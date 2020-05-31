@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hoomoomoo.im.dao.SysConsoleDao">
+
+    <select id="selectIncomeLast" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select income_amount consoleData
+        from sys_income a, sys_user b
+        where a.user_id = b.user_id
+        and income_id = (
+            select max(income_id)
+            from sys_income
+            <where>
+                <if test="userId != null">
+                    and a.user_id = #{userId}
+                </if>
+            </where>
+        )
+    </select>
+
+    <select id="selectIncomeMonth" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select sum(income_amount) consoleData
+        from sys_income a, sys_user b
+        <where>
+            a.user_id = b.user_id
+            <choose>
+                <when test="queryCondition != null">
+                    and #{queryCondition} = to_char(income_date, 'yyyyMM')
+                </when>
+                <otherwise>
+                    and to_char(sysdate, 'yyyyMM') = to_char(income_date, 'yyyyMM')
+                </otherwise>
+            </choose>
+            <if test="userId != null">
+                and a.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectIncomePreviousYearMonth" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select sum(income_amount) consoleData
+        from sys_income a, sys_user b
+        <where>
+            a.user_id = b.user_id
+            and to_char(add_months(sysdate, -12), 'yyyyMM') = to_char(income_date, 'yyyyMM')
+            <if test="userId != null">
+                and a.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectIncomePreviousMonth" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select sum(income_amount) consoleData
+        from sys_income a, sys_user b
+        <where>
+            a.user_id = b.user_id
+            and to_char(add_months(sysdate, -1), 'yyyyMM') = to_char(income_date, 'yyyyMM')
+            <if test="userId != null">
+                and a.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectIncomeYear" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select
+            <choose>
+                <when test="isCalc != null">
+                    sum(income_amount) consoleData
+                </when>
+                <otherwise>
+                    sum(income_amount) consoleData
+                </otherwise>
+            </choose>
+        from sys_income a, sys_user b
+        <where>
+            a.user_id = b.user_id
+            and to_char(income_date, 'yyyyMM')
+                between #{yearStartDate}
+                and to_char(add_months(to_date(#{yearStartDate}, 'yyyyMM'), 12), 'yyyyMM')
+            <if test="userId != null">
+                and a.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectIncomeTotal" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select
+            <choose>
+                <when test="isCalc != null">
+                    sum(income_amount) consoleData
+                </when>
+                <otherwise>
+                    sum(income_amount) consoleData
+                </otherwise>
+            </choose>
+        from sys_income a, sys_user b
+        <where>
+            a.user_id = b.user_id
+            <if test="userId != null">
+                and a.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectGiftSendLast" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select gift_amount consoleData
+        from sys_gift a, sys_user b
+        where
+        (
+            substr(a.gift_sender, instr(a.gift_sender, '-') + 1) = b.user_id
+            or
+            substr(a.gift_receiver, instr(a.gift_receiver, '-') + 1) = b.user_id
+        )
+        and gift_id = (
+            select max(gift_id)
+            from sys_gift a, sys_user b
+            <where>
+                substr(a.gift_sender, instr(a.gift_sender, '-') + 1) = b.user_id
+                <if test="userId != null">
+                    and b.user_id = #{userId}
+                </if>
+            </where>
+        )
+    </select>
+
+    <select id="selectGiftSendYear" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select sum(gift_amount) consoleData
+        from sys_gift a, sys_user b
+        where substr(a.gift_sender, instr(a.gift_sender, '-') + 1) = b.user_id
+        and to_char(gift_date, 'yyyyMM')
+            between #{yearStartDate}
+            and to_char(add_months(to_date(#{yearStartDate}, 'yyyyMM'), 12), 'yyyyMM')
+        <if test="userId != null">
+            and b.user_id = #{userId}
+        </if>
+    </select>
+
+    <select id="selectGiftSendTotal" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select sum(gift_amount) consoleData
+        from sys_gift a, sys_user b
+        where substr(a.gift_sender, instr(a.gift_sender, '-') + 1) = b.user_id
+        <if test="userId != null">
+            and b.user_id = #{userId}
+        </if>
+    </select>
+
+    <select id="selectGiftReceiveLast" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select gift_amount consoleData
+        from sys_gift a, sys_user b
+        where
+        (
+            substr(a.gift_sender, instr(a.gift_sender, '-') + 1) = b.user_id
+            or
+            substr(a.gift_receiver, instr(a.gift_receiver, '-') + 1) = b.user_id
+        )
+        and gift_id = (
+            select max(gift_id)
+            from sys_gift a, sys_user b
+            <where>
+                substr(a.gift_receiver, instr(a.gift_receiver, '-') + 1) = b.user_id
+                <if test="userId != null">
+                    and b.user_id = #{userId}
+                </if>
+            </where>
+        )
+    </select>
+
+    <select id="selectGiftReceiveYear" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select sum(gift_amount) consoleData
+        from sys_gift a, sys_user b
+        where substr(a.gift_receiver, instr(a.gift_receiver, '-') + 1) = b.user_id
+        and to_char(gift_date, 'yyyyMM')
+            between #{yearStartDate}
+            and to_char(add_months(to_date(#{yearStartDate}, 'yyyyMM'), 12), 'yyyyMM')
+        <if test="userId != null">
+            and b.user_id = #{userId}
+        </if>
+    </select>
+
+    <select id="selectGiftReceiveTotal" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select sum(gift_amount) consoleData
+        from sys_gift a, sys_user b
+        where substr(a.gift_receiver, instr(a.gift_receiver, '-') + 1) = b.user_id
+        <if test="userId != null">
+            and b.user_id = #{userId}
+        </if>
+    </select>
+
+    <select id="selectLoginLast" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select to_char(login_date, 'yyyy-MM-dd hh24:mm:ss') consoleData
+        from sys_login_log
+        where log_id = (
+            select max(log_id)
+            from sys_login_log a, sys_user b
+            <where>
+                a.user_id = b.user_id
+                <if test="userId != null">
+                    and a.user_id = #{userId}
+                </if>
+            </where>
+            )
+    </select>
+
+    <select id="selectLoginMonthTime" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select count(1) consoleData
+        from sys_login_log a, sys_user b
+        <where>
+            a.user_id = b.user_id
+            and to_char(login_date, 'yyyyMM') = to_char(sysdate, 'yyyyMM')
+            <if test="userId != null">
+                and a.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectLoginYearTime" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select count(1) consoleData
+        from sys_login_log a, sys_user b
+        <where>
+            a.user_id = b.user_id
+            and to_char(login_date, 'yyyy') = to_char(sysdate, 'yyyy')
+            <if test="userId != null">
+                and a.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectLoginTotalTime" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
+            resultType="java.lang.String">
+        select count(1) consoleData
+        from sys_login_log a, sys_user b
+        <where>
+            a.user_id = b.user_id
+            <if test="userId != null">
+                and a.user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+</mapper>

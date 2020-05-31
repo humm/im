@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoomoomoo.im.dao.SysReportDao">
+
+    <select id="selectIncomeYear" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
+        select
+            '全年度' title,
+            '单位：元' subTitle,
+            <if test="userId != null">
+                s.user_name reportName,
+            </if>
+            sum(t.income_amount) reportNum,
+            to_number(substr(to_char(t.income_date, 'yyyyMMdd'), 1, 4)) reportDate
+        from sys_income t, sys_user s
+        where t.user_id = s.user_id
+        <if test="userId != null">
+            and t.user_id = #{userId}
+        </if>
+        group by
+            <if test="userId != null">
+                s.user_name,
+            </if>
+            to_number(substr(to_char(t.income_date, 'yyyyMMdd'), 1, 4))
+        order by
+            <if test="userId != null">
+                s.user_name,
+            </if>
+            to_number(substr(to_char(t.income_date, 'yyyyMMdd'), 1, 4))
+    </select>
+
+    <select id="selectIncomeMonth" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
+        select
+            #{reportValue} || '年' title,
+            '单位：元' subTitle,
+            <if test="userId != null">
+                s.user_name reportName,
+            </if>
+            sum(t.income_amount) reportNum,
+            to_number(substr(to_char(t.income_date, 'yyyyMMdd'), 5, 2)) reportDate
+        from sys_income t, sys_user s
+        where t.user_id = s.user_id
+        and substr(to_char(t.income_date, 'yyyyMMdd'), 1, 4) = #{reportValue}
+        <if test="userId != null">
+            and t.user_id = #{userId}
+        </if>
+        group by
+            <if test="userId != null">
+                s.user_name,
+            </if>
+            to_number(substr(to_char(t.income_date, 'yyyyMMdd'), 5, 2))
+        order by
+            <if test="userId != null">
+                s.user_name,
+            </if>
+            to_number(substr(to_char(t.income_date, 'yyyyMMdd'), 5, 2))
+    </select>
+
+    <select id="selectIncomeSource" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
+        select
+            <choose>
+                <when test="userId != null">
+                    u.user_name title,
+                </when>
+                <otherwise>
+                    '家庭' title,
+                </otherwise>
+            </choose>
+            '单位：元' subtitle,
+            s.dictionary_caption reportName,
+            sum(t.income_amount) reportNum
+        from sys_income t, sys_dictionary s, sys_user u
+        where t.income_company = s.dictionary_code || '-' ||  s.dictionary_item
+        and t.user_id = u.user_id
+        <if test="userId != null">
+            and t.user_id = #{userId}
+        </if>
+        group by s.dictionary_caption
+        <if test="userId != null">
+            , u.user_name
+        </if>
+        order by s.dictionary_caption
+    </select>
+
+    <select id="selectIncomeType" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
+        select
+            <choose>
+                <when test="userId != null">
+                    b.user_name title,
+                </when>
+                <otherwise>
+                    '家庭' title,
+                </otherwise>
+            </choose>
+            '单位：元' subtitle,
+            s.dictionary_caption reportName,
+            sum(t.income_amount) reportNum
+        from sys_income t, sys_dictionary s, sys_user b
+        where t.income_type = s.dictionary_code || '-' ||  s.dictionary_item
+        and t.user_id = b.user_id
+        <if test="userId != null">
+            and t.user_id = #{userId}
+        </if>
+        group by s.dictionary_caption
+        <if test="userId != null">
+            , b.user_name
+        </if>
+        order by s.dictionary_caption
+    </select>
+
+    <select id="selectIncomePeak" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
+        select
+            title,
+            '单位：元' subtitle,
+            reportName,
+            reportNum
+        from (select
+                    <choose>
+                        <when test="userId != null">
+                            b.user_name title,
+                        </when>
+                        <otherwise>
+                            '家庭' title,
+                        </otherwise>
+                    </choose>
+                    c.dictionary_caption || ' - ' || s.dictionary_caption reportName,
+                    max(t.income_amount) reportNum
+              from sys_income t, sys_dictionary s, sys_user b, sys_dictionary c
+              where t.income_type = s.dictionary_code || '-' || s.dictionary_item
+              and t.income_company = c.dictionary_code || '-' || c.dictionary_item
+              and t.user_id = b.user_id
+              <if test="userId != null">
+                 and t.user_id = #{userId}
+              </if>
+              group by s.dictionary_caption, c.dictionary_caption
+              <if test="userId != null">
+                , b.user_name
+              </if>
+              order by max(t.income_amount) desc
+        ) m
+        where rownum = 1
+        union all
+        select
+            title,
+            '单位：元' subtitle,
+            reportName,
+            reportNum
+        from (select
+                     <choose>
+                        <when test="userId != null">
+                            b.user_name title,
+                        </when>
+                        <otherwise>
+                            '家庭' title,
+                        </otherwise>
+                     </choose>
+                     c.dictionary_caption || ' - ' || s.dictionary_caption reportName,
+                     min(t.income_amount) reportNum
+              from sys_income t, sys_dictionary s, sys_user b, sys_dictionary c
+              where t.income_type = s.dictionary_code || '-' || s.dictionary_item
+              and t.income_company = c.dictionary_code || '-' || c.dictionary_item
+              and t.user_id = b.user_id
+              <if test="userId != null">
+                 and t.user_id = #{userId}
+              </if>
+              group by s.dictionary_caption, c.dictionary_caption
+              <if test="userId != null">
+                , b.user_name
+              </if>
+              order by min(t.income_amount)
+        ) s
+        where rownum = 1
+    </select>
+
+    <select id="selectGiftYear" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
+        select
+            '全年度' title,
+            '单位：元' subTitle,
+            <if test="giftSender != null or giftReceiver != null">
+                s.user_name reportName,
+            </if>
+            sum(t.gift_amount) reportNum,
+            to_number(substr(to_char(t.gift_date, 'yyyyMMdd'), 1, 4)) reportDate
+        from sys_gift t, sys_user s
+        where 1=1
+        <if test='giftMode == "0"'>
+            and  substr(t.gift_sender, instr(t.gift_sender, '-') + 1) = s.user_id
+        </if>
+        <if test='giftMode == "1"'>
+            and substr(t.gift_receiver, instr(t.gift_receiver, '-') + 1) = s.user_id
+        </if>
+        <if test="giftSender != null">
+            and substr(t.gift_sender, instr(gift_sender, '-') + 1) = #{giftSender}
+        </if>
+        <if test="giftReceiver != null">
+            and substr(t.gift_receiver, instr(gift_receiver, '-') + 1) = #{giftReceiver}
+        </if>
+        group by
+            <if test="giftSender != null or giftReceiver != null">
+                s.user_name,
+            </if>
+            to_number(substr(to_char(t.gift_date, 'yyyyMMdd'), 1, 4))
+        order by
+            <if test="giftSender != null or giftReceiver != null">
+                s.user_name,
+            </if>
+            to_number(substr(to_char(t.gift_date, 'yyyyMMdd'), 1, 4))
+    </select>
+
+    <select id="selectGiftMonth" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
+        select
+            #{reportValue} || '年' title,
+            '单位：元' subTitle,
+            <if test="giftSender != null or giftReceiver != null">
+                s.user_name reportName,
+            </if>
+            sum(t.gift_amount) reportNum,
+            to_number(substr(to_char(t.gift_date, 'yyyyMMdd'), 5, 2)) reportDate
+        from sys_gift t, sys_user s
+        where 1=1
+        <if test='giftMode == "0"'>
+            and  substr(t.gift_sender, instr(t.gift_sender, '-') + 1) = s.user_id
+        </if>
+        <if test='giftMode == "1"'>
+            and substr(t.gift_receiver, instr(t.gift_receiver, '-') + 1) = s.user_id
+        </if>
+        <if test="giftSender != null">
+            and substr(t.gift_sender, instr(gift_sender, '-') + 1) = #{giftSender}
+        </if>
+        <if test="giftReceiver != null">
+            and substr(t.gift_receiver, instr(gift_receiver, '-') + 1) = #{giftReceiver}
+        </if>
+        and substr(to_char(t.gift_date, 'yyyyMMdd'), 1, 4) = #{reportValue}
+        group by
+            <if test="giftSender != null or giftReceiver != null">
+                s.user_name,
+            </if>
+            to_number(substr(to_char(t.gift_date, 'yyyyMMdd'), 5, 2))
+        order by
+            <if test="giftSender != null or giftReceiver != null">
+                s.user_name,
+            </if>
+            to_number(substr(to_char(t.gift_date, 'yyyyMMdd'), 5, 2))
+    </select>
+
+    <select id="selectGiftType" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
+        select
+            <choose>
+                <when test="giftSender != null or giftReceiver != null">
+                    n.user_name title,
+                </when>
+                <otherwise>
+                    '家庭' title,
+                </otherwise>
+            </choose>
+            '单位：元' subtitle,
+            s.dictionary_caption reportName,
+            sum(t.gift_amount) reportNum
+        from sys_gift t, sys_dictionary s, sys_user n
+        where t.gift_type = s.dictionary_code || '-' ||  s.dictionary_item
+        <if test='giftMode == "0"'>
+            and  substr(t.gift_sender, instr(t.gift_sender, '-') + 1) = n.user_id
+        </if>
+        <if test='giftMode == "1"'>
+            and substr(t.gift_receiver, instr(t.gift_receiver, '-') + 1) = n.user_id
+        </if>
+        <if test="giftSender != null">
+            and substr(t.gift_sender, instr(gift_sender, '-') + 1) = #{giftSender}
+        </if>
+        <if test="giftReceiver != null">
+            and substr(t.gift_receiver, instr(gift_receiver, '-') + 1) = #{giftReceiver}
+        </if>
+        group by s.dictionary_caption
+        <if test="giftSender != null or giftReceiver != null">
+            , n.user_name
+        </if>
+        order by s.dictionary_caption
+    </select>
+
+    <select id="selectGiftPeak" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
+        select
+            title,
+            '单位：元' subtitle,
+            reportName,
+            reportNum
+        from (
+            select
+                <choose>
+                    <when test="giftSender != null or giftReceiver != null">
+                        n.user_name title,
+                    </when>
+                    <otherwise>
+                        '家庭' title,
+                    </otherwise>
+                </choose>
+                c.dictionary_caption || ' - ' || s.dictionary_caption reportName,
+                max(t.gift_amount) reportNum
+            from sys_gift t, sys_dictionary s, sys_user n, sys_dictionary c
+            where t.gift_type = s.dictionary_code || '-' || s.dictionary_item
+            <if test='giftMode == "0"'>
+                and substr(t.gift_sender, instr(t.gift_sender, '-') + 1) = n.user_id
+                and t.gift_receiver = c.dictionary_code || '-' || c.dictionary_item
+            </if>
+            <if test='giftMode == "1"'>
+                and substr(t.gift_receiver, instr(t.gift_receiver, '-') + 1) = n.user_id
+                and t.gift_sender = c.dictionary_code || '-' || c.dictionary_item
+            </if>
+            <if test="giftSender != null">
+                and substr(t.gift_sender, instr(gift_sender, '-') + 1) = #{giftSender}
+            </if>
+            <if test="giftReceiver != null">
+                and substr(t.gift_receiver, instr(gift_receiver, '-') + 1) = #{giftReceiver}
+            </if>
+            group by s.dictionary_caption, c.dictionary_caption
+            <if test="giftSender != null or giftReceiver != null">
+                , n.user_name
+            </if>
+            order by max(t.gift_amount) desc
+        ) m
+        where rownum = 1
+        union all
+        select
+            title,
+            '单位：元' subtitle,
+            reportName,
+            reportNum
+        from (
+            select
+                <choose>
+                    <when test="giftSender != null or giftReceiver != null">
+                        n.user_name title,
+                    </when>
+                    <otherwise>
+                        '家庭' title,
+                    </otherwise>
+                </choose>
+                c.dictionary_caption || ' - ' || s.dictionary_caption reportName,
+                min(t.gift_amount) reportNum
+            from sys_gift t, sys_dictionary s, sys_user n, sys_dictionary c
+            where t.gift_type = s.dictionary_code || '-' || s.dictionary_item
+            <if test='giftMode == "0"'>
+                and substr(t.gift_sender, instr(t.gift_sender, '-') + 1) = n.user_id
+                and t.gift_receiver = c.dictionary_code || '-' || c.dictionary_item
+            </if>
+            <if test='giftMode == "1"'>
+                and substr(t.gift_receiver, instr(t.gift_receiver, '-') + 1) = n.user_id
+                and t.gift_sender = c.dictionary_code || '-' || c.dictionary_item
+            </if>
+            <if test="giftSender != null">
+                and substr(t.gift_sender, instr(gift_sender, '-') + 1) = #{giftSender}
+            </if>
+            <if test="giftReceiver != null">
+                and substr(t.gift_receiver, instr(gift_receiver, '-') + 1) = #{giftReceiver}
+            </if>
+            group by s.dictionary_caption, c.dictionary_caption
+            <if test="giftSender != null or giftReceiver != null">
+                , n.user_name
+            </if>
+            order by min(t.gift_amount)
+        ) s
+        where rownum = 1
+    </select>
+
+    <select id="selectGift" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
+        select
+            <choose>
+                <when test="giftSender != null">
+                    n.user_name title,
+                </when>
+                <otherwise>
+                    '家庭' title,
+                </otherwise>
+            </choose>
+            '单位：元' subTitle,
+            '送礼' reportName,
+            sum(t.gift_amount) reportNum
+        from sys_gift t, sys_dictionary s, sys_user n
+        where t.gift_type = s.dictionary_code || '-' || s.dictionary_item
+        and  substr(t.gift_sender, instr(t.gift_sender, '-') + 1) = n.user_id
+        <if test="giftSender != null">
+            and substr(t.gift_sender, instr(gift_sender, '-') + 1) = #{giftSender}
+            group by n.user_name
+        </if>
+        union all
+        select
+            <choose>
+                <when test="giftReceiver != null">
+                    n.user_name title,
+                </when>
+                <otherwise>
+                    '家庭' title,
+                </otherwise>
+            </choose>
+            '单位：元' subTitle,
+            '收礼' reportName,
+            sum(t.gift_amount) reportNum
+        from sys_gift t, sys_dictionary s, sys_user n
+        where t.gift_type = s.dictionary_code || '-' || s.dictionary_item
+        and substr(t.gift_receiver, instr(t.gift_receiver, '-') + 1) = n.user_id
+        <if test="giftReceiver != null">
+            and substr(t.gift_receiver, instr(gift_receiver, '-') + 1) = #{giftReceiver}
+            group by n.user_name
+        </if>
+    </select>
+
+</mapper>

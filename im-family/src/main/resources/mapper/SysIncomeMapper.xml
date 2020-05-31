@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoomoomoo.im.dao.SysIncomeDao">
+
+    <sql id="Base_Column_List">
+        a.income_id incomeId, a.user_id userId, a.income_type incomeType,
+        a.income_date incomeDate, a.income_company incomeCompany,
+        a.income_amount incomeAmount, a.income_memo incomeMemo,
+        a.create_date createDate, a.modify_date modifyDate,
+        a.create_user createUser, a.modify_user modifyUser,
+        substr(a.income_type, instr(a.income_type, '-') + 1) incomeTypeCode,
+        substr(a.income_company, instr(a.income_company, '-') + 1) incomeCompanyCode
+    </sql>
+
+    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
+            resultType="com.hoomoomoo.im.model.SysIncomeModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_income a, sys_user b
+        <where>
+            a.user_id = b.user_id
+            <if test="incomeId != null">
+                and income_id = #{incomeId}
+            </if>
+            <if test="userId != null">
+                and a.user_id = #{userId}
+            </if>
+            <if test="incomeType != null">
+                and income_type = #{incomeType}
+            </if>
+            <if test="incomeDate != null">
+                and to_char(income_date, 'yyyy-MM') = to_char(#{incomeDate}, 'yyyy-MM')
+            </if>
+            <if test="incomeCompany != null">
+                and income_company = #{incomeCompany}
+            </if>
+            <if test="incomeAmount != null">
+                and income_amount = #{incomeAmount}
+            </if>
+            <if test="isAdminData == false">
+                and a.user_id = #{userKey}
+            </if>
+        </where>
+        order by
+        <if test="sort != null and order != null">
+            a.${sort} ${order}
+        </if>
+        <if test="sort != null and order == null">
+            a.${sort}
+        </if>
+        <if test="sort == null">
+            a.modify_date desc
+        </if>
+    </select>
+
+    <delete id="delete" parameterType="java.util.List">
+        delete from sys_income
+        <where>
+            income_id in
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item.incomeId}
+            </foreach>
+        </where>
+    </delete>
+
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
+            resultType="com.hoomoomoo.im.model.SysIncomeModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_income a
+        <where>
+            <if test="incomeId != null">
+                and income_id = #{incomeId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="incomeType != null">
+                and income_type = #{incomeType}
+            </if>
+            <if test="incomeDate != null">
+                and to_char(income_date, 'yyyy-MM') = to_char(#{incomeDate}, 'yyyy-MM')
+            </if>
+            <if test="incomeCompany != null">
+                and income_company = #{incomeCompany}
+            </if>
+            <if test="incomeAmount != null">
+                and income_amount = #{incomeAmount}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectLastType" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
+            resultType="com.hoomoomoo.im.model.common.LastType">
+        select s.income_type as incomeType
+        from (
+            select t.income_type
+            from sys_income t
+            where t.user_id = #{userId}
+            order by t.modify_date desc
+        )s
+        where rownum = 1
+    </select>
+
+    <select id="selectLastTypeIncomeCompany" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
+            resultType="com.hoomoomoo.im.model.common.LastType">
+        select s.income_company as incomeCompany
+        from (
+            select t.income_company
+            from sys_income t
+            where t.user_id = #{userId}
+            order by t.modify_date desc
+        )s
+        where rownum = 1
+    </select>
+
+    <update id="save" parameterType="com.hoomoomoo.im.model.SysIncomeModel">
+        merge into sys_income a
+        using (select #{incomeId} as income_id from dual) b
+        on (a.income_id = b.income_id)
+        when matched then
+            update
+                <set>
+                    income_memo = nvl(#{incomeMemo}, ' '),
+                    <if test="userId != null">
+                        user_id = #{userId},
+                    </if>
+                    <if test="incomeType != null">
+                        income_type = #{incomeType},
+                    </if>
+                    <if test="incomeDate != null">
+                        income_date = #{incomeDate},
+                    </if>
+                    <if test="incomeCompany != null">
+                        income_company = #{incomeCompany},
+                    </if>
+                    <if test="incomeAmount != null">
+                        income_amount = #{incomeAmount},
+                    </if>
+                    <if test="modifyDate != null">
+                        modify_date = #{modifyDate},
+                    </if>
+                    <if test="modifyUser != null">
+                        modify_user = #{modifyUser}
+                    </if>
+                </set>
+            where income_id = #{incomeId}
+        when not matched then
+            insert(
+                income_id,
+                user_id,
+                income_type,
+                income_date,
+                income_company,
+                income_amount,
+                income_memo,
+                create_date,
+                create_user,
+                modify_date,
+                modify_user
+            )
+            values(
+                #{incomeId},
+                #{userId},
+                #{incomeType},
+                #{incomeDate},
+                #{incomeCompany},
+                #{incomeAmount},
+                nvl(#{incomeMemo}, ' '),
+                #{createDate},
+                #{createUser},
+                #{modifyDate},
+                #{modifyUser}
+            )
+    </update>
+
+</mapper>

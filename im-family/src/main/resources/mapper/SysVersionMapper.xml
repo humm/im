@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hoomoomoo.im.dao.SysVersionDao">
+
+    <select id="selectList" resultType="com.hoomoomoo.im.model.SysVersionModel">
+        select
+            version_id versionId,
+            version_content versionContent,
+            version_date versionDate,
+            version_order versionOrder,
+            version_type versionType
+        from sys_version
+        order by version_order desc
+    </select>
+
+</mapper>

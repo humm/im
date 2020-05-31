@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoomoomoo.im.dao.SysInterfaceDao">
+
+    <sql id="Base_Column_List">
+        interface_id interfaceId, request_id requestId, request_data requestData,
+        request_result requestResult, request_message requestMessage, feedback_status feedbackStatus
+    </sql>
+
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysInterfaceQueryModel"
+            resultType="com.hoomoomoo.im.model.SysInterfaceModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_interface
+        <where>
+            <if test="interfaceId != null">
+                and interface_id = #{interfaceId}
+            </if>
+            <if test="requestId != null">
+                and request_id = #{requestId}
+            </if>
+            <if test="requestData != null">
+                and request_data = #{requestData}
+            </if>
+            <if test="requestResult != null">
+                and request_result = #{requestResult}
+            </if>
+            <if test="requestMessage != null">
+                and request_message = #{requestMessage}
+            </if>
+            <if test="feedbackStatus != null">
+                and feedback_status = #{feedbackStatus}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.hoomoomoo.im.model.SysInterfaceModel">
+        insert into sys_interface (
+            interface_id,
+            request_id,
+            request_data,
+            request_result,
+            request_message,
+            feedback_status,
+            create_date,
+            create_user,
+            modify_date,
+            modify_user
+        ) values (
+            #{interfaceId},
+            #{requestId},
+            #{requestData},
+            #{requestResult},
+            #{requestMessage},
+            #{feedbackStatus},
+            #{createDate},
+            #{createUser},
+            #{modifyDate},
+            #{modifyUser}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.hoomoomoo.im.model.SysInterfaceModel">
+        update sys_interface
+        <set>
+            <if test="requestId != null">
+                request_id = #{requestId},
+            </if>
+            <if test="requestData != null">
+                request_data = #{requestData},
+            </if>
+            <if test="requestResult != null">
+                request_result = #{requestResult},
+            </if>
+            <if test="requestMessage != null">
+                request_message = #{requestMessage},
+            </if>
+            <if test="feedbackStatus != null">
+                feedback_status = #{feedbackStatus},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate},
+            </if>
+            <if test="modifyUser != null">
+                modify_user = #{modifyUser}
+            </if>
+        </set>
+        <where>
+            <if test="interfaceId != null">
+                and interface_id = #{interfaceId}
+            </if>
+        </where>
+    </update>
+</mapper>

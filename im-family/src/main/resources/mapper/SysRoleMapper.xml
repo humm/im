@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hoomoomoo.im.dao.SysRoleDao">
+
+    <sql id="Base_Column_List">
+        role_id roleId, role_code roleCode,
+        role_name roleName, role_memo roleMemo,
+        create_date createDate, modify_date modifyDate,
+        create_user createUser, modify_user modifyUser
+    </sql>
+
+    <select id="selectSysRole" parameterType="com.hoomoomoo.im.model.SysRoleQueryModel"
+            resultType="com.hoomoomoo.im.model.SysRoleModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_role
+        <where>
+            <if test="roleId != null" >
+                and role_id = #{roleId}
+            </if>
+            <if test="roleCode != null" >
+                and role_code = #{roleCode}
+            </if>
+            <if test="roleName != null" >
+                and role_name = #{roleName}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysRoleQueryModel"
+            resultType="com.hoomoomoo.im.model.SysRoleModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_role
+        <where>
+            <if test="roleId != null" >
+                and role_id = #{roleId}
+            </if>
+            <if test="roleCode != null" >
+                and role_code like '%' || #{roleCode} || '%'
+            </if>
+            <if test="roleName != null" >
+                and role_name like '%' || #{roleName} || '%'
+            </if>
+        </where>
+        order by
+        <if test="sort != null and order != null">
+            ${sort} ${order}
+        </if>
+        <if test="sort != null and order == null">
+            ${sort}
+        </if>
+        <if test="sort == null">
+            modify_date desc
+        </if>
+    </select>
+
+    <delete id="delete" parameterType="java.util.List">
+        delete from sys_role
+        <where>
+            role_id in
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item.roleId}
+            </foreach>
+        </where>
+    </delete>
+
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysRoleQueryModel"
+            resultType="com.hoomoomoo.im.model.SysRoleModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_role
+        <where>
+            <if test="roleId != null" >
+                and role_id = #{roleId}
+            </if>
+            <if test="roleCode != null" >
+                and role_code = #{roleCode}
+            </if>
+            <if test="roleName != null" >
+                and role_name = #{roleName}
+            </if>
+        </where>
+    </select>
+
+    <update id="save" parameterType="com.hoomoomoo.im.model.SysRoleModel">
+        merge into sys_role a
+        using (select #{roleId} as role_id from dual) b
+        on (a.role_id = b.role_id)
+        when matched then
+            update
+            <set>
+                role_memo = nvl(#{roleMemo}, ' '),
+                <if test="roleCode != null" >
+                    role_code = #{roleCode},
+                </if>
+                <if test="roleName != null" >
+                    role_name = #{roleName},
+                </if>
+                <if test="modifyDate != null">
+                    modify_date = #{modifyDate},
+                </if>
+                <if test="modifyUser != null">
+                    modify_user = #{modifyUser}
+                </if>
+            </set>
+            where role_id = #{roleId}
+        when not matched then
+            insert(
+                role_id,
+                role_code,
+                role_name,
+                create_date,
+                modify_date,
+                create_user,
+                modify_user,
+                role_memo
+            )
+            values(
+                #{roleId},
+                #{roleCode},
+                #{roleName},
+                #{createDate},
+                #{modifyDate},
+                #{createUser},
+                #{modifyUser},
+                nvl(#{roleMemo}, ' ')
+            )
+    </update>
+
+    <select id="checkRoleCode" parameterType="com.hoomoomoo.im.model.SysRoleQueryModel"
+            resultType="java.lang.Boolean">
+        select case when count(1) > 0 then '0' else '1' end isExist
+        from sys_role
+        where role_code = #{roleCode}
+        <if test="roleId != null">
+            and role_id != #{roleId}
+        </if>
+    </select>
+
+    <delete id="deleteRoleMenu" parameterType="com.hoomoomoo.im.model.SysRoleMenuModel">
+        delete from sys_role_menu where role_id = #{roleId}
+    </delete>
+
+    <delete id="deleteRoleUser" parameterType="com.hoomoomoo.im.model.SysUserModel">
+        delete from sys_user_role where role_id = #{roleId}
+    </delete>
+
+    <insert id="saveRoleMenu" parameterType="com.hoomoomoo.im.model.SysRoleMenuModel">
+        insert into sys_role_menu(
+            role_menu_id,
+            menu_id,
+            role_id
+        )values(
+            #{roleMenuId},
+            #{menuId},
+            #{roleId}
+        )
+    </insert>
+
+</mapper>

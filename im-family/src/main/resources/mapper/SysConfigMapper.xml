@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hoomoomoo.im.dao.SysConfigDao">
+
+    <select id="selectModule" parameterType="com.hoomoomoo.im.model.SysConfigQueryModel"
+            resultType="com.hoomoomoo.im.model.SysConfigModel">
+        select
+            module_group_code moduleGroupCode,
+            module_group_name moduleGroupName,
+            module_code moduleCode,
+            module_name moduleName,
+            module_status moduleStatus,
+            module_ext moduleExt
+        from sys_config
+        <where>
+            <if test="moduleGroupCode != null">
+                and module_group_code = #{moduleGroupCode}
+            </if>
+            <if test="moduleGroupName != null">
+                and module_group_name = #{moduleGroupName}
+            </if>
+            <if test="moduleCode != null">
+                and module_code = #{moduleCode}
+            </if>
+            <if test="moduleName != null">
+                and module_name = #{moduleName}
+            </if>
+            <if test="moduleStatus != null">
+                and module_status = #{moduleStatus}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </select>
+
+    <update id="save" parameterType="com.hoomoomoo.im.model.SysConfigModel">
+        merge into sys_config a
+        using (
+          select
+            #{moduleGroupCode} as module_group_code,
+            #{moduleCode} as module_code,
+            #{userId} as user_id
+          from dual
+        ) b
+        on (a.module_group_code = b.module_group_code and a.module_code = b.module_code and a.user_id = b.user_id)
+        when matched then
+        update
+        <set>
+            module_status = #{moduleStatus}
+        </set>
+        when not matched then
+        insert(
+            module_group_code,
+            module_group_name,
+            module_code,
+            module_name,
+            module_status,
+            module_ext,
+            user_id
+        )
+        values(
+            #{moduleGroupCode},
+            (select module_group_name from sys_config where module_group_code = #{moduleGroupCode} and module_code = #{moduleCode} and nvl(user_id, 0) = 0),
+            #{moduleCode},
+            (select module_name from sys_config where module_group_code = #{moduleGroupCode} and module_code = #{moduleCode} and nvl(user_id, 0) = 0),
+            #{moduleStatus},
+            (select module_ext from sys_config where module_group_code = #{moduleGroupCode} and module_code = #{moduleCode} and nvl(user_id, 0) = 0),
+            #{userId}
+        )
+    </update>
+
+    <delete id="delete" parameterType="java.util.List">
+        delete from sys_config
+        <where>
+            user_id in
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item.userId}
+            </foreach>
+        </where>
+    </delete>
+
+</mapper>

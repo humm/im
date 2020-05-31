@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hoomoomoo.im.dao.SysParameterDao">
+
+    <sql id="Base_Column_List">
+        parameter_code parameterCode,
+        parameter_caption parameterCaption,
+        parameter_value parameterValue,
+        parameter_order parameterOrder,
+        parameter_type parameterType,
+        parameter_ext parameterExt,
+        parameter_group parameterGroup,
+        is_show isShow,
+        is_edit isEdit
+    </sql>
+
+    <select id="selectList" parameterType="com.hoomoomoo.im.model.SysParameterQueryModel"
+            resultType="com.hoomoomoo.im.model.SysParameterModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_parameter
+        <where>
+            is_show = '1'
+            <if test="parameterCode != null" >
+                and parameter_code = #{parameterCode}
+            </if>
+        </where>
+        order by parameter_order
+    </select>
+
+    <select id="selectSysParameter" parameterType="com.hoomoomoo.im.model.SysParameterQueryModel"
+            resultType="com.hoomoomoo.im.model.SysParameterModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_parameter
+        <where>
+            <if test="parameterCode != null" >
+                and parameter_code = #{parameterCode}
+            </if>
+        </where>
+    </select>
+
+    <select id="save" parameterType="com.hoomoomoo.im.model.SysParameterModel">
+        update sys_parameter set parameter_value = trim(#{parameterValue}) where parameter_code = #{parameterCode}
+    </select>
+
+    <update id="updateBackupDir" parameterType="com.hoomoomoo.im.model.SysParameterModel">
+        create or replace directory backup_dir as ${parameterValue}
+    </update>
+
+    <select id="selectMailConfig" resultType="com.hoomoomoo.im.model.SysParameterModel">
+        select
+          <include refid="Base_Column_List"/>
+        from sys_parameter
+        where parameter_code in (
+          'mailFrom', 'mailUsername', 'mailPassword', 'mailHost', 'mailProtocol', 'mailDebug', 'mailEncoding',
+          'mailSubject', 'mailReceiveFolder', 'mailReceiveHost', 'mailReceiveUsername', 'mailReceivePassword', 'mailReceiveProtocol'
+        )
+    </select>
+
+</mapper>

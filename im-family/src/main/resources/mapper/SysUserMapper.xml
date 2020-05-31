@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hoomoomoo.im.dao.SysUserDao">
+
+    <sql id="Base_Column_List">
+        user_id userId, user_code userCode,
+        user_name userName, user_password userPassword,
+        user_status userStatus, user_memo userMemo,
+        create_date createDate, modify_date modifyDate,
+        create_user createUser, modify_user modifyUser,
+        substr(user_status, instr(user_status, '-') + 1) userStatusCode
+    </sql>
+
+    <select id="selectSysUser" parameterType="com.hoomoomoo.im.model.SysUserQueryModel"
+            resultType="com.hoomoomoo.im.model.SysUserModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_user
+        <where>
+            <if test="userId != null" >
+                and user_id = #{userId}
+            </if>
+            <if test="userCode != null" >
+                and user_code = #{userCode}
+            </if>
+            <if test="userName != null" >
+                and user_name = #{userName}
+            </if>
+            <if test="userPassword != null" >
+                and user_password = #{userPassword}
+            </if>
+            <if test="userStatus != null" >
+                and user_status = #{userStatus}
+            </if>
+        </where>
+        order by user_id
+    </select>
+
+    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysUserQueryModel"
+            resultType="com.hoomoomoo.im.model.SysUserModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_user
+        <where>
+            <if test="userId != null" >
+                and user_id = #{userId}
+            </if>
+            <if test="userCode != null" >
+                and user_code like '%' || #{userCode} || '%'
+            </if>
+            <if test="userName != null" >
+                and user_name like '%' || #{userName} || '%'
+            </if>
+            <if test="userStatus != null" >
+                and user_status = #{userStatus}
+            </if>
+        </where>
+        order by
+        <if test="sort != null and order != null">
+            ${sort} ${order}
+        </if>
+        <if test="sort != null and order == null">
+            ${sort}
+        </if>
+        <if test="sort == null">
+            modify_date desc
+        </if>
+    </select>
+
+    <delete id="delete" parameterType="java.util.List">
+        delete from sys_user
+        <where>
+            user_id in
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item.userId}
+            </foreach>
+        </where>
+    </delete>
+
+    <update id="reset" parameterType="java.util.List">
+        update sys_user set user_password = #{userPassword}
+        <where>
+            user_id in
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item.userId}
+            </foreach>
+        </where>
+    </update>
+
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysUserQueryModel"
+            resultType="com.hoomoomoo.im.model.SysUserModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_user
+        <where>
+            <if test="userId != null" >
+                and user_id = #{userId}
+            </if>
+            <if test="userCode != null" >
+                and user_code = #{userCode}
+            </if>
+            <if test="userName != null" >
+                and user_name = #{userName}
+            </if>
+            <if test="userStatus != null" >
+                and user_status = #{userStatus}
+            </if>
+        </where>
+    </select>
+
+    <update id="save" parameterType="com.hoomoomoo.im.model.SysUserModel">
+        merge into sys_user a
+        using (select #{userId} as user_id from dual) b
+        on (a.user_id = b.user_id)
+        when matched then
+            update
+            <set>
+                user_memo = nvl(#{userMemo}, ' '),
+                <if test="userCode != null" >
+                    user_code = #{userCode},
+                </if>
+                <if test="userName != null" >
+                    user_name = #{userName},
+                </if>
+                <if test="userStatus != null" >
+                    user_status = #{userStatus},
+                </if>
+                <if test="modifyDate != null">
+                    modify_date = #{modifyDate},
+                </if>
+                <if test="modifyUser != null">
+                    modify_user = #{modifyUser}
+                </if>
+            </set>
+            where user_id = #{userId}
+        when not matched then
+            insert(
+                user_id,
+                user_code,
+                user_name,
+                user_password,
+                user_status,
+                create_date,
+                modify_date,
+                create_user,
+                modify_user,
+                user_memo
+            )
+            values(
+                #{userId},
+                #{userCode},
+                #{userName},
+                #{userPassword},
+                #{userStatus},
+                #{createDate},
+                #{modifyDate},
+                #{createUser},
+                #{modifyUser},
+                nvl(#{userMemo}, ' ')
+            )
+    </update>
+
+    <select id="checkUserCode" parameterType="com.hoomoomoo.im.model.SysUserQueryModel"
+            resultType="java.lang.Boolean">
+        select case when count(1) > 0 then '0' else '1' end isExist
+        from sys_user
+        where user_code = #{userCode}
+        <if test="userId != null">
+            and user_id != #{userId}
+        </if>
+    </select>
+
+    <delete id="deleteUserRole" parameterType="com.hoomoomoo.im.model.SysUserModel">
+        delete from sys_user_role where user_id = #{userId}
+    </delete>
+
+    <insert id="saveUserRole" parameterType="com.hoomoomoo.im.model.SysUserRoleModel">
+        insert into sys_user_role(
+            user_role_id,
+            user_id,
+            role_id
+        ) values (
+            #{userRoleId},
+            #{userId},
+            #{roleId}
+        )
+    </insert>
+
+    <select id="selectUserRole" parameterType="com.hoomoomoo.im.model.SysUserQueryModel"
+            resultType="com.hoomoomoo.im.model.SysUserRoleModel">
+        select
+            user_role_id userRoleId,
+            user_id userId,
+            role_id roleId
+        from sys_user_role
+        where user_id = #{userId}
+    </select>
+
+    <update id="changPassword" parameterType="com.hoomoomoo.im.model.SysUserModel">
+        update sys_user set user_password = #{userPassword} where user_id = #{userId}
+    </update>
+
+</mapper>

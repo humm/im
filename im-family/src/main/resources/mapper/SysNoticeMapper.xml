@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoomoomoo.im.dao.SysNoticeDao">
+
+    <sql id="Base_Column_List">
+        notice_id noticeId,
+        user_id userId,
+        business_id businessId,
+        business_type businessType,
+        business_sub_type businessSubType,
+        business_date businessDate,
+        business_amount businessAmount,
+        notice_status noticeStatus,
+        notice_type noticeType,
+        read_status readStatus,
+        create_date createDate,
+        modify_date modifyDate,
+        create_user createUser,
+        modify_user modifyUser,
+        substr(business_sub_type, instr(business_sub_type, '-') + 1) businessSubTypeCode,
+        substr(business_type, instr(business_type, '-') + 1) businessTypeCode,
+        substr(notice_status, instr(notice_status, '-') + 1) noticeStatusCode,
+        substr(notice_type, instr(notice_type, '-') + 1) noticeTypeCode,
+        substr(read_status, instr(read_status, '-') + 1) readStatusCode
+    </sql>
+
+    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysNoticeQueryModel"
+            resultType="com.hoomoomoo.im.model.SysNoticeModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_notice
+        <where>
+            <if test="noticeId != null">
+                and notice_id = #{noticeId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="businessId != null">
+                and business_id = #{businessId}
+            </if>
+            <if test="businessType != null">
+                and business_type = #{businessType}
+            </if>
+            <if test="businessSubType != null">
+                and business_sub_type = #{businessSubType}
+            </if>
+            <if test="noticeStatus != null">
+                and notice_status = #{noticeStatus}
+            </if>
+            <if test="noticeType != null">
+                and notice_type = #{noticeType}
+            </if>
+            <if test="readStatus != null">
+                and read_status = #{readStatus}
+            </if>
+            <if test="businessDate != null">
+                and to_char(business_date, 'yyyy-MM-dd') = to_char(#{businessDate}, 'yyyy-MM-dd')
+            </if>
+            <if test="isAdminData == false">
+                and user_id = #{userKey}
+            </if>
+        </where>
+        order by
+        <if test="sort != null and order != null">
+            ${sort} ${order}
+        </if>
+        <if test="sort != null and order == null">
+            ${sort}
+        </if>
+        <if test="sort == null">
+            modify_date desc
+        </if>
+    </select>
+
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysNoticeQueryModel"
+            resultType="com.hoomoomoo.im.model.SysNoticeModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_notice
+        <where>
+            <if test="noticeId != null">
+                and notice_id = #{noticeId}
+            </if>
+        </where>
+    </select>
+
+    <insert id="save" parameterType="com.hoomoomoo.im.model.SysNoticeModel">
+        insert into sys_notice(
+            notice_id,
+            user_id,
+            business_id,
+            business_type,
+            business_sub_type,
+            business_date,
+            business_amount,
+            notice_status,
+            notice_type,
+            read_status,
+            create_date,
+            modify_date,
+            create_user,
+            modify_user
+        )values(
+            #{noticeId},
+            #{userId},
+            #{businessId},
+            #{businessType},
+            #{businessSubType},
+            #{businessDate},
+            #{businessAmount},
+            #{noticeStatus},
+            #{noticeType},
+            #{readStatus},
+            #{createDate},
+            #{modifyDate},
+            #{createUser},
+            #{modifyUser}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.hoomoomoo.im.model.SysNoticeModel">
+        update sys_notice
+        <set>
+            <if test="readStatus != null">
+                read_status = #{readStatus},
+            </if>
+            <if test="noticeStatus != null">
+                notice_status = #{noticeStatus},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate},
+            </if>
+            <if test="modifyUser != null">
+                modify_user = #{modifyUser}
+            </if>
+        </set>
+        where notice_id = (
+            select max(notice_id) from sys_notice
+            <where>
+                <if test="businessId != null">
+                    and business_id = #{businessId}
+                </if>
+                <if test="businessType != null">
+                    and business_type = #{businessType}
+                </if>
+                <if test="noticeId != null">
+                    and notice_id = #{noticeId}
+                </if>
+                <if test="userId != null">
+                    and user_id = #{userId}
+                </if>
+            </where>
+        )
+    </update>
+
+    <update id="updateBatch" parameterType="com.hoomoomoo.im.model.SysNoticeModel">
+        update sys_notice
+        <set>
+            <if test="readStatus != null">
+                read_status = #{readStatus},
+            </if>
+            <if test="noticeStatus != null">
+                notice_status = #{noticeStatus},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate},
+            </if>
+            <if test="modifyUser != null">
+                modify_user = #{modifyUser}
+            </if>
+        </set>
+        <where>
+            1=1
+            <if test="businessId != null">
+                and business_id = #{businessId}
+            </if>
+            <if test="businessType != null">
+                and business_type = #{businessType}
+            </if>
+            <if test="noticeId != null">
+                and notice_id = #{noticeId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+        </where>
+    </update>
+
+</mapper>

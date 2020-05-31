@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoomoomoo.im.dao.SysGiftDao">
+
+    <sql id="Base_Column_List">
+        a.gift_id giftId, a.gift_type giftType,
+        a.gift_sender giftSender, a.gift_receiver giftReceiver,
+        a.gift_date giftDate, a.gift_amount giftAmount,
+        a.gift_memo giftMemo,
+        a.create_date createDate, a.modify_date modifyDate,
+        a.create_user createUser, a.modify_user modifyUser,
+        substr(a.gift_type, instr(a.gift_type, '-') + 1) giftTypeCode
+    </sql>
+
+    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysGiftQueryModel"
+            resultType="com.hoomoomoo.im.model.SysGiftModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_gift a
+        left join sys_dictionary c on a.gift_sender = c.dictionary_code || '-' || c.dictionary_item
+        left join sys_dictionary d on a.gift_receiver = d.dictionary_code || '-' || d.dictionary_item
+         , sys_user b
+        <where>
+            (
+                substr(a.gift_sender, instr(a.gift_sender, '-') + 1) = b.user_id
+                or
+                substr(a.gift_receiver, instr(a.gift_receiver, '-') + 1) = b.user_id
+            )
+            <if test="giftId != null">
+                and gift_id = #{giftId}
+            </if>
+            <if test="giftType != null">
+                and gift_type = #{giftType}
+            </if>
+            <if test="giftSender != null">
+                and c.dictionary_caption like '%' || #{giftSender} || '%'
+            </if>
+            <if test="giftReceiver != null">
+                and d.dictionary_caption like '%' || #{giftReceiver} || '%'
+            </if>
+            <if test="giftDate != null">
+                and to_char(gift_date, 'yyyy-MM') = to_char(#{giftDate}, 'yyyy-MM')
+            </if>
+            <if test="giftAmount != null">
+                and gift_amount = #{giftAmount}
+            </if>
+            <if test="isAdminData == false">
+                and (
+                    substr(gift_sender, instr(gift_sender, '-') + 1) = #{userKey}
+                    or
+                    substr(gift_receiver, instr(gift_receiver, '-') + 1) = #{userKey}
+                )
+            </if>
+        </where>
+        order by
+        <if test="sort != null and order != null">
+            a.${sort} ${order}
+        </if>
+        <if test="sort != null and order == null">
+            a.${sort}
+        </if>
+        <if test="sort == null">
+            a.modify_date desc
+        </if>
+    </select>
+
+    <delete id="delete" parameterType="java.util.List">
+        delete from sys_gift
+        <where>
+            gift_id in
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item.giftId}
+            </foreach>
+        </where>
+    </delete>
+
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysGiftQueryModel"
+            resultType="com.hoomoomoo.im.model.SysGiftModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_gift a
+        <where>
+            <if test="giftId != null">
+                and gift_id = #{giftId}
+            </if>
+            <if test="giftType != null">
+                and gift_type = #{giftType}
+            </if>
+            <if test="giftSender != null">
+                and gift_sender = #{giftSender}
+            </if>
+            <if test="giftReceiver != null">
+                and gift_receiver = #{giftReceiver}
+            </if>
+            <if test="giftDate != null">
+                and to_char(gift_date, 'yyyy-MM') = to_char(#{giftDate}, 'yyyy-MM')
+            </if>
+            <if test="giftAmount != null">
+                and gift_amount = #{giftAmount}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectLastType" parameterType="com.hoomoomoo.im.model.SysGiftQueryModel"
+            resultType="com.hoomoomoo.im.model.common.LastType">
+        select s.gift_type as giftType
+        from (
+            select t.gift_type
+            from sys_gift t
+            where substr(t.gift_sender, instr(t.gift_sender, '-') + 1) = #{giftSender}
+            or substr(t.gift_receiver, instr(t.gift_receiver, '-') + 1) = #{giftSender}
+            order by t.modify_date desc
+        )s
+        where rownum = 1
+    </select>
+
+    <update id="save" parameterType="com.hoomoomoo.im.model.SysIncomeModel">
+        merge into sys_gift a
+        using (select #{giftId} as gift_id from dual) b
+        on (a.gift_id = b.gift_id)
+        when matched then
+        update
+        <set>
+            gift_memo = nvl(#{giftMemo}, ' '),
+            <if test="giftSender != null">
+                gift_sender = #{giftSender},
+            </if>
+            <if test="giftReceiver != null">
+                gift_receiver = #{giftReceiver},
+            </if>
+
+            <if test="giftType != null">
+                gift_type = #{giftType},
+            </if>
+            <if test="giftDate != null">
+                gift_date = #{giftDate},
+            </if>
+            <if test="giftAmount != null">
+                gift_amount = #{giftAmount},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate},
+            </if>
+            <if test="modifyUser != null">
+                modify_user = #{modifyUser}
+            </if>
+        </set>
+        where gift_id = #{giftId}
+        when not matched then
+        insert(
+            gift_id,
+            gift_type,
+            gift_sender,
+            gift_receiver,
+            gift_date,
+            gift_amount,
+            gift_memo,
+            create_date,
+            create_user,
+            modify_date,
+            modify_user
+        )
+        values(
+            #{giftId},
+            #{giftType},
+            #{giftSender},
+            #{giftReceiver},
+            #{giftDate},
+            #{giftAmount},
+            nvl(#{giftMemo}, ' '),
+            #{createDate},
+            #{createUser},
+            #{modifyDate},
+            #{modifyUser}
+        )
+    </update>
+
+    <select id="selectFreeInfo" parameterType="com.hoomoomoo.im.model.SysGiftQueryModel"
+            resultType="com.hoomoomoo.im.model.SysGiftModel">
+        select
+            <if test="giftSender != null">
+                c.dictionary_caption as giftReceiver,
+            </if>
+            <if test="giftReceiver != null">
+                d.dictionary_caption as giftSender,
+            </if>
+            e.dictionary_caption as giftType,
+            gift_amount as giftAmount
+        from
+            sys_gift a
+            <if test="giftSender != null">
+                left join sys_dictionary c on a.gift_receiver = c.dictionary_code || '-' || c.dictionary_item
+            </if>
+            <if test="giftReceiver != null">
+                left join sys_dictionary d on a.gift_sender = d.dictionary_code || '-' || d.dictionary_item
+            </if>
+            left join sys_dictionary e on a.gift_type = e.dictionary_code || '-' || e.dictionary_item
+            , sys_user b
+        <where>
+            <if test="giftId != null">
+                and b.user_id = #{giftId}
+            </if>
+            <if test="giftSender != null">
+                and substr(a.gift_sender, instr(a.gift_sender, '-') + 1) = b.user_id
+                and c.dictionary_caption like '%' || #{giftSender} || '%'
+            </if>
+            <if test="giftReceiver != null">
+                and substr(a.gift_receiver, instr(a.gift_receiver, '-') + 1) = b.user_id
+                and d.dictionary_caption like '%' || #{giftReceiver} || '%'
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

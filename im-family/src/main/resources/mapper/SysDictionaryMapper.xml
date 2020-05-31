@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hoomoomoo.im.dao.SysDictionaryDao">
+
+    <sql id="Base_Column_List">
+         dictionary_code dictionaryCode, dictionary_item dictionaryItem,
+         dictionary_caption dictionaryCaption,
+         item_order itemOrder, code_order codeOrder,
+         user_id userId, is_open isOpen
+    </sql>
+
+    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysDictionaryQueryModel"
+            resultType="com.hoomoomoo.im.model.SysDictionaryModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_dictionary
+        <where>
+            dictionary_item = '#'
+            <if test="dictionaryCode != null">
+                and dictionary_code like '%' || #{dictionaryCode} || '%'
+            </if>
+            <if test="dictionaryCaption != null">
+                and dictionary_caption like '%' || #{dictionaryCaption} || '%'
+            </if>
+        </where>
+        order by
+        <if test="sort != null and order != null">
+            ${sort} ${order}
+        </if>
+        <if test="sort != null and order == null">
+            ${sort}
+        </if>
+        <if test="sort == null">
+            code_order
+        </if>
+    </select>
+
+    <select id="selectSysDictionary" parameterType="com.hoomoomoo.im.model.SysDictionaryQueryModel"
+            resultType="com.hoomoomoo.im.model.SysDictionaryModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_dictionary
+        <where>
+            <if test="dictionaryCode != null">
+                and dictionary_code = #{dictionaryCode}
+            </if>
+            <if test="dictionaryItem != null">
+                and dictionary_item = #{dictionaryItem}
+            </if>
+            <if test="dictionaryCaption != null">
+                and dictionary_caption = #{dictionaryCaption}
+            </if>
+        </where>
+        order by code_order, item_order
+    </select>
+
+    <select id="selectSysDictionaryCondition" resultType="com.hoomoomoo.im.model.SysDictionaryModel">
+        select
+            dictionary_code dictionaryCode,
+            dictionary_code || '-' || dictionary_item dictionaryItem,
+            dictionary_item || '：' || dictionary_caption dictionaryCaption,
+            item_order itemOrder,
+            code_order codeOrder,
+            user_id userId
+        from sys_dictionary
+        where dictionary_item != '#'
+        union all
+        select
+            'D000' as dictionaryCode,
+            to_char(user_id) as dictionaryItem,
+            user_id || '：' || user_name as dictionary_caption,
+            user_id as itemOrder,
+            0 as codeOrder,
+            user_id as userId
+        from sys_user
+        where user_code != 'admin'
+        order by codeOrder, itemOrder
+    </select>
+
+    <delete id="delete" parameterType="com.hoomoomoo.im.model.SysDictionaryModel">
+        delete from sys_dictionary
+        where dictionary_code = #{dictionaryCode}
+        and dictionary_item != '#'
+        <if test="dictionaryItem != null">
+            and dictionary_item = #{dictionaryItem}
+        </if>
+    </delete>
+
+    <update id="update" parameterType="com.hoomoomoo.im.model.SysDictionaryModel">
+        update sys_dictionary
+        set dictionary_caption = #{dictionaryCaption}, item_order = #{itemOrder}, user_id = #{userId}
+        where dictionary_code = #{dictionaryCode} and dictionary_item = #{dictionaryItem}
+    </update>
+
+    <insert id="save" parameterType="com.hoomoomoo.im.model.SysDictionaryModel">
+        insert into sys_dictionary (
+            dictionary_code,
+            dictionary_item,
+            dictionary_caption,
+            item_order,
+            user_id
+        )values(
+            #{dictionaryCode},
+            #{dictionaryItem},
+            #{dictionaryCaption},
+            <choose>
+                <when test="itemOrder != null">
+                    #{itemOrder},
+                </when>
+                <otherwise>
+                    (select nvl(max(item_order), 0) + 1 from sys_dictionary where dictionary_code = #{dictionaryCode}),
+                </otherwise>
+            </choose>
+            #{userId}
+        )
+    </insert>
+
+</mapper>

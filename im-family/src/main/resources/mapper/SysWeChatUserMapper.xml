@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hoomoomoo.im.dao.SysWeChatUserDao">
+
+    <sql id="Base_Column_List">
+        wechat_user_id weChatUserId, wechat_public_id weChatPublicId,
+        is_auth isAuth, user_id userId,
+        create_date createDate, modify_date modifyDate,
+        create_user createUser, modify_user modifyUser
+    </sql>
+
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysWeChatUserQueryModel"
+            resultType="com.hoomoomoo.im.model.SysWeChatUserModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_wechat_user
+        <where>
+            <if test="weChatUserId != null" >
+                and wechat_user_id = #{weChatUserId}
+            </if>
+            <if test="weChatPublicId != null" >
+                and wechat_public_id = #{weChatPublicId}
+            </if>
+            <if test="userId != null" >
+                and user_id = #{userId}
+            </if>
+            <if test="isAuth != null" >
+                and is_auth = #{isAuth}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectList" parameterType="com.hoomoomoo.im.model.SysWeChatUserQueryModel"
+            resultType="com.hoomoomoo.im.model.SysWeChatUserModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_wechat_user
+        <where>
+            <if test="weChatUserId != null" >
+                and wechat_user_id = #{weChatUserId}
+            </if>
+            <if test="weChatPublicId != null" >
+                and wechat_public_id = #{weChatPublicId}
+            </if>
+            <if test="userId != null" >
+                and user_id = #{userId}
+            </if>
+            <if test="isAuth != null" >
+                and is_auth = #{isAuth}
+            </if>
+        </where>
+    </select>
+
+    <delete id="delete" parameterType="com.hoomoomoo.im.model.SysWeChatUserModel">
+        delete from sys_wechat_user
+        <where>
+            <if test="weChatUserId != null" >
+                and wechat_user_id = #{weChatUserId}
+            </if>
+            <if test="weChatPublicId != null" >
+                and wechat_public_id = #{weChatPublicId}
+            </if>
+        </where>
+    </delete>
+
+    <update id="insert" parameterType="com.hoomoomoo.im.model.SysWeChatUserModel">
+        insert into sys_wechat_user(
+            wechat_user_id,
+            wechat_public_id,
+            is_auth,
+            user_id,
+            create_date,
+            modify_date,
+            create_user,
+            modify_user
+        )
+        values(
+            #{weChatUserId},
+            #{weChatPublicId},
+            #{isAuth},
+            #{userId},
+            #{createDate},
+            #{modifyDate},
+            #{createUser},
+            #{modifyUser}
+        )
+    </update>
+
+    <select id="update" parameterType="com.hoomoomoo.im.model.SysWeChatUserModel">
+        update sys_wechat_user
+        <set>
+            <if test="isAuth != null" >
+                is_auth = #{isAuth},
+            </if>
+            <if test="userId != null" >
+                user_id = #{userId},
+            </if>
+            <if test="modifyDate != null">
+                modify_date = #{modifyDate},
+            </if>
+            <if test="modifyUser != null">
+                modify_user = #{modifyUser}
+            </if>
+        </set>
+        where wechat_user_id = #{weChatUserId}
+        and wechat_public_id = #{weChatPublicId}
+    </select>
+
+</mapper>

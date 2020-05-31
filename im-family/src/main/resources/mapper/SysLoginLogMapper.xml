@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hoomoomoo.im.dao.SysLoginLogDao">
+
+    <sql id="Base_Column_List">
+        log_id logId, user_id userId,
+        login_date loginDate, logout_date logoutDate,
+        login_status loginStatus, login_message loginMessage,
+        substr(login_status, instr(login_status, '-') + 1) loginStatusCode
+
+    </sql>
+
+    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysLoginLogQueryModel"
+            resultType="com.hoomoomoo.im.model.SysLoginLogModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_login_log
+        <where>
+            <if test="logId != null">
+                and log_id = #{logId}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="loginStatus != null">
+                and login_status = #{loginStatus}
+            </if>
+            <if test="loginMessage != null">
+                and login_message like '%' || #{loginMessage} || '%'
+            </if>
+            <if test="loginDate != null">
+                and to_char(login_date, 'yyyy-MM-dd') = to_char(#{loginDate}, 'yyyy-MM-dd')
+            </if>
+            <if test="logoutDate != null">
+                and to_char(logout_date, 'yyyy-MM-dd') = to_char(#{logoutDate}, 'yyyy-MM-dd')
+            </if>
+            <if test="isAdminData == false">
+                and user_id = #{userKey}
+            </if>
+        </where>
+        order by
+        <if test="sort != null and order != null">
+            ${sort} ${order}
+        </if>
+        <if test="sort != null and order == null">
+            ${sort}
+        </if>
+        <if test="sort == null">
+            login_date desc
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.hoomoomoo.im.model.SysLoginLogModel">
+        insert into sys_login_log(
+            log_id,
+            user_id,
+            login_date,
+            login_status,
+            login_message
+        )values(
+            #{logId},
+            #{userId},
+            #{loginDate},
+            #{loginStatus},
+            #{loginMessage}
+        )
+    </insert>
+
+    <update id="update" parameterType="com.hoomoomoo.im.model.SysLoginLogModel">
+        update sys_login_log
+        set logout_date = #{logoutDate}
+        where log_id = (
+            select max(log_id) log_id
+            from sys_login_log
+            where login_status = 'D002-1'
+            and user_id = #{userId}
+        )
+    </update>
+
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysLoginLogQueryModel"
+            resultType="com.hoomoomoo.im.model.SysLoginLogModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_login_log
+        <where>
+            <if test="logId != null">
+                and log_id = #{logId}
+            </if>
+        </where>
+    </select>
+</mapper>

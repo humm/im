@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sqlConfig>
+    <sql id="自定义sqlId" model="模式：select add updat delete 若为空则默认为select">namespace + sqlId</sql>
+</sqlConfig>
