@@ -18,6 +18,7 @@
 	<modules>
 		<module>im-base</module>
 		<module>im-family</module>
+		<module>im-file</module>
 	</modules>
 
 	<properties>
