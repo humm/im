@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static com.hoomoomoo.im.config.RunDataConfig.*;
 import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.D013;
 import static com.hoomoomoo.im.consts.WeChatConst.*;
 

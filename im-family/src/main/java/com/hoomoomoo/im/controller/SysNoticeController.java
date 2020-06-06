@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 import static com.hoomoomoo.im.consts.BusinessConst.REQUEST_URL;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 
 /**
  * @author hoomoomoo

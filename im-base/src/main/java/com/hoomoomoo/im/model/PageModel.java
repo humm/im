@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import java.util.List;
 import static com.hoomoomoo.im.consts.BaseConst.PAGE_CODE_SUCCESS;
-import static com.hoomoomoo.im.consts.BaseTipsConst.PAGE_MSG_SUCCESS;
+import static com.hoomoomoo.im.consts.BaseCueConst.PAGE_MSG_SUCCESS;
 
 /**
  * @author hoomoomoo

@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BaseConst.APP_DESCRIBE;
 import static com.hoomoomoo.im.consts.BaseConst.APP_NAME;
-import static com.hoomoomoo.im.consts.BaseTipsConst.LOG_BUSINESS_TYPE_FREEMARKER;
+import static com.hoomoomoo.im.consts.BaseCueConst.LOG_BUSINESS_TYPE_FREEMARKER;
 
 /**
  * @author hoomoomoo

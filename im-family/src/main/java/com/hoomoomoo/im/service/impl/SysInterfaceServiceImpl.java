@@ -27,7 +27,7 @@ import static com.hoomoomoo.im.config.RunDataConfig.MAIL_CONFIG;
 import static com.hoomoomoo.im.config.RunDataConfig.MAIL_HANDLE_FLAG;
 import static com.hoomoomoo.im.consts.BusinessConst.*;
 import static com.hoomoomoo.im.consts.BusinessConst.MINUS;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.*;
 
 /**

@@ -24,8 +24,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.CueConst.*;
-import static com.hoomoomoo.im.consts.CueConst.LOG_OPERATE_TYPE_SELECT;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.LOG_OPERATE_TYPE_SELECT;
 
 
 /**

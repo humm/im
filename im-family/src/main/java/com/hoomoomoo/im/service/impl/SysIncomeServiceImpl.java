@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.*;
 
 /**

@@ -21,9 +21,9 @@ import java.util.List;
 
 import static com.hoomoomoo.im.config.RunDataConfig.DICTIONARY_CONDITION;
 import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.CueConst.SELECT_SUCCESS;
+import static com.hoomoomoo.im.consts.BusinessCueConst.SELECT_SUCCESS;
 import static com.hoomoomoo.im.consts.DictionaryConst.D000;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 
 /**
  * @author hoomoomoo

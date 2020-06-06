@@ -33,7 +33,7 @@ import static com.hoomoomoo.im.consts.BusinessConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.D000;
 import static com.hoomoomoo.im.consts.DictionaryConst.D012;
 import static com.hoomoomoo.im.consts.ParameterConst.*;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 
 /**
  * @author hoomoomoo

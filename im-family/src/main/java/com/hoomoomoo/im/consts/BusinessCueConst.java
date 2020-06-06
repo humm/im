@@ -7,7 +7,7 @@ package com.hoomoomoo.im.consts;
  * @date 2019/08/03
  */
 
-public class CueConst {
+public class BusinessCueConst {
 
     /**
      * 提示信息：操作成功

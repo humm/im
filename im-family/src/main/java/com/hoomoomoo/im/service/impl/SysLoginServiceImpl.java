@@ -24,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.D002;
 import static com.hoomoomoo.im.consts.ParameterConst.COOKIE_TIMEOUT;
 

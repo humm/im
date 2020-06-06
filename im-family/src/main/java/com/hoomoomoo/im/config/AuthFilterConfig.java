@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 
 import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 import static com.hoomoomoo.im.consts.WeChatConst.WECHAT_REQUEST;
 
 /**

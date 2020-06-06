@@ -43,7 +43,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.hoomoomoo.im.config.RunDataConfig.*;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.APPLICATION_PROPERTIES;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.*;
 import static com.hoomoomoo.im.consts.ParameterConst.*;
 import static com.hoomoomoo.im.consts.ParameterConst.MIND_FILL;

@@ -17,8 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.BaseTipsConst.ERROR;
-import static com.hoomoomoo.im.consts.BaseTipsConst.LOG_BUSINESS_TYPE_EXCEPTION;
+import static com.hoomoomoo.im.consts.BaseCueConst.ERROR;
+import static com.hoomoomoo.im.consts.BaseCueConst.LOG_BUSINESS_TYPE_EXCEPTION;
 import static javax.servlet.RequestDispatcher.ERROR_STATUS_CODE;
 
 /**

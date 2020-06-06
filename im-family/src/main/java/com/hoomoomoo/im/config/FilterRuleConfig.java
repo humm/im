@@ -13,7 +13,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.Filter;
 
 import static com.hoomoomoo.im.consts.BusinessConst.FILTER_URL_PATTERNS;
-import static com.hoomoomoo.im.consts.CueConst.LOG_BUSINESS_TYPE_FILTER;
+import static com.hoomoomoo.im.consts.BusinessCueConst.LOG_BUSINESS_TYPE_FILTER;
 
 /**
  * @author hoomoomoo

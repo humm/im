@@ -12,7 +12,7 @@ import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import static com.hoomoomoo.im.consts.BaseTipsConst.LOG_BUSINESS_TYPE_WEBSOCKET;
+import static com.hoomoomoo.im.consts.BaseCueConst.LOG_BUSINESS_TYPE_WEBSOCKET;
 
 /**
  * @author hoomoomoo

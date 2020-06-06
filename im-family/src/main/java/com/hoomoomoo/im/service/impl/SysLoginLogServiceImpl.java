@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BusinessConst.BUSINESS_TYPE_LOGIN_LOG;
-import static com.hoomoomoo.im.consts.CueConst.SELECT_SUCCESS;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.SELECT_SUCCESS;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 
 /**
  * @author hoomoomoo

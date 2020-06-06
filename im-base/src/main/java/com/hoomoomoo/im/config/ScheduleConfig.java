@@ -20,7 +20,7 @@ import javax.annotation.PostConstruct;
 import java.util.concurrent.Executor;
 
 import static com.hoomoomoo.im.consts.BaseConst.SHUTDOWN;
-import static com.hoomoomoo.im.consts.BaseTipsConst.LOG_BUSINESS_TYPE_SCHEDULE;
+import static com.hoomoomoo.im.consts.BaseCueConst.LOG_BUSINESS_TYPE_SCHEDULE;
 
 /**
  * @author hoomoomoo

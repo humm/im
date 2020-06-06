@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 import static com.hoomoomoo.im.consts.BusinessConst.HAS_BUTTON;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 
 /**
  * @author hoomoomoo

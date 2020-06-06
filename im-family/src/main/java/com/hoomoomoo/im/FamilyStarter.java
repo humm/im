@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 
-import static com.hoomoomoo.im.consts.CueConst.LOG_BUSINESS_TYPE_APP_START;
+import static com.hoomoomoo.im.consts.BusinessCueConst.LOG_BUSINESS_TYPE_APP_START;
 
 
 /**

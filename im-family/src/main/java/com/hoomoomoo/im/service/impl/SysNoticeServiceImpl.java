@@ -26,11 +26,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.CueConst.OPERATE_SUCCESS;
-import static com.hoomoomoo.im.consts.CueConst.SELECT_SUCCESS;
+import static com.hoomoomoo.im.consts.BusinessCueConst.OPERATE_SUCCESS;
+import static com.hoomoomoo.im.consts.BusinessCueConst.SELECT_SUCCESS;
 import static com.hoomoomoo.im.consts.DictionaryConst.D007;
 import static com.hoomoomoo.im.consts.DictionaryConst.D012;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 
 /**
  * @author hoomoomoo

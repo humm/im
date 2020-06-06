@@ -21,7 +21,7 @@ import java.util.*;
 
 import static com.hoomoomoo.im.config.RunDataConfig.MAIL_CONFIG;
 import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 
 /**
  * @author hoomoomoo

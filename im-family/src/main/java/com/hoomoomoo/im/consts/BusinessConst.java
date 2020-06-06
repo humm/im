@@ -15,11 +15,6 @@ public class BusinessConst {
     public static final String SYSTEM_VERSION                               = "3.3.00";
 
     /**
-     * 应用配置文件路径
-     */
-    public static final String APPLICATION_PROPERTIES                       = "classpath:application.properties";
-
-    /**
      * 系统初始化数据
      */
     public static final String INIT_SYSTEM_DATA                             = "database/initData.sql";

@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import static com.hoomoomoo.im.consts.BusinessConst.BUSINESS_TYPE_VERSION;
 import static com.hoomoomoo.im.consts.ParameterConst.VERSION;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 
 @Controller
 @RequestMapping("/version")

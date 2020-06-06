@@ -6,7 +6,7 @@ package com.hoomoomoo.im.consts;
  * @package com.hoomoomoo.im.consts
  * @Date 2020/05/31
  */
-public class BaseTipsConst {
+public class BaseCueConst {
 
     /**
      * 提示信息：系统错误

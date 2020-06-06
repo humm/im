@@ -19,12 +19,12 @@ public class BaseConst {
     /**
      * 定时任务配置读取前缀
      */
-    public static final String SCHEDULE                                         = "family.schedule";
+    public static final String SCHEDULE                                         = "im.schedule";
 
     /**
      * 应用级别参数读取前缀
      */
-    public static final String CONFIG                                           = "family.config";
+    public static final String CONFIG                                           = "im.config";
 
     /**
      * 数据库连接配置读取前缀

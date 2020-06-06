@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.D010;
 import static com.hoomoomoo.im.consts.ParameterConst.BACKUP_LOCATION;
 

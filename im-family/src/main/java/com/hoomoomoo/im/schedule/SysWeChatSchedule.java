@@ -3,26 +3,21 @@ package com.hoomoomoo.im.schedule;
 import com.hoomoomoo.im.service.SysWeChatFlowService;
 import com.hoomoomoo.im.service.SysWeChatService;
 import com.hoomoomoo.im.util.SysLogUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.Trigger;
-import org.springframework.scheduling.TriggerContext;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 import org.springframework.scheduling.support.CronTrigger;
 
-import java.sql.SQLSyntaxErrorException;
 import java.util.Date;
 
 import static com.hoomoomoo.im.consts.BusinessConst.COLON;
-import static com.hoomoomoo.im.consts.BusinessConst.EXCEPTION_TYPE_TABLE_NOT_EXISTS;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 
 /**
  * @author hoomoomoo

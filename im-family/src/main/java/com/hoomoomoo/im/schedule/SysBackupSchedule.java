@@ -16,7 +16,7 @@ import org.springframework.scheduling.support.CronTrigger;
 import java.util.Date;
 
 import static com.hoomoomoo.im.consts.BusinessConst.COLON;
-import static com.hoomoomoo.im.consts.CueConst.*;
+import static com.hoomoomoo.im.consts.BusinessCueConst.*;
 
 /**
  * @author hoomoomoo
