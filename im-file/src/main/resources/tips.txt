@@ -1,0 +1,3 @@
+idea 生成可执行jar
+    1. file --> project structure --> Atifacts --> + --> jar --> from module with dependenceis
+    2. 选择一个Main Class, 然后指定META-INF/MANIFEST.MF的路径为src下, 注意不要放到main/java目录下,否则打成的jar中META-INF/MANIFEST.MF不含有Main Class信息
