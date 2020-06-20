@@ -59,12 +59,12 @@
         base: '${appName}/layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
-    }).use(['index', 'form', 'laydate', 'admin', 'family'], function () {
+    }).use(['index', 'form', 'laydate', 'admin', 'im'], function () {
         var $ = layui.$,
             form = layui.form,
             admin = layui.admin,
             laydate = layui.laydate,
-            family = layui.family;
+            im = layui.im;
 
         // 应用名称
         var appName = '${appName}';
@@ -78,22 +78,22 @@
             dataType: "json",
             done: function (response) {
                 if (response.bizResult) {
-                    family.setCondition("layui-form", response.data.condition);
+                    im.setCondition("layui-form", response.data.condition);
                     if(response.data.mindFill){
                         var lastType = response.data.lastType;
                         var sessionBean = response.data.sessionBean;
-                        if(!family.isBlank(lastType)){
+                        if(!im.isBlank(lastType)){
                             $("select[name='incomeType']").val(lastType.incomeType);
                             $("select[name='incomeCompany']").val(lastType.incomeCompany);
                         }
-                        if(!family.isBlank(sessionBean)){
+                        if(!im.isBlank(sessionBean)){
                             $("select[name='userId']").val(sessionBean.userId);
                         }
-                        $("#incomeDate").val(family.getDate());
+                        $("#incomeDate").val(im.getDate());
                     }
                     form.render();
                 } else {
-                    family.msg(response.msg);
+                    im.msg(response.msg);
                 }
             }
         });

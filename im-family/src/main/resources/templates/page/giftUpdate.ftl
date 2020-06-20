@@ -60,19 +60,19 @@
         base: '${appName}/layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
-    }).use(['index', 'form', 'laydate', 'admin', 'family'], function () {
+    }).use(['index', 'form', 'laydate', 'admin', 'im'], function () {
         var $ = layui.$,
             form = layui.form,
             admin = layui.admin,
             laydate = layui.laydate,
-            family = layui.family;
+            im = layui.im;
 
         // 应用名称
         var appName = '${appName}';
 
         var request = {
-            giftId: family.getUrlParameter("giftId"),
-            isTranslate: family.getUrlParameter("isTranslate")
+            giftId: im.getUrlParameter("giftId"),
+            isTranslate: im.getUrlParameter("isTranslate")
         }
 
         var url = {
@@ -87,7 +87,7 @@
             dataType: "json",
             done: function (response) {
                 if (response.bizResult) {
-                    family.setCondition("layui-form", response.data.condition);
+                    im.setCondition("layui-form", response.data.condition);
                     form.render();
 
                     // 数据回填
@@ -97,14 +97,14 @@
                         dataType: "json",
                         done: function (response) {
                             if (response.bizResult) {
-                                family.setValue("layui-form", response.data);
+                                im.setValue("layui-form", response.data);
                             } else {
-                                family.msg(response.msg);
+                                im.msg(response.msg);
                             }
                         }
                     });
                 } else {
-                    family.msg(response.msg);
+                    im.msg(response.msg);
                 }
             }
         });

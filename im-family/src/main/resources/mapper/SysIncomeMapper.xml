@@ -91,7 +91,7 @@
     </select>
 
     <select id="selectLastType" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
-            resultType="com.hoomoomoo.im.model.common.LastType">
+            resultType="com.hoomoomoo.im.model.LastType">
         select s.income_type as incomeType
         from (
             select t.income_type
@@ -103,7 +103,7 @@
     </select>
 
     <select id="selectLastTypeIncomeCompany" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
-            resultType="com.hoomoomoo.im.model.common.LastType">
+            resultType="com.hoomoomoo.im.model.LastType">
         select s.income_company as incomeCompany
         from (
             select t.income_company

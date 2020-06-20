@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.config;
 
 import com.hoomoomoo.im.config.bean.ConfigBean;
+import com.hoomoomoo.im.consts.BaseCueConst;
 import com.hoomoomoo.im.util.SysLogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket init() {
-        SysLogUtils.load(logger, LOG_BUSINESS_TYPE_SWAGGER);
+        SysLogUtils.load(logger, BaseCueConst.LOG_BUSINESS_TYPE_SWAGGER);
         return new Docket(DocumentationType.SWAGGER_2)
                 .enable(configBean.getSwagger())
                 .apiInfo(apiInfo())
@@ -47,9 +48,9 @@ public class SwaggerConfig {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title(SWAGGER_TITLE)
-                .description(SWAGGER_DESCRIPTION)
-                .version(SWAGGER_VERSION)
+                .title(BaseCueConst.SWAGGER_TITLE)
+                .description(BaseCueConst.SWAGGER_DESCRIPTION)
+                .version(BaseCueConst.SWAGGER_VERSION)
                 .build();
     }
 }

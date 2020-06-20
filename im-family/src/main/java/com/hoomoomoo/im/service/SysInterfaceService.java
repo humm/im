@@ -2,7 +2,7 @@ package com.hoomoomoo.im.service;
 
 import com.hoomoomoo.im.model.SysInterfaceResponseModel;
 import com.hoomoomoo.im.model.SysMailModel;
-import com.hoomoomoo.im.model.BaseModel;
+import com.hoomoomoo.im.model.base.BaseModel;
 
 import java.util.List;
 
@@ -29,4 +29,9 @@ public interface SysInterfaceService {
      * @return
      */
     SysInterfaceResponseModel handleRequestData(List<BaseModel> baseModelList, SysMailModel sysMailModel);
+
+    /**
+     * 系统启动读取邮件
+     */
+    void startMail();
 }

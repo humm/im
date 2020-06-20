@@ -2,7 +2,7 @@ package com.hoomoomoo.im.service;
 
 import com.hoomoomoo.im.model.SysConfigModel;
 import com.hoomoomoo.im.model.SysModuleModel;
-import com.hoomoomoo.im.model.ResultData;
+import com.hoomoomoo.im.model.base.ResultData;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -22,26 +22,4 @@ public interface SysConsoleService {
      */
     ResultData selectConsoleData(HttpServletRequest httpServletRequest);
 
-    /**
-     * 查询模块配置信息
-     *
-     * @return
-     */
-    SysModuleModel selectConfigModule();
-
-    /**
-     * 保存模块信息
-     *
-     * @param sysModuleModel
-     * @return
-     */
-    ResultData save(SysModuleModel sysModuleModel);
-
-    /**
-     * 删除模块信息
-     *
-     * @param sysConfigModelList
-     * @return
-     */
-    ResultData delete(List<SysConfigModel> sysConfigModelList);
 }

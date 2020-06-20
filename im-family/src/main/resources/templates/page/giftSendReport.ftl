@@ -79,11 +79,11 @@
         base: '${appName}/layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
-    }).use(['index', 'admin', 'carousel', 'echarts', 'family'], function () {
+    }).use(['index', 'admin', 'carousel', 'echarts', 'im'], function () {
         var $ = layui.$,
             admin = layui.admin,
             report = (layui.admin, layui.carousel),
-            family = layui.family,
+            im = layui.im,
             element = layui.element,
             device = layui.device(),
             carousel = layui.carousel,
@@ -153,13 +153,13 @@
                             loopYear(response.data);
                         }
                         reportList[index] = echarts.init(year, layui.echartsTheme);
-                        reportList[index].setOption(family.getBarData(response.data));
+                        reportList[index].setOption(im.getBarData(response.data));
                         window.onresize = reportList[index].resize;
                         if($.isEmptyObject(response.data.legendData)){
-                            family.msg(family.tips.msg.emptyData);
+                            im.msg(im.tips.msg.emptyData);
                         }
                     } else {
-                        family.msg(response.msg);
+                        im.msg(response.msg);
                     }
                 }
             });
@@ -212,10 +212,10 @@
                             loopType(response.data);
                         }
                         typeList[index] = echarts.init(user, layui.echartsTheme);
-                        typeList[index].setOption(family.getPieData(response.data));
+                        typeList[index].setOption(im.getPieData(response.data));
                         window.onresize = typeList[index].resize;
                     } else {
-                        family.msg(response.msg);
+                        im.msg(response.msg);
                     }
                 }
             });
@@ -267,10 +267,10 @@
                             loopPeak(response.data);
                         }
                         peakList[index] = echarts.init(user, layui.echartsTheme);
-                        peakList[index].setOption(family.getPieData(response.data));
+                        peakList[index].setOption(im.getPieData(response.data));
                         window.onresize = peakList[index].resize;
                     } else {
-                        family.msg(response.msg);
+                        im.msg(response.msg);
                     }
                 }
             });
@@ -322,10 +322,10 @@
                             loopGift(response.data);
                         }
                         giftList[index] = echarts.init(user, layui.echartsTheme);
-                        giftList[index].setOption(family.getPieData(response.data));
+                        giftList[index].setOption(im.getPieData(response.data));
                         window.onresize = giftList[index].resize;
                     } else {
-                        family.msg(response.msg);
+                        im.msg(response.msg);
                     }
                 }
             });

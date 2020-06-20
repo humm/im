@@ -2,8 +2,8 @@ package com.hoomoomoo.im.service;
 
 import com.hoomoomoo.im.model.SysGiftModel;
 import com.hoomoomoo.im.model.SysGiftQueryModel;
-import com.hoomoomoo.im.model.PageModel;
-import com.hoomoomoo.im.model.ResultData;
+import com.hoomoomoo.im.model.base.PageModel;
+import com.hoomoomoo.im.model.base.ResultData;
 
 /**
  * @author hoomoomoo

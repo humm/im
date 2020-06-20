@@ -6,8 +6,8 @@ import org.slf4j.Logger;
 import java.util.List;
 import java.util.Map;
 
-import static com.hoomoomoo.im.config.BaseRunDataConfig.LOG_REQUEST_PARAMETER;
-import static com.hoomoomoo.im.config.BaseRunDataConfig.LOG_REQUEST_TAG;
+import static com.hoomoomoo.im.config.RunDataConfig.LOG_REQUEST_PARAMETER;
+import static com.hoomoomoo.im.config.RunDataConfig.LOG_REQUEST_TAG;
 
 /**
  * @author hoomoomoo

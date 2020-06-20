@@ -1,6 +1,6 @@
 package com.hoomoomoo.im.service;
 
-import com.hoomoomoo.im.model.ResultData;
+import com.hoomoomoo.im.model.base.ResultData;
 
 /**
  * @author hoomoomoo

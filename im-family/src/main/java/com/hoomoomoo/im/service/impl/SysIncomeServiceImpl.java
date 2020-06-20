@@ -5,7 +5,9 @@ import com.github.pagehelper.PageInfo;
 import com.hoomoomoo.im.config.WebSocketServerConfig;
 import com.hoomoomoo.im.dao.SysIncomeDao;
 import com.hoomoomoo.im.model.*;
-import com.hoomoomoo.im.model.common.*;
+import com.hoomoomoo.im.model.base.PageModel;
+import com.hoomoomoo.im.model.base.ResultData;
+import com.hoomoomoo.im.model.base.ViewData;
 import com.hoomoomoo.im.service.SysIncomeService;
 import com.hoomoomoo.im.service.SysNoticeService;
 import com.hoomoomoo.im.service.SysSystemService;
@@ -21,8 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.BusinessCueConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseCueConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.*;
 
 /**

@@ -1,6 +1,6 @@
 package com.hoomoomoo.im.util;
 
-import com.hoomoomoo.im.model.ResultData;
+import com.hoomoomoo.im.model.base.ResultData;
 
 import java.io.BufferedReader;
 import java.io.IOException;

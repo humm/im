@@ -3,8 +3,8 @@ package com.hoomoomoo.im.service;
 
 import com.hoomoomoo.im.model.SysIncomeModel;
 import com.hoomoomoo.im.model.SysIncomeQueryModel;
-import com.hoomoomoo.im.model.PageModel;
-import com.hoomoomoo.im.model.ResultData;
+import com.hoomoomoo.im.model.base.PageModel;
+import com.hoomoomoo.im.model.base.ResultData;
 
 /**
  * @author hoomoomoo

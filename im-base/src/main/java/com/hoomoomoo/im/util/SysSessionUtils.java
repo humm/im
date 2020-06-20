@@ -1,6 +1,6 @@
 package com.hoomoomoo.im.util;
 
-import com.hoomoomoo.im.model.SessionBean;
+import com.hoomoomoo.im.model.base.SessionBean;
 
 /**
  * @author hoomoomoo

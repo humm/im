@@ -2,8 +2,8 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.model.SysIncomeModel;
 import com.hoomoomoo.im.model.SysIncomeQueryModel;
-import com.hoomoomoo.im.model.PageModel;
-import com.hoomoomoo.im.model.ResultData;
+import com.hoomoomoo.im.model.base.PageModel;
+import com.hoomoomoo.im.model.base.ResultData;
 import com.hoomoomoo.im.service.SysIncomeService;
 import com.hoomoomoo.im.service.SysSystemService;
 import com.hoomoomoo.im.util.SysLogUtils;
@@ -17,8 +17,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 
-import static com.hoomoomoo.im.consts.BusinessConst.HAS_BUTTON;
-import static com.hoomoomoo.im.consts.BusinessCueConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.HAS_BUTTON;
+import static com.hoomoomoo.im.consts.BaseCueConst.*;
 
 /**
  * @author hoomoomoo

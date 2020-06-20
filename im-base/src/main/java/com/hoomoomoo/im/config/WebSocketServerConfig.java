@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.config;
 
+import com.hoomoomoo.im.consts.BaseCueConst;
 import com.hoomoomoo.im.util.SysLogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +29,11 @@ public class WebSocketServerConfig {
 
     @PostConstruct
     public void init(){
-        SysLogUtils.load(logger, LOG_BUSINESS_TYPE_WEBSOCKET);
+        SysLogUtils.load(logger, BaseCueConst.LOG_BUSINESS_TYPE_WEBSOCKET);
     }
 
     /**
-     * WebSocket对象
+     * websocket对象
      */
     private static CopyOnWriteArraySet<WebSocketServerConfig> webSocketSet = new CopyOnWriteArraySet<>();
 
@@ -103,7 +104,7 @@ public class WebSocketServerConfig {
                     item.sendMessage(message);
                 }
             } catch (IOException e) {
-                SysLogUtils.exception(logger, LOG_BUSINESS_TYPE_WEBSOCKET, e);
+                SysLogUtils.exception(logger, BaseCueConst.LOG_BUSINESS_TYPE_WEBSOCKET, e);
             }
         }
     }

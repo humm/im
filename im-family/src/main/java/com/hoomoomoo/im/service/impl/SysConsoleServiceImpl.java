@@ -3,13 +3,10 @@ package com.hoomoomoo.im.service.impl;
 import com.hoomoomoo.im.config.WebSocketServerConfig;
 import com.hoomoomoo.im.dao.*;
 import com.hoomoomoo.im.model.*;
-import com.hoomoomoo.im.model.PageModel;
-import com.hoomoomoo.im.model.ResultData;
-import com.hoomoomoo.im.model.SessionBean;
-import com.hoomoomoo.im.service.SysConsoleService;
-import com.hoomoomoo.im.service.SysMenuService;
-import com.hoomoomoo.im.service.SysNoticeService;
-import com.hoomoomoo.im.service.SysParameterService;
+import com.hoomoomoo.im.model.base.PageModel;
+import com.hoomoomoo.im.model.base.ResultData;
+import com.hoomoomoo.im.model.base.SessionBean;
+import com.hoomoomoo.im.service.*;
 import com.hoomoomoo.im.util.SysBeanUtils;
 import com.hoomoomoo.im.util.SysLogUtils;
 import com.hoomoomoo.im.util.SysSessionUtils;
@@ -29,11 +26,11 @@ import java.util.List;
 import java.util.Map;
 
 import static com.hoomoomoo.im.config.RunDataConfig.DICTIONARY_CONDITION;
-import static com.hoomoomoo.im.consts.BusinessConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.D000;
 import static com.hoomoomoo.im.consts.DictionaryConst.D012;
 import static com.hoomoomoo.im.consts.ParameterConst.*;
-import static com.hoomoomoo.im.consts.BusinessCueConst.*;
+import static com.hoomoomoo.im.consts.BaseCueConst.*;
 
 /**
  * @author hoomoomoo
@@ -69,6 +66,9 @@ public class SysConsoleServiceImpl implements SysConsoleService {
     @Autowired
     private SysMenuService sysMenuService;
 
+    @Autowired
+    private SysSystemService sysSystemService;
+
     /**
      * 查询首页信息
      *
@@ -89,7 +89,7 @@ public class SysConsoleServiceImpl implements SysConsoleService {
             // 查询未读消息通知
             sysConsoleModel.setReadNum(selectReadNoticeNum());
             // 查询模块配置信息
-            sysConsoleModel.setSysConfig(selectConfigModule(loginUserId));
+            sysConsoleModel.setSysConfig(sysSystemService.selectConfigModule(loginUserId));
             // 设置权限信息
             sysConsoleModel.setSysAuthModel(setAuthInfo());
             sysConsoleQueryModel.setUserName(FAMILY_TITLE);
@@ -420,83 +420,6 @@ public class SysConsoleServiceImpl implements SysConsoleService {
         sysNoticeQueryModel.setReadStatus(new StringBuffer(D012).append(MINUS).append(STR_1).toString());
         PageModel pageModel = sysNoticeService.selectPage(sysNoticeQueryModel);
         return String.valueOf(pageModel.getCount());
-    }
-
-    /**
-     * 查询配置模块信息
-     *
-     */
-    @Override
-    public SysModuleModel selectConfigModule(){
-        SessionBean sessionBean = SysSessionUtils.getSession();
-        if (sessionBean != null) {
-            return selectConfigModule(sessionBean.getUserId());
-        }
-        return new SysModuleModel();
-    }
-
-    /**
-     * 查询配置模块信息
-     *
-     */
-    private SysModuleModel selectConfigModule(String userId){
-        SysModuleModel sysModuleModel = new SysModuleModel();
-        SysConfigQueryModel sysConfigQueryModel = new SysConfigQueryModel();
-        sysConfigQueryModel.setUserId(userId);
-        sysConfigQueryModel.setModuleGroupCode(MODULE_CONSOLE);
-        List<SysConfigModel> sysConfigModelList = sysConfigDao.selectModule(sysConfigQueryModel);
-        if (CollectionUtils.isNotEmpty(sysConfigModelList)) {
-            Map module = new HashMap(16);
-            for (SysConfigModel sysConfigModel : sysConfigModelList) {
-                module.put(sysConfigModel.getModuleCode(), sysConfigModel.getModuleStatus());
-            }
-            sysModuleModel = (SysModuleModel)SysBeanUtils.mapToBean(SysModuleModel.class, module);
-        }
-        return sysModuleModel;
-    }
-
-    /**
-     * 保存模块信息
-     *
-     * @param sysModuleModel
-     * @return
-     */
-    @Override
-    public ResultData save(SysModuleModel sysModuleModel) {
-        SysLogUtils.serviceStart(logger, LOG_BUSINESS_TYPE_CONSOLE, LOG_OPERATE_TYPE_UPDATE);
-        SessionBean sessionBean = SysSessionUtils.getSession();
-        if (sessionBean != null) {
-            Map<String, Object> module = SysBeanUtils.beanToMap(sysModuleModel);
-            SysConfigModel sysConfigModel = new SysConfigModel();
-            sysConfigModel.setUserId(sessionBean.getUserId());
-            Iterator<String> iterator = module.keySet().iterator();
-            while (iterator.hasNext()) {
-                String key = iterator.next();
-                sysConfigModel.setModuleGroupCode(MODULE_CONSOLE);
-                sysConfigModel.setModuleCode(key);
-                String status = SWITCH_ON.equals(String.valueOf(module.get(key))) ? STR_1 : STR_0;
-                sysConfigModel.setModuleStatus(status);
-                sysConfigDao.save(sysConfigModel);
-            }
-            WebSocketServerConfig.sendMessageInfo(WEBSOCKET_TOPIC_NAME_CONSOLE, LOG_BUSINESS_TYPE_CONSOLE);
-        }
-        SysLogUtils.serviceEnd(logger, LOG_BUSINESS_TYPE_CONSOLE, LOG_OPERATE_TYPE_UPDATE);
-        return new ResultData(true, UPDATE_SUCCESS, null);
-
-    }
-
-    /**
-     * 删除模块信息
-     *
-     * @param sysConfigModelList
-     * @return
-     */
-    @Override
-    public ResultData delete(List<SysConfigModel> sysConfigModelList) {
-        SysLogUtils.serviceStart(logger, LOG_BUSINESS_TYPE_CONSOLE, LOG_OPERATE_TYPE_DELETE);
-        sysConfigDao.delete(sysConfigModelList);
-        SysLogUtils.serviceEnd(logger, LOG_BUSINESS_TYPE_CONSOLE, LOG_OPERATE_TYPE_DELETE);
-        return new ResultData(true, LOG_OPERATE_TYPE_DELETE, null);
     }
 
     /**

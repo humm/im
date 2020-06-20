@@ -1,9 +1,9 @@
 package com.hoomoomoo.im.util;
 
 import com.hoomoomoo.im.model.SysSqlMode;
-import com.hoomoomoo.im.model.QueryBaseModel;
-import com.hoomoomoo.im.model.SessionBean;
-import com.hoomoomoo.im.model.BaseModel;
+import com.hoomoomoo.im.model.base.QueryBaseModel;
+import com.hoomoomoo.im.model.base.SessionBean;
+import com.hoomoomoo.im.model.base.BaseModel;
 import org.apache.commons.lang.StringUtils;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;

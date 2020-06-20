@@ -2,8 +2,8 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.model.SysGiftModel;
 import com.hoomoomoo.im.model.SysGiftQueryModel;
-import com.hoomoomoo.im.model.PageModel;
-import com.hoomoomoo.im.model.ResultData;
+import com.hoomoomoo.im.model.base.PageModel;
+import com.hoomoomoo.im.model.base.ResultData;
 import com.hoomoomoo.im.service.SysGiftService;
 import com.hoomoomoo.im.service.SysSystemService;
 import com.hoomoomoo.im.util.SysLogUtils;
@@ -19,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import static com.hoomoomoo.im.consts.BusinessConst.HAS_BUTTON;
-import static com.hoomoomoo.im.consts.BusinessCueConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.HAS_BUTTON;
+import static com.hoomoomoo.im.consts.BaseCueConst.*;
 
 /**
  * @author hoomoomoo

@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.config.bean;
 
+import com.hoomoomoo.im.consts.BaseConst;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.PropertySource;
@@ -17,8 +18,8 @@ import static com.hoomoomoo.im.consts.BaseConst.SPRING_DATASOURCE;
  */
 
 @Component
-@PropertySource({APPLICATION_PROPERTIES})
-@ConfigurationProperties(prefix = SPRING_DATASOURCE)
+@PropertySource({BaseConst.APPLICATION_PROPERTIES})
+@ConfigurationProperties(prefix = BaseConst.SPRING_DATASOURCE)
 @Data
 public class DatasourceConfigBean {
 

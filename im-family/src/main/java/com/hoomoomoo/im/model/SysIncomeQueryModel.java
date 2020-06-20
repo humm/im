@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.hoomoomoo.im.model.base.QueryBaseModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;

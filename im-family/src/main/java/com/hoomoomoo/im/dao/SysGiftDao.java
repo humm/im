@@ -2,7 +2,7 @@ package com.hoomoomoo.im.dao;
 
 import com.hoomoomoo.im.model.SysGiftModel;
 import com.hoomoomoo.im.model.SysGiftQueryModel;
-import com.hoomoomoo.im.model.common.LastType;
+import com.hoomoomoo.im.model.LastType;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -3,7 +3,7 @@ package com.hoomoomoo.im;
 import com.hoomoomoo.im.model.SysGiftModel;
 import com.hoomoomoo.im.model.SysGiftQueryModel;
 import com.hoomoomoo.im.model.SysMenuTreeModel;
-import com.hoomoomoo.im.model.SessionBean;
+import com.hoomoomoo.im.model.base.SessionBean;
 import com.hoomoomoo.im.service.SysMenuService;
 import com.hoomoomoo.im.service.SysSqlService;
 import com.hoomoomoo.im.util.SysSessionUtils;

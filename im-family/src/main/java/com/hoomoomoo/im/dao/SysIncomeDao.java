@@ -2,7 +2,7 @@ package com.hoomoomoo.im.dao;
 
 import com.hoomoomoo.im.model.SysIncomeModel;
 import com.hoomoomoo.im.model.SysIncomeQueryModel;
-import com.hoomoomoo.im.model.common.LastType;
+import com.hoomoomoo.im.model.LastType;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

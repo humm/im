@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.config;
 
+import com.hoomoomoo.im.service.SysInterfaceService;
 import com.hoomoomoo.im.service.SysSystemService;
 import com.hoomoomoo.im.service.SysWeChatFlowService;
 import com.hoomoomoo.im.util.SysLogUtils;
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import static com.hoomoomoo.im.consts.BusinessCueConst.*;
+import static com.hoomoomoo.im.consts.BaseCueConst.*;
 /**
  * @author hoomoomoo
  * @description 初始化配置
@@ -28,6 +29,9 @@ public class InitConfig implements CommandLineRunner {
 
     @Autowired
     private SysWeChatFlowService sysWeChatFlowService;
+
+    @Autowired
+    private SysInterfaceService sysInterfaceService;
 
     @Override
     public void run(String... args) {
@@ -62,7 +66,7 @@ public class InitConfig implements CommandLineRunner {
         sysSystemService.startBackup();
 
         // 处理邮件申请数据
-        sysSystemService.startMail();
+        sysInterfaceService.startMail();
 
         // 发送备份文件至邮箱
         sysSystemService.systemBackupToMail();

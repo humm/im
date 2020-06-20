@@ -1,12 +1,13 @@
 package com.hoomoomoo.im;
 
-import com.hoomoomoo.im.util.SysDateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 /**
@@ -158,9 +159,14 @@ public class CopyMergeFile {
      */
     private static final String OPERATE_TYPE_MERGE = "merge";
 
+    /**
+     * 格式化模板
+     */
+    private static final String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
     public static void main(String[] args) {
-        CURRENT_DATE = SysDateUtils.yyyyMMddHHmmss();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(YYYYMMDDHHMMSS);
+        CURRENT_DATE = simpleDateFormat.format(new Date());
         try{
             // 设置启动模式
             getStartMode();

@@ -1,6 +1,8 @@
 package com.hoomoomoo.im.config;
 
 import com.hoomoomoo.im.config.bean.SystemConfigBean;
+import com.hoomoomoo.im.consts.BaseConst;
+import com.hoomoomoo.im.consts.BaseCueConst;
 import com.hoomoomoo.im.util.SysLogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,10 +40,10 @@ public class FreemarkerConfig {
         configurer.setDefaultEncoding(systemConfigBean.getFreemarkerCharset());
         configurer.setPreferFileSystemAccess(false);
         Map<String, Object> freemarkerVariables = new HashMap<>(1);
-        freemarkerVariables.put(APP_NAME, systemConfigBean.getAppName());
-        freemarkerVariables.put(APP_DESCRIBE, systemConfigBean.getAppDescribe());
+        freemarkerVariables.put(BaseConst.APP_NAME, systemConfigBean.getAppName());
+        freemarkerVariables.put(BaseConst.APP_DESCRIBE, systemConfigBean.getAppDescribe());
         configurer.setFreemarkerVariables(freemarkerVariables);
-        SysLogUtils.load(logger, LOG_BUSINESS_TYPE_FREEMARKER);
+        SysLogUtils.load(logger, BaseCueConst.LOG_BUSINESS_TYPE_FREEMARKER);
         return configurer;
     }
 }

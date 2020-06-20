@@ -3,7 +3,7 @@ package com.hoomoomoo.im.service.impl;
 import com.hoomoomoo.im.config.bean.SystemConfigBean;
 import com.hoomoomoo.im.dao.*;
 import com.hoomoomoo.im.model.*;
-import com.hoomoomoo.im.model.BaseModel;
+import com.hoomoomoo.im.model.base.BaseModel;
 import com.hoomoomoo.im.service.*;
 import com.hoomoomoo.im.util.SysCommonUtils;
 import com.hoomoomoo.im.util.SysJsonUtils;
@@ -25,10 +25,11 @@ import java.util.List;
 
 import static com.hoomoomoo.im.config.RunDataConfig.MAIL_CONFIG;
 import static com.hoomoomoo.im.config.RunDataConfig.MAIL_HANDLE_FLAG;
-import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.BusinessConst.MINUS;
-import static com.hoomoomoo.im.consts.BusinessCueConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.MINUS;
+import static com.hoomoomoo.im.consts.BaseCueConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.*;
+import static com.hoomoomoo.im.consts.ParameterConst.START_MAIL;
 
 /**
  * @author hoomoomoo
@@ -66,6 +67,9 @@ public class SysInterfaceServiceImpl implements SysInterfaceService {
 
     @Autowired
     private SystemConfigBean systemConfigBean;
+
+    @Autowired
+    private SysParameterService sysParameterService;
 
     /**
      * 处理邮件请求
@@ -536,5 +540,16 @@ public class SysInterfaceServiceImpl implements SysInterfaceService {
             }
         }
         return sysCheckResultModel;
+    }
+
+    /**
+     * 系统启动读取邮件
+     */
+    @Override
+    public void startMail() {
+        boolean startMail = sysParameterService.getParameterBoolean(START_MAIL);
+        if (startMail) {
+            handleMailRequest();
+        }
     }
 }

@@ -1,6 +1,6 @@
 package com.hoomoomoo.im.util;
 
-import com.hoomoomoo.im.model.BaseModel;
+import com.hoomoomoo.im.model.base.BaseModel;
 import net.sf.cglib.beans.BeanMap;
 import org.apache.commons.collections.CollectionUtils;
 import java.util.*;

@@ -1,6 +1,6 @@
 package com.hoomoomoo.im.controller;
 
-import com.hoomoomoo.im.model.ResultData;
+import com.hoomoomoo.im.model.base.ResultData;
 import com.hoomoomoo.im.service.SysReportService;
 import com.hoomoomoo.im.util.SysLogUtils;
 import io.swagger.annotations.ApiOperation;
@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import static com.hoomoomoo.im.consts.BusinessCueConst.*;
+import static com.hoomoomoo.im.consts.BaseCueConst.*;
 
 /**
  * @author hoomoomoo

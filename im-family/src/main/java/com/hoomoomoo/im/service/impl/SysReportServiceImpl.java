@@ -2,8 +2,8 @@ package com.hoomoomoo.im.service.impl;
 
 import com.hoomoomoo.im.dao.SysReportDao;
 import com.hoomoomoo.im.model.*;
-import com.hoomoomoo.im.model.ResultData;
-import com.hoomoomoo.im.model.SessionBean;
+import com.hoomoomoo.im.model.base.ResultData;
+import com.hoomoomoo.im.model.base.SessionBean;
 import com.hoomoomoo.im.service.SysReportService;
 import com.hoomoomoo.im.util.SysLogUtils;
 import com.hoomoomoo.im.util.SysSessionUtils;
@@ -20,10 +20,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.hoomoomoo.im.config.RunDataConfig.DICTIONARY_CONDITION;
-import static com.hoomoomoo.im.consts.BusinessConst.*;
-import static com.hoomoomoo.im.consts.BusinessCueConst.SELECT_SUCCESS;
+import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseCueConst.SELECT_SUCCESS;
 import static com.hoomoomoo.im.consts.DictionaryConst.D000;
-import static com.hoomoomoo.im.consts.BusinessCueConst.*;
+import static com.hoomoomoo.im.consts.BaseCueConst.*;
 
 /**
  * @author hoomoomoo

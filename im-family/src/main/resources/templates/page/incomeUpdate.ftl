@@ -8,7 +8,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
     <link rel="stylesheet" href="${appName}/layuiadmin/layui/css/layui.css" media="all">
-    <link rel="stylesheet" href="${appName}/layuiadmin/style/family.css" media="all">
+    <link rel="stylesheet" href="${appName}/layuiadmin/style/im.css" media="all">
 
 </head>
 <body>
@@ -62,19 +62,19 @@
         base: '${appName}/layuiadmin/' //静态资源所在路径
     }).extend({
         index: 'lib/index' //主入口模块
-    }).use(['index', 'form', 'laydate', 'admin', 'family'], function () {
+    }).use(['index', 'form', 'laydate', 'admin', 'im'], function () {
         var $ = layui.$,
             form = layui.form,
             admin = layui.admin,
             laydate = layui.laydate,
-            family = layui.family;
+            im = layui.im;
 
         // 应用名称
         var appName = '${appName}';
 
         var request = {
-            incomeId: family.getUrlParameter("incomeId"),
-            isTranslate: family.getUrlParameter("isTranslate")
+            incomeId: im.getUrlParameter("incomeId"),
+            isTranslate: .getUrlParameter("isTranslate")
         }
 
         var url = {
@@ -89,7 +89,7 @@
             dataType: "json",
             done: function (response) {
                 if (response.bizResult) {
-                    family.setCondition("layui-form", response.data.condition);
+                    im.setCondition("layui-form", response.data.condition);
                     form.render();
                     // 数据回填
                     admin.req({
@@ -98,14 +98,14 @@
                         dataType: "json",
                         done: function (response) {
                             if (response.bizResult) {
-                                family.setValue("layui-form", response.data);
+                                im.setValue("layui-form", response.data);
                             } else {
-                                family.msg(response.msg);
+                                im.msg(response.msg);
                             }
                         }
                     });
                 } else {
-                    family.msg(response.msg);
+                    im.msg(response.msg);
                 }
             }
         });

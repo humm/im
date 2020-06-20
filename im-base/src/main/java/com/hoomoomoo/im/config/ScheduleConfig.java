@@ -1,6 +1,8 @@
 package com.hoomoomoo.im.config;
 
 import com.hoomoomoo.im.config.bean.ScheduleConfigBean;
+import com.hoomoomoo.im.consts.BaseConst;
+import com.hoomoomoo.im.consts.BaseCueConst;
 import com.hoomoomoo.im.util.SysLogUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,7 @@ public class ScheduleConfig implements SchedulingConfigurer, AsyncConfigurer {
 
     @PostConstruct
     public void init(){
-        SysLogUtils.load(logger, LOG_BUSINESS_TYPE_SCHEDULE);
+        SysLogUtils.load(logger, BaseCueConst.LOG_BUSINESS_TYPE_SCHEDULE);
     }
 
     /**
@@ -59,7 +61,7 @@ public class ScheduleConfig implements SchedulingConfigurer, AsyncConfigurer {
      *
      * @return
      */
-    @Bean(destroyMethod = SHUTDOWN)
+    @Bean(destroyMethod = BaseConst.SHUTDOWN)
     public ThreadPoolTaskScheduler taskScheduler(){
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(scheduleConfigBean.getPoolSize());

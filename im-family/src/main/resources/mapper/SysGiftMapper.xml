@@ -102,7 +102,7 @@
     </select>
 
     <select id="selectLastType" parameterType="com.hoomoomoo.im.model.SysGiftQueryModel"
-            resultType="com.hoomoomoo.im.model.common.LastType">
+            resultType="com.hoomoomoo.im.model.LastType">
         select s.gift_type as giftType
         from (
             select t.gift_type
