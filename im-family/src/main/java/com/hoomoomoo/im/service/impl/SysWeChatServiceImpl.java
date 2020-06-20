@@ -1053,10 +1053,7 @@ public class SysWeChatServiceImpl implements SysWeChatService {
      */
     private boolean isOpenService(String flowCode) {
         SysWeChatFlowModel sysWeChatFlowModel = WECHAT_FLOW_LIST.get(flowCode);
-        if (sysWeChatFlowModel == null) {
-            return false;
-        }
-        return true;
+        return sysWeChatFlowModel != null;
     }
 
     /**

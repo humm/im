@@ -15,12 +15,4 @@
 	<version>${im.version}</version>
 	<packaging>jar</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.hoomoomoo</groupId>
-			<artifactId>im-base</artifactId>
-			<version>${im.version}</version>
-		</dependency>
-	</dependencies>
-
 </project>
