@@ -620,7 +620,7 @@ public class SysWeChatServiceImpl implements SysWeChatService {
     private void selectService(SysWeChatTextModel request, SysWeChatTextModel response) {
         String flowCode = getFlowCode(request);
         if (!isOpenService(flowCode)) {
-            response.setContent(new StringBuffer(WECHAT_SERVICE_NOT_EXIST).append(NEXT_LINE).append(WECHAT_MAIN_FLOW_LIST).toString());
+            response.setContent(WECHAT_MAIN_FLOW_LIST.replace(WECHAT_MAIN_FLOW, WECHAT_SERVICE_NOT_EXIST));
             setOperateInfo(request, FLOW_CODE_SELECT);
             return;
         }
@@ -949,7 +949,7 @@ public class SysWeChatServiceImpl implements SysWeChatService {
         if (sysWeChatFlowModel != null) {
             response.setContent(sysWeChatFlowModel.getFlowTips());
         } else {
-            response.setContent(new StringBuffer(WECHAT_SERVICE_NOT_EXIST).append(NEXT_LINE).append(WECHAT_MAIN_FLOW_LIST).toString());
+            response.setContent(WECHAT_MAIN_FLOW_LIST.replace(WECHAT_MAIN_FLOW, WECHAT_SERVICE_NOT_EXIST));
         }
         setOperateInfo(request, FLOW_CODE_SELECT);
     }
