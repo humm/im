@@ -243,15 +243,15 @@
             table.render($.extend({
                 autoSort: false,  // 禁用前端自动排序
                 page: true,
-                limit: 10,
-                limits: [10, 50, 100, 500],
+                limit: 15,
+                limits: [15, 30, 50, 100, 500],
                 text: {
                     none: this.tips.msg.emptyData
                 },
                 // 行边框风格
-                skin: 'line'
+                skin: 'line',
                 // 开启隔行背景
-                // even: true
+                even: true
             }, config));
         },
         open: function (config) {

@@ -85,7 +85,7 @@
 
         // 绑定新增事件
         $(document).on('click', 'button.layuiadmin-btn-dictionary-add', function () {
-            $(".dictionary").prepend(addItem(userList, '', getItemValue(), ''));
+            $(".dictionary").prepend(addItem(userList, '', getItemValue(), '', getItemOrder()));
             form.render();
         });
 
@@ -108,12 +108,26 @@
             return ++value;
         }
 
+        // 获取字典项最大排序
+        function getItemOrder() {
+            var value = 0;
+            $(".dictionary .layui-form-item-dictionary input[name='itemOrder']").each(function () {
+                var val = $(this).val();
+                if(val.length != 14){
+                    if(parseInt(val) > value){
+                        value = parseInt(val);
+                    }
+                }
+            });
+            return ++value;
+        }
+
         // 添加字典项
         function addDictionary(data) {
             if (!$.isEmptyObject(data)) {
                 userList = data.user;
                 for (var i = 0; i < data.dictionary.length; i++) {
-                    $(".dictionary").append(addItem(data.user, data.dictionary[i].userId, data.dictionary[i].dictionaryItem, data.dictionary[i].dictionaryCaption));
+                    $(".dictionary").append(addItem(data.user, data.dictionary[i].userId, data.dictionary[i].dictionaryItem, data.dictionary[i].dictionaryCaption, data.dictionary[i].itemOrder));
                     form.render();
                 }
             }
@@ -144,7 +158,7 @@
         }
 
         // 添加元素
-        function addItem(userList, userId, dictionaryItem, dictionaryCaption) {
+        function addItem(userList, userId, dictionaryItem, dictionaryCaption, dictionaryOrder) {
             var item = '';
             item = '<div class="layui-form-item layui-form-item-dictionary">';
             item += '   <label class="layui-form-label" style="display:none;">字典选值</label>';
@@ -169,6 +183,7 @@
             }
             item += '       </select>';
             item += '   </div>';
+            item += '   <input type="hidden" name="itemOrder" value="' + dictionaryOrder + '">';
             item += '   <button class="layui-btn layui-btn-danger layui-btn-xs layuiadmin-btn-dictionary-delete">';
             item += '       <i class="layui-icon layuiadmin-button-btn layui-icon-close"></i>';
             item += '   </button>';

@@ -211,7 +211,6 @@
                 });
                 item["dictionaryCode"] = data.dictionaryCode;
                 item["isOpen"] = data.isOpen;
-                item["itemOrder"] = index + 1;
                 elements.push(item);
             });
             if (flag) {
