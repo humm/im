@@ -65,6 +65,15 @@ public interface SysSystemService {
     void transferData(BaseModel baseModel, Class clazz);
 
     /**
+     * 字典转义
+     *
+     * @param baseModel
+     * @param clazz
+     * @param transferAmout
+     */
+    void transferData(BaseModel baseModel, Class clazz, Boolean transferAmout);
+
+    /**
      * 加载所有字典查询条件
      *
      * @return

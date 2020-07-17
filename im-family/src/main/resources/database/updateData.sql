@@ -330,5 +330,20 @@ call update_system_version('3.3.00');
 
 call add_version('20190000000091', '字典项增删后排序错乱', '2020-07-04', 435, '3');
 
+alter table sys_wechat_flow modify flow_order number(12,2);
+update sys_wechat_flow set flow_num = flow_num + 1 where flow_num > 5 and flow_num != 99;
+delete from sys_wechat_flow where flow_id = 20200000000018;
+insert into sys_wechat_flow (flow_id, flow_num, flow_code, flow_describe, flow_tips, flow_type, flow_order, create_date, modify_date, create_user, modify_user, is_show)
+values (20200000000018, '6', 'income-add-same', '收入新增 - 同上一笔', '请按如下格式输入收入信息
+
+收入金额: 支持两位小数
+收入备注: 最大150字符', '1', 5.1, to_timestamp('2020-07-17 21:00:00', 'yyyy-MM-dd hh24:mi:ss'), to_timestamp('2020-07-17 21:00:00', 'yyyy-MM-dd hh24:mi:ss'), '20190000000001', '20190000000001', 'D013-1');
+
+commit;
+
+call add_version('20190000000092', '微信：收入新增同上一笔模式', '2020-07-17', 440, '1');
+call add_version('20190000000093', '发布版本：3.4.00', '2020-07-17', 445, '4');
+call update_system_version('3.4.00');
+
 
 

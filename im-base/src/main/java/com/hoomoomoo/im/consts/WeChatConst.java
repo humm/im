@@ -106,6 +106,11 @@ public class WeChatConst {
     public static final String FLOW_CODE_INCOME_ADD                         = "income-add";
 
     /**
+     * 流程步骤：收入新增同上一笔
+     */
+    public static final String FLOW_CODE_INCOME_ADD_SAME                    = "income-add-same";
+
+    /**
      * 流程步骤：收入修改
      */
     public static final String FLOW_CODE_INCOME_UPDATE                      = "income-update";
@@ -119,6 +124,11 @@ public class WeChatConst {
      * 流程步骤：收入新增操作
      */
     public static final String FLOW_CODE_INCOME_ADD$                        = "income-add$";
+
+    /**
+     * 流程步骤：收入新增操作
+     */
+    public static final String FLOW_CODE_INCOME_ADD_SAME$                   = "income-add-same$";
 
     /**
      * 流程步骤：收入删除操作

@@ -2,6 +2,7 @@ package com.hoomoomoo.im.service.impl;
 
 import com.hoomoomoo.im.dao.SysConsoleDao;
 import com.hoomoomoo.im.dao.SysGiftDao;
+import com.hoomoomoo.im.dao.SysIncomeDao;
 import com.hoomoomoo.im.model.*;
 import com.hoomoomoo.im.model.base.BaseModel;
 import com.hoomoomoo.im.model.base.SessionBean;
@@ -71,6 +72,12 @@ public class SysWeChatServiceImpl implements SysWeChatService {
 
     @Autowired
     private SysGiftService sysGiftService;
+
+    @Autowired
+    private SysIncomeDao sysIncomeDao;
+
+    @Autowired
+    private SysSystemService sysSystemService;
 
 
 
@@ -424,25 +431,48 @@ public class SysWeChatServiceImpl implements SysWeChatService {
                 bindUserInfo(request, response);
                 break;
             case FLOW_CODE_INCOME_ADD$:
+                goToBack(request, response);
                 insertIncomeInfo(request, response);
                 break;
             case FLOW_CODE_INCOME_DELETE$:
+                goToBack(request, response);
                 deleteIncomeInfo(request, response);
                 break;
             case FLOW_CODE_GIFT_ADD$:
+                goToBack(request, response);
                 insertGiftInfo(request, response);
                 break;
             case FLOW_CODE_GIFT_DELETE$:
+                goToBack(request, response);
                 deleteGiftInfo(request, response);
                 break;
             case FLOW_CODE_GIFT_FREE$:
                 freeGiftInfo(request, response);
+                break;
+            case FLOW_CODE_INCOME_ADD_SAME$:
+                insertIncomeSameInfo(request, response);
                 break;
             default:
                 break;
         }
     }
 
+    private void goToBack(SysWeChatTextModel request, SysWeChatTextModel response) {
+        String[] condition = getAllCondition(request);
+        String flowCode = getFlowCode(request);
+        if (condition.length == 1 && FLOW_CODE_MAIN.equals(flowCode)) {
+            defaultReply(request, response);
+        }
+    }
+    /**
+     * 新增收入信息 同上一笔
+     *
+     * @param request
+     * @param response
+     */
+    private void insertIncomeSameInfo(SysWeChatTextModel request, SysWeChatTextModel response) {
+        saveBusinessData(request, response, INTERFACE_TYPE_INCOME, FLOW_CODE_INCOME_ADD_SAME$);
+    }
     /**
      * 新增收入信息
      *
@@ -545,7 +575,7 @@ public class SysWeChatServiceImpl implements SysWeChatService {
         for (String businessId : condition) {
             businessNo.append(businessId).append(COMMA);
         }
-        return condition.toString();
+        return businessNo.toString();
     }
 
     /**
@@ -560,22 +590,45 @@ public class SysWeChatServiceImpl implements SysWeChatService {
     private void saveBusinessData(SysWeChatTextModel request, SysWeChatTextModel response,
                                   String businessType, String flowCode) {
         String[] condition = getAllCondition(request);
-        if (condition.length < 5 || condition.length > 6) {
+        if ((FLOW_CODE_INCOME_ADD_SAME$.equals(flowCode) && condition.length != 1 && condition.length != 2) && (condition.length != 5 && condition.length != 6)) {
             response.setContent(WECHAT_PARAMETER_ERROR);
             setOperateInfo(request, flowCode);
         } else {
             List<BaseModel> requestModelList = new ArrayList<>();
             SysInterfaceRequestModel sysInterfaceRequestModel = new SysInterfaceRequestModel();
-            sysInterfaceRequestModel.setUser(condition[0]);
-            sysInterfaceRequestModel.setTarget(condition[1]);
-            sysInterfaceRequestModel.setDate(condition[2]);
-            sysInterfaceRequestModel.setType(businessType);
-            sysInterfaceRequestModel.setSubType(condition[3]);
-            sysInterfaceRequestModel.setAmount(condition[4]);
-            if (condition.length == 6) {
-                sysInterfaceRequestModel.setMemo(condition[5]);
+            if (condition.length <= 2) {
+                // 同上一笔收入
+                SysWeChatUserModel sysWeChatUserModel = getSysWeChatUserInfo(request);
+                if (sysWeChatUserModel != null) {
+                    SysIncomeQueryModel sysIncomeQueryModel = new SysIncomeQueryModel();
+                    sysIncomeQueryModel.setUserId(sysWeChatUserModel.getUserId());
+                    SysIncomeModel sysIncomeModel = sysIncomeDao.selectIncomeLast(sysIncomeQueryModel);
+                    if (sysIncomeModel != null) {
+                        sysInterfaceRequestModel.setUser(sysIncomeModel.getUserId());
+                        sysInterfaceRequestModel.setTarget(sysIncomeModel.getIncomeCompany());
+                        sysInterfaceRequestModel.setDate(SysDateUtils.yyyyMMdd());
+                        sysInterfaceRequestModel.setType(businessType);
+                        sysInterfaceRequestModel.setSubType(sysIncomeModel.getIncomeType());
+                        sysInterfaceRequestModel.setAmount(condition[0]);
+                        if (condition.length == 2) {
+                            sysInterfaceRequestModel.setMemo(condition[1]);
+                        }
+                        sysSystemService.transferData(sysInterfaceRequestModel, SysInterfaceRequestModel.class, false);
+                        requestModelList.add(sysInterfaceRequestModel);
+                    }
+                }
+            } else {
+                sysInterfaceRequestModel.setUser(condition[0]);
+                sysInterfaceRequestModel.setTarget(condition[1]);
+                sysInterfaceRequestModel.setDate(condition[2]);
+                sysInterfaceRequestModel.setType(businessType);
+                sysInterfaceRequestModel.setSubType(condition[3]);
+                sysInterfaceRequestModel.setAmount(condition[4]);
+                if (condition.length == 6) {
+                    sysInterfaceRequestModel.setMemo(condition[5]);
+                }
+                requestModelList.add(sysInterfaceRequestModel);
             }
-            requestModelList.add(sysInterfaceRequestModel);
             SysInterfaceResponseModel sysInterfaceResponseModel =
                     sysInterfaceService.handleRequestData(requestModelList, null);
             response.setContent(convertMessage(businessType, sysInterfaceResponseModel.getMessage()));
@@ -639,6 +692,9 @@ public class SysWeChatServiceImpl implements SysWeChatService {
                 break;
             case FLOW_CODE_INCOME_ADD:
                 getFlowTip(request, response, FLOW_CODE_INCOME_ADD);
+                break;
+            case FLOW_CODE_INCOME_ADD_SAME:
+                getFlowTip(request, response, FLOW_CODE_INCOME_ADD_SAME);
                 break;
             case FLOW_CODE_INCOME_UPDATE:
                 getFlowTip(request, response, FLOW_CODE_INCOME_UPDATE);
@@ -1103,9 +1159,7 @@ public class SysWeChatServiceImpl implements SysWeChatService {
         String content = request.getContent().trim();
         if (StringUtils.isNotBlank(content)) {
             String[] message = content.split(BACKSLASH_S);
-            if (message.length > 1) {
-                return message;
-            }
+            return message;
         }
         return new String[] {STR_EMPTY};
     }

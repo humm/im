@@ -65,4 +65,12 @@ public interface SysIncomeDao {
      */
     void save(SysIncomeModel sysIncomeModel);
 
+    /**
+     * 查询最后一笔收入
+     *
+     * @param sysIncomeQueryModel
+     * @return
+     */
+    SysIncomeModel selectIncomeLast(SysIncomeQueryModel sysIncomeQueryModel);
+
 }

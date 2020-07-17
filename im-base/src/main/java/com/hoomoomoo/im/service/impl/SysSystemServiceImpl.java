@@ -227,7 +227,7 @@ public class SysSystemServiceImpl implements SysSystemService {
             // 本次查询缓存数据
             Map dictionaryCache = new HashMap(16);
             for (Object obj : list) {
-                baseModelList.add(transfer(dictionaryCache, SysBeanUtils.beanToMap(obj), clazz));
+                baseModelList.add(transfer(dictionaryCache, SysBeanUtils.beanToMap(obj), clazz, true));
             }
         }
         SysLogUtils.functionEnd(logger, LOG_BUSINESS_TYPE_DICTIONARY_TRANSFER);
@@ -248,7 +248,7 @@ public class SysSystemServiceImpl implements SysSystemService {
             // 本次查询缓存数据
             Map dictionaryCache = new HashMap(16);
             for (LinkedHashMap single : list) {
-                baseModelList.add(transfer(dictionaryCache, single));
+                baseModelList.add(transfer(dictionaryCache, single, true));
             }
         }
         SysLogUtils.functionEnd(logger, LOG_BUSINESS_TYPE_DICTIONARY_TRANSFER);
@@ -265,7 +265,17 @@ public class SysSystemServiceImpl implements SysSystemService {
     public void transferData(BaseModel baseModel, Class clazz) {
         SysLogUtils.functionStart(logger, LOG_BUSINESS_TYPE_DICTIONARY_TRANSFER);
         if (baseModel != null) {
-            BaseModel baseModelTransfer = transfer(new HashMap(16), SysBeanUtils.beanToMap(baseModel), clazz);
+            BaseModel baseModelTransfer = transfer(new HashMap(16), SysBeanUtils.beanToMap(baseModel), clazz, true);
+            BeanUtils.copyProperties(baseModelTransfer, baseModel);
+        }
+        SysLogUtils.functionEnd(logger, LOG_BUSINESS_TYPE_DICTIONARY_TRANSFER);
+    }
+
+    @Override
+    public void transferData(BaseModel baseModel, Class clazz, Boolean transferAmout) {
+        SysLogUtils.functionStart(logger, LOG_BUSINESS_TYPE_DICTIONARY_TRANSFER);
+        if (baseModel != null) {
+            BaseModel baseModelTransfer = transfer(new HashMap(16), SysBeanUtils.beanToMap(baseModel), clazz, transferAmout);
             BeanUtils.copyProperties(baseModelTransfer, baseModel);
         }
         SysLogUtils.functionEnd(logger, LOG_BUSINESS_TYPE_DICTIONARY_TRANSFER);
@@ -1249,8 +1259,8 @@ public class SysSystemServiceImpl implements SysSystemService {
      * @param ele
      * @return
      */
-    private LinkedHashMap transfer(Map dictionaryCache, LinkedHashMap ele) {
-        transferElement(dictionaryCache, ele, null, true);
+    private LinkedHashMap transfer(Map dictionaryCache, LinkedHashMap ele, boolean transferAmout) {
+        transferElement(dictionaryCache, ele, null, true, transferAmout);
         return ele;
     }
 
@@ -1261,7 +1271,7 @@ public class SysSystemServiceImpl implements SysSystemService {
      * @param ele
      * @param clazz
      */
-    private LinkedHashMap transferElement(Map dictionaryCache, LinkedHashMap ele, Class clazz, boolean filter) {
+    private LinkedHashMap transferElement(Map dictionaryCache, LinkedHashMap ele, Class clazz, boolean filter, boolean transferAmout) {
         Iterator<String> iterator = ele.keySet().iterator();
         while (iterator.hasNext()) {
             String key = iterator.next();
@@ -1300,7 +1310,7 @@ public class SysSystemServiceImpl implements SysSystemService {
                 }
             }
             // 金额格式化
-            if (key.toLowerCase().contains(AMOUNT)) {
+            if (transferAmout && key.toLowerCase().contains(AMOUNT)) {
                 ele.put(key, SysCommonUtils.formatValue(value));
             }
             if (filter) {
@@ -1332,9 +1342,9 @@ public class SysSystemServiceImpl implements SysSystemService {
      * @param dictionaryCache
      * @param ele
      */
-    private BaseModel transfer(Map dictionaryCache, Map ele, Class clazz) {
+    private BaseModel transfer(Map dictionaryCache, Map ele, Class clazz, Boolean transferAmout) {
         return SysBeanUtils.mapToBean(clazz, SysBeanUtils.linkedHashMapToMap(transferElement(dictionaryCache,
-                SysBeanUtils.mapToLinkedHashMap(ele), clazz, false)));
+                SysBeanUtils.mapToLinkedHashMap(ele), clazz, false, transferAmout)));
     }
 
     /**

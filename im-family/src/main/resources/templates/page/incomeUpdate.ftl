@@ -74,7 +74,7 @@
 
         var request = {
             incomeId: im.getUrlParameter("incomeId"),
-            isTranslate: .getUrlParameter("isTranslate")
+            isTranslate: im.getUrlParameter("isTranslate")
         }
 
         var url = {

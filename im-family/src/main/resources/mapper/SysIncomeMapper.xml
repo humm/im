@@ -90,6 +90,20 @@
         </where>
     </select>
 
+    <select id="selectIncomeLast" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
+            resultType="com.hoomoomoo.im.model.SysIncomeModel">
+        select
+            <include refid="Base_Column_List"/>
+        from sys_income a, sys_user b
+        where a.user_id = b.user_id
+        and a.user_id = #{userId}
+        and income_id = (
+        select max(income_id)
+        from sys_income
+        where a.user_id = #{userId}
+        )
+    </select>
+
     <select id="selectLastType" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
             resultType="com.hoomoomoo.im.model.LastType">
         select s.income_type as incomeType
