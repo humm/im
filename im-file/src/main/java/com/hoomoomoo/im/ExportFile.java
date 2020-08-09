@@ -17,9 +17,9 @@ import java.util.Properties;
  * @Date 2020/06/07
  */
 
-public class CopyMergeFile {
+public class ExportFile {
 
-    private static final Logger logger = LoggerFactory.getLogger(CopyMergeFile.class);
+    private static final Logger logger = LoggerFactory.getLogger(ExportFile.class);
 
     /**
      * 工作目录前缀
@@ -188,7 +188,7 @@ public class CopyMergeFile {
      * 设置启动模式
      */
     private static void getStartMode() {
-        URL url = CopyMergeFile.class.getResource("CopyMergeFile.class");
+        URL url = ExportFile.class.getResource("CopyMergeFile.class");
         if (url.toString().startsWith(START_MODE_JAR)) {
             START_MODE = START_MODE_JAR;
         } else {
@@ -203,7 +203,7 @@ public class CopyMergeFile {
         InputStream pro;
         try {
             if (START_MODE_PROJECT.equals(START_MODE)) {
-                pro = CopyMergeFile.class.getClassLoader().getResourceAsStream(PROPERTIES_PATH);
+                pro = ExportFile.class.getClassLoader().getResourceAsStream(PROPERTIES_PATH);
             } else {
                 pro = new FileInputStream(new File(PROPERTIES_PATH));
             }
@@ -479,7 +479,7 @@ public class CopyMergeFile {
     private static File checkFile() {
         File file;
         if (START_MODE_PROJECT.equals(START_MODE)) {
-            file = new File(CopyMergeFile.class.getClassLoader().getResource(FILE_PATH).getFile());
+            file = new File(ExportFile.class.getClassLoader().getResource(FILE_PATH).getFile());
         } else {
             file = new File(FILE_PATH);
         }
