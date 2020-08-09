@@ -104,7 +104,7 @@ public class CopyMergeFile {
     /**
      * 减号
      */
-    private static final String SYMBOL_MINUS  = "-";
+    private static final String SYMBOL_MINUS = "-";
 
     /**
      * 换行
@@ -167,19 +167,19 @@ public class CopyMergeFile {
     public static void main(String[] args) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(YYYYMMDDHHMMSS);
         CURRENT_DATE = simpleDateFormat.format(new Date());
-        try{
+        try {
             // 设置启动模式
             getStartMode();
             // 读取配置文件参数
             getProperties();
-            if(OPERATE_TYPE.equals(OPERATE_TYPE_COPY)){
+            if (OPERATE_TYPE.equals(OPERATE_TYPE_COPY)) {
                 // 复制文件
                 copyPatch();
-            }else if(OPERATE_TYPE.equals(OPERATE_TYPE_MERGE)){
+            } else if (OPERATE_TYPE.equals(OPERATE_TYPE_MERGE)) {
                 // 合并文件
                 mergePatch();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -187,11 +187,11 @@ public class CopyMergeFile {
     /**
      * 设置启动模式
      */
-    private static void getStartMode(){
+    private static void getStartMode() {
         URL url = CopyMergeFile.class.getResource("CopyMergeFile.class");
-        if(url.toString().startsWith(START_MODE_JAR)){
+        if (url.toString().startsWith(START_MODE_JAR)) {
             START_MODE = START_MODE_JAR;
-        }else{
+        } else {
             START_MODE = START_MODE_PROJECT;
         }
     }
@@ -199,12 +199,12 @@ public class CopyMergeFile {
     /**
      * 读取配置文件参数
      */
-    private static void getProperties(){
+    private static void getProperties() {
         InputStream pro;
         try {
-            if(START_MODE_PROJECT.equals(START_MODE)){
+            if (START_MODE_PROJECT.equals(START_MODE)) {
                 pro = CopyMergeFile.class.getClassLoader().getResourceAsStream(PROPERTIES_PATH);
-            }else{
+            } else {
                 pro = new FileInputStream(new File(PROPERTIES_PATH));
             }
             Properties config = new Properties();
@@ -215,11 +215,11 @@ public class CopyMergeFile {
             }
             String workspace = config.getProperty("workspace");
             if (StringUtils.isNotBlank(workspace)) {
-                if (!workspace.endsWith(SYMBOL_SLASH) && workspace.endsWith(SYMBOL_BACKSLASH)) {
+                if (!workspace.endsWith(SYMBOL_SLASH) && !workspace.endsWith(SYMBOL_BACKSLASH)) {
                     workspace += SYMBOL_BACKSLASH;
                 }
-                WORKSPACE = workspace;
-                logger.info(String.format("导出源文件工作目录: %s", workspace));
+                WORKSPACE = workspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
+                logger.info(String.format("导出源文件工作目录[%s]", WORKSPACE));
             } else if (OPERATE_TYPE_COPY.equals(OPERATE_TYPE)) {
                 throw new RuntimeException("请设置导出源文件工作目录[workspace]");
             }
@@ -228,8 +228,8 @@ public class CopyMergeFile {
                 if (!exportWorkspace.endsWith(SYMBOL_SLASH) && !exportWorkspace.endsWith(SYMBOL_BACKSLASH)) {
                     exportWorkspace += SYMBOL_BACKSLASH;
                 }
-                EXPORT_WORKSPACE = exportWorkspace;
-                logger.info(String.format("导出文件工作目录: %s", exportWorkspace));
+                EXPORT_WORKSPACE = exportWorkspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
+                logger.info(String.format("导出文件工作目录[%s]", EXPORT_WORKSPACE));
             } else {
                 throw new RuntimeException("请设置导出文件工作目录[exportWorkspace]");
             }
@@ -238,14 +238,14 @@ public class CopyMergeFile {
                 ENCODING = encoding;
             }
             if (OPERATE_TYPE_MERGE.equals(OPERATE_TYPE)) {
-                logger.info(String.format("文件编码格式: %s", ENCODING));
+                logger.info(String.format("文件编码格式[%s]", ENCODING));
             }
-            logger.info(String.format("文件操作模式: %s", OPERATE_TYPE));
+            logger.info(String.format("文件操作模式[%s]", OPERATE_TYPE));
             String fileSuffix = config.getProperty("fileSuffix");
             if (StringUtils.isNotBlank(fileSuffix)) {
                 FILE_SUFFIX = fileSuffix;
             }
-            logger.info(String.format("输出文件后缀名称: %s", FILE_SUFFIX));
+            logger.info(String.format("输出文件后缀名称[%s]", FILE_SUFFIX));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -255,28 +255,19 @@ public class CopyMergeFile {
      * 复制文件
      */
     private static void copyPatch() {
-        File file;
-        if(START_MODE_PROJECT.equals(START_MODE)){
-            file = new File(CopyMergeFile.class.getClassLoader().getResource(FILE_PATH).getFile());
-        }else{
-            file = new File(FILE_PATH);
-        }
-        if (!file.exists() || file.isDirectory()) {
-            throw new RuntimeException(String.format("源文件配置文件: %s 不存在", FILE_PATH));
-        }
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
-            bufferedReader = new BufferedReader(new FileReader(file));
+            bufferedReader = new BufferedReader(new FileReader(checkFile()));
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
-                    if(inputPath.trim().startsWith(SYMBOL_IGNORE)){
+                    if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
                         continue;
                     }
-                    String[] subInputPath = inputPath.trim().replace(SYMBOL_SLASH,SYMBOL_BACKSLASH).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath = inputPath.trim().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH).split(SYMBOL_BLANK_SPACE);
                     String sourcePath = subInputPath[subInputPath.length - 1].trim();
-                    logger.info(String.format("复制文件: %s", sourcePath));
-                    if(!sourcePath.isEmpty()){
+                    logger.info(String.format("复制文件[%s]", sourcePath));
+                    if (!sourcePath.isEmpty()) {
                         String exportPath = sourcePath.replace(WORKSPACE, EXPORT_WORKSPACE + CURRENT_DATE + SYMBOL_BACKSLASH);
                         copyFile(sourcePath, exportPath);
                         READ_NUM++;
@@ -354,14 +345,14 @@ public class CopyMergeFile {
     /**
      * 设置复制结果状态
      */
-    private static void savePathStatus(){
+    private static void savePathStatus() {
         String statusPath = EXPORT_WORKSPACE + CURRENT_DATE;
         File statusFolder = new File(statusPath);
-        if(!statusFolder.exists()){
+        if (!statusFolder.exists()) {
             statusFolder.mkdirs();
         }
         String fileName = SUCCESS;
-        if(READ_NUM != COPY_NUM || EXCEPTION_STATUS){
+        if (READ_NUM != COPY_NUM || EXCEPTION_STATUS) {
             fileName = FAIL;
         }
         String statusFilename = statusPath + SYMBOL_BACKSLASH + fileName + FILE_SUFFIX;
@@ -370,11 +361,11 @@ public class CopyMergeFile {
         try {
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(MESSAGE.toString());
-            if(SUCCESS.equals(fileName)){
-                logger.info(String.format("文件复制完成,文件个数: %s",READ_NUM));
-            }else{
-                logger.error(String.format("文件复制失败,读取文件个数: %s,复制文件个数: %s", READ_NUM, COPY_NUM));
-                logger.error(String.format("请检查[%s]编码格式,若乱码请尝试转换文件格式[UTF-8 或 GBK]", FILE_PATH));
+            if (SUCCESS.equals(fileName)) {
+                logger.info(String.format("文件复制完成,文件个数[%s]", READ_NUM));
+            } else {
+                logger.error(String.format("文件复制失败,读取文件个数[%s],复制文件个数[%s]", READ_NUM, COPY_NUM));
+                logger.error(String.format("请检查[%s]编码格式,请尝试转换文件格式为[UTF-8或GBK]", FILE_PATH));
                 logger.error(MESSAGE.toString());
             }
         } catch (FileNotFoundException e) {
@@ -388,27 +379,18 @@ public class CopyMergeFile {
      * 合并文件
      */
     private static void mergePatch() {
-        File file;
-        if(START_MODE_PROJECT.equals(START_MODE)){
-            file = new File(CopyMergeFile.class.getClassLoader().getResource(FILE_PATH).getFile());
-        }else{
-            file = new File(FILE_PATH);
-        }
-        if (!file.exists() || file.isDirectory()) {
-            throw new RuntimeException(String.format("源文件配置文件: %s 不存在", FILE_PATH));
-        }
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
-            bufferedReader = new BufferedReader(new FileReader(file));
+            bufferedReader = new BufferedReader(new FileReader(checkFile()));
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
-                    if(inputPath.trim().startsWith(SYMBOL_IGNORE)){
+                    if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
                         continue;
                     }
-                    String[] subInputPath = inputPath.trim().replace(SYMBOL_SLASH,SYMBOL_BACKSLASH).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath = inputPath.trim().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH).split(SYMBOL_BLANK_SPACE);
                     String path = subInputPath[subInputPath.length - 1].trim();
-                    logger.info(String.format("合并文件: %s", path));
+                    logger.info(String.format("合并文件[%s]", path));
                     CONTENT.append(getFileContent(path));
                     READ_NUM++;
                 }
@@ -433,7 +415,7 @@ public class CopyMergeFile {
      * @param fileName
      * @return
      */
-    private static String getFileContent(String fileName){
+    private static String getFileContent(String fileName) {
         BufferedReader reader = null;
         StringBuffer stringBuffer = new StringBuffer();
         try {
@@ -466,10 +448,10 @@ public class CopyMergeFile {
      *
      * @param content
      */
-    private static void createFile(String content){
+    private static void createFile(String content) {
         String statusPath = EXPORT_WORKSPACE + CURRENT_DATE;
         File statusFolder = new File(statusPath);
-        if(!statusFolder.exists()){
+        if (!statusFolder.exists()) {
             statusFolder.mkdirs();
         }
         String fileName = FILE_NAME_MERGE + SYMBOL_MINUS + READ_NUM;
@@ -480,11 +462,30 @@ public class CopyMergeFile {
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), ENCODING)));
             out.write(content);
             out.flush();
-            logger.info(String.format("文件合并完成,文件个数: %s", READ_NUM));
+            logger.info(String.format("文件合并完成,文件个数[%s]", READ_NUM));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             out.close();
         }
+    }
+
+    /**
+     * @param
+     * @author: 校验文件是否存在
+     * @date: 2020/08/09
+     * @return:
+     */
+    private static File checkFile() {
+        File file;
+        if (START_MODE_PROJECT.equals(START_MODE)) {
+            file = new File(CopyMergeFile.class.getClassLoader().getResource(FILE_PATH).getFile());
+        } else {
+            file = new File(FILE_PATH);
+        }
+        if (!file.exists() || file.isDirectory()) {
+            throw new RuntimeException(String.format("源文件配置文件[%s] 不存在", FILE_PATH));
+        }
+        return file;
     }
 }
