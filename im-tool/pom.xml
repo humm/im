@@ -9,9 +9,9 @@
 		<version>3.4.00-SNAPSHOT</version>
 	</parent>
 
-	<description>文件信息</description>
+	<description>工具信息</description>
 	<groupId>com.hoomoomoo</groupId>
-	<artifactId>im-file</artifactId>
+	<artifactId>im-tool</artifactId>
 	<version>${im.version}</version>
 	<packaging>jar</packaging>
 
