@@ -3,7 +3,7 @@
 -- 用户信息
 truncate table sys_user;
 insert into sys_user (USER_ID, USER_CODE, USER_NAME, USER_PASSWORD, USER_STATUS, CREATE_DATE, MODIFY_DATE, CREATE_USER, MODIFY_USER, USER_MEMO)
-values (20190000000001, 'admin', '管理员', '==wctlmZ', 'D001-1', sysdate, sysdate, '20190000000001', '20190000000001', '系统管理员，不能删除');
+values (20190000000001, 'admin', '管理员', '5xWatFmZ', 'D001-1', sysdate, sysdate, '20190000000001', '20190000000001', '系统管理员，不能删除');
 
 -- 菜单信息
 truncate table sys_menu;

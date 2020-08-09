@@ -346,4 +346,11 @@ call add_version('20190000000093', '发布版本：3.4.00', '2020-07-17', 445, '
 call update_system_version('3.4.00');
 
 
+update sys_parameter set parameter_group = replace(parameter_group, '参数', '信息');
+commit;
+call add_version('20190000000094', '发布版本：3.4.01', '2020-08-09', 450, '4');
+call update_system_version('3.4.01');
+
+
+
 
