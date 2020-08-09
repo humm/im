@@ -188,7 +188,7 @@ public class ExportFile {
      * 设置启动模式
      */
     private static void getStartMode() {
-        URL url = ExportFile.class.getResource("CopyMergeFile.class");
+        URL url = ExportFile.class.getResource("ExportFile.class");
         if (url.toString().startsWith(START_MODE_JAR)) {
             START_MODE = START_MODE_JAR;
         } else {
@@ -219,9 +219,9 @@ public class ExportFile {
                     workspace += SYMBOL_BACKSLASH;
                 }
                 WORKSPACE = workspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
-                logger.info(String.format("导出源文件工作目录[%s]", WORKSPACE));
+                logger.info(String.format("导出源文件工作目录[ %s ]", WORKSPACE));
             } else if (OPERATE_TYPE_COPY.equals(OPERATE_TYPE)) {
-                throw new RuntimeException("请设置导出源文件工作目录[workspace]");
+                throw new RuntimeException("请设置导出源文件工作目录[ workspace ]");
             }
             String exportWorkspace = config.getProperty("exportWorkspace");
             if (StringUtils.isNotBlank(exportWorkspace)) {
@@ -229,23 +229,23 @@ public class ExportFile {
                     exportWorkspace += SYMBOL_BACKSLASH;
                 }
                 EXPORT_WORKSPACE = exportWorkspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
-                logger.info(String.format("导出文件工作目录[%s]", EXPORT_WORKSPACE));
+                logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
             } else {
-                throw new RuntimeException("请设置导出文件工作目录[exportWorkspace]");
+                throw new RuntimeException("请设置导出文件工作目录[ exportWorkspace ]");
             }
             String encoding = config.getProperty("encoding");
             if (StringUtils.isNotBlank(encoding)) {
                 ENCODING = encoding;
             }
             if (OPERATE_TYPE_MERGE.equals(OPERATE_TYPE)) {
-                logger.info(String.format("文件编码格式[%s]", ENCODING));
+                logger.info(String.format("文件编码格式[ %s ]", ENCODING));
             }
-            logger.info(String.format("文件操作模式[%s]", OPERATE_TYPE));
+            logger.info(String.format("文件操作模式[ %s ]", OPERATE_TYPE));
             String fileSuffix = config.getProperty("fileSuffix");
             if (StringUtils.isNotBlank(fileSuffix)) {
                 FILE_SUFFIX = fileSuffix;
             }
-            logger.info(String.format("输出文件后缀名称[%s]", FILE_SUFFIX));
+            logger.info(String.format("输出文件后缀名称[ %s ]", FILE_SUFFIX));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -266,7 +266,7 @@ public class ExportFile {
                     }
                     String[] subInputPath = inputPath.trim().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH).split(SYMBOL_BLANK_SPACE);
                     String sourcePath = subInputPath[subInputPath.length - 1].trim();
-                    logger.info(String.format("复制文件[%s]", sourcePath));
+                    logger.info(String.format("复制文件[ %s ]", sourcePath));
                     if (!sourcePath.isEmpty()) {
                         String exportPath = sourcePath.replace(WORKSPACE, EXPORT_WORKSPACE + CURRENT_DATE + SYMBOL_BACKSLASH);
                         copyFile(sourcePath, exportPath);
@@ -362,10 +362,10 @@ public class ExportFile {
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(MESSAGE.toString());
             if (SUCCESS.equals(fileName)) {
-                logger.info(String.format("文件复制完成,文件个数[%s]", READ_NUM));
+                logger.info(String.format("文件复制完成,文件数量[ %s ]", READ_NUM));
             } else {
-                logger.error(String.format("文件复制失败,读取文件个数[%s],复制文件个数[%s]", READ_NUM, COPY_NUM));
-                logger.error(String.format("请检查[%s]编码格式,请尝试转换文件格式为[UTF-8或GBK]", FILE_PATH));
+                logger.error(String.format("文件复制失败,读取文件数量[ %s ],复制文件数量[ %s ]", READ_NUM, COPY_NUM));
+                logger.error(String.format("请检查[ %s ]编码格式,请尝试转换文件格式为[ UTF-8或GBK ]", FILE_PATH));
                 logger.error(MESSAGE.toString());
             }
         } catch (FileNotFoundException e) {
@@ -390,7 +390,7 @@ public class ExportFile {
                     }
                     String[] subInputPath = inputPath.trim().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH).split(SYMBOL_BLANK_SPACE);
                     String path = subInputPath[subInputPath.length - 1].trim();
-                    logger.info(String.format("合并文件[%s]", path));
+                    logger.info(String.format("合并文件[ %s ]", path));
                     CONTENT.append(getFileContent(path));
                     READ_NUM++;
                 }
@@ -462,7 +462,7 @@ public class ExportFile {
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), ENCODING)));
             out.write(content);
             out.flush();
-            logger.info(String.format("文件合并完成,文件个数[%s]", READ_NUM));
+            logger.info(String.format("文件合并完成,文件数量[ %s ]", READ_NUM));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -484,7 +484,7 @@ public class ExportFile {
             file = new File(FILE_PATH);
         }
         if (!file.exists() || file.isDirectory()) {
-            throw new RuntimeException(String.format("源文件配置文件[%s] 不存在", FILE_PATH));
+            throw new RuntimeException(String.format("源文件配置文件[ %s ] 不存在", FILE_PATH));
         }
         return file;
     }

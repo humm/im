@@ -1,8 +1,0 @@
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-web-lib\src\main\resources\static\resources\view\sysinfo\farezone\yieldFareZoneSetting.js
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-info-service\src\main\resources\mybatis\mappers\mysql\sysinfo\YieldFareZoneManualMapper.xml
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-info-service\src\main\resources\mybatis\mappers\oracle\sysinfo\YieldFareZoneManualMapper.xml
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-web-lib\src\main\resources\static\resources\view\sysinfo\farezone\yieldFareZoneSetting.es6
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-web-lib\src\main\resources\static\resources\view\sysinfo\farezone\fareZoneSetting.js
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-info-service\src\main\resources\mybatis\mappers\mysql\sysinfo\FareZoneManualMapper.xml
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-info-service\src\main\resources\mybatis\mappers\oracle\sysinfo\FareZoneManualMapper.xml
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-web-lib\src\main\resources\static\resources\view\sysinfo\farezone\fareZoneSetting.es6
