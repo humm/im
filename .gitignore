@@ -38,3 +38,9 @@ target/
 *.log
 rebel.xml
 logs
+classes
+im-file.properties
+module_im.xml
+im-file.xml
+module_im-base.xml
+module_im-family.xml
