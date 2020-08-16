@@ -24,14 +24,9 @@ public class ExportFile {
     private static final Logger logger = LoggerFactory.getLogger(ExportFile.class);
 
     /**
-     * 工作目录前缀
+     * 格式化模板
      */
-    private static String WORKSPACE = "";
-
-    /**
-     * 导出文件目录
-     */
-    private static String EXPORT_WORKSPACE = "";
+    private static final String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
 
     /**
      * 文件地址读取文件
@@ -42,6 +37,21 @@ public class ExportFile {
      * 配置文件
      */
     private static String PROPERTIES_PATH = "application.properties";
+
+    /**
+     * 提示消息
+     */
+    private static StringBuffer MESSAGE = new StringBuffer();
+
+    /**
+     * 错误提示消息
+     */
+    private static StringBuffer FAIL_MESSAGE = new StringBuffer();
+
+    /**
+     * 合并文件内容
+     */
+    private static StringBuffer CONTENT = new StringBuffer();
 
     /**
      * 当前日期
@@ -64,24 +74,24 @@ public class ExportFile {
     private static boolean EXCEPTION_STATUS = false;
 
     /**
-     * 错误提示消息
+     * 暂停模式
      */
-    private static StringBuffer MESSAGE = new StringBuffer();
+    private static String PAUSE_MODE = "on";
 
     /**
-     * 编码格式
+     * 开启
      */
-    private static String ENCODING = "GBK";
+    private static final String ON = "on";
 
     /**
-     * 输出文件后缀
+     * 成功暂停时间
      */
-    private static String FILE_SUFFIX = ".txt";
+    private static Integer PAUSE_SUCCESS_TIME = 5;
 
     /**
-     * 合并文件内容
+     * 失败暂停时间
      */
-    private static StringBuffer CONTENT = new StringBuffer();
+    private static Integer PAUSE_FAIL_TIME = 10;
 
     /**
      * 斜杠
@@ -109,6 +119,11 @@ public class ExportFile {
     private static final String SYMBOL_SPACE = " ";
 
     /**
+     * 空串
+     */
+    private static final String SYMBOL_EMPTY = "";
+
+    /**
      * 减号
      */
     private static final String SYMBOL_MINUS = "-";
@@ -121,6 +136,26 @@ public class ExportFile {
      * 注释
      */
     private static final String SYMBOL_IGNORE = "--";
+
+    /**
+     * 工作目录前缀
+     */
+    private static String WORKSPACE = "";
+
+    /**
+     * 导出文件目录
+     */
+    private static String EXPORT_WORKSPACE = "";
+
+    /**
+     * 编码格式
+     */
+    private static String ENCODING = "GBK";
+
+    /**
+     * 提示文件后缀
+     */
+    private static String FILE_SUFFIX = ".txt";
 
     /**
      * 成功
@@ -153,9 +188,10 @@ public class ExportFile {
     private static final String START_MODE_PROJECT = "project";
 
     /**
-     * 文件操作模式 1:单文件复制  2:文件合并
+     * 文件操作模式 1:文件复制 2:文件合并 3:文件覆盖
      */
     private static String OPERATE_TYPE = "copy";
+
     /**
      * 文件复制
      */
@@ -165,15 +201,26 @@ public class ExportFile {
      * 文件合并
      */
     private static final String OPERATE_TYPE_MERGE = "merge";
+
     /**
      * 文件覆盖
      */
     private static final String OPERATE_TYPE_COVER = "cover";
 
     /**
-     * 格式化模板
+     * 文件复制
      */
-    private static final String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
+    private static final String STATUS_TYPE_COPY = "复制";
+
+    /**
+     * 文件合并
+     */
+    private static final String STATUS_TYPE_MERGE = "合并";
+
+    /**
+     * 文件覆盖
+     */
+    private static final String STATUS_TYPE_COVER = "覆盖";
 
 
     public static void main(String[] args) {
@@ -196,6 +243,18 @@ public class ExportFile {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            EXCEPTION_STATUS = true;
+        }
+        if (ON.equals(PAUSE_MODE)) {
+            Integer sleepTime = PAUSE_SUCCESS_TIME;
+            if (READ_NUM != COPY_NUM || EXCEPTION_STATUS) {
+                sleepTime = PAUSE_FAIL_TIME;
+            }
+            try {
+                Thread.sleep(sleepTime * 1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -230,7 +289,7 @@ public class ExportFile {
             for (File coverFile : coverFileList) {
                 coverFile(coverFile, coverFileDirectory.getAbsolutePath());
             }
-            savePathStatus(coverFileDirectory.getAbsolutePath());
+            savePathStatus(STATUS_TYPE_COVER, coverFileDirectory.getAbsolutePath());
         }
     }
 
@@ -293,14 +352,12 @@ public class ExportFile {
                     }
                 }
             }
-            savePathStatus(null);
+            savePathStatus(STATUS_TYPE_COPY, null);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            MESSAGE.append(e.toString()).append(SYMBOL_NEXT_LINE);
             EXCEPTION_STATUS = true;
         } catch (IOException e) {
             e.printStackTrace();
-            MESSAGE.append(e.toString()).append(SYMBOL_NEXT_LINE);
             EXCEPTION_STATUS = true;
         } finally {
             try {
@@ -322,6 +379,7 @@ public class ExportFile {
         String path = exportPath.substring(0, lastIndex);
         File inFile = new File(sourcePath);
         File outFile = new File(exportPath);
+        StringBuffer msg = new StringBuffer();
         if (inFile.exists() && inFile.isFile()) {
             File sourceFolder = new File(path);
             if (!sourceFolder.exists()) {
@@ -339,16 +397,19 @@ public class ExportFile {
                 }
                 fileOutputStream.flush();
                 COPY_NUM++;
-                MESSAGE.append(SUCCESS).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                msg.append(SUCCESS).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                MESSAGE.append(msg);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                MESSAGE.append(e.toString()).append(SYMBOL_NEXT_LINE);
-                MESSAGE.append(FAIL).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                msg.append(FAIL).append(SYMBOL_SPACE).append(e.getMessage()).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                MESSAGE.append(msg);
+                FAIL_MESSAGE.append(msg);
                 EXCEPTION_STATUS = true;
             } catch (IOException e) {
                 e.printStackTrace();
-                MESSAGE.append(e.toString()).append(SYMBOL_NEXT_LINE);
-                MESSAGE.append(FAIL).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                msg.append(FAIL).append(SYMBOL_SPACE).append(e.getMessage()).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                MESSAGE.append(msg);
+                FAIL_MESSAGE.append(msg);
                 EXCEPTION_STATUS = true;
             } finally {
                 try {
@@ -358,16 +419,20 @@ public class ExportFile {
                     e.printStackTrace();
                 }
             }
+        } else {
+            msg.append(FAIL).append(" 不存在文件").append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE).toString();
+            MESSAGE.append(msg);
+            FAIL_MESSAGE.append(msg);
         }
     }
 
     /**
-     * 设置复制、覆盖结果状态
+     * 设置结果状态
      */
-    private static void savePathStatus(String coverDirectory) {
+    private static void savePathStatus(String statusType, String directory) {
         String statusPath = EXPORT_WORKSPACE + CURRENT_DATE;
-        if (StringUtils.isNotBlank(coverDirectory)) {
-            statusPath = coverDirectory;
+        if (StringUtils.isNotBlank(directory)) {
+            statusPath = directory;
         }
         File statusFolder = new File(statusPath);
         if (!statusFolder.exists()) {
@@ -384,24 +449,17 @@ public class ExportFile {
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(MESSAGE.toString());
             if (SUCCESS.equals(fileName)) {
-                String msg = "文件复制完成,文件数量[ %s ]";
-                if (StringUtils.isNotBlank(coverDirectory)) {
-                    msg = "文件覆盖完成,文件数量[ %s ]";
-                }
-                logger.info(String.format(msg, READ_NUM));
+                logger.info(String.format("文件%s完成,文件数量[ %s ]", statusType, READ_NUM));
             } else {
-                String msg = "文件复制失败,读取文件数量[ %s ],复制文件数量[ %s ]";
-                if (StringUtils.isNotBlank(coverDirectory)) {
-                    msg = "文件覆盖失败,读取文件数量[ %s ],覆盖文件数量[ %s ]";
+                logger.error(String.format("文件%s失败,读取文件数量[ %s ],%s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM));
+                logger.error(FAIL_MESSAGE.toString());
+                if (!STATUS_TYPE_MERGE.equals(statusType)) {
+                    logger.error(String.format("若源文件路径存在中文,请检查[ %s ]编码格式,转换文件格式为[ GBK ]", FILE_PATH));
                 }
-                logger.error(String.format(msg, READ_NUM, COPY_NUM));
-                if (StringUtils.isBlank(coverDirectory)) {
-                    logger.error(String.format("请检查[ %s ]编码格式,请尝试转换文件格式为[ UTF-8或GBK ]", FILE_PATH));
-                }
-                logger.error(MESSAGE.toString());
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            EXCEPTION_STATUS = true;
         } finally {
             printStream.close();
         }
@@ -427,11 +485,13 @@ public class ExportFile {
                     READ_NUM++;
                 }
             }
-            createFile(CONTENT.toString());
+            savePathStatus(STATUS_TYPE_MERGE, createFile(CONTENT.toString()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            EXCEPTION_STATUS = true;
         } catch (IOException e) {
             e.printStackTrace();
+            EXCEPTION_STATUS = true;
         } finally {
             try {
                 bufferedReader.close();
@@ -450,18 +510,30 @@ public class ExportFile {
     private static String getFileContent(String fileName) {
         BufferedReader reader = null;
         StringBuffer stringBuffer = new StringBuffer();
+        StringBuffer msg = new StringBuffer();
         try {
             File file = new File(fileName);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), ENCODING));
-            String content;
-            while ((content = reader.readLine()) != null) {
-                stringBuffer.append(content).append(SYMBOL_NEXT_LINE);
+            if (file.exists()) {
+                reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), ENCODING));
+                String content;
+                while ((content = reader.readLine()) != null) {
+                    stringBuffer.append(content).append(SYMBOL_NEXT_LINE);
+                }
+                msg.append(SUCCESS).append(SYMBOL_SPACE).append(fileName).append(SYMBOL_NEXT_LINE);
+                MESSAGE.append(msg);
+                COPY_NUM++;
+            } else {
+                msg.append(FAIL).append(" 不存在文件").append(SYMBOL_SPACE).append(fileName).append(SYMBOL_NEXT_LINE).toString();
+                MESSAGE.append(msg);
+                FAIL_MESSAGE.append(msg);
+                return SYMBOL_NEXT_LINE;
             }
         } catch (IOException e) {
             e.printStackTrace();
+            msg.append(FAIL).append(SYMBOL_SPACE).append(e.getMessage()).append(SYMBOL_SPACE).append(fileName).append(SYMBOL_NEXT_LINE);
+            MESSAGE.append(msg);
+            FAIL_MESSAGE.append(msg);
+            EXCEPTION_STATUS = true;
         } finally {
             try {
                 if (reader != null) {
@@ -480,7 +552,7 @@ public class ExportFile {
      *
      * @param content
      */
-    private static void createFile(String content) {
+    private static String createFile(String content) {
         String statusPath = EXPORT_WORKSPACE + CURRENT_DATE;
         File statusFolder = new File(statusPath);
         if (!statusFolder.exists()) {
@@ -494,12 +566,13 @@ public class ExportFile {
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), ENCODING)));
             out.write(content);
             out.flush();
-            logger.info(String.format("文件合并完成,文件数量[ %s ]", READ_NUM));
         } catch (IOException e) {
             e.printStackTrace();
+            EXCEPTION_STATUS = true;
         } finally {
             out.close();
         }
+        return statusPath;
     }
 
     /**
@@ -583,8 +656,24 @@ public class ExportFile {
                 FILE_SUFFIX = fileSuffix;
             }
             logger.info(String.format("文件后缀[ %s ]", FILE_SUFFIX));
+            String pauseMode = config.getProperty("pauseMode");
+            if (StringUtils.isNotBlank(pauseMode)) {
+                PAUSE_MODE = pauseMode;
+            }
+            logger.info(String.format("暂停模式[ %s ]", PAUSE_MODE));
+            String pauseSuccessTime = config.getProperty("pauseSuccessTime");
+            if (StringUtils.isNotBlank(pauseSuccessTime)) {
+                PAUSE_SUCCESS_TIME = Integer.valueOf(pauseSuccessTime);
+            }
+            logger.info(String.format("成功暂停时间[ %s ]", PAUSE_SUCCESS_TIME));
+            String pauseFailTime = config.getProperty("pauseFailTime");
+            if (StringUtils.isNotBlank(pauseFailTime)) {
+                PAUSE_FAIL_TIME = Integer.valueOf(pauseFailTime);
+            }
+            logger.info(String.format("失败暂停时间[ %s ]", PAUSE_FAIL_TIME));
         } catch (IOException e) {
             e.printStackTrace();
+            EXCEPTION_STATUS = true;
         }
     }
 }
