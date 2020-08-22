@@ -8,7 +8,6 @@ import java.io.*;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.Properties;
 
@@ -268,17 +267,14 @@ public class ExportFile {
         }
         File[] fileDirectoryList = fileDirectory.listFiles();
         if (fileDirectoryList != null) {
-            Arrays.sort(fileDirectoryList, new Comparator<File>() {
-                @Override
-                public int compare(File o1, File o2) {
-                    long sort = o2.lastModified() - o1.lastModified();
-                    if (sort > 0) {
-                        return 1;
-                    } else if (sort == 0) {
-                        return 0;
-                    } else {
-                        return -1;
-                    }
+            Arrays.sort(fileDirectoryList, (o1, o2) -> {
+                long sort = o2.lastModified() - o1.lastModified();
+                if (sort > 0) {
+                    return 1;
+                } else if (sort == 0) {
+                    return 0;
+                } else {
+                    return -1;
                 }
             });
             File coverFileDirectory = fileDirectoryList[0];

@@ -3,18 +3,21 @@ package com.hoomoomoo.im.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.hoomoomoo.im.config.RunDataConfig;
 import com.hoomoomoo.im.config.WebSocketServerConfig;
-import com.hoomoomoo.im.config.bean.DatasourceConfigBean;
 import com.hoomoomoo.im.config.bean.ConfigBean;
+import com.hoomoomoo.im.config.bean.DatasourceConfigBean;
 import com.hoomoomoo.im.dao.SysConfigDao;
 import com.hoomoomoo.im.dao.SysDictionaryDao;
-import com.hoomoomoo.im.dao.SysUserDao;
 import com.hoomoomoo.im.dao.SysSystemDao;
+import com.hoomoomoo.im.dao.SysUserDao;
 import com.hoomoomoo.im.model.*;
 import com.hoomoomoo.im.model.base.BaseModel;
 import com.hoomoomoo.im.model.base.ResultData;
 import com.hoomoomoo.im.model.base.SessionBean;
 import com.hoomoomoo.im.model.base.ViewData;
-import com.hoomoomoo.im.service.*;
+import com.hoomoomoo.im.service.SysMailService;
+import com.hoomoomoo.im.service.SysMenuService;
+import com.hoomoomoo.im.service.SysParameterService;
+import com.hoomoomoo.im.service.SysSystemService;
 import com.hoomoomoo.im.util.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
@@ -44,12 +47,11 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static com.hoomoomoo.im.config.RunDataConfig.*;
-import static com.hoomoomoo.im.consts.BaseConst.APPLICATION_PROPERTIES;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseCueConst.*;
 import static com.hoomoomoo.im.consts.DictionaryConst.*;
-import static com.hoomoomoo.im.consts.ParameterConst.*;
 import static com.hoomoomoo.im.consts.ParameterConst.MIND_FILL;
-import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.ParameterConst.*;
 
 /**
  * @author hoomoomoo
@@ -62,7 +64,7 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
 @Transactional
 public class SysSystemServiceImpl implements SysSystemService {
 
-    private static final Logger  logger = LoggerFactory.getLogger(SysSystemServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SysSystemServiceImpl.class);
 
     @Autowired
     private ConfigBean configBean;
@@ -71,19 +73,19 @@ public class SysSystemServiceImpl implements SysSystemService {
     private DatasourceConfigBean datasourceConfigBean;
 
     @Autowired
-    private Environment          environment;
+    private Environment environment;
 
     @Autowired
-    private SysSystemDao         sysSystemDao;
+    private SysSystemDao sysSystemDao;
 
     @Autowired
-    private SysDictionaryDao     sysDictionaryDao;
+    private SysDictionaryDao sysDictionaryDao;
 
     @Autowired
-    private SysUserDao           sysUserDao;
+    private SysUserDao sysUserDao;
 
     @Autowired
-    private SysParameterService  sysParameterService;
+    private SysParameterService sysParameterService;
 
     @Autowired
     private SysMenuService sysMenuService;
@@ -547,7 +549,7 @@ public class SysSystemServiceImpl implements SysSystemService {
         databaseContent.append(NEXT_LINE);
         for (String tableName : tables) {
             // 去除表名称的单引号
-            tableName = tableName.substring(1, tableName.length()- 1);
+            tableName = tableName.substring(1, tableName.length() - 1);
             database.append(EXPLAN).append(tableName).append(NEXT_LINE);
             StringBuffer tableInfo = new StringBuffer();
             tableInfo.append(EXPLAN).append(tableName).append(NEXT_LINE);
@@ -579,7 +581,7 @@ public class SysSystemServiceImpl implements SysSystemService {
                         page++;
                     }
                     sysTableQueryModel.setLimit(BACKUP_DATA_LIMIT);
-                    for (int i=1; i<=page; i++) {
+                    for (int i = 1; i <= page; i++) {
                         sysTableQueryModel.setPage(i);
                         PageHelper.startPage(sysTableQueryModel.getPage(), sysTableQueryModel.getLimit());
                         buildTableData(sysSystemDao.selectTableData(sysTableQueryModel), tableName, columnMap, tableInfo);
@@ -630,10 +632,10 @@ public class SysSystemServiceImpl implements SysSystemService {
                     insert.append(columnCode).append(COMMA).append(STR_SPACE);
                     values.append(getColumnValue(columnType, singleData.get(columnCode.toUpperCase()))).append(COMMA).append(STR_SPACE);
                 }
-                if(insert.toString().endsWith(new StringBuffer(COMMA).append(STR_SPACE).toString())){
+                if (insert.toString().endsWith(new StringBuffer(COMMA).append(STR_SPACE).toString())) {
                     insert = new StringBuffer(insert.substring(0, insert.length() - 2));
                 }
-                if(values.toString().endsWith(new StringBuffer(COMMA).append(STR_SPACE).toString())){
+                if (values.toString().endsWith(new StringBuffer(COMMA).append(STR_SPACE).toString())) {
                     values = new StringBuffer(values.substring(0, values.length() - 2));
                 }
                 sql.append(insert).append(BRACKET_RIGHT).append(NEXT_LINE)
@@ -699,7 +701,7 @@ public class SysSystemServiceImpl implements SysSystemService {
         LinkedHashMap<String, List<LinkedHashMap>> backupData = new LinkedHashMap<>(16);
         for (String tableName : tables) {
             // 去除表名称的单引号
-            tableName = tableName.substring(1, tableName.length()- 1);
+            tableName = tableName.substring(1, tableName.length() - 1);
             if (!isBackupTable(tableName)) {
                 // 不是配置表直接返回
                 continue;
@@ -722,7 +724,7 @@ public class SysSystemServiceImpl implements SysSystemService {
                     page++;
                 }
                 sysTableQueryModel.setLimit(BACKUP_DATA_LIMIT);
-                for (int i=1; i<=page; i++) {
+                for (int i = 1; i <= page; i++) {
                     sysTableQueryModel.setPage(i);
                     PageHelper.startPage(sysTableQueryModel.getPage(), sysTableQueryModel.getLimit());
                     List<LinkedHashMap> singleQuery = sysSystemDao.selectTableData(sysTableQueryModel);
@@ -743,7 +745,7 @@ public class SysSystemServiceImpl implements SysSystemService {
                 all.addAll(tableData);
                 List<SysTableModel> titleList = sysSystemDao.selectTableColumnComments(sysTableQueryModel);
                 LinkedHashMap<String, Object> single = tableData.get(0);
-                Iterator<String> iterator  = single.keySet().iterator();
+                Iterator<String> iterator = single.keySet().iterator();
                 while (iterator.hasNext()) {
                     String key = iterator.next();
                     title.put(key, getColumnComments(titleList, key));
@@ -853,7 +855,7 @@ public class SysSystemServiceImpl implements SysSystemService {
             }
             outputStream = new FileOutputStream(filePath);
             workbook.write(outputStream);
-         } catch (Exception e) {
+        } catch (Exception e) {
             SysLogUtils.exception(logger, LOG_BUSINESS_TYPE_BACKUP_EXCEL, e);
         } finally {
             try {
@@ -937,7 +939,7 @@ public class SysSystemServiceImpl implements SysSystemService {
      *
      * @param backupType
      */
-    private void backup(String backupType){
+    private void backup(String backupType) {
         String backupLocation = sysParameterService.getParameterString(BACKUP_LOCATION);
         if (WELL.equals(backupLocation)) {
             SysLogUtils.exception(logger, LOG_BUSINESS_TYPE_BACKUP, BACKUP_LOCATION_IS_EMPTY);
@@ -993,17 +995,14 @@ public class SysSystemServiceImpl implements SysSystemService {
             if (StringUtils.isNotBlank(backupLocation)) {
                 File[] backupFile = new File(backupLocation).listFiles();
                 if (backupFile != null) {
-                    Arrays.sort(backupFile, new Comparator<File>() {
-                        @Override
-                        public int compare(File o1, File o2) {
-                            long sort = o2.lastModified() - o1.lastModified();
-                            if (sort > 0) {
-                                return 1;
-                            } else if (sort == 0) {
-                                return 0;
-                            } else {
-                                return -1;
-                            }
+                    Arrays.sort(backupFile, (o1, o2) -> {
+                        long sort = o2.lastModified() - o1.lastModified();
+                        if (sort > 0) {
+                            return 1;
+                        } else if (sort == 0) {
+                            return 0;
+                        } else {
+                            return -1;
                         }
                     });
                     List<String> filePath = new ArrayList<>();
@@ -1156,6 +1155,7 @@ public class SysSystemServiceImpl implements SysSystemService {
 
     /**
      * 获取数据库连接驱动
+     *
      * @return
      */
     private Connection getConnection() {
@@ -1356,7 +1356,7 @@ public class SysSystemServiceImpl implements SysSystemService {
      * @param key
      * @param value
      */
-    private void transfer(Map dictionaryCache, Map ele, Class clazz, String key, String value){
+    private void transfer(Map dictionaryCache, Map ele, Class clazz, String key, String value) {
         // 用户信息userId不转义
         if (!SysUserModel.class.equals(clazz)) {
             // 转义 userId
@@ -1382,7 +1382,7 @@ public class SysSystemServiceImpl implements SysSystemService {
 
         @Override
         public Enumeration<Object> keys() {
-            return Collections.<Object> enumeration(keys);
+            return Collections.<Object>enumeration(keys);
         }
 
         @Override
@@ -1414,7 +1414,7 @@ public class SysSystemServiceImpl implements SysSystemService {
      */
     private String convertValue(String key) {
         if (StringUtils.isNotBlank(configBean.getConvertOutputKeyword())
-            && StringUtils.isNotBlank(key)) {
+                && StringUtils.isNotBlank(key)) {
             String[] keywords = configBean.getConvertOutputKeyword().split(COMMA);
             for (String word : keywords) {
                 if (key.contains(word)) {
@@ -1456,10 +1456,9 @@ public class SysSystemServiceImpl implements SysSystemService {
 
     /**
      * 查询配置模块信息
-     *
      */
     @Override
-    public SysModuleModel selectConfigModule(){
+    public SysModuleModel selectConfigModule() {
         SessionBean sessionBean = SysSessionUtils.getSession();
         if (sessionBean != null) {
             return selectConfigModule(sessionBean.getUserId());
@@ -1469,10 +1468,9 @@ public class SysSystemServiceImpl implements SysSystemService {
 
     /**
      * 查询配置模块信息
-     *
      */
     @Override
-    public SysModuleModel selectConfigModule(String userId){
+    public SysModuleModel selectConfigModule(String userId) {
         SysModuleModel sysModuleModel = new SysModuleModel();
         SysConfigQueryModel sysConfigQueryModel = new SysConfigQueryModel();
         sysConfigQueryModel.setUserId(userId);
@@ -1483,7 +1481,7 @@ public class SysSystemServiceImpl implements SysSystemService {
             for (SysConfigModel sysConfigModel : sysConfigModelList) {
                 module.put(sysConfigModel.getModuleCode(), sysConfigModel.getModuleStatus());
             }
-            sysModuleModel = (SysModuleModel)SysBeanUtils.mapToBean(SysModuleModel.class, module);
+            sysModuleModel = (SysModuleModel) SysBeanUtils.mapToBean(SysModuleModel.class, module);
         }
         return sysModuleModel;
     }
