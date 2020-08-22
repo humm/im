@@ -86,12 +86,12 @@ public class ExportFile {
     /**
      * 成功暂停时间
      */
-    private static Integer PAUSE_SUCCESS_TIME = 5;
+    private static Integer PAUSE_SUCCESS_TIME = 1;
 
     /**
      * 失败暂停时间
      */
-    private static Integer PAUSE_FAIL_TIME = 10;
+    private static Integer PAUSE_FAIL_TIME = 5;
 
     /**
      * 斜杠
