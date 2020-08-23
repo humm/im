@@ -4,10 +4,10 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>com.hoomoomoo</groupId>
-        <artifactId>im-z-dubbo</artifactId>
-        <version>3.4.00-SNAPSHOT</version>
-    </parent>
+         <groupId>com.hoomoomoo</groupId>
+         <artifactId>im-z-dubbo</artifactId>
+         <version>3.4.00-SNAPSHOT</version>
+     </parent>
 
     <description>dubbo服务消费者</description>
     <groupId>com.hoomoomoo</groupId>
