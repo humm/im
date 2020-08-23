@@ -1,3 +1,22 @@
-idea 生成可执行jar
-    1. file --> project structure --> Atifacts --> + --> jar --> from module with dependenceis
+idea生成可执行jar文件
+    1. file -> project structure -> Artifacts --> + -> jar -> from module with ...
     2. 选择一个Main Class, 然后指定META-INF/MANIFEST.MF路径, 注意不要放到main/java目录下,否则打成的jar中META-INF/MANIFEST.MF不含有Main Class信息
+
+功能说明
+    1. 文件复制
+        1. 读取filePath.txt文件中的文件路径
+        2. 文件路径替换,替换规则为[ 文件路径.replace(workspace, exportWorkspace + 时间戳) ]
+        3. 复制文件至[ exportWorkspace + 时间戳 ]目录
+    2. 文件合并
+        1. 读取filePath.txt文件中的文件路径
+        2. 读取文件路径对应文件内容
+        3. 创建合并文件,文件格式为[ merge + 合并文件数量 ]
+        4. 合并后文件目录为[ exportWorkspace + 时间戳 ]
+    3. 文件覆盖
+        1. 读取[ workspace ]目录最后修改时间的文件夹
+        2. 文件路径替换,替换规则为[ 文件路径.replace(workspace + 文件夹名称, exportWorkspace) ]
+        2. 复制文件至[ exportWorkspace ]目录
+    4. 文件更新
+        1. 读取[ workspace ]目录文件
+        2. 文件路径替换,替换规则为[ 文件路径.replace(workspace - 多余路径, exportWorkspace)
+        3. 更新文件至[ exportWorkspace ]目录

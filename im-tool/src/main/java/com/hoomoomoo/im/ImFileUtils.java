@@ -1,31 +1,28 @@
 package com.hoomoomoo.im;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * @Author hoomoomoo
- * @Description 文件复制合并
+ * @Description 文件工具类
  * @package com.hoomoomoo.im
  * @Date 2020/06/07
  */
 
-public class ExportFile {
+public class ImFileUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExportFile.class);
-
-    /**
-     * 格式化模板
-     */
-    private static final String YYYYMMDDHHMMSS = "yyyyMMddHHmmss";
+    private static final Logger logger = LoggerFactory.getLogger(ImFileUtils.class);
 
     /**
      * 文件地址读取文件
@@ -36,6 +33,51 @@ public class ExportFile {
      * 配置文件
      */
     private static String PROPERTIES_PATH = "application.properties";
+
+    /**
+     * 斜杠
+     */
+    private static final String SYMBOL_SLASH = "/";
+
+    /**
+     * 反斜杠
+     */
+    private static final String SYMBOL_BACKSLASH = "\\";
+
+    /**
+     * 逗号
+     */
+    private static final String SYMBOL_COMMA = ",";
+
+    /**
+     * 空格
+     */
+    private static final String SYMBOL_BLANK_SPACE = "\\s+";
+
+    /**
+     * 空格
+     */
+    private static final String SYMBOL_SPACE = " ";
+
+    /**
+     * 减号
+     */
+    private static final String SYMBOL_MINUS = "-";
+
+    /**
+     * 换行
+     */
+    private static final String SYMBOL_NEXT_LINE = "\n";
+
+    /**
+     * 注释
+     */
+    private static final String SYMBOL_IGNORE = "--";
+
+    /**
+     * 格式化模板
+     */
+    private static final String YYYY_MM_DD_HH_MM_SS = "yyyyMMddHHmmss";
 
     /**
      * 提示消息
@@ -75,12 +117,7 @@ public class ExportFile {
     /**
      * 暂停模式
      */
-    private static String PAUSE_MODE = "on";
-
-    /**
-     * 开启
-     */
-    private static final String ON = "on";
+    private static Boolean PAUSE_MODE = true;
 
     /**
      * 成功暂停时间
@@ -93,50 +130,6 @@ public class ExportFile {
     private static Integer PAUSE_FAIL_TIME = 5;
 
     /**
-     * 斜杠
-     */
-    private static final String SYMBOL_SLASH = "/";
-
-    /**
-     * 反斜杠
-     */
-    private static final String SYMBOL_BACKSLASH = "\\";
-
-    /**
-     * 逗号
-     */
-    private static final String SYMBOL_COMMA = ",";
-
-    /**
-     * 空格
-     */
-    private static final String SYMBOL_BLANK_SPACE = "\\s+";
-
-    /**
-     * 空格
-     */
-    private static final String SYMBOL_SPACE = " ";
-
-    /**
-     * 空串
-     */
-    private static final String SYMBOL_EMPTY = "";
-
-    /**
-     * 减号
-     */
-    private static final String SYMBOL_MINUS = "-";
-
-    /**
-     * 换行
-     */
-    private static final String SYMBOL_NEXT_LINE = "\n";
-    /**
-     * 注释
-     */
-    private static final String SYMBOL_IGNORE = "--";
-
-    /**
      * 工作目录前缀
      */
     private static String WORKSPACE = "";
@@ -145,6 +138,21 @@ public class ExportFile {
      * 导出文件目录
      */
     private static String EXPORT_WORKSPACE = "";
+
+    /**
+     * 指定行内容
+     */
+    private static String LINE_CONTENT = "";
+
+    /**
+     * 指定行内容偏移量
+     */
+    private static Integer LINE_OFFSET = 0;
+
+    /**
+     * 成功后删除文件
+     */
+    private static Boolean DELETE_AFTER_SUCCESS = true;
 
     /**
      * 编码格式
@@ -157,6 +165,17 @@ public class ExportFile {
     private static String FILE_SUFFIX = ".txt";
 
     /**
+     * zip文件
+     */
+    private static final String FILE_TYPE_ZIP = ".zip";
+
+    /**
+     * rar文件
+     */
+    private static final String FILE_TYPE_RAR = ".rar";
+
+
+    /**
      * 成功
      */
     private static final String SUCCESS = "success";
@@ -165,6 +184,21 @@ public class ExportFile {
      * 失败
      */
     private static final String FAIL = "fail";
+
+    /**
+     * 数据库升级脚本目录
+     */
+    private static final String FILE_NAME_UPDATE = "数据库升级脚本";
+
+    /**
+     * 升级脚本path
+     */
+    private static String FILE_NAME_PATH_UPDATE = "";
+
+    /**
+     * 更新文件目录path
+     */
+    private static String FILE_DIRECTORY_PATH_UPDATE = "";
 
     /**
      * 合并文件名称
@@ -207,6 +241,11 @@ public class ExportFile {
     private static final String OPERATE_TYPE_COVER = "cover";
 
     /**
+     * 文件更新
+     */
+    private static final String OPERATE_TYPE_UPDATE = "update";
+
+    /**
      * 文件复制
      */
     private static final String STATUS_TYPE_COPY = "复制";
@@ -221,30 +260,43 @@ public class ExportFile {
      */
     private static final String STATUS_TYPE_COVER = "覆盖";
 
+    /**
+     * 文件更新
+     */
+    private static final String STATUS_TYPE_UPDATE = "更新";
+
 
     public static void main(String[] args) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(YYYYMMDDHHMMSS);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
         CURRENT_DATE = simpleDateFormat.format(new Date());
         try {
             // 设置启动模式
             getStartMode();
             // 读取配置文件参数
             getProperties();
-            if (OPERATE_TYPE.equals(OPERATE_TYPE_COPY)) {
-                // 复制文件
-                copyPatch();
-            } else if (OPERATE_TYPE.equals(OPERATE_TYPE_MERGE)) {
-                // 合并文件
-                mergePatch();
-            } else if (OPERATE_TYPE.equals(OPERATE_TYPE_COVER)) {
-                // 覆盖文件
-                coverPatch();
+            switch (OPERATE_TYPE) {
+                case OPERATE_TYPE_COPY:
+                    // 复制文件
+                    copyFile();
+                    break;
+                case OPERATE_TYPE_MERGE:
+                    // 合并文件
+                    mergeFile();
+                    break;
+                case OPERATE_TYPE_COVER:
+                    // 覆盖文件
+                    coverFile();
+                case OPERATE_TYPE_UPDATE:
+                    // 更新文件
+                    updateFile();
+                default:
+                    break;
             }
         } catch (Exception e) {
             e.printStackTrace();
             EXCEPTION_STATUS = true;
         }
-        if (ON.equals(PAUSE_MODE)) {
+        if (PAUSE_MODE) {
             Integer sleepTime = PAUSE_SUCCESS_TIME;
             if (READ_NUM != COPY_NUM || EXCEPTION_STATUS) {
                 sleepTime = PAUSE_FAIL_TIME;
@@ -258,77 +310,329 @@ public class ExportFile {
     }
 
     /**
-     * 覆盖文件入口
+     * 文件更新
+     *
+     * @param
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
-    private static void coverPatch() {
+    private static void updateFile() {
+        File fileDirectory = new File(WORKSPACE);
+        if (!fileDirectory.isDirectory()) {
+            throw new RuntimeException(String.format("源文件工作目录[ %s ]不存在", WORKSPACE));
+        }
+        File[] fileList = fileDirectory.listFiles();
+        if (fileList != null) {
+            // 解压文件
+            for (File file : fileList) {
+                if (file.isDirectory()) {
+                    continue;
+                }
+                String fileName = file.getName();
+                try {
+                    if (fileName.endsWith(FILE_TYPE_ZIP)) {
+                        UnZipAnRarTool.unZip(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH);
+                    } else if (fileName.endsWith(FILE_TYPE_RAR)) {
+                        UnZipAnRarTool.unRar(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    EXCEPTION_STATUS = true;
+                }
+            }
+            // 更新文件
+            fileList = fileDirectory.listFiles();
+            for (File file : fileList) {
+                String fileName = file.getName();
+                if (fileName.endsWith(FILE_TYPE_ZIP) || fileName.endsWith(FILE_TYPE_RAR)) {
+                    continue;
+                }
+                if ((SUCCESS + FILE_SUFFIX).equals(file.getName()) || (FAIL + FILE_SUFFIX).equals(file.getName())) {
+                    continue;
+                }
+                if (file.isDirectory()) {
+                    // 文件夹
+                    File target = new File(EXPORT_WORKSPACE);
+                    Map<String, String> targetDirectory = new HashMap<>(10);
+                    if (target != null) {
+                        File[] targetList = target.listFiles();
+                        for (File targetFile : targetList) {
+                            targetDirectory.put(targetFile.getName(), targetFile.getName());
+                        }
+                    }
+                    getWorkspaceAbsolutely(file.getAbsolutePath(), targetDirectory);
+                    if (StringUtils.isBlank(FILE_DIRECTORY_PATH_UPDATE)) {
+                        throw new RuntimeException(String.format("[ %s ]更新文件目录不匹配", file.getAbsolutePath()));
+                    }
+                    updateMultipleFile(file, FILE_DIRECTORY_PATH_UPDATE);
+                } else {
+                    // 单个文件,升级脚本,增量更新
+                    File updateFile = new File(EXPORT_WORKSPACE + FILE_NAME_UPDATE);
+                    if (!updateFile.exists()) {
+                        updateFile = new File(EXPORT_WORKSPACE);
+                    }
+                    getUpdateScriptPath(file.getName(), updateFile.getAbsolutePath());
+                    if (StringUtils.isBlank(FILE_NAME_PATH_UPDATE)) {
+                        throw new RuntimeException(String.format("[ %s ]更新文件目录不匹配", file.getAbsolutePath()));
+                    }
+                    READ_NUM++;
+                    logger.info(String.format("更新文件[ %s ]", FILE_NAME_PATH_UPDATE));
+                    updateScriptFile(file.getAbsolutePath(), FILE_NAME_PATH_UPDATE);
+                }
+            }
+            if (DELETE_AFTER_SUCCESS) {
+                for (File file : fileList) {
+                    deleteFile(file);
+                }
+            }
+        }
+        savePathStatus(STATUS_TYPE_UPDATE, WORKSPACE);
+    }
+
+    /**
+     * 更新文件夹下文件
+     *
+     * @param file
+     * @param fileDirectory
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
+     */
+    private static void updateMultipleFile(File file, String fileDirectory) {
+        if (!file.isDirectory()) {
+            updateSingleFile(file, fileDirectory);
+        } else {
+            File[] fileList = file.listFiles();
+            for (File single : fileList) {
+                if (single.isDirectory()) {
+                    updateMultipleFile(single, fileDirectory);
+                } else {
+                    updateSingleFile(single, fileDirectory);
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 更新单个文件
+     *
+     * @param file
+     * @param fileDirectory
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
+     */
+    private static void updateSingleFile(File file, String fileDirectory) {
+        READ_NUM++;
+        String inputPath = file.getAbsolutePath().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
+        String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
+        copySingleFile(inputPath, exportPath);
+        logger.info(String.format("更新文件[ %s ]", inputPath));
+    }
+
+    /**
+     * 获取替换文件绝对路径
+     *
+     * @param filePath
+     * @param targetDirectory
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
+     */
+    private static boolean getWorkspaceAbsolutely(String filePath, Map<String, String> targetDirectory) {
+        File source = new File(filePath);
+        if (source != null) {
+            if (source.isDirectory()) {
+                String fileName = source.getName();
+                if (!StringUtils.isNotBlank(targetDirectory.get(fileName))) {
+                    File[] subSourceList = source.listFiles();
+                    for (File subSource : subSourceList) {
+                        if (getWorkspaceAbsolutely(subSource.getAbsolutePath(), targetDirectory)) {
+                            break;
+                        }
+                    }
+                } else {
+                    FILE_DIRECTORY_PATH_UPDATE = source.getParentFile().getAbsolutePath();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 获取升级脚本绝对路径
+     *
+     * @param fileName
+     * @param filePath
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
+     */
+    private static boolean getUpdateScriptPath(String fileName, String filePath) {
+        File file = new File(filePath);
+        if (file.isDirectory()) {
+            File[] fileList = file.listFiles();
+            for (File singleFile : fileList) {
+                if (getUpdateScriptPath(fileName, singleFile.getAbsolutePath())) {
+                    break;
+                }
+            }
+        } else {
+            if (fileName.equals(file.getName())) {
+                FILE_NAME_PATH_UPDATE = file.getAbsolutePath();
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 更新升级脚本
+     *
+     * @param sourcePath
+     * @param targetPath
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
+     */
+    private static void updateScriptFile(String sourcePath, String targetPath) {
+        String fileContent = SYMBOL_NEXT_LINE + getFileContent(sourcePath);
+        try {
+            List<String> lines = Files.readAllLines(Paths.get(targetPath), Charset.forName(ENCODING));
+            int position = 0;
+            if (StringUtils.isBlank(LINE_CONTENT)) {
+                lines.add(fileContent);
+            } else {
+                if (CollectionUtils.isNotEmpty(lines)) {
+                    for (int i = 0; i < lines.size(); i++) {
+                        String content = lines.get(i);
+                        if (LINE_CONTENT.equals(content.trim())) {
+                            position = i + LINE_OFFSET;
+                        }
+                    }
+                }
+                lines.add(position, fileContent);
+            }
+            Files.write(Paths.get(targetPath), lines, Charset.forName(ENCODING));
+        } catch (IOException e) {
+            e.printStackTrace();
+            EXCEPTION_STATUS = true;
+        }
+    }
+
+    /**
+     * 删除文件
+     *
+     * @param file
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
+     */
+    private static void deleteFile(File file) {
+        if (file.isDirectory()) {
+            File[] fileList = file.listFiles();
+            if (fileList == null) {
+                file.delete();
+            } else {
+                for (File subFile : fileList) {
+                    deleteFile(subFile);
+                }
+                file.delete();
+            }
+        } else {
+            file.delete();
+        }
+    }
+
+    /**
+     * 覆盖文件
+     *
+     * @param
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
+     */
+    private static void coverFile() {
         File fileDirectory = new File(WORKSPACE);
         if (!fileDirectory.isDirectory()) {
             throw new RuntimeException(String.format("源文件工作目录[ %s ]不存在", WORKSPACE));
         }
         File[] fileDirectoryList = fileDirectory.listFiles();
         if (fileDirectoryList != null) {
-            Arrays.sort(fileDirectoryList, (o1, o2) -> {
-                long sort = o2.lastModified() - o1.lastModified();
-                if (sort > 0) {
-                    return 1;
-                } else if (sort == 0) {
-                    return 0;
-                } else {
-                    return -1;
-                }
-            });
+            sortFile(fileDirectoryList);
             File coverFileDirectory = fileDirectoryList[0];
             if (!coverFileDirectory.isDirectory()) {
                 throw new RuntimeException(String.format("[ %s ]不是文件夹", coverFileDirectory.getAbsolutePath()));
             }
             File[] coverFileList = coverFileDirectory.listFiles();
             for (File coverFile : coverFileList) {
-                coverFile(coverFile, coverFileDirectory.getAbsolutePath());
+                coverMultipleFile(coverFile, coverFileDirectory.getAbsolutePath());
             }
             savePathStatus(STATUS_TYPE_COVER, coverFileDirectory.getAbsolutePath());
         }
     }
 
     /**
-     * 覆盖文件
+     * 覆盖文件夹下文件
+     *
+     * @param file
+     * @param fileDirectory
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
-    private static void coverFile(File file, String fileDirectory) {
+    private static void coverMultipleFile(File file, String fileDirectory) {
         if (!file.isDirectory()) {
-            cover(file, fileDirectory);
+            coverSingleFile(file, fileDirectory);
         } else {
             File[] fileList = file.listFiles();
             for (File single : fileList) {
                 if (single.isDirectory()) {
-                    coverFile(single, fileDirectory);
+                    coverMultipleFile(single, fileDirectory);
                 } else {
-                    cover(single, fileDirectory);
+                    coverSingleFile(single, fileDirectory);
                 }
             }
         }
-
     }
 
     /**
      * 覆盖单个文件
+     *
+     * @param file
+     * @param fileDirectory
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
-    private static void cover(File file, String fileDirectory) {
+    private static void coverSingleFile(File file, String fileDirectory) {
         if ((SUCCESS + FILE_SUFFIX).equals(file.getName()) || (FAIL + FILE_SUFFIX).equals(file.getName())) {
             return;
         }
         String inputPath = file.getAbsolutePath().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
         String[] exportWorkspaceList = EXPORT_WORKSPACE.split(SYMBOL_COMMA);
         for (String exportWorkspace : exportWorkspaceList) {
-            String exportPath = inputPath.replace(fileDirectory, exportWorkspace);
-            copyFile(inputPath, exportPath);
-            logger.info(String.format("覆盖文件[ %s ]", inputPath));
             READ_NUM++;
+            String exportPath = inputPath.replace(fileDirectory, exportWorkspace);
+            copySingleFile(inputPath, exportPath);
+            logger.info(String.format("覆盖文件[ %s ]", inputPath));
         }
+        COPY_NUM = COPY_NUM / exportWorkspaceList.length;
+        READ_NUM = READ_NUM / exportWorkspaceList.length;
     }
 
     /**
-     * 复制文件入口
+     * 复制文件
+     *
+     * @param
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
-    private static void copyPatch() {
+    private static void copyFile() {
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
@@ -341,10 +645,10 @@ public class ExportFile {
                     String[] subInputPath = inputPath.trim().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH).split(SYMBOL_BLANK_SPACE);
                     String sourcePath = subInputPath[subInputPath.length - 1].trim();
                     if (!sourcePath.isEmpty()) {
+                        READ_NUM++;
                         logger.info(String.format("复制文件[ %s ]", sourcePath));
                         String exportPath = sourcePath.replace(WORKSPACE, EXPORT_WORKSPACE + CURRENT_DATE + SYMBOL_BACKSLASH);
-                        copyFile(sourcePath, exportPath);
-                        READ_NUM++;
+                        copySingleFile(sourcePath, exportPath);
                     }
                 }
             }
@@ -365,12 +669,15 @@ public class ExportFile {
     }
 
     /**
-     * 复制文件
+     * 复制单个文件
      *
      * @param sourcePath
      * @param exportPath
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
-    private static void copyFile(String sourcePath, String exportPath) {
+    private static void copySingleFile(String sourcePath, String exportPath) {
         int lastIndex = exportPath.lastIndexOf(SYMBOL_BACKSLASH);
         String path = exportPath.substring(0, lastIndex);
         File inFile = new File(sourcePath);
@@ -424,6 +731,12 @@ public class ExportFile {
 
     /**
      * 设置结果状态
+     *
+     * @param statusType
+     * @param directory
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
     private static void savePathStatus(String statusType, String directory) {
         String statusPath = EXPORT_WORKSPACE + CURRENT_DATE;
@@ -449,7 +762,7 @@ public class ExportFile {
             } else {
                 logger.error(String.format("文件%s失败,读取文件数量[ %s ],%s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM));
                 logger.error(FAIL_MESSAGE.toString());
-                if (!STATUS_TYPE_MERGE.equals(statusType)) {
+                if (STATUS_TYPE_COPY.equals(statusType) || STATUS_TYPE_MERGE.equals(statusType)) {
                     logger.error(String.format("若源文件路径存在中文,请检查[ %s ]编码格式,转换文件格式为[ GBK ]", FILE_PATH));
                 }
             }
@@ -462,9 +775,14 @@ public class ExportFile {
     }
 
     /**
-     * 合并文件入口
+     * 合并文件
+     *
+     * @param
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
-    private static void mergePatch() {
+    private static void mergeFile() {
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
@@ -474,11 +792,11 @@ public class ExportFile {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
                         continue;
                     }
+                    READ_NUM++;
                     String[] subInputPath = inputPath.trim().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH).split(SYMBOL_BLANK_SPACE);
                     String path = subInputPath[subInputPath.length - 1].trim();
                     logger.info(String.format("合并文件[ %s ]", path));
                     CONTENT.append(getFileContent(path));
-                    READ_NUM++;
                 }
             }
             savePathStatus(STATUS_TYPE_MERGE, createFile(CONTENT.toString()));
@@ -501,7 +819,9 @@ public class ExportFile {
      * 获取单个文件内容
      *
      * @param fileName
-     * @return
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
     private static String getFileContent(String fileName) {
         BufferedReader reader = null;
@@ -544,9 +864,12 @@ public class ExportFile {
     }
 
     /**
-     * 合并文件
+     * 创建合并文件
      *
      * @param content
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
     private static String createFile(String content) {
         String statusPath = EXPORT_WORKSPACE + CURRENT_DATE;
@@ -572,15 +895,17 @@ public class ExportFile {
     }
 
     /**
+     * 校验文件是否存在
+     *
      * @param
-     * @author: 校验文件是否存在
-     * @date: 2020/08/09
+     * @author: hoomoomoo
+     * @date: 2020/08/23
      * @return:
      */
     private static File checkFile() {
         File file;
         if (START_MODE_PROJECT.equals(START_MODE)) {
-            file = new File(ExportFile.class.getClassLoader().getResource(FILE_PATH).getFile());
+            file = new File(ImFileUtils.class.getClassLoader().getResource(FILE_PATH).getFile());
         } else {
             file = new File(FILE_PATH);
         }
@@ -592,9 +917,14 @@ public class ExportFile {
 
     /**
      * 设置启动模式
+     *
+     * @param
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
     private static void getStartMode() {
-        URL url = ExportFile.class.getResource("ExportFile.class");
+        URL url = ImFileUtils.class.getResource("ImFileUtils.class");
         if (url.toString().startsWith(START_MODE_JAR)) {
             START_MODE = START_MODE_JAR;
         } else {
@@ -603,13 +933,39 @@ public class ExportFile {
     }
 
     /**
+     * 文件排序
+     *
+     * @param fileList
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
+     */
+    private static void sortFile(File[] fileList) {
+        Arrays.sort(fileList, (o1, o2) -> {
+            long sort = o2.lastModified() - o1.lastModified();
+            if (sort > 0) {
+                return 1;
+            } else if (sort == 0) {
+                return 0;
+            } else {
+                return -1;
+            }
+        });
+    }
+
+    /**
      * 读取配置文件参数
+     *
+     * @param
+     * @author: hoomoomoo
+     * @date: 2020/08/23
+     * @return:
      */
     private static void getProperties() {
         InputStream pro;
         try {
             if (START_MODE_PROJECT.equals(START_MODE)) {
-                pro = ExportFile.class.getClassLoader().getResourceAsStream(PROPERTIES_PATH);
+                pro = ImFileUtils.class.getClassLoader().getResourceAsStream(PROPERTIES_PATH);
             } else {
                 pro = new FileInputStream(new File(PROPERTIES_PATH));
             }
@@ -621,14 +977,15 @@ public class ExportFile {
             }
             logger.info(String.format("文件操作模式[ %s ]", OPERATE_TYPE));
             String workspace = config.getProperty("workspace");
-            if (StringUtils.isNotBlank(workspace)) {
+            if (OPERATE_TYPE_COPY.equals(OPERATE_TYPE) || OPERATE_TYPE_COVER.equals(OPERATE_TYPE) || OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
+                if (StringUtils.isBlank(workspace)) {
+                    throw new RuntimeException("请设置源文件工作目录[ workspace ]");
+                }
                 if (!workspace.endsWith(SYMBOL_SLASH) && !workspace.endsWith(SYMBOL_BACKSLASH)) {
                     workspace += SYMBOL_BACKSLASH;
                 }
                 WORKSPACE = workspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
                 logger.info(String.format("源文件工作目录[ %s ]", WORKSPACE));
-            } else if (OPERATE_TYPE_COPY.equals(OPERATE_TYPE) || OPERATE_TYPE_COVER.equals(OPERATE_TYPE)) {
-                throw new RuntimeException("请设置源文件工作目录[ workspace ]");
             }
             String exportWorkspace = config.getProperty("exportWorkspace");
             if (StringUtils.isNotBlank(exportWorkspace)) {
@@ -640,11 +997,11 @@ public class ExportFile {
             } else {
                 throw new RuntimeException("请设置导出文件工作目录[ exportWorkspace ]");
             }
-            String encoding = config.getProperty("encoding");
-            if (StringUtils.isNotBlank(encoding)) {
-                ENCODING = encoding;
-            }
-            if (OPERATE_TYPE_MERGE.equals(OPERATE_TYPE)) {
+            if (OPERATE_TYPE_MERGE.equals(OPERATE_TYPE) || OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
+                String encoding = config.getProperty("encoding");
+                if (StringUtils.isNotBlank(encoding)) {
+                    ENCODING = encoding;
+                }
                 logger.info(String.format("文件编码格式[ %s ]", ENCODING));
             }
             String fileSuffix = config.getProperty("fileSuffix");
@@ -652,21 +1009,40 @@ public class ExportFile {
                 FILE_SUFFIX = fileSuffix;
             }
             logger.info(String.format("文件后缀[ %s ]", FILE_SUFFIX));
+            if (OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
+                String lineContent = config.getProperty("lineContent");
+                if (StringUtils.isNotBlank(lineContent)) {
+                    LINE_CONTENT = lineContent;
+                }
+                logger.info(String.format("指定行内容[ %s ]", LINE_CONTENT));
+                String lineOffset = config.getProperty("lineOffset");
+                if (StringUtils.isNotBlank(lineOffset)) {
+                    LINE_OFFSET = Integer.valueOf(lineOffset);
+                }
+                logger.info(String.format("指定行偏移量[ %s ]", LINE_OFFSET));
+                String deleteAfterSuccess = config.getProperty("deleteAfterSuccess");
+                if (StringUtils.isNotBlank(deleteAfterSuccess)) {
+                    DELETE_AFTER_SUCCESS = Boolean.valueOf(deleteAfterSuccess);
+                }
+                logger.info(String.format("成功后删除源文件[ %s ]", DELETE_AFTER_SUCCESS));
+            }
             String pauseMode = config.getProperty("pauseMode");
             if (StringUtils.isNotBlank(pauseMode)) {
-                PAUSE_MODE = pauseMode;
+                PAUSE_MODE = Boolean.getBoolean(pauseMode);
             }
             logger.info(String.format("暂停模式[ %s ]", PAUSE_MODE));
-            String pauseSuccessTime = config.getProperty("pauseSuccessTime");
-            if (StringUtils.isNotBlank(pauseSuccessTime)) {
-                PAUSE_SUCCESS_TIME = Integer.valueOf(pauseSuccessTime);
+            if (PAUSE_MODE) {
+                String pauseSuccessTime = config.getProperty("pauseSuccessTime");
+                if (StringUtils.isNotBlank(pauseSuccessTime)) {
+                    PAUSE_SUCCESS_TIME = Integer.valueOf(pauseSuccessTime);
+                }
+                logger.info(String.format("成功暂停时间[ %s ]", PAUSE_SUCCESS_TIME));
+                String pauseFailTime = config.getProperty("pauseFailTime");
+                if (StringUtils.isNotBlank(pauseFailTime)) {
+                    PAUSE_FAIL_TIME = Integer.valueOf(pauseFailTime);
+                }
+                logger.info(String.format("失败暂停时间[ %s ]", PAUSE_FAIL_TIME));
             }
-            logger.info(String.format("成功暂停时间[ %s ]", PAUSE_SUCCESS_TIME));
-            String pauseFailTime = config.getProperty("pauseFailTime");
-            if (StringUtils.isNotBlank(pauseFailTime)) {
-                PAUSE_FAIL_TIME = Integer.valueOf(pauseFailTime);
-            }
-            logger.info(String.format("失败暂停时间[ %s ]", PAUSE_FAIL_TIME));
         } catch (IOException e) {
             e.printStackTrace();
             EXCEPTION_STATUS = true;

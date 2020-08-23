@@ -5,14 +5,14 @@
 
     <parent>
         <groupId>com.hoomoomoo</groupId>
-        <artifactId>im</artifactId>
+        <artifactId>im-z-dubbo</artifactId>
         <version>3.4.00-SNAPSHOT</version>
     </parent>
 
-    <description>基础信息</description>
+    <description>dubbo服务接口</description>
     <groupId>com.hoomoomoo</groupId>
-    <artifactId>im-base</artifactId>
-    <version>${im.version}</version>
+    <artifactId>im-z-dubbo-api</artifactId>
+    <version>${im-z-dubbo.version}</version>
     <packaging>jar</packaging>
 
 </project>

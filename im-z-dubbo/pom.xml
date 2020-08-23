@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.hoomoomoo</groupId>
+        <artifactId>im</artifactId>
+        <version>3.4.00-SNAPSHOT</version>
+    </parent>
+
+    <description>dubbo信息</description>
+    <groupId>com.hoomoomoo</groupId>
+    <artifactId>im-z-dubbo</artifactId>
+    <version>${im.version}</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>im-z-dubbo-api</module>
+        <module>im-z-dubbo-provider</module>
+        <module>im-z-dubbo-consumer</module>
+    </modules>
+
+    <properties>
+        <im-z-dubbo.version>3.4.00-SNAPSHOT</im-z-dubbo.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.dubbo.springboot</groupId>
+            <artifactId>spring-boot-starter-dubbo</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>1.7.25</version>
+        </dependency>
+    </dependencies>
+
+</project>
