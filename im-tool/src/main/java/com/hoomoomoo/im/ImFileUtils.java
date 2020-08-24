@@ -1028,7 +1028,7 @@ public class ImFileUtils {
             }
             String pauseMode = config.getProperty("pauseMode");
             if (StringUtils.isNotBlank(pauseMode)) {
-                PAUSE_MODE = Boolean.getBoolean(pauseMode);
+                PAUSE_MODE = Boolean.valueOf(pauseMode);
             }
             logger.info(String.format("暂停模式[ %s ]", PAUSE_MODE));
             if (PAUSE_MODE) {
