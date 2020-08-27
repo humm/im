@@ -22,7 +22,7 @@ public class UnZipAnRarTool {
     /**
      * 解压Zip
      *
-     * @param zipPath
+     * @param file
      * @param outDir
      * @author: hoomoomoo
      * @date: 2020/08/23
