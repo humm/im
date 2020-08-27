@@ -5,7 +5,10 @@ import com.github.junrar.rarfile.FileHeader;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Enumeration;
 
 /**
@@ -19,38 +22,42 @@ public class UnZipAnRarTool {
     /**
      * 解压Zip
      *
-     * @param zipFile
+     * @param zipPath
      * @param outDir
      * @author: hoomoomoo
      * @date: 2020/08/23
      * @return:
      */
-    public static void unZip(File zipFile, String outDir) throws Exception {
-        File outFileDir = new File(outDir);
-        if (!outFileDir.exists()) {
-            outFileDir.mkdirs();
+    public static void unZip(File file, String outDir) throws Exception {
+        if (!file.exists()) {
+            throw new Exception("解压文件不存在!");
         }
-        ZipFile zip = new ZipFile(zipFile);
-        for (Enumeration enumeration = zip.getEntries(); enumeration.hasMoreElements(); ) {
-            ZipEntry entry = (ZipEntry) enumeration.nextElement();
-            String zipEntryName = entry.getName();
-            InputStream in = zip.getInputStream(entry);
-            // 处理压缩文件包含文件夹的情况
-            if (entry.isDirectory()) {
-                File fileDir = new File(outDir + zipEntryName);
-                fileDir.mkdir();
-                continue;
+        ZipFile zipFile = new ZipFile(file, "GBK");
+        Enumeration e = zipFile.getEntries();
+        while (e.hasMoreElements()) {
+            ZipEntry zipEntry = (ZipEntry) e.nextElement();
+            if (zipEntry.isDirectory()) {
+                String name = zipEntry.getName();
+                name = name.substring(0, name.length() - 1);
+                File f = new File(outDir + name);
+                f.mkdirs();
+            } else {
+                File f = new File(outDir + zipEntry.getName());
+                f.getParentFile().mkdirs();
+                f.createNewFile();
+                InputStream is = zipFile.getInputStream(zipEntry);
+                FileOutputStream fos = new FileOutputStream(f);
+                int length = 0;
+                byte[] b = new byte[1024];
+                while ((length = is.read(b, 0, 1024)) != -1) {
+                    fos.write(b, 0, length);
+                }
+                is.close();
+                fos.close();
             }
-            File file = new File(outDir, zipEntryName);
-            file.createNewFile();
-            OutputStream out = new FileOutputStream(file);
-            byte[] buff = new byte[1024];
-            int len;
-            while ((len = in.read(buff)) > 0) {
-                out.write(buff, 0, len);
-            }
-            in.close();
-            out.close();
+        }
+        if (zipFile != null) {
+            zipFile.close();
         }
     }
 

@@ -80,6 +80,11 @@ public class ImFileUtils {
     private static final String YYYY_MM_DD_HH_MM_SS = "yyyyMMddHHmmss";
 
     /**
+     * 字符集异常
+     */
+    private static final String UN_MAPPABLE_CHARACT_EREXCEPTION = "java.nio.charset.UnmappableCharacterException";
+
+    /**
      * 提示消息
      */
     private static StringBuffer MESSAGE = new StringBuffer();
@@ -286,9 +291,11 @@ public class ImFileUtils {
                 case OPERATE_TYPE_COVER:
                     // 覆盖文件
                     coverFile();
+                    break;
                 case OPERATE_TYPE_UPDATE:
                     // 更新文件
                     updateFile();
+                    break;
                 default:
                     break;
             }
@@ -381,7 +388,7 @@ public class ImFileUtils {
                     updateScriptFile(file.getAbsolutePath(), FILE_NAME_PATH_UPDATE);
                 }
             }
-            if (DELETE_AFTER_SUCCESS) {
+            if (DELETE_AFTER_SUCCESS && READ_NUM == COPY_NUM && !EXCEPTION_STATUS) {
                 for (File file : fileList) {
                     deleteFile(file);
                 }
@@ -500,8 +507,11 @@ public class ImFileUtils {
      */
     private static void updateScriptFile(String sourcePath, String targetPath) {
         String fileContent = SYMBOL_NEXT_LINE + getFileContent(sourcePath);
+        List<String> sourceLines = new ArrayList<>();
+        COPY_NUM--;
         try {
             List<String> lines = Files.readAllLines(Paths.get(targetPath), Charset.forName(ENCODING));
+            sourceLines.addAll(lines);
             int position = 0;
             if (StringUtils.isBlank(LINE_CONTENT)) {
                 lines.add(fileContent);
@@ -517,8 +527,17 @@ public class ImFileUtils {
                 lines.add(position, fileContent);
             }
             Files.write(Paths.get(targetPath), lines, Charset.forName(ENCODING));
+            COPY_NUM++;
         } catch (IOException e) {
             e.printStackTrace();
+            try {
+                Files.write(Paths.get(targetPath), sourceLines, Charset.forName(ENCODING));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EREXCEPTION)) {
+                FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,转换文件格式为[ GBK ]", sourcePath));
+            }
             EXCEPTION_STATUS = true;
         }
     }
