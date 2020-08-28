@@ -135,6 +135,11 @@ public class ImFileUtils {
     private static Integer PAUSE_FAIL_TIME = 5;
 
     /**
+     * 错误次数
+     */
+    private static Integer ERROR_TIMES = 0;
+
+    /**
      * 工作目录前缀
      */
     private static String WORKSPACE = "";
@@ -163,6 +168,16 @@ public class ImFileUtils {
      * 编码格式
      */
     private static String ENCODING = "GBK";
+
+    /**
+     * 编码格式
+     */
+    private static String ENCODING_UTF8 = "UTF-8";
+
+    /**
+     * 编码格式
+     */
+    private static String ENCODING_GBK = "GBK";
 
     /**
      * 提示文件后缀
@@ -506,7 +521,16 @@ public class ImFileUtils {
      * @return:
      */
     private static void updateScriptFile(String sourcePath, String targetPath) {
+        String encoding = ENCODING;
+        if (ERROR_TIMES != 0) {
+            if (ENCODING_GBK.equals(ENCODING)) {
+                ENCODING = ENCODING_UTF8;
+            } else if (ENCODING_UTF8.equals(ENCODING)) {
+                ENCODING = ENCODING_GBK;
+            }
+        }
         String fileContent = SYMBOL_NEXT_LINE + getFileContent(sourcePath);
+        ENCODING = encoding;
         List<String> sourceLines = new ArrayList<>();
         COPY_NUM--;
         try {
@@ -529,16 +553,24 @@ public class ImFileUtils {
             Files.write(Paths.get(targetPath), lines, Charset.forName(ENCODING));
             COPY_NUM++;
         } catch (IOException e) {
-            e.printStackTrace();
+            // 内容还原
             try {
                 Files.write(Paths.get(targetPath), sourceLines, Charset.forName(ENCODING));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EREXCEPTION)) {
+            if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EREXCEPTION) && ERROR_TIMES == 0) {
+                // 编码转换再读取一次 编码转换在方法入口
+                ERROR_TIMES++;
+                updateScriptFile(sourcePath, targetPath);
+            } else if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EREXCEPTION)) {
                 FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,转换文件格式为[ GBK ]", sourcePath));
+                EXCEPTION_STATUS = true;
+                e.printStackTrace();
+            } else {
+                EXCEPTION_STATUS = true;
+                e.printStackTrace();
             }
-            EXCEPTION_STATUS = true;
         }
     }
 
