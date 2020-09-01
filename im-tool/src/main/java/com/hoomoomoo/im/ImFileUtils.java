@@ -664,15 +664,10 @@ public class ImFileUtils {
             return;
         }
         String inputPath = file.getAbsolutePath().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
-        String[] exportWorkspaceList = EXPORT_WORKSPACE.split(SYMBOL_COMMA);
-        for (String exportWorkspace : exportWorkspaceList) {
-            READ_NUM++;
-            String exportPath = inputPath.replace(fileDirectory, exportWorkspace);
-            copySingleFile(inputPath, exportPath);
-            logger.info(String.format("覆盖文件[ %s ]", inputPath));
-        }
-        COPY_NUM = COPY_NUM / exportWorkspaceList.length;
-        READ_NUM = READ_NUM / exportWorkspaceList.length;
+        READ_NUM++;
+        String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
+        copySingleFile(inputPath, exportPath);
+        logger.info(String.format("覆盖文件[ %s ]", inputPath));
     }
 
     /**
