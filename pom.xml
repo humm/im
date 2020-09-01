@@ -19,7 +19,7 @@
         <module>im-base</module>
         <module>im-family</module>
         <module>im-tool</module>
-<!--                <module>im-z-dubbo</module>-->
+        <module>im-z-dubbo</module>
     </modules>
 
     <properties>

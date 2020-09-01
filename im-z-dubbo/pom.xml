@@ -12,7 +12,7 @@
     <description>dubbo信息</description>
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-z-dubbo</artifactId>
-    <version>${im.version}</version>
+    <version>3.4.00-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
