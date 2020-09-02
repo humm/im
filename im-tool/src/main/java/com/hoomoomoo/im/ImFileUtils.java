@@ -25,14 +25,24 @@ public class ImFileUtils {
     private static final Logger logger = LoggerFactory.getLogger(ImFileUtils.class);
 
     /**
-     * 文件地址读取文件
-     */
-    private static String FILE_PATH = "filePath.txt";
-
-    /**
      * 配置文件
      */
-    private static String PROPERTIES_PATH = "application.properties";
+    private static final String PROPERTIES_PATH = "application.properties";
+
+    /**
+     * 多路径配置 版本号
+     */
+    private static Map<String, String> MULTIPLE_VERSION = new HashMap();
+
+    /**
+     * 多路径配置 工作目录
+     */
+    private static Map<String, String> MULTIPLE_EXPORTWORKSPACE = new HashMap();
+
+    /**
+     * 文件地址读取文件
+     */
+    private static final String FILE_PATH = "path.txt";
 
     /**
      * 斜杠
@@ -1033,15 +1043,51 @@ public class ImFileUtils {
                 WORKSPACE = workspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
                 logger.info(String.format("源文件工作目录[ %s ]", WORKSPACE));
             }
-            String exportWorkspace = config.getProperty("exportWorkspace");
-            if (StringUtils.isNotBlank(exportWorkspace)) {
-                if (!exportWorkspace.endsWith(SYMBOL_SLASH) && !exportWorkspace.endsWith(SYMBOL_BACKSLASH)) {
-                    exportWorkspace += SYMBOL_BACKSLASH;
+            String multipleVersion = config.getProperty("multiple.version");
+            String multipleExportWorkspace = config.getProperty("multiple.exportWorkspace");
+            if (StringUtils.isNotBlank(multipleVersion) && StringUtils.isNotBlank(multipleExportWorkspace)) {
+                String[] versionList = multipleVersion.split(SYMBOL_COMMA);
+                String[] exportWorkspaceList = multipleExportWorkspace.split(SYMBOL_COMMA);
+                if (versionList.length != exportWorkspaceList.length) {
+                    throw new RuntimeException("多路径版本号[ multiple.version ]与多路径工作目录[ multiple.exportWorkspace ]不匹配");
                 }
-                EXPORT_WORKSPACE = exportWorkspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
-                logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
+                for (int i = 0; i < versionList.length; i++) {
+                    String[] version = versionList[i].split(SYMBOL_MINUS);
+                    if (version.length != 2) {
+                        throw new RuntimeException(String.format("多路径版本号[ multiple.version ]中[ %s ]格式错误", versionList[i]));
+                    }
+                    MULTIPLE_VERSION.put(version[0], version[1]);
+                    MULTIPLE_EXPORTWORKSPACE.put(version[0], exportWorkspaceList[i]);
+                }
+                logger.info("请选择版本号:");
+                Iterator<Map.Entry<String, String>> iterator = MULTIPLE_VERSION.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, String> item = iterator.next();
+                    logger.info(String.format("[ %s ]%s", item.getKey(), item.getValue()));
+                }
+                Scanner scanner = new Scanner(System.in);
+                while (true) {
+                    String code = scanner.next();
+                    if (StringUtils.isBlank(MULTIPLE_VERSION.get(code))) {
+                        logger.info("版本号不存在,请重新选择");
+                    } else {
+                        EXPORT_WORKSPACE = MULTIPLE_EXPORTWORKSPACE.get(code);
+                        logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
+                        scanner.close();
+                        break;
+                    }
+                }
             } else {
-                throw new RuntimeException("请设置导出文件工作目录[ exportWorkspace ]");
+                String exportWorkspace = config.getProperty("exportWorkspace");
+                if (StringUtils.isNotBlank(exportWorkspace)) {
+                    if (!exportWorkspace.endsWith(SYMBOL_SLASH) && !exportWorkspace.endsWith(SYMBOL_BACKSLASH)) {
+                        exportWorkspace += SYMBOL_BACKSLASH;
+                    }
+                    EXPORT_WORKSPACE = exportWorkspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
+                    logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
+                } else {
+                    throw new RuntimeException("请设置导出文件工作目录[ exportWorkspace ]");
+                }
             }
             if (OPERATE_TYPE_MERGE.equals(OPERATE_TYPE) || OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
                 String encoding = config.getProperty("encoding");
