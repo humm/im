@@ -12,6 +12,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @Author hoomoomoo
@@ -40,6 +42,16 @@ public class ImFileUtils {
     private static Map<String, String> MULTIPLE_EXPORTWORKSPACE = new HashMap();
 
     /**
+     * 多文件 多文件定位行
+     */
+    private static Map<String, String[]> MULTIPLE_LINE_CONTENT = new HashMap();
+
+    /**
+     * unicode字符串正则
+     */
+    private static final Pattern PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
+
+    /**
      * 文件地址读取文件
      */
     private static final String FILE_PATH = "path.txt";
@@ -53,6 +65,11 @@ public class ImFileUtils {
      * 反斜杠
      */
     private static final String SYMBOL_BACKSLASH = "\\";
+
+    /**
+     * #
+     */
+    private static final String SYMBOL_WEI = "#";
 
     /**
      * 逗号
@@ -70,9 +87,24 @@ public class ImFileUtils {
     private static final String SYMBOL_SPACE = " ";
 
     /**
+     * 空串
+     */
+    private static final String SYMBOL_EMPTY = "";
+
+    /**
+     * 等号
+     */
+    private static final String SYMBOL_EQUALS = "=";
+
+    /**
      * 减号
      */
     private static final String SYMBOL_MINUS = "-";
+
+    /**
+     * 冒号
+     */
+    private static final String SYMBOL_COLON = ":";
 
     /**
      * 换行
@@ -550,11 +582,22 @@ public class ImFileUtils {
             if (StringUtils.isBlank(LINE_CONTENT)) {
                 lines.add(fileContent);
             } else {
+                String lineContent = LINE_CONTENT;
+                Integer lineOffset = LINE_OFFSET;
+                Iterator<Map.Entry<String, String[]>> iterator = MULTIPLE_LINE_CONTENT.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, String[]> file = iterator.next();
+                    if (targetPath.endsWith(file.getKey())) {
+                        lineContent = file.getValue()[1];
+                        lineOffset = Integer.valueOf(file.getValue()[2]);
+                        break;
+                    }
+                }
                 if (CollectionUtils.isNotEmpty(lines)) {
                     for (int i = 0; i < lines.size(); i++) {
                         String content = lines.get(i);
-                        if (LINE_CONTENT.equals(content.trim())) {
-                            position = i + LINE_OFFSET;
+                        if (lineContent.equals(content.trim())) {
+                            position = i + lineOffset;
                         }
                     }
                 }
@@ -692,7 +735,7 @@ public class ImFileUtils {
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
-            bufferedReader = new BufferedReader(new FileReader(checkFile()));
+            bufferedReader = new BufferedReader(new FileReader(checkFile(FILE_PATH)));
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
@@ -842,7 +885,7 @@ public class ImFileUtils {
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
-            bufferedReader = new BufferedReader(new FileReader(checkFile()));
+            bufferedReader = new BufferedReader(new FileReader(checkFile(FILE_PATH)));
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
@@ -958,15 +1001,15 @@ public class ImFileUtils {
      * @date: 2020/08/23
      * @return:
      */
-    private static File checkFile() {
+    private static File checkFile(String fileName) {
         File file;
         if (START_MODE_PROJECT.equals(START_MODE)) {
-            file = new File(ImFileUtils.class.getClassLoader().getResource(FILE_PATH).getFile());
+            file = new File(ImFileUtils.class.getClassLoader().getResource(fileName).getFile());
         } else {
-            file = new File(FILE_PATH);
+            file = new File(fileName);
         }
         if (!file.exists() || file.isDirectory()) {
-            throw new RuntimeException(String.format("源文件配置文件[ %s ] 不存在", FILE_PATH));
+            throw new RuntimeException(String.format("源文件配置文件[ %s ] 不存在", fileName));
         }
         return file;
     }
@@ -1018,126 +1061,194 @@ public class ImFileUtils {
      * @return:
      */
     private static void getProperties() {
-        InputStream pro;
-        try {
-            if (START_MODE_PROJECT.equals(START_MODE)) {
-                pro = ImFileUtils.class.getClassLoader().getResourceAsStream(PROPERTIES_PATH);
-            } else {
-                pro = new FileInputStream(new File(PROPERTIES_PATH));
+        Map<String, String> config = getConfigProperties();
+        String operateType = config.get("operateType");
+        if (StringUtils.isNotBlank(operateType)) {
+            OPERATE_TYPE = operateType;
+        }
+        logger.info(String.format("文件操作模式[ %s ]", OPERATE_TYPE));
+        String workspace = config.get("workspace");
+        if (OPERATE_TYPE_COPY.equals(OPERATE_TYPE) || OPERATE_TYPE_COVER.equals(OPERATE_TYPE) || OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
+            if (StringUtils.isBlank(workspace)) {
+                throw new RuntimeException("请设置源文件工作目录[ workspace ]");
             }
-            Properties config = new Properties();
-            config.load(pro);
-            String operateType = config.getProperty("operateType");
-            if (StringUtils.isNotBlank(operateType)) {
-                OPERATE_TYPE = operateType;
+            if (!workspace.endsWith(SYMBOL_SLASH) && !workspace.endsWith(SYMBOL_BACKSLASH)) {
+                workspace += SYMBOL_BACKSLASH;
             }
-            logger.info(String.format("文件操作模式[ %s ]", OPERATE_TYPE));
-            String workspace = config.getProperty("workspace");
-            if (OPERATE_TYPE_COPY.equals(OPERATE_TYPE) || OPERATE_TYPE_COVER.equals(OPERATE_TYPE) || OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
-                if (StringUtils.isBlank(workspace)) {
-                    throw new RuntimeException("请设置源文件工作目录[ workspace ]");
-                }
-                if (!workspace.endsWith(SYMBOL_SLASH) && !workspace.endsWith(SYMBOL_BACKSLASH)) {
-                    workspace += SYMBOL_BACKSLASH;
-                }
-                WORKSPACE = workspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
-                logger.info(String.format("源文件工作目录[ %s ]", WORKSPACE));
+            WORKSPACE = workspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
+            logger.info(String.format("源文件工作目录[ %s ]", WORKSPACE));
+        }
+        String multipleVersion = config.get("multiple.version");
+        String multipleExportWorkspace = config.get("multiple.exportWorkspace");
+        if (StringUtils.isNotBlank(multipleVersion) && StringUtils.isNotBlank(multipleExportWorkspace)) {
+            String[] versionList = multipleVersion.split(SYMBOL_COMMA);
+            String[] exportWorkspaceList = multipleExportWorkspace.split(SYMBOL_COMMA);
+            if (versionList.length != exportWorkspaceList.length) {
+                throw new RuntimeException("多路径版本号[ multiple.version ]与多路径工作目录[ multiple.exportWorkspace ]不匹配");
             }
-            String multipleVersion = config.getProperty("multiple.version");
-            String multipleExportWorkspace = config.getProperty("multiple.exportWorkspace");
-            if (StringUtils.isNotBlank(multipleVersion) && StringUtils.isNotBlank(multipleExportWorkspace)) {
-                String[] versionList = multipleVersion.split(SYMBOL_COMMA);
-                String[] exportWorkspaceList = multipleExportWorkspace.split(SYMBOL_COMMA);
-                if (versionList.length != exportWorkspaceList.length) {
-                    throw new RuntimeException("多路径版本号[ multiple.version ]与多路径工作目录[ multiple.exportWorkspace ]不匹配");
+            for (int i = 0; i < versionList.length; i++) {
+                String[] version = versionList[i].split(SYMBOL_COLON);
+                if (version.length != 2) {
+                    throw new RuntimeException(String.format("多路径版本号[ multiple.version ]中[ %s ]格式错误", versionList[i]));
                 }
-                for (int i = 0; i < versionList.length; i++) {
-                    String[] version = versionList[i].split(SYMBOL_MINUS);
-                    if (version.length != 2) {
-                        throw new RuntimeException(String.format("多路径版本号[ multiple.version ]中[ %s ]格式错误", versionList[i]));
-                    }
-                    MULTIPLE_VERSION.put(version[0], version[1]);
-                    MULTIPLE_EXPORTWORKSPACE.put(version[0], exportWorkspaceList[i]);
-                }
-                logger.info("请选择版本号:");
-                Iterator<Map.Entry<String, String>> iterator = MULTIPLE_VERSION.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<String, String> item = iterator.next();
-                    logger.info(String.format("[ %s ]%s", item.getKey(), item.getValue()));
-                }
-                Scanner scanner = new Scanner(System.in);
-                while (true) {
-                    String code = scanner.next();
-                    if (StringUtils.isBlank(MULTIPLE_VERSION.get(code))) {
-                        logger.info("版本号不存在,请重新选择");
-                    } else {
-                        EXPORT_WORKSPACE = MULTIPLE_EXPORTWORKSPACE.get(code);
-                        logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
-                        scanner.close();
-                        break;
-                    }
-                }
-            } else {
-                String exportWorkspace = config.getProperty("exportWorkspace");
-                if (StringUtils.isNotBlank(exportWorkspace)) {
-                    if (!exportWorkspace.endsWith(SYMBOL_SLASH) && !exportWorkspace.endsWith(SYMBOL_BACKSLASH)) {
-                        exportWorkspace += SYMBOL_BACKSLASH;
-                    }
-                    EXPORT_WORKSPACE = exportWorkspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
-                    logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
+                MULTIPLE_VERSION.put(version[0], version[1]);
+                MULTIPLE_EXPORTWORKSPACE.put(version[0], exportWorkspaceList[i]);
+            }
+            logger.info("请选择版本号:");
+            Iterator<Map.Entry<String, String>> iterator = MULTIPLE_VERSION.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> item = iterator.next();
+                logger.info(String.format("[ %s ]%s", item.getKey(), item.getValue()));
+            }
+            Scanner scanner = new Scanner(System.in);
+            while (true) {
+                String code = scanner.next();
+                if (StringUtils.isBlank(MULTIPLE_VERSION.get(code))) {
+                    logger.info("版本号不存在,请重新选择");
                 } else {
-                    throw new RuntimeException("请设置导出文件工作目录[ exportWorkspace ]");
+                    EXPORT_WORKSPACE = MULTIPLE_EXPORTWORKSPACE.get(code);
+                    logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
+                    scanner.close();
+                    break;
                 }
             }
-            if (OPERATE_TYPE_MERGE.equals(OPERATE_TYPE) || OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
-                String encoding = config.getProperty("encoding");
-                if (StringUtils.isNotBlank(encoding)) {
-                    ENCODING = encoding;
+        } else {
+            String exportWorkspace = config.get("exportWorkspace");
+            if (StringUtils.isNotBlank(exportWorkspace)) {
+                if (!exportWorkspace.endsWith(SYMBOL_SLASH) && !exportWorkspace.endsWith(SYMBOL_BACKSLASH)) {
+                    exportWorkspace += SYMBOL_BACKSLASH;
                 }
-                logger.info(String.format("文件编码格式[ %s ]", ENCODING));
+                EXPORT_WORKSPACE = exportWorkspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
+                logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
+            } else {
+                throw new RuntimeException("请设置导出文件工作目录[ exportWorkspace ]");
             }
-            String fileSuffix = config.getProperty("fileSuffix");
-            if (StringUtils.isNotBlank(fileSuffix)) {
-                FILE_SUFFIX = fileSuffix;
+        }
+        String multipleLineContent = config.get("multiple.lineContent");
+        if (StringUtils.isNotBlank(multipleLineContent)) {
+            String[] lineContent = multipleLineContent.split(SYMBOL_COMMA);
+            for (int i = 0; i < lineContent.length; i++) {
+                String[] content = lineContent[i].split(SYMBOL_COLON);
+                if (content.length != 3) {
+                    throw new RuntimeException(String.format("多文件定位行[ multiple.lineContent ]中[ %s ]格式错误", lineContent[i]));
+                }
+                MULTIPLE_LINE_CONTENT.put(content[0], content);
             }
-            logger.info(String.format("文件后缀[ %s ]", FILE_SUFFIX));
-            if (OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
-                String lineContent = config.getProperty("lineContent");
-                if (StringUtils.isNotBlank(lineContent)) {
-                    LINE_CONTENT = lineContent;
-                }
-                logger.info(String.format("指定行内容[ %s ]", LINE_CONTENT));
-                String lineOffset = config.getProperty("lineOffset");
-                if (StringUtils.isNotBlank(lineOffset)) {
-                    LINE_OFFSET = Integer.valueOf(lineOffset);
-                }
-                logger.info(String.format("指定行偏移量[ %s ]", LINE_OFFSET));
-                String deleteAfterSuccess = config.getProperty("deleteAfterSuccess");
-                if (StringUtils.isNotBlank(deleteAfterSuccess)) {
-                    DELETE_AFTER_SUCCESS = Boolean.valueOf(deleteAfterSuccess);
-                }
-                logger.info(String.format("成功后删除源文件[ %s ]", DELETE_AFTER_SUCCESS));
+        }
+        if (OPERATE_TYPE_MERGE.equals(OPERATE_TYPE) || OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
+            String encoding = config.get("encoding");
+            if (StringUtils.isNotBlank(encoding)) {
+                ENCODING = encoding;
             }
-            String pauseMode = config.getProperty("pauseMode");
-            if (StringUtils.isNotBlank(pauseMode)) {
-                PAUSE_MODE = Boolean.valueOf(pauseMode);
+            logger.info(String.format("文件编码格式[ %s ]", ENCODING));
+        }
+        String fileSuffix = config.get("fileSuffix");
+        if (StringUtils.isNotBlank(fileSuffix)) {
+            FILE_SUFFIX = fileSuffix;
+        }
+        logger.info(String.format("文件后缀[ %s ]", FILE_SUFFIX));
+        if (OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
+            String lineContent = config.get("lineContent");
+            if (StringUtils.isNotBlank(lineContent)) {
+                LINE_CONTENT = lineContent;
             }
-            logger.info(String.format("暂停模式[ %s ]", PAUSE_MODE));
-            if (PAUSE_MODE) {
-                String pauseSuccessTime = config.getProperty("pauseSuccessTime");
-                if (StringUtils.isNotBlank(pauseSuccessTime)) {
-                    PAUSE_SUCCESS_TIME = Integer.valueOf(pauseSuccessTime);
-                }
-                logger.info(String.format("成功暂停时间[ %s ]", PAUSE_SUCCESS_TIME));
-                String pauseFailTime = config.getProperty("pauseFailTime");
-                if (StringUtils.isNotBlank(pauseFailTime)) {
-                    PAUSE_FAIL_TIME = Integer.valueOf(pauseFailTime);
-                }
-                logger.info(String.format("失败暂停时间[ %s ]", PAUSE_FAIL_TIME));
+            logger.info(String.format("指定行内容[ %s ]", LINE_CONTENT));
+            String lineOffset = config.get("lineOffset");
+            if (StringUtils.isNotBlank(lineOffset)) {
+                LINE_OFFSET = Integer.valueOf(lineOffset);
             }
+            logger.info(String.format("指定行偏移量[ %s ]", LINE_OFFSET));
+            String deleteAfterSuccess = config.get("deleteAfterSuccess");
+            if (StringUtils.isNotBlank(deleteAfterSuccess)) {
+                DELETE_AFTER_SUCCESS = Boolean.valueOf(deleteAfterSuccess);
+            }
+            logger.info(String.format("成功后删除源文件[ %s ]", DELETE_AFTER_SUCCESS));
+        }
+        String pauseMode = config.get("pauseMode");
+        if (StringUtils.isNotBlank(pauseMode)) {
+            PAUSE_MODE = Boolean.valueOf(pauseMode);
+        }
+        logger.info(String.format("暂停模式[ %s ]", PAUSE_MODE));
+        if (PAUSE_MODE) {
+            String pauseSuccessTime = config.get("pauseSuccessTime");
+            if (StringUtils.isNotBlank(pauseSuccessTime)) {
+                PAUSE_SUCCESS_TIME = Integer.valueOf(pauseSuccessTime);
+            }
+            logger.info(String.format("成功暂停时间[ %s ]", PAUSE_SUCCESS_TIME));
+            String pauseFailTime = config.get("pauseFailTime");
+            if (StringUtils.isNotBlank(pauseFailTime)) {
+                PAUSE_FAIL_TIME = Integer.valueOf(pauseFailTime);
+            }
+            logger.info(String.format("失败暂停时间[ %s ]", PAUSE_FAIL_TIME));
+        }
+    }
+
+    /**
+     * 读取配置文件
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2020/09/03
+     * @return:
+     */
+    private static Map<String, String> getConfigProperties() {
+        Map<String, String> config = new HashMap();
+        BufferedReader bufferedReader = null;
+        try {
+            String inputPath;
+            bufferedReader = new BufferedReader(new FileReader(checkFile(PROPERTIES_PATH)));
+            while ((inputPath = bufferedReader.readLine()) != null) {
+                if (!inputPath.isEmpty()) {
+                    if (StringUtils.isBlank(inputPath.trim()) || inputPath.trim().startsWith(SYMBOL_WEI)) {
+                        continue;
+                    }
+                    if (!inputPath.trim().contains(SYMBOL_EQUALS)) {
+                        throw new RuntimeException(String.format("[ %s ]文件中[ %s ]格式错误", PROPERTIES_PATH, inputPath.trim()));
+                    }
+                    String[] item = inputPath.trim().split(SYMBOL_EQUALS);
+                    if (item.length != 2) {
+                        throw new RuntimeException(String.format("[ %s ]文件中[ %s ]格式错误", PROPERTIES_PATH, inputPath.trim()));
+                    }
+                    config.put(item[0], convertUnicodeToCh(item[1]));
+                }
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            EXCEPTION_STATUS = true;
         } catch (IOException e) {
             e.printStackTrace();
             EXCEPTION_STATUS = true;
+        } finally {
+            try {
+                bufferedReader.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
+        return config;
+    }
+
+    /**
+     * unicode转中文字符串
+     *
+     * @param str
+     * @author: humm23693
+     * @date: 2020/09/03
+     * @return:
+     */
+    private static String convertUnicodeToCh(String str) {
+        Matcher matcher = PATTERN.matcher(str);
+        // 迭代，将str中的所有unicode转换为正常字符
+        while (matcher.find()) {
+            // 匹配出的每个字的unicode，比如\u67e5
+            String unicodeFull = matcher.group(1);
+            // 匹配出每个字的数字，比如\u67e5，会匹配出67e5
+            String unicodeNum = matcher.group(2);
+            // 将匹配出的数字按照16进制转换为10进制，转换为char类型，就是对应的正常字符了
+            char singleChar = (char) Integer.parseInt(unicodeNum, 16);
+            // 替换原始字符串中的unicode码
+            str = str.replace(unicodeFull, singleChar + SYMBOL_EMPTY);
+        }
+        return str;
     }
 }
