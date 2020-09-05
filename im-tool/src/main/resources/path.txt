@@ -1,7 +1,7 @@
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-info-service\src\main\java\com\hundsun\ta\ta5\biz\liquidation\service\LiquidationServ1iceImpl.java
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-info-api\src\main\java\com\hundsun\ta\ta5\dal\liquidation\model\ProcessLiquidationInstance.java
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-info-service\src\main\java\com\hundsun\ta\ta5\biz\liquidation\service\LiquidationExtendServiceImpl.java
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-web-lib\src\main\java\com\hundsun\ta\ta5\tadailydeal\liquidation\LiquidationExtendController.java
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-web-lib\src\main\resources\static\resources\view\taprocess\liquidation\newdetail.js
-D:\workspace\ta5\self-ta\ta-code\jres_ta5-web-lib\src\main\resources\static\resources\view\taprocess\liquidation\newdetail.es6
+D:/workspace/ta5/self-ta/ta-code/jres_ta5-info-service/src/main/java/com/hundsun/ta/ta5/biz/liquidation/service/LiquidationServiceImpl.java
+D:/workspace/ta5/self-ta/ta-code/jres_ta5-info-api/src/main/java/com/hundsun/ta/ta5/dal/liquidation/model/ProcessLiquidationInstance.java
+D:/workspace/ta5/self-ta/ta-code/jres_ta5-info-service/src/main/java/com/hundsun/ta/ta5/biz/liquidation/service/LiquidationExtendServiceImpl.java
+D:/workspace/ta5/self-ta/ta-code/jres_ta5-web-lib/src/main/java/com/hundsun/ta/ta5/tadailydeal/liquidation/LiquidationExtendController.java
+D:/workspace/ta5/self-ta/ta-code/jres_ta5-web-lib/src/main/resources/static/resources/view/taprocess/liquidation/newdetail.js
+D:/workspace/ta5/self-ta/ta-code/jres_ta5-web-lib/src/main/resources/static/resources/view/taprocess/liquidation/newdetail.es6
 

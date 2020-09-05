@@ -64,7 +64,12 @@ public class ImFileUtils {
     /**
      * 反斜杠
      */
-    private static final String SYMBOL_BACKSLASH = "\\";
+    private static final String SYMBOL_BACKSLASH = "\\\\";
+
+    /**
+     * 反斜杠
+     */
+    private static final String SYMBOL_BACKSLASH_1 = "\\";
 
     /**
      * #
@@ -396,9 +401,9 @@ public class ImFileUtils {
                 String fileName = file.getName();
                 try {
                     if (fileName.endsWith(FILE_TYPE_ZIP)) {
-                        UnZipAnRarTool.unZip(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH);
+                        UnZipAnRarTool.unZip(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
                     } else if (fileName.endsWith(FILE_TYPE_RAR)) {
-                        UnZipAnRarTool.unRar(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH);
+                        UnZipAnRarTool.unRar(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -490,7 +495,7 @@ public class ImFileUtils {
      */
     private static void updateSingleFile(File file, String fileDirectory) {
         READ_NUM++;
-        String inputPath = file.getAbsolutePath().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
+        String inputPath = file.getAbsolutePath().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
         logger.info(String.format("更新文件[ %s ]", inputPath));
@@ -518,7 +523,7 @@ public class ImFileUtils {
                         }
                     }
                 } else {
-                    FILE_DIRECTORY_PATH_UPDATE = source.getParentFile().getAbsolutePath();
+                    FILE_DIRECTORY_PATH_UPDATE = source.getParentFile().getAbsolutePath().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
                     return true;
                 }
             }
@@ -546,7 +551,7 @@ public class ImFileUtils {
             }
         } else {
             if (fileName.equals(file.getName())) {
-                FILE_NAME_PATH_UPDATE = file.getAbsolutePath();
+                FILE_NAME_PATH_UPDATE = file.getAbsolutePath().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
                 return true;
             }
         }
@@ -673,7 +678,7 @@ public class ImFileUtils {
             }
             File[] coverFileList = coverFileDirectory.listFiles();
             for (File coverFile : coverFileList) {
-                coverMultipleFile(coverFile, coverFileDirectory.getAbsolutePath());
+                coverMultipleFile(coverFile, coverFileDirectory.getAbsolutePath().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH));
             }
             savePathStatus(STATUS_TYPE_COVER, coverFileDirectory.getAbsolutePath());
         }
@@ -716,7 +721,7 @@ public class ImFileUtils {
         if ((SUCCESS + FILE_SUFFIX).equals(file.getName()) || (FAIL + FILE_SUFFIX).equals(file.getName())) {
             return;
         }
-        String inputPath = file.getAbsolutePath().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
+        String inputPath = file.getAbsolutePath().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
         READ_NUM++;
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
@@ -741,12 +746,13 @@ public class ImFileUtils {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
                         continue;
                     }
-                    String[] subInputPath = inputPath.trim().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath =
+                            inputPath.trim().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH).split(SYMBOL_BLANK_SPACE);
                     String sourcePath = subInputPath[subInputPath.length - 1].trim();
                     if (!sourcePath.isEmpty()) {
                         READ_NUM++;
                         logger.info(String.format("复制文件[ %s ]", sourcePath));
-                        String exportPath = sourcePath.replace(WORKSPACE, EXPORT_WORKSPACE + CURRENT_DATE + SYMBOL_BACKSLASH);
+                        String exportPath = sourcePath.replace(WORKSPACE, EXPORT_WORKSPACE + CURRENT_DATE + SYMBOL_BACKSLASH_1);
                         copySingleFile(sourcePath, exportPath);
                     }
                 }
@@ -777,7 +783,7 @@ public class ImFileUtils {
      * @return:
      */
     private static void copySingleFile(String sourcePath, String exportPath) {
-        int lastIndex = exportPath.lastIndexOf(SYMBOL_BACKSLASH);
+        int lastIndex = exportPath.lastIndexOf(SYMBOL_SLASH);
         String path = exportPath.substring(0, lastIndex);
         File inFile = new File(sourcePath);
         File outFile = new File(exportPath);
@@ -850,7 +856,7 @@ public class ImFileUtils {
         if (READ_NUM != COPY_NUM || EXCEPTION_STATUS) {
             fileName = FAIL;
         }
-        String statusFilename = statusPath + SYMBOL_BACKSLASH + fileName + FILE_SUFFIX;
+        String statusFilename = statusPath + SYMBOL_BACKSLASH_1 + fileName + FILE_SUFFIX;
         File file = new File(statusFilename);
         PrintStream printStream = null;
         try {
@@ -892,7 +898,8 @@ public class ImFileUtils {
                         continue;
                     }
                     READ_NUM++;
-                    String[] subInputPath = inputPath.trim().replace(SYMBOL_SLASH, SYMBOL_BACKSLASH).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath =
+                            inputPath.trim().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH).split(SYMBOL_BLANK_SPACE);
                     String path = subInputPath[subInputPath.length - 1].trim();
                     logger.info(String.format("合并文件[ %s ]", path));
                     CONTENT.append(getFileContent(path));
@@ -977,7 +984,7 @@ public class ImFileUtils {
             statusFolder.mkdirs();
         }
         String fileName = FILE_NAME_MERGE + SYMBOL_MINUS + READ_NUM;
-        String statusFilename = statusPath + SYMBOL_BACKSLASH + fileName + FILE_SUFFIX;
+        String statusFilename = statusPath + SYMBOL_BACKSLASH_1 + fileName + FILE_SUFFIX;
         File file = new File(statusFilename);
         PrintWriter out = null;
         try {
@@ -1072,68 +1079,15 @@ public class ImFileUtils {
             if (StringUtils.isBlank(workspace)) {
                 throw new RuntimeException("请设置源文件工作目录[ workspace ]");
             }
-            if (!workspace.endsWith(SYMBOL_SLASH) && !workspace.endsWith(SYMBOL_BACKSLASH)) {
-                workspace += SYMBOL_BACKSLASH;
-            }
-            WORKSPACE = workspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
+            WORKSPACE = workspace;
             logger.info(String.format("源文件工作目录[ %s ]", WORKSPACE));
         }
-        String multipleVersion = config.get("multiple.version");
-        String multipleExportWorkspace = config.get("multiple.exportWorkspace");
-        if (StringUtils.isNotBlank(multipleVersion) && StringUtils.isNotBlank(multipleExportWorkspace)) {
-            String[] versionList = multipleVersion.split(SYMBOL_COMMA);
-            String[] exportWorkspaceList = multipleExportWorkspace.split(SYMBOL_COMMA);
-            if (versionList.length != exportWorkspaceList.length) {
-                throw new RuntimeException("多路径版本号[ multiple.version ]与多路径工作目录[ multiple.exportWorkspace ]不匹配");
-            }
-            for (int i = 0; i < versionList.length; i++) {
-                String[] version = versionList[i].split(SYMBOL_COLON);
-                if (version.length != 2) {
-                    throw new RuntimeException(String.format("多路径版本号[ multiple.version ]中[ %s ]格式错误", versionList[i]));
-                }
-                MULTIPLE_VERSION.put(version[0], version[1]);
-                MULTIPLE_EXPORTWORKSPACE.put(version[0], exportWorkspaceList[i]);
-            }
-            logger.info("请选择版本号:");
-            Iterator<Map.Entry<String, String>> iterator = MULTIPLE_VERSION.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry<String, String> item = iterator.next();
-                logger.info(String.format("[ %s ]%s", item.getKey(), item.getValue()));
-            }
-            Scanner scanner = new Scanner(System.in);
-            while (true) {
-                String code = scanner.next();
-                if (StringUtils.isBlank(MULTIPLE_VERSION.get(code))) {
-                    logger.info("版本号不存在,请重新选择");
-                } else {
-                    EXPORT_WORKSPACE = MULTIPLE_EXPORTWORKSPACE.get(code);
-                    logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
-                    scanner.close();
-                    break;
-                }
-            }
+        String exportWorkspace = config.get("exportWorkspace");
+        if (StringUtils.isNotBlank(exportWorkspace)) {
+            EXPORT_WORKSPACE = exportWorkspace;
+            logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
         } else {
-            String exportWorkspace = config.get("exportWorkspace");
-            if (StringUtils.isNotBlank(exportWorkspace)) {
-                if (!exportWorkspace.endsWith(SYMBOL_SLASH) && !exportWorkspace.endsWith(SYMBOL_BACKSLASH)) {
-                    exportWorkspace += SYMBOL_BACKSLASH;
-                }
-                EXPORT_WORKSPACE = exportWorkspace.replace(SYMBOL_SLASH, SYMBOL_BACKSLASH);
-                logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
-            } else {
-                throw new RuntimeException("请设置导出文件工作目录[ exportWorkspace ]");
-            }
-        }
-        String multipleLineContent = config.get("multiple.lineContent");
-        if (StringUtils.isNotBlank(multipleLineContent)) {
-            String[] lineContent = multipleLineContent.split(SYMBOL_COMMA);
-            for (int i = 0; i < lineContent.length; i++) {
-                String[] content = lineContent[i].split(SYMBOL_COLON);
-                if (content.length != 3) {
-                    throw new RuntimeException(String.format("多文件定位行[ multiple.lineContent ]中[ %s ]格式错误", lineContent[i]));
-                }
-                MULTIPLE_LINE_CONTENT.put(content[0], content);
-            }
+            throw new RuntimeException("请设置导出文件工作目录[ exportWorkspace ]");
         }
         if (OPERATE_TYPE_MERGE.equals(OPERATE_TYPE) || OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
             String encoding = config.get("encoding");
@@ -1163,6 +1117,52 @@ public class ImFileUtils {
                 DELETE_AFTER_SUCCESS = Boolean.valueOf(deleteAfterSuccess);
             }
             logger.info(String.format("成功后删除源文件[ %s ]", DELETE_AFTER_SUCCESS));
+            String multipleLineContent = config.get("multiple.lineContent");
+            if (StringUtils.isNotBlank(multipleLineContent)) {
+                String[] line = multipleLineContent.split(SYMBOL_COMMA);
+                for (int i = 0; i < line.length; i++) {
+                    String[] content = line[i].replace(SYMBOL_BACKSLASH, SYMBOL_SLASH).split(SYMBOL_COLON);
+                    if (content.length != 3) {
+                        throw new RuntimeException(String.format("多文件定位行[ multiple.lineContent ]中[ %s ]格式错误", line[i]));
+                    }
+                    MULTIPLE_LINE_CONTENT.put(content[0], content);
+                }
+            }
+            String multipleVersion = config.get("multiple.version");
+            String multipleExportWorkspace = config.get("multiple.exportWorkspace");
+            if (StringUtils.isNotBlank(multipleVersion) && StringUtils.isNotBlank(multipleExportWorkspace)) {
+                String[] versionList = multipleVersion.split(SYMBOL_COMMA);
+                String[] exportWorkspaceList = multipleExportWorkspace.split(SYMBOL_COMMA);
+                if (versionList.length != exportWorkspaceList.length) {
+                    throw new RuntimeException("多路径版本号[ multiple.version ]与多路径工作目录[ multiple.exportWorkspace ]不匹配");
+                }
+                for (int i = 0; i < versionList.length; i++) {
+                    String[] version = versionList[i].split(SYMBOL_COLON);
+                    if (version.length != 2) {
+                        throw new RuntimeException(String.format("多路径版本号[ multiple.version ]中[ %s ]格式错误", versionList[i]));
+                    }
+                    MULTIPLE_VERSION.put(version[0], version[1]);
+                    MULTIPLE_EXPORTWORKSPACE.put(version[0], exportWorkspaceList[i].replace(SYMBOL_BACKSLASH, SYMBOL_SLASH));
+                }
+                logger.info("请选择版本号:");
+                Iterator<Map.Entry<String, String>> iterator = MULTIPLE_VERSION.entrySet().iterator();
+                while (iterator.hasNext()) {
+                    Map.Entry<String, String> item = iterator.next();
+                    logger.info(String.format("[ %s ]%s", item.getKey(), item.getValue()));
+                }
+                Scanner scanner = new Scanner(System.in);
+                while (true) {
+                    String code = scanner.next();
+                    if (StringUtils.isBlank(MULTIPLE_VERSION.get(code))) {
+                        logger.info("版本号不存在,请重新选择");
+                    } else {
+                        EXPORT_WORKSPACE = MULTIPLE_EXPORTWORKSPACE.get(code);
+                        logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
+                        scanner.close();
+                        break;
+                    }
+                }
+            }
         }
         String pauseMode = config.get("pauseMode");
         if (StringUtils.isNotBlank(pauseMode)) {
@@ -1207,7 +1207,14 @@ public class ImFileUtils {
                     }
                     String[] item = inputPath.trim().split(SYMBOL_EQUALS);
                     if (item.length != 2) {
-                        throw new RuntimeException(String.format("[ %s ]文件中[ %s ]格式错误", PROPERTIES_PATH, inputPath.trim()));
+                        continue;
+                    }
+                    if ("workspace".equals(item[0]) || "exportWorkspace".equals(item[0])) {
+                        if (!item[1].endsWith(SYMBOL_SLASH) && !item[1].endsWith(SYMBOL_BACKSLASH)) {
+                            item[1] += SYMBOL_BACKSLASH;
+                            item[1] = item[1].replace(SYMBOL_BACKSLASH, SYMBOL_SLASH);
+                        }
+
                     }
                     config.put(item[0], convertUnicodeToCh(item[1]));
                 }
