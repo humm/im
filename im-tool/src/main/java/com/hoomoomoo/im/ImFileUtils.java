@@ -32,39 +32,14 @@ public class ImFileUtils {
     private static final String PROPERTIES_PATH = "application.properties";
 
     /**
-     * 多路径配置 版本号
-     */
-    private static Map<String, String> MULTIPLE_VERSION = new HashMap();
-
-    /**
-     * 多路径配置 工作目录
-     */
-    private static Map<String, String> MULTIPLE_EXPORTWORKSPACE = new HashMap();
-
-    /**
-     * 多文件 多文件定位行
-     */
-    private static Map<String, String[]> MULTIPLE_LINE_CONTENT = new HashMap();
-
-    /**
-     * unicode字符串正则
-     */
-    private static final Pattern PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
-
-    /**
-     * 文件地址读取文件
+     * 文件路径地址
      */
     private static final String FILE_PATH = "path.txt";
 
     /**
-     * 斜杠
-     */
-    private static final String SYMBOL_SLASH = "/";
-
-    /**
      * 反斜杠
      */
-    private static final String SYMBOL_BACKSLASH = "\\\\";
+    private static final String SYMBOL_BACKSLASH_2 = "\\\\";
 
     /**
      * 反斜杠
@@ -72,9 +47,19 @@ public class ImFileUtils {
     private static final String SYMBOL_BACKSLASH_1 = "\\";
 
     /**
+     * 斜杠
+     */
+    private static final String SYMBOL_SLASH = "/";
+
+    /**
      * #
      */
     private static final String SYMBOL_WEI = "#";
+
+    /**
+     * $
+     */
+    private static final String SYMBOL_DOLLAR = "\\$";
 
     /**
      * 逗号
@@ -85,6 +70,16 @@ public class ImFileUtils {
      * 空格
      */
     private static final String SYMBOL_BLANK_SPACE = "\\s+";
+
+    /**
+     * 点符号
+     */
+    private static final String SYMBOL_POINT_2 = "\\.";
+
+    /**
+     * 点符号
+     */
+    private static final String SYMBOL_POINT_1 = ".";
 
     /**
      * 空格
@@ -129,7 +124,27 @@ public class ImFileUtils {
     /**
      * 字符集异常
      */
-    private static final String UN_MAPPABLE_CHARACT_EREXCEPTION = "java.nio.charset.UnmappableCharacterException";
+    private static final String UN_MAPPABLE_CHARACT_EXCEPTION = "java.nio.charset.UnmappableCharacterException";
+
+    /**
+     * 指定文件定位行
+     */
+    private static Map<String, String[]> OTHER_LINE_CONTENT = new LinkedHashMap(16);
+
+    /**
+     * 模式配置
+     */
+    private static Map<String, String[]> MODE_CONFIG = new LinkedHashMap(16);
+
+    /**
+     * 版本配置
+     */
+    private static Map<String, String[]> VERSION_CONFIG = new LinkedHashMap(16);
+
+    /**
+     * unicode字符串正则
+     */
+    private static final Pattern PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
 
     /**
      * 提示消息
@@ -174,12 +189,12 @@ public class ImFileUtils {
     /**
      * 成功暂停时间
      */
-    private static Integer PAUSE_SUCCESS_TIME = 1;
+    private static Integer PAUSE_TIME_SUCCESS = 1;
 
     /**
      * 失败暂停时间
      */
-    private static Integer PAUSE_FAIL_TIME = 5;
+    private static Integer PAUSE_TIME_FAIL = 5;
 
     /**
      * 错误次数
@@ -288,87 +303,82 @@ public class ImFileUtils {
     private static final String START_MODE_PROJECT = "project";
 
     /**
-     * 文件操作模式 1:文件复制 2:文件合并 3:文件覆盖
+     * 文件操作模式
      */
-    private static String OPERATE_TYPE = "copy";
+    private static String OPERATE_MODE = "";
 
     /**
      * 文件复制
      */
-    private static final String OPERATE_TYPE_COPY = "copy";
+    private static final String OPERATE_MODE_COPY = "mode.copy";
 
     /**
      * 文件合并
      */
-    private static final String OPERATE_TYPE_MERGE = "merge";
+    private static final String OPERATE_MODE_MERGE = "mode.merge";
 
     /**
      * 文件覆盖
      */
-    private static final String OPERATE_TYPE_COVER = "cover";
+    private static final String OPERATE_MODE_COVER = "mode.cover";
 
     /**
      * 文件更新
      */
-    private static final String OPERATE_TYPE_UPDATE = "update";
+    private static final String OPERATE_MODE_UPDATE = "mode.update";
 
     /**
      * 文件复制
      */
-    private static final String STATUS_TYPE_COPY = "复制";
+    private static final String STATUS_MODE_COPY = "复制";
 
     /**
      * 文件合并
      */
-    private static final String STATUS_TYPE_MERGE = "合并";
+    private static final String STATUS_MODE_MERGE = "合并";
 
     /**
      * 文件覆盖
      */
-    private static final String STATUS_TYPE_COVER = "覆盖";
+    private static final String STATUS_MODE_COVER = "覆盖";
 
     /**
      * 文件更新
      */
-    private static final String STATUS_TYPE_UPDATE = "更新";
+    private static final String STATUS_MODE_UPDATE = "更新";
 
 
     public static void main(String[] args) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
         CURRENT_DATE = simpleDateFormat.format(new Date());
-        try {
-            // 设置启动模式
-            getStartMode();
-            // 读取配置文件参数
-            getProperties();
-            switch (OPERATE_TYPE) {
-                case OPERATE_TYPE_COPY:
-                    // 复制文件
-                    copyFile();
-                    break;
-                case OPERATE_TYPE_MERGE:
-                    // 合并文件
-                    mergeFile();
-                    break;
-                case OPERATE_TYPE_COVER:
-                    // 覆盖文件
-                    coverFile();
-                    break;
-                case OPERATE_TYPE_UPDATE:
-                    // 更新文件
-                    updateFile();
-                    break;
-                default:
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            EXCEPTION_STATUS = true;
+        // 设置启动模式
+        getStartMode();
+        // 读取配置文件参数
+        getProperties();
+        switch (OPERATE_MODE) {
+            case OPERATE_MODE_COPY:
+                // 复制文件
+                copyFile();
+                break;
+            case OPERATE_MODE_MERGE:
+                // 合并文件
+                mergeFile();
+                break;
+            case OPERATE_MODE_COVER:
+                // 覆盖文件
+                coverFile();
+                break;
+            case OPERATE_MODE_UPDATE:
+                // 更新文件
+                updateFile();
+                break;
+            default:
+                break;
         }
         if (PAUSE_MODE) {
-            Integer sleepTime = PAUSE_SUCCESS_TIME;
+            Integer sleepTime = PAUSE_TIME_SUCCESS;
             if (READ_NUM != COPY_NUM || EXCEPTION_STATUS) {
-                sleepTime = PAUSE_FAIL_TIME;
+                sleepTime = PAUSE_TIME_FAIL;
             }
             try {
                 Thread.sleep(sleepTime * 1000);
@@ -456,7 +466,7 @@ public class ImFileUtils {
                 }
             }
         }
-        savePathStatus(STATUS_TYPE_UPDATE, WORKSPACE);
+        savePathStatus(STATUS_MODE_UPDATE, WORKSPACE);
     }
 
     /**
@@ -495,7 +505,7 @@ public class ImFileUtils {
      */
     private static void updateSingleFile(File file, String fileDirectory) {
         READ_NUM++;
-        String inputPath = file.getAbsolutePath().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
+        String inputPath = convertBackslashOne(file.getAbsolutePath());
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
         logger.info(String.format("更新文件[ %s ]", inputPath));
@@ -523,7 +533,7 @@ public class ImFileUtils {
                         }
                     }
                 } else {
-                    FILE_DIRECTORY_PATH_UPDATE = source.getParentFile().getAbsolutePath().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
+                    FILE_DIRECTORY_PATH_UPDATE = convertBackslashOne(source.getParentFile().getAbsolutePath());
                     return true;
                 }
             }
@@ -551,7 +561,7 @@ public class ImFileUtils {
             }
         } else {
             if (fileName.equals(file.getName())) {
-                FILE_NAME_PATH_UPDATE = file.getAbsolutePath().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
+                FILE_NAME_PATH_UPDATE = convertBackslashOne(file.getAbsolutePath());
                 return true;
             }
         }
@@ -589,7 +599,7 @@ public class ImFileUtils {
             } else {
                 String lineContent = LINE_CONTENT;
                 Integer lineOffset = LINE_OFFSET;
-                Iterator<Map.Entry<String, String[]>> iterator = MULTIPLE_LINE_CONTENT.entrySet().iterator();
+                Iterator<Map.Entry<String, String[]>> iterator = OTHER_LINE_CONTENT.entrySet().iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<String, String[]> file = iterator.next();
                     if (targetPath.endsWith(file.getKey())) {
@@ -617,11 +627,11 @@ public class ImFileUtils {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-            if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EREXCEPTION) && ERROR_TIMES == 0) {
+            if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION) && ERROR_TIMES == 0) {
                 // 编码转换再读取一次 编码转换在方法入口
                 ERROR_TIMES++;
                 updateScriptFile(sourcePath, targetPath);
-            } else if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EREXCEPTION)) {
+            } else if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION)) {
                 FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,转换文件格式为[ GBK ]", sourcePath));
                 EXCEPTION_STATUS = true;
                 e.printStackTrace();
@@ -678,9 +688,9 @@ public class ImFileUtils {
             }
             File[] coverFileList = coverFileDirectory.listFiles();
             for (File coverFile : coverFileList) {
-                coverMultipleFile(coverFile, coverFileDirectory.getAbsolutePath().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH));
+                coverMultipleFile(coverFile, convertBackslashOne(coverFileDirectory.getAbsolutePath()));
             }
-            savePathStatus(STATUS_TYPE_COVER, coverFileDirectory.getAbsolutePath());
+            savePathStatus(STATUS_MODE_COVER, coverFileDirectory.getAbsolutePath());
         }
     }
 
@@ -721,7 +731,7 @@ public class ImFileUtils {
         if ((SUCCESS + FILE_SUFFIX).equals(file.getName()) || (FAIL + FILE_SUFFIX).equals(file.getName())) {
             return;
         }
-        String inputPath = file.getAbsolutePath().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
+        String inputPath = convertBackslashOne(file.getAbsolutePath());
         READ_NUM++;
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
@@ -747,7 +757,7 @@ public class ImFileUtils {
                         continue;
                     }
                     String[] subInputPath =
-                            inputPath.trim().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH).split(SYMBOL_BLANK_SPACE);
+                            convertBackslashOne(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
                     String sourcePath = subInputPath[subInputPath.length - 1].trim();
                     if (!sourcePath.isEmpty()) {
                         READ_NUM++;
@@ -757,7 +767,7 @@ public class ImFileUtils {
                     }
                 }
             }
-            savePathStatus(STATUS_TYPE_COPY, null);
+            savePathStatus(STATUS_MODE_COPY, null);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             EXCEPTION_STATUS = true;
@@ -867,7 +877,7 @@ public class ImFileUtils {
             } else {
                 logger.error(String.format("文件%s失败,读取文件数量[ %s ],%s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM));
                 logger.error(FAIL_MESSAGE.toString());
-                if (STATUS_TYPE_COPY.equals(statusType) || STATUS_TYPE_MERGE.equals(statusType)) {
+                if (STATUS_MODE_COPY.equals(statusType) || STATUS_MODE_MERGE.equals(statusType)) {
                     logger.error(String.format("若源文件路径存在中文,请检查[ %s ]编码格式,转换文件格式为[ GBK ]", FILE_PATH));
                 }
             }
@@ -899,13 +909,13 @@ public class ImFileUtils {
                     }
                     READ_NUM++;
                     String[] subInputPath =
-                            inputPath.trim().replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH).split(SYMBOL_BLANK_SPACE);
+                            convertBackslashOne(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
                     String path = subInputPath[subInputPath.length - 1].trim();
                     logger.info(String.format("合并文件[ %s ]", path));
                     CONTENT.append(getFileContent(path));
                 }
             }
-            savePathStatus(STATUS_TYPE_MERGE, createFile(CONTENT.toString()));
+            savePathStatus(STATUS_MODE_MERGE, createFile(CONTENT.toString()));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             EXCEPTION_STATUS = true;
@@ -1069,117 +1079,103 @@ public class ImFileUtils {
      */
     private static void getProperties() {
         Map<String, String> config = getConfigProperties();
-        String operateType = config.get("operateType");
-        if (StringUtils.isNotBlank(operateType)) {
-            OPERATE_TYPE = operateType;
-        }
-        logger.info(String.format("文件操作模式[ %s ]", OPERATE_TYPE));
-        String workspace = config.get("workspace");
-        if (OPERATE_TYPE_COPY.equals(OPERATE_TYPE) || OPERATE_TYPE_COVER.equals(OPERATE_TYPE) || OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
-            if (StringUtils.isBlank(workspace)) {
-                throw new RuntimeException("请设置源文件工作目录[ workspace ]");
+
+        // 获取模式配置
+        getModeConfig(config);
+        // 获取版本配置
+        getVersionConfig(config);
+        // 模式选择
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            String code = scanner.next();
+            if (MODE_CONFIG.get(code) == null) {
+                logger.info("模式不存在,请重新选择");
+            } else {
+                OPERATE_MODE = MODE_CONFIG.get(code)[2];
+                logger.info(String.format("选择模式为[ %s ]", MODE_CONFIG.get(code)[1]));
+                break;
             }
-            WORKSPACE = workspace;
-            logger.info(String.format("源文件工作目录[ %s ]", WORKSPACE));
         }
-        String exportWorkspace = config.get("exportWorkspace");
-        if (StringUtils.isNotBlank(exportWorkspace)) {
-            EXPORT_WORKSPACE = exportWorkspace;
-            logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
-        } else {
-            throw new RuntimeException("请设置导出文件工作目录[ exportWorkspace ]");
+        // 版本号选择
+        logger.info("请选择版本号:");
+        Iterator<Map.Entry<String, String[]>> iterator = VERSION_CONFIG.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String[]> item = iterator.next();
+            if (item.getKey().startsWith(OPERATE_MODE)) {
+                logger.info(String.format("[ %s ]%s", item.getValue()[0], item.getValue()[item.getValue().length - 1]));
+            }
         }
-        if (OPERATE_TYPE_MERGE.equals(OPERATE_TYPE) || OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
+        while (true) {
+            String code = OPERATE_MODE + SYMBOL_POINT_1 + scanner.next();
+            if (VERSION_CONFIG.get(code) == null) {
+                logger.info("版本号不存在,请重新选择");
+            } else {
+                WORKSPACE = VERSION_CONFIG.get(code)[1];
+                EXPORT_WORKSPACE = VERSION_CONFIG.get(code)[2];
+                logger.info(String.format("源文件工作目录[ %s ]", WORKSPACE));
+                logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
+                scanner.close();
+                break;
+            }
+        }
+
+        // 编码格式
+        if (OPERATE_MODE_MERGE.equals(OPERATE_MODE) || OPERATE_MODE_UPDATE.equals(OPERATE_MODE)) {
             String encoding = config.get("encoding");
             if (StringUtils.isNotBlank(encoding)) {
                 ENCODING = encoding;
             }
             logger.info(String.format("文件编码格式[ %s ]", ENCODING));
         }
-        String fileSuffix = config.get("fileSuffix");
+
+        // 文件后缀名称
+        String fileSuffix = config.get("file.suffix");
         if (StringUtils.isNotBlank(fileSuffix)) {
             FILE_SUFFIX = fileSuffix;
         }
-        logger.info(String.format("文件后缀[ %s ]", FILE_SUFFIX));
-        if (OPERATE_TYPE_UPDATE.equals(OPERATE_TYPE)) {
-            String lineContent = config.get("lineContent");
-            if (StringUtils.isNotBlank(lineContent)) {
-                LINE_CONTENT = lineContent;
+        logger.info(String.format("文件后缀名称[ %s ]", FILE_SUFFIX));
+
+        // 更新模式获取文件定位
+        if (OPERATE_MODE_UPDATE.equals(OPERATE_MODE)) {
+            String line = config.get("mode.update.line");
+            if (StringUtils.isNotBlank(line)) {
+                String[] lines = line.split(SYMBOL_DOLLAR);
+                if (lines.length != 2) {
+                    throw new RuntimeException(String.format("更新模式文件定位[ mode.update.line ]配置[ %s ]格式错误", line));
+                }
+                LINE_CONTENT = lines[0];
+                LINE_OFFSET = Integer.valueOf(lines[1]);
             }
-            logger.info(String.format("指定行内容[ %s ]", LINE_CONTENT));
-            String lineOffset = config.get("lineOffset");
-            if (StringUtils.isNotBlank(lineOffset)) {
-                LINE_OFFSET = Integer.valueOf(lineOffset);
-            }
-            logger.info(String.format("指定行偏移量[ %s ]", LINE_OFFSET));
-            String deleteAfterSuccess = config.get("deleteAfterSuccess");
+            logger.info(String.format("更新模式文件定位[ %s ]", LINE_CONTENT));
+
+            // 更新模式成功后删除源文件
+            String deleteAfterSuccess = config.get("mode.update.delete.after.success");
             if (StringUtils.isNotBlank(deleteAfterSuccess)) {
                 DELETE_AFTER_SUCCESS = Boolean.valueOf(deleteAfterSuccess);
             }
-            logger.info(String.format("成功后删除源文件[ %s ]", DELETE_AFTER_SUCCESS));
-            String multipleLineContent = config.get("multiple.lineContent");
-            if (StringUtils.isNotBlank(multipleLineContent)) {
-                String[] line = multipleLineContent.split(SYMBOL_COMMA);
-                for (int i = 0; i < line.length; i++) {
-                    String[] content = line[i].replace(SYMBOL_BACKSLASH, SYMBOL_SLASH).split(SYMBOL_COLON);
-                    if (content.length != 3) {
-                        throw new RuntimeException(String.format("多文件定位行[ multiple.lineContent ]中[ %s ]格式错误", line[i]));
-                    }
-                    MULTIPLE_LINE_CONTENT.put(content[0], content);
-                }
-            }
-            String multipleVersion = config.get("multiple.version");
-            String multipleExportWorkspace = config.get("multiple.exportWorkspace");
-            if (StringUtils.isNotBlank(multipleVersion) && StringUtils.isNotBlank(multipleExportWorkspace)) {
-                String[] versionList = multipleVersion.split(SYMBOL_COMMA);
-                String[] exportWorkspaceList = multipleExportWorkspace.split(SYMBOL_COMMA);
-                if (versionList.length != exportWorkspaceList.length) {
-                    throw new RuntimeException("多路径版本号[ multiple.version ]与多路径工作目录[ multiple.exportWorkspace ]不匹配");
-                }
-                for (int i = 0; i < versionList.length; i++) {
-                    String[] version = versionList[i].split(SYMBOL_COLON);
-                    if (version.length != 2) {
-                        throw new RuntimeException(String.format("多路径版本号[ multiple.version ]中[ %s ]格式错误", versionList[i]));
-                    }
-                    MULTIPLE_VERSION.put(version[0], version[1]);
-                    MULTIPLE_EXPORTWORKSPACE.put(version[0], exportWorkspaceList[i].replace(SYMBOL_BACKSLASH, SYMBOL_SLASH));
-                }
-                logger.info("请选择版本号:");
-                Iterator<Map.Entry<String, String>> iterator = MULTIPLE_VERSION.entrySet().iterator();
-                while (iterator.hasNext()) {
-                    Map.Entry<String, String> item = iterator.next();
-                    logger.info(String.format("[ %s ]%s", item.getKey(), item.getValue()));
-                }
-                Scanner scanner = new Scanner(System.in);
-                while (true) {
-                    String code = scanner.next();
-                    if (StringUtils.isBlank(MULTIPLE_VERSION.get(code))) {
-                        logger.info("版本号不存在,请重新选择");
-                    } else {
-                        EXPORT_WORKSPACE = MULTIPLE_EXPORTWORKSPACE.get(code);
-                        logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
-                        scanner.close();
-                        break;
-                    }
-                }
-            }
+            logger.info(String.format("更新模式成功后删除源文件[ %s ]", DELETE_AFTER_SUCCESS));
+
+            // 更新模式指定文件定位
+            getMoreUpdateLine(config);
         }
-        String pauseMode = config.get("pauseMode");
+
+        // 暂停模式
+        String pauseMode = config.get("pause.mode");
         if (StringUtils.isNotBlank(pauseMode)) {
             PAUSE_MODE = Boolean.valueOf(pauseMode);
         }
         logger.info(String.format("暂停模式[ %s ]", PAUSE_MODE));
         if (PAUSE_MODE) {
-            String pauseSuccessTime = config.get("pauseSuccessTime");
-            if (StringUtils.isNotBlank(pauseSuccessTime)) {
-                PAUSE_SUCCESS_TIME = Integer.valueOf(pauseSuccessTime);
+            String pauseTimeSuccess = config.get("pause.time.success");
+            if (StringUtils.isNotBlank(pauseTimeSuccess)) {
+                PAUSE_TIME_SUCCESS = Integer.valueOf(pauseTimeSuccess);
             }
-            logger.info(String.format("成功暂停时间[ %s ]", PAUSE_SUCCESS_TIME));
-            String pauseFailTime = config.get("pauseFailTime");
-            if (StringUtils.isNotBlank(pauseFailTime)) {
-                PAUSE_FAIL_TIME = Integer.valueOf(pauseFailTime);
+            logger.info(String.format("成功暂停时间[ %s ]", PAUSE_TIME_SUCCESS));
+            String pauseTimeFail = config.get("pause.time.fail");
+            if (StringUtils.isNotBlank(pauseTimeFail)) {
+                PAUSE_TIME_FAIL = Integer.valueOf(pauseTimeFail);
             }
-            logger.info(String.format("失败暂停时间[ %s ]", PAUSE_FAIL_TIME));
+            logger.info(String.format("失败暂停时间[ %s ]", PAUSE_TIME_FAIL));
         }
     }
 
@@ -1192,7 +1188,7 @@ public class ImFileUtils {
      * @return:
      */
     private static Map<String, String> getConfigProperties() {
-        Map<String, String> config = new HashMap();
+        Map<String, String> config = new LinkedHashMap<>(16);
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
@@ -1208,13 +1204,6 @@ public class ImFileUtils {
                     String[] item = inputPath.trim().split(SYMBOL_EQUALS);
                     if (item.length != 2) {
                         continue;
-                    }
-                    if ("workspace".equals(item[0]) || "exportWorkspace".equals(item[0])) {
-                        if (!item[1].endsWith(SYMBOL_SLASH) && !item[1].endsWith(SYMBOL_BACKSLASH)) {
-                            item[1] += SYMBOL_BACKSLASH;
-                            item[1] = item[1].replace(SYMBOL_BACKSLASH, SYMBOL_SLASH);
-                        }
-
                     }
                     config.put(item[0], convertUnicodeToCh(item[1]));
                 }
@@ -1258,4 +1247,129 @@ public class ImFileUtils {
         }
         return str;
     }
+
+    /**
+     * 反斜线转换
+     *
+     * @param value
+     * @author: humm23693
+     * @date: 2020/09/06
+     * @return:
+     */
+    private static String convertBackslashOne(String value) {
+        if (StringUtils.isNotBlank(value)) {
+            return value.replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
+        }
+        return value;
+    }
+
+    /**
+     * 反斜线转换
+     *
+     * @param value
+     * @author: humm23693
+     * @date: 2020/09/06
+     * @return:
+     */
+    private static String convertBackslashTwo(String value) {
+        if (StringUtils.isNotBlank(value)) {
+            return value.replace(SYMBOL_BACKSLASH_2, SYMBOL_SLASH);
+        }
+        return value;
+    }
+
+    /**
+     * 获取更新模式指定文件定位
+     *
+     * @param config
+     * @author: humm23693
+     * @date: 2020/09/06
+     * @return:
+     */
+    private static void getMoreUpdateLine(Map config) {
+        if (config != null) {
+            Iterator<Map.Entry<String, String>> iterator = config.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> item = iterator.next();
+                String fileName = item.getKey();
+                if (fileName.contains("mode.update.line.")) {
+                    String line = item.getValue();
+                    String[] lines = line.split(SYMBOL_DOLLAR);
+                    if (lines.length != 3) {
+                        throw new RuntimeException(String.format("更新模式指定文件定位[ %s ]配置[ %s ]格式错误", fileName, line));
+                    }
+                    OTHER_LINE_CONTENT.put(lines[0], lines);
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取配置模式
+     *
+     * @param config
+     * @author: humm23693
+     * @date: 2020/09/06
+     * @return:
+     */
+    private static void getModeConfig(Map config) {
+        if (config != null) {
+            logger.info("请选择模式:");
+            Iterator<Map.Entry<String, String>> iterator = config.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> item = iterator.next();
+                String modeName = item.getKey();
+                if (modeName.contains("mode.config.")) {
+                    String mode = item.getValue();
+                    String[] modes = mode.split(SYMBOL_DOLLAR);
+                    if (modes.length != 2) {
+                        throw new RuntimeException(String.format("模式[ %s ]配置[ %s ]格式错误", modeName, mode));
+                    }
+                    String[] modeExtend = Arrays.copyOf(modes, modes.length + 1);
+                    modeExtend[modeExtend.length - 1] = modeName.replace(".config", SYMBOL_EMPTY);
+                    MODE_CONFIG.put(modes[0], modeExtend);
+                    logger.info(String.format("[ %s ]%s", modeExtend[0], modeExtend[1]));
+                }
+            }
+        }
+    }
+
+    /**
+     * 获取配置版本
+     *
+     * @param config
+     * @author: humm23693
+     * @date: 2020/09/06
+     * @return:
+     */
+    private static void getVersionConfig(Map config) {
+        if (config != null) {
+            Iterator<Map.Entry<String, String>> iterator = config.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String> item = iterator.next();
+                String versionName = item.getKey();
+                if (versionName.contains(".version.")) {
+                    String version = item.getValue();
+                    String[] versions = version.split(SYMBOL_DOLLAR);
+                    if (versions.length != 3) {
+                        throw new RuntimeException(String.format("版本[ %s ]配置[ %s ]格式错误", versionName, version));
+                    }
+                    String[] versionExtend = Arrays.copyOf(versions, versions.length + 2);
+                    // 获取版本号
+                    String[] versionCode = versionName.split(SYMBOL_POINT_2);
+                    versionExtend[versionExtend.length - 1] = versionCode[versionCode.length - 1];
+                    if (!versionExtend[1].endsWith(SYMBOL_SLASH) && !versionExtend[1].endsWith(SYMBOL_BACKSLASH_2)) {
+                        versionExtend[1] = convertBackslashTwo(versionExtend[1] + SYMBOL_BACKSLASH_2);
+                    }
+                    if (!versionExtend[2].endsWith(SYMBOL_SLASH) && !versionExtend[2].endsWith(SYMBOL_BACKSLASH_2)) {
+                        versionExtend[2] = convertBackslashTwo(versionExtend[2] + SYMBOL_BACKSLASH_2);
+                    }
+                    String versionItem = versionName.replace(".version", SYMBOL_EMPTY);
+                    String versionItemCode = versionItem.replace(versionExtend[versionExtend.length - 1], versionExtend[0]);
+                    VERSION_CONFIG.put(versionItemCode, versionExtend);
+                }
+            }
+        }
+    }
+
 }
