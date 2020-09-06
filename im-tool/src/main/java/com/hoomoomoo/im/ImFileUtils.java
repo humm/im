@@ -756,8 +756,7 @@ public class ImFileUtils {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
                         continue;
                     }
-                    String[] subInputPath =
-                            convertBackslashOne(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath = convertBackslashOne(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
                     String sourcePath = subInputPath[subInputPath.length - 1].trim();
                     if (!sourcePath.isEmpty()) {
                         READ_NUM++;
@@ -793,6 +792,7 @@ public class ImFileUtils {
      * @return:
      */
     private static void copySingleFile(String sourcePath, String exportPath) {
+        boolean flag = false;
         int lastIndex = exportPath.lastIndexOf(SYMBOL_SLASH);
         String path = exportPath.substring(0, lastIndex);
         File inFile = new File(sourcePath);
@@ -812,8 +812,11 @@ public class ImFileUtils {
                 fileOutputStream = new FileOutputStream(outFile);
                 while ((length = fileInputStream.read(cache)) != -1) {
                     fileOutputStream.write(cache, 0, length);
+                    flag = true;
                 }
-                fileOutputStream.flush();
+                if (flag) {
+                    fileOutputStream.flush();
+                }
                 COPY_NUM++;
                 msg.append(SUCCESS).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
                 MESSAGE.append(msg);
@@ -908,8 +911,7 @@ public class ImFileUtils {
                         continue;
                     }
                     READ_NUM++;
-                    String[] subInputPath =
-                            convertBackslashOne(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath = convertBackslashOne(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
                     String path = subInputPath[subInputPath.length - 1].trim();
                     logger.info(String.format("合并文件[ %s ]", path));
                     CONTENT.append(getFileContent(path));
