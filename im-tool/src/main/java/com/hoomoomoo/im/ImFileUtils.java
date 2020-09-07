@@ -632,7 +632,7 @@ public class ImFileUtils {
                 ERROR_TIMES++;
                 updateScriptFile(sourcePath, targetPath);
             } else if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION)) {
-                FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,转换文件格式为[ GBK ]", sourcePath));
+                FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,调整配置项[ encoding ]为对应值", sourcePath));
                 EXCEPTION_STATUS = true;
                 e.printStackTrace();
             } else {
@@ -881,7 +881,7 @@ public class ImFileUtils {
                 logger.error(String.format("文件%s失败,读取文件数量[ %s ],%s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM));
                 logger.error(FAIL_MESSAGE.toString());
                 if (STATUS_MODE_COPY.equals(statusType) || STATUS_MODE_MERGE.equals(statusType)) {
-                    logger.error(String.format("若源文件路径存在中文,请检查[ %s ]编码格式,转换文件格式为[ GBK ]", FILE_PATH));
+                    logger.error(String.format("请检查[ %s ]编码格式,转换文件格式为[ GBK ]", FILE_PATH));
                 }
             }
         } catch (FileNotFoundException e) {
