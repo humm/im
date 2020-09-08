@@ -187,6 +187,16 @@ public class ImFileUtils {
     private static Boolean PAUSE_MODE = true;
 
     /**
+     * 连续操作模式
+     */
+    private static Boolean OPERATE_CONTINUE = true;
+
+    /**
+     * 连续操作间隔时间
+     */
+    private static Integer OPERATE_CONTINUE_TIME = 5;
+
+    /**
      * 成功暂停时间
      */
     private static Integer PAUSE_TIME_SUCCESS = 1;
@@ -354,7 +364,20 @@ public class ImFileUtils {
         // 设置启动模式
         getStartMode();
         // 读取配置文件参数
-        getProperties();
+        run(getConfigProperties());
+    }
+
+    /**
+     * 主入口
+     *
+     * @param config
+     * @author: humm23693
+     * @date: 2020/09/07
+     * @return:
+     */
+    private static void run(Map config) {
+        // 获取配置参数
+        getProperties(config);
         switch (OPERATE_MODE) {
             case OPERATE_MODE_COPY:
                 // 复制文件
@@ -375,17 +398,43 @@ public class ImFileUtils {
             default:
                 break;
         }
+        // 连续操作模式控制应用退出
+        exit();
+        // 连续操作模式
+        run(config);
+        // 暂停模式控制
         if (PAUSE_MODE) {
             Integer sleepTime = PAUSE_TIME_SUCCESS;
             if (READ_NUM != COPY_NUM || EXCEPTION_STATUS) {
                 sleepTime = PAUSE_TIME_FAIL;
             }
-            try {
-                Thread.sleep(sleepTime * 1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            sleep(sleepTime);
         }
+    }
+
+    /**
+     * 应用退出控制
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2020/09/08
+     * @return:
+     */
+    private static void exit() {
+        logger.info(SYMBOL_NEXT_LINE);
+        new Thread(() -> {
+            // 连续操作模式 上一次操作正常
+            if (OPERATE_CONTINUE && READ_NUM == COPY_NUM && !EXCEPTION_STATUS) {
+                OPERATE_MODE = SYMBOL_EMPTY;
+                while (StringUtils.isBlank(OPERATE_MODE)) {
+                    sleep(1);
+                    OPERATE_CONTINUE_TIME--;
+                    if (OPERATE_CONTINUE_TIME == 0) {
+                        System.exit(0);
+                    }
+                }
+            }
+        }).start();
     }
 
     /**
@@ -1074,14 +1123,12 @@ public class ImFileUtils {
     /**
      * 读取配置文件参数
      *
-     * @param
-     * @author: hoomoomoo
-     * @date: 2020/08/23
+     * @param config
+     * @author: humm23693
+     * @date: 2020/09/07
      * @return:
      */
-    private static void getProperties() {
-        Map<String, String> config = getConfigProperties();
-
+    private static void getProperties(Map<String, String> config) {
         // 获取模式配置
         getModeConfig(config);
         // 获取版本配置
@@ -1116,7 +1163,6 @@ public class ImFileUtils {
                 EXPORT_WORKSPACE = VERSION_CONFIG.get(code)[2];
                 logger.info(String.format("源文件工作目录[ %s ]", WORKSPACE));
                 logger.info(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE));
-                scanner.close();
                 break;
             }
         }
@@ -1160,6 +1206,20 @@ public class ImFileUtils {
             // 更新模式指定文件定位
             getMoreUpdateLine(config);
         }
+
+        // 连续操作模式
+        String operateContinue = config.get("operate.continue");
+        if (StringUtils.isNotBlank(operateContinue)) {
+            OPERATE_CONTINUE = Boolean.valueOf(operateContinue);
+        }
+        logger.info(String.format("连续操作模式[ %s ]", OPERATE_CONTINUE));
+
+        // 连续操作间隔时间
+        String operateContinueTime = config.get("operate.continue.time");
+        if (StringUtils.isNotBlank(operateContinueTime)) {
+            OPERATE_CONTINUE_TIME = Integer.valueOf(operateContinueTime);
+        }
+        logger.info(String.format("连续操作间隔时间[ %s ]", OPERATE_CONTINUE_TIME));
 
         // 暂停模式
         String pauseMode = config.get("pause.mode");
@@ -1333,6 +1393,22 @@ public class ImFileUtils {
                     logger.info(String.format("[ %s ]%s", modeExtend[0], modeExtend[1]));
                 }
             }
+        }
+    }
+
+    /**
+     * 深沉睡眠
+     *
+     * @param sleepTime
+     * @author: humm23693
+     * @date: 2020/09/08
+     * @return:
+     */
+    private static void sleep(Integer sleepTime) {
+        try {
+            Thread.sleep(sleepTime * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
