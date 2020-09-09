@@ -425,7 +425,7 @@ public class ImFileUtils {
         new Thread(() -> {
             // 连续操作模式 上一次操作正常
             if (OPERATE_CONTINUE && READ_NUM == COPY_NUM && !EXCEPTION_STATUS) {
-                OPERATE_MODE = SYMBOL_EMPTY;
+                clean();
                 while (StringUtils.isBlank(OPERATE_MODE)) {
                     sleep(1);
                     OPERATE_CONTINUE_TIME--;
@@ -554,7 +554,7 @@ public class ImFileUtils {
      */
     private static void updateSingleFile(File file, String fileDirectory) {
         READ_NUM++;
-        String inputPath = convertBackslashOne(file.getAbsolutePath());
+        String inputPath = convertBackslash(file.getAbsolutePath());
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
         logger.info(String.format("更新文件[ %s ]", inputPath));
@@ -582,7 +582,7 @@ public class ImFileUtils {
                         }
                     }
                 } else {
-                    FILE_DIRECTORY_PATH_UPDATE = convertBackslashOne(source.getParentFile().getAbsolutePath());
+                    FILE_DIRECTORY_PATH_UPDATE = convertBackslash(source.getParentFile().getAbsolutePath());
                     return true;
                 }
             }
@@ -610,7 +610,7 @@ public class ImFileUtils {
             }
         } else {
             if (fileName.equals(file.getName())) {
-                FILE_NAME_PATH_UPDATE = convertBackslashOne(file.getAbsolutePath());
+                FILE_NAME_PATH_UPDATE = convertBackslash(file.getAbsolutePath());
                 return true;
             }
         }
@@ -669,6 +669,7 @@ public class ImFileUtils {
             }
             Files.write(Paths.get(targetPath), lines, Charset.forName(ENCODING));
             COPY_NUM++;
+            ERROR_TIMES = 0;
         } catch (IOException e) {
             // 内容还原
             try {
@@ -737,7 +738,7 @@ public class ImFileUtils {
             }
             File[] coverFileList = coverFileDirectory.listFiles();
             for (File coverFile : coverFileList) {
-                coverMultipleFile(coverFile, convertBackslashOne(coverFileDirectory.getAbsolutePath()));
+                coverMultipleFile(coverFile, convertBackslash(coverFileDirectory.getAbsolutePath()));
             }
             savePathStatus(STATUS_MODE_COVER, coverFileDirectory.getAbsolutePath());
         }
@@ -780,7 +781,7 @@ public class ImFileUtils {
         if ((SUCCESS + FILE_SUFFIX).equals(file.getName()) || (FAIL + FILE_SUFFIX).equals(file.getName())) {
             return;
         }
-        String inputPath = convertBackslashOne(file.getAbsolutePath());
+        String inputPath = convertBackslash(file.getAbsolutePath());
         READ_NUM++;
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
@@ -805,7 +806,7 @@ public class ImFileUtils {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
                         continue;
                     }
-                    String[] subInputPath = convertBackslashOne(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath = convertBackslash(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
                     String sourcePath = subInputPath[subInputPath.length - 1].trim();
                     if (!sourcePath.isEmpty()) {
                         READ_NUM++;
@@ -960,7 +961,7 @@ public class ImFileUtils {
                         continue;
                     }
                     READ_NUM++;
-                    String[] subInputPath = convertBackslashOne(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath = convertBackslash(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
                     String path = subInputPath[subInputPath.length - 1].trim();
                     logger.info(String.format("合并文件[ %s ]", path));
                     CONTENT.append(getFileContent(path));
@@ -1318,24 +1319,9 @@ public class ImFileUtils {
      * @date: 2020/09/06
      * @return:
      */
-    private static String convertBackslashOne(String value) {
+    private static String convertBackslash(String value) {
         if (StringUtils.isNotBlank(value)) {
-            return value.replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
-        }
-        return value;
-    }
-
-    /**
-     * 反斜线转换
-     *
-     * @param value
-     * @author: humm23693
-     * @date: 2020/09/06
-     * @return:
-     */
-    private static String convertBackslashTwo(String value) {
-        if (StringUtils.isNotBlank(value)) {
-            return value.replace(SYMBOL_BACKSLASH_2, SYMBOL_SLASH);
+            return value.replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH).replace(SYMBOL_BACKSLASH_2, SYMBOL_SLASH);
         }
         return value;
     }
@@ -1450,4 +1436,22 @@ public class ImFileUtils {
         }
     }
 
+    /**
+     * 参数清理
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2020/09/09
+     * @return:
+     */
+    private static void clean() {
+        OPERATE_MODE = SYMBOL_EMPTY;
+        MESSAGE = new StringBuffer();
+        FAIL_MESSAGE = new StringBuffer();
+        CONTENT = new StringBuffer();
+        READ_NUM = 0;
+        COPY_NUM = 0;
+        EXCEPTION_STATUS = false;
+        ERROR_TIMES = 0;
+    }
 }
