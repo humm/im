@@ -1423,10 +1423,10 @@ public class ImFileUtils {
                     String[] versionCode = versionName.split(SYMBOL_POINT_2);
                     versionExtend[versionExtend.length - 1] = versionCode[versionCode.length - 1];
                     if (!versionExtend[1].endsWith(SYMBOL_SLASH) && !versionExtend[1].endsWith(SYMBOL_BACKSLASH_2)) {
-                        versionExtend[1] = convertBackslashTwo(versionExtend[1] + SYMBOL_BACKSLASH_2);
+                        versionExtend[1] = convertBackslash(versionExtend[1] + SYMBOL_BACKSLASH_2);
                     }
                     if (!versionExtend[2].endsWith(SYMBOL_SLASH) && !versionExtend[2].endsWith(SYMBOL_BACKSLASH_2)) {
-                        versionExtend[2] = convertBackslashTwo(versionExtend[2] + SYMBOL_BACKSLASH_2);
+                        versionExtend[2] = convertBackslash(versionExtend[2] + SYMBOL_BACKSLASH_2);
                     }
                     String versionItem = versionName.replace(".version", SYMBOL_EMPTY);
                     String versionItemCode = versionItem.replace(versionExtend[versionExtend.length - 1], versionExtend[0]);
