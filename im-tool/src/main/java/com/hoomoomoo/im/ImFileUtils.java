@@ -1,5 +1,6 @@
 package com.hoomoomoo.im;
 
+import com.hoomoomoo.im.utils.UnZipAnRarUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.fusesource.jansi.Ansi;
@@ -32,7 +33,7 @@ public class ImFileUtils {
     /**
      * 应用版本
      */
-    private static String NAME_VERSION = "   3.0.0";
+    private static String NAME_VERSION = "   v3.0.0";
 
     /**
      * 配置文件
@@ -518,9 +519,9 @@ public class ImFileUtils {
                 String fileName = file.getName();
                 try {
                     if (fileName.endsWith(FILE_TYPE_ZIP)) {
-                        UnZipAnRarTool.unZip(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
+                        UnZipAnRarUtils.unZip(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
                     } else if (fileName.endsWith(FILE_TYPE_RAR)) {
-                        UnZipAnRarTool.unRar(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
+                        UnZipAnRarUtils.unRar(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

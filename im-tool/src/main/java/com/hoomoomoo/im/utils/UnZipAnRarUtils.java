@@ -1,4 +1,4 @@
-package com.hoomoomoo.im;
+package com.hoomoomoo.im.utils;
 
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
@@ -17,7 +17,7 @@ import java.util.Enumeration;
  * @package com.hoomoomoo.im
  * @date 2020/08/23
  */
-public class UnZipAnRarTool {
+public class UnZipAnRarUtils {
 
     /**
      * 解压Zip
