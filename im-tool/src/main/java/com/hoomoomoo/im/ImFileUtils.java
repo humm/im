@@ -165,6 +165,16 @@ public class ImFileUtils {
     private static Map<String, String[]> VERSION_CONFIG = new LinkedHashMap(16);
 
     /**
+     * 复制排除时间戳
+     */
+    private static Map<String, String> EXCLUDE_TIMESTAMP = new LinkedHashMap(16);
+
+    /**
+     * 操作版本
+     */
+    private static String OPERATE_VERSION = "";
+
+    /**
      * unicode字符串正则
      */
     private static final Pattern PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
@@ -418,34 +428,39 @@ public class ImFileUtils {
      * @return:
      */
     private static void run(Map config, boolean init) {
-        // 获取配置参数
-        getProperties(config, init);
-        switch (OPERATE_MODE) {
-            case OPERATE_MODE_COPY:
-                // 复制文件
-                copyFile();
-                break;
-            case OPERATE_MODE_MERGE:
-                // 合并文件
-                mergeFile();
-                break;
-            case OPERATE_MODE_COVER:
-                // 覆盖文件
-                coverFile();
-                break;
-            case OPERATE_MODE_UPDATE:
-                // 更新文件
-                updateFile();
-                break;
-            default:
-                break;
+        try {
+            // 获取配置参数
+            getProperties(config, init);
+            switch (OPERATE_MODE) {
+                case OPERATE_MODE_COPY:
+                    // 复制文件
+                    copyFile();
+                    break;
+                case OPERATE_MODE_MERGE:
+                    // 合并文件
+                    mergeFile();
+                    break;
+                case OPERATE_MODE_COVER:
+                    // 覆盖文件
+                    coverFile();
+                    break;
+                case OPERATE_MODE_UPDATE:
+                    // 更新文件
+                    updateFile();
+                    break;
+                default:
+                    break;
+            }
+            // 连续操作模式控制应用退出
+            exit();
+            // 清除上一次操作信息
+            clean();
+            // 连续操作模式
+            run(config, false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            EXCEPTION_STATUS = true;
         }
-        // 连续操作模式控制应用退出
-        exit();
-        // 清除上一次操作信息
-        clean();
-        // 连续操作模式
-        run(config, false);
         // 暂停模式控制
         if (PAUSE_MODE) {
             Integer sleepTime = PAUSE_TIME_SUCCESS;
@@ -841,6 +856,7 @@ public class ImFileUtils {
      */
     private static void copyFile() {
         BufferedReader bufferedReader = null;
+        String workspace = null;
         try {
             String inputPath;
             bufferedReader = new BufferedReader(new FileReader(checkFile(FILE_PATH)));
@@ -854,7 +870,14 @@ public class ImFileUtils {
                     if (!sourcePath.isEmpty()) {
                         READ_NUM++;
                         println(String.format("复制文件[ %s ]", sourcePath), SYMBOL_EMPTY);
-                        String exportPath = sourcePath.replace(WORKSPACE, EXPORT_WORKSPACE + CURRENT_DATE + SYMBOL_BACKSLASH_1);
+                        String exportPath = null;
+                        if (StringUtils.isNotBlank(EXCLUDE_TIMESTAMP.get(OPERATE_VERSION))) {
+                            exportPath = sourcePath.replace(WORKSPACE, EXPORT_WORKSPACE);
+                            workspace = EXPORT_WORKSPACE;
+                        } else {
+                            exportPath = sourcePath.replace(WORKSPACE, EXPORT_WORKSPACE + CURRENT_DATE + SYMBOL_BACKSLASH_1);
+                            EXPORT_WORKSPACE = EXPORT_WORKSPACE + CURRENT_DATE;
+                        }
                         copySingleFile(sourcePath, exportPath);
                         if (EXCEPTION_STATUS) {
                             break;
@@ -862,7 +885,7 @@ public class ImFileUtils {
                     }
                 }
             }
-            savePathStatus(STATUS_MODE_COPY, null);
+            savePathStatus(STATUS_MODE_COPY, workspace);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             EXCEPTION_STATUS = true;
@@ -949,38 +972,36 @@ public class ImFileUtils {
      * @return:
      */
     private static void savePathStatus(String statusType, String directory) {
-        String statusPath = EXPORT_WORKSPACE + CURRENT_DATE;
-        if (StringUtils.isNotBlank(directory)) {
-            statusPath = directory;
-        }
-        File statusFolder = new File(statusPath);
-        if (!statusFolder.exists()) {
-            statusFolder.mkdirs();
-        }
         String fileName = SUCCESS;
         if (READ_NUM != COPY_NUM || EXCEPTION_STATUS) {
             fileName = FAIL;
         }
-        String statusFilename = statusPath + SYMBOL_BACKSLASH_1 + fileName + FILE_SUFFIX;
-        File file = new File(statusFilename);
-        PrintStream printStream = null;
-        try {
-            printStream = new PrintStream(new FileOutputStream(file));
-            printStream.println(MESSAGE.toString());
-            if (SUCCESS.equals(fileName)) {
-                println(String.format("文件%s完成 文件数量[ %s ]", statusType, READ_NUM), SUCCESS_COLOR);
-            } else {
-                println(String.format("文件%s失败 读取文件数量[ %s ] %s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM), ERROR_COLOR);
-                println(FAIL_MESSAGE.toString(), ERROR_COLOR);
-                if (STATUS_MODE_COPY.equals(statusType) || STATUS_MODE_MERGE.equals(statusType)) {
-                    println(String.format("请检查[ %s ]编码格式是否为[ GBK ]", FILE_PATH), ERROR_COLOR);
-                }
+        if (StringUtils.isBlank(EXCLUDE_TIMESTAMP.get(OPERATE_VERSION))) {
+            File statusFolder = new File(directory);
+            if (!statusFolder.exists()) {
+                statusFolder.mkdirs();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            EXCEPTION_STATUS = true;
-        } finally {
-            printStream.close();
+            String statusFilename = directory + SYMBOL_BACKSLASH_1 + fileName + FILE_SUFFIX;
+            File file = new File(statusFilename);
+            PrintStream printStream = null;
+            try {
+                printStream = new PrintStream(new FileOutputStream(file));
+                printStream.println(MESSAGE.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                EXCEPTION_STATUS = true;
+            } finally {
+                printStream.close();
+            }
+        }
+        if (SUCCESS.equals(fileName)) {
+            println(String.format("文件%s完成 文件数量[ %s ]", statusType, READ_NUM), SUCCESS_COLOR);
+        } else {
+            println(String.format("文件%s失败 读取文件数量[ %s ] %s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM), ERROR_COLOR);
+            println(FAIL_MESSAGE.toString(), ERROR_COLOR);
+            if (STATUS_MODE_COPY.equals(statusType) || STATUS_MODE_MERGE.equals(statusType)) {
+                println(String.format("请检查[ %s ]编码格式是否为[ GBK ]", FILE_PATH), ERROR_COLOR);
+            }
         }
     }
 
@@ -1240,6 +1261,7 @@ public class ImFileUtils {
             } else {
                 WORKSPACE = VERSION_CONFIG.get(code)[1];
                 EXPORT_WORKSPACE = VERSION_CONFIG.get(code)[2];
+                OPERATE_VERSION = VERSION_CONFIG.get(code)[4];
                 println(String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]), parameterColor);
                 println(String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
                 println(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE), parameterColor);
@@ -1319,6 +1341,15 @@ public class ImFileUtils {
             }
             println(String.format("失败暂停时间[ %s ]", PAUSE_TIME_FAIL), parameterColor);
         }
+        String timestamp = config.get("mode.copy.exclude.timestamp");
+        if (StringUtils.isNotBlank(timestamp)) {
+            String[] items = timestamp.split(SYMBOL_DOLLAR);
+            for (String item : items) {
+                EXCLUDE_TIMESTAMP.put(item, item);
+            }
+        }
+
+
     }
 
     /**
