@@ -1,9 +1,10 @@
 package com.hoomoomoo.im;
 
+import com.hoomoomoo.im.utils.CommonUtils;
+import com.hoomoomoo.im.utils.SvnUtils;
 import com.hoomoomoo.im.utils.UnZipAnRarUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.AnsiConsole;
 
 import java.io.*;
@@ -13,8 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
  * @Author hoomoomoo
@@ -33,7 +34,7 @@ public class ImFileUtils {
     /**
      * 应用版本
      */
-    private static String NAME_VERSION = "   v3.0.0";
+    private static String NAME_VERSION = "   V3.0.0";
 
     /**
      * 配置文件
@@ -44,106 +45,6 @@ public class ImFileUtils {
      * 文件路径地址
      */
     private static final String FILE_PATH = "path.txt";
-
-    /**
-     * 反斜杠
-     */
-    private static final String SYMBOL_BACKSLASH_2 = "\\\\";
-
-    /**
-     * 反斜杠
-     */
-    private static final String SYMBOL_BACKSLASH_1 = "\\";
-
-    /**
-     * 斜杠
-     */
-    private static final String SYMBOL_SLASH = "/";
-
-    /**
-     * #
-     */
-    private static final String SYMBOL_WEI = "#";
-
-    /**
-     * $
-     */
-    private static final String SYMBOL_DOLLAR = "\\$";
-
-    /**
-     * 逗号
-     */
-    private static final String SYMBOL_COMMA = ",";
-
-    /**
-     * 星号
-     */
-    private static final String SYMBOL_STAR = "*";
-
-    /**
-     * 星号
-     */
-    private static final String SYMBOL_STAR_3 = "*** ";
-
-    /**
-     * 星号
-     */
-    private static final String SYMBOL_STAR_3_MORE = "***   ";
-
-    /**
-     * 空格
-     */
-    private static final String SYMBOL_BLANK_SPACE = "\\s+";
-
-    /**
-     * 点符号
-     */
-    private static final String SYMBOL_POINT_2 = "\\.";
-
-    /**
-     * 点符号
-     */
-    private static final String SYMBOL_POINT_1 = ".";
-
-    /**
-     * 空格
-     */
-    private static final String SYMBOL_SPACE = " ";
-
-    /**
-     * 空串
-     */
-    private static final String SYMBOL_EMPTY = "";
-
-    /**
-     * 等号
-     */
-    private static final String SYMBOL_EQUALS = "=";
-
-    /**
-     * 减号
-     */
-    private static final String SYMBOL_MINUS = "-";
-
-    /**
-     * 冒号
-     */
-    private static final String SYMBOL_COLON = ":";
-
-    /**
-     * 换行
-     */
-    private static final String SYMBOL_NEXT_LINE = "\n";
-
-    /**
-     * 注释
-     */
-    private static final String SYMBOL_IGNORE = "--";
-
-    /**
-     * 格式化模板
-     */
-    private static final String YYYY_MM_DD_HH_MM_SS = "yyyyMMddHHmmss";
 
     /**
      * 字符集异常
@@ -169,16 +70,6 @@ public class ImFileUtils {
      * 复制排除时间戳
      */
     private static Map<String, String> EXCLUDE_TIMESTAMP = new LinkedHashMap(16);
-
-    /**
-     * 操作版本
-     */
-    private static String OPERATE_VERSION = "";
-
-    /**
-     * unicode字符串正则
-     */
-    private static final Pattern PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
 
     /**
      * 提示消息
@@ -218,32 +109,32 @@ public class ImFileUtils {
     /**
      * 暂停模式
      */
-    private static Boolean PAUSE_MODE = true;
+    private static boolean PAUSE_MODE = true;
 
     /**
      * 连续操作模式
      */
-    private static Boolean OPERATE_CONTINUE = true;
+    private static boolean OPERATE_CONTINUE = true;
 
     /**
      * 连续操作间隔时间
      */
-    private static Integer OPERATE_CONTINUE_TIME = 5;
+    private static int OPERATE_CONTINUE_TIME = 5;
 
     /**
      * 成功暂停时间
      */
-    private static Integer PAUSE_TIME_SUCCESS = 3;
+    private static int PAUSE_TIME_SUCCESS = 3;
 
     /**
      * 失败暂停时间
      */
-    private static Integer PAUSE_TIME_FAIL = 10;
+    private static int PAUSE_TIME_FAIL = 10;
 
     /**
      * 错误次数
      */
-    private static Integer ERROR_TIMES = 0;
+    private static int ERROR_TIMES = 0;
 
     /**
      * 工作目录前缀
@@ -263,12 +154,32 @@ public class ImFileUtils {
     /**
      * 指定行内容偏移量
      */
-    private static Integer LINE_OFFSET = 0;
+    private static int LINE_OFFSET = 0;
 
     /**
      * 成功后删除文件
      */
     private static Boolean DELETE_AFTER_SUCCESS = true;
+
+    /**
+     * svn更新
+     */
+    private static Boolean SVN_UPDATE = true;
+
+    /**
+     * svn 用户名
+     */
+    private static String SVN_USERNAME = "";
+
+    /**
+     * svn 密码
+     */
+    private static String SVN_PASSWORD = "";
+
+    /**
+     * svn 文件后缀
+     */
+    private static String SVN_FILE_NAME = ".svn";
 
     /**
      * 模式选择颜色
@@ -291,45 +202,19 @@ public class ImFileUtils {
     private static String ENCODING = "GBK";
 
     /**
-     * 编码格式
-     */
-    private static String ENCODING_UTF8 = "UTF-8";
-
-    /**
-     * 编码格式
-     */
-    private static String ENCODING_GBK = "GBK";
-
-    /**
      * 提示文件后缀
      */
     private static String FILE_SUFFIX = ".txt";
 
     /**
-     * zip文件
-     */
-    private static final String FILE_TYPE_ZIP = ".zip";
-
-    /**
-     * rar文件
-     */
-    private static final String FILE_TYPE_RAR = ".rar";
-
-
-    /**
-     * 成功
-     */
-    private static final String SUCCESS = "success";
-
-    /**
-     * 失败
-     */
-    private static final String FAIL = "fail";
-
-    /**
      * 数据库升级脚本目录
      */
-    private static final String FILE_NAME_UPDATE = "数据库升级脚本";
+    private static final String FILE_PATH_UPDATE = "数据库升级脚本";
+
+    /**
+     * 升级脚本
+     */
+    private static final String FILE_NAME_UPDATE = "_升级脚本";
 
     /**
      * 升级脚本path
@@ -347,19 +232,19 @@ public class ImFileUtils {
     private static final String FILE_NAME_MERGE = "merge";
 
     /**
+     * 模式重置
+     */
+    private static final String OPERATE_MODE_RESET = "0";
+
+    /**
      * 启动模式 1:Jar包启动 2:工程启动
      */
     private static String START_MODE = "jar";
 
     /**
-     * Jar启动模式
+     * 操作版本
      */
-    private static final String START_MODE_JAR = "jar";
-
-    /**
-     * 工程启动模式
-     */
-    private static final String START_MODE_PROJECT = "project";
+    private static String OPERATE_VERSION = "";
 
     /**
      * 文件操作模式
@@ -464,11 +349,11 @@ public class ImFileUtils {
         }
         // 暂停模式控制
         if (PAUSE_MODE) {
-            Integer sleepTime = PAUSE_TIME_SUCCESS;
+            int sleepTime = PAUSE_TIME_SUCCESS;
             if (READ_NUM != COPY_NUM || EXCEPTION_STATUS) {
                 sleepTime = PAUSE_TIME_FAIL;
             }
-            sleep(sleepTime);
+            CommonUtils.sleep(sleepTime);
         }
     }
 
@@ -481,12 +366,12 @@ public class ImFileUtils {
      * @return:
      */
     private static void exit() {
-        println(SYMBOL_NEXT_LINE, SYMBOL_EMPTY);
+        CommonUtils.println(SYMBOL_NEXT_LINE, SYMBOL_EMPTY);
         new Thread(() -> {
             // 连续操作模式 上一次操作正常
             if (OPERATE_CONTINUE && READ_NUM == COPY_NUM && !EXCEPTION_STATUS) {
                 while (StringUtils.isBlank(OPERATE_MODE)) {
-                    sleep(1);
+                    CommonUtils.sleep(1);
                     OPERATE_CONTINUE_TIME--;
                     if (OPERATE_CONTINUE_TIME == 0) {
                         System.exit(0);
@@ -555,22 +440,28 @@ public class ImFileUtils {
                     updateMultipleFile(file, FILE_DIRECTORY_PATH_UPDATE);
                 } else {
                     // 单个文件,升级脚本,增量更新
-                    File updateFile = new File(EXPORT_WORKSPACE + FILE_NAME_UPDATE);
+                    File updateFile = new File(EXPORT_WORKSPACE + FILE_PATH_UPDATE);
                     if (!updateFile.exists()) {
                         updateFile = new File(EXPORT_WORKSPACE);
                     }
                     getUpdateScriptPath(file.getName(), updateFile.getAbsolutePath());
                     if (StringUtils.isBlank(FILE_NAME_PATH_UPDATE)) {
-                        throw new RuntimeException(String.format("[ %s ]更新文件目录不匹配", file.getAbsolutePath()));
+                        int index = file.getName().lastIndexOf(SYMBOL_POINT_1);
+                        String suffix = fileName.substring(index);
+                        fileName = fileName.replace(FILE_NAME_UPDATE + suffix, suffix);
+                        getUpdateScriptPath(fileName, updateFile.getAbsolutePath());
+                        if (StringUtils.isBlank(FILE_NAME_PATH_UPDATE)) {
+                            throw new RuntimeException(String.format("[ %s ]更新文件目录不匹配", file.getAbsolutePath()));
+                        }
                     }
                     READ_NUM++;
-                    println(String.format("更新文件[ %s ]", FILE_NAME_PATH_UPDATE), SYMBOL_EMPTY);
+                    CommonUtils.println(String.format("更新文件[ %s ]", FILE_NAME_PATH_UPDATE), SYMBOL_EMPTY);
                     updateScriptFile(file.getAbsolutePath(), FILE_NAME_PATH_UPDATE);
                 }
             }
             if (DELETE_AFTER_SUCCESS && READ_NUM == COPY_NUM && !EXCEPTION_STATUS) {
                 for (File file : fileList) {
-                    deleteFile(file);
+                    CommonUtils.deleteFile(file);
                 }
             }
         }
@@ -613,10 +504,10 @@ public class ImFileUtils {
      */
     private static void updateSingleFile(File file, String fileDirectory) {
         READ_NUM++;
-        String inputPath = convertBackslash(file.getAbsolutePath());
+        String inputPath = CommonUtils.convertBackslash(file.getAbsolutePath());
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
-        println(String.format("更新文件[ %s ]", inputPath), SYMBOL_EMPTY);
+        CommonUtils.println(String.format("更新文件[ %s ]", inputPath), SYMBOL_EMPTY);
     }
 
     /**
@@ -641,7 +532,7 @@ public class ImFileUtils {
                         }
                     }
                 } else {
-                    FILE_DIRECTORY_PATH_UPDATE = convertBackslash(source.getParentFile().getAbsolutePath());
+                    FILE_DIRECTORY_PATH_UPDATE = CommonUtils.convertBackslash(source.getParentFile().getAbsolutePath());
                     return true;
                 }
             }
@@ -669,7 +560,7 @@ public class ImFileUtils {
             }
         } else {
             if (fileName.equals(file.getName())) {
-                FILE_NAME_PATH_UPDATE = convertBackslash(file.getAbsolutePath());
+                FILE_NAME_PATH_UPDATE = CommonUtils.convertBackslash(file.getAbsolutePath());
                 return true;
             }
         }
@@ -706,7 +597,7 @@ public class ImFileUtils {
                 lines.add(fileContent);
             } else {
                 String lineContent = LINE_CONTENT;
-                Integer lineOffset = LINE_OFFSET;
+                int lineOffset = LINE_OFFSET;
                 Iterator<Map.Entry<String, String[]>> iterator = OTHER_LINE_CONTENT.entrySet().iterator();
                 while (iterator.hasNext()) {
                     Map.Entry<String, String[]> file = iterator.next();
@@ -752,30 +643,6 @@ public class ImFileUtils {
     }
 
     /**
-     * 删除文件
-     *
-     * @param file
-     * @author: hoomoomoo
-     * @date: 2020/08/23
-     * @return:
-     */
-    private static void deleteFile(File file) {
-        if (file.isDirectory()) {
-            File[] fileList = file.listFiles();
-            if (fileList == null) {
-                file.delete();
-            } else {
-                for (File subFile : fileList) {
-                    deleteFile(subFile);
-                }
-                file.delete();
-            }
-        } else {
-            file.delete();
-        }
-    }
-
-    /**
      * 覆盖文件
      *
      * @param
@@ -790,14 +657,14 @@ public class ImFileUtils {
         }
         File[] fileDirectoryList = fileDirectory.listFiles();
         if (fileDirectoryList != null) {
-            sortFile(fileDirectoryList);
+            CommonUtils.sortFile(fileDirectoryList);
             File coverFileDirectory = fileDirectoryList[0];
             if (!coverFileDirectory.isDirectory()) {
                 throw new RuntimeException(String.format("[ %s ]不是文件夹", coverFileDirectory.getAbsolutePath()));
             }
             File[] coverFileList = coverFileDirectory.listFiles();
             for (File coverFile : coverFileList) {
-                coverMultipleFile(coverFile, convertBackslash(coverFileDirectory.getAbsolutePath()));
+                coverMultipleFile(coverFile, CommonUtils.convertBackslash(coverFileDirectory.getAbsolutePath()));
             }
             savePathStatus(STATUS_MODE_COVER, coverFileDirectory.getAbsolutePath());
         }
@@ -840,11 +707,11 @@ public class ImFileUtils {
         if ((SUCCESS + FILE_SUFFIX).equals(file.getName()) || (FAIL + FILE_SUFFIX).equals(file.getName())) {
             return;
         }
-        String inputPath = convertBackslash(file.getAbsolutePath());
+        String inputPath = CommonUtils.convertBackslash(file.getAbsolutePath());
         READ_NUM++;
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
-        println(String.format("覆盖文件[ %s ]", inputPath), SYMBOL_EMPTY);
+        CommonUtils.println(String.format("覆盖文件[ %s ]", inputPath), SYMBOL_EMPTY);
     }
 
     /**
@@ -857,7 +724,10 @@ public class ImFileUtils {
      */
     private static void copyFile() {
         BufferedReader bufferedReader = null;
-        String workspace = null;
+        String exportWorkspace = EXPORT_WORKSPACE + CURRENT_DATE + SYMBOL_BACKSLASH_1;
+        if (StringUtils.isNotBlank(EXCLUDE_TIMESTAMP.get(OPERATE_VERSION))) {
+            exportWorkspace = EXPORT_WORKSPACE;
+        }
         try {
             String inputPath;
             bufferedReader = new BufferedReader(new FileReader(checkFile(FILE_PATH)));
@@ -866,19 +736,13 @@ public class ImFileUtils {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
                         continue;
                     }
-                    String[] subInputPath = convertBackslash(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath = CommonUtils.convertBackslash(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
                     String sourcePath = subInputPath[subInputPath.length - 1].trim();
                     if (!sourcePath.isEmpty()) {
                         READ_NUM++;
-                        println(String.format("复制文件[ %s ]", sourcePath), SYMBOL_EMPTY);
+                        CommonUtils.println(String.format("复制文件[ %s ]", sourcePath), SYMBOL_EMPTY);
                         String exportPath = null;
-                        if (StringUtils.isNotBlank(EXCLUDE_TIMESTAMP.get(OPERATE_VERSION))) {
-                            exportPath = sourcePath.replace(WORKSPACE, EXPORT_WORKSPACE);
-                            workspace = EXPORT_WORKSPACE;
-                        } else {
-                            exportPath = sourcePath.replace(WORKSPACE, EXPORT_WORKSPACE + CURRENT_DATE + SYMBOL_BACKSLASH_1);
-                            EXPORT_WORKSPACE = EXPORT_WORKSPACE + CURRENT_DATE;
-                        }
+                        exportPath = sourcePath.replace(WORKSPACE, exportWorkspace);
                         copySingleFile(sourcePath, exportPath);
                         if (EXCEPTION_STATUS) {
                             break;
@@ -886,7 +750,7 @@ public class ImFileUtils {
                     }
                 }
             }
-            savePathStatus(STATUS_MODE_COPY, workspace);
+            savePathStatus(STATUS_MODE_COPY, exportWorkspace);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             EXCEPTION_STATUS = true;
@@ -996,12 +860,12 @@ public class ImFileUtils {
             }
         }
         if (SUCCESS.equals(fileName)) {
-            println(String.format("文件%s完成 文件数量[ %s ]", statusType, READ_NUM), SUCCESS_COLOR);
+            CommonUtils.println(String.format("文件%s完成 文件数量[ %s ]", statusType, READ_NUM), SUCCESS_COLOR);
         } else {
-            println(String.format("文件%s失败 读取文件数量[ %s ] %s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM), ERROR_COLOR);
-            println(FAIL_MESSAGE.toString(), ERROR_COLOR);
+            CommonUtils.println(String.format("文件%s失败 读取文件数量[ %s ] %s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM), ERROR_COLOR);
+            CommonUtils.println(FAIL_MESSAGE.toString(), ERROR_COLOR);
             if (STATUS_MODE_COPY.equals(statusType) || STATUS_MODE_MERGE.equals(statusType)) {
-                println(String.format("请检查[ %s ]编码格式是否为[ GBK ]", FILE_PATH), ERROR_COLOR);
+                CommonUtils.println(String.format("请检查[ %s ]编码格式是否为[ GBK ]", FILE_PATH), ERROR_COLOR);
             }
         }
     }
@@ -1025,9 +889,9 @@ public class ImFileUtils {
                         continue;
                     }
                     READ_NUM++;
-                    String[] subInputPath = convertBackslash(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath = CommonUtils.convertBackslash(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
                     String path = subInputPath[subInputPath.length - 1].trim();
-                    println(String.format("合并文件[ %s ]", path), SYMBOL_EMPTY);
+                    CommonUtils.println(String.format("合并文件[ %s ]", path), SYMBOL_EMPTY);
                     CONTENT.append(getFileContent(path));
                     if (EXCEPTION_STATUS) {
                         break;
@@ -1108,13 +972,13 @@ public class ImFileUtils {
      * @return:
      */
     private static String createFile(String content) {
-        String statusPath = EXPORT_WORKSPACE + CURRENT_DATE;
-        File statusFolder = new File(statusPath);
-        if (!statusFolder.exists()) {
-            statusFolder.mkdirs();
-        }
+        String contentFolderPath = EXPORT_WORKSPACE + CURRENT_DATE;
         String fileName = FILE_NAME_MERGE + SYMBOL_MINUS + READ_NUM;
-        String statusFilename = statusPath + SYMBOL_BACKSLASH_1 + fileName + FILE_SUFFIX;
+        String statusFilename = contentFolderPath + SYMBOL_BACKSLASH_1 + fileName + FILE_SUFFIX;
+        File contentFolder = new File(contentFolderPath);
+        if (!contentFolder.exists()) {
+            contentFolder.mkdirs();
+        }
         File file = new File(statusFilename);
         PrintWriter out = null;
         try {
@@ -1127,7 +991,7 @@ public class ImFileUtils {
         } finally {
             out.close();
         }
-        return statusPath;
+        return contentFolderPath;
     }
 
     /**
@@ -1169,27 +1033,6 @@ public class ImFileUtils {
     }
 
     /**
-     * 文件排序
-     *
-     * @param fileList
-     * @author: hoomoomoo
-     * @date: 2020/08/23
-     * @return:
-     */
-    private static void sortFile(File[] fileList) {
-        Arrays.sort(fileList, (o1, o2) -> {
-            long sort = o2.lastModified() - o1.lastModified();
-            if (sort > 0) {
-                return 1;
-            } else if (sort == 0) {
-                return 0;
-            } else {
-                return -1;
-            }
-        });
-    }
-
-    /**
      * 读取配置文件参数
      *
      * @param config
@@ -1219,53 +1062,81 @@ public class ImFileUtils {
             ERROR_COLOR = errorColor;
         }
         String parameterColor = config.get("im.parameter.color");
-
+        // 颜色debug
+        colorDebug(config.get("im.color.debug"));
         if (init) {
             StringBuffer star = new StringBuffer(SYMBOL_STAR_3);
             for (int i = 0; i < NAME_CONTENT.length() * 4; i++) {
                 star.append(SYMBOL_STAR);
             }
-            println(star.toString(), nameColor);
-            println(SYMBOL_STAR_3 + NAME_CONTENT + NAME_VERSION, nameColor);
-            println(star.toString(), nameColor);
+            CommonUtils.println(star.toString(), nameColor);
+            CommonUtils.println(SYMBOL_STAR_3 + NAME_CONTENT + NAME_VERSION, nameColor);
+            CommonUtils.println(star.toString(), nameColor);
         }
 
         // 获取模式配置
         getModeConfig(config);
         // 获取版本配置
         getVersionConfig(config);
+        // 获取svn配置信息
+        String svnUpdate = config.get("svn.update");
+        if (StringUtils.isNotBlank(svnUpdate)) {
+            SVN_UPDATE = Boolean.valueOf(svnUpdate);
+        }
+        if (SVN_UPDATE) {
+            String svnUsername = config.get("svn.username");
+            if (StringUtils.isNotBlank(svnUsername)) {
+                SVN_USERNAME = svnUsername;
+            } else {
+                throw new RuntimeException("svn用户名[ svn.username ]不能为空");
+            }
+            String svnPassword = config.get("svn.password");
+            if (StringUtils.isNotBlank(svnPassword)) {
+                SVN_PASSWORD = svnPassword;
+            } else {
+                throw new RuntimeException("svn密码[ svn.password ]不能为空");
+            }
+        }
         // 模式选择
         Scanner scanner = new Scanner(System.in);
         while (true) {
             String code = scanner.next();
             if (MODE_CONFIG.get(code) == null) {
-                println("模式不存在 请重新选择", errorColor);
+                CommonUtils.println("模式不存在 请重新选择", errorColor);
             } else {
                 OPERATE_MODE = MODE_CONFIG.get(code)[2];
-                println(String.format("模式设置为[ %s ]", MODE_CONFIG.get(code)[1]), parameterColor);
+                CommonUtils.println(String.format("模式设置为[ %s ]", MODE_CONFIG.get(code)[1]), parameterColor);
                 break;
             }
         }
         // 版本号选择
-        println("请选择版本:", SYMBOL_EMPTY);
+        CommonUtils.println("请选择版本:", SYMBOL_EMPTY);
         Iterator<Map.Entry<String, String[]>> iterator = VERSION_CONFIG.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String[]> item = iterator.next();
             if (item.getKey().startsWith(OPERATE_MODE)) {
-                println(String.format("[ %s ] %s", item.getValue()[0], item.getValue()[item.getValue().length - 1]), versionColor);
+                CommonUtils.println(String.format("[ %s ] %s", item.getValue()[0], item.getValue()[item.getValue().length - 1]), versionColor);
             }
         }
+        CommonUtils.println(String.format("[ %s ] 重选模式", OPERATE_MODE_RESET), versionColor);
         while (true) {
             String code = OPERATE_MODE + SYMBOL_POINT_1 + scanner.next();
             if (VERSION_CONFIG.get(code) == null) {
-                println("版本不存在 请重新选择", errorColor);
+                if ((OPERATE_MODE + SYMBOL_POINT_1 + OPERATE_MODE_RESET).equals(code)) {
+                    getProperties(config, false);
+                    return;
+                }
+                CommonUtils.println("版本不存在 请重新选择", errorColor);
             } else {
                 WORKSPACE = VERSION_CONFIG.get(code)[1];
                 EXPORT_WORKSPACE = VERSION_CONFIG.get(code)[2];
                 OPERATE_VERSION = VERSION_CONFIG.get(code)[4];
-                println(String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]), parameterColor);
-                println(String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
-                println(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE), parameterColor);
+                CommonUtils.println(String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]), parameterColor);
+                CommonUtils.println(String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
+                CommonUtils.println(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE), parameterColor);
+                if (!updateSvn(EXPORT_WORKSPACE)) {
+                    throw new RuntimeException("svn更新失败...");
+                }
                 break;
             }
         }
@@ -1276,7 +1147,7 @@ public class ImFileUtils {
             if (StringUtils.isNotBlank(encoding)) {
                 ENCODING = encoding;
             }
-            println(String.format("文件编码格式[ %s ]", ENCODING), parameterColor);
+            CommonUtils.println(String.format("文件编码格式[ %s ]", ENCODING), parameterColor);
         }
 
         // 文件后缀名称
@@ -1284,7 +1155,7 @@ public class ImFileUtils {
         if (StringUtils.isNotBlank(fileSuffix)) {
             FILE_SUFFIX = fileSuffix;
         }
-        println(String.format("文件后缀名称[ %s ]", FILE_SUFFIX), parameterColor);
+        CommonUtils.println(String.format("文件后缀名称[ %s ]", FILE_SUFFIX), parameterColor);
 
         // 更新模式获取文件定位
         if (OPERATE_MODE_UPDATE.equals(OPERATE_MODE)) {
@@ -1297,14 +1168,14 @@ public class ImFileUtils {
                 LINE_CONTENT = lines[0];
                 LINE_OFFSET = Integer.valueOf(lines[1]);
             }
-            println(String.format("更新模式文件定位[ %s ]", LINE_CONTENT), parameterColor);
+            CommonUtils.println(String.format("更新模式文件定位[ %s ]", LINE_CONTENT), parameterColor);
 
             // 更新模式成功后删除源文件
             String deleteAfterSuccess = config.get("mode.update.delete.after.success");
             if (StringUtils.isNotBlank(deleteAfterSuccess)) {
                 DELETE_AFTER_SUCCESS = Boolean.valueOf(deleteAfterSuccess);
             }
-            println(String.format("更新模式成功后删除源文件[ %s ]", DELETE_AFTER_SUCCESS), parameterColor);
+            CommonUtils.println(String.format("更新模式成功后删除源文件[ %s ]", DELETE_AFTER_SUCCESS), parameterColor);
 
             // 更新模式指定文件定位
             getMoreUpdateLine(config);
@@ -1315,32 +1186,32 @@ public class ImFileUtils {
         if (StringUtils.isNotBlank(operateContinue)) {
             OPERATE_CONTINUE = Boolean.valueOf(operateContinue);
         }
-        println(String.format("连续操作模式[ %s ]", OPERATE_CONTINUE), parameterColor);
+        CommonUtils.println(String.format("连续操作模式[ %s ]", OPERATE_CONTINUE), parameterColor);
 
         // 连续操作间隔时间
         String operateContinueTime = config.get("operate.continue.time");
         if (StringUtils.isNotBlank(operateContinueTime)) {
             OPERATE_CONTINUE_TIME = Integer.valueOf(operateContinueTime);
         }
-        println(String.format("连续操作间隔时间[ %s ]", OPERATE_CONTINUE_TIME), parameterColor);
+        CommonUtils.println(String.format("连续操作间隔时间[ %s ]", OPERATE_CONTINUE_TIME), parameterColor);
 
         // 暂停模式
         String pauseMode = config.get("pause.mode");
         if (StringUtils.isNotBlank(pauseMode)) {
             PAUSE_MODE = Boolean.valueOf(pauseMode);
         }
-        println(String.format("暂停模式[ %s ]", PAUSE_MODE), parameterColor);
+        CommonUtils.println(String.format("暂停模式[ %s ]", PAUSE_MODE), parameterColor);
         if (PAUSE_MODE) {
             String pauseTimeSuccess = config.get("pause.time.success");
             if (StringUtils.isNotBlank(pauseTimeSuccess)) {
                 PAUSE_TIME_SUCCESS = Integer.valueOf(pauseTimeSuccess);
             }
-            println(String.format("成功暂停时间[ %s ]", PAUSE_TIME_SUCCESS), parameterColor);
+            CommonUtils.println(String.format("成功暂停时间[ %s ]", PAUSE_TIME_SUCCESS), parameterColor);
             String pauseTimeFail = config.get("pause.time.fail");
             if (StringUtils.isNotBlank(pauseTimeFail)) {
                 PAUSE_TIME_FAIL = Integer.valueOf(pauseTimeFail);
             }
-            println(String.format("失败暂停时间[ %s ]", PAUSE_TIME_FAIL), parameterColor);
+            CommonUtils.println(String.format("失败暂停时间[ %s ]", PAUSE_TIME_FAIL), parameterColor);
         }
         String timestamp = config.get("mode.copy.exclude.timestamp");
         if (StringUtils.isNotBlank(timestamp)) {
@@ -1349,8 +1220,6 @@ public class ImFileUtils {
                 EXCLUDE_TIMESTAMP.put(item, item);
             }
         }
-
-
     }
 
     /**
@@ -1379,7 +1248,7 @@ public class ImFileUtils {
                     if (item.length != 2) {
                         continue;
                     }
-                    config.put(item[0], convertUnicodeToCh(item[1]));
+                    config.put(item[0], CommonUtils.convertUnicodeToCh(item[1]));
                 }
             }
         } catch (FileNotFoundException e) {
@@ -1396,45 +1265,6 @@ public class ImFileUtils {
             }
         }
         return config;
-    }
-
-    /**
-     * unicode转中文字符串
-     *
-     * @param str
-     * @author: humm23693
-     * @date: 2020/09/03
-     * @return:
-     */
-    private static String convertUnicodeToCh(String str) {
-        Matcher matcher = PATTERN.matcher(str);
-        // 迭代，将str中的所有unicode转换为正常字符
-        while (matcher.find()) {
-            // 匹配出的每个字的unicode，比如\u67e5
-            String unicodeFull = matcher.group(1);
-            // 匹配出每个字的数字，比如\u67e5，会匹配出67e5
-            String unicodeNum = matcher.group(2);
-            // 将匹配出的数字按照16进制转换为10进制，转换为char类型，就是对应的正常字符了
-            char singleChar = (char) Integer.parseInt(unicodeNum, 16);
-            // 替换原始字符串中的unicode码
-            str = str.replace(unicodeFull, singleChar + SYMBOL_EMPTY);
-        }
-        return str;
-    }
-
-    /**
-     * 反斜线转换
-     *
-     * @param value
-     * @author: humm23693
-     * @date: 2020/09/06
-     * @return:
-     */
-    private static String convertBackslash(String value) {
-        if (StringUtils.isNotBlank(value)) {
-            return value.replace(SYMBOL_BACKSLASH_2, SYMBOL_SLASH).replace(SYMBOL_BACKSLASH_1, SYMBOL_SLASH);
-        }
-        return value;
     }
 
     /**
@@ -1473,7 +1303,7 @@ public class ImFileUtils {
      */
     private static void getModeConfig(Map config) {
         if (config != null) {
-            println("请选择模式:", SYMBOL_EMPTY);
+            CommonUtils.println("请选择模式:", SYMBOL_EMPTY);
             Iterator<Map.Entry<String, String>> iterator = config.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, String> item = iterator.next();
@@ -1487,25 +1317,9 @@ public class ImFileUtils {
                     String[] modeExtend = Arrays.copyOf(modes, modes.length + 1);
                     modeExtend[modeExtend.length - 1] = modeName.replace(".config", SYMBOL_EMPTY);
                     MODE_CONFIG.put(modes[0], modeExtend);
-                    println(String.format("[ %s ] %s", modeExtend[0], modeExtend[1]), MODE_COLOR);
+                    CommonUtils.println(String.format("[ %s ] %s", modeExtend[0], modeExtend[1]), MODE_COLOR);
                 }
             }
-        }
-    }
-
-    /**
-     * 深沉睡眠
-     *
-     * @param sleepTime
-     * @author: humm23693
-     * @date: 2020/09/08
-     * @return:
-     */
-    private static void sleep(Integer sleepTime) {
-        try {
-            Thread.sleep(sleepTime * 1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         }
     }
 
@@ -1534,10 +1348,10 @@ public class ImFileUtils {
                     String[] versionCode = versionName.split(SYMBOL_POINT_2);
                     versionExtend[versionExtend.length - 1] = versionCode[versionCode.length - 1];
                     if (!versionExtend[1].endsWith(SYMBOL_SLASH) && !versionExtend[1].endsWith(SYMBOL_BACKSLASH_2)) {
-                        versionExtend[1] = convertBackslash(versionExtend[1] + SYMBOL_BACKSLASH_2);
+                        versionExtend[1] = CommonUtils.convertBackslash(versionExtend[1] + SYMBOL_BACKSLASH_2);
                     }
                     if (!versionExtend[2].endsWith(SYMBOL_SLASH) && !versionExtend[2].endsWith(SYMBOL_BACKSLASH_2)) {
-                        versionExtend[2] = convertBackslash(versionExtend[2] + SYMBOL_BACKSLASH_2);
+                        versionExtend[2] = CommonUtils.convertBackslash(versionExtend[2] + SYMBOL_BACKSLASH_2);
                     }
                     String versionItem = versionName.replace(".version", SYMBOL_EMPTY);
                     String versionItemCode = versionItem.replace(versionExtend[versionExtend.length - 1], versionExtend[0]);
@@ -1567,69 +1381,41 @@ public class ImFileUtils {
     }
 
     /**
-     * 控制台输出
+     * 颜色debug
      *
-     * @param content
-     * @param color
+     * @param debug
      * @author: humm23693
-     * @date: 2020/09/09
+     * @date: 2020/09/10
      * @return:
      */
-    private static void println(String content, String color) {
-        if (StringUtils.isNotBlank(content) && StringUtils.startsWith(content, "[ ")) {
-            System.out.print(Ansi.ansi().fg(getColor(SYMBOL_EMPTY)).a(SYMBOL_STAR_3_MORE).reset());
-        } else {
-            System.out.print(Ansi.ansi().fg(getColor(SYMBOL_EMPTY)).a(SYMBOL_STAR_3).reset());
+    private static void colorDebug(String debug) {
+        if (StringUtils.isNotBlank(debug) && Boolean.valueOf(debug)) {
+            CommonUtils.println("black.. black... black", "black");
+            CommonUtils.println("red.. red... red", "red");
+            CommonUtils.println("green.. green... green", "green");
+            CommonUtils.println("yellow.. yellow... yellow", "yellow");
+            CommonUtils.println("blue.. blue... blue", "blue");
+            CommonUtils.println("magenta.. magenta... magenta", "magenta");
+            CommonUtils.println("cyan.. cyan... cyan", "cyan");
+            CommonUtils.println("white.. white... white", "white");
         }
-        if (StringUtils.isBlank(color)) {
-            color = SYMBOL_EMPTY;
-        }
-        System.out.println(Ansi.ansi().fg(getColor(color)).a(content).reset());
-
     }
 
     /**
-     * 获取颜色
+     * svn更新
      *
-     * @param color
+     * @param workspace
      * @author: humm23693
-     * @date: 2020/09/09
+     * @date: 2020/09/12
      * @return:
      */
-    private static Ansi.Color getColor(String color) {
-        if (StringUtils.isBlank(color)) {
-            return Ansi.Color.WHITE;
+    private static boolean updateSvn(String workspace) {
+        if (SVN_UPDATE && CommonUtils.isSuffixDirectory(new File(workspace), SVN_FILE_NAME)) {
+            CommonUtils.println("svn更新执行中...", SYMBOL_EMPTY);
+            Long svnVersion = SvnUtils.update(SVN_USERNAME, SVN_PASSWORD, workspace);
+            CommonUtils.println(String.format("svn已更新至版本[ %s ]", svnVersion), SYMBOL_EMPTY);
+            return svnVersion > 0;
         }
-        Ansi.Color colorType = Ansi.Color.WHITE;
-        switch (color.toUpperCase()) {
-            case "BLACK":
-                colorType = Ansi.Color.BLACK;
-                break;
-            case "RED":
-                colorType = Ansi.Color.RED;
-                break;
-            case "GREEN":
-                colorType = Ansi.Color.GREEN;
-                break;
-            case "YELLOW":
-                colorType = Ansi.Color.YELLOW;
-                break;
-            case "BLUE":
-                colorType = Ansi.Color.BLUE;
-                break;
-            case "MAGENTA":
-                colorType = Ansi.Color.MAGENTA;
-                break;
-            case "CYAN":
-                colorType = Ansi.Color.CYAN;
-                break;
-            case "WHITE":
-                colorType = Ansi.Color.WHITE;
-                break;
-            default:
-                break;
-        }
-        return colorType;
+        return true;
     }
-
 }
