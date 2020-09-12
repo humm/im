@@ -13,7 +13,7 @@ import java.util.Enumeration;
 
 /**
  * @author hoomoomoo
- * @description TODO
+ * @description 解压工具类
  * @package com.hoomoomoo.im
  * @date 2020/08/23
  */
