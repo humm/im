@@ -865,6 +865,7 @@ public class ImFileUtils {
             CommonUtils.println(String.format("文件%s失败 读取文件数量[ %s ] %s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM), ERROR_COLOR);
             CommonUtils.println(FAIL_MESSAGE.toString(), ERROR_COLOR);
             if (STATUS_MODE_COPY.equals(statusType) || STATUS_MODE_MERGE.equals(statusType)) {
+                CommonUtils.println(String.format("请检查[ %s ]配置文件路径是否存在", FILE_PATH), ERROR_COLOR);
                 CommonUtils.println(String.format("请检查[ %s ]编码格式是否为[ GBK ]", FILE_PATH), ERROR_COLOR);
             }
         }
