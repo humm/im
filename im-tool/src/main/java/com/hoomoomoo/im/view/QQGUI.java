@@ -1,4 +1,4 @@
-package com.hoomoomoo.im.utils.ui;
+package com.hoomoomoo.im.view;
 
 import javax.swing.*;
 import java.awt.*;
