@@ -51,6 +51,7 @@
         <ant.version>1.9.4</ant.version>
         <svnkit.version>1.8.2</svnkit.version>
         <jansi.version>1.18</jansi.version>
+        <hsweb-utils.version>3.0.2</hsweb-utils.version>
     </properties>
 
     <dependencies>
@@ -163,6 +164,11 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hswebframework</groupId>
+            <artifactId>hsweb-utils</artifactId>
+            <version>${hsweb-utils.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-lang</groupId>

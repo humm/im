@@ -112,7 +112,17 @@ public class BaseConst {
     /**
      * 编码格式
      */
+    public static String ENCODING_UTF = "UTF";
+
+    /**
+     * 编码格式
+     */
     public static String ENCODING_GBK = "GBK";
+
+    /**
+     * 编码格式
+     */
+    public static String ENCODING_GB = "GB";
 
     /**
      * zip文件

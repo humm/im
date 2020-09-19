@@ -2,6 +2,7 @@ package com.hoomoomoo.im.utils;
 
 import org.apache.commons.lang.StringUtils;
 import org.fusesource.jansi.Ansi;
+import org.hswebframework.utils.file.EncodingDetect;
 
 import java.io.File;
 import java.util.Arrays;
@@ -118,16 +119,46 @@ public class CommonUtils {
      * @date: 2020/09/09
      * @return:
      */
-    public static void println(String content, String color) {
-        if (StringUtils.isNotBlank(content) && StringUtils.startsWith(content, "[ ")) {
+    public static void print(String content, String color, boolean lineHead, boolean nextLine) {
+        if (lineHead && StringUtils.isNotBlank(content) && StringUtils.startsWith(content, "[ ")) {
             System.out.print(Ansi.ansi().fg(getColor(SYMBOL_EMPTY)).a(SYMBOL_STAR_3_MORE).reset());
-        } else {
+        } else if (lineHead) {
             System.out.print(Ansi.ansi().fg(getColor(SYMBOL_EMPTY)).a(SYMBOL_STAR_3).reset());
         }
         if (StringUtils.isBlank(color)) {
             color = SYMBOL_EMPTY;
         }
-        System.out.println(Ansi.ansi().fg(getColor(color)).a(content).reset());
+        if (nextLine) {
+            System.out.println(Ansi.ansi().fg(getColor(color)).a(content).reset());
+        } else {
+            System.out.print(Ansi.ansi().fg(getColor(color)).a(content).reset());
+        }
+    }
+
+    /**
+     * 控制台输出
+     *
+     * @param content
+     * @param color
+     * @author: humm23693
+     * @date: 2020/09/09
+     * @return:
+     */
+    public static void println(String content, String color, boolean lineHead) {
+        print(content, color, lineHead, true);
+    }
+
+    /**
+     * 控制台输出
+     *
+     * @param content
+     * @param color
+     * @author: humm23693
+     * @date: 2020/09/09
+     * @return:
+     */
+    public static void println(String content, String color) {
+        print(content, color, true, true);
     }
 
     /**
@@ -222,4 +253,22 @@ public class CommonUtils {
         }
         return exist;
     }
+
+    /**
+     * 获取文件编码格式
+     *
+     * @param filePath
+     * @author: humm23693
+     * @date: 2020/09/19
+     * @return:
+     */
+    public static String getFileEncode(String filePath) {
+        String fileEncode = EncodingDetect.getJavaEncode(filePath);
+        if (StringUtils.startsWith(fileEncode.toUpperCase(), ENCODING_GB)) {
+            return ENCODING_GBK;
+        } else {
+            return ENCODING_UTF8;
+        }
+    }
+
 }

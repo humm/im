@@ -132,11 +132,6 @@ public class ImFileUtils {
     private static int PAUSE_TIME_FAIL = 10;
 
     /**
-     * 错误次数
-     */
-    private static int ERROR_TIMES = 0;
-
-    /**
      * 工作目录前缀
      */
     private static String WORKSPACE = "";
@@ -172,6 +167,11 @@ public class ImFileUtils {
     private static String SVN_USERNAME = "";
 
     /**
+     * svn 版本号
+     */
+    private static long SVN_VERSION = -1L;
+
+    /**
      * svn 密码
      */
     private static String SVN_PASSWORD = "";
@@ -195,6 +195,11 @@ public class ImFileUtils {
      * 失败信息颜色
      */
     private static String ERROR_COLOR = "";
+
+    /**
+     * 参数信息颜色
+     */
+    private static String PARAMETER_COLOR = "";
 
     /**
      * 编码格式
@@ -272,6 +277,11 @@ public class ImFileUtils {
     private static final String OPERATE_MODE_UPDATE = "mode.update";
 
     /**
+     * svn更新
+     */
+    private static final String OPERATE_MODE_SVN = "mode.svn";
+
+    /**
      * 文件复制
      */
     private static final String STATUS_MODE_COPY = "复制";
@@ -334,6 +344,10 @@ public class ImFileUtils {
                     // 更新文件
                     updateFile();
                     break;
+                case OPERATE_MODE_SVN:
+                    // svn更新
+                    updateSvn();
+                    break;
                 default:
                     break;
             }
@@ -366,7 +380,7 @@ public class ImFileUtils {
      * @return:
      */
     private static void exit() {
-        CommonUtils.println(SYMBOL_NEXT_LINE, SYMBOL_EMPTY);
+        CommonUtils.println(SYMBOL_NEXT_LINE, SYMBOL_EMPTY, false);
         new Thread(() -> {
             // 连续操作模式 上一次操作正常
             if (OPERATE_CONTINUE && READ_NUM == COPY_NUM && !EXCEPTION_STATUS) {
@@ -379,6 +393,23 @@ public class ImFileUtils {
                 }
             }
         }).start();
+    }
+
+    /**
+     * svn更新
+     *
+     * @param
+     * @author: hoomoomoo
+     * @date: 2020/09/19
+     * @return:
+     */
+    private static void updateSvn() {
+        Iterator<Map.Entry<String, String[]>> iterator = VERSION_CONFIG.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String[]> item = iterator.next();
+            String[] version = item.getValue();
+            updateSvn(version[2], version[2]);
+        }
     }
 
     /**
@@ -577,16 +608,7 @@ public class ImFileUtils {
      * @return:
      */
     private static void updateScriptFile(String sourcePath, String targetPath) {
-        String encoding = ENCODING;
-        if (ERROR_TIMES != 0) {
-            if (ENCODING_GBK.equals(ENCODING)) {
-                ENCODING = ENCODING_UTF8;
-            } else if (ENCODING_UTF8.equals(ENCODING)) {
-                ENCODING = ENCODING_GBK;
-            }
-        }
         String fileContent = SYMBOL_NEXT_LINE + getFileContent(sourcePath);
-        ENCODING = encoding;
         List<String> sourceLines = new ArrayList<>();
         COPY_NUM--;
         try {
@@ -619,25 +641,17 @@ public class ImFileUtils {
             }
             Files.write(Paths.get(targetPath), lines, Charset.forName(ENCODING));
             COPY_NUM++;
-            ERROR_TIMES = 0;
         } catch (IOException e) {
+            if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION)) {
+                FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,是否与[ encoding ]保持一致", sourcePath));
+            }
+            e.printStackTrace();
+            EXCEPTION_STATUS = true;
             // 内容还原
             try {
                 Files.write(Paths.get(targetPath), sourceLines, Charset.forName(ENCODING));
             } catch (IOException ex) {
                 ex.printStackTrace();
-            }
-            if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION) && ERROR_TIMES == 0) {
-                // 编码转换再读取一次 编码转换在方法入口
-                ERROR_TIMES++;
-                updateScriptFile(sourcePath, targetPath);
-            } else if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION)) {
-                FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,调整配置项[ encoding ]为对应值", sourcePath));
-                EXCEPTION_STATUS = true;
-                e.printStackTrace();
-            } else {
-                EXCEPTION_STATUS = true;
-                e.printStackTrace();
             }
         }
     }
@@ -924,13 +938,15 @@ public class ImFileUtils {
      * @return:
      */
     private static String getFileContent(String fileName) {
+        // 获取文件编码格式
+        String fileEncode = CommonUtils.getFileEncode(fileName);
         BufferedReader reader = null;
         StringBuffer stringBuffer = new StringBuffer();
         StringBuffer msg = new StringBuffer();
         try {
             File file = new File(fileName);
             if (file.exists()) {
-                reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), ENCODING));
+                reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), fileEncode));
                 String content;
                 while ((content = reader.readLine()) != null) {
                     stringBuffer.append(content).append(SYMBOL_NEXT_LINE);
@@ -1063,8 +1079,11 @@ public class ImFileUtils {
             ERROR_COLOR = errorColor;
         }
         String parameterColor = config.get("im.parameter.color");
+        if (StringUtils.isNotBlank(parameterColor)) {
+            PARAMETER_COLOR = parameterColor;
+        }
         // 颜色debug
-        colorDebug(config.get("im.color.debug"));
+        debugColor(config.get("im.color.debug"));
         if (init) {
             StringBuffer star = new StringBuffer(SYMBOL_STAR_3);
             for (int i = 0; i < NAME_CONTENT.length() * 4; i++) {
@@ -1110,6 +1129,9 @@ public class ImFileUtils {
                 break;
             }
         }
+        if (OPERATE_MODE_SVN.equals(OPERATE_MODE)) {
+            return;
+        }
         // 版本号选择
         CommonUtils.println("请选择版本:", SYMBOL_EMPTY);
         Iterator<Map.Entry<String, String[]>> iterator = VERSION_CONFIG.entrySet().iterator();
@@ -1135,7 +1157,7 @@ public class ImFileUtils {
                 CommonUtils.println(String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]), parameterColor);
                 CommonUtils.println(String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
                 CommonUtils.println(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE), parameterColor);
-                if (!updateSvn(EXPORT_WORKSPACE)) {
+                if (!updateSvn(EXPORT_WORKSPACE, null)) {
                     throw new RuntimeException("svn更新失败...");
                 }
                 break;
@@ -1378,7 +1400,6 @@ public class ImFileUtils {
         READ_NUM = 0;
         COPY_NUM = 0;
         EXCEPTION_STATUS = false;
-        ERROR_TIMES = 0;
     }
 
     /**
@@ -1389,7 +1410,7 @@ public class ImFileUtils {
      * @date: 2020/09/10
      * @return:
      */
-    private static void colorDebug(String debug) {
+    private static void debugColor(String debug) {
         if (StringUtils.isNotBlank(debug) && Boolean.valueOf(debug)) {
             CommonUtils.println("black.. black... black", "black");
             CommonUtils.println("red.. red... red", "red");
@@ -1410,13 +1431,49 @@ public class ImFileUtils {
      * @date: 2020/09/12
      * @return:
      */
-    private static boolean updateSvn(String workspace) {
+    private static boolean updateSvn(String workspace, String versionName) {
         if (SVN_UPDATE && CommonUtils.isSuffixDirectory(new File(workspace), SVN_FILE_NAME)) {
-            CommonUtils.println("svn更新执行中...", SYMBOL_EMPTY);
-            Long svnVersion = SvnUtils.update(SVN_USERNAME, SVN_PASSWORD, workspace);
-            CommonUtils.println(String.format("svn已更新至版本[ %s ]", svnVersion), SYMBOL_EMPTY);
-            return svnVersion > 0;
+            if (StringUtils.isNotBlank(versionName)) {
+                CommonUtils.println(String.format("更新工作目录[ %s ]", versionName), PARAMETER_COLOR);
+            }
+            CommonUtils.print("svn更新执行中...", SYMBOL_EMPTY, true, false);
+            SVN_VERSION = -1L;
+            executing();
+            long svnVersion = SvnUtils.update(SVN_USERNAME, SVN_PASSWORD, workspace);
+            SVN_VERSION = svnVersion;
+            while (true) {
+                CommonUtils.sleep(1);
+                if (SVN_VERSION > svnVersion) {
+                    SVN_VERSION--;
+                    break;
+                }
+            }
+            return SVN_VERSION > 0;
         }
         return true;
+    }
+
+    /**
+     * 执行中标识
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2020/09/19
+     * @return:
+     */
+    private static void executing() {
+        new Thread(() -> {
+            while (true) {
+                CommonUtils.sleep(1);
+                if (SVN_VERSION == -1L) {
+                    CommonUtils.print("...", SYMBOL_EMPTY, false, false);
+                } else {
+                    SVN_VERSION++;
+                    CommonUtils.println("...", SYMBOL_EMPTY, false);
+                    CommonUtils.println(String.format("svn已更新至版本[ %s ]", SVN_VERSION), SYMBOL_EMPTY);
+                    break;
+                }
+            }
+        }).start();
     }
 }
