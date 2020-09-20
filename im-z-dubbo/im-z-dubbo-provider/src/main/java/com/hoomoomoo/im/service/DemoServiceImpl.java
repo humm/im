@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author humm23693
+ * @author hoomoomoo
  * @description TODO
  * @package com.hoomoomoo.im.service
  * @date 2020/08/22

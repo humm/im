@@ -74,7 +74,7 @@ public class CommonUtils {
      * unicode转中文字符串
      *
      * @param str
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/03
      * @return:
      */
@@ -98,7 +98,7 @@ public class CommonUtils {
      * 深沉睡眠
      *
      * @param sleepTime
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/08
      * @return:
      */
@@ -115,7 +115,7 @@ public class CommonUtils {
      *
      * @param content
      * @param color
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/09
      * @return:
      */
@@ -140,7 +140,7 @@ public class CommonUtils {
      *
      * @param content
      * @param color
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/09
      * @return:
      */
@@ -153,7 +153,7 @@ public class CommonUtils {
      *
      * @param content
      * @param color
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/09
      * @return:
      */
@@ -165,7 +165,7 @@ public class CommonUtils {
      * 获取颜色
      *
      * @param color
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/09
      * @return:
      */
@@ -209,7 +209,7 @@ public class CommonUtils {
      * 反斜线转换
      *
      * @param value
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/06
      * @return:
      */
@@ -225,11 +225,11 @@ public class CommonUtils {
      *
      * @param file
      * @param suffix
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/12
      * @return:
      */
-    public static Boolean isSuffixDirectory(File file, String suffix) {
+    public static boolean isSuffixDirectory(File file, String suffix) {
         boolean exist = false;
         if (file != null && suffix != null) {
             if (!file.isDirectory()) {
@@ -258,7 +258,7 @@ public class CommonUtils {
      * 获取文件编码格式
      *
      * @param filePath
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/19
      * @return:
      */

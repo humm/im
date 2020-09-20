@@ -5,7 +5,7 @@ import com.hoomoomoo.im.model.DemoModel;
 import java.util.List;
 
 /**
- * @author humm23693
+ * @author hoomoomoo
  * @description TODO
  * @package com.hoomoomoo.im.api
  * @date 2020/08/22

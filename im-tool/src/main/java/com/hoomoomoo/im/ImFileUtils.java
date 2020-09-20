@@ -34,7 +34,7 @@ public class ImFileUtils {
     /**
      * 应用版本
      */
-    private static String NAME_VERSION = "   V3.0.0";
+    private static String NAME_VERSION = "   V3.1.0";
 
     /**
      * 配置文件
@@ -154,12 +154,12 @@ public class ImFileUtils {
     /**
      * 成功后删除文件
      */
-    private static Boolean DELETE_AFTER_SUCCESS = true;
+    private static boolean DELETE_AFTER_SUCCESS = true;
 
     /**
      * svn更新
      */
-    private static Boolean SVN_UPDATE = true;
+    private static boolean SVN_UPDATE = true;
 
     /**
      * svn 用户名
@@ -169,7 +169,7 @@ public class ImFileUtils {
     /**
      * svn 版本号
      */
-    private static long SVN_VERSION = -1L;
+    private static Long SVN_VERSION = -1L;
 
     /**
      * svn 密码
@@ -319,7 +319,7 @@ public class ImFileUtils {
      * 主入口
      *
      * @param config
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/07
      * @return:
      */
@@ -375,7 +375,7 @@ public class ImFileUtils {
      * 应用退出控制
      *
      * @param
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/08
      * @return:
      */
@@ -404,11 +404,18 @@ public class ImFileUtils {
      * @return:
      */
     private static void updateSvn() {
+        Map updateMap = new HashMap(16);
         Iterator<Map.Entry<String, String[]>> iterator = VERSION_CONFIG.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry<String, String[]> item = iterator.next();
             String[] version = item.getValue();
-            updateSvn(version[2], version[2]);
+            if (updateMap.containsKey(version[2])) {
+                continue;
+            } else {
+                updateMap.put(version[2], version[2]);
+            }
+            updateSvn(version[2]);
+
         }
     }
 
@@ -642,9 +649,6 @@ public class ImFileUtils {
             Files.write(Paths.get(targetPath), lines, Charset.forName(ENCODING));
             COPY_NUM++;
         } catch (IOException e) {
-            if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION)) {
-                FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,是否与[ encoding ]保持一致", sourcePath));
-            }
             e.printStackTrace();
             EXCEPTION_STATUS = true;
             // 内容还原
@@ -652,6 +656,9 @@ public class ImFileUtils {
                 Files.write(Paths.get(targetPath), sourceLines, Charset.forName(ENCODING));
             } catch (IOException ex) {
                 ex.printStackTrace();
+            }
+            if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION)) {
+                FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,是否与[ encoding ]保持一致", sourcePath));
             }
         }
     }
@@ -1054,7 +1061,7 @@ public class ImFileUtils {
      *
      * @param config
      * @param init
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/07
      * @return:
      */
@@ -1157,8 +1164,8 @@ public class ImFileUtils {
                 CommonUtils.println(String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]), parameterColor);
                 CommonUtils.println(String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
                 CommonUtils.println(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE), parameterColor);
-                if (!updateSvn(EXPORT_WORKSPACE, null)) {
-                    throw new RuntimeException("svn更新失败...");
+                if (!updateSvn(EXPORT_WORKSPACE)) {
+                    throw new RuntimeException("svn同步失败");
                 }
                 break;
             }
@@ -1249,7 +1256,7 @@ public class ImFileUtils {
      * 读取配置文件
      *
      * @param
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/03
      * @return:
      */
@@ -1294,7 +1301,7 @@ public class ImFileUtils {
      * 获取更新模式指定文件定位
      *
      * @param config
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/06
      * @return:
      */
@@ -1320,7 +1327,7 @@ public class ImFileUtils {
      * 获取配置模式
      *
      * @param config
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/06
      * @return:
      */
@@ -1350,7 +1357,7 @@ public class ImFileUtils {
      * 获取配置版本
      *
      * @param config
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/06
      * @return:
      */
@@ -1388,7 +1395,7 @@ public class ImFileUtils {
      * 参数清理
      *
      * @param
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/09
      * @return:
      */
@@ -1406,7 +1413,7 @@ public class ImFileUtils {
      * 颜色debug
      *
      * @param debug
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/10
      * @return:
      */
@@ -1427,19 +1434,17 @@ public class ImFileUtils {
      * svn更新
      *
      * @param workspace
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/12
      * @return:
      */
-    private static boolean updateSvn(String workspace, String versionName) {
+    private static boolean updateSvn(String workspace) {
+        CommonUtils.println(String.format("同步工作目录[ %s ]", workspace), PARAMETER_COLOR);
         if (SVN_UPDATE && CommonUtils.isSuffixDirectory(new File(workspace), SVN_FILE_NAME)) {
-            if (StringUtils.isNotBlank(versionName)) {
-                CommonUtils.println(String.format("更新工作目录[ %s ]", versionName), PARAMETER_COLOR);
-            }
-            CommonUtils.print("svn更新执行中...", SYMBOL_EMPTY, true, false);
+            CommonUtils.print("svn同步执行中...", SYMBOL_EMPTY, true, false);
             SVN_VERSION = -1L;
             executing();
-            long svnVersion = SvnUtils.update(SVN_USERNAME, SVN_PASSWORD, workspace);
+            Long svnVersion = SvnUtils.update(SVN_USERNAME, SVN_PASSWORD, workspace);
             SVN_VERSION = svnVersion;
             while (true) {
                 CommonUtils.sleep(1);
@@ -1450,6 +1455,7 @@ public class ImFileUtils {
             }
             return SVN_VERSION > 0;
         }
+        CommonUtils.println("非svn目录 无需同步", SYMBOL_EMPTY);
         return true;
     }
 
@@ -1457,7 +1463,7 @@ public class ImFileUtils {
      * 执行中标识
      *
      * @param
-     * @author: humm23693
+     * @author: hoomoomoo
      * @date: 2020/09/19
      * @return:
      */
@@ -1466,11 +1472,15 @@ public class ImFileUtils {
             while (true) {
                 CommonUtils.sleep(1);
                 if (SVN_VERSION == -1L) {
-                    CommonUtils.print("...", SYMBOL_EMPTY, false, false);
+                    CommonUtils.print(SYMBOL_POINT_3, SYMBOL_EMPTY, false, false);
                 } else {
+                    CommonUtils.println(SYMBOL_EMPTY, SYMBOL_EMPTY, false);
+                    if (SVN_VERSION > 0) {
+                        CommonUtils.println(String.format("svn已同步至版本[ %s ]", SVN_VERSION), SYMBOL_EMPTY);
+                    } else {
+                        CommonUtils.println("svn同步失败", SYMBOL_EMPTY);
+                    }
                     SVN_VERSION++;
-                    CommonUtils.println("...", SYMBOL_EMPTY, false);
-                    CommonUtils.println(String.format("svn已更新至版本[ %s ]", SVN_VERSION), SYMBOL_EMPTY);
                     break;
                 }
             }

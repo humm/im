@@ -70,6 +70,11 @@ public class BaseConst {
     public static final String SYMBOL_POINT_1 = ".";
 
     /**
+     * 点符号
+     */
+    public static final String SYMBOL_POINT_3 = "...";
+
+    /**
      * 空格
      */
     public static final String SYMBOL_SPACE = " ";
