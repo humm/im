@@ -34,7 +34,7 @@ public class ImFileUtils {
     /**
      * 应用版本
      */
-    private static String NAME_VERSION = "   V3.1.0";
+    private static String NAME_VERSION = "   3.1.0";
 
     /**
      * 配置文件
