@@ -8,6 +8,9 @@ import org.tmatesoft.svn.core.wc.*;
 
 import java.io.File;
 
+import static com.hoomoomoo.im.ImFileUtils.ERROR_COLOR;
+import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
+
 /**
  * @author
  * @description svn工具类
@@ -15,6 +18,10 @@ import java.io.File;
  * @date 2020/09/10
  */
 public class SvnUtils {
+
+    private final static String SVN_ERROR_CODE_E170001 = "E170001";
+    private final static String SVN_ERROR_CODE_E175002 = "E175002";
+    private final static String SVN_ERROR_CODE_E155004 = "E155004";
 
     /**
      * svn 更新
@@ -34,7 +41,16 @@ public class SvnUtils {
         try {
             return svnUpdateClient.doUpdate(workspace, svnRevision, svnDepth, false, false);
         } catch (SVNException e) {
-            e.printStackTrace();
+            CommonUtils.println(SYMBOL_EMPTY, SYMBOL_EMPTY, false);
+            if (e.toString().contains(SVN_ERROR_CODE_E170001)) {
+                CommonUtils.println("svn同步异常 请检查配置项[ svn.username ] [ svn.password ]", ERROR_COLOR);
+            } else if (e.toString().contains(SVN_ERROR_CODE_E175002)) {
+                CommonUtils.println("svn同步异常 请检查网络连接是否正常", ERROR_COLOR);
+            } else if (e.toString().contains(SVN_ERROR_CODE_E155004)) {
+                CommonUtils.println(String.format("svn同步异常 请至工作目录[ %s ]执行cleanUp并选择 Break write locks", workspace.getAbsolutePath()), ERROR_COLOR);
+            } else {
+                e.printStackTrace();
+            }
         }
         return 0L;
     }

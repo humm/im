@@ -34,7 +34,7 @@ public class ImFileUtils {
     /**
      * 应用版本
      */
-    private static String NAME_VERSION = "   3.1.0";
+    private static String NAME_VERSION = "   3.1.1";
 
     /**
      * 配置文件
@@ -194,7 +194,7 @@ public class ImFileUtils {
     /**
      * 失败信息颜色
      */
-    private static String ERROR_COLOR = "";
+    public static String ERROR_COLOR = "";
 
     /**
      * 参数信息颜色
@@ -1132,7 +1132,7 @@ public class ImFileUtils {
                 CommonUtils.println("模式不存在 请重新选择", errorColor);
             } else {
                 OPERATE_MODE = MODE_CONFIG.get(code)[2];
-                CommonUtils.println(String.format("模式设置为[ %s ]", MODE_CONFIG.get(code)[1]), parameterColor);
+                CommonUtils.println(String.format("模式设置为[ %s ]", MODE_CONFIG.get(code)[1]), successColor);
                 break;
             }
         }
@@ -1161,11 +1161,11 @@ public class ImFileUtils {
                 WORKSPACE = VERSION_CONFIG.get(code)[1];
                 EXPORT_WORKSPACE = VERSION_CONFIG.get(code)[2];
                 OPERATE_VERSION = VERSION_CONFIG.get(code)[4];
-                CommonUtils.println(String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]), parameterColor);
+                CommonUtils.println(String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]), successColor);
                 CommonUtils.println(String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
                 CommonUtils.println(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE), parameterColor);
                 if (!updateSvn(EXPORT_WORKSPACE)) {
-                    throw new RuntimeException("svn同步失败");
+                    throw new RuntimeException("svn同步异常");
                 }
                 break;
             }
@@ -1477,8 +1477,6 @@ public class ImFileUtils {
                     CommonUtils.println(SYMBOL_EMPTY, SYMBOL_EMPTY, false);
                     if (SVN_VERSION > 0) {
                         CommonUtils.println(String.format("svn已同步至版本[ %s ]", SVN_VERSION), SYMBOL_EMPTY);
-                    } else {
-                        CommonUtils.println("svn同步失败", SYMBOL_EMPTY);
                     }
                     SVN_VERSION++;
                     break;

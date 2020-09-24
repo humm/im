@@ -237,6 +237,9 @@ public class CommonUtils {
             }
             // 判断当前文件下是否存在文件
             File[] fileList = file.listFiles();
+            if (fileList == null) {
+                return false;
+            }
             for (File item : fileList) {
                 if (item.getName().equals(suffix)) {
                     exist = true;
