@@ -22,6 +22,7 @@ public class SvnUtils {
     private final static String SVN_ERROR_CODE_E170001 = "E170001";
     private final static String SVN_ERROR_CODE_E175002 = "E175002";
     private final static String SVN_ERROR_CODE_E155004 = "E155004";
+    private static Integer SVN_ERROR_TIMES = 0;
 
     /**
      * svn 更新
@@ -39,7 +40,9 @@ public class SvnUtils {
         SVNUpdateClient svnUpdateClient = svnClientManager.getUpdateClient();
         svnUpdateClient.setIgnoreExternals(false);
         try {
-            return svnUpdateClient.doUpdate(workspace, svnRevision, svnDepth, false, false);
+            Long version = svnUpdateClient.doUpdate(workspace, svnRevision, svnDepth, false, false);
+            SVN_ERROR_TIMES = 0;
+            return version;
         } catch (SVNException e) {
             CommonUtils.println(SYMBOL_EMPTY, SYMBOL_EMPTY, false);
             if (e.toString().contains(SVN_ERROR_CODE_E170001)) {
@@ -47,7 +50,16 @@ public class SvnUtils {
             } else if (e.toString().contains(SVN_ERROR_CODE_E175002)) {
                 CommonUtils.println("svn同步异常 请检查网络连接是否正常", ERROR_COLOR);
             } else if (e.toString().contains(SVN_ERROR_CODE_E155004)) {
-                CommonUtils.println(String.format("svn同步异常 请至工作目录[ %s ]执行cleanUp并选择 Break write locks", workspace.getAbsolutePath()), ERROR_COLOR);
+                if (SVN_ERROR_TIMES == 0) {
+                    SVN_ERROR_TIMES++;
+                    if (cleanUp(svnClientManager, workspace)) {
+                        update(svnClientManager, workspace, svnRevision, svnDepth);
+                    } else {
+                        CommonUtils.println(String.format("svn同步异常 请至工作目录[ %s ]执行cleanUp并选择 Break write locks", workspace.getAbsolutePath()), ERROR_COLOR);
+                    }
+                } else {
+                    CommonUtils.println(String.format("svn同步异常 请至工作目录[ %s ]执行cleanUp并选择 Break write locks", workspace.getAbsolutePath()), ERROR_COLOR);
+                }
             } else {
                 e.printStackTrace();
             }
