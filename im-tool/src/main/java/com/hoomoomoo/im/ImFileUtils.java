@@ -129,7 +129,7 @@ public class ImFileUtils {
     /**
      * 失败暂停时间
      */
-    private static int PAUSE_TIME_FAIL = 10;
+    private static int PAUSE_TIME_FAIL = 30;
 
     /**
      * 工作目录前缀
@@ -414,8 +414,10 @@ public class ImFileUtils {
             } else {
                 updateMap.put(version[2], version[2]);
             }
-            updateSvn(version[2]);
-
+            if (!updateSvn(version[2])) {
+                EXCEPTION_STATUS = true;
+                throw new RuntimeException("svn同步异常");
+            }
         }
     }
 
@@ -1165,6 +1167,7 @@ public class ImFileUtils {
                 CommonUtils.println(String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
                 CommonUtils.println(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE), parameterColor);
                 if (!updateSvn(EXPORT_WORKSPACE)) {
+                    EXCEPTION_STATUS = true;
                     throw new RuntimeException("svn同步异常");
                 }
                 break;
