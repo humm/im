@@ -34,7 +34,7 @@ public class ImFileUtils {
     /**
      * 应用版本
      */
-    private static String NAME_VERSION = "   3.2.0";
+    private static String NAME_VERSION = "   3.2.1";
 
     /**
      * 配置文件
@@ -753,7 +753,7 @@ public class ImFileUtils {
         }
         try {
             String inputPath;
-            bufferedReader = new BufferedReader(new FileReader(checkFile(FILE_PATH)));
+            bufferedReader = getBufferedReader(FILE_PATH);
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
@@ -889,7 +889,6 @@ public class ImFileUtils {
             CommonUtils.println(FAIL_MESSAGE.toString(), ERROR_COLOR);
             if (STATUS_MODE_COPY.equals(statusType) || STATUS_MODE_MERGE.equals(statusType)) {
                 CommonUtils.println(String.format("请检查[ %s ]配置文件路径是否存在", FILE_PATH), ERROR_COLOR);
-                CommonUtils.println(String.format("请检查[ %s ]编码格式是否为[ GBK ]", FILE_PATH), ERROR_COLOR);
             }
         }
     }
@@ -906,7 +905,7 @@ public class ImFileUtils {
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
-            bufferedReader = new BufferedReader(new FileReader(checkFile(FILE_PATH)));
+            bufferedReader = getBufferedReader(FILE_PATH);
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
@@ -947,15 +946,13 @@ public class ImFileUtils {
      * @return:
      */
     private static String getFileContent(String fileName) {
-        // 获取文件编码格式
-        String fileEncode = CommonUtils.getFileEncode(fileName);
         BufferedReader reader = null;
         StringBuffer stringBuffer = new StringBuffer();
         StringBuffer msg = new StringBuffer();
         try {
             File file = new File(fileName);
             if (file.exists()) {
-                reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), fileEncode));
+                reader = getBufferedReader(fileName);
                 String content;
                 while ((content = reader.readLine()) != null) {
                     stringBuffer.append(content).append(SYMBOL_NEXT_LINE);
@@ -1028,7 +1025,7 @@ public class ImFileUtils {
      * @date: 2020/08/23
      * @return:
      */
-    private static File checkFile(String fileName) {
+    private static void checkFile(String fileName) {
         File file;
         if (START_MODE_PROJECT.equals(START_MODE)) {
             file = new File(ImFileUtils.class.getClassLoader().getResource(fileName).getFile());
@@ -1038,7 +1035,6 @@ public class ImFileUtils {
         if (!file.exists() || file.isDirectory()) {
             throw new RuntimeException(String.format("源文件配置文件[ %s ] 不存在", fileName));
         }
-        return file;
     }
 
     /**
@@ -1268,7 +1264,7 @@ public class ImFileUtils {
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
-            bufferedReader = new BufferedReader(new FileReader(checkFile(PROPERTIES_PATH)));
+            bufferedReader = getBufferedReader(PROPERTIES_PATH);
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
                     if (StringUtils.isBlank(inputPath.trim()) || inputPath.trim().startsWith(SYMBOL_WEI)) {
@@ -1486,5 +1482,19 @@ public class ImFileUtils {
                 }
             }
         }).start();
+    }
+
+    /**
+     * 获取文件编码格式
+     *
+     * @param fileName
+     * @author: hoomoomoo
+     * @date: 2020/10/17
+     * @return:
+     */
+    private static BufferedReader getBufferedReader(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
+        checkFile(fileName);
+        String fileEncode = CommonUtils.getFileEncode(fileName);
+        return new BufferedReader(new InputStreamReader(new FileInputStream(fileName), fileEncode));
     }
 }
