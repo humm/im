@@ -351,10 +351,10 @@ public class ImFileUtils {
                 default:
                     break;
             }
-            // 连续操作模式控制应用退出
-            exit();
             // 清除上一次操作信息
             clean();
+            // 连续操作模式控制应用退出
+            exit();
             // 连续操作模式
             run(config, false);
         } catch (Exception e) {
@@ -386,8 +386,8 @@ public class ImFileUtils {
             if (OPERATE_CONTINUE && READ_NUM == COPY_NUM && !EXCEPTION_STATUS) {
                 while (StringUtils.isBlank(OPERATE_MODE)) {
                     CommonUtils.sleep(1);
-                    OPERATE_CONTINUE_TIME--;
-                    if (OPERATE_CONTINUE_TIME == 0) {
+                    PAUSE_TIME_SUCCESS--;
+                    if (PAUSE_TIME_SUCCESS == 0) {
                         System.exit(0);
                     }
                 }
@@ -1025,7 +1025,7 @@ public class ImFileUtils {
      * @date: 2020/08/23
      * @return:
      */
-    private static void checkFile(String fileName) {
+    private static File checkFile(String fileName) {
         File file;
         if (START_MODE_PROJECT.equals(START_MODE)) {
             file = new File(ImFileUtils.class.getClassLoader().getResource(fileName).getFile());
@@ -1035,6 +1035,7 @@ public class ImFileUtils {
         if (!file.exists() || file.isDirectory()) {
             throw new RuntimeException(String.format("源文件配置文件[ %s ] 不存在", fileName));
         }
+        return file;
     }
 
     /**
@@ -1493,8 +1494,12 @@ public class ImFileUtils {
      * @return:
      */
     private static BufferedReader getBufferedReader(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
-        checkFile(fileName);
-        String fileEncode = CommonUtils.getFileEncode(fileName);
-        return new BufferedReader(new InputStreamReader(new FileInputStream(fileName), fileEncode));
+        File file = checkFile(fileName);
+        if (START_MODE_PROJECT.equals(START_MODE)) {
+            return new BufferedReader(new FileReader(file));
+        } else {
+            String fileEncode = CommonUtils.getFileEncode(fileName);
+            return new BufferedReader(new InputStreamReader(new FileInputStream(fileName), fileEncode));
+        }
     }
 }
