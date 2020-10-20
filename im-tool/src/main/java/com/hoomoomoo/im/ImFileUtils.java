@@ -107,11 +107,6 @@ public class ImFileUtils {
     private static boolean EXCEPTION_STATUS = false;
 
     /**
-     * 暂停模式
-     */
-    private static boolean PAUSE_MODE = true;
-
-    /**
      * 连续操作模式
      */
     private static boolean OPERATE_CONTINUE = true;
@@ -120,16 +115,6 @@ public class ImFileUtils {
      * 连续操作间隔时间
      */
     private static int OPERATE_CONTINUE_TIME = 5;
-
-    /**
-     * 成功暂停时间
-     */
-    private static int PAUSE_TIME_SUCCESS = 3;
-
-    /**
-     * 失败暂停时间
-     */
-    private static int PAUSE_TIME_FAIL = 30;
 
     /**
      * 工作目录前缀
@@ -351,24 +336,29 @@ public class ImFileUtils {
                 default:
                     break;
             }
-            // 清除上一次操作信息
-            clean();
-            // 连续操作模式控制应用退出
-            exit();
-            // 连续操作模式
-            run(config, false);
+            continueOperate(config);
         } catch (Exception e) {
             e.printStackTrace();
             EXCEPTION_STATUS = true;
+            continueOperate(config);
         }
-        // 暂停模式控制
-        if (PAUSE_MODE) {
-            int sleepTime = PAUSE_TIME_SUCCESS;
-            if (READ_NUM != COPY_NUM || EXCEPTION_STATUS) {
-                sleepTime = PAUSE_TIME_FAIL;
-            }
-            CommonUtils.sleep(sleepTime);
-        }
+    }
+
+    /**
+     * 连续操作
+     *
+     * @param config
+     * @author: hoomoomoo
+     * @date: 2020/10/20
+     * @return:
+     */
+    private static void continueOperate(Map config) {
+        // 清除上一次操作信息
+        clean();
+        // 连续操作模式控制应用退出
+        exit();
+        // 连续操作模式
+        run(config, false);
     }
 
     /**
@@ -381,15 +371,17 @@ public class ImFileUtils {
      */
     private static void exit() {
         CommonUtils.println(SYMBOL_NEXT_LINE, SYMBOL_EMPTY, false);
+        if (!OPERATE_CONTINUE) {
+            CommonUtils.sleep(5);
+            System.exit(0);
+        }
         new Thread(() -> {
-            // 连续操作模式 上一次操作正常
-            if (OPERATE_CONTINUE && READ_NUM == COPY_NUM && !EXCEPTION_STATUS) {
-                while (StringUtils.isBlank(OPERATE_MODE)) {
-                    CommonUtils.sleep(1);
-                    PAUSE_TIME_SUCCESS--;
-                    if (PAUSE_TIME_SUCCESS == 0) {
-                        System.exit(0);
-                    }
+            // 连续操作模式
+            while (StringUtils.isBlank(OPERATE_MODE)) {
+                CommonUtils.sleep(1);
+                OPERATE_CONTINUE_TIME--;
+                if (OPERATE_CONTINUE_TIME == 0) {
+                    System.exit(0);
                 }
             }
         }).start();
@@ -1225,24 +1217,7 @@ public class ImFileUtils {
         }
         CommonUtils.println(String.format("连续操作间隔时间[ %s ]", OPERATE_CONTINUE_TIME), parameterColor);
 
-        // 暂停模式
-        String pauseMode = config.get("pause.mode");
-        if (StringUtils.isNotBlank(pauseMode)) {
-            PAUSE_MODE = Boolean.valueOf(pauseMode);
-        }
-        CommonUtils.println(String.format("暂停模式[ %s ]", PAUSE_MODE), parameterColor);
-        if (PAUSE_MODE) {
-            String pauseTimeSuccess = config.get("pause.time.success");
-            if (StringUtils.isNotBlank(pauseTimeSuccess)) {
-                PAUSE_TIME_SUCCESS = Integer.valueOf(pauseTimeSuccess);
-            }
-            CommonUtils.println(String.format("成功暂停时间[ %s ]", PAUSE_TIME_SUCCESS), parameterColor);
-            String pauseTimeFail = config.get("pause.time.fail");
-            if (StringUtils.isNotBlank(pauseTimeFail)) {
-                PAUSE_TIME_FAIL = Integer.valueOf(pauseTimeFail);
-            }
-            CommonUtils.println(String.format("失败暂停时间[ %s ]", PAUSE_TIME_FAIL), parameterColor);
-        }
+        // 复制模式排除时间戳
         String timestamp = config.get("mode.copy.exclude.timestamp");
         if (StringUtils.isNotBlank(timestamp)) {
             String[] items = timestamp.split(SYMBOL_DOLLAR);
