@@ -273,5 +273,4 @@ public class CommonUtils {
             return ENCODING_UTF8;
         }
     }
-
 }

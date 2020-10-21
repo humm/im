@@ -1017,17 +1017,15 @@ public class ImFileUtils {
      * @date: 2020/08/23
      * @return:
      */
-    private static File checkFile(String fileName) {
-        File file;
+    private static String checkFile(String fileName) {
         if (START_MODE_PROJECT.equals(START_MODE)) {
-            file = new File(ImFileUtils.class.getClassLoader().getResource(fileName).getFile());
-        } else {
-            file = new File(fileName);
+            fileName = ImFileUtils.class.getClassLoader().getResource(fileName).getFile();
         }
+        File file = new File(fileName);
         if (!file.exists() || file.isDirectory()) {
             throw new RuntimeException(String.format("源文件配置文件[ %s ] 不存在", fileName));
         }
-        return file;
+        return fileName;
     }
 
     /**
@@ -1469,12 +1467,8 @@ public class ImFileUtils {
      * @return:
      */
     private static BufferedReader getBufferedReader(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
-        File file = checkFile(fileName);
-        if (START_MODE_PROJECT.equals(START_MODE)) {
-            return new BufferedReader(new FileReader(file));
-        } else {
-            String fileEncode = CommonUtils.getFileEncode(fileName);
-            return new BufferedReader(new InputStreamReader(new FileInputStream(fileName), fileEncode));
-        }
+        fileName = checkFile(fileName);
+        String fileEncode = CommonUtils.getFileEncode(fileName);
+        return new BufferedReader(new InputStreamReader(new FileInputStream(fileName), fileEncode));
     }
 }

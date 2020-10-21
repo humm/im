@@ -12,7 +12,7 @@
     <description>工具信息</description>
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-tool</artifactId>
-    <version>3.2.1</version>
+    <version>3.2.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <build>
