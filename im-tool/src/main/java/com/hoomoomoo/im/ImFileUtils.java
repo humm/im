@@ -649,10 +649,11 @@ public class ImFileUtils {
             try {
                 Files.write(Paths.get(targetPath), sourceLines, Charset.forName(ENCODING));
             } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION)) {
-                FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,是否与[ encoding ]保持一致", sourcePath));
+                if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION)) {
+                    FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,是否与[ encoding ]保持一致", sourcePath));
+                } else {
+                    ex.printStackTrace();
+                }
             }
         }
     }
