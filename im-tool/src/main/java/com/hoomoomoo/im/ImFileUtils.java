@@ -745,7 +745,7 @@ public class ImFileUtils {
         }
         try {
             String inputPath;
-            bufferedReader = getBufferedReader(FILE_PATH);
+            bufferedReader = getBufferedReader(FILE_PATH, true);
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
@@ -897,7 +897,7 @@ public class ImFileUtils {
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
-            bufferedReader = getBufferedReader(FILE_PATH);
+            bufferedReader = getBufferedReader(FILE_PATH, true);
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
                     if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
@@ -944,7 +944,7 @@ public class ImFileUtils {
         try {
             File file = new File(fileName);
             if (file.exists()) {
-                reader = getBufferedReader(fileName);
+                reader = getBufferedReader(fileName, false);
                 String content;
                 while ((content = reader.readLine()) != null) {
                     stringBuffer.append(content).append(SYMBOL_NEXT_LINE);
@@ -1238,7 +1238,7 @@ public class ImFileUtils {
         BufferedReader bufferedReader = null;
         try {
             String inputPath;
-            bufferedReader = getBufferedReader(PROPERTIES_PATH);
+            bufferedReader = getBufferedReader(PROPERTIES_PATH, true);
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
                     if (StringUtils.isBlank(inputPath.trim()) || inputPath.trim().startsWith(SYMBOL_WEI)) {
@@ -1445,7 +1445,7 @@ public class ImFileUtils {
             while (true) {
                 CommonUtils.sleep(1);
                 if (SVN_VERSION == -1L) {
-                    CommonUtils.print(SYMBOL_POINT_3, SYMBOL_EMPTY, false, false);
+                    CommonUtils.print(SYMBOL_POINT_1, SYMBOL_EMPTY, false, false);
                 } else {
                     CommonUtils.println(SYMBOL_EMPTY, SYMBOL_EMPTY, false);
                     if (SVN_VERSION > 0) {
@@ -1466,8 +1466,11 @@ public class ImFileUtils {
      * @date: 2020/10/17
      * @return:
      */
-    private static BufferedReader getBufferedReader(String fileName) throws FileNotFoundException, UnsupportedEncodingException {
-        fileName = checkFile(fileName);
+    private static BufferedReader getBufferedReader(String fileName, boolean changeName) throws FileNotFoundException,
+            UnsupportedEncodingException {
+        if (changeName) {
+            fileName = checkFile(fileName);
+        }
         String fileEncode = CommonUtils.getFileEncode(fileName);
         return new BufferedReader(new InputStreamReader(new FileInputStream(fileName), fileEncode));
     }
