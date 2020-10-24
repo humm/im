@@ -51,14 +51,15 @@ public class AuthFilterConfig implements Filter {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         String servletPath = request.getServletPath();
-        if (WECHAT_REQUEST.contains(servletPath)) {
+        if (WECHAT_REQUEST.contains(servletPath) || servletPath.contains(SWAGGER_REQUEST) || servletPath.contains(SWAGGER_API_DOCS_REQUEST)) {
+            LoginFilterConfig.isSwagger(request, servletPath);
             filterChain.doFilter(request, response);
             return;
         }
         String menuId = request.getParameter(STR_KEY_MEND_ID);
         if (StringUtils.isNotBlank(menuId)) {
             SessionBean sessionBean = SysSessionUtils.getSession();
-            if(sessionBean != null){
+            if (sessionBean != null) {
                 if (!STR_KEY_MEND_ID_SKIP.equals(menuId) && !ADMIN_CODE.equals(sessionBean.getUserCode()) && !servletPath.startsWith(PAGE_ROLE)) {
                     SysMenuQueryModel sysMenuQueryModel = new SysMenuQueryModel();
                     sysMenuQueryModel.setUserId(sessionBean.getUserId());
@@ -72,6 +73,11 @@ public class AuthFilterConfig implements Filter {
                 }
             }
         } else {
+            SessionBean sessionBean = SysSessionUtils.getSession();
+            if (sessionBean != null && sessionBean.getIsSwagger()) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             int index = servletPath.lastIndexOf(SLASH);
             String requestSuffix = servletPath.substring(index + 1);
             String ignoreRequest = new StringBuffer(IGNORE_REQUEST).append(COMMA).append(PAGE_INDEX).append(COMMA).append(PAGE_CONSOLE).toString();

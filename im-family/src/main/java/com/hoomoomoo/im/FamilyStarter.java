@@ -19,11 +19,11 @@ import static com.hoomoomoo.im.consts.BaseCueConst.LOG_BUSINESS_TYPE_APP_START;
 @ServletComponentScan
 public class FamilyStarter {
 
-	private static final Logger logger = LoggerFactory.getLogger(FamilyStarter.class);
+    private static final Logger logger = LoggerFactory.getLogger(FamilyStarter.class);
 
-	public static void main(String[] args){
-		SpringApplication.run(FamilyStarter.class, args);
-		com.hoomoomoo.im.util.SysLogUtils.configSuccess(logger, LOG_BUSINESS_TYPE_APP_START);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FamilyStarter.class, args);
+        com.hoomoomoo.im.util.SysLogUtils.configSuccess(logger, LOG_BUSINESS_TYPE_APP_START);
+    }
 
 }

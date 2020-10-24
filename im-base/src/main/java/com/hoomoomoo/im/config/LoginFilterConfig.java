@@ -43,7 +43,7 @@ public class LoginFilterConfig implements Filter {
         if (sysMenuService == null) {
             ServletContext servletContext = filterConfig.getServletContext();
             ApplicationContext ctx = WebApplicationContextUtils.getWebApplicationContext(servletContext);
-            sysMenuService = ctx.getBean("sysMenuServiceImpl",SysMenuService.class);
+            sysMenuService = ctx.getBean("sysMenuServiceImpl", SysMenuService.class);
         }
         SysLogUtils.load(logger, LOG_BUSINESS_TYPE_LOGIN_FILTER);
     }
@@ -54,7 +54,8 @@ public class LoginFilterConfig implements Filter {
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         response.setCharacterEncoding(UTF8);
         String servletPath = request.getServletPath();
-        if (WECHAT_REQUEST.contains(servletPath)) {
+        if (WECHAT_REQUEST.contains(servletPath) || servletPath.contains(SWAGGER_REQUEST) || servletPath.contains(SWAGGER_API_DOCS_REQUEST)) {
+            isSwagger(request, servletPath);
             filterChain.doFilter(request, response);
             return;
         }
@@ -84,7 +85,7 @@ public class LoginFilterConfig implements Filter {
             if (ADMIN_CODE.equals(sessionBean.getUserCode())) {
                 sessionBean.setIsAdminData(true);
             } else {
-                 sessionBean.setIsAdminData(sysMenuService.selectDataAuthorityByUserId(sessionBean.getUserId()));
+                sessionBean.setIsAdminData(sysMenuService.selectDataAuthorityByUserId(sessionBean.getUserId()));
             }
             SysSessionUtils.setSession(sessionBean);
             if (PAGE_LOGIN.equals(servletPath)) {
@@ -146,6 +147,15 @@ public class LoginFilterConfig implements Filter {
             }
         }
         return false;
+    }
+
+    public static void isSwagger(HttpServletRequest request, String servletPath) {
+        if (servletPath.contains(SWAGGER_REQUEST) || servletPath.contains(SWAGGER_API_DOCS_REQUEST)) {
+            SessionBean sessionBean = (SessionBean) request.getSession().getAttribute(SESSION_BEAN);
+            if (sessionBean != null) {
+                sessionBean.setIsSwagger(true);
+            }
+        }
     }
 
     /**

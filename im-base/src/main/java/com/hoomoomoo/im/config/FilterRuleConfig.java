@@ -28,7 +28,7 @@ public class FilterRuleConfig {
     private static final Logger logger = LoggerFactory.getLogger(FilterRuleConfig.class);
 
     @PostConstruct
-    public void init(){
+    public void init() {
         SysLogUtils.load(logger, LOG_BUSINESS_TYPE_FILTER);
     }
 
@@ -63,7 +63,7 @@ public class FilterRuleConfig {
         filterRegistrationBean.addUrlPatterns(urlPatterns);
         //设置init参数
         if (StringUtils.isNotBlank(initParameterKey)) {
-            filterRegistrationBean.addInitParameter(initParameterKey,initParameterValue);
+            filterRegistrationBean.addInitParameter(initParameterKey, initParameterValue);
         }
         //执行次序
         filterRegistrationBean.setOrder(order);
