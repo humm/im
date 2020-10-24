@@ -47,11 +47,6 @@ public class ImFileUtils {
     private static final String FILE_PATH = "path.txt";
 
     /**
-     * 字符集异常
-     */
-    private static final String UN_MAPPABLE_CHARACT_EXCEPTION = "java.nio.charset.UnmappableCharacterException";
-
-    /**
      * 指定文件定位行
      */
     private static Map<String, String[]> OTHER_LINE_CONTENT = new LinkedHashMap(16);
@@ -225,6 +220,11 @@ public class ImFileUtils {
      * 模式重置
      */
     private static final String OPERATE_MODE_RESET = "0";
+
+    /**
+     * 退出程序
+     */
+    private static final String OPERATE_VERSION_EXIT = "0";
 
     /**
      * 启动模式 1:Jar包启动 2:工程启动
@@ -649,11 +649,7 @@ public class ImFileUtils {
             try {
                 Files.write(Paths.get(targetPath), sourceLines, Charset.forName(ENCODING));
             } catch (IOException ex) {
-                if (e.toString().startsWith(UN_MAPPABLE_CHARACT_EXCEPTION)) {
-                    FAIL_MESSAGE.append(String.format("请检查[ %s ]编码格式,是否与[ encoding ]保持一致", sourcePath));
-                } else {
-                    ex.printStackTrace();
-                }
+                ex.printStackTrace();
             }
         }
     }
@@ -775,7 +771,9 @@ public class ImFileUtils {
             EXCEPTION_STATUS = true;
         } finally {
             try {
-                bufferedReader.close();
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -881,7 +879,7 @@ public class ImFileUtils {
             CommonUtils.println(String.format("文件%s失败 读取文件数量[ %s ] %s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM), ERROR_COLOR);
             CommonUtils.println(FAIL_MESSAGE.toString(), ERROR_COLOR);
             if (STATUS_MODE_COPY.equals(statusType) || STATUS_MODE_MERGE.equals(statusType)) {
-                CommonUtils.println(String.format("请检查[ %s ]配置文件路径是否存在", FILE_PATH), ERROR_COLOR);
+                CommonUtils.println(String.format("请检查[ %s ]文件中路径是否存在", FILE_PATH), ERROR_COLOR);
             }
         }
     }
@@ -923,7 +921,9 @@ public class ImFileUtils {
             EXCEPTION_STATUS = true;
         } finally {
             try {
-                bufferedReader.close();
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1079,6 +1079,7 @@ public class ImFileUtils {
         if (StringUtils.isNotBlank(parameterColor)) {
             PARAMETER_COLOR = parameterColor;
         }
+
         // 颜色debug
         debugColor(config.get("im.color.debug"));
         if (init) {
@@ -1093,8 +1094,10 @@ public class ImFileUtils {
 
         // 获取模式配置
         getModeConfig(config);
+
         // 获取版本配置
         getVersionConfig(config);
+
         // 获取svn配置信息
         String svnUpdate = config.get("svn.update");
         if (StringUtils.isNotBlank(svnUpdate)) {
@@ -1114,10 +1117,14 @@ public class ImFileUtils {
                 throw new RuntimeException("svn密码[ svn.password ]不能为空");
             }
         }
+
         // 模式选择
         Scanner scanner = new Scanner(System.in);
         while (true) {
             String code = scanner.next();
+            if (OPERATE_VERSION_EXIT.equals(code)) {
+                System.exit(0);
+            }
             if (MODE_CONFIG.get(code) == null) {
                 CommonUtils.println("模式不存在 请重新选择", errorColor);
             } else {
@@ -1126,57 +1133,57 @@ public class ImFileUtils {
                 break;
             }
         }
-        if (OPERATE_MODE_SVN.equals(OPERATE_MODE)) {
-            return;
-        }
+
         // 版本号选择
-        CommonUtils.println("请选择版本:", SYMBOL_EMPTY);
-        Iterator<Map.Entry<String, String[]>> iterator = VERSION_CONFIG.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String[]> item = iterator.next();
-            if (item.getKey().startsWith(OPERATE_MODE)) {
-                CommonUtils.println(String.format("[ %s ] %s", item.getValue()[0], item.getValue()[item.getValue().length - 1]), versionColor);
-            }
-        }
-        CommonUtils.println(String.format("[ %s ] 重选模式", OPERATE_MODE_RESET), versionColor);
-        while (true) {
-            String code = OPERATE_MODE + SYMBOL_POINT_1 + scanner.next();
-            if (VERSION_CONFIG.get(code) == null) {
-                if ((OPERATE_MODE + SYMBOL_POINT_1 + OPERATE_MODE_RESET).equals(code)) {
-                    getProperties(config, false);
-                    return;
+        if (!OPERATE_MODE_SVN.equals(OPERATE_MODE)) {
+            CommonUtils.println("请选择版本:", SYMBOL_EMPTY);
+            Iterator<Map.Entry<String, String[]>> iterator = VERSION_CONFIG.entrySet().iterator();
+            while (iterator.hasNext()) {
+                Map.Entry<String, String[]> item = iterator.next();
+                if (item.getKey().startsWith(OPERATE_MODE)) {
+                    CommonUtils.println(String.format("[ %s ] %s", item.getValue()[0], item.getValue()[item.getValue().length - 1]), versionColor);
                 }
-                CommonUtils.println("版本不存在 请重新选择", errorColor);
-            } else {
-                WORKSPACE = VERSION_CONFIG.get(code)[1];
-                EXPORT_WORKSPACE = VERSION_CONFIG.get(code)[2];
-                OPERATE_VERSION = VERSION_CONFIG.get(code)[4];
-                CommonUtils.println(String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]), successColor);
-                CommonUtils.println(String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
-                CommonUtils.println(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE), parameterColor);
-                if (!updateSvn(EXPORT_WORKSPACE)) {
-                    EXCEPTION_STATUS = true;
-                    throw new RuntimeException("svn同步异常");
+            }
+            CommonUtils.println(String.format("[ %s ] 重选模式", OPERATE_MODE_RESET), versionColor);
+            while (true) {
+                String code = OPERATE_MODE + SYMBOL_POINT_1 + scanner.next();
+                if (VERSION_CONFIG.get(code) == null) {
+                    if ((OPERATE_MODE + SYMBOL_POINT_1 + OPERATE_MODE_RESET).equals(code)) {
+                        getProperties(config, false);
+                        return;
+                    }
+                    CommonUtils.println("版本不存在 请重新选择", errorColor);
+                } else {
+                    WORKSPACE = VERSION_CONFIG.get(code)[1];
+                    EXPORT_WORKSPACE = VERSION_CONFIG.get(code)[2];
+                    OPERATE_VERSION = VERSION_CONFIG.get(code)[4];
+                    CommonUtils.println(String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]), successColor);
+                    CommonUtils.println(String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
+                    CommonUtils.println(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE), parameterColor);
+                    if (!updateSvn(EXPORT_WORKSPACE)) {
+                        EXCEPTION_STATUS = true;
+                        throw new RuntimeException("svn同步异常");
+                    }
+                    break;
                 }
-                break;
             }
-        }
 
-        // 编码格式
-        if (OPERATE_MODE_MERGE.equals(OPERATE_MODE) || OPERATE_MODE_UPDATE.equals(OPERATE_MODE)) {
-            String encoding = config.get("encoding");
-            if (StringUtils.isNotBlank(encoding)) {
-                ENCODING = encoding;
+            // 编码格式
+            if (OPERATE_MODE_MERGE.equals(OPERATE_MODE) || OPERATE_MODE_UPDATE.equals(OPERATE_MODE)) {
+                String encoding = config.get("encoding");
+                if (StringUtils.isNotBlank(encoding)) {
+                    ENCODING = encoding;
+                }
+                CommonUtils.println(String.format("文件编码格式[ %s ]", ENCODING), parameterColor);
             }
-            CommonUtils.println(String.format("文件编码格式[ %s ]", ENCODING), parameterColor);
-        }
 
-        // 文件后缀名称
-        String fileSuffix = config.get("file.suffix");
-        if (StringUtils.isNotBlank(fileSuffix)) {
-            FILE_SUFFIX = fileSuffix;
+            // 文件后缀名称
+            String fileSuffix = config.get("file.suffix");
+            if (StringUtils.isNotBlank(fileSuffix)) {
+                FILE_SUFFIX = fileSuffix;
+            }
+            CommonUtils.println(String.format("文件后缀名称[ %s ]", FILE_SUFFIX), parameterColor);
         }
-        CommonUtils.println(String.format("文件后缀名称[ %s ]", FILE_SUFFIX), parameterColor);
 
         // 更新模式获取文件定位
         if (OPERATE_MODE_UPDATE.equals(OPERATE_MODE)) {
@@ -1202,6 +1209,17 @@ public class ImFileUtils {
             getMoreUpdateLine(config);
         }
 
+        // 复制模式排除时间戳
+        if (OPERATE_MODE_COPY.equals(OPERATE_MODE)) {
+            String timestamp = config.get("mode.copy.exclude.timestamp");
+            if (StringUtils.isNotBlank(timestamp)) {
+                String[] items = timestamp.split(SYMBOL_DOLLAR);
+                for (String item : items) {
+                    EXCLUDE_TIMESTAMP.put(item, item);
+                }
+            }
+        }
+
         // 连续操作模式
         String operateContinue = config.get("operate.continue");
         if (StringUtils.isNotBlank(operateContinue)) {
@@ -1215,15 +1233,6 @@ public class ImFileUtils {
             OPERATE_CONTINUE_TIME = Integer.valueOf(operateContinueTime);
         }
         CommonUtils.println(String.format("连续操作间隔时间[ %s ]", OPERATE_CONTINUE_TIME), parameterColor);
-
-        // 复制模式排除时间戳
-        String timestamp = config.get("mode.copy.exclude.timestamp");
-        if (StringUtils.isNotBlank(timestamp)) {
-            String[] items = timestamp.split(SYMBOL_DOLLAR);
-            for (String item : items) {
-                EXCLUDE_TIMESTAMP.put(item, item);
-            }
-        }
     }
 
     /**
@@ -1263,7 +1272,9 @@ public class ImFileUtils {
             EXCEPTION_STATUS = true;
         } finally {
             try {
-                bufferedReader.close();
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -1324,6 +1335,7 @@ public class ImFileUtils {
                     CommonUtils.println(String.format("[ %s ] %s", modeExtend[0], modeExtend[1]), MODE_COLOR);
                 }
             }
+            CommonUtils.println(String.format("[ %s ] %s", OPERATE_VERSION_EXIT, "退出"), MODE_COLOR);
         }
     }
 

@@ -266,11 +266,16 @@ public class CommonUtils {
      * @return:
      */
     public static String getFileEncode(String filePath) {
-        String fileEncode = EncodingDetect.getJavaEncode(filePath);
-        if (StringUtils.startsWith(fileEncode.toUpperCase(), ENCODING_GB)) {
+        try {
+            String fileEncode = EncodingDetect.getJavaEncode(filePath);
+            if (StringUtils.startsWith(fileEncode.toUpperCase(), ENCODING_GB)) {
+                return ENCODING_GBK;
+            } else {
+                return ENCODING_UTF8;
+            }
+        } catch (Exception e) {
             return ENCODING_GBK;
-        } else {
-            return ENCODING_UTF8;
         }
+
     }
 }
