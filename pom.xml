@@ -51,7 +51,7 @@
         <junrar.version>7.3.0</junrar.version>
         <ant.version>1.9.4</ant.version>
         <svnkit.version>1.8.2</svnkit.version>
-        <jansi.version>1.18</jansi.version>
+        <jansi.version>2.0.1</jansi.version>
         <hsweb-utils.version>3.0.2</hsweb-utils.version>
     </properties>
 
