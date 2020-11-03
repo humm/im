@@ -20,6 +20,7 @@
         <module>im-family</module>
         <module>im-tool</module>
         <module>im-z-dubbo</module>
+        <module>im-learn</module>
     </modules>
 
     <properties>
