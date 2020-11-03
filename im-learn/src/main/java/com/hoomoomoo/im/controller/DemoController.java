@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +27,9 @@ public class DemoController {
 
     @Autowired
     private Map<String, ExecuteService> serviceMap = new HashMap();
+
+    @Autowired
+    private List<ExecuteService> serviceList = new ArrayList<>();
 
     @ApiOperation("获取服务名称")
     @RequestMapping(value = "/service", method = RequestMethod.POST)

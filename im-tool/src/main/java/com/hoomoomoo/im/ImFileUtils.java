@@ -1386,6 +1386,8 @@ public class ImFileUtils {
      * @return:
      */
     private static void clean() {
+        WORKSPACE = SYMBOL_EMPTY;
+        EXPORT_WORKSPACE = SYMBOL_EMPTY;
         OPERATE_MODE = SYMBOL_EMPTY;
         MESSAGE = new StringBuffer();
         FAIL_MESSAGE = new StringBuffer();
