@@ -12,7 +12,7 @@ public class BaseConst {
     /**
      * 系统版本号
      */
-    public static final String SYSTEM_VERSION = "3.4.00";
+    public static final String SYSTEM_VERSION = "3.5.00";
 
     /**
      * 应用配置文件路径

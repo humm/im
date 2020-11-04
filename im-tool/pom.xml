@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.hoomoomoo</groupId>
         <artifactId>im</artifactId>
-        <version>3.4.00-SNAPSHOT</version>
+        <version>3.5.00-SNAPSHOT</version>
     </parent>
 
     <description>工具信息</description>

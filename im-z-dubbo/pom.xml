@@ -6,13 +6,13 @@
     <parent>
         <groupId>com.hoomoomoo</groupId>
         <artifactId>im</artifactId>
-        <version>3.4.00-SNAPSHOT</version>
+        <version>3.5.00-SNAPSHOT</version>
     </parent>
 
     <description>dubbo信息</description>
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-z-dubbo</artifactId>
-    <version>3.4.00-SNAPSHOT</version>
+    <version>3.5.00-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -22,7 +22,7 @@
     </modules>
 
     <properties>
-        <im-z-dubbo.version>3.4.00-SNAPSHOT</im-z-dubbo.version>
+        <im-z-dubbo.version>3.5.00-SNAPSHOT</im-z-dubbo.version>
     </properties>
 
     <dependencies>

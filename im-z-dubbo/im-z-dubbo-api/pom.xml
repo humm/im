@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.hoomoomoo</groupId>
         <artifactId>im-z-dubbo</artifactId>
-        <version>3.4.00-SNAPSHOT</version>
+        <version>3.5.00-SNAPSHOT</version>
     </parent>
 
     <description>dubbo服务接口</description>
