@@ -1060,7 +1060,7 @@ public class ImFileUtils {
         String nameColor = config.get("im.name.color");
         String nameContent = config.get("im.name.content");
         if (StringUtils.isNotBlank(nameContent)) {
-            NAME_CONTENT = nameContent;
+            NAME_CONTENT = SYMBOL_SPACE + nameContent;
         }
         String modeColor = config.get("im.mode.color");
         if (StringUtils.isNotBlank(modeColor)) {
@@ -1084,7 +1084,7 @@ public class ImFileUtils {
         debugColor(config.get("im.color.debug"));
         if (init) {
             StringBuffer star = new StringBuffer(SYMBOL_STAR_3);
-            for (int i = 0; i < NAME_CONTENT.length() * 8; i++) {
+            for (int i = 0; i < NAME_CONTENT.length() * 9; i++) {
                 star.append(SYMBOL_STAR);
             }
             CommonUtils.println(star.toString(), nameColor);
