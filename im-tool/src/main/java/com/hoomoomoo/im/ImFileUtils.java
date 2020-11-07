@@ -1084,7 +1084,7 @@ public class ImFileUtils {
         debugColor(config.get("im.color.debug"));
         if (init) {
             StringBuffer star = new StringBuffer(SYMBOL_STAR_3);
-            for (int i = 0; i < NAME_CONTENT.length() * 9; i++) {
+            for (int i = 0; i < NAME_CONTENT.length() * 7; i++) {
                 star.append(SYMBOL_STAR);
             }
             CommonUtils.println(star.toString(), nameColor);
