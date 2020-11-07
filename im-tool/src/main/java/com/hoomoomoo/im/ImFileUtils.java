@@ -34,7 +34,7 @@ public class ImFileUtils {
     /**
      * 应用版本
      */
-    private static String NAME_VERSION = "   3.5.0";
+    private static String NAME_VERSION = "   version: 3.5.0   date: 2020-11-06";
 
     /**
      * 配置文件
@@ -1084,7 +1084,7 @@ public class ImFileUtils {
         debugColor(config.get("im.color.debug"));
         if (init) {
             StringBuffer star = new StringBuffer(SYMBOL_STAR_3);
-            for (int i = 0; i < NAME_CONTENT.length() * 4; i++) {
+            for (int i = 0; i < NAME_CONTENT.length() * 8; i++) {
                 star.append(SYMBOL_STAR);
             }
             CommonUtils.println(star.toString(), nameColor);
