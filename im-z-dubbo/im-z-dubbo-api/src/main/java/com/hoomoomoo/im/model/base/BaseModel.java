@@ -33,7 +33,4 @@ public class BaseModel implements Serializable {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date modifyDate;
-
-    @ApiModelProperty(value = "数据来源", required = false)
-    private String dataType;
 }

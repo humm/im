@@ -17,8 +17,8 @@
 
     <modules>
         <module>im-z-dubbo-api</module>
-        <module>im-z-dubbo-provider</module>
-        <module>im-z-dubbo-consumer</module>
+        <module>im-z-dubbo-service</module>
+        <module>im-z-dubbo-web</module>
     </modules>
 
     <properties>

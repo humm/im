@@ -21,9 +21,8 @@ public class DemoServiceImpl implements DemoService {
     public List<DemoModel> getDemoData() {
         List<DemoModel> demoModelList = new ArrayList<>();
         DemoModel demoModel = new DemoModel();
-        demoModel.setUserId("20200822");
-        demoModel.setUserCode("demo");
-        demoModel.setUserName("演示");
+        demoModel.setCode("demo");
+        demoModel.setMsg("恭喜你...");
         demoModelList.add(demoModel);
         return demoModelList;
     }
