@@ -29,7 +29,7 @@ public class ImFileUtils {
     /**
      * 应用名称
      */
-    private static String NAME_CONTENT = "文件处理程序";
+    private static String NAME_CONTENT = " 文件处理程序";
 
     /**
      * 应用版本
