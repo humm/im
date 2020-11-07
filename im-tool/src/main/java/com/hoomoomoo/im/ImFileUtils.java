@@ -790,11 +790,26 @@ public class ImFileUtils {
      * @return:
      */
     private static void copySingleFile(String sourcePath, String exportPath) {
+        StringBuffer msg = new StringBuffer();
+        if (sourcePath.equals(exportPath)) {
+            if (sourcePath.startsWith(WORKSPACE)) {
+                // 自我复制
+                COPY_NUM++;
+                msg.append(SUCCESS).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                MESSAGE.append(msg);
+            } else {
+                // 源文件与版本不匹配
+                msg.append(FAIL).append(" 源文件与版本不匹配").append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE).toString();
+                MESSAGE.append(msg);
+                FAIL_MESSAGE.append(msg);
+                EXCEPTION_STATUS = true;
+            }
+            return;
+        }
         int lastIndex = exportPath.lastIndexOf(SYMBOL_SLASH);
         String path = exportPath.substring(0, lastIndex);
         File inFile = new File(sourcePath);
         File outFile = new File(exportPath);
-        StringBuffer msg = new StringBuffer();
         if (inFile.exists() && inFile.isFile()) {
             File sourceFolder = new File(path);
             if (!sourceFolder.exists()) {
