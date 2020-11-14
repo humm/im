@@ -516,7 +516,7 @@ public class RedisUtil {
      * @return 移除的个数
      */
     public long lRemove(String namespace, String key, long count, Object value) {
-        Long remove = redisTemplate.opsForList().remove(namespace + key, count, value);
+        long remove = redisTemplate.opsForList().remove(namespace + key, count, value);
         return remove;
     }
 }
