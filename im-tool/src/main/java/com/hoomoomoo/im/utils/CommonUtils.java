@@ -119,19 +119,35 @@ public class CommonUtils {
      * @date: 2020/09/09
      * @return:
      */
-    public static void print(String content, String color, boolean lineHead, boolean nextLine) {
+    public static void print(boolean singleColor, String content, String color, boolean lineHead, boolean nextLine) {
         if (lineHead && StringUtils.isNotBlank(content) && StringUtils.startsWith(content, "[ ")) {
-            System.out.print(Ansi.ansi().fg(getColor(SYMBOL_EMPTY)).a(SYMBOL_STAR_3_MORE).reset());
+            if (singleColor) {
+                System.out.print(SYMBOL_STAR_3_MORE);
+            } else {
+                System.out.print(Ansi.ansi().fg(getColor(SYMBOL_EMPTY)).a(SYMBOL_STAR_3_MORE).reset());
+            }
         } else if (lineHead) {
-            System.out.print(Ansi.ansi().fg(getColor(SYMBOL_EMPTY)).a(SYMBOL_STAR_3).reset());
+            if (singleColor) {
+                System.out.print(SYMBOL_STAR_3);
+            } else {
+                System.out.print(Ansi.ansi().fg(getColor(SYMBOL_EMPTY)).a(SYMBOL_STAR_3).reset());
+            }
         }
         if (StringUtils.isBlank(color)) {
             color = SYMBOL_EMPTY;
         }
         if (nextLine) {
-            System.out.println(Ansi.ansi().fg(getColor(color)).a(content).reset());
+            if (singleColor) {
+                System.out.println(content);
+            } else {
+                System.out.println(Ansi.ansi().fg(getColor(color)).a(content).reset());
+            }
         } else {
-            System.out.print(Ansi.ansi().fg(getColor(color)).a(content).reset());
+            if (singleColor) {
+                System.out.print(content);
+            } else {
+                System.out.print(Ansi.ansi().fg(getColor(color)).a(content).reset());
+            }
         }
     }
 
@@ -140,12 +156,13 @@ public class CommonUtils {
      *
      * @param content
      * @param color
+     * @param singleColor
      * @author: hoomoomoo
      * @date: 2020/09/09
      * @return:
      */
-    public static void println(String content, String color, boolean lineHead) {
-        print(content, color, lineHead, true);
+    public static void println(boolean singleColor, String content, String color, boolean lineHead) {
+        print(singleColor, content, color, lineHead, true);
     }
 
     /**
@@ -153,12 +170,13 @@ public class CommonUtils {
      *
      * @param content
      * @param color
+     * @param singleColor
      * @author: hoomoomoo
      * @date: 2020/09/09
      * @return:
      */
-    public static void println(String content, String color) {
-        print(content, color, true, true);
+    public static void println(boolean singleColor, String content, String color) {
+        print(singleColor, content, color, true, true);
     }
 
     /**

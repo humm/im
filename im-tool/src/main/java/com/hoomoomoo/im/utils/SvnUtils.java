@@ -35,7 +35,7 @@ public class SvnUtils {
      * @date: 2020/09/11
      * @return:
      */
-    private static long update(SVNClientManager svnClientManager, File workspace,
+    private static long update(boolean singleColor, SVNClientManager svnClientManager, File workspace,
                                SVNRevision svnRevision, SVNDepth svnDepth) {
         SVNUpdateClient svnUpdateClient = svnClientManager.getUpdateClient();
         svnUpdateClient.setIgnoreExternals(false);
@@ -44,21 +44,23 @@ public class SvnUtils {
             SVN_ERROR_TIMES = 0;
             return version;
         } catch (SVNException e) {
-            CommonUtils.println(SYMBOL_EMPTY, SYMBOL_EMPTY, false);
+            CommonUtils.println(singleColor, SYMBOL_EMPTY, SYMBOL_EMPTY, false);
             if (e.toString().contains(SVN_ERROR_CODE_E170001)) {
-                CommonUtils.println("svn同步异常 请检查配置项[ svn.username ] [ svn.password ]", ERROR_COLOR);
+                CommonUtils.println(singleColor, "svn同步异常 请检查配置项[ svn.username ] [ svn.password ]", ERROR_COLOR);
             } else if (e.toString().contains(SVN_ERROR_CODE_E175002)) {
-                CommonUtils.println("svn同步异常 请检查网络连接是否正常", ERROR_COLOR);
+                CommonUtils.println(singleColor, "svn同步异常 请检查网络连接是否正常;svn目录是否存在", ERROR_COLOR);
             } else if (e.toString().contains(SVN_ERROR_CODE_E155004)) {
                 if (SVN_ERROR_TIMES == 0) {
                     SVN_ERROR_TIMES++;
                     if (cleanUp(svnClientManager, workspace)) {
-                        update(svnClientManager, workspace, svnRevision, svnDepth);
+                        update(singleColor, svnClientManager, workspace, svnRevision, svnDepth);
                     } else {
-                        CommonUtils.println(String.format("svn同步异常 请至工作目录[ %s ]执行cleanUp并选择 Break write locks", workspace.getAbsolutePath()), ERROR_COLOR);
+                        CommonUtils.println(singleColor, String.format("svn同步异常 请至工作目录[ %s ]执行cleanUp并选择 Break write " +
+                                "locks", workspace.getAbsolutePath()), ERROR_COLOR);
                     }
                 } else {
-                    CommonUtils.println(String.format("svn同步异常 请至工作目录[ %s ]执行cleanUp并选择 Break write locks", workspace.getAbsolutePath()), ERROR_COLOR);
+                    CommonUtils.println(singleColor, String.format("svn同步异常 请至工作目录[ %s ]执行cleanUp并选择 Break write " +
+                            "locks", workspace.getAbsolutePath()), ERROR_COLOR);
                 }
             } else {
                 e.printStackTrace();
@@ -77,11 +79,11 @@ public class SvnUtils {
      * @date: 2020/09/12
      * @return:
      */
-    public static long update(String username, String password, String workspace) {
+    public static long update(boolean singleColor, String username, String password, String workspace) {
         SVNRepositoryFactoryImpl.setup();
         ISVNOptions isvnOptions = SVNWCUtil.createDefaultOptions(true);
         SVNClientManager svnClientManager = SVNClientManager.newInstance((DefaultSVNOptions) isvnOptions, username, password);
-        return update(svnClientManager, new File(workspace), SVNRevision.HEAD, SVNDepth.INFINITY);
+        return update(singleColor, svnClientManager, new File(workspace), SVNRevision.HEAD, SVNDepth.INFINITY);
     }
 
     /**

@@ -34,7 +34,7 @@ public class ImFileUtils {
     /**
      * 应用版本
      */
-    private static String NAME_VERSION = "   version: 3.5.0   date: 2020-11-06";
+    private static String NAME_VERSION = "   version: 3.5.1   date: 2020-11-19";
 
     /**
      * 配置文件
@@ -167,6 +167,11 @@ public class ImFileUtils {
     private static String MODE_COLOR = "";
 
     /**
+     * 单色模式
+     */
+    private static boolean SINGLE_COLOR = false;
+
+    /**
      * 成功信息颜色
      */
     private static String SUCCESS_COLOR = "";
@@ -288,16 +293,13 @@ public class ImFileUtils {
 
 
     public static void main(String[] args) {
-        // 控制台颜色控制开始
-        AnsiConsole.systemInstall();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(YYYY_MM_DD_HH_MM_SS);
         CURRENT_DATE = simpleDateFormat.format(new Date());
+        AnsiConsole.systemInstall();
         // 设置启动模式
         getStartMode();
         // 读取配置文件参数
         run(getConfigProperties(), true);
-        // 控制台颜色控制开始
-        AnsiConsole.systemUninstall();
     }
 
     /**
@@ -370,7 +372,7 @@ public class ImFileUtils {
      * @return:
      */
     private static void exit() {
-        CommonUtils.println(SYMBOL_NEXT_LINE, SYMBOL_EMPTY, false);
+        CommonUtils.println(SINGLE_COLOR, SYMBOL_NEXT_LINE, SYMBOL_EMPTY, false);
         if (!OPERATE_CONTINUE) {
             CommonUtils.sleep(5);
             System.exit(0);
@@ -487,7 +489,7 @@ public class ImFileUtils {
                         }
                     }
                     READ_NUM++;
-                    CommonUtils.println(String.format("更新文件[ %s ]", FILE_NAME_PATH_UPDATE), SYMBOL_EMPTY);
+                    CommonUtils.println(SINGLE_COLOR, String.format("更新文件[ %s ]", FILE_NAME_PATH_UPDATE), SYMBOL_EMPTY);
                     updateScriptFile(file.getAbsolutePath(), FILE_NAME_PATH_UPDATE);
                 }
             }
@@ -539,7 +541,7 @@ public class ImFileUtils {
         String inputPath = CommonUtils.convertBackslash(file.getAbsolutePath());
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
-        CommonUtils.println(String.format("更新文件[ %s ]", inputPath), SYMBOL_EMPTY);
+        CommonUtils.println(SINGLE_COLOR, String.format("更新文件[ %s ]", inputPath), SYMBOL_EMPTY);
     }
 
     /**
@@ -723,7 +725,7 @@ public class ImFileUtils {
         READ_NUM++;
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
-        CommonUtils.println(String.format("覆盖文件[ %s ]", inputPath), SYMBOL_EMPTY);
+        CommonUtils.println(SINGLE_COLOR, String.format("覆盖文件[ %s ]", inputPath), SYMBOL_EMPTY);
     }
 
     /**
@@ -752,7 +754,7 @@ public class ImFileUtils {
                     String sourcePath = subInputPath[subInputPath.length - 1].trim();
                     if (!sourcePath.isEmpty()) {
                         READ_NUM++;
-                        CommonUtils.println(String.format("复制文件[ %s ]", sourcePath), SYMBOL_EMPTY);
+                        CommonUtils.println(SINGLE_COLOR, String.format("复制文件[ %s ]", sourcePath), SYMBOL_EMPTY);
                         String exportPath = null;
                         exportPath = sourcePath.replace(WORKSPACE, exportWorkspace);
                         copySingleFile(sourcePath, exportPath);
@@ -889,12 +891,13 @@ public class ImFileUtils {
             }
         }
         if (SUCCESS.equals(fileName)) {
-            CommonUtils.println(String.format("文件%s完成 文件数量[ %s ]", statusType, READ_NUM), SUCCESS_COLOR);
+            CommonUtils.println(SINGLE_COLOR, String.format("文件%s完成 文件数量[ %s ]", statusType, READ_NUM), SUCCESS_COLOR);
         } else {
-            CommonUtils.println(String.format("文件%s失败 读取文件数量[ %s ] %s文件数量[ %s ]", statusType, READ_NUM, statusType, COPY_NUM), ERROR_COLOR);
-            CommonUtils.println(FAIL_MESSAGE.toString(), ERROR_COLOR);
+            CommonUtils.println(SINGLE_COLOR, String.format("文件%s失败 读取文件数量[ %s ] %s文件数量[ %s ]", statusType, READ_NUM,
+                    statusType, COPY_NUM), ERROR_COLOR);
+            CommonUtils.println(SINGLE_COLOR, FAIL_MESSAGE.toString(), ERROR_COLOR);
             if (STATUS_MODE_COPY.equals(statusType) || STATUS_MODE_MERGE.equals(statusType)) {
-                CommonUtils.println(String.format("请检查[ %s ]文件中路径是否存在", FILE_PATH), ERROR_COLOR);
+                CommonUtils.println(SINGLE_COLOR, String.format("请检查[ %s ]文件中路径是否存在", FILE_PATH), ERROR_COLOR);
             }
         }
     }
@@ -920,7 +923,7 @@ public class ImFileUtils {
                     READ_NUM++;
                     String[] subInputPath = CommonUtils.convertBackslash(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
                     String path = subInputPath[subInputPath.length - 1].trim();
-                    CommonUtils.println(String.format("合并文件[ %s ]", path), SYMBOL_EMPTY);
+                    CommonUtils.println(SINGLE_COLOR, String.format("合并文件[ %s ]", path), SYMBOL_EMPTY);
                     CONTENT.append(getFileContent(path));
                     if (EXCEPTION_STATUS) {
                         break;
@@ -1071,6 +1074,16 @@ public class ImFileUtils {
      * @return:
      */
     private static void getProperties(Map<String, String> config, boolean init) {
+        String singleColor = config.get("single.color");
+        if (StringUtils.isNotBlank(singleColor)) {
+            SINGLE_COLOR = Boolean.valueOf(singleColor);
+            if (SINGLE_COLOR) {
+                // 控制台颜色控制开始
+                AnsiConsole.systemInstall();
+            } else {
+                AnsiConsole.systemUninstall();
+            }
+        }
         // 获取颜色配置
         String nameColor = config.get("im.name.color");
         String nameContent = config.get("im.name.content");
@@ -1099,12 +1112,12 @@ public class ImFileUtils {
         debugColor(config.get("im.color.debug"));
         if (init) {
             StringBuffer star = new StringBuffer(SYMBOL_STAR_3);
-            for (int i = 0; i < NAME_CONTENT.length() * 8; i++) {
+            for (int i = 0; i < NAME_CONTENT.length() * 8.5; i++) {
                 star.append(SYMBOL_STAR);
             }
-            CommonUtils.println(star.toString(), nameColor);
-            CommonUtils.println(SYMBOL_STAR_3 + NAME_CONTENT + NAME_VERSION, nameColor);
-            CommonUtils.println(star.toString(), nameColor);
+            CommonUtils.println(SINGLE_COLOR, star.toString(), nameColor);
+            CommonUtils.println(SINGLE_COLOR, SYMBOL_STAR_3 + NAME_CONTENT + NAME_VERSION, nameColor);
+            CommonUtils.println(SINGLE_COLOR, star.toString(), nameColor);
         }
 
         // 获取模式配置
@@ -1141,25 +1154,26 @@ public class ImFileUtils {
                 System.exit(0);
             }
             if (MODE_CONFIG.get(code) == null) {
-                CommonUtils.println("模式不存在 请重新选择", errorColor);
+                CommonUtils.println(SINGLE_COLOR, "模式不存在 请重新选择", errorColor);
             } else {
                 OPERATE_MODE = MODE_CONFIG.get(code)[2];
-                CommonUtils.println(String.format("模式设置为[ %s ]", MODE_CONFIG.get(code)[1]), successColor);
+                CommonUtils.println(SINGLE_COLOR, String.format("模式设置为[ %s ]", MODE_CONFIG.get(code)[1]), successColor);
                 break;
             }
         }
 
         // 版本号选择
         if (!OPERATE_MODE_SVN.equals(OPERATE_MODE)) {
-            CommonUtils.println("请选择版本:", SYMBOL_EMPTY);
+            CommonUtils.println(SINGLE_COLOR, "请选择版本:", SYMBOL_EMPTY);
             Iterator<Map.Entry<String, String[]>> iterator = VERSION_CONFIG.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, String[]> item = iterator.next();
                 if (item.getKey().startsWith(OPERATE_MODE)) {
-                    CommonUtils.println(String.format("[ %s ] %s", item.getValue()[0], item.getValue()[item.getValue().length - 1]), versionColor);
+                    CommonUtils.println(SINGLE_COLOR, String.format("[ %s ] %s", item.getValue()[0],
+                            item.getValue()[item.getValue().length - 1]), versionColor);
                 }
             }
-            CommonUtils.println(String.format("[ %s ] 重选模式", OPERATE_MODE_RESET), versionColor);
+            CommonUtils.println(SINGLE_COLOR, String.format("[ %s ] 重选模式", OPERATE_MODE_RESET), versionColor);
             while (true) {
                 String code = OPERATE_MODE + SYMBOL_POINT_1 + scanner.next();
                 if (VERSION_CONFIG.get(code) == null) {
@@ -1167,14 +1181,16 @@ public class ImFileUtils {
                         getProperties(config, false);
                         return;
                     }
-                    CommonUtils.println("版本不存在 请重新选择", errorColor);
+                    CommonUtils.println(SINGLE_COLOR, "版本不存在 请重新选择", errorColor);
                 } else {
                     WORKSPACE = VERSION_CONFIG.get(code)[1];
                     EXPORT_WORKSPACE = VERSION_CONFIG.get(code)[2];
                     OPERATE_VERSION = VERSION_CONFIG.get(code)[4];
-                    CommonUtils.println(String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]), successColor);
-                    CommonUtils.println(String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
-                    CommonUtils.println(String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE), parameterColor);
+                    CommonUtils.println(SINGLE_COLOR, String.format("版本设置为[ %s ]", VERSION_CONFIG.get(code)[4]),
+                            successColor);
+                    CommonUtils.println(SINGLE_COLOR, String.format("源文件工作目录[ %s ]", WORKSPACE), parameterColor);
+                    CommonUtils.println(SINGLE_COLOR, String.format("导出文件工作目录[ %s ]", EXPORT_WORKSPACE),
+                            parameterColor);
                     if (!updateSvn(EXPORT_WORKSPACE)) {
                         EXCEPTION_STATUS = true;
                         throw new RuntimeException("svn同步异常");
@@ -1189,7 +1205,7 @@ public class ImFileUtils {
                 if (StringUtils.isNotBlank(encoding)) {
                     ENCODING = encoding;
                 }
-                CommonUtils.println(String.format("文件编码格式[ %s ]", ENCODING), parameterColor);
+                CommonUtils.println(SINGLE_COLOR, String.format("文件编码格式[ %s ]", ENCODING), parameterColor);
             }
 
             // 文件后缀名称
@@ -1197,7 +1213,7 @@ public class ImFileUtils {
             if (StringUtils.isNotBlank(fileSuffix)) {
                 FILE_SUFFIX = fileSuffix;
             }
-            CommonUtils.println(String.format("文件后缀名称[ %s ]", FILE_SUFFIX), parameterColor);
+            CommonUtils.println(SINGLE_COLOR, String.format("文件后缀名称[ %s ]", FILE_SUFFIX), parameterColor);
         }
 
         // 更新模式获取文件定位
@@ -1211,14 +1227,15 @@ public class ImFileUtils {
                 LINE_CONTENT = lines[0];
                 LINE_OFFSET = Integer.valueOf(lines[1]);
             }
-            CommonUtils.println(String.format("更新模式文件定位[ %s ]", LINE_CONTENT), parameterColor);
+            CommonUtils.println(SINGLE_COLOR, String.format("更新模式文件定位[ %s ]", LINE_CONTENT), parameterColor);
 
             // 更新模式成功后删除源文件
             String deleteAfterSuccess = config.get("mode.update.delete.after.success");
             if (StringUtils.isNotBlank(deleteAfterSuccess)) {
                 DELETE_AFTER_SUCCESS = Boolean.valueOf(deleteAfterSuccess);
             }
-            CommonUtils.println(String.format("更新模式成功后删除源文件[ %s ]", DELETE_AFTER_SUCCESS), parameterColor);
+            CommonUtils.println(SINGLE_COLOR, String.format("更新模式成功后删除源文件[ %s ]", DELETE_AFTER_SUCCESS),
+                    parameterColor);
 
             // 更新模式指定文件定位
             getMoreUpdateLine(config);
@@ -1240,14 +1257,14 @@ public class ImFileUtils {
         if (StringUtils.isNotBlank(operateContinue)) {
             OPERATE_CONTINUE = Boolean.valueOf(operateContinue);
         }
-        CommonUtils.println(String.format("连续操作模式[ %s ]", OPERATE_CONTINUE), parameterColor);
+        CommonUtils.println(SINGLE_COLOR, String.format("连续操作模式[ %s ]", OPERATE_CONTINUE), parameterColor);
 
         // 连续操作间隔时间
         String operateContinueTime = config.get("operate.continue.time");
         if (StringUtils.isNotBlank(operateContinueTime)) {
             OPERATE_CONTINUE_TIME = Integer.valueOf(operateContinueTime);
         }
-        CommonUtils.println(String.format("连续操作间隔时间[ %s ]", OPERATE_CONTINUE_TIME), parameterColor);
+        CommonUtils.println(SINGLE_COLOR, String.format("连续操作间隔时间[ %s ]", OPERATE_CONTINUE_TIME), parameterColor);
     }
 
     /**
@@ -1333,7 +1350,7 @@ public class ImFileUtils {
      */
     private static void getModeConfig(Map config) {
         if (config != null) {
-            CommonUtils.println("请选择模式:", SYMBOL_EMPTY);
+            CommonUtils.println(SINGLE_COLOR, "请选择模式:", SYMBOL_EMPTY);
             Iterator<Map.Entry<String, String>> iterator = config.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, String> item = iterator.next();
@@ -1347,10 +1364,11 @@ public class ImFileUtils {
                     String[] modeExtend = Arrays.copyOf(modes, modes.length + 1);
                     modeExtend[modeExtend.length - 1] = modeName.replace(".config", SYMBOL_EMPTY);
                     MODE_CONFIG.put(modes[0], modeExtend);
-                    CommonUtils.println(String.format("[ %s ] %s", modeExtend[0], modeExtend[1]), MODE_COLOR);
+                    CommonUtils.println(SINGLE_COLOR, String.format("[ %s ] %s", modeExtend[0], modeExtend[1]),
+                            MODE_COLOR);
                 }
             }
-            CommonUtils.println(String.format("[ %s ] %s", OPERATE_VERSION_EXIT, "退出"), MODE_COLOR);
+            CommonUtils.println(SINGLE_COLOR, String.format("[ %s ] %s", OPERATE_VERSION_EXIT, "退出"), MODE_COLOR);
         }
     }
 
@@ -1401,6 +1419,8 @@ public class ImFileUtils {
      * @return:
      */
     private static void clean() {
+        FILE_DIRECTORY_PATH_UPDATE = SYMBOL_EMPTY;
+        FILE_NAME_PATH_UPDATE = SYMBOL_EMPTY;
         WORKSPACE = SYMBOL_EMPTY;
         EXPORT_WORKSPACE = SYMBOL_EMPTY;
         OPERATE_MODE = SYMBOL_EMPTY;
@@ -1422,14 +1442,14 @@ public class ImFileUtils {
      */
     private static void debugColor(String debug) {
         if (StringUtils.isNotBlank(debug) && Boolean.valueOf(debug)) {
-            CommonUtils.println("black.. black... black", "black");
-            CommonUtils.println("red.. red... red", "red");
-            CommonUtils.println("green.. green... green", "green");
-            CommonUtils.println("yellow.. yellow... yellow", "yellow");
-            CommonUtils.println("blue.. blue... blue", "blue");
-            CommonUtils.println("magenta.. magenta... magenta", "magenta");
-            CommonUtils.println("cyan.. cyan... cyan", "cyan");
-            CommonUtils.println("white.. white... white", "white");
+            CommonUtils.println(SINGLE_COLOR, "black.. black... black", "black");
+            CommonUtils.println(SINGLE_COLOR, "red.. red... red", "red");
+            CommonUtils.println(SINGLE_COLOR, "green.. green... green", "green");
+            CommonUtils.println(SINGLE_COLOR, "yellow.. yellow... yellow", "yellow");
+            CommonUtils.println(SINGLE_COLOR, "blue.. blue... blue", "blue");
+            CommonUtils.println(SINGLE_COLOR, "magenta.. magenta... magenta", "magenta");
+            CommonUtils.println(SINGLE_COLOR, "cyan.. cyan... cyan", "cyan");
+            CommonUtils.println(SINGLE_COLOR, "white.. white... white", "white");
         }
     }
 
@@ -1442,12 +1462,12 @@ public class ImFileUtils {
      * @return:
      */
     private static boolean updateSvn(String workspace) {
-        CommonUtils.println(String.format("同步工作目录[ %s ]", workspace), PARAMETER_COLOR);
+        CommonUtils.println(SINGLE_COLOR, String.format("同步工作目录[ %s ]", workspace), PARAMETER_COLOR);
         if (SVN_UPDATE && CommonUtils.isSuffixDirectory(new File(workspace), SVN_FILE_NAME)) {
-            CommonUtils.print("svn同步执行中...", SYMBOL_EMPTY, true, false);
+            CommonUtils.print(SINGLE_COLOR, "svn同步执行中...", SYMBOL_EMPTY, true, false);
             SVN_VERSION = -1L;
             executing();
-            Long svnVersion = SvnUtils.update(SVN_USERNAME, SVN_PASSWORD, workspace);
+            Long svnVersion = SvnUtils.update(SINGLE_COLOR, SVN_USERNAME, SVN_PASSWORD, workspace);
             SVN_VERSION = svnVersion;
             while (true) {
                 CommonUtils.sleep(1);
@@ -1458,7 +1478,7 @@ public class ImFileUtils {
             }
             return SVN_VERSION > 0;
         }
-        CommonUtils.println("非svn目录 无需同步", SYMBOL_EMPTY);
+        CommonUtils.println(SINGLE_COLOR, "非svn目录 无需同步", SYMBOL_EMPTY);
         return true;
     }
 
@@ -1475,11 +1495,11 @@ public class ImFileUtils {
             while (true) {
                 CommonUtils.sleep(1);
                 if (SVN_VERSION == -1L) {
-                    CommonUtils.print(SYMBOL_POINT_1, SYMBOL_EMPTY, false, false);
+                    CommonUtils.print(SINGLE_COLOR, SYMBOL_POINT_1, SYMBOL_EMPTY, false, false);
                 } else {
-                    CommonUtils.println(SYMBOL_EMPTY, SYMBOL_EMPTY, false);
+                    CommonUtils.println(SINGLE_COLOR, SYMBOL_EMPTY, SYMBOL_EMPTY, false);
                     if (SVN_VERSION > 0) {
-                        CommonUtils.println(String.format("svn已同步至版本[ %s ]", SVN_VERSION), SYMBOL_EMPTY);
+                        CommonUtils.println(SINGLE_COLOR, String.format("svn已同步至版本[ %s ]", SVN_VERSION), SYMBOL_EMPTY);
                     }
                     SVN_VERSION++;
                     break;
