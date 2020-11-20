@@ -10,10 +10,11 @@ import java.math.BigDecimal;
  * @package com.hoomoomoo.im
  * @date 2020/11/14
  */
-public class mainTest {
+public class MainTest {
 
     @Test
     public void bigDecimal() {
+        // 浮点数构造用字符串 避免精度问题 非浮点数没关系
         BigDecimal a = new BigDecimal("12.86");
         BigDecimal b = new BigDecimal("12.881");
         System.out.println("a " + a);
