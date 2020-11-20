@@ -3,6 +3,11 @@ package com.hoomoomoo.im;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author
@@ -33,5 +38,47 @@ public class MainTest {
         System.out.println("a%b 进位 " + a.remainder(b).setScale(1, BigDecimal.ROUND_UP));
         System.out.println("equals " + a.equals(b));
         System.out.println("compareTo " + a.compareTo(b));
+    }
+
+
+    @Test
+    public void date() {
+        LocalDate date = LocalDate.now();
+        System.out.println("当前日期：" + date);
+
+        LocalDate date1 = LocalDate.of(2000, 1, 1);
+        System.out.println("千禧年：" + date1);
+
+        LocalDate date2 = LocalDate.now();
+        System.out.printf("年：%d 月：%d 日：%d\n", date2.getYear(), date2.getMonthValue(), date2.getDayOfMonth());
+
+        LocalDate now = LocalDate.now();
+        LocalDate date3 = LocalDate.of(2018, 9, 24);
+        System.out.println("日期是否相等：" + now.equals(date3));
+
+        LocalTime time = LocalTime.now();
+        System.out.println("当前时间：" + time);
+
+        // 时间增量
+        LocalTime time2 = LocalTime.now();
+        LocalTime newTime = time2.plusHours(2);
+        System.out.println("newTime：" + newTime);
+
+        // 日期增量
+        LocalDate date4 = LocalDate.now();
+        LocalDate newDate = date4.plus(1, ChronoUnit.WEEKS);
+        System.out.println("newDate：" + newDate);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        // 日期时间转字符串
+        LocalDateTime now1 = LocalDateTime.now();
+        String nowText = now1.format(formatter);
+        System.out.println("nowText：" + nowText);
+
+        // 字符串转日期时间
+        String datetimeText = "1999-12-31 23:59:59";
+        LocalDateTime datetime = LocalDateTime.parse(datetimeText, formatter);
+        System.out.println(datetime);
     }
 }
