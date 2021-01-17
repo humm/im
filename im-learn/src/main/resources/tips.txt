@@ -1,0 +1,3 @@
+idea生成可执行jar文件
+    1. file -> project structure -> Artifacts --> + -> jar -> from module with ...
+    2. 选择一个Main Class, 然后指定META-INF/MANIFEST.MF路径, 注意不要放到main/java目录下,否则打成的jar中META-INF/MANIFEST.MF不含有Main Class信息
