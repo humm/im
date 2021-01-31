@@ -171,7 +171,7 @@
             </if>
         </set>
         <where>
-            1=1
+            read_status != 'D012-2'
             <if test="businessId != null">
                 and business_id = #{businessId}
             </if>

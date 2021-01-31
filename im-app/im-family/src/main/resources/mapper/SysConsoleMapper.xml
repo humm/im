@@ -199,7 +199,7 @@
 
     <select id="selectLoginLast" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
-        select to_char(login_date, 'yyyy-MM-dd hh24:mm:ss') consoleData
+        select to_char(login_date, 'yyyy-MM-dd hh24:mi:ss') consoleData
         from sys_login_log
         where log_id = (
             select max(log_id)
