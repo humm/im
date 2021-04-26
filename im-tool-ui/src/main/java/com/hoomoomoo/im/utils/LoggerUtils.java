@@ -1,9 +1,10 @@
 package com.hoomoomoo.im.utils;
 
-import com.hoomoomoo.im.dto.BaseLogDto;
+import com.hoomoomoo.im.dto.BaseDto;
 import javafx.application.Platform;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
 import java.util.List;
 
@@ -15,34 +16,39 @@ import java.util.List;
  */
 public class LoggerUtils {
 
-    public static void info(TableView tableView, BaseLogDto baseLog) {
+    public static void info(TableView tableView, BaseDto baseDto) {
         Platform.runLater(() -> {
-            // 更新UI
-            tableView.getItems().add(baseLog);
+            tableView.getItems().add(baseDto);
         });
     }
 
-    public static void info(TextArea textArea, String log) {
+    public static void info(Object obj, String text) {
         Platform.runLater(() -> {
-            // 更新UI
-            textArea.appendText(log);
+            if (obj instanceof TextArea) {
+                ((TextArea) obj).appendText(text);
+            } else if (obj instanceof TextField) {
+                ((TextField) obj).appendText(text);
+            }
         });
     }
 
-    public static void info(TextArea textArea, List<String> log) {
+    public static void info(TextArea textArea, List<String> text) {
         Platform.runLater(() -> {
-            // 更新UI
-            for (String item : log) {
+            for (String item : text) {
                 textArea.appendText(item);
             }
         });
     }
 
-    public static void clearLog(TableView tableView) {
-        tableView.getItems().clear();
-    }
-
-    public static void clearLog(TextArea textArea) {
-        textArea.clear();
+    public static void clearLog(Object obj) {
+        Platform.runLater(() -> {
+            if (obj instanceof TableView) {
+                ((TableView) obj).getItems().clear();
+            } else if (obj instanceof TextArea) {
+                ((TextArea) obj).clear();
+            } else if (obj instanceof TextField) {
+                ((TextField) obj).clear();
+            }
+        });
     }
 }

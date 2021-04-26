@@ -1,15 +1,14 @@
 package com.hoomoomoo.im;
 
+import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.utils.FileUtils;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-import java.util.Optional;
 
 /**
  * @author humm23693
@@ -21,26 +20,20 @@ public class MainStarter extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        primaryStage.getIcons().add(new Image("image/icon.png"));
-        Parent root = FXMLLoader.load(getClass().getResource("/fxml/starter.fxml"));
-        primaryStage.setTitle("开发助手");
-        primaryStage.setScene(new Scene(root));
+        FileUtils.UnJar("/conf/app.conf");
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfig();
+        primaryStage.getIcons().add(new Image("/conf/image/icon.png"));
+        Parent root = FXMLLoader.load(FileUtils.getFilePath("/conf/fxml/starter.fxml"));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(FileUtils.getFilePath("/conf/style/progressIndicator.css").toExternalForm());
+        primaryStage.setTitle(appConfigDto.getAppName());
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
-        primaryStage.setOnCloseRequest(event -> {
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            //设置对话框标题
-            alert.setTitle("退出");
-            //设置内容
-            alert.setHeaderText("确定要退出吗？");
-            //显示对话框
-            Optional<ButtonType> result = alert.showAndWait();
-            //如果点击OK
-            if (result.get() == ButtonType.OK) {
-                primaryStage.close();
-                //否则
-            } else {
-                event.consume();
-            }
-        });
     }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
 }

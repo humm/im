@@ -1,5 +1,9 @@
 package com.hoomoomoo.im.controller;
 
+import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.TabType;
+import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.utils.FileUtils;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,10 +14,14 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static com.hoomoomoo.im.consts.BaseConst.STR_1;
+import static com.hoomoomoo.im.consts.BaseConst.STR_COMMA;
 
 
 /**
@@ -46,7 +54,7 @@ public class StarterController implements Initializable {
 
     @FXML
     void openSvnLog(ActionEvent event) throws IOException {
-        Tab tab = getFunctionTab("fxml/svnLog.fxml", "获取svn提交文件记录");
+        Tab tab = getFunctionTab(TabType.getPath(STR_1), TabType.getName(STR_1));
         if (!isOpen(tab)) {
             functionTab.getTabs().add(tab);
         }
@@ -55,9 +63,15 @@ public class StarterController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            Tab tab = getFunctionTab("fxml/svnLog.fxml", "获取svn提交文件记录");
-            functionTab.getTabs().add(tab);
-        } catch (IOException e) {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfig();
+            String showTab = appConfigDto.getShowTab();
+            if (StringUtils.isNotBlank(showTab)) {
+                String[] tabs = showTab.split(STR_COMMA);
+                for (String tab : tabs) {
+                    functionTab.getTabs().add(getFunctionTab(TabType.getPath(tab), TabType.getName(tab)));
+                }
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -72,7 +86,7 @@ public class StarterController implements Initializable {
      * @return:
      */
     private Tab getFunctionTab(String tabPath, String tabName) throws IOException {
-        Parent svnLog = FXMLLoader.load(getClass().getClassLoader().getResource(tabPath));
+        Parent svnLog = FXMLLoader.load(FileUtils.getFilePath(tabPath));
         return new Tab(tabName, svnLog);
     }
 

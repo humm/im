@@ -5,27 +5,21 @@
 
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-tool-ui</artifactId>
-    <version>1.0.0.0-SNAPSHOT</version>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <version>1.0.0.0</version>
 
     <name>im-tool-ui</name>
     <description>图形界面工具</description>
 
     <properties>
+        <java.version>1.8</java.version>
         <commons-lang3.version>3.6</commons-lang3.version>
         <lombok.version>1.16.4</lombok.version>
         <svnkit.version>1.8.2</svnkit.version>
+        <commons.collections>3.2.2</commons.collections>
+        <hsweb-utils.version>3.0.2</hsweb-utils.version>
+        <commons-beanutils.version>1.9.2</commons-beanutils.version>
+        <junrar.version>7.3.0</junrar.version>
+        <ant.version>1.9.4</ant.version>
     </properties>
 
     <dependencies>
@@ -44,6 +38,62 @@
             <artifactId>svnkit</artifactId>
             <version>${svnkit.version}</version>
         </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>${commons.collections}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hswebframework</groupId>
+            <artifactId>hsweb-utils</artifactId>
+            <version>${hsweb-utils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.junrar</groupId>
+            <artifactId>junrar</artifactId>
+            <version>${junrar.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>${ant.version}</version>
+        </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>1.3.5.RELEASE</version>
+                <configuration>
+                    <mainClass>com.hoomoomoo.im.MainStarter</mainClass>
+                    <layout>JAR</layout>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

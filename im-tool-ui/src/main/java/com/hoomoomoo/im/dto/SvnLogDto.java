@@ -12,7 +12,7 @@ import java.util.List;
  */
 
 @Data
-public class SvnLogDto extends BaseLogDto implements Comparable<SvnLogDto> {
+public class SvnLogDto extends BaseDto implements Comparable<SvnLogDto> {
 
     private Long version;
 

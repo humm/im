@@ -7,7 +7,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.hoomoomoo.im.controller.SvnLogController">
     <children>
-        <SplitPane dividerPositions="0.3969849246231156" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
+        <SplitPane dividerPositions="0.3869346733668342" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
                    prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -22,17 +22,19 @@
                                         <Label layoutX="14.0" layoutY="14.0" text="svn用户名：" AnchorPane.leftAnchor="15.0"
                                                AnchorPane.topAnchor="15.0"/>
                                         <TextField fx:id="svnName" layoutX="83.0" layoutY="11.0" prefHeight="23.0"
-                                                   prefWidth="140.0" text="humm23693" AnchorPane.topAnchor="10.0"/>
+                                                   prefWidth="161.0" AnchorPane.topAnchor="10.0"/>
                                         <Label layoutX="15.0" layoutY="46.0" prefHeight="15.0" prefWidth="116.0"
-                                               text="获取最近提交次数："/>
+                                               text="最近提交次数："/>
                                         <TextField fx:id="svnTimes" layoutX="129.0" layoutY="42.0" prefHeight="23.0"
-                                                   prefWidth="94.0" text="1"/>
-                                        <Button fx:id="svnSubmit" layoutX="83.0" layoutY="83.0" mnemonicParsing="false"
+                                                   prefWidth="115.0"/>
+                                        <Button fx:id="svnSubmit" layoutX="109.0" layoutY="93.0" mnemonicParsing="false"
                                                 onAction="#executeSubmit" text="运行">
                                             <padding>
-                                                <Insets bottom="10.0" left="15.0" right="15.0" top="10.0"/>
+                                                <Insets bottom="10.0" left="40.0" right="40.0" top="10.0"/>
                                             </padding>
                                         </Button>
+                                        <ProgressIndicator fx:id="svnSchedule" layoutX="38.0" layoutY="99.0"
+                                                           progress="0.0"/>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">
@@ -41,20 +43,19 @@
                                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="version" editable="false" prefWidth="80"
+                                                <TableColumn id="version" editable="false" prefWidth="130"
                                                              sortable="false" text="版本号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="version"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="time" editable="false" prefWidth="170"
-                                                             sortable="false" text="提交时间">
+                                                <TableColumn id="time" editable="false" prefWidth="182" sortable="false"
+                                                             text="提交时间">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="time"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="num" editable="false" prefWidth="115"
-                                                             sortable="false"
+                                                <TableColumn id="num" editable="false" prefWidth="150" sortable="false"
                                                              text="文件数量">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="num"/>
