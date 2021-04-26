@@ -43,6 +43,7 @@ public class FileUtils {
 
     public static final String FILE_TYPE_JAR = ".jar";
     public static final String FILE_TYPE_CONF = "conf";
+    public static final String FILE_TYPE_SLASH = "file:/";
 
     /**
      * 读取配置文件
@@ -306,7 +307,7 @@ public class FileUtils {
             File file = new File(url.getPath());
             if (!file.exists()) {
                 // 解压文件
-                String jarPath = sourceUrl.getPath().replace("file:/", "");
+                String jarPath = sourceUrl.getPath().replace(FILE_TYPE_SLASH, STR_EMPTY);
                 int jarIndex = jarPath.indexOf(START_MODE_JAR);
                 String filePath = jarPath.substring(0, jarIndex);
                 String fileName = filePath.substring(0, jarIndex) + FILE_TYPE_JAR;

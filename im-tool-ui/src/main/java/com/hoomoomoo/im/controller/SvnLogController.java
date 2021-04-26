@@ -4,7 +4,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.SvnLogDto;
 import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.LoggerUtils;
+import com.hoomoomoo.im.utils.OutputUtils;
 import com.hoomoomoo.im.utils.SvnUtils;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -50,8 +50,8 @@ public class SvnLogController implements Initializable {
         try {
             svnSubmit.setDisable(true);
             setProgress(0);
-            LoggerUtils.clearLog(svnLog);
-            LoggerUtils.clearLog(fileLog);
+            OutputUtils.clearLog(svnLog);
+            OutputUtils.clearLog(fileLog);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfig();
             appConfigDto.setSvnUsername(svnName.getText());
             appConfigDto.setSvnRecentTime(svnTimes.getText());
@@ -62,7 +62,7 @@ public class SvnLogController implements Initializable {
                 getSvnLog(Integer.valueOf(svnTimes.getText()));
             }).start();
         } catch (Exception e) {
-            LoggerUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " " + e.getMessage());
+            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " " + e.getMessage());
         }
     }
 
@@ -70,29 +70,29 @@ public class SvnLogController implements Initializable {
         try {
             List<SvnLogDto> logDtoList = SvnUtils.getSvnLog(svnTimes);
             for (SvnLogDto svnLogDto : logDtoList) {
-                LoggerUtils.info(svnLog, svnLogDto);
-                LoggerUtils.info(fileLog, svnLogDto.getFile());
+                OutputUtils.info(svnLog, svnLogDto);
+                OutputUtils.info(fileLog, svnLogDto.getFile());
             }
             if (CollectionUtils.isEmpty(logDtoList)) {
-                LoggerUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录");
+                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录");
             }
             setProgress(1);
             svnSubmit.setDisable(false);
         } catch (Exception e) {
             e.printStackTrace();
-            LoggerUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " " + e.getMessage());
+            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " " + e.getMessage());
         }
     }
 
     private void updateProgress() {
         while (true) {
-            if (progress >= 0.9) {
+            if (progress >= 0.95) {
                 break;
             }
             if (progress <= 0.6) {
-                setProgress(progress + 0.08);
+                setProgress(progress + 0.05);
             } else if (progress < 0.9) {
-                setProgress(progress + 0.03);
+                setProgress(progress + 0.01);
             }
             try {
                 Thread.sleep(1000);
@@ -113,11 +113,11 @@ public class SvnLogController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            LoggerUtils.clearLog(svnName);
-            LoggerUtils.clearLog(svnTimes);
+            OutputUtils.clearLog(svnName);
+            OutputUtils.clearLog(svnTimes);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfig();
-            LoggerUtils.info(svnName, appConfigDto.getSvnUsername());
-            LoggerUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
+            OutputUtils.info(svnName, appConfigDto.getSvnUsername());
+            OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
         } catch (Exception e) {
             e.printStackTrace();
         }

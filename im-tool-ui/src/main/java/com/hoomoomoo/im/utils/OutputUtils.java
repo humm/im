@@ -10,11 +10,11 @@ import java.util.List;
 
 /**
  * @author humm23693
- * @description 日志工具类
+ * @description 输出工具类
  * @package com.hoomoomoo.im
  * @date 2021/04/19
  */
-public class LoggerUtils {
+public class OutputUtils {
 
     public static void info(TableView tableView, BaseDto baseDto) {
         Platform.runLater(() -> {
