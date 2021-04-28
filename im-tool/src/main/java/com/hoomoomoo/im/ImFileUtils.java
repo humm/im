@@ -2,7 +2,7 @@ package com.hoomoomoo.im;
 
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.SvnUtils;
-import com.hoomoomoo.im.utils.UnZipAnRarUtils;
+import com.hoomoomoo.im.utils.UnZipRarUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiConsole;
@@ -448,9 +448,9 @@ public class ImFileUtils {
                 String fileName = file.getName();
                 try {
                     if (fileName.endsWith(FILE_TYPE_ZIP)) {
-                        UnZipAnRarUtils.unZip(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
+                        UnZipRarUtils.unZip(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
                     } else if (fileName.endsWith(FILE_TYPE_RAR)) {
-                        UnZipAnRarUtils.unRar(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
+                        UnZipRarUtils.unRar(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();

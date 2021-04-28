@@ -17,7 +17,7 @@ import java.util.Enumeration;
  * @package com.hoomoomoo.im
  * @date 2020/08/23
  */
-public class UnZipAnRarUtils {
+public class UnZipRarUtils {
 
     /**
      * 解压Zip
