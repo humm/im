@@ -2,6 +2,7 @@ package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.dto.BaseDto;
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hswebframework.utils.file.EncodingDetect;
 
@@ -34,16 +35,18 @@ public class FileUtils {
     private final static String STR_EQUALS = "=";
     private final static String STR_POINT = ".";
     private static final String STR_SLASH = "/";
+    private static final String STR_NEXT_LINE = "\n";
 
     private final static Integer NUM_2 = 2;
 
     private static final Pattern PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
 
-    public static final String START_MODE_JAR = ".jar!";
+    private static final String START_MODE_JAR = ".jar!";
 
-    public static final String FILE_TYPE_JAR = ".jar";
-    public static final String FILE_TYPE_CONF = "conf";
-    public static final String FILE_TYPE_SLASH = "file:/";
+    private static final String FILE_TYPE_JAR = ".jar";
+    private static final String FILE_TYPE_CONF = "conf";
+    private static final String FILE_TYPE_SLASH = "file:/";
+    private static final String FILE_TYPE_FILE = "file:";
 
     /**
      * 读取配置文件
@@ -66,7 +69,7 @@ public class FileUtils {
      * @return:
      */
     public static Map<String, String> readConfigFileToMap(String filePath) throws IOException {
-        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG));
+        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, null));
     }
 
 
@@ -78,9 +81,53 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
-    public static List<String> readNormalFile(String filePath) throws IOException {
-        return (List<String>) readFile(filePath, FILE_TYPE_NORMAL);
+    public static List<String> readNormalFile(String filePath, Boolean skipAnnotation) throws IOException {
+        return (List<String>) readFile(filePath, FILE_TYPE_NORMAL, skipAnnotation);
     }
+
+    /**
+     * 写文件
+     *
+     * @param filePath
+     * @param contentList
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static void writeFile(String filePath, List<String> contentList, Boolean isAppend) throws IOException {
+        if (CollectionUtils.isEmpty(contentList)) {
+            return;
+        }
+        String content = STR_EMPTY;
+        for (String item : contentList) {
+            content += item + STR_NEXT_LINE;
+        }
+        writeFile(filePath, content, isAppend);
+    }
+
+    /**
+     * 写文件
+     *
+     * @param filePath
+     * @param content
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static void writeFile(String filePath, String content, Boolean isAppend) throws IOException {
+        // 判断文件夹是否存在
+        String folderPath = filePath.substring(0, filePath.lastIndexOf(STR_SLASH));
+        File file = new File(folderPath);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        file = new File(filePath);
+        PrintWriter printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, isAppend), getFileEncode(filePath))));
+        printWriter.write(content);
+        printWriter.flush();
+        printWriter.close();
+    }
+
 
     /**
      * 读取文件
@@ -91,19 +138,17 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    private static Object readFile(String filePath, String fileType) throws IOException {
+    private static Object readFile(String filePath, String fileType, Boolean skipAnnotation) throws IOException {
         List<String> fileContent = new LinkedList();
         HashMap<String, String> fileContentMap = new HashMap<>(16);
         BufferedReader bufferedReader = null;
         bufferedReader = getBufferedReader(filePath);
         String content;
         while ((content = bufferedReader.readLine()) != null) {
-            if (StringUtils.isNotBlank(content) && StringUtils.isNotBlank(content.trim())) {
-                if (FILE_TYPE_NORMAL.equals(fileType)) {
-                    buildFileContent(fileContent, content);
-                } else if (FILE_TYPE_CONFIG.equals(fileType)) {
-                    buildFileContentMap(fileContentMap, content);
-                }
+            if (FILE_TYPE_NORMAL.equals(fileType)) {
+                buildFileContent(fileContent, content, skipAnnotation);
+            } else if (FILE_TYPE_CONFIG.equals(fileType)) {
+                buildFileContentMap(fileContentMap, content);
             }
         }
         return FILE_TYPE_NORMAL.equals(fileType) ? fileContent : fileContentMap;
@@ -118,8 +163,8 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    private static void buildFileContent(List<String> fileContent, String content) {
-        if (content.startsWith(ANNOTATION_NORMAL)) {
+    private static void buildFileContent(List<String> fileContent, String content, Boolean skipAnnotation) {
+        if (skipAnnotation && content.startsWith(ANNOTATION_NORMAL)) {
             return;
         }
         fileContent.add(content);
@@ -135,6 +180,9 @@ public class FileUtils {
      * @return:
      */
     private static void buildFileContentMap(Map<String, String> fileContentMap, String content) {
+        if (StringUtils.isBlank(content) && StringUtils.isBlank(content.trim())) {
+            return;
+        }
         if (content.startsWith(ANNOTATION_CONFIG)) {
             return;
         }
@@ -144,6 +192,9 @@ public class FileUtils {
         String[] item = content.split(STR_EQUALS);
         if (item.length == NUM_2) {
             fileContentMap.put(item[0], convertUnicodeToChar(item[1]));
+        } else if (item.length > NUM_2) {
+            int index = content.indexOf(STR_EQUALS) + 1;
+            fileContentMap.put(item[0], convertUnicodeToChar(content.substring(index)));
         } else {
             fileContentMap.put(item[0], STR_EMPTY);
         }
@@ -157,7 +208,7 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
-    private static String getFileEncode(String filePath) {
+    public static String getFileEncode(String filePath) {
         try {
             String fileEncode = EncodingDetect.getJavaEncode(filePath);
             if (StringUtils.startsWith(fileEncode.toUpperCase(), ENCODING_GB)) {
@@ -168,7 +219,6 @@ public class FileUtils {
         } catch (Exception e) {
             return ENCODING_GBK;
         }
-
     }
 
     /**
@@ -274,8 +324,12 @@ public class FileUtils {
      * @date: 2021/04/26
      * @return:
      */
-    public static URL getFilePath(String path) {
+    public static URL getFilePath(String path) throws MalformedURLException {
         URL url = FileUtils.class.getResource(path);
+        if (url == null) {
+            String folder = FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+            url = new URL(FILE_TYPE_FILE + folder + path.substring(1));
+        }
         if (url.getPath().contains(START_MODE_JAR)) {
             String jarPath = url.getPath();
             int jarIndex = jarPath.indexOf(START_MODE_JAR);
@@ -283,11 +337,7 @@ public class FileUtils {
             filePath = filePath.substring(filePath.indexOf(STR_SLASH));
             String folderPath = jarPath.substring(0, jarIndex);
             folderPath = folderPath.substring(0, folderPath.lastIndexOf(STR_SLASH));
-            try {
-                return new URL(folderPath + filePath);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            }
+            return new URL(folderPath + filePath);
         }
         return url;
     }

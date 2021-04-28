@@ -6,9 +6,9 @@ package com.hoomoomoo.im.consts;
  * @package com.hoomoomoo.im.consts
  * @date 2021/04/25
  */
-public enum TabType {
+public enum FunctionType {
 
-    SVN_LOG("1", "svn提交文件记录", "/conf/fxml/svnLog.fxml");
+    SVN_LOG("1", "svn提交记录", "/conf/fxml/svnLog.fxml");
 
     private String type;
 
@@ -16,14 +16,14 @@ public enum TabType {
 
     private String path;
 
-    TabType(String type, String name, String path) {
+    FunctionType(String type, String name, String path) {
         this.type = type;
         this.name = name;
         this.path = path;
     }
 
     public static String getName(String type) {
-        for (TabType tabType : TabType.values()) {
+        for (FunctionType tabType : FunctionType.values()) {
             if (tabType.getType().equals(type)) {
                 return tabType.name;
             }
@@ -32,7 +32,7 @@ public enum TabType {
     }
 
     public static String getPath(String type) {
-        for (TabType tabType : TabType.values()) {
+        for (FunctionType tabType : FunctionType.values()) {
             if (tabType.getType().equals(type)) {
                 return tabType.path;
             }

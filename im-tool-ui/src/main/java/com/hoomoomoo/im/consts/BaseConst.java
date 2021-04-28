@@ -12,4 +12,16 @@ public class BaseConst {
 
     public static final String STR_1 = "1";
 
+    public final static String STR_EQUALS = "=";
+
+    public final static String STR_SECURITY = "+++";
+
+    public final static String STR_SPACE = " ";
+
+    public static final String STR_NEXT_LINE = "\n";
+
+    public static final String STR_COLON = ":";
+
+    public static final String KEY_PASSWORD = "password";
+
 }

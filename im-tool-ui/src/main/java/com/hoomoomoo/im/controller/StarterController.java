@@ -1,7 +1,7 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.TabType;
+import com.hoomoomoo.im.consts.FunctionType;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.FileUtils;
 import javafx.collections.ObservableList;
@@ -54,7 +54,7 @@ public class StarterController implements Initializable {
 
     @FXML
     void openSvnLog(ActionEvent event) throws IOException {
-        Tab tab = getFunctionTab(TabType.getPath(STR_1), TabType.getName(STR_1));
+        Tab tab = getFunctionTab(FunctionType.getPath(STR_1), FunctionType.getName(STR_1));
         if (!isOpen(tab)) {
             functionTab.getTabs().add(tab);
         }
@@ -68,7 +68,7 @@ public class StarterController implements Initializable {
             if (StringUtils.isNotBlank(showTab)) {
                 String[] tabs = showTab.split(STR_COMMA);
                 for (String tab : tabs) {
-                    functionTab.getTabs().add(getFunctionTab(TabType.getPath(tab), TabType.getName(tab)));
+                    functionTab.getTabs().add(getFunctionTab(FunctionType.getPath(tab), FunctionType.getName(tab)));
                 }
             }
         } catch (Exception e) {

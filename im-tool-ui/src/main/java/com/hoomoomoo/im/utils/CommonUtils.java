@@ -13,6 +13,7 @@ public class CommonUtils {
 
     private final static String PATTERN1 = "yyyy-MM-dd HH:mm:ss";
     private final static String PATTERN2 = "yyyyMMddHHmmss";
+    private final static String PATTERN3 = "yyyyMMdd";
 
     /**
      * 获取当前系统时间
@@ -24,6 +25,18 @@ public class CommonUtils {
      */
     public static String getCurrentDateTime1() {
         return new SimpleDateFormat(PATTERN1).format(new Date());
+    }
+
+    /**
+     * 获取指定时间
+     *
+     * @param date
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
+    public static String getCurrentDateTime1(Date date) {
+        return new SimpleDateFormat(PATTERN1).format(date);
     }
 
     /**
@@ -39,14 +52,15 @@ public class CommonUtils {
     }
 
     /**
-     * 获取指定时间
+     * 获取当前日期
      *
-     * @param date
+     * @param
      * @author: humm23693
-     * @date: 2021/04/23
+     * @date: 2021/04/28
      * @return:
      */
-    public static String getCurrentDateTime1(Date date) {
-        return new SimpleDateFormat(PATTERN1).format(date);
+    public static String getCurrentDateTime3() {
+        return new SimpleDateFormat(PATTERN3).format(new Date());
     }
+
 }
