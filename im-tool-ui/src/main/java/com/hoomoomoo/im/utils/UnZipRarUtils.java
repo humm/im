@@ -18,7 +18,10 @@ import java.util.Enumeration;
  * @package com.hoomoomoo.im
  * @date 2020/08/23
  */
-public class UnZipAnRarUtils {
+public class UnZipRarUtils {
+
+    private final static String ENCODING_GBK = "GBK";
+    private final static Integer NUM_1024 = 1024;
 
     /**
      * 解压Zip
@@ -33,7 +36,7 @@ public class UnZipAnRarUtils {
         if (!file.exists()) {
             throw new Exception("解压文件不存在!");
         }
-        ZipFile zipFile = new ZipFile(file, "GBK");
+        ZipFile zipFile = new ZipFile(file, ENCODING_GBK);
         Enumeration e = zipFile.getEntries();
         while (e.hasMoreElements()) {
             ZipEntry zipEntry = (ZipEntry) e.nextElement();
@@ -48,9 +51,9 @@ public class UnZipAnRarUtils {
                 f.createNewFile();
                 InputStream is = zipFile.getInputStream(zipEntry);
                 FileOutputStream fos = new FileOutputStream(f);
-                int length = 0;
+                int length;
                 byte[] b = new byte[1024];
-                while ((length = is.read(b, 0, 1024)) != -1) {
+                while ((length = is.read(b, 0, NUM_1024)) != -1) {
                     fos.write(b, 0, length);
                 }
                 is.close();

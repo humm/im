@@ -102,7 +102,7 @@ public class FileUtils {
                 if (FILE_TYPE_NORMAL.equals(fileType)) {
                     buildFileContent(fileContent, content);
                 } else if (FILE_TYPE_CONFIG.equals(fileType)) {
-                    buildFileContentMap(filePath, fileContentMap, content);
+                    buildFileContentMap(fileContentMap, content);
                 }
             }
         }
@@ -134,7 +134,7 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    private static void buildFileContentMap(String filePath, Map<String, String> fileContentMap, String content) {
+    private static void buildFileContentMap(Map<String, String> fileContentMap, String content) {
         if (content.startsWith(ANNOTATION_CONFIG)) {
             return;
         }
@@ -318,7 +318,7 @@ public class FileUtils {
                 if (!temp.exists()) {
                     temp.mkdirs();
                 }
-                UnZipAnRarUtils.unZip(new File(fileName), tempFolder);
+                UnZipRarUtils.unZip(new File(fileName), tempFolder);
                 // 复制文件
                 copyFolder(tempFolder + FILE_TYPE_CONF, folder);
                 File[] fileList = new File(tempFolder).listFiles();
