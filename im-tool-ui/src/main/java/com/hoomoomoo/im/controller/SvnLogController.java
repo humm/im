@@ -27,7 +27,7 @@ import static com.hoomoomoo.im.consts.BaseConst.STR_SPACE;
 public class SvnLogController implements Initializable {
 
     @FXML
-    private TextField svnName;
+    private Label svnName;
 
     @FXML
     private TextField svnTimes;
@@ -52,7 +52,7 @@ public class SvnLogController implements Initializable {
             setProgress(0);
             OutputUtils.clearLog(svnLog);
             OutputUtils.clearLog(fileLog);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfig();
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             appConfigDto.setSvnUsername(svnName.getText());
             appConfigDto.setSvnRecentTime(svnTimes.getText());
             updateProgress();
@@ -119,7 +119,7 @@ public class SvnLogController implements Initializable {
         try {
             OutputUtils.clearLog(svnName);
             OutputUtils.clearLog(svnTimes);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfig();
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             OutputUtils.info(svnName, appConfigDto.getSvnUsername());
             OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
         } catch (Exception e) {

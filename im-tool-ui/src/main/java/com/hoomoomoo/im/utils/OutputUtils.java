@@ -2,11 +2,14 @@ package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.dto.BaseDto;
 import javafx.application.Platform;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 
 import java.util.List;
+
+import static com.hoomoomoo.im.consts.BaseConst.STR_EMPTY;
 
 /**
  * @author humm23693
@@ -27,7 +30,9 @@ public class OutputUtils {
             if (obj instanceof TextArea) {
                 ((TextArea) obj).appendText(text);
             } else if (obj instanceof TextField) {
-                ((TextField) obj).appendText(text);
+                ((TextField) obj).setText(text);
+            } else if (obj instanceof Label) {
+                ((Label) obj).setText(text);
             }
         });
     }
@@ -48,6 +53,8 @@ public class OutputUtils {
                 ((TextArea) obj).clear();
             } else if (obj instanceof TextField) {
                 ((TextField) obj).clear();
+            } else if (obj instanceof Label) {
+                ((Label) obj).setText(STR_EMPTY);
             }
         });
     }

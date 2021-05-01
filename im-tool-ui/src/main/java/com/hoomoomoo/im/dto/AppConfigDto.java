@@ -28,4 +28,6 @@ public class AppConfigDto extends BaseDto {
 
     private String svnDeletePrefix;
 
+    private Boolean enableLog;
+
 }

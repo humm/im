@@ -1,6 +1,8 @@
 package com.hoomoomoo.im.utils;
 
+import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.FunctionType;
+import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.SvnLogDto;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -21,7 +23,11 @@ public class LoggerUtils {
 
     private static final String FILE_TYPE_LOG = ".log";
 
-    public static void writeSvnLogInfo(Date startDate, List<SvnLogDto> svnLogDtoList) throws IOException {
+    public static void writeSvnLogInfo(Date startDate, List<SvnLogDto> svnLogDtoList) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        if (!appConfigDto.getEnableLog()) {
+            return;
+        }
         Date endDate = new Date();
         StringBuilder log = new StringBuilder();
         // 写日志文件

@@ -63,7 +63,7 @@ public class StarterController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfig();
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String showTab = appConfigDto.getShowTab();
             if (StringUtils.isNotBlank(showTab)) {
                 String[] tabs = showTab.split(STR_COMMA);

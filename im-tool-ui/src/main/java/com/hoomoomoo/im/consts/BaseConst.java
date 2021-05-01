@@ -18,6 +18,8 @@ public class BaseConst {
 
     public final static String STR_SPACE = " ";
 
+    public final static String STR_EMPTY = "";
+
     public static final String STR_NEXT_LINE = "\n";
 
     public static final String STR_COLON = ":";

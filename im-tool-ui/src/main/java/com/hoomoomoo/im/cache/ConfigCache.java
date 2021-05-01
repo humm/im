@@ -23,10 +23,6 @@ public class ConfigCache {
 
     private AppConfigDto appConfigDto;
 
-    public AppConfigDto getAppConfig() {
-        return appConfigDto;
-    }
-
     public static ConfigCache getConfigCache() throws Exception {
         if (configCache == null) {
             configCache = new ConfigCache();

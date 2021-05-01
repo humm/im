@@ -25,7 +25,7 @@ import java.util.*;
 public class SvnUtils {
 
     public static List<SvnLogDto> getSvnLog(int times) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfig();
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         final List<SvnLogDto> logList = new ArrayList<>();
         String svnUrl = appConfigDto.getSvnUrl();
         String svnName = appConfigDto.getSvnUsername();
