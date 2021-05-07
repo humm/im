@@ -19,7 +19,7 @@
         <hsweb-utils.version>3.0.2</hsweb-utils.version>
         <commons-beanutils.version>1.9.2</commons-beanutils.version>
         <junrar.version>7.3.0</junrar.version>
-        <ant.version>1.9.4</ant.version>
+        <ant.version>1.10.9</ant.version>
         <jxl.version>2.6</jxl.version>
     </properties>
 
