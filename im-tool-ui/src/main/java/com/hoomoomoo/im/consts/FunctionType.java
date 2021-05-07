@@ -8,7 +8,12 @@ package com.hoomoomoo.im.consts;
  */
 public enum FunctionType {
 
-    SVN_LOG("1", "svn提交记录", "/conf/fxml/svnLog.fxml");
+    SVN_LOG("1", "svn提交记录", "/conf/fxml/svnLog.fxml"),
+
+    FUND_INFO("3", "基金信息", "/conf/fxml/fundInfo.fxml"),
+
+    PROCESS_INFO("4", "流程信息", "/conf/fxml/processInfo.fxml");
+
 
     private String type;
 

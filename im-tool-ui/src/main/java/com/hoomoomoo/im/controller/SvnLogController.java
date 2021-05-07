@@ -10,6 +10,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.util.Date;
@@ -65,8 +66,8 @@ public class SvnLogController implements Initializable {
     private void getSvnLog(Integer svnTimes) {
         new Thread(() -> {
             try {
-                Date date = new Date();
                 svnSubmit.setDisable(true);
+                Date date = new Date();
                 List<SvnLogDto> logDtoList = SvnUtils.getSvnLog(svnTimes);
                 for (SvnLogDto svnLogDto : logDtoList) {
                     OutputUtils.info(svnLog, svnLogDto);
@@ -120,8 +121,12 @@ public class SvnLogController implements Initializable {
             OutputUtils.clearLog(svnName);
             OutputUtils.clearLog(svnTimes);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            OutputUtils.info(svnName, appConfigDto.getSvnUsername());
-            OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
+            if (StringUtils.isNotBlank(appConfigDto.getSvnUsername())) {
+                OutputUtils.info(svnName, appConfigDto.getSvnUsername());
+            }
+            if (StringUtils.isNotBlank(appConfigDto.getSvnRecentTime())) {
+                OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

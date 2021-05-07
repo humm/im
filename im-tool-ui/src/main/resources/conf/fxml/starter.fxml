@@ -9,8 +9,11 @@
             <menus>
                 <Menu fx:id="menuFunction" mnemonicParsing="false" text="功能">
                     <items>
-                        <MenuItem fx:id="menuItemSvnlog" mnemonicParsing="false" onAction="#openSvnLog"
-                                  text="svn提交记录"/>
+                        <MenuItem fx:id="menuItemSvnlog" mnemonicParsing="false" onAction="#openSvnLog" text="svn提交记录"/>
+                        <MenuItem fx:id="menuItemFundInfo" mnemonicParsing="false" onAction="#openFundInfo"
+                                  text="基金信息"/>
+                        <MenuItem fx:id="menuItemProcessInfo" mnemonicParsing="false" onAction="#openProcessInfo"
+                                  text="流程信息"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">

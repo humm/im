@@ -20,6 +20,7 @@
         <commons-beanutils.version>1.9.2</commons-beanutils.version>
         <junrar.version>7.3.0</junrar.version>
         <ant.version>1.9.4</ant.version>
+        <jxl.version>2.6</jxl.version>
     </properties>
 
     <dependencies>
@@ -62,6 +63,11 @@
             <groupId>org.apache.ant</groupId>
             <artifactId>ant</artifactId>
             <version>${ant.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>jexcelapi</groupId>
+            <artifactId>jxl</artifactId>
+            <version>${jxl.version}</version>
         </dependency>
     </dependencies>
 

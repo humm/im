@@ -20,8 +20,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_1;
-import static com.hoomoomoo.im.consts.BaseConst.STR_COMMA;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 
 /**
@@ -55,6 +54,22 @@ public class StarterController implements Initializable {
     @FXML
     void openSvnLog(ActionEvent event) throws IOException {
         Tab tab = getFunctionTab(FunctionType.getPath(STR_1), FunctionType.getName(STR_1));
+        if (!isOpen(tab)) {
+            functionTab.getTabs().add(tab);
+        }
+    }
+
+    @FXML
+    void openFundInfo(ActionEvent event) throws IOException {
+        Tab tab = getFunctionTab(FunctionType.getPath(STR_3), FunctionType.getName(STR_3));
+        if (!isOpen(tab)) {
+            functionTab.getTabs().add(tab);
+        }
+    }
+
+    @FXML
+    void openProcessInfo(ActionEvent event) throws IOException {
+        Tab tab = getFunctionTab(FunctionType.getPath(STR_4), FunctionType.getName(STR_4));
         if (!isOpen(tab)) {
             functionTab.getTabs().add(tab);
         }

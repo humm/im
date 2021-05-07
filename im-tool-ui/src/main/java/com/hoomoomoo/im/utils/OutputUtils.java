@@ -1,15 +1,11 @@
 package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.dto.BaseDto;
+import com.hoomoomoo.im.dto.LogDto;
 import javafx.application.Platform;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 
 import java.util.List;
-
-import static com.hoomoomoo.im.consts.BaseConst.STR_EMPTY;
 
 /**
  * @author humm23693
@@ -19,9 +15,20 @@ import static com.hoomoomoo.im.consts.BaseConst.STR_EMPTY;
  */
 public class OutputUtils {
 
+    private final static String STR_EMPTY = "";
+
     public static void info(TableView tableView, BaseDto baseDto) {
         Platform.runLater(() -> {
             tableView.getItems().add(baseDto);
+        });
+    }
+
+    public static void info(TableView tableView, String msg) {
+        LogDto logDto = new LogDto();
+        logDto.setTime(CommonUtils.getCurrentDateTime1());
+        logDto.setMsg(msg);
+        Platform.runLater(() -> {
+            tableView.getItems().add(logDto);
         });
     }
 
@@ -33,6 +40,14 @@ public class OutputUtils {
                 ((TextField) obj).setText(text);
             } else if (obj instanceof Label) {
                 ((Label) obj).setText(text);
+            }
+        });
+    }
+
+    public static void selected(Object obj, Boolean selected) {
+        Platform.runLater(() -> {
+            if (obj instanceof RadioButton) {
+                ((RadioButton) obj).setSelected(selected);
             }
         });
     }

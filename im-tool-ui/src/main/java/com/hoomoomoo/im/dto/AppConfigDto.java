@@ -30,4 +30,17 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean enableLog;
 
+    private String fundExcelPath;
+
+    private String fundGenerateMode;
+
+    private String fundGeneratePath;
+
+    private String processExcelPath;
+
+    private String processGeneratePath;
+
+    private String processTaCode;
+
+
 }
