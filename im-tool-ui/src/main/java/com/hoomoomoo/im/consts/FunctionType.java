@@ -10,9 +10,15 @@ public enum FunctionType {
 
     SVN_LOG("1", "svn提交记录", "/conf/fxml/svnLog.fxml"),
 
+    SVN_UPDATE("2", "svn代码更新", "/conf/fxml/svnUpdate.fxml"),
+
     FUND_INFO("3", "基金信息", "/conf/fxml/fundInfo.fxml"),
 
-    PROCESS_INFO("4", "流程信息", "/conf/fxml/processInfo.fxml");
+    PROCESS_INFO("4", "流程信息", "/conf/fxml/processInfo.fxml"),
+
+    STAT_INFO("5", "统计分析", "/conf/fxml/statInfo.fxml"),
+
+    ABOUT_INFO("6", "关于", "/conf/fxml/aboutInfo.fxml");
 
 
     private String type;

@@ -469,4 +469,41 @@ public class FileUtils {
         inputStream.close();
         outputStream.close();
     }
+
+    /**
+     * 是否指定后缀工作目录
+     *
+     * @param file
+     * @param suffix
+     * @author: hoomoomoo
+     * @date: 2020/09/12
+     * @return:
+     */
+    public static boolean isSuffixDirectory(File file, String suffix) {
+        boolean exist = false;
+        if (file != null && suffix != null) {
+            if (!file.isDirectory()) {
+                exist = false;
+            }
+            // 判断当前文件下是否存在文件
+            File[] fileList = file.listFiles();
+            if (fileList == null) {
+                return false;
+            }
+            for (File item : fileList) {
+                if (item.getName().equals(suffix)) {
+                    exist = true;
+                    break;
+                }
+            }
+            // 判断父文件夹下是否存在文件
+            File parentFile = file.getParentFile();
+            if (parentFile != null) {
+                if (isSuffixDirectory(parentFile, suffix)) {
+                    exist = true;
+                }
+            }
+        }
+        return exist;
+    }
 }

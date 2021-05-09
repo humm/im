@@ -20,7 +20,7 @@ public class TaskMemoryCache {
     public static final String HEAD_TASK = "head_task";
     public static final String SCHE_TASK_NAME = "sche_task_name";
     public static final String FUNCTION_ID = "function_id";
-    public static final String PARENT_FUNDCITION_ID = "parent_function_id";
+    public static final String PARENT_FUNCTION_ID = "parent_function_id";
     public static final String SCHE_TASK_REDO = "sche_task_redo";
     public static final String SCHE_TASK_TIMEOUT = "sche_task_timeout";
     public static final String SCHE_TASK_RETRYCOUNT = "sche_task_retrycount";
@@ -64,7 +64,7 @@ public class TaskMemoryCache {
     public static List<Map<String, Object>> getCacheMapByFunction(String functionId, String reserve) {
         List<Map<String, Object>> list = new ArrayList<>();
         for (Map.Entry entry : map.entrySet()) {
-            if (((Map<String, Object>) entry.getValue()).get(PARENT_FUNDCITION_ID).equals(functionId) &&
+            if (((Map<String, Object>) entry.getValue()).get(PARENT_FUNCTION_ID).equals(functionId) &&
                     ((Map<String, Object>) entry.getValue()).get(SCHE_TASK_RESERVE).equals(reserve)) {
                 list.add((Map<String, Object>) entry.getValue());
             }

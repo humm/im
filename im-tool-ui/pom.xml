@@ -5,7 +5,7 @@
 
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-tool-ui</artifactId>
-    <version>1.0.0.0</version>
+    <version>final</version>
 
     <name>im-tool-ui</name>
     <description>图形界面工具</description>
@@ -68,6 +68,24 @@
             <groupId>jexcelapi</groupId>
             <artifactId>jxl</artifactId>
             <version>${jxl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

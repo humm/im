@@ -377,7 +377,7 @@ public class ProcessInfoController implements Initializable {
         }
         bufferedWriter.write("-- 一级job配置脚本 end  " + groupName + "\n\n");
 
-        bufferedWriter.write("-- 二级job配置脚本 beginb  " + groupName + "\n");
+        bufferedWriter.write("-- 二级job配置脚本 begin  " + groupName + "\n");
         for (int k = 2; k < rows; k++) {
             // 二级JOB
             if (!sheet.getCell(3, k).getContents().equals("1")) {

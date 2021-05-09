@@ -2,7 +2,7 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.FundLogDto;
+import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
@@ -662,9 +662,9 @@ public class FundInfoController implements Initializable {
     }
 
     private void infoMsg(String msg) {
-        FundLogDto fundLogDto = new FundLogDto();
-        fundLogDto.setTime(CommonUtils.getCurrentDateTime1());
-        fundLogDto.setMsg(msg);
-        OutputUtils.info(fundLog, fundLogDto);
+        LogDto logDto = new LogDto();
+        logDto.setTime(CommonUtils.getCurrentDateTime1());
+        logDto.setMsg(msg);
+        OutputUtils.info(fundLog, logDto);
     }
 }

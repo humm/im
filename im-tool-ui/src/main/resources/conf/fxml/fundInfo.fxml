@@ -35,12 +35,14 @@
                                         <TextField fx:id="filePath" layoutX="81.0" layoutY="11.0" prefHeight="23.0"
                                                    prefWidth="130.0"/>
                                         <Button fx:id="selectFile" layoutX="220.0" layoutY="12.0"
-                                                mnemonicParsing="false" onAction="#executeSelect"
-                                                prefHeight="23.0" prefWidth="25.0" text="···"/>
-                                        <RadioButton fx:id="modeAll" userData="1" layoutX="81.0" layoutY="46.0"
-                                                     mnemonicParsing="false" onAction="#selectModeAll" text="全量"/>
-                                        <RadioButton fx:id="modeUpdate" userData="2" layoutX="148.0" layoutY="46.0"
-                                                     mnemonicParsing="false" onAction="#selectModeUpdate" text="升级"/>
+                                                mnemonicParsing="false" onAction="#executeSelect" prefHeight="23.0"
+                                                prefWidth="25.0" text="···"/>
+                                        <RadioButton fx:id="modeAll" layoutX="81.0" layoutY="46.0"
+                                                     mnemonicParsing="false" onAction="#selectModeAll" text="全量"
+                                                     userData="1"/>
+                                        <RadioButton fx:id="modeUpdate" layoutX="148.0" layoutY="46.0"
+                                                     mnemonicParsing="false" onAction="#selectModeUpdate" text="升级"
+                                                     userData="2"/>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">

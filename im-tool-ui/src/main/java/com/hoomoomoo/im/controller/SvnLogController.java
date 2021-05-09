@@ -2,7 +2,7 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.SvnLogDto;
+import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -54,7 +54,6 @@ public class SvnLogController implements Initializable {
             OutputUtils.clearLog(svnLog);
             OutputUtils.clearLog(fileLog);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            appConfigDto.setSvnUsername(svnName.getText());
             appConfigDto.setSvnRecentTime(svnTimes.getText());
             updateProgress();
             getSvnLog(Integer.valueOf(svnTimes.getText()));
@@ -68,13 +67,18 @@ public class SvnLogController implements Initializable {
             try {
                 svnSubmit.setDisable(true);
                 Date date = new Date();
-                List<SvnLogDto> logDtoList = SvnUtils.getSvnLog(svnTimes);
-                for (SvnLogDto svnLogDto : logDtoList) {
+                List<LogDto> logDtoList = SvnUtils.getSvnLog(svnTimes);
+                for (LogDto svnLogDto : logDtoList) {
                     OutputUtils.info(svnLog, svnLogDto);
                     OutputUtils.info(fileLog, svnLogDto.getFile());
                 }
                 if (CollectionUtils.isEmpty(logDtoList)) {
                     OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录\n");
+                } else {
+                    AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                    if (appConfigDto.getSvnDefaultAppendBiz()) {
+                        OutputUtils.info(fileLog, appConfigDto.getSvnDefaultAppendPath());
+                    }
                 }
                 setProgress(1);
                 LoggerUtils.writeSvnLogInfo(date, logDtoList);

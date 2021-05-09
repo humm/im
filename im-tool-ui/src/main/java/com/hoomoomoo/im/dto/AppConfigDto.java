@@ -2,6 +2,9 @@ package com.hoomoomoo.im.dto;
 
 import lombok.Data;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+
 /**
  * @author humm23693
  * @description TODO
@@ -41,6 +44,12 @@ public class AppConfigDto extends BaseDto {
     private String processGeneratePath;
 
     private String processTaCode;
+
+    private Boolean svnDefaultAppendBiz;
+
+    private String svnDefaultAppendPath;
+
+    private List<LinkedHashMap<String, String>> svnUpdatePath;
 
 
 }

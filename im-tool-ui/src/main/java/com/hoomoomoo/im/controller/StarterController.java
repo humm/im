@@ -35,20 +35,42 @@ public class StarterController implements Initializable {
     private Menu menuFunction;
 
     @FXML
-    private MenuItem menuItemSvnlog;
-
-    @FXML
     private Menu menuHelp;
 
     @FXML
-    private MenuItem menuItemAbout;
+    private MenuItem menuItemSvnlog;
+
+    @FXML
+    private MenuItem menuItemFundInfo;
+
+    @FXML
+    private MenuItem menuItemProcessInfo;
+
+    @FXML
+    private MenuItem menuStat;
+
+    @FXML
+    private MenuItem menuAbout;
 
     @FXML
     private TabPane functionTab;
 
     @FXML
-    void openAbout(ActionEvent event) {
+    void openAboutInfo(ActionEvent event) throws IOException {
+        Tab tab = getFunctionTab(FunctionType.getPath(STR_6), FunctionType.getName(STR_6));
+        if (!isOpen(tab)) {
+            functionTab.getTabs().add(tab);
+        }
+        functionTab.getSelectionModel().select(tab);
+    }
 
+    @FXML
+    void openStatInfo(ActionEvent event) throws IOException {
+        Tab tab = getFunctionTab(FunctionType.getPath(STR_5), FunctionType.getName(STR_5));
+        if (!isOpen(tab)) {
+            functionTab.getTabs().add(tab);
+        }
+        functionTab.getSelectionModel().select(tab);
     }
 
     @FXML
@@ -56,7 +78,18 @@ public class StarterController implements Initializable {
         Tab tab = getFunctionTab(FunctionType.getPath(STR_1), FunctionType.getName(STR_1));
         if (!isOpen(tab)) {
             functionTab.getTabs().add(tab);
+            functionTab.getSelectionModel().select(tab);
         }
+        functionTab.getSelectionModel().select(tab);
+    }
+
+    @FXML
+    void openSvnUpdate(ActionEvent event) throws IOException {
+        Tab tab = getFunctionTab(FunctionType.getPath(STR_2), FunctionType.getName(STR_2));
+        if (!isOpen(tab)) {
+            functionTab.getTabs().add(tab);
+        }
+        functionTab.getSelectionModel().select(tab);
     }
 
     @FXML
@@ -65,6 +98,7 @@ public class StarterController implements Initializable {
         if (!isOpen(tab)) {
             functionTab.getTabs().add(tab);
         }
+        functionTab.getSelectionModel().select(tab);
     }
 
     @FXML
@@ -73,6 +107,7 @@ public class StarterController implements Initializable {
         if (!isOpen(tab)) {
             functionTab.getTabs().add(tab);
         }
+        functionTab.getSelectionModel().select(tab);
     }
 
     @Override
@@ -85,6 +120,9 @@ public class StarterController implements Initializable {
                 for (String tab : tabs) {
                     functionTab.getTabs().add(getFunctionTab(FunctionType.getPath(tab), FunctionType.getName(tab)));
                 }
+            } else {
+                Tab tab = getFunctionTab(FunctionType.getPath(STR_1), FunctionType.getName(STR_1));
+                functionTab.getTabs().add(tab);
             }
         } catch (Exception e) {
             e.printStackTrace();

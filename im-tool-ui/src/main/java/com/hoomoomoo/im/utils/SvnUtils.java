@@ -3,16 +3,20 @@ package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.SvnLogDto;
+import com.hoomoomoo.im.dto.LogDto;
+import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
 import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
+import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
+import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
-import org.tmatesoft.svn.core.wc.SVNWCUtil;
+import org.tmatesoft.svn.core.wc.*;
 
+import java.io.File;
 import java.util.*;
 
 
@@ -24,29 +28,29 @@ import java.util.*;
  */
 public class SvnUtils {
 
-    public static List<SvnLogDto> getSvnLog(int times) throws Exception {
+    public static List<LogDto> getSvnLog(int times) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        final List<SvnLogDto> logList = new ArrayList<>();
+        final List<LogDto> logList = new ArrayList<>();
         String svnUrl = appConfigDto.getSvnUrl();
         String svnName = appConfigDto.getSvnUsername();
-        String svnpPssword = appConfigDto.getSvnPassword();
+        String svnPassword = appConfigDto.getSvnPassword();
         // HEAD (the latest) revision
         long endRevision = -1;
         DAVRepositoryFactory.setup();
         SVNRepository repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnUrl));
-        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnName, svnpPssword);
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnName, svnPassword);
         repository.setAuthenticationManager(authManager);
         // 最后一次提交记录
         SVNDirEntry lastSVNDirEntry = repository.info(".", endRevision);
         // 开始版本号
         long startRevision = lastSVNDirEntry.getRevision() - Integer.valueOf(appConfigDto.getSvnMaxRevision());
-        repository.log(new String[]{""}, startRevision, endRevision, true, true, svnlogentry -> {
-            if (svnlogentry.getAuthor().equals(svnName)) {
-                SvnLogDto svnLogDto = new SvnLogDto();
+        repository.log(new String[]{""}, startRevision, endRevision, true, true, svnLogEntry -> {
+            if (svnLogEntry.getAuthor().equals(svnName)) {
+                LogDto svnLogDto = new LogDto();
                 logList.add(svnLogDto);
-                svnLogDto.setVersion(svnlogentry.getRevision());
-                svnLogDto.setTime(CommonUtils.getCurrentDateTime1(svnlogentry.getDate()));
-                Map<String, SVNLogEntryPath> logMap = svnlogentry.getChangedPaths();
+                svnLogDto.setVersion(svnLogEntry.getRevision());
+                svnLogDto.setTime(CommonUtils.getCurrentDateTime1(svnLogEntry.getDate()));
+                Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
                 svnLogDto.setNum(logMap.size());
                 List<String> pathList = new ArrayList<>();
                 svnLogDto.setFile(pathList);
@@ -67,5 +71,18 @@ public class SvnUtils {
             return logList.subList(0, times);
         }
         return logList;
+    }
+
+    public static Long updateSvn(String workspace) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        String svnName = appConfigDto.getSvnUsername();
+        String svnPassword = appConfigDto.getSvnPassword();
+        SVNRepositoryFactoryImpl.setup();
+        ISVNOptions isvnOptions = SVNWCUtil.createDefaultOptions(true);
+        SVNClientManager svnClientManager = SVNClientManager.newInstance((DefaultSVNOptions) isvnOptions, svnName, svnPassword);
+        SVNUpdateClient svnUpdateClient = svnClientManager.getUpdateClient();
+        svnUpdateClient.setIgnoreExternals(false);
+        Long version = svnUpdateClient.doUpdate(new File(workspace), SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
+        return version;
     }
 }

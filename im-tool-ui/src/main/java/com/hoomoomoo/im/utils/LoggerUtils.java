@@ -3,7 +3,7 @@ package com.hoomoomoo.im.utils;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.FunctionType;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.SvnLogDto;
+import com.hoomoomoo.im.dto.LogDto;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.io.File;
@@ -11,8 +11,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_3;
-import static com.hoomoomoo.im.consts.BaseConst.STR_4;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
  * @author humm23693
@@ -83,7 +82,33 @@ public class LoggerUtils {
         writeStatFile(statFilePath);
     }
 
-    public static void writeSvnLogInfo(Date startDate, List<SvnLogDto> svnLogDtoList) throws Exception {
+    public static void writeSvnUpdateInfo(Date startDate, List<String> filePath) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        if (!appConfigDto.getEnableLog()) {
+            return;
+        }
+        // 写日志文件
+        Date endDate = new Date();
+        StringBuilder log = new StringBuilder();
+        log.append(CommonUtils.getCurrentDateTime1(startDate)).append(STR_SPACE);
+        log.append(FunctionType.getName(STR_2)).append(STR_SPACE).append("开始").append(STR_NEXT_LINE);
+        for (String item : filePath) {
+            log.append(getLineIndentation()).append(item).append(STR_NEXT_LINE);
+        }
+        log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
+        log.append(FunctionType.getName(STR_2)).append(STR_SPACE).append("结束").append(STR_NEXT_LINE);
+        long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
+        log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
+        log.append(FunctionType.getName(STR_2)).append(STR_SPACE);
+        log.append("耗时:").append(costTime).append("秒").append(STR_NEXT_LINE).append(STR_NEXT_LINE);
+        String logFilePath = "/logs/svnUpdate/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
+        FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+        // 写统计文件
+        String statFilePath = FileUtils.getFilePath("/logs/svnUpdate/00000000.log").getPath();
+        writeStatFile(statFilePath);
+    }
+
+    public static void writeSvnLogInfo(Date startDate, List<LogDto> svnLogDtoList) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (!appConfigDto.getEnableLog()) {
             return;
@@ -95,7 +120,7 @@ public class LoggerUtils {
         log.append(FunctionType.getName(STR_1)).append(STR_SPACE).append("开始").append(STR_NEXT_LINE);
         int fileNum = 0;
         if (CollectionUtils.isNotEmpty(svnLogDtoList)) {
-            for (SvnLogDto item : svnLogDtoList) {
+            for (LogDto item : svnLogDtoList) {
                 List<String> itemFile = item.getFile();
                 for (int i = 0; i < itemFile.size(); i++) {
                     fileNum++;
