@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -23,6 +25,9 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @date 2021/05/09
  */
 public class StatInfoController implements Initializable {
+
+    private static final Logger logger = LoggerFactory.getLogger(StatInfoController.class);
+
 
     @FXML
     private TextArea svnLog;
@@ -45,22 +50,22 @@ public class StatInfoController implements Initializable {
         try {
             svnLogStat = FileUtils.readNormalFile(FileUtils.getFilePath("/logs/svnLog/00000000.log").getPath(), false);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
         }
         try {
             svnUpdateStat = FileUtils.readNormalFile(FileUtils.getFilePath("/logs/svnUpdate/00000000.log").getPath(), false);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
         }
         try {
             fundInfoStat = FileUtils.readNormalFile(FileUtils.getFilePath("/logs/fundInfo/00000000.log").getPath(), false);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
         }
         try {
             processInfoStat = FileUtils.readNormalFile(FileUtils.getFilePath("/logs/processInfo/00000000.log").getPath(), false);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.info(e.getMessage());
         }
 
         OutputUtils.clearLog(svnLogStat);

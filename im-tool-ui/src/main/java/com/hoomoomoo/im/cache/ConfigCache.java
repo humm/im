@@ -68,7 +68,7 @@ public class ConfigCache {
         if (CollectionUtils.isNotEmpty(content)) {
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i);
-                if (item.contains(STR_EQUALS) && item.contains(KEY_PASSWORD) && !item.endsWith(STR_SECURITY)) {
+                if (item.contains(STR_EQUALS) && item.startsWith(KEY_SVN_PASSWORD) && !item.endsWith(STR_SECURITY)) {
                     int index = item.indexOf(STR_EQUALS) + 1;
                     if (StringUtils.isNotBlank(item.substring(index))) {
                         String password = SecurityUtils.getEncryptString(item.substring(index)) + STR_SECURITY;

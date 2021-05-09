@@ -57,8 +57,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openAboutInfo(ActionEvent event) throws IOException {
-        Tab tab = getFunctionTab(FunctionType.getPath(STR_6), FunctionType.getName(STR_6));
-        if (!isOpen(tab)) {
+        Tab tab = isOpen(FunctionType.getName(STR_6));
+        if (tab == null) {
+            tab = getFunctionTab(FunctionType.getPath(STR_6), FunctionType.getName(STR_6));
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -66,8 +67,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openStatInfo(ActionEvent event) throws IOException {
-        Tab tab = getFunctionTab(FunctionType.getPath(STR_5), FunctionType.getName(STR_5));
-        if (!isOpen(tab)) {
+        Tab tab = isOpen(FunctionType.getName(STR_5));
+        if (tab == null) {
+            tab = getFunctionTab(FunctionType.getPath(STR_5), FunctionType.getName(STR_5));
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -75,18 +77,19 @@ public class StarterController implements Initializable {
 
     @FXML
     void openSvnLog(ActionEvent event) throws IOException {
-        Tab tab = getFunctionTab(FunctionType.getPath(STR_1), FunctionType.getName(STR_1));
-        if (!isOpen(tab)) {
+        Tab tab = isOpen(FunctionType.getName(STR_1));
+        if (tab == null) {
+            tab = getFunctionTab(FunctionType.getPath(STR_1), FunctionType.getName(STR_1));
             functionTab.getTabs().add(tab);
-            functionTab.getSelectionModel().select(tab);
         }
         functionTab.getSelectionModel().select(tab);
     }
 
     @FXML
     void openSvnUpdate(ActionEvent event) throws IOException {
-        Tab tab = getFunctionTab(FunctionType.getPath(STR_2), FunctionType.getName(STR_2));
-        if (!isOpen(tab)) {
+        Tab tab = isOpen(FunctionType.getName(STR_2));
+        if (tab == null) {
+            tab = getFunctionTab(FunctionType.getPath(STR_2), FunctionType.getName(STR_2));
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -94,8 +97,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openFundInfo(ActionEvent event) throws IOException {
-        Tab tab = getFunctionTab(FunctionType.getPath(STR_3), FunctionType.getName(STR_3));
-        if (!isOpen(tab)) {
+        Tab tab = isOpen(FunctionType.getName(STR_3));
+        if (tab == null) {
+            tab = getFunctionTab(FunctionType.getPath(STR_3), FunctionType.getName(STR_3));
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -103,8 +107,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openProcessInfo(ActionEvent event) throws IOException {
-        Tab tab = getFunctionTab(FunctionType.getPath(STR_4), FunctionType.getName(STR_4));
-        if (!isOpen(tab)) {
+        Tab tab = isOpen(FunctionType.getName(STR_4));
+        if (tab == null) {
+            tab = getFunctionTab(FunctionType.getPath(STR_4), FunctionType.getName(STR_4));
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -146,20 +151,20 @@ public class StarterController implements Initializable {
     /**
      * TAB是否已打开
      *
-     * @param tab
+     * @param tabName
      * @author: humm23693
      * @date: 2021/04/18
      * @return:
      */
-    private boolean isOpen(Tab tab) {
+    private Tab isOpen(String tabName) {
         ObservableList<Tab> tabList = functionTab.getTabs();
         if (tabList != null) {
             for (Tab item : tabList) {
-                if (item.getText().equals(tab.getText())) {
-                    return true;
+                if (item.getText().equals(tabName)) {
+                    return item;
                 }
             }
         }
-        return false;
+        return null;
     }
 }

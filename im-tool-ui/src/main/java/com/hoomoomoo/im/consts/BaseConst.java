@@ -15,7 +15,7 @@ public class BaseConst {
     public static final String STR_5 = "5";
     public static final String STR_6 = "6";
 
-    public static final String KEY_PASSWORD = "password";
+    public static final String KEY_SVN_PASSWORD = "svn.password";
     public static final String KEY_SVN_UPDATE = "svn.update.";
     public static final String KEY_SVN = ".svn";
 

@@ -12,7 +12,8 @@ import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE_2;
 import static com.hoomoomoo.im.consts.BaseConst.STR_SPACE_4;
-import static com.hoomoomoo.im.consts.VersionConst.*;
+import static com.hoomoomoo.im.consts.VersionConst.VERSION_DATE;
+import static com.hoomoomoo.im.consts.VersionConst.VERSION_NUM;
 
 /**
  * @author humm23693
@@ -33,7 +34,6 @@ public class AboutInfoController implements Initializable {
             OutputUtils.info(about, appConfigDto.getAppName() + STR_NEXT_LINE_2);
             OutputUtils.info(about, STR_SPACE_4 + "版本号: " + VERSION_NUM + STR_NEXT_LINE_2);
             OutputUtils.info(about, STR_SPACE_4 + "发布时间: " + VERSION_DATE + STR_NEXT_LINE_2);
-            OutputUtils.info(about, STR_SPACE_4 + "作者: " + VERSION_AUTHOR + STR_NEXT_LINE_2);
         } catch (Exception e) {
             e.printStackTrace();
         }

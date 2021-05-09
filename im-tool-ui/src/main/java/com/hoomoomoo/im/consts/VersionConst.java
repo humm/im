@@ -8,10 +8,8 @@ package com.hoomoomoo.im.consts;
  */
 public class VersionConst {
 
-    public static final String VERSION_NUM = "2.0.0.0";
+    public static final String VERSION_NUM = "2.1.0";
 
-    public static final String VERSION_DATE = "2021-05-09 18:00:00";
-
-    public static final String VERSION_AUTHOR = "hoomoomoo";
+    public static final String VERSION_DATE = "2021-05-09 22:35:06";
 
 }
