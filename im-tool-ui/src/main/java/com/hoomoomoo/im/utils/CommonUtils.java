@@ -14,6 +14,7 @@ public class CommonUtils {
     private final static String PATTERN1 = "yyyy-MM-dd HH:mm:ss";
     private final static String PATTERN2 = "yyyyMMddHHmmss";
     private final static String PATTERN3 = "yyyyMMdd";
+    private final static String PATTERN4 = "yyyy-MM-dd";
 
     /**
      * 获取当前系统时间
@@ -61,6 +62,18 @@ public class CommonUtils {
      */
     public static String getCurrentDateTime3() {
         return new SimpleDateFormat(PATTERN3).format(new Date());
+    }
+
+    /**
+     * 获取当前日期
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static String getCurrentDateTime4() {
+        return new SimpleDateFormat(PATTERN4).format(new Date());
     }
 
 }

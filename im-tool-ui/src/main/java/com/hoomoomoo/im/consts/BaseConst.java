@@ -33,6 +33,11 @@ public class BaseConst {
 
     public static final String STR_COMMA = ",";
 
+    public static final String STR_POINTER = ".";
+
+    public static final String STR_HYPHEN = "-";
+
+    public static final String STR_NEXT_LINE = "\n";
     public static final String STR_NEXT_LINE_2 = "\n\n";
 
 }

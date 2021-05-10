@@ -68,8 +68,20 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
+    public static Map<String, String> readConfigFileToMapIncludePoint(String filePath) throws IOException {
+        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, null), false);
+    }
+
+    /**
+     * 读取配置文件
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
     public static Map<String, String> readConfigFileToMap(String filePath) throws IOException {
-        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, null));
+        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, null), true);
     }
 
 
@@ -285,7 +297,7 @@ public class FileUtils {
      * @date: 2020/12/02
      * @return:
      */
-    private static LinkedHashMap<String, String> convertMap(HashMap<String, String> map) {
+    private static LinkedHashMap<String, String> convertMap(HashMap<String, String> map, boolean deletePoint) {
         if (map == null) {
             return null;
         }
@@ -296,20 +308,24 @@ public class FileUtils {
             String key = item.getKey();
             String value = item.getValue();
             StringBuffer convertKey = new StringBuffer();
-            boolean isPoint = false;
-            for (int i = 0; i < key.length(); i++) {
-                char single = key.charAt(i);
-                if (String.valueOf(single).equals(STR_POINT)) {
-                    isPoint = true;
-                    continue;
-                } else {
-                    if (isPoint) {
-                        convertKey.append(String.valueOf(single).toUpperCase());
+            if (deletePoint) {
+                boolean isPoint = false;
+                for (int i = 0; i < key.length(); i++) {
+                    char single = key.charAt(i);
+                    if (String.valueOf(single).equals(STR_POINT)) {
+                        isPoint = true;
+                        continue;
                     } else {
-                        convertKey.append(single);
+                        if (isPoint) {
+                            convertKey.append(String.valueOf(single).toUpperCase());
+                        } else {
+                            convertKey.append(single);
+                        }
+                        isPoint = false;
                     }
-                    isPoint = false;
                 }
+            } else {
+                convertKey.append(key);
             }
             afterMap.put(convertKey.toString(), value);
         }
@@ -355,28 +371,54 @@ public class FileUtils {
         if (sourceUrl.getPath().contains(START_MODE_JAR)) {
             URL url = getFilePath(path);
             File file = new File(url.getPath());
-            if (!file.exists()) {
-                // 解压文件
-                String jarPath = sourceUrl.getPath().replace(FILE_TYPE_SLASH, STR_EMPTY);
-                int jarIndex = jarPath.indexOf(START_MODE_JAR);
-                String filePath = jarPath.substring(0, jarIndex);
-                String fileName = filePath.substring(0, jarIndex) + FILE_TYPE_JAR;
-                String folder = filePath.substring(0, filePath.lastIndexOf(STR_SLASH));
-                // 生成临时解压文件夹
-                String tempFolder = folder + STR_SLASH + CommonUtils.getCurrentDateTime2() + STR_SLASH;
-                File temp = new File(tempFolder);
-                if (!temp.exists()) {
-                    temp.mkdirs();
-                }
-                UnZipRarUtils.unZip(new File(fileName), tempFolder);
-                // 复制文件
-                copyFolder(tempFolder + FILE_TYPE_CONF, folder);
-                File[] fileList = new File(tempFolder).listFiles();
-                for (File item : fileList) {
+            Map<String, String> oldAppConfig = new HashMap<>(16);
+            if (file.exists()) {
+                // 读取历史配置文件
+                oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(url.getPath());
+                // 删除历史解压文件
+                File confFolder = file.getParentFile();
+                File[] oldFileList = confFolder.listFiles();
+                for (File item : oldFileList) {
                     deleteFile(item);
                 }
-                deleteFile(new File(tempFolder));
+                deleteFile(confFolder);
             }
+            // 解压文件
+            String jarPath = sourceUrl.getPath().replace(FILE_TYPE_SLASH, STR_EMPTY);
+            int jarIndex = jarPath.indexOf(START_MODE_JAR);
+            String filePath = jarPath.substring(0, jarIndex);
+            String fileName = filePath.substring(0, jarIndex) + FILE_TYPE_JAR;
+            String folder = filePath.substring(0, filePath.lastIndexOf(STR_SLASH));
+            // 生成临时解压文件夹
+            String tempFolder = folder + STR_SLASH + CommonUtils.getCurrentDateTime2() + STR_SLASH;
+            File temp = new File(tempFolder);
+            if (!temp.exists()) {
+                temp.mkdirs();
+            }
+            UnZipRarUtils.unZip(new File(fileName), tempFolder);
+            // 复制文件
+            copyFolder(tempFolder + FILE_TYPE_CONF, folder);
+            File[] fileList = new File(tempFolder).listFiles();
+            for (File item : fileList) {
+                deleteFile(item);
+            }
+            deleteFile(new File(tempFolder));
+            // 更新配置文件
+            List<String> content = FileUtils.readNormalFile(url.getPath(), false);
+            for (int i = 0; i < content.size(); i++) {
+                String item = content.get(i);
+                Iterator<String> iterator = oldAppConfig.keySet().iterator();
+                while (iterator.hasNext()) {
+                    String key = iterator.next();
+                    String value = oldAppConfig.get(key);
+                    if (item.startsWith(key + STR_EQUALS)) {
+                        int index = item.indexOf(STR_EQUALS) + 1;
+                        item = item.substring(0, index) + value;
+                        content.set(i, item);
+                    }
+                }
+            }
+            FileUtils.writeFile(url.getPath(), content, false);
         }
     }
 

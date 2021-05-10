@@ -1,5 +1,6 @@
 package com.hoomoomoo.im;
 
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.junit.Test;
@@ -7,8 +8,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_EMPTY;
-import static com.hoomoomoo.im.consts.BaseConst.STR_EQUALS;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
  * @author humm23693
@@ -19,13 +19,20 @@ import static com.hoomoomoo.im.consts.BaseConst.STR_EQUALS;
 
 public class UpdateConfigTest {
 
+    /**
+     * 去除敏感信息
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/05/10
+     * @return:
+     */
     @Test
     public void updateAppConfig() {
         try {
             List<String> keys = new ArrayList<>(16);
             keys.add("svn.username");
             keys.add("svn.password");
-            // 去除敏感信息
             String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
             List<String> content = FileUtils.readNormalFile(confPath, false);
             if (CollectionUtils.isNotEmpty(content)) {
@@ -55,6 +62,29 @@ public class UpdateConfigTest {
             }
         }
         return false;
+    }
+
+    /**
+     * 更新版本信息
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/05/10
+     * @return:
+     */
+    @Test
+    public void updateVersionConfig() {
+        try {
+            String versionFilePath = FileUtils.getFilePath("/conf/version.conf").getPath();
+            String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
+            StringBuilder statLog = new StringBuilder();
+            statLog.append("版本号: ").append(CommonUtils.getCurrentDateTime4().replace(STR_HYPHEN, STR_POINTER)).append(STR_NEXT_LINE);
+            statLog.append("发布时间: ").append(CommonUtils.getCurrentDateTime1()).append(STR_NEXT_LINE);
+            FileUtils.writeFile(versionFilePath, statLog.toString(), false);
+            FileUtils.writeFile(versionFilePathSource, statLog.toString(), false);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
