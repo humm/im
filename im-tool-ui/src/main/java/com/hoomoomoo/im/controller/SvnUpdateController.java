@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.FunctionType;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
@@ -49,6 +50,9 @@ public class SvnUpdateController implements Initializable {
     @FXML
     void executeSubmit(ActionEvent event) {
         try {
+            if (!CommonUtils.checkConfig(fileLog, FunctionType.SVN_UPDATE.getType())) {
+                return;
+            }
             setProgress(0);
             OutputUtils.clearLog(svnLog);
             OutputUtils.clearLog(fileLog);

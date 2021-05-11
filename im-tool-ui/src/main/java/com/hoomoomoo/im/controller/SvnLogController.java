@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.FunctionType;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
@@ -50,6 +51,9 @@ public class SvnLogController implements Initializable {
     @FXML
     void executeSubmit(ActionEvent event) {
         try {
+            if (!CommonUtils.checkConfig(fileLog, FunctionType.SVN_LOG.getType())) {
+                return;
+            }
             setProgress(0);
             OutputUtils.clearLog(svnLog);
             OutputUtils.clearLog(fileLog);
@@ -76,7 +80,7 @@ public class SvnLogController implements Initializable {
                     OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录\n");
                 } else {
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                    if (appConfigDto.getSvnDefaultAppendBiz()) {
+                    if (appConfigDto.getSvnDefaultAppendBiz() && StringUtils.isNotBlank(appConfigDto.getSvnDefaultAppendPath())) {
                         OutputUtils.info(fileLog, appConfigDto.getSvnDefaultAppendPath());
                     }
                 }

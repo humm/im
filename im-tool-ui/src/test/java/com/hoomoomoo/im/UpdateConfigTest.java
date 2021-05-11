@@ -33,6 +33,18 @@ public class UpdateConfigTest {
             List<String> keys = new ArrayList<>(16);
             keys.add("svn.username");
             keys.add("svn.password");
+
+            keys.add("svn.url");
+            keys.add("svn.default.append.path");
+
+            keys.add("svn.update.ta6");
+
+            keys.add("fund.excel.path");
+            keys.add("fund.generate.path");
+
+            keys.add("process.excel.path");
+            keys.add("process.generate.path");
+
             String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
             List<String> content = FileUtils.readNormalFile(confPath, false);
             if (CollectionUtils.isNotEmpty(content)) {

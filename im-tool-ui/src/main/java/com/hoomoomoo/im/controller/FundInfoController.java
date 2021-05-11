@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.FunctionType;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.CommonUtils;
@@ -100,7 +101,10 @@ public class FundInfoController implements Initializable {
     }
 
     @FXML
-    void executeSubmit(ActionEvent event) {
+    void executeSubmit(ActionEvent event) throws Exception {
+        if (!CommonUtils.checkConfig(fundLog, FunctionType.FUND_INFO.getType())) {
+            return;
+        }
         setProgress(0);
         if (StringUtils.isBlank(filePath.getText())) {
             infoMsg("请选择基金信息Excel文件");

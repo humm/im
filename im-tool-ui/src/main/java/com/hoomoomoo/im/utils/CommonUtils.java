@@ -1,7 +1,17 @@
 package com.hoomoomoo.im.utils;
 
+import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.FunctionType;
+import com.hoomoomoo.im.dto.AppConfigDto;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
  * @author humm23693
@@ -74,6 +84,59 @@ public class CommonUtils {
      */
     public static String getCurrentDateTime4() {
         return new SimpleDateFormat(PATTERN4).format(new Date());
+    }
+
+
+    public static Boolean checkConfig(TextArea log, String functionType) throws Exception {
+        boolean flag = true;
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        if (functionType.equals(FunctionType.SVN_LOG.getType())) {
+            if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
+                OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_NEXT_LINE);
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
+                OutputUtils.info(log, STR_MSG_SVN_PASSWORD + STR_NEXT_LINE);
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getSvnUrl())) {
+                OutputUtils.info(log, STR_MSG_SVN_URL + STR_NEXT_LINE);
+                flag = false;
+            }
+        }
+        if (functionType.equals(FunctionType.SVN_UPDATE.getType())) {
+            if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
+                OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_NEXT_LINE);
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
+                OutputUtils.info(log, STR_MSG_SVN_PASSWORD + STR_NEXT_LINE);
+                flag = false;
+            }
+            if (CollectionUtils.isEmpty(appConfigDto.getSvnUpdatePath())) {
+                OutputUtils.info(log, STR_MSG_SVN_UPDATE_TA6 + STR_NEXT_LINE);
+                flag = false;
+            }
+        }
+        return flag;
+    }
+
+    public static Boolean checkConfig(TableView<?> log, String functionType) throws Exception {
+        boolean flag = true;
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        if (functionType.equals(FunctionType.FUND_INFO.getType())) {
+            if (StringUtils.isBlank(appConfigDto.getFundGeneratePath())) {
+                OutputUtils.info(log, STR_MSG_FUND_GENERATE_PATH);
+                flag = false;
+            }
+        }
+        if (functionType.equals(FunctionType.PROCESS_INFO.getType())) {
+            if (StringUtils.isBlank(appConfigDto.getProcessGeneratePath())) {
+                OutputUtils.info(log, STR_MSG_PROCESS_GENERATE_PATH);
+                flag = false;
+            }
+        }
+        return flag;
     }
 
 }

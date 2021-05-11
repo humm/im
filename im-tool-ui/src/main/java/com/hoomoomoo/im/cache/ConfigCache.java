@@ -51,9 +51,11 @@ public class ConfigCache {
                     int index = item.indexOf(STR_EQUALS);
                     String name = item.substring(KEY_SVN_UPDATE.length(), index);
                     String path = item.substring(index + 1);
-                    LinkedHashMap version = new LinkedHashMap(2);
-                    version.put(name, path);
-                    appConfigDto.getSvnUpdatePath().add(version);
+                    if (StringUtils.isNotBlank(path)) {
+                        LinkedHashMap version = new LinkedHashMap(2);
+                        version.put(name, path);
+                        appConfigDto.getSvnUpdatePath().add(version);
+                    }
                 }
             }
         }

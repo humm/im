@@ -47,6 +47,7 @@ public class FileUtils {
     private static final String FILE_TYPE_CONF = "conf";
     private static final String FILE_TYPE_SLASH = "file:/";
     private static final String FILE_TYPE_FILE = "file:";
+    private static final String STR_SVN_UPDATE = "svn.update.";
 
     /**
      * 读取配置文件
@@ -404,22 +405,45 @@ public class FileUtils {
             }
             deleteFile(new File(tempFolder));
             // 更新配置文件
+            List<String> updateContent = new ArrayList<>(16);
             List<String> content = FileUtils.readNormalFile(url.getPath(), false);
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i);
                 Iterator<String> iterator = oldAppConfig.keySet().iterator();
+                // 获取历史svn代码更新配置
+                if (item.startsWith(STR_SVN_UPDATE)) {
+                    List<String> svnUpdateConfig = getSvnUpdateConfig(oldAppConfig);
+                    updateContent.addAll(svnUpdateConfig);
+                    if (CollectionUtils.isNotEmpty(svnUpdateConfig)) {
+                        continue;
+                    }
+                }
                 while (iterator.hasNext()) {
                     String key = iterator.next();
                     String value = oldAppConfig.get(key);
                     if (item.startsWith(key + STR_EQUALS)) {
                         int index = item.indexOf(STR_EQUALS) + 1;
                         item = item.substring(0, index) + value;
-                        content.set(i, item);
                     }
                 }
+                updateContent.add(item);
             }
-            FileUtils.writeFile(url.getPath(), content, false);
+            FileUtils.writeFile(url.getPath(), updateContent, false);
         }
+    }
+
+    private static List<String> getSvnUpdateConfig(Map<String, String> content) {
+        List<String> svnUpdate = new ArrayList<>(16);
+        Iterator<String> iterator = content.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            String value = content.get(key);
+            if (key.startsWith(STR_SVN_UPDATE)) {
+                String item = key + STR_EQUALS + value;
+                svnUpdate.add(item);
+            }
+        }
+        return svnUpdate;
     }
 
     /**

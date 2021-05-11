@@ -3,7 +3,9 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.cache.TaskMemoryCache;
 import com.hoomoomoo.im.cache.TransMemoryCache;
+import com.hoomoomoo.im.consts.FunctionType;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.application.Platform;
@@ -79,7 +81,10 @@ public class ProcessInfoController implements Initializable {
     }
 
     @FXML
-    void executeSubmit(ActionEvent event) {
+    void executeSubmit(ActionEvent event) throws Exception {
+        if (!CommonUtils.checkConfig(log, FunctionType.PROCESS_INFO.getType())) {
+            return;
+        }
         setProgress(0);
         if (StringUtils.isBlank(filePath.getText())) {
             OutputUtils.info(log, "请选择流程信息Excel文件");
