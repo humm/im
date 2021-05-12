@@ -22,15 +22,11 @@ import jxl.Sheet;
 import jxl.Workbook;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_EMPTY;
-import static com.hoomoomoo.im.consts.BaseConst.STR_SPACE;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
  * @author humm23693
@@ -147,11 +143,17 @@ public class ProcessInfoController implements Initializable {
                 OutputUtils.clearLog(log);
                 // 创建生成脚本目录
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                String processPath = appConfigDto.getProcessGeneratePath();
-                File pathFolder = new File(processPath);
-                if (!pathFolder.exists()) {
-                    pathFolder.mkdirs();
+                String processSchedule = appConfigDto.getProcessGeneratePathSchedule();
+                String processPathTrans = appConfigDto.getProcessGeneratePathTrans();
+                File pathFolderSchedule = new File(processSchedule);
+                if (!pathFolderSchedule.exists()) {
+                    pathFolderSchedule.mkdirs();
                 }
+                File pathFolderTrans = new File(processPathTrans);
+                if (!pathFolderTrans.exists()) {
+                    pathFolderTrans.mkdirs();
+                }
+
                 // 打开workbook
                 Workbook workbook = Workbook.getWorkbook(new File(filePath.getText()));
 
@@ -169,22 +171,19 @@ public class ProcessInfoController implements Initializable {
                 }
                 // step 2.2 生成tbtrans数据
                 String transFileName = "02tbtrans-fund.sql";
-                String transPath = processPath + "/" + transFileName;
+                String transPath = processPathTrans + "/" + transFileName;
                 File transFile = new File(transPath);
-                FileWriter fw = new FileWriter(transFile);
-                BufferedWriter bf = new BufferedWriter(fw);
+                BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(transFile), ENCODING_UTF8));
                 Sheet tranSheet = workbook.getSheet("交易配置");
                 TransMemoryCache.initCache(tranSheet);
                 writeTransInfo(bf);
                 bf.close();
-                fw.close();
 
                 // step 3 创建 输出文件
                 String fileName = "tbschedule-fund_000000.sql";
-                String schedulePath = processPath + "/" + fileName;
+                String schedulePath = processSchedule + "/" + fileName;
                 File file = new File(schedulePath);
-                FileWriter fileWriter = new FileWriter(file);
-                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), ENCODING_UTF8));
 
                 // step 3 在输出文件内 写 组信息 和 页 信息
                 Sheet flowSheet = workbook.getSheet("基本流程信息");
@@ -231,7 +230,6 @@ public class ProcessInfoController implements Initializable {
 
                 bufferedWriter.write(STR_EMPTY);
                 bufferedWriter.close();
-                fileWriter.close();
                 schedule.setProgress(1);
                 List<String> path = new ArrayList<>();
                 path.add(transPath);

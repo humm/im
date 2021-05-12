@@ -43,7 +43,8 @@ public class UpdateConfigTest {
             keys.add("fund.generate.path");
 
             keys.add("process.excel.path");
-            keys.add("process.generate.path");
+            keys.add("process.generate.path.trans");
+            keys.add("process.generate.path.schedule");
 
             String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
             List<String> content = FileUtils.readNormalFile(confPath, false);

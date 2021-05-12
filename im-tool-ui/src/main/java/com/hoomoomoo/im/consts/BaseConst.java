@@ -15,6 +15,8 @@ public class BaseConst {
     public static final String STR_5 = "5";
     public static final String STR_6 = "6";
 
+    public final static String ENCODING_UTF8 = "UTF-8";
+
     public static final String KEY_SVN_PASSWORD = "svn.password";
 
     public static final String KEY_SVN_UPDATE = "svn.update.";
@@ -47,6 +49,7 @@ public class BaseConst {
     public static final String STR_MSG_SVN_URL = "请设置[ svn.url ]";
     public static final String STR_MSG_SVN_UPDATE_TA6 = "请设置[ svn.update.ta6 ]";
     public static final String STR_MSG_FUND_GENERATE_PATH = "请设置[ fund.generate.path ]";
-    public static final String STR_MSG_PROCESS_GENERATE_PATH = "请设置[ process.generate.path ]";
+    public static final String STR_MSG_PROCESS_GENERATE_PATH_SCHEDULE = "请设置[ process.generate.path.schedule ]";
+    public static final String STR_MSG_PROCESS_GENERATE_PATH_TRANS = "请设置[ process.generate.path.trans ]";
 
 }

@@ -41,7 +41,9 @@ public class AppConfigDto extends BaseDto {
 
     private String processExcelPath;
 
-    private String processGeneratePath;
+    private String processGeneratePathTrans;
+
+    private String processGeneratePathSchedule;
 
     private String processTaCode;
 

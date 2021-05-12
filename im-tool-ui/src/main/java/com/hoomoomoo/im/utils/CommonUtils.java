@@ -131,8 +131,12 @@ public class CommonUtils {
             }
         }
         if (functionType.equals(FunctionType.PROCESS_INFO.getType())) {
-            if (StringUtils.isBlank(appConfigDto.getProcessGeneratePath())) {
-                OutputUtils.info(log, STR_MSG_PROCESS_GENERATE_PATH);
+            if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathSchedule())) {
+                OutputUtils.info(log, STR_MSG_PROCESS_GENERATE_PATH_SCHEDULE);
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathTrans())) {
+                OutputUtils.info(log, STR_MSG_PROCESS_GENERATE_PATH_TRANS);
                 flag = false;
             }
         }

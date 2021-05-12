@@ -18,10 +18,7 @@ import jxl.Sheet;
 import jxl.Workbook;
 import org.apache.commons.lang3.StringUtils;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -203,8 +200,7 @@ public class FundInfoController implements Initializable {
                 String fileName = "15fund-product-field.sql";
                 String productPath = appConfigDto.getFundGeneratePath() + "/" + fileName;
                 File productFile = new File(productPath);
-                FileWriter fileWriter = new FileWriter(productFile);
-                BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(productFile), ENCODING_UTF8));
 
                 // 1.1写入头部信息
                 bufferedWriter.write("-- ***************************************************\n");
@@ -283,7 +279,6 @@ public class FundInfoController implements Initializable {
                 }
                 bufferedWriter.write("commit;\n");
                 bufferedWriter.close();
-                fileWriter.close();
                 fundSchedule.setProgress(1);
                 LoggerUtils.writeFundInfo(date, productPath);
             } catch (Exception e) {
