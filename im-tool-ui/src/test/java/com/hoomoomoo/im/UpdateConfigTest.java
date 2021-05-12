@@ -88,7 +88,7 @@ public class UpdateConfigTest {
     @Test
     public void updateVersionConfig() {
         try {
-            String versionFilePath = FileUtils.getFilePath("/conf/version.properties").getPath();
+            String versionFilePath = FileUtils.getFilePath("/conf/version.init").getPath();
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
             StringBuilder statLog = new StringBuilder();
             statLog.append("版本号: ").append(CommonUtils.getCurrentDateTime4().replace(STR_HYPHEN, STR_POINTER)).append(STR_NEXT_LINE);
