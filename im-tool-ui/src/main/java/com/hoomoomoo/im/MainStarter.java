@@ -20,7 +20,7 @@ public class MainStarter extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FileUtils.UnJar("/conf/app.conf");
+        FileUtils.UnJar("/conf/app.properties");
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         primaryStage.getIcons().add(new Image("/conf/image/icon.png"));
         Parent root = FXMLLoader.load(FileUtils.getFilePath("/conf/fxml/starter.fxml"));

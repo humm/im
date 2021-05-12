@@ -46,7 +46,7 @@ public class UpdateConfigTest {
             keys.add("process.generate.path.trans");
             keys.add("process.generate.path.schedule");
 
-            String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
+            String confPath = FileUtils.getFilePath("/conf/app.properties").getPath();
             List<String> content = FileUtils.readNormalFile(confPath, false);
             if (CollectionUtils.isNotEmpty(content)) {
                 for (int i = 0; i < content.size(); i++) {
@@ -88,7 +88,7 @@ public class UpdateConfigTest {
     @Test
     public void updateVersionConfig() {
         try {
-            String versionFilePath = FileUtils.getFilePath("/conf/version.conf").getPath();
+            String versionFilePath = FileUtils.getFilePath("/conf/version.properties").getPath();
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
             StringBuilder statLog = new StringBuilder();
             statLog.append("版本号: ").append(CommonUtils.getCurrentDateTime4().replace(STR_HYPHEN, STR_POINTER)).append(STR_NEXT_LINE);

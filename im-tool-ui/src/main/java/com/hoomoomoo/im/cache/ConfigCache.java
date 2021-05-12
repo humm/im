@@ -38,7 +38,7 @@ public class ConfigCache {
     }
 
     private void init() throws Exception {
-        String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
+        String confPath = FileUtils.getFilePath("/conf/app.properties").getPath();
         // 读取配置文件
         appConfigDto = (AppConfigDto) FileUtils.readConfigFileToObject(confPath, AppConfigDto.class);
         appConfigDto.setSvnUpdatePath(new ArrayList<>(16));
