@@ -46,7 +46,7 @@ public class UpdateConfigTest {
             keys.add("process.generate.path.trans");
             keys.add("process.generate.path.schedule");
 
-            String confPath = FileUtils.getFilePath("/conf/app.properties").getPath();
+            String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
             List<String> content = FileUtils.readNormalFile(confPath, false);
             if (CollectionUtils.isNotEmpty(content)) {
                 for (int i = 0; i < content.size(); i++) {
