@@ -44,10 +44,11 @@ public class FileUtils {
     private static final String START_MODE_JAR = ".jar!";
 
     private static final String FILE_TYPE_JAR = ".jar";
+    private static final String FILE_TYPE_BAK = ".bak";
     private static final String FILE_TYPE_CONF = "conf";
     private static final String FILE_TYPE_SLASH = "file:/";
     private static final String FILE_TYPE_FILE = "file:";
-    private static final String STR_SVN_UPDATE = "svn.update.";
+    private static final String KEY_SVN_UPDATE = "svn.update.";
 
     /**
      * 读取配置文件
@@ -372,24 +373,40 @@ public class FileUtils {
         if (sourceUrl.getPath().contains(START_MODE_JAR)) {
             URL url = getFilePath(path);
             File file = new File(url.getPath());
-            Map<String, String> oldAppConfig = new HashMap<>(16);
+            Map<String, String> oldAppConfig;
+
+            // 临时备份历史配置文件名称及路径
+            String bakFileName = file.getName() + FILE_TYPE_BAK;
+            String bakFilePath = file.getParentFile().getParentFile().getPath();
+            String bakFile = bakFilePath + STR_SLASH + bakFileName;
+
             if (file.exists()) {
                 // 读取历史配置文件
                 oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(url.getPath());
-                // 删除历史解压文件
-                File confFolder = file.getParentFile();
-                File[] oldFileList = confFolder.listFiles();
-                for (File item : oldFileList) {
-                    deleteFile(item);
-                }
-                deleteFile(confFolder);
+
+                // 备份历史配置文件
+                copyFile(file, new File(bakFile));
+
+            } else {
+                // 读取备份配置文件
+                oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(bakFile);
             }
+
+            // 删除历史解压文件
+            File confFolder = file.getParentFile();
+            File[] oldFileList = confFolder.listFiles();
+            for (File item : oldFileList) {
+                deleteFile(item);
+            }
+            deleteFile(confFolder);
+
             // 解压文件
             String jarPath = sourceUrl.getPath().replace(FILE_TYPE_SLASH, STR_EMPTY);
             int jarIndex = jarPath.indexOf(START_MODE_JAR);
             String filePath = jarPath.substring(0, jarIndex);
             String fileName = filePath.substring(0, jarIndex) + FILE_TYPE_JAR;
             String folder = filePath.substring(0, filePath.lastIndexOf(STR_SLASH));
+
             // 生成临时解压文件夹
             String tempFolder = folder + STR_SLASH + CommonUtils.getCurrentDateTime2() + STR_SLASH;
             File temp = new File(tempFolder);
@@ -397,13 +414,16 @@ public class FileUtils {
                 temp.mkdirs();
             }
             UnZipRarUtils.unZip(new File(fileName), tempFolder);
+
             // 复制文件
             copyFolder(tempFolder + FILE_TYPE_CONF, folder);
             File[] fileList = new File(tempFolder).listFiles();
             for (File item : fileList) {
                 deleteFile(item);
             }
+            // 删除解压零时文件夹
             deleteFile(new File(tempFolder));
+
             // 更新配置文件
             List<String> updateContent = new ArrayList<>(16);
             List<String> content = FileUtils.readNormalFile(url.getPath(), false);
@@ -411,7 +431,7 @@ public class FileUtils {
                 String item = content.get(i);
                 Iterator<String> iterator = oldAppConfig.keySet().iterator();
                 // 获取历史svn代码更新配置
-                if (item.startsWith(STR_SVN_UPDATE)) {
+                if (item.startsWith(KEY_SVN_UPDATE)) {
                     List<String> svnUpdateConfig = getSvnUpdateConfig(oldAppConfig);
                     updateContent.addAll(svnUpdateConfig);
                     if (CollectionUtils.isNotEmpty(svnUpdateConfig)) {
@@ -429,6 +449,9 @@ public class FileUtils {
                 updateContent.add(item);
             }
             FileUtils.writeFile(url.getPath(), updateContent, false);
+
+            // 删除 备份历史配置文件
+            deleteFile(new File(bakFile));
         }
     }
 
@@ -438,7 +461,7 @@ public class FileUtils {
         while (iterator.hasNext()) {
             String key = iterator.next();
             String value = content.get(key);
-            if (key.startsWith(STR_SVN_UPDATE)) {
+            if (key.startsWith(KEY_SVN_UPDATE)) {
                 String item = key + STR_EQUALS + value;
                 svnUpdate.add(item);
             }
