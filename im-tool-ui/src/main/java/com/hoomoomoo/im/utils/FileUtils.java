@@ -373,7 +373,7 @@ public class FileUtils {
         if (sourceUrl.getPath().contains(START_MODE_JAR)) {
             URL url = getFilePath(path);
             File file = new File(url.getPath());
-            Map<String, String> oldAppConfig;
+            Map<String, String> oldAppConfig = new HashMap<>(16);
 
             // 临时备份历史配置文件名称及路径
             String bakFileName = file.getName() + FILE_TYPE_BAK;
@@ -389,7 +389,10 @@ public class FileUtils {
 
             } else {
                 // 读取备份配置文件
-                oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(bakFile);
+                File bak = new File(bakFile);
+                if (bak.exists()) {
+                    oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(bakFile);
+                }
             }
 
             // 删除历史解压文件
@@ -406,13 +409,12 @@ public class FileUtils {
             String filePath = jarPath.substring(0, jarIndex);
             String fileName = filePath.substring(0, jarIndex) + FILE_TYPE_JAR;
             String folder = filePath.substring(0, filePath.lastIndexOf(STR_SLASH));
+            String tempFolder = folder + STR_SLASH + "im-tool-ui.temp" + STR_SLASH;
 
             // 生成临时解压文件夹
-            String tempFolder = folder + STR_SLASH + CommonUtils.getCurrentDateTime2() + STR_SLASH;
             File temp = new File(tempFolder);
-            if (!temp.exists()) {
-                temp.mkdirs();
-            }
+            deleteFile(temp);
+            temp.mkdirs();
             UnZipRarUtils.unZip(new File(fileName), tempFolder);
 
             // 复制文件
