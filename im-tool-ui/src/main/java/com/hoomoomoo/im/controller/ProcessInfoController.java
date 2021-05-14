@@ -21,6 +21,8 @@ import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -35,6 +37,8 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @date 2021/05/07
  */
 public class ProcessInfoController implements Initializable {
+
+    private static final Logger logger = LoggerFactory.getLogger(ProcessInfoController.class);
 
     @FXML
     private AnchorPane processInfo;
@@ -111,11 +115,15 @@ public class ProcessInfoController implements Initializable {
     }
 
     synchronized private void setProgress(double value) {
-        progress = value;
-        Platform.runLater(() -> {
-            schedule.setProgress(progress);
-        });
-        schedule.requestFocus();
+        try {
+            progress = value;
+            Platform.runLater(() -> {
+                schedule.setProgress(progress);
+            });
+            schedule.requestFocus();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 
     @Override

@@ -17,6 +17,8 @@ import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -32,6 +34,9 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @date 2021/05/03
  */
 public class FundInfoController implements Initializable {
+
+    private static final Logger logger = LoggerFactory.getLogger(FundInfoController.class);
+
 
     @FXML
     private AnchorPane fundInfo;
@@ -144,11 +149,15 @@ public class FundInfoController implements Initializable {
     }
 
     synchronized private void setProgress(double value) {
-        progress = value;
-        Platform.runLater(() -> {
-            fundSchedule.setProgress(progress);
-        });
-        fundSchedule.requestFocus();
+        try {
+            progress = value;
+            Platform.runLater(() -> {
+                fundSchedule.setProgress(progress);
+            });
+            fundSchedule.requestFocus();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 
     @Override

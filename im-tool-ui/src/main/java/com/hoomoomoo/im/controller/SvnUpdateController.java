@@ -12,6 +12,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
@@ -26,6 +28,9 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @date 2021/05/09
  */
 public class SvnUpdateController implements Initializable {
+
+    private static final Logger logger = LoggerFactory.getLogger(SvnUpdateController.class);
+
 
     @FXML
     private Label workspaceNum;
@@ -127,11 +132,15 @@ public class SvnUpdateController implements Initializable {
     }
 
     synchronized private void setProgress(double value) {
-        progress = value;
-        Platform.runLater(() -> {
-            schedule.setProgress(progress);
-        });
-        schedule.requestFocus();
+        try {
+            progress = value;
+            Platform.runLater(() -> {
+                schedule.setProgress(progress);
+            });
+            schedule.requestFocus();
+        } catch (Exception e) {
+            logger.error(e.getMessage());
+        }
     }
 
     @Override

@@ -91,7 +91,10 @@ public class UpdateConfigTest {
             String versionFilePath = FileUtils.getFilePath("/conf/version.init").getPath();
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
             StringBuilder statLog = new StringBuilder();
-            statLog.append("版本号: ").append(CommonUtils.getCurrentDateTime4().replace(STR_HYPHEN, STR_POINTER)).append(STR_NEXT_LINE);
+            statLog.append("首发版本: ").append("2021.05.07").append(STR_NEXT_LINE);
+            statLog.append("首发时间: ").append("2021-05-07 09:09:09").append(STR_NEXT_LINE);
+            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime4().replace(STR_HYPHEN, STR_POINTER)).append(STR_NEXT_LINE);
+            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime4().replace(STR_HYPHEN, STR_POINTER)).append(STR_NEXT_LINE);
             statLog.append("发布时间: ").append(CommonUtils.getCurrentDateTime1()).append(STR_NEXT_LINE);
             FileUtils.writeFile(versionFilePath, statLog.toString(), false);
             FileUtils.writeFile(versionFilePathSource, statLog.toString(), false);
