@@ -53,5 +53,8 @@ public class AppConfigDto extends BaseDto {
 
     private List<LinkedHashMap<String, String>> svnUpdatePath;
 
+    private List<LinkedHashMap<String, List<String>>> scriptUpdateTable;
+
+    private Boolean scriptUpdateSkip;
 
 }

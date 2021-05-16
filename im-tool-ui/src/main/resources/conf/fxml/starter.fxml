@@ -17,6 +17,8 @@
                                   text="基金信息"/>
                         <MenuItem fx:id="menuItemProcessInfo" mnemonicParsing="false" onAction="#openProcessInfo"
                                   text="流程信息"/>
+                        <MenuItem fx:id="menuItemScriptUpdate" mnemonicParsing="false" onAction="#openScriptUpdate"
+                                  text="升级脚本"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">

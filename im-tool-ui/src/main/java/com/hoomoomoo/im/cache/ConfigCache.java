@@ -8,6 +8,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -42,6 +43,7 @@ public class ConfigCache {
         // 读取配置文件
         appConfigDto = (AppConfigDto) FileUtils.readConfigFileToObject(confPath, AppConfigDto.class);
         appConfigDto.setSvnUpdatePath(new ArrayList<>(16));
+        appConfigDto.setScriptUpdateTable(new ArrayList<>(16));
         // 读取svn代码更新配置
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {
@@ -55,6 +57,18 @@ public class ConfigCache {
                         LinkedHashMap version = new LinkedHashMap(2);
                         version.put(name, path);
                         appConfigDto.getSvnUpdatePath().add(version);
+                    }
+                }
+                // 升级脚本配置
+                if (item.startsWith(KEY_SCRIPT_UPDATE)) {
+                    int index = item.indexOf(STR_EQUALS);
+                    String name = item.substring(KEY_SCRIPT_UPDATE.length(), index);
+                    String column = item.substring(index + 1);
+                    if (StringUtils.isNotBlank(column)) {
+                        List<String> columnConfig = Arrays.asList(column.split(STR_COMMA));
+                        LinkedHashMap table = new LinkedHashMap(2);
+                        table.put(name.toLowerCase(), columnConfig);
+                        appConfigDto.getScriptUpdateTable().add(table);
                     }
                 }
             }

@@ -16,9 +16,11 @@ public enum FunctionType {
 
     PROCESS_INFO("4", "流程信息", "/conf/fxml/processInfo.fxml"),
 
-    STAT_INFO("5", "统计分析", "/conf/fxml/statInfo.fxml"),
+    SCRIPT_UPDATE("5", "升级脚本", "/conf/fxml/scriptUpdate.fxml"),
 
-    ABOUT_INFO("6", "关于", "/conf/fxml/aboutInfo.fxml");
+    STAT_INFO("6", "统计分析", "/conf/fxml/statInfo.fxml"),
+
+    ABOUT_INFO("7", "关于", "/conf/fxml/aboutInfo.fxml");
 
 
     private String type;

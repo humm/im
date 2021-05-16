@@ -14,12 +14,17 @@ public class BaseConst {
     public static final String STR_4 = "4";
     public static final String STR_5 = "5";
     public static final String STR_6 = "6";
+    public static final String STR_7 = "7";
 
     public final static String ENCODING_UTF8 = "UTF-8";
 
     public static final String KEY_SVN_PASSWORD = "svn.password";
 
     public static final String KEY_SVN_UPDATE = "svn.update.";
+
+    public static final String KEY_SCRIPT_UPDATE = "script.update.table.";
+
+    public static final String KEY_VALUES = "values";
 
     public static final String KEY_SVN = ".svn";
 
@@ -35,6 +40,12 @@ public class BaseConst {
     public final static String STR_EQUALS = "=";
 
     public static final String STR_COMMA = ",";
+
+    public static final String STR_BRACKETS_LEFT = "(";
+
+    public static final String STR_BRACKETS_RIGHT = ")";
+
+    public static final String STR_SEMICOLON = ";";
 
     public static final String STR_POINTER = ".";
 

@@ -31,6 +31,67 @@ public class LoggerUtils {
 
     private static final String STR_NEXT_LINE = "\n";
 
+    public static void writeSvnLogInfo(Date startDate, List<LogDto> svnLogDtoList) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        if (!appConfigDto.getEnableLog()) {
+            return;
+        }
+        Date endDate = new Date();
+        StringBuilder log = new StringBuilder();
+        // 写日志文件
+        log.append(CommonUtils.getCurrentDateTime1(startDate)).append(STR_SPACE);
+        log.append(FunctionType.getName(STR_1)).append(STR_SPACE).append("开始").append(STR_NEXT_LINE);
+        int fileNum = 0;
+        if (CollectionUtils.isNotEmpty(svnLogDtoList)) {
+            for (LogDto item : svnLogDtoList) {
+                List<String> itemFile = item.getFile();
+                for (int i = 0; i < itemFile.size(); i++) {
+                    fileNum++;
+                    log.append(getLineIndentation()).append(itemFile.get(i));
+                }
+            }
+        }
+        log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
+        log.append(FunctionType.getName(STR_1)).append(STR_SPACE).append("结束").append(STR_NEXT_LINE);
+        long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
+        log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
+        log.append(FunctionType.getName(STR_1)).append(STR_SPACE);
+        log.append("耗时:").append(costTime).append("秒").append(STR_SPACE);
+        log.append("svn版本个数:").append(svnLogDtoList.size()).append(STR_SPACE);
+        log.append("文件个数:").append(fileNum).append(STR_NEXT_LINE).append(STR_NEXT_LINE);
+        String logFilePath = "/logs/svnLog/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
+        FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+        // 写统计文件
+        String statFilePath = FileUtils.getFilePath("/logs/svnLog/00000000.log").getPath();
+        writeStatFile(statFilePath);
+
+    }
+
+    public static void writeSvnUpdateInfo(Date startDate, List<String> filePath) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        if (!appConfigDto.getEnableLog()) {
+            return;
+        }
+        // 写日志文件
+        Date endDate = new Date();
+        StringBuilder log = new StringBuilder();
+        log.append(CommonUtils.getCurrentDateTime1(startDate)).append(STR_SPACE);
+        log.append(FunctionType.getName(STR_2)).append(STR_SPACE).append("开始").append(STR_NEXT_LINE);
+        for (String item : filePath) {
+            log.append(getLineIndentation()).append(item).append(STR_NEXT_LINE);
+        }
+        log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
+        log.append(FunctionType.getName(STR_2)).append(STR_SPACE).append("结束").append(STR_NEXT_LINE);
+        long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
+        log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
+        log.append(FunctionType.getName(STR_2)).append(STR_SPACE);
+        log.append("耗时:").append(costTime).append("秒").append(STR_NEXT_LINE).append(STR_NEXT_LINE);
+        String logFilePath = "/logs/svnUpdate/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
+        FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+        // 写统计文件
+        String statFilePath = FileUtils.getFilePath("/logs/svnUpdate/00000000.log").getPath();
+        writeStatFile(statFilePath);
+    }
 
     public static void writeFundInfo(Date startDate, String filePath) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
@@ -82,7 +143,7 @@ public class LoggerUtils {
         writeStatFile(statFilePath);
     }
 
-    public static void writeSvnUpdateInfo(Date startDate, List<String> filePath) throws Exception {
+    public static void writeScriptUpdateInfo(Date startDate, List<String> filePath) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (!appConfigDto.getEnableLog()) {
             return;
@@ -91,57 +152,21 @@ public class LoggerUtils {
         Date endDate = new Date();
         StringBuilder log = new StringBuilder();
         log.append(CommonUtils.getCurrentDateTime1(startDate)).append(STR_SPACE);
-        log.append(FunctionType.getName(STR_2)).append(STR_SPACE).append("开始").append(STR_NEXT_LINE);
+        log.append(FunctionType.getName(STR_5)).append(STR_SPACE).append("开始").append(STR_NEXT_LINE);
         for (String item : filePath) {
             log.append(getLineIndentation()).append(item).append(STR_NEXT_LINE);
         }
         log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
-        log.append(FunctionType.getName(STR_2)).append(STR_SPACE).append("结束").append(STR_NEXT_LINE);
+        log.append(FunctionType.getName(STR_5)).append(STR_SPACE).append("结束").append(STR_NEXT_LINE);
         long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
         log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
-        log.append(FunctionType.getName(STR_2)).append(STR_SPACE);
+        log.append(FunctionType.getName(STR_5)).append(STR_SPACE);
         log.append("耗时:").append(costTime).append("秒").append(STR_NEXT_LINE).append(STR_NEXT_LINE);
-        String logFilePath = "/logs/svnUpdate/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
+        String logFilePath = "/logs/scriptUpdate/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
         FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
         // 写统计文件
-        String statFilePath = FileUtils.getFilePath("/logs/svnUpdate/00000000.log").getPath();
+        String statFilePath = FileUtils.getFilePath("/logs/scriptUpdate/00000000.log").getPath();
         writeStatFile(statFilePath);
-    }
-
-    public static void writeSvnLogInfo(Date startDate, List<LogDto> svnLogDtoList) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        if (!appConfigDto.getEnableLog()) {
-            return;
-        }
-        Date endDate = new Date();
-        StringBuilder log = new StringBuilder();
-        // 写日志文件
-        log.append(CommonUtils.getCurrentDateTime1(startDate)).append(STR_SPACE);
-        log.append(FunctionType.getName(STR_1)).append(STR_SPACE).append("开始").append(STR_NEXT_LINE);
-        int fileNum = 0;
-        if (CollectionUtils.isNotEmpty(svnLogDtoList)) {
-            for (LogDto item : svnLogDtoList) {
-                List<String> itemFile = item.getFile();
-                for (int i = 0; i < itemFile.size(); i++) {
-                    fileNum++;
-                    log.append(getLineIndentation()).append(itemFile.get(i));
-                }
-            }
-        }
-        log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
-        log.append(FunctionType.getName(STR_1)).append(STR_SPACE).append("结束").append(STR_NEXT_LINE);
-        long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
-        log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
-        log.append(FunctionType.getName(STR_1)).append(STR_SPACE);
-        log.append("耗时:").append(costTime).append("秒").append(STR_SPACE);
-        log.append("svn版本个数:").append(svnLogDtoList.size()).append(STR_SPACE);
-        log.append("文件个数:").append(fileNum).append(STR_NEXT_LINE).append(STR_NEXT_LINE);
-        String logFilePath = "/logs/svnLog/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
-        FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
-        // 写统计文件
-        String statFilePath = FileUtils.getFilePath("/logs/svnLog/00000000.log").getPath();
-        writeStatFile(statFilePath);
-
     }
 
     private static void writeStatFile(String filePath) throws IOException {
