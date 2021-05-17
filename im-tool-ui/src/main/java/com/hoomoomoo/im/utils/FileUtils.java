@@ -433,8 +433,15 @@ public class FileUtils {
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i);
                 // 获取历史svn代码更新配置
-                if (item.startsWith(KEY_SVN_UPDATE) || item.startsWith(KEY_SCRIPT_UPDATE)) {
-                    List<String> updateConfig = getUpdateConfig(oldAppConfig);
+                if (item.startsWith(KEY_SVN_UPDATE)) {
+                    List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_UPDATE);
+                    updateContent.addAll(updateConfig);
+                    if (CollectionUtils.isNotEmpty(updateConfig)) {
+                        continue;
+                    }
+                }
+                if (item.startsWith(KEY_SCRIPT_UPDATE)) {
+                    List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SCRIPT_UPDATE);
                     updateContent.addAll(updateConfig);
                     if (CollectionUtils.isNotEmpty(updateConfig)) {
                         continue;
@@ -458,13 +465,13 @@ public class FileUtils {
         }
     }
 
-    private static List<String> getUpdateConfig(Map<String, String> content) {
+    private static List<String> getUpdateConfig(Map<String, String> content, String keyWord) {
         List<String> update = new ArrayList<>(16);
         Iterator<String> iterator = content.keySet().iterator();
         while (iterator.hasNext()) {
             String key = iterator.next();
             String value = content.get(key);
-            if (key.startsWith(KEY_SVN_UPDATE)) {
+            if (key.startsWith(keyWord)) {
                 String item = key + STR_EQUALS + value;
                 update.add(item);
             }
