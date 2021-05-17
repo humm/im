@@ -269,8 +269,8 @@ public class ProcessInfoController implements Initializable {
             String transCode = (String) entry.getKey();
             Map<String, Object> row = (Map<String, Object>) entry.getValue();
             bf.write("delete from tbtrans where trans_code = '" + transCode + "';\n");
-            bf.write("insert into tbtrans (trans_code, trans_name, enable_flag, channels, host_online, trans_type, monitor_flag, log_level, cancel_flag, erase_flag, mon_trans_type, reserve1, reserve2, reserve3) \n" +
-                    "values ('" + transCode + "'," +
+            bf.write("insert into tbtrans (trans_code, trans_name, enable_flag, channels, host_online, trans_type, monitor_flag, log_level, cancel_flag, erase_flag, mon_trans_type, reserve1, reserve2, reserve3) " +
+                    "\nvalues ('" + transCode + "'," +
                     "'" + row.get(TransMemoryCache.TRANS_NAME) + "'," +
                     "'" + row.get(TransMemoryCache.ENABLE_FLAG) + "'," +
                     "'" + row.get(TransMemoryCache.CHANNELS) + "'," +
@@ -313,14 +313,14 @@ public class ProcessInfoController implements Initializable {
             if (pageFlag) {
                 bufferedWriter.write("-- 流程页配置脚本 begin\n");
                 bufferedWriter.write("delete from tbschedulepage WHERE sche_page_code='" + sheet.getCell(0, k).getContents() + "';\n");
-                bufferedWriter.write("insert into tbschedulepage (sche_page_code,sche_page_name,sche_page_isuse,sche_page_belong) VALUES ('" + sheet.getCell(0, k).getContents() +
+                bufferedWriter.write("insert into tbschedulepage (sche_page_code,sche_page_name,sche_page_isuse,sche_page_belong) \nvalues ('" + sheet.getCell(0, k).getContents() +
                         "' , '" + sheet.getCell(1, k).getContents() + "' , '" + sheet.getCell(2, k).getContents() + "' , '" + sheet.getCell(3, k).getContents() + "');\n");
                 bufferedWriter.write("-- 流程页配置脚本 end\n\n");
 
             } else {
                 bufferedWriter.write("-- 流程组配置脚本 begin\n");
                 bufferedWriter.write("delete from tbschedulegroup where sche_group_code='" + sheet.getCell(1, k).getContents() + "';\n");
-                bufferedWriter.write("insert into tbschedulegroup (sche_page_code,sche_group_code,sche_group_name,sche_group_isuse,sche_group_type) VALUES ('" + sheet.getCell(0, k).getContents() +
+                bufferedWriter.write("insert into tbschedulegroup (sche_page_code,sche_group_code,sche_group_name,sche_group_isuse,sche_group_type) \nvalues ('" + sheet.getCell(0, k).getContents() +
                         "' , '" + sheet.getCell(1, k).getContents() + "' , '" + sheet.getCell(2, k).getContents() + "' , '" + sheet.getCell(3, k).getContents() + "' , '" + sheet.getCell(4, k).getContents() + "');\n");
                 bufferedWriter.write("-- 流程组配置脚本 end\n\n");
             }
@@ -355,7 +355,7 @@ public class ProcessInfoController implements Initializable {
 
             // 一级job 不为空，二级job为空
             if (sheet.getCell(3, k).getContents().equals("1")) {
-                String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name,sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url,sche_job_pause,sche_ishidebutton,url_open_mode) \n VALUES ('"
+                String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name,sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url,sche_job_pause,sche_ishidebutton,url_open_mode) \nvalues ('"
                         + groupCode + "',"
                         + getCell(sheet, 2, k) + ","
                         + getCell(sheet, 0, k) + ","
@@ -392,7 +392,7 @@ public class ProcessInfoController implements Initializable {
         for (int k = 2; k < rows; k++) {
             // 二级JOB
             if (!sheet.getCell(3, k).getContents().equals("1")) {
-                String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name,sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url,sche_job_pause,sche_ishidebutton,url_open_mode) \n VALUES ('"
+                String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name,sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url,sche_job_pause,sche_ishidebutton,url_open_mode) \nvalues ('"
                         + groupCode + "',"
                         + getCell(sheet, 2, k) + ","
                         + getCell(sheet, 0, k) + ","
@@ -460,7 +460,7 @@ public class ProcessInfoController implements Initializable {
                         " SCHE_TASK_ISUSE, SCHE_TASK_ISHIDE, SCHE_TASK_MEMO, SCHE_TASK_DEPENDENCIES, FUNCTION_ID, " +
                         "BANK_NO, TA_CODE, SCHE_TASK_ISSKIP, SCHE_TASK_SKIPREASON, SCHE_TASK_DELAYTIME, SCHE_TASK_PAUSE," +
                         " PARENT_FUNCTION_ID,SCHE_RESERVE)\n" +
-                        "VALUES('"
+                        "values('"
                         + key + "' , '"
                         + taskCode + "' , '"
                         + map.get(TaskMemoryCache.SCHE_TASK_NAME) + "' , '"
@@ -497,7 +497,7 @@ public class ProcessInfoController implements Initializable {
                                 " SCHE_TASK_ISUSE, SCHE_TASK_ISHIDE, SCHE_TASK_MEMO, SCHE_TASK_DEPENDENCIES, FUNCTION_ID, " +
                                 "BANK_NO, TA_CODE, SCHE_TASK_ISSKIP, SCHE_TASK_SKIPREASON, SCHE_TASK_DELAYTIME, SCHE_TASK_PAUSE," +
                                 " PARENT_FUNCTION_ID,SCHE_RESERVE)\n" +
-                                "VALUES( null ,'"
+                                "values( null ,'"
                                 + subMap.get(TaskMemoryCache.SCHE_TASK_CODE) + "' , '"
                                 + subMap.get(TaskMemoryCache.SCHE_TASK_NAME) + "' , '"
                                 + parentSubTaskCode + "' , '"
