@@ -11,13 +11,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_SPACE_4;
-import static com.hoomoomoo.im.consts.BaseConst.STR_SYMBOL_NEXT_LINE_2;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.ABOUT_INFO;
 import static com.hoomoomoo.im.consts.FunctionConfig.STAT_INFO;
 
@@ -50,12 +50,12 @@ public class StatInfoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        LoggerUtils.info(String.format(STR_MSG_USE, STAT_INFO.getName()));
         List<FunctionDto> functionDtoList = null;
         try {
             functionDtoList = CommonUtils.getAuthFunction();
         } catch (Exception e) {
             LoggerUtils.info(e.toString());
-            LoggerUtils.writeAppLog(e.toString());
         }
         if (CollectionUtils.isEmpty(functionDtoList)) {
             return;
@@ -66,7 +66,7 @@ public class StatInfoController implements Initializable {
                 continue;
             }
             String logPath = "/logs/" + FunctionConfig.getLogFolder(functionDto.getFunctionCode()) + "/00000000.log";
-            TextArea stat;
+            TextArea stat = null;
             switch (i + 1) {
                 case 1:
                     stat = stat1;
@@ -84,7 +84,6 @@ public class StatInfoController implements Initializable {
                     stat = stat5;
                     break;
                 default:
-                    stat = null;
                     break;
             }
             try {
@@ -93,8 +92,10 @@ public class StatInfoController implements Initializable {
                 List<String> logStat = FileUtils.readNormalFile(FileUtils.getFilePath(logPath).getPath(), false);
                 outputStatInfo(stat, logStat);
             } catch (IOException e) {
+                if (e instanceof FileNotFoundException) {
+                    return;
+                }
                 LoggerUtils.info(e.toString());
-                LoggerUtils.writeAppLog(e.toString());
             }
         }
     }

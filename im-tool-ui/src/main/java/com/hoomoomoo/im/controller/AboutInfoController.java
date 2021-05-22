@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.ABOUT_INFO;
 
 /**
  * @author humm23693
@@ -33,6 +34,7 @@ public class AboutInfoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        LoggerUtils.info(String.format(STR_MSG_USE, ABOUT_INFO.getName()));
         try {
             OutputUtils.clearLog(about);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();

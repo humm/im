@@ -176,9 +176,9 @@ public class FileUtils {
             return;
         }
         String[] item = content.split(STR_SYMBOL_EQUALS);
-        if (item.length == NUM_2) {
+        if (item.length == 2) {
             fileContentMap.put(item[0], convertUnicodeToChar(item[1]));
-        } else if (item.length > NUM_2) {
+        } else if (item.length > 2) {
             int index = content.indexOf(STR_SYMBOL_EQUALS) + 1;
             fileContentMap.put(item[0], convertUnicodeToChar(content.substring(index)));
         } else {

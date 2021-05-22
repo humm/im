@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_SYMBOL_COMMA;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.*;
 
 
@@ -66,6 +66,7 @@ public class StarterController implements Initializable {
 
     @FXML
     void openSvnLog(ActionEvent event) throws IOException {
+        LoggerUtils.info(String.format(STR_MSG_OPEN, SVN_LOG.getName()));
         Tab tab = isOpen(SVN_LOG.getName());
         if (tab == null) {
             tab = getFunctionTab(SVN_LOG.getPath(), SVN_LOG.getName());
@@ -76,6 +77,7 @@ public class StarterController implements Initializable {
 
     @FXML
     void openSvnUpdate(ActionEvent event) throws IOException {
+        LoggerUtils.info(String.format(STR_MSG_OPEN, SVN_UPDATE.getName()));
         Tab tab = isOpen(SVN_UPDATE.getName());
         if (tab == null) {
             tab = getFunctionTab(SVN_UPDATE.getPath(), SVN_UPDATE.getName());
@@ -86,6 +88,7 @@ public class StarterController implements Initializable {
 
     @FXML
     void openFundInfo(ActionEvent event) throws IOException {
+        LoggerUtils.info(String.format(STR_MSG_OPEN, FUND_INFO.getName()));
         Tab tab = isOpen(FUND_INFO.getName());
         if (tab == null) {
             tab = getFunctionTab(FUND_INFO.getPath(), FUND_INFO.getName());
@@ -96,6 +99,7 @@ public class StarterController implements Initializable {
 
     @FXML
     void openProcessInfo(ActionEvent event) throws IOException {
+        LoggerUtils.info(String.format(STR_MSG_OPEN, PROCESS_INFO.getName()));
         Tab tab = isOpen(PROCESS_INFO.getName());
         if (tab == null) {
             tab = getFunctionTab(PROCESS_INFO.getPath(), PROCESS_INFO.getName());
@@ -106,6 +110,7 @@ public class StarterController implements Initializable {
 
     @FXML
     void openScriptUpdate(ActionEvent event) throws IOException {
+        LoggerUtils.info(String.format(STR_MSG_OPEN, SCRIPT_UPDATE.getName()));
         Tab tab = isOpen(SCRIPT_UPDATE.getName());
         if (tab == null) {
             tab = getFunctionTab(SCRIPT_UPDATE.getPath(), SCRIPT_UPDATE.getName());
@@ -116,6 +121,7 @@ public class StarterController implements Initializable {
 
     @FXML
     void openStatInfo(ActionEvent event) throws IOException {
+        LoggerUtils.info(String.format(STR_MSG_OPEN, STAT_INFO.getName()));
         Tab tab = isOpen(STAT_INFO.getName());
         if (tab == null) {
             tab = getFunctionTab(STAT_INFO.getPath(), STAT_INFO.getName());
@@ -126,6 +132,7 @@ public class StarterController implements Initializable {
 
     @FXML
     void openAboutInfo(ActionEvent event) throws IOException {
+        LoggerUtils.info(String.format(STR_MSG_OPEN, ABOUT_INFO.getName()));
         Tab tab = isOpen(ABOUT_INFO.getName());
         if (tab == null) {
             tab = getFunctionTab(ABOUT_INFO.getPath(), ABOUT_INFO.getName());
@@ -146,6 +153,8 @@ public class StarterController implements Initializable {
                 return;
             }
 
+            LoggerUtils.info(String.format(STR_MSG_CHECK, "证书有效日期"));
+
             // 控制菜单功能
             CommonUtils.showAuthFunction(menuFunction);
 
@@ -154,8 +163,7 @@ public class StarterController implements Initializable {
                 String[] tabs = showTab.split(STR_SYMBOL_COMMA);
                 for (String tab : tabs) {
                     if (StringUtils.isBlank(FunctionConfig.getName(tab))) {
-                        LoggerUtils.info(String.format("功能[ %s ]不存在", tab));
-                        LoggerUtils.writeAppLog("功能[ %s ]不存在");
+                        LoggerUtils.info(String.format(STR_MSG_FUNCTION_NOT_EXIST, tab));
                         continue;
                     }
                     // 校验功能是否有权限
@@ -173,8 +181,10 @@ public class StarterController implements Initializable {
                     functionTab.getTabs().add(tab);
                 }
             }
+            LoggerUtils.info(String.format(STR_MSG_INIT, "功能界面"));
         } catch (Exception e) {
             e.printStackTrace();
+            LoggerUtils.info(String.format(STR_MSG_INIT_EXCEPTION, "功能界面") + STR_SPACE + e.toString());
         }
     }
 

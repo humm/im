@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.SVN_UPDATE;
 
 /**
  * @author humm23693
@@ -49,6 +50,7 @@ public class SvnUpdateController implements Initializable {
 
     @FXML
     void executeSubmit(ActionEvent event) {
+        LoggerUtils.info(String.format(STR_MSG_USE, SVN_UPDATE.getName()));
         try {
             if (!CommonUtils.checkConfig(fileLog, FunctionConfig.SVN_UPDATE.getCode())) {
                 return;

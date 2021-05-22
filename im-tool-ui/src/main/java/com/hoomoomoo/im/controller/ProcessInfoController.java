@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.PROCESS_INFO;
 
 /**
  * @author humm23693
@@ -78,6 +79,7 @@ public class ProcessInfoController implements Initializable {
 
     @FXML
     void executeSubmit(ActionEvent event) throws Exception {
+        LoggerUtils.info(String.format(STR_MSG_USE, PROCESS_INFO.getName()));
         if (!CommonUtils.checkConfig(log, FunctionConfig.PROCESS_INFO.getCode())) {
             return;
         }

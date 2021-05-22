@@ -23,6 +23,7 @@ public class LoggerUtils {
 
     public static void info(String msg) {
         System.out.println(CommonUtils.getCurrentDateTime1(new Date()) + STR_SPACE + msg + STR_SYMBOL_NEXT_LINE);
+        writeAppLog(msg);
     }
 
     public static void writeAppLog(String mgs) {

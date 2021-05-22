@@ -172,8 +172,7 @@ public class CommonUtils {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         LicenseDto licenseDto = appConfigDto.getLicense();
         if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
-            LoggerUtils.info(String.format("功能授权已过期"));
-            LoggerUtils.writeAppLog("功能授权已过期");
+            LoggerUtils.info(String.format(STR_MSG_LICENSE_EXPIRE, licenseDto.getEffectiveDate()));
             return false;
         }
         if (StringUtils.isBlank(functionCode)) {
@@ -184,7 +183,7 @@ public class CommonUtils {
         }
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
         if (CollectionUtils.isEmpty(functionDtoList)) {
-            LoggerUtils.writeAppLog(String.format("功能[ %s ]未授权", FunctionConfig.getName(functionCode)));
+            LoggerUtils.info(String.format(STR_MSG_LICENSE_NOT_AUTH, FunctionConfig.getName(functionCode)));
             return false;
         }
         for (FunctionDto functionDto : functionDtoList) {
@@ -192,7 +191,7 @@ public class CommonUtils {
                 return true;
             }
         }
-        LoggerUtils.writeAppLog(String.format("功能[ %s ]未授权", FunctionConfig.getName(functionCode)));
+        LoggerUtils.info(String.format(STR_MSG_LICENSE_NOT_AUTH, FunctionConfig.getName(functionCode)));
         return false;
     }
 

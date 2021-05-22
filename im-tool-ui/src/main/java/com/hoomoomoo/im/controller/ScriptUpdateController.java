@@ -18,6 +18,7 @@ import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.SCRIPT_UPDATE;
 
 /**
  * @author humm23693
@@ -43,6 +44,7 @@ public class ScriptUpdateController implements Initializable {
 
     @FXML
     void executeSubmit(ActionEvent event) {
+        LoggerUtils.info(String.format(STR_MSG_USE, SCRIPT_UPDATE.getName()));
         setProgress(0);
         updateProgress();
         generateScript();

@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.FUND_INFO;
 
 /**
  * @author humm23693
@@ -99,6 +100,7 @@ public class FundInfoController implements Initializable {
 
     @FXML
     void executeSubmit(ActionEvent event) throws Exception {
+        LoggerUtils.info(String.format(STR_MSG_USE, FUND_INFO.getName()));
         if (!CommonUtils.checkConfig(fundLog, FunctionConfig.FUND_INFO.getCode())) {
             return;
         }

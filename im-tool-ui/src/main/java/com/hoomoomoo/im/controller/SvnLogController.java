@@ -18,7 +18,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static com.hoomoomoo.im.consts.BaseConst.STR_MSG_USE;
 import static com.hoomoomoo.im.consts.BaseConst.STR_SPACE;
+import static com.hoomoomoo.im.consts.FunctionConfig.SVN_LOG;
 
 /**
  * @author humm23693
@@ -50,6 +52,7 @@ public class SvnLogController implements Initializable {
 
     @FXML
     void executeSubmit(ActionEvent event) {
+        LoggerUtils.info(String.format(STR_MSG_USE, SVN_LOG.getName()));
         try {
             if (!CommonUtils.checkConfig(fileLog, FunctionConfig.SVN_LOG.getCode())) {
                 return;

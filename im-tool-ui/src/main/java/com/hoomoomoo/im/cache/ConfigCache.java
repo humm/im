@@ -53,9 +53,11 @@ public class ConfigCache {
         List<String> licenseContent = FileUtils.readNormalFile(licensePath, false);
         StringBuilder license = new StringBuilder();
         if (CollectionUtils.isEmpty(licenseContent)) {
-            LoggerUtils.info("证书信息加载失败,停止应用启动");
-            LoggerUtils.writeAppLog("证书信息加载失败,停止应用启动");
-            System.exit(0);
+            LoggerUtils.info(STR_MSG_LICENSE_NOT_EXIST);
+            LicenseDto licenseDto = new LicenseDto();
+            licenseDto.setEffectiveDate("0");
+            licenseDto.setFunction(new ArrayList<>());
+            appConfigDto.setLicense(licenseDto);
         } else {
             for (String item : licenseContent) {
                 license.append(item);
@@ -63,6 +65,8 @@ public class ConfigCache {
             LicenseDto licenseDto = JSON.parseObject(SecurityUtils.getDecryptString(license.toString()), LicenseDto.class);
             appConfigDto.setLicense(licenseDto);
         }
+
+        LoggerUtils.info(String.format(STR_MSG_LOAD, "授权证书信息"));
 
         // 读取svn代码更新配置
         List<String> content = FileUtils.readNormalFile(confPath, false);
@@ -115,6 +119,9 @@ public class ConfigCache {
                 }
             }
         }
+
+        LoggerUtils.info(String.format(STR_MSG_ENCRYPT, "用户信息"));
+
         FileUtils.writeFile(confPath, content, false);
     }
 }
