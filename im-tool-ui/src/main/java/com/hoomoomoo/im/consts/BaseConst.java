@@ -48,6 +48,7 @@ public class BaseConst {
     public final static String STR_EMPTY = "";
     public final static String STR_SPACE = " ";
     public final static String STR_SPACE_2 = "  ";
+    public final static String STR_SPACE_3 = "   ";
     public final static String STR_SPACE_4 = "    ";
 
     public final static String STR_SYMBOL_EQUALS = "=";

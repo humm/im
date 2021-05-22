@@ -6,6 +6,7 @@ import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
+import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.SecurityUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -231,7 +232,7 @@ public class InitConfigTest {
             FileUtils.writeFile(versionFilePath, statLog.toString(), false);
             FileUtils.writeFile(versionFilePathSource, statLog.toString(), false);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
         }
     }
 

@@ -43,7 +43,7 @@ public class AboutInfoController implements Initializable {
             try {
                 version = FileUtils.readNormalFile(FileUtils.getFilePath("/conf/init/version.init").getPath(), false);
             } catch (IOException e) {
-                LoggerUtils.info(e.toString());
+                LoggerUtils.info(e);
             }
             if (CollectionUtils.isNotEmpty(version)) {
                 for (String item : version) {
@@ -60,9 +60,8 @@ public class AboutInfoController implements Initializable {
                 authStatus = "生效中";
             }
             OutputUtils.info(about, STR_SPACE_4 + "授权状态: " + authStatus + STR_SYMBOL_NEXT_LINE_2);
-
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
         }
     }
 }

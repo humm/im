@@ -69,7 +69,7 @@ public class ScriptUpdateController implements Initializable {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LoggerUtils.info(e);
                 }
             }
         }).start();
@@ -83,7 +83,7 @@ public class ScriptUpdateController implements Initializable {
             });
             schedule.requestFocus();
         } catch (Exception e) {
-            LoggerUtils.info(e.toString());
+            LoggerUtils.info(e);
         }
     }
 
@@ -180,7 +180,7 @@ public class ScriptUpdateController implements Initializable {
                     LoggerUtils.writeScriptUpdateInfo(date, logList);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                LoggerUtils.info(e);
                 OutputUtils.clearLog(target);
                 OutputUtils.info(target, e.toString());
             } finally {

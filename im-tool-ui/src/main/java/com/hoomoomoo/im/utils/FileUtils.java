@@ -127,7 +127,7 @@ public class FileUtils {
     private static Object readFile(String filePath, String fileType, Boolean skipAnnotation) throws IOException {
         List<String> fileContent = new LinkedList();
         HashMap<String, String> fileContentMap = new HashMap<>(16);
-        BufferedReader bufferedReader = null;
+        BufferedReader bufferedReader;
         bufferedReader = getBufferedReader(filePath);
         String content;
         while ((content = bufferedReader.readLine()) != null) {

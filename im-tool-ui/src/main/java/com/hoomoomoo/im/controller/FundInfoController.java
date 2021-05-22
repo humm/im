@@ -139,7 +139,7 @@ public class FundInfoController implements Initializable {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LoggerUtils.info(e);
                 }
             }
         }).start();
@@ -153,7 +153,7 @@ public class FundInfoController implements Initializable {
             });
             fundSchedule.requestFocus();
         } catch (Exception e) {
-            LoggerUtils.info(e.toString());
+            LoggerUtils.info(e);
         }
     }
 
@@ -183,7 +183,7 @@ public class FundInfoController implements Initializable {
             }
 
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
         }
     }
 
@@ -288,7 +288,7 @@ public class FundInfoController implements Initializable {
                 fundSchedule.setProgress(1);
                 LoggerUtils.writeFundInfo(date, productPath);
             } catch (Exception e) {
-                e.printStackTrace();
+                LoggerUtils.info(e);
                 infoMsg(e.toString());
             } finally {
                 scriptSubmit.setDisable(false);

@@ -106,7 +106,7 @@ public class ProcessInfoController implements Initializable {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LoggerUtils.info(e);
                 }
             }
         }).start();
@@ -120,7 +120,7 @@ public class ProcessInfoController implements Initializable {
             });
             schedule.requestFocus();
         } catch (Exception e) {
-            LoggerUtils.info(e.toString());
+            LoggerUtils.info(e);
         }
     }
 
@@ -137,7 +137,7 @@ public class ProcessInfoController implements Initializable {
                 OutputUtils.info(taCode, appConfigDto.getProcessTaCode());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
         }
     }
 
@@ -242,7 +242,7 @@ public class ProcessInfoController implements Initializable {
                 path.add(schedulePath);
                 LoggerUtils.writeProcessInfo(date, path);
             } catch (Exception e) {
-                e.printStackTrace();
+                LoggerUtils.info(e);
                 OutputUtils.info(log, e.toString());
             } finally {
                 submit.setDisable(false);

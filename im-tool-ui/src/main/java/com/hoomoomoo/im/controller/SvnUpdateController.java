@@ -64,6 +64,7 @@ public class SvnUpdateController implements Initializable {
             updateProgress();
             getSvnUpdate();
         } catch (Exception e) {
+            LoggerUtils.info(e);
             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + e.toString());
         }
     }
@@ -100,7 +101,7 @@ public class SvnUpdateController implements Initializable {
                 setProgress(1);
                 LoggerUtils.writeSvnUpdateInfo(date, updatePath);
             } catch (Exception e) {
-                e.printStackTrace();
+                LoggerUtils.info(e);
                 OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + ExceptionMsgUtils.getMsg(e));
             } finally {
                 svnSubmit.setDisable(false);
@@ -122,7 +123,7 @@ public class SvnUpdateController implements Initializable {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    LoggerUtils.info(e);
                 }
             }
         }).start();
@@ -136,7 +137,7 @@ public class SvnUpdateController implements Initializable {
             });
             schedule.requestFocus();
         } catch (Exception e) {
-            LoggerUtils.info(e.toString());
+            LoggerUtils.info(e);
         }
     }
 
@@ -151,7 +152,7 @@ public class SvnUpdateController implements Initializable {
             }
             OutputUtils.info(workspaceNum, String.valueOf(appConfigDto.getSvnUpdatePath().size()));
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
         }
     }
 

@@ -26,6 +26,11 @@ public class LoggerUtils {
         writeAppLog(msg);
     }
 
+    public static void info(Exception exception) {
+        exception.printStackTrace();
+        writeAppLog(exception);
+    }
+
     public static void writeAppLog(String mgs) {
         try {
             String logFilePath = "/logs/appLog/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
@@ -33,7 +38,21 @@ public class LoggerUtils {
             log.append(mgs).append(STR_SYMBOL_NEXT_LINE_2);
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
+        }
+    }
+
+    public static void writeAppLog(Exception exception) {
+        try {
+            String logFilePath = "/logs/appLog/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
+            StringBuilder log = new StringBuilder(CommonUtils.getCurrentDateTime1(new Date())).append(STR_SYMBOL_NEXT_LINE);
+            StackTraceElement[] stackTraceElements = exception.getStackTrace();
+            for (int i = 0; i < stackTraceElements.length; i++) {
+                log.append(getLineIndentation()).append(stackTraceElements[i].toString()).append(STR_SYMBOL_NEXT_LINE);
+            }
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
     }
 
@@ -72,7 +91,7 @@ public class LoggerUtils {
             String statFilePath = FileUtils.getFilePath("/logs/svnLog/00000000.log").getPath();
             writeStatFile(statFilePath);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
         }
     }
 
@@ -102,7 +121,7 @@ public class LoggerUtils {
             String statFilePath = FileUtils.getFilePath("/logs/svnUpdate/00000000.log").getPath();
             writeStatFile(statFilePath);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
         }
     }
 
@@ -130,7 +149,7 @@ public class LoggerUtils {
             String statFilePath = FileUtils.getFilePath("/logs/fundInfo/00000000.log").getPath();
             writeStatFile(statFilePath);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
         }
     }
 
@@ -160,7 +179,7 @@ public class LoggerUtils {
             String statFilePath = FileUtils.getFilePath("/logs/processInfo/00000000.log").getPath();
             writeStatFile(statFilePath);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
         }
     }
 
@@ -190,7 +209,7 @@ public class LoggerUtils {
             String statFilePath = FileUtils.getFilePath("/logs/scriptUpdate/00000000.log").getPath();
             writeStatFile(statFilePath);
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
         }
     }
 
@@ -227,7 +246,7 @@ public class LoggerUtils {
     }
 
     private static String getLineIndentation() {
-        return STR_SPACE_2;
+        return STR_SPACE_3;
     }
 
 }

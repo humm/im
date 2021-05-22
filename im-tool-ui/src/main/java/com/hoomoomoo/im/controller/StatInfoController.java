@@ -11,8 +11,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
 
+import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -55,7 +55,7 @@ public class StatInfoController implements Initializable {
         try {
             functionDtoList = CommonUtils.getAuthFunction();
         } catch (Exception e) {
-            LoggerUtils.info(e.toString());
+            LoggerUtils.info(e);
         }
         if (CollectionUtils.isEmpty(functionDtoList)) {
             return;
@@ -89,13 +89,17 @@ public class StatInfoController implements Initializable {
             try {
                 OutputUtils.clearLog(stat);
                 OutputUtils.info(stat, functionDto.getFunctionName() + STR_SYMBOL_NEXT_LINE_2);
+                File statFile = new File(FileUtils.getFilePath(logPath).getPath());
+                if (!statFile.exists()) {
+                    continue;
+                }
                 List<String> logStat = FileUtils.readNormalFile(FileUtils.getFilePath(logPath).getPath(), false);
                 outputStatInfo(stat, logStat);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 if (e instanceof FileNotFoundException) {
-                    return;
+                    continue;
                 }
-                LoggerUtils.info(e.toString());
+                LoggerUtils.info(e);
             }
         }
     }

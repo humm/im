@@ -183,8 +183,7 @@ public class StarterController implements Initializable {
             }
             LoggerUtils.info(String.format(STR_MSG_INIT, "功能界面"));
         } catch (Exception e) {
-            e.printStackTrace();
-            LoggerUtils.info(String.format(STR_MSG_INIT_EXCEPTION, "功能界面") + STR_SPACE + e.toString());
+            LoggerUtils.info(e);
         }
     }
 
