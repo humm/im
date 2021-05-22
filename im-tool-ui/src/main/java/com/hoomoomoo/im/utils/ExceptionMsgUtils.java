@@ -20,7 +20,7 @@ public class ExceptionMsgUtils {
         } else if (e.toString().contains(SVN_ERROR_CODE_E155004)) {
             return "请至svn路径执行[ cleanUp ]并选择[ Break write ]";
         } else {
-            return e.getMessage();
+            return e.toString();
         }
     }
 }

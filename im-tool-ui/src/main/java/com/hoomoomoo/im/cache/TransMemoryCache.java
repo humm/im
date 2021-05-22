@@ -5,6 +5,12 @@ import jxl.Sheet;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @param
+ * @author: humm23693
+ * @date: 2021/05/22
+ * @return:
+ */
 public class TransMemoryCache {
     private static Map<String, Map<String, Object>> map = new ConcurrentHashMap<>();
     public static final String TRANS_CODE = "trans_code";

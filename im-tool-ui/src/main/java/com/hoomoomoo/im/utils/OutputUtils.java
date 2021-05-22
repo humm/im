@@ -7,6 +7,8 @@ import javafx.scene.control.*;
 
 import java.util.List;
 
+import static com.hoomoomoo.im.consts.BaseConst.STR_EMPTY;
+
 /**
  * @author humm23693
  * @description 输出工具类
@@ -14,8 +16,6 @@ import java.util.List;
  * @date 2021/04/19
  */
 public class OutputUtils {
-
-    private final static String STR_EMPTY = "";
 
     public static void info(TableView tableView, BaseDto baseDto) {
         Platform.runLater(() -> {

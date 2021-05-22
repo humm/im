@@ -7,6 +7,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * @param
+ * @author: humm23693
+ * @date: 2021/05/22
+ * @return:
+ */
 public class TaskMemoryCache {
     /**
      * 全量task

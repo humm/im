@@ -57,4 +57,6 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean scriptUpdateSkip;
 
+    private LicenseDto license;
+
 }

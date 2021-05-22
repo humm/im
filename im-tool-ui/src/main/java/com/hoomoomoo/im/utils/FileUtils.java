@@ -11,7 +11,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
  * @author humm23693
@@ -20,36 +21,6 @@ import java.util.regex.Pattern;
  * @date 2021/04/23
  */
 public class FileUtils {
-
-    private final static String ENCODING_UTF8 = "UTF-8";
-    private final static String ENCODING_GBK = "GBK";
-    private final static String ENCODING_GB = "GB";
-
-    private final static String FILE_TYPE_NORMAL = "1";
-    private final static String FILE_TYPE_CONFIG = "2";
-
-    private final static String ANNOTATION_NORMAL = "--";
-    private final static String ANNOTATION_CONFIG = "#";
-
-    private final static String STR_EMPTY = "";
-    private final static String STR_EQUALS = "=";
-    private final static String STR_POINT = ".";
-    private static final String STR_SLASH = "/";
-    private static final String STR_NEXT_LINE = "\n";
-
-    private final static Integer NUM_2 = 2;
-
-    private static final Pattern PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
-
-    private static final String START_MODE_JAR = ".jar!";
-
-    private static final String FILE_TYPE_JAR = ".jar";
-    private static final String FILE_TYPE_BAK = ".bak";
-    private static final String FILE_TYPE_CONF = "conf";
-    private static final String FILE_TYPE_SLASH = "file:/";
-    private static final String FILE_TYPE_FILE = "file:";
-    private static final String KEY_SVN_UPDATE = "svn.update.";
-    private static final String KEY_SCRIPT_UPDATE = "script.update.table.";
 
     /**
      * 读取配置文件
@@ -115,7 +86,7 @@ public class FileUtils {
         }
         String content = STR_EMPTY;
         for (String item : contentList) {
-            content += item + STR_NEXT_LINE;
+            content += item + STR_SYMBOL_NEXT_LINE;
         }
         writeFile(filePath, content, isAppend);
     }
@@ -131,7 +102,7 @@ public class FileUtils {
      */
     public static void writeFile(String filePath, String content, Boolean isAppend) throws IOException {
         // 判断文件夹是否存在
-        String folderPath = filePath.substring(0, filePath.lastIndexOf(STR_SLASH));
+        String folderPath = filePath.substring(0, filePath.lastIndexOf(STR_SYMBOL_SLASH));
         File file = new File(folderPath);
         if (!file.exists()) {
             file.mkdirs();
@@ -201,14 +172,14 @@ public class FileUtils {
         if (content.startsWith(ANNOTATION_CONFIG)) {
             return;
         }
-        if (!content.contains(STR_EQUALS)) {
+        if (!content.contains(STR_SYMBOL_EQUALS)) {
             return;
         }
-        String[] item = content.split(STR_EQUALS);
+        String[] item = content.split(STR_SYMBOL_EQUALS);
         if (item.length == NUM_2) {
             fileContentMap.put(item[0], convertUnicodeToChar(item[1]));
         } else if (item.length > NUM_2) {
-            int index = content.indexOf(STR_EQUALS) + 1;
+            int index = content.indexOf(STR_SYMBOL_EQUALS) + 1;
             fileContentMap.put(item[0], convertUnicodeToChar(content.substring(index)));
         } else {
             fileContentMap.put(item[0], STR_EMPTY);
@@ -259,7 +230,7 @@ public class FileUtils {
      * @return:
      */
     private static String convertUnicodeToChar(String str) {
-        Matcher matcher = PATTERN.matcher(str);
+        Matcher matcher = STR_PATTERN.matcher(str);
         // 迭代，将str中的所有unicode转换为正常字符
         while (matcher.find()) {
             // 匹配出的每个字的unicode，比如\u67e5
@@ -315,7 +286,7 @@ public class FileUtils {
                 boolean isPoint = false;
                 for (int i = 0; i < key.length(); i++) {
                     char single = key.charAt(i);
-                    if (String.valueOf(single).equals(STR_POINT)) {
+                    if (String.valueOf(single).equals(STR_SYMBOL_POINT)) {
                         isPoint = true;
                         continue;
                     } else {
@@ -347,15 +318,15 @@ public class FileUtils {
         URL url = FileUtils.class.getResource(path);
         if (url == null) {
             String folder = FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-            url = new URL(FILE_TYPE_FILE + folder + path.substring(1));
+            url = new URL(STR_NAME_FILE + folder + path.substring(1));
         }
         if (url.getPath().contains(START_MODE_JAR)) {
             String jarPath = url.getPath();
             int jarIndex = jarPath.indexOf(START_MODE_JAR);
             String filePath = jarPath.substring(jarIndex + 1);
-            filePath = filePath.substring(filePath.indexOf(STR_SLASH));
+            filePath = filePath.substring(filePath.indexOf(STR_SYMBOL_SLASH));
             String folderPath = jarPath.substring(0, jarIndex);
-            folderPath = folderPath.substring(0, folderPath.lastIndexOf(STR_SLASH));
+            folderPath = folderPath.substring(0, folderPath.lastIndexOf(STR_SYMBOL_SLASH));
             return new URL(folderPath + filePath);
         }
         return url;
@@ -379,7 +350,7 @@ public class FileUtils {
             // 临时备份历史配置文件名称及路径
             String bakFileName = file.getName() + FILE_TYPE_BAK;
             String bakFilePath = file.getParentFile().getParentFile().getPath();
-            String bakFile = bakFilePath + STR_SLASH + bakFileName;
+            String bakFile = bakFilePath + STR_SYMBOL_SLASH + bakFileName;
 
             if (file.exists()) {
                 // 读取历史配置文件
@@ -405,12 +376,12 @@ public class FileUtils {
             deleteFile(confFolder);
 
             // 解压文件
-            String jarPath = sourceUrl.getPath().replace(FILE_TYPE_SLASH, STR_EMPTY);
+            String jarPath = sourceUrl.getPath().replace(STR_NAME_FILE_SLASH, STR_EMPTY);
             int jarIndex = jarPath.indexOf(START_MODE_JAR);
             String filePath = jarPath.substring(0, jarIndex);
             String fileName = filePath.substring(0, jarIndex) + FILE_TYPE_JAR;
-            String folder = filePath.substring(0, filePath.lastIndexOf(STR_SLASH));
-            String tempFolder = folder + STR_SLASH + "im-tool-ui.temp" + STR_SLASH;
+            String folder = filePath.substring(0, filePath.lastIndexOf(STR_SYMBOL_SLASH));
+            String tempFolder = folder + STR_SYMBOL_SLASH + "im-tool-ui.temp" + STR_SYMBOL_SLASH;
 
             // 生成临时解压文件夹
             File temp = new File(tempFolder);
@@ -419,7 +390,7 @@ public class FileUtils {
             UnZipRarUtils.unZip(new File(fileName), tempFolder);
 
             // 复制文件
-            copyFolder(tempFolder + FILE_TYPE_CONF, folder);
+            copyFolder(tempFolder + STR_NAME_CONF, folder);
             File[] fileList = new File(tempFolder).listFiles();
             for (File item : fileList) {
                 deleteFile(item);
@@ -451,8 +422,8 @@ public class FileUtils {
                 while (iterator.hasNext()) {
                     String key = iterator.next();
                     String value = oldAppConfig.get(key);
-                    if (item.startsWith(key + STR_EQUALS)) {
-                        int index = item.indexOf(STR_EQUALS) + 1;
+                    if (item.startsWith(key + STR_SYMBOL_EQUALS)) {
+                        int index = item.indexOf(STR_SYMBOL_EQUALS) + 1;
                         item = item.substring(0, index) + value;
                     }
                 }
@@ -472,7 +443,7 @@ public class FileUtils {
             String key = iterator.next();
             String value = content.get(key);
             if (key.startsWith(keyWord)) {
-                String item = key + STR_EQUALS + value;
+                String item = key + STR_SYMBOL_EQUALS + value;
                 update.add(item);
             }
         }

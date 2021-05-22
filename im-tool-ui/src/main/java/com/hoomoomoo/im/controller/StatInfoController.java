@@ -1,22 +1,25 @@
 package com.hoomoomoo.im.controller;
 
-import com.hoomoomoo.im.consts.FunctionType;
+import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.dto.FunctionDto;
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
+import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.STR_SPACE_4;
+import static com.hoomoomoo.im.consts.BaseConst.STR_SYMBOL_NEXT_LINE_2;
+import static com.hoomoomoo.im.consts.FunctionConfig.ABOUT_INFO;
+import static com.hoomoomoo.im.consts.FunctionConfig.STAT_INFO;
 
 /**
  * @author humm23693
@@ -25,9 +28,6 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @date 2021/05/09
  */
 public class StatInfoController implements Initializable {
-
-    private static final Logger logger = LoggerFactory.getLogger(StatInfoController.class);
-
 
     @FXML
     private TextArea stat1;
@@ -50,72 +50,59 @@ public class StatInfoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        List<String> svnLogStat = new ArrayList<>(3);
-        List<String> svnUpdateStat = new ArrayList<>(3);
-        List<String> fundInfoStat = new ArrayList<>(3);
-        List<String> processInfoStat = new ArrayList<>(3);
-        List<String> scriptUpdateStat = new ArrayList<>(3);
+        List<FunctionDto> functionDtoList = null;
         try {
-            svnLogStat = FileUtils.readNormalFile(FileUtils.getFilePath("/logs/svnLog/00000000.log").getPath(), false);
-        } catch (IOException e) {
-            logger.info(e.getMessage());
+            functionDtoList = CommonUtils.getAuthFunction();
+        } catch (Exception e) {
+            LoggerUtils.info(e.toString());
+            LoggerUtils.writeAppLog(e.toString());
         }
-        try {
-            svnUpdateStat = FileUtils.readNormalFile(FileUtils.getFilePath("/logs/svnUpdate/00000000.log").getPath(), false);
-        } catch (IOException e) {
-            logger.info(e.getMessage());
+        if (CollectionUtils.isEmpty(functionDtoList)) {
+            return;
         }
-        try {
-            fundInfoStat = FileUtils.readNormalFile(FileUtils.getFilePath("/logs/fundInfo/00000000.log").getPath(), false);
-        } catch (IOException e) {
-            logger.info(e.getMessage());
+        for (int i = 0; i < functionDtoList.size(); i++) {
+            FunctionDto functionDto = functionDtoList.get(i);
+            if (STAT_INFO.getCode().equals(functionDto.getFunctionCode()) || ABOUT_INFO.getCode().equals(functionDto.getFunctionCode())) {
+                continue;
+            }
+            String logPath = "/logs/" + FunctionConfig.getLogFolder(functionDto.getFunctionCode()) + "/00000000.log";
+            TextArea stat;
+            switch (i + 1) {
+                case 1:
+                    stat = stat1;
+                    break;
+                case 2:
+                    stat = stat2;
+                    break;
+                case 3:
+                    stat = stat3;
+                    break;
+                case 4:
+                    stat = stat4;
+                    break;
+                case 5:
+                    stat = stat5;
+                    break;
+                default:
+                    stat = null;
+                    break;
+            }
+            try {
+                OutputUtils.clearLog(stat);
+                OutputUtils.info(stat, functionDto.getFunctionName() + STR_SYMBOL_NEXT_LINE_2);
+                List<String> logStat = FileUtils.readNormalFile(FileUtils.getFilePath(logPath).getPath(), false);
+                outputStatInfo(stat, logStat);
+            } catch (IOException e) {
+                LoggerUtils.info(e.toString());
+                LoggerUtils.writeAppLog(e.toString());
+            }
         }
-        try {
-            processInfoStat = FileUtils.readNormalFile(FileUtils.getFilePath("/logs/processInfo/00000000.log").getPath(), false);
-        } catch (IOException e) {
-            logger.info(e.getMessage());
-        }
-        try {
-            scriptUpdateStat = FileUtils.readNormalFile(FileUtils.getFilePath("/logs/scriptUpdate/00000000.log").getPath(), false);
-        } catch (IOException e) {
-            logger.info(e.getMessage());
-        }
+    }
 
-        OutputUtils.clearLog(svnLogStat);
-        OutputUtils.clearLog(svnUpdateStat);
-        OutputUtils.clearLog(fundInfoStat);
-        OutputUtils.clearLog(processInfoStat);
-        OutputUtils.clearLog(scriptUpdateStat);
-
-        OutputUtils.info(stat1, FunctionType.getName(STR_1) + STR_NEXT_LINE_2);
-        OutputUtils.info(stat2, FunctionType.getName(STR_2) + STR_NEXT_LINE_2);
-        OutputUtils.info(stat3, FunctionType.getName(STR_3) + STR_NEXT_LINE_2);
-        OutputUtils.info(stat4, FunctionType.getName(STR_4) + STR_NEXT_LINE_2);
-        OutputUtils.info(stat5, FunctionType.getName(STR_5) + STR_NEXT_LINE_2);
-
-        if (CollectionUtils.isNotEmpty(svnLogStat)) {
-            for (String item : svnLogStat) {
-                OutputUtils.info(stat1, STR_SPACE_4 + item + STR_NEXT_LINE_2);
-            }
-        }
-        if (CollectionUtils.isNotEmpty(svnUpdateStat)) {
-            for (String item : svnUpdateStat) {
-                OutputUtils.info(stat2, STR_SPACE_4 + item + STR_NEXT_LINE_2);
-            }
-        }
-        if (CollectionUtils.isNotEmpty(fundInfoStat)) {
-            for (String item : fundInfoStat) {
-                OutputUtils.info(stat3, STR_SPACE_4 + item + STR_NEXT_LINE_2);
-            }
-        }
-        if (CollectionUtils.isNotEmpty(processInfoStat)) {
-            for (String item : processInfoStat) {
-                OutputUtils.info(stat4, STR_SPACE_4 + item + STR_NEXT_LINE_2);
-            }
-        }
-        if (CollectionUtils.isNotEmpty(scriptUpdateStat)) {
-            for (String item : scriptUpdateStat) {
-                OutputUtils.info(stat5, STR_SPACE_4 + item + STR_NEXT_LINE_2);
+    private void outputStatInfo(TextArea stat, List<String> logStat) {
+        if (CollectionUtils.isNotEmpty(logStat)) {
+            for (String item : logStat) {
+                OutputUtils.info(stat, STR_SPACE_4 + item + STR_SYMBOL_NEXT_LINE_2);
             }
         }
     }

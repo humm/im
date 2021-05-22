@@ -13,8 +13,6 @@ import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.*;
@@ -28,8 +26,6 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @date 2021/05/14
  */
 public class ScriptUpdateController implements Initializable {
-
-    private static final Logger logger = LoggerFactory.getLogger(ScriptUpdateController.class);
 
     @FXML
     private TextArea source;
@@ -47,6 +43,7 @@ public class ScriptUpdateController implements Initializable {
 
     @FXML
     void executeSubmit(ActionEvent event) {
+        setProgress(0);
         updateProgress();
         generateScript();
     }
@@ -84,7 +81,7 @@ public class ScriptUpdateController implements Initializable {
             });
             schedule.requestFocus();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            LoggerUtils.info(e.toString());
         }
     }
 
@@ -98,16 +95,16 @@ public class ScriptUpdateController implements Initializable {
                 List<String> logList = new ArrayList<>(16);
                 if (StringUtils.isNotBlank(sourceScript)) {
                     List<String> deleteSqlList = new ArrayList<>(16);
-                    String[] items = sourceScript.split(STR_SEMICOLON);
-                    String[] itemsAfter = sourceScript.replace(STR_NEXT_LINE, STR_EMPTY).split(STR_SEMICOLON);
+                    String[] items = sourceScript.split(STR_SYMBOL_SEMICOLON);
+                    String[] itemsAfter = sourceScript.replace(STR_SYMBOL_NEXT_LINE, STR_EMPTY).split(STR_SYMBOL_SEMICOLON);
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     for (String item : itemsAfter) {
                         // 获取sql字段和值
-                        String[] sql = item.split(KEY_VALUES);
+                        String[] sql = item.split(STR_NAME_VALUES);
                         if (sql.length != 2) {
-                            sql = item.split(KEY_VALUES.toUpperCase());
+                            sql = item.split(STR_NAME_VALUES.toUpperCase());
                             if (sql.length != 2) {
-                                throw new Exception("sql语句未包含或者包含多个" + KEY_VALUES + STR_NEXT_LINE + item);
+                                throw new Exception("sql语句未包含或者包含多个" + STR_NAME_VALUES + STR_SYMBOL_NEXT_LINE + item);
                             }
                         }
                         Map<String, String> sqlInfo = new LinkedHashMap<>(16);
@@ -115,13 +112,13 @@ public class ScriptUpdateController implements Initializable {
                         String[] values = null;
                         for (int i = 0; i < sql.length; i++) {
                             String sqlItem = sql[i];
-                            int indexStart = sqlItem.indexOf(STR_BRACKETS_LEFT) + 1;
-                            int indexEnd = sqlItem.lastIndexOf(STR_BRACKETS_RIGHT);
+                            int indexStart = sqlItem.indexOf(STR_SYMBOL_BRACKETS_LEFT) + 1;
+                            int indexEnd = sqlItem.lastIndexOf(STR_SYMBOL_BRACKETS_RIGHT);
                             String subSql = sqlItem.substring(indexStart, indexEnd);
                             if (i == 0) {
-                                columns = subSql.split(STR_COMMA);
+                                columns = subSql.split(STR_SYMBOL_COMMA);
                             } else {
-                                values = subSql.split(STR_COMMA);
+                                values = subSql.split(STR_SYMBOL_COMMA);
                             }
                         }
                         if (columns != null && values != null) {
@@ -152,7 +149,7 @@ public class ScriptUpdateController implements Initializable {
                                             deleteSql.append(cloumnItem.toLowerCase() + "=" + sqlInfo.get(cloumnItem.toLowerCase()));
                                         }
                                     }
-                                    deleteSql.append(STR_SEMICOLON);
+                                    deleteSql.append(STR_SYMBOL_SEMICOLON);
                                     deleteSqlList.add(deleteSql.toString());
                                     break outer;
                                 }
@@ -167,23 +164,23 @@ public class ScriptUpdateController implements Initializable {
                                 continue;
                             }
                             if (sql.toLowerCase().startsWith("insert")) {
-                                OutputUtils.info(target, deleteSqlList.get(i));
+                                OutputUtils.info(target, deleteSqlList.get(i) + STR_SYMBOL_NEXT_LINE);
                                 logList.add(deleteSqlList.get(i));
                             }
-                            OutputUtils.info(target, sql + STR_SEMICOLON + STR_NEXT_LINE);
-                            logList.add(sql.replace(STR_NEXT_LINE, STR_SPACE) + STR_SEMICOLON);
+                            OutputUtils.info(target, sql + STR_SYMBOL_SEMICOLON + STR_SYMBOL_NEXT_LINE);
+                            logList.add(sql.replace(STR_SYMBOL_NEXT_LINE, STR_SPACE) + STR_SYMBOL_SEMICOLON);
                         }
                     } else {
                         OutputUtils.clearLog(target);
                         OutputUtils.info(target, "未匹配到升级脚本生成规则");
                     }
+                    // 写日志文件
+                    LoggerUtils.writeScriptUpdateInfo(date, logList);
                 }
-                // 写日志文件
-                LoggerUtils.writeScriptUpdateInfo(date, logList);
             } catch (Exception e) {
                 e.printStackTrace();
                 OutputUtils.clearLog(target);
-                OutputUtils.info(target, e.getMessage());
+                OutputUtils.info(target, e.toString());
             } finally {
                 submit.setDisable(false);
             }

@@ -1,17 +1,27 @@
 package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.FunctionType;
+import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.dto.FunctionDto;
+import com.hoomoomoo.im.dto.LicenseDto;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.ListIterator;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.ABOUT_INFO;
+import static com.hoomoomoo.im.consts.FunctionConfig.STAT_INFO;
 
 /**
  * @author humm23693
@@ -86,35 +96,50 @@ public class CommonUtils {
         return new SimpleDateFormat(PATTERN4).format(new Date());
     }
 
+    /**
+     * 格式化日期
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static String getCurrentDateTime5(String date) {
+        if (date.length() != 8) {
+            return date;
+        }
+        return date.substring(0, 4) + STR_SYMBOL_HYPHEN + date.substring(4, 6) + STR_SYMBOL_HYPHEN + date.substring(6);
+    }
+
 
     public static Boolean checkConfig(TextArea log, String functionType) throws Exception {
         boolean flag = true;
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        if (functionType.equals(FunctionType.SVN_LOG.getType())) {
+        if (functionType.equals(FunctionConfig.SVN_LOG.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
-                OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_NEXT_LINE);
+                OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
-                OutputUtils.info(log, STR_MSG_SVN_PASSWORD + STR_NEXT_LINE);
+                OutputUtils.info(log, STR_MSG_SVN_PASSWORD + STR_SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnUrl())) {
-                OutputUtils.info(log, STR_MSG_SVN_URL + STR_NEXT_LINE);
+                OutputUtils.info(log, STR_MSG_SVN_URL + STR_SYMBOL_NEXT_LINE);
                 flag = false;
             }
         }
-        if (functionType.equals(FunctionType.SVN_UPDATE.getType())) {
+        if (functionType.equals(FunctionConfig.SVN_UPDATE.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
-                OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_NEXT_LINE);
+                OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
-                OutputUtils.info(log, STR_MSG_SVN_PASSWORD + STR_NEXT_LINE);
+                OutputUtils.info(log, STR_MSG_SVN_PASSWORD + STR_SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (CollectionUtils.isEmpty(appConfigDto.getSvnUpdatePath())) {
-                OutputUtils.info(log, STR_MSG_SVN_UPDATE_TA6 + STR_NEXT_LINE);
+                OutputUtils.info(log, STR_MSG_SVN_UPDATE_TA6 + STR_SYMBOL_NEXT_LINE);
                 flag = false;
             }
         }
@@ -124,13 +149,13 @@ public class CommonUtils {
     public static Boolean checkConfig(TableView<?> log, String functionType) throws Exception {
         boolean flag = true;
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        if (functionType.equals(FunctionType.FUND_INFO.getType())) {
+        if (functionType.equals(FunctionConfig.FUND_INFO.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getFundGeneratePath())) {
                 OutputUtils.info(log, STR_MSG_FUND_GENERATE_PATH);
                 flag = false;
             }
         }
-        if (functionType.equals(FunctionType.PROCESS_INFO.getType())) {
+        if (functionType.equals(FunctionConfig.PROCESS_INFO.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathSchedule())) {
                 OutputUtils.info(log, STR_MSG_PROCESS_GENERATE_PATH_SCHEDULE);
                 flag = false;
@@ -143,4 +168,75 @@ public class CommonUtils {
         return flag;
     }
 
+    public static Boolean checkLicense(String functionCode) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        LicenseDto licenseDto = appConfigDto.getLicense();
+        if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
+            LoggerUtils.info(String.format("功能授权已过期"));
+            LoggerUtils.writeAppLog("功能授权已过期");
+            return false;
+        }
+        if (StringUtils.isBlank(functionCode)) {
+            return true;
+        }
+        if (ABOUT_INFO.getCode().equals(functionCode) || STAT_INFO.getCode().equals(functionCode)) {
+            return true;
+        }
+        List<FunctionDto> functionDtoList = licenseDto.getFunction();
+        if (CollectionUtils.isEmpty(functionDtoList)) {
+            LoggerUtils.writeAppLog(String.format("功能[ %s ]未授权", FunctionConfig.getName(functionCode)));
+            return false;
+        }
+        for (FunctionDto functionDto : functionDtoList) {
+            if (functionCode.equals(functionDto.getFunctionCode())) {
+                return true;
+            }
+        }
+        LoggerUtils.writeAppLog(String.format("功能[ %s ]未授权", FunctionConfig.getName(functionCode)));
+        return false;
+    }
+
+    public static List<FunctionDto> getAuthFunction() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        LicenseDto licenseDto = appConfigDto.getLicense();
+        if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
+            return new ArrayList<>();
+        }
+        return licenseDto.getFunction();
+    }
+
+    public static void showAuthFunction(Menu menu) throws Exception {
+        List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
+        if (CollectionUtils.isEmpty(functionDtoList)) {
+            menu.getItems().clear();
+            return;
+        }
+        ObservableList<MenuItem> list = menu.getItems();
+        ListIterator<MenuItem> iterator = list.listIterator();
+        outer:
+        while (iterator.hasNext()) {
+            MenuItem item = iterator.next();
+            for (FunctionDto functionDto : functionDtoList) {
+                if (FunctionConfig.getMenuId(functionDto.getFunctionCode()).equals(item.getId())) {
+                    continue outer;
+                }
+            }
+            iterator.remove();
+        }
+    }
+
+    public static void deleteMenuItem(Menu menu, String menuId) {
+        if (menu == null) {
+            return;
+        }
+        ObservableList<MenuItem> list = menu.getItems();
+        ListIterator<MenuItem> iterator = list.listIterator();
+        while (iterator.hasNext()) {
+            MenuItem item = iterator.next();
+            if (item.getId().equals(menuId)) {
+                iterator.remove();
+                break;
+            }
+        }
+    }
 }

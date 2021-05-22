@@ -1,7 +1,7 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.FunctionType;
+import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
@@ -12,8 +12,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URL;
@@ -28,9 +26,6 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @date 2021/05/09
  */
 public class SvnUpdateController implements Initializable {
-
-    private static final Logger logger = LoggerFactory.getLogger(SvnUpdateController.class);
-
 
     @FXML
     private Label workspaceNum;
@@ -55,7 +50,7 @@ public class SvnUpdateController implements Initializable {
     @FXML
     void executeSubmit(ActionEvent event) {
         try {
-            if (!CommonUtils.checkConfig(fileLog, FunctionType.SVN_UPDATE.getType())) {
+            if (!CommonUtils.checkConfig(fileLog, FunctionConfig.SVN_UPDATE.getCode())) {
                 return;
             }
             setProgress(0);
@@ -67,7 +62,7 @@ public class SvnUpdateController implements Initializable {
             updateProgress();
             getSvnUpdate();
         } catch (Exception e) {
-            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + e.getMessage());
+            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + e.toString());
         }
     }
 
@@ -88,7 +83,7 @@ public class SvnUpdateController implements Initializable {
                             updatePath.add(path);
                             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + "更新[ " + name + " ]开始\n");
                             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE_4 + path + "\n");
-                            if (FileUtils.isSuffixDirectory(new File(path), KEY_SVN)) {
+                            if (FileUtils.isSuffixDirectory(new File(path), FILE_TYPE_SVN)) {
                                 Long version = SvnUtils.updateSvn(path);
                                 infoMsg(name, version, "更新完成");
                             } else {
@@ -139,7 +134,7 @@ public class SvnUpdateController implements Initializable {
             });
             schedule.requestFocus();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            LoggerUtils.info(e.toString());
         }
     }
 

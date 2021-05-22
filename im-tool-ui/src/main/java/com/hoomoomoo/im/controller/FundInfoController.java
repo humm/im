@@ -1,7 +1,7 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.FunctionType;
+import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.CommonUtils;
@@ -17,8 +17,6 @@ import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -34,9 +32,6 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @date 2021/05/03
  */
 public class FundInfoController implements Initializable {
-
-    private static final Logger logger = LoggerFactory.getLogger(FundInfoController.class);
-
 
     @FXML
     private AnchorPane fundInfo;
@@ -104,7 +99,7 @@ public class FundInfoController implements Initializable {
 
     @FXML
     void executeSubmit(ActionEvent event) throws Exception {
-        if (!CommonUtils.checkConfig(fundLog, FunctionType.FUND_INFO.getType())) {
+        if (!CommonUtils.checkConfig(fundLog, FunctionConfig.FUND_INFO.getCode())) {
             return;
         }
         setProgress(0);
@@ -156,7 +151,7 @@ public class FundInfoController implements Initializable {
             });
             fundSchedule.requestFocus();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            LoggerUtils.info(e.toString());
         }
     }
 
@@ -292,7 +287,7 @@ public class FundInfoController implements Initializable {
                 LoggerUtils.writeFundInfo(date, productPath);
             } catch (Exception e) {
                 e.printStackTrace();
-                infoMsg(e.getMessage());
+                infoMsg(e.toString());
             } finally {
                 scriptSubmit.setDisable(false);
             }
@@ -389,13 +384,13 @@ public class FundInfoController implements Initializable {
                 continue;
             }
             if (!STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(ANNOTATION)) {
+                if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
                     continue;
                 }
                 bufferedWriter.write("delete from tbdataelement where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, dict_key, rel_table, rel_field, rel_condition, reserve) values (";
-            if (getCellReal(sheet, 0, i).contains(ANNOTATION)) {
+            if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, dict_key, rel_table, rel_field, rel_condition, reserve) values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -453,13 +448,13 @@ public class FundInfoController implements Initializable {
                 continue;
             }
             if (!STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(ANNOTATION)) {
+                if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
                     continue;
                 }
                 bufferedWriter.write("delete from tbprdtemplate where template_code = " + getCell(sheet, 2, i) + ";\n");
             }
             String sql = "insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) values (";
-            if (getCellReal(sheet, 0, i).contains(ANNOTATION)) {
+            if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -498,13 +493,13 @@ public class FundInfoController implements Initializable {
                 continue;
             }
             if (!STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(ANNOTATION)) {
+                if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
                     continue;
                 }
                 bufferedWriter.write("delete from tbelementgroup where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) values (";
-            if (getCellReal(sheet, 0, i).contains(ANNOTATION)) {
+            if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -548,13 +543,13 @@ public class FundInfoController implements Initializable {
                 continue;
             }
             if (!STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(ANNOTATION)) {
+                if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
                     continue;
                 }
                 bufferedWriter.write("delete from tbtemplaterelgroup where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) values (";
-            if (getCellReal(sheet, 0, i).contains(ANNOTATION)) {
+            if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -589,13 +584,13 @@ public class FundInfoController implements Initializable {
                 continue;
             }
             if (!STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(ANNOTATION)) {
+                if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
                     continue;
                 }
                 bufferedWriter.write("delete from tbpageelement where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) values (";
-            if (getCellReal(sheet, 0, i).contains(ANNOTATION)) {
+            if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) values (";
             }
             // 获取component_kind

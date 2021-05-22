@@ -1,7 +1,7 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.FunctionType;
+import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
@@ -12,8 +12,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.Date;
@@ -29,8 +27,6 @@ import static com.hoomoomoo.im.consts.BaseConst.STR_SPACE;
  * @date 2021/04/18
  */
 public class SvnLogController implements Initializable {
-
-    private static final Logger logger = LoggerFactory.getLogger(SvnLogController.class);
 
     @FXML
     private Label svnName;
@@ -55,7 +51,7 @@ public class SvnLogController implements Initializable {
     @FXML
     void executeSubmit(ActionEvent event) {
         try {
-            if (!CommonUtils.checkConfig(fileLog, FunctionType.SVN_LOG.getType())) {
+            if (!CommonUtils.checkConfig(fileLog, FunctionConfig.SVN_LOG.getCode())) {
                 return;
             }
             setProgress(0);
@@ -66,7 +62,7 @@ public class SvnLogController implements Initializable {
             updateProgress();
             getSvnLog(Integer.valueOf(svnTimes.getText()));
         } catch (Exception e) {
-            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + e.getMessage());
+            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + e.toString());
         }
     }
 
@@ -127,7 +123,7 @@ public class SvnLogController implements Initializable {
             });
             svnSchedule.requestFocus();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            LoggerUtils.info(e.toString());
         }
     }
 

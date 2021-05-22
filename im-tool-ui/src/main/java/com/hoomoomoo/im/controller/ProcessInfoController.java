@@ -3,7 +3,7 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.cache.TaskMemoryCache;
 import com.hoomoomoo.im.cache.TransMemoryCache;
-import com.hoomoomoo.im.consts.FunctionType;
+import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
@@ -21,8 +21,6 @@ import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.URL;
@@ -37,8 +35,6 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @date 2021/05/07
  */
 public class ProcessInfoController implements Initializable {
-
-    private static final Logger logger = LoggerFactory.getLogger(ProcessInfoController.class);
 
     @FXML
     private AnchorPane processInfo;
@@ -82,7 +78,7 @@ public class ProcessInfoController implements Initializable {
 
     @FXML
     void executeSubmit(ActionEvent event) throws Exception {
-        if (!CommonUtils.checkConfig(log, FunctionType.PROCESS_INFO.getType())) {
+        if (!CommonUtils.checkConfig(log, FunctionConfig.PROCESS_INFO.getCode())) {
             return;
         }
         setProgress(0);
@@ -122,7 +118,7 @@ public class ProcessInfoController implements Initializable {
             });
             schedule.requestFocus();
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            LoggerUtils.info(e.toString());
         }
     }
 
@@ -245,7 +241,7 @@ public class ProcessInfoController implements Initializable {
                 LoggerUtils.writeProcessInfo(date, path);
             } catch (Exception e) {
                 e.printStackTrace();
-                OutputUtils.info(log, e.getMessage());
+                OutputUtils.info(log, e.toString());
             } finally {
                 submit.setDisable(false);
             }
@@ -355,7 +351,9 @@ public class ProcessInfoController implements Initializable {
 
             // 一级job 不为空，二级job为空
             if (sheet.getCell(3, k).getContents().equals("1")) {
-                String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name,sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url,sche_job_pause,sche_ishidebutton,url_open_mode) \nvalues ('"
+                String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name," +
+                        "sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url," +
+                        "sche_job_pause,sche_ishidebutton,url_open_mode, sche_job_ishide, sche_job_isskip) \nvalues ('"
                         + groupCode + "',"
                         + getCell(sheet, 2, k) + ","
                         + getCell(sheet, 0, k) + ","
@@ -367,7 +365,9 @@ public class ProcessInfoController implements Initializable {
                         + getCell(sheet, 9, k) + ","
                         + getCell(sheet, 10, k) + ", "
                         + ((getCell(sheet, 11, k).equals("null")) ? "'0'" : "'1'") + ", "
-                        + ((getCell(sheet, 9, k).equals("null")) ? "'0'" : "'1'")
+                        + ((getCell(sheet, 9, k).equals("null")) ? "'0'" : "'1'") + ", "
+                        + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : "'1'") + ", "
+                        + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : "'1'")
                         + ");";
                 parentJobList.add(sql);
             }
@@ -392,7 +392,10 @@ public class ProcessInfoController implements Initializable {
         for (int k = 2; k < rows; k++) {
             // 二级JOB
             if (!sheet.getCell(3, k).getContents().equals("1")) {
-                String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name,sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url,sche_job_pause,sche_ishidebutton,url_open_mode) \nvalues ('"
+                String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name," +
+                        "sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url," +
+                        "sche_job_pause,sche_ishidebutton,url_open_mode, sche_job_ishide, sche_job_isskip) " +
+                        "\nvalues ('"
                         + groupCode + "',"
                         + getCell(sheet, 2, k) + ","
                         + getCell(sheet, 0, k) + ","
@@ -404,7 +407,9 @@ public class ProcessInfoController implements Initializable {
                         + getCell(sheet, 9, k) + ","
                         + getCell(sheet, 10, k) + ","
                         + ((getCell(sheet, 11, k).equals("null")) ? "'0'" : "'1'") + ","
-                        + ((getCell(sheet, 9, k).equals("null")) ? "'0'" : "'1'")
+                        + ((getCell(sheet, 9, k).equals("null")) ? "'0'" : "'1'") + ","
+                        + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : "'1'") + ","
+                        + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : "'1'")
                         + ");";
                 secondJobList.add(sql);
             }
@@ -455,11 +460,11 @@ public class ProcessInfoController implements Initializable {
                     return;
                 }
                 // 写主task
-                String taskSql = "insert into tbscheduletask (SCHE_JOB_CODE, SCHE_TASK_CODE, SCHE_TASK_NAME, " +
-                        "SCHE_PARENT_TASK_CODE, SCHE_TASK_REDO, SCHE_TASK_TIMEOUT, SCHE_TASK_RETRYCOUNT," +
-                        " SCHE_TASK_ISUSE, SCHE_TASK_ISHIDE, SCHE_TASK_MEMO, SCHE_TASK_DEPENDENCIES, FUNCTION_ID, " +
-                        "BANK_NO, TA_CODE, SCHE_TASK_ISSKIP, SCHE_TASK_SKIPREASON, SCHE_TASK_DELAYTIME, SCHE_TASK_PAUSE," +
-                        " PARENT_FUNCTION_ID,SCHE_RESERVE)\n" +
+                String taskSql = "insert into tbscheduletask (sche_job_code, sche_task_code, sche_task_name, " +
+                        "sche_parent_task_code, sche_task_redo, sche_task_timeout, sche_task_retrycount," +
+                        " sche_task_isuse, sche_task_ishide, sche_task_memo, sche_task_dependencies, function_id, " +
+                        "bank_no, ta_code, sche_task_isskip, sche_task_skipreason, sche_task_delaytime, sche_task_pause," +
+                        " parent_function_id,sche_reserve)\n" +
                         "values('"
                         + key + "' , '"
                         + taskCode + "' , '"
@@ -492,11 +497,11 @@ public class ProcessInfoController implements Initializable {
                         continue;
                     } else {
                         // 写分task
-                        String subTaskSql = "insert into tbscheduletask (SCHE_JOB_CODE, SCHE_TASK_CODE, SCHE_TASK_NAME, " +
-                                "SCHE_PARENT_TASK_CODE, SCHE_TASK_REDO, SCHE_TASK_TIMEOUT, SCHE_TASK_RETRYCOUNT," +
-                                " SCHE_TASK_ISUSE, SCHE_TASK_ISHIDE, SCHE_TASK_MEMO, SCHE_TASK_DEPENDENCIES, FUNCTION_ID, " +
-                                "BANK_NO, TA_CODE, SCHE_TASK_ISSKIP, SCHE_TASK_SKIPREASON, SCHE_TASK_DELAYTIME, SCHE_TASK_PAUSE," +
-                                " PARENT_FUNCTION_ID,SCHE_RESERVE)\n" +
+                        String subTaskSql = "insert into tbscheduletask (sche_job_code, sche_task_code, sche_task_name, " +
+                                "sche_parent_task_code, sche_task_redo, sche_task_timeout, sche_task_retrycount," +
+                                " sche_task_isuse, sche_task_ishide, sche_task_memo, sche_task_dependencies, function_id, " +
+                                "bank_no, ta_code, sche_task_isskip, sche_task_skipreason, sche_task_delaytime, sche_task_pause," +
+                                " parent_function_id,sche_reserve)\n" +
                                 "values( null ,'"
                                 + subMap.get(TaskMemoryCache.SCHE_TASK_CODE) + "' , '"
                                 + subMap.get(TaskMemoryCache.SCHE_TASK_NAME) + "' , '"

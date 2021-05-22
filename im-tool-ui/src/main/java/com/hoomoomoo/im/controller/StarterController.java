@@ -1,9 +1,12 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.FunctionType;
+import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.dto.FunctionDto;
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
+import com.hoomoomoo.im.utils.LoggerUtils;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,13 +17,16 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
-import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.STR_SYMBOL_COMMA;
+import static com.hoomoomoo.im.consts.FunctionConfig.*;
 
 
 /**
@@ -60,9 +66,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openSvnLog(ActionEvent event) throws IOException {
-        Tab tab = isOpen(FunctionType.getName(STR_1));
+        Tab tab = isOpen(SVN_LOG.getName());
         if (tab == null) {
-            tab = getFunctionTab(FunctionType.getPath(STR_1), FunctionType.getName(STR_1));
+            tab = getFunctionTab(SVN_LOG.getPath(), SVN_LOG.getName());
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -70,9 +76,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openSvnUpdate(ActionEvent event) throws IOException {
-        Tab tab = isOpen(FunctionType.getName(STR_2));
+        Tab tab = isOpen(SVN_UPDATE.getName());
         if (tab == null) {
-            tab = getFunctionTab(FunctionType.getPath(STR_2), FunctionType.getName(STR_2));
+            tab = getFunctionTab(SVN_UPDATE.getPath(), SVN_UPDATE.getName());
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -80,9 +86,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openFundInfo(ActionEvent event) throws IOException {
-        Tab tab = isOpen(FunctionType.getName(STR_3));
+        Tab tab = isOpen(FUND_INFO.getName());
         if (tab == null) {
-            tab = getFunctionTab(FunctionType.getPath(STR_3), FunctionType.getName(STR_3));
+            tab = getFunctionTab(FUND_INFO.getPath(), FUND_INFO.getName());
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -90,9 +96,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openProcessInfo(ActionEvent event) throws IOException {
-        Tab tab = isOpen(FunctionType.getName(STR_4));
+        Tab tab = isOpen(PROCESS_INFO.getName());
         if (tab == null) {
-            tab = getFunctionTab(FunctionType.getPath(STR_4), FunctionType.getName(STR_4));
+            tab = getFunctionTab(PROCESS_INFO.getPath(), PROCESS_INFO.getName());
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -100,9 +106,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openScriptUpdate(ActionEvent event) throws IOException {
-        Tab tab = isOpen(FunctionType.getName(STR_5));
+        Tab tab = isOpen(SCRIPT_UPDATE.getName());
         if (tab == null) {
-            tab = getFunctionTab(FunctionType.getPath(STR_5), FunctionType.getName(STR_5));
+            tab = getFunctionTab(SCRIPT_UPDATE.getPath(), SCRIPT_UPDATE.getName());
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -110,9 +116,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openStatInfo(ActionEvent event) throws IOException {
-        Tab tab = isOpen(FunctionType.getName(STR_6));
+        Tab tab = isOpen(STAT_INFO.getName());
         if (tab == null) {
-            tab = getFunctionTab(FunctionType.getPath(STR_6), FunctionType.getName(STR_6));
+            tab = getFunctionTab(STAT_INFO.getPath(), STAT_INFO.getName());
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -120,9 +126,9 @@ public class StarterController implements Initializable {
 
     @FXML
     void openAboutInfo(ActionEvent event) throws IOException {
-        Tab tab = isOpen(FunctionType.getName(STR_7));
+        Tab tab = isOpen(ABOUT_INFO.getName());
         if (tab == null) {
-            tab = getFunctionTab(FunctionType.getPath(STR_7), FunctionType.getName(STR_7));
+            tab = getFunctionTab(ABOUT_INFO.getPath(), ABOUT_INFO.getName());
             functionTab.getTabs().add(tab);
         }
         functionTab.getSelectionModel().select(tab);
@@ -132,15 +138,40 @@ public class StarterController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+
+            // 校验证书是否过期
+            if (!CommonUtils.checkLicense(null)) {
+                menuFunction.getItems().clear();
+                menuHelp.getItems().remove(0);
+                return;
+            }
+
+            // 控制菜单功能
+            CommonUtils.showAuthFunction(menuFunction);
+
             String showTab = appConfigDto.getShowTab();
             if (StringUtils.isNotBlank(showTab)) {
-                String[] tabs = showTab.split(STR_COMMA);
+                String[] tabs = showTab.split(STR_SYMBOL_COMMA);
                 for (String tab : tabs) {
-                    functionTab.getTabs().add(getFunctionTab(FunctionType.getPath(tab), FunctionType.getName(tab)));
+                    if (StringUtils.isBlank(FunctionConfig.getName(tab))) {
+                        LoggerUtils.info(String.format("功能[ %s ]不存在", tab));
+                        LoggerUtils.writeAppLog("功能[ %s ]不存在");
+                        continue;
+                    }
+                    // 校验功能是否有权限
+                    if (!CommonUtils.checkLicense(tab)) {
+                        continue;
+                    }
+                    functionTab.getTabs().add(getFunctionTab(FunctionConfig.getPath(tab), FunctionConfig.getName(tab)));
                 }
             } else {
-                Tab tab = getFunctionTab(FunctionType.getPath(STR_1), FunctionType.getName(STR_1));
-                functionTab.getTabs().add(tab);
+                // 默认打开有权限的第一个功能
+                List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
+                if (CollectionUtils.isNotEmpty(functionDtoList)) {
+                    FunctionDto functionDto = functionDtoList.get(0);
+                    Tab tab = getFunctionTab(FunctionConfig.getPath(functionDto.getFunctionCode()), FunctionConfig.getName(functionDto.getFunctionCode()));
+                    functionTab.getTabs().add(tab);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

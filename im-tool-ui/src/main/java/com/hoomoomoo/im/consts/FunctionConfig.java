@@ -6,24 +6,24 @@ package com.hoomoomoo.im.consts;
  * @package com.hoomoomoo.im.consts
  * @date 2021/04/25
  */
-public enum FunctionType {
+public enum FunctionConfig {
 
-    SVN_LOG("1", "svn提交记录", "/conf/fxml/svnLog.fxml", "menuItemSvnLog"),
+    SVN_LOG("1", "svn提交记录", "/conf/fxml/svnLog.fxml", "menuItemSvnLog", "svnLog"),
 
-    SVN_UPDATE("2", "svn代码更新", "/conf/fxml/svnUpdate.fxml", "menuItemSvnUpdate"),
+    SVN_UPDATE("2", "svn代码更新", "/conf/fxml/svnUpdate.fxml", "menuItemSvnUpdate", "svnUpdate"),
 
-    FUND_INFO("3", "基金信息", "/conf/fxml/fundInfo.fxml", "menuItemFundInfo"),
+    FUND_INFO("3", "基金信息", "/conf/fxml/fundInfo.fxml", "menuItemFundInfo", "fundInfo"),
 
-    PROCESS_INFO("4", "流程信息", "/conf/fxml/processInfo.fxml", "menuItemProcessInfo"),
+    PROCESS_INFO("4", "流程信息", "/conf/fxml/processInfo.fxml", "menuItemProcessInfo", "processInfo"),
 
-    SCRIPT_UPDATE("5", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "menuItemScriptUpdate"),
+    SCRIPT_UPDATE("5", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "menuItemScriptUpdate", "scriptUpdate"),
 
-    STAT_INFO("98", "统计分析", "/conf/fxml/statInfo.fxml", "menuItemStat"),
+    STAT_INFO("98", "统计分析", "/conf/fxml/statInfo.fxml", "menuItemStat", ""),
 
-    ABOUT_INFO("99", "关于", "/conf/fxml/aboutInfo.fxml", "menuItemAbout");
+    ABOUT_INFO("99", "关于", "/conf/fxml/aboutInfo.fxml", "menuItemAbout", "");
 
 
-    private String type;
+    private String code;
 
     private String name;
 
@@ -31,18 +31,22 @@ public enum FunctionType {
 
     private String menuId;
 
-    FunctionType(String type, String name, String path, String menuId) {
-        this.type = type;
+    private String logFolder;
+
+    FunctionConfig(String code, String name, String path, String menuId, String logFolder) {
+        this.code = code;
         this.name = name;
         this.path = path;
         this.menuId = menuId;
+        this.logFolder = logFolder;
     }
 
-    public String getType() {
-        return type;
+    public String getCode() {
+        return code;
     }
 
     public String getName() {
+
         return name;
     }
 
@@ -51,22 +55,44 @@ public enum FunctionType {
     }
 
     public String getMenuId() {
-        return path;
+        return menuId;
     }
 
-    public static String getName(String type) {
-        for (FunctionType tabType : FunctionType.values()) {
-            if (tabType.getType().equals(type)) {
-                return tabType.name;
+    public String getLogFolder() {
+        return logFolder;
+    }
+
+    public static String getName(String code) {
+        for (FunctionConfig tab : FunctionConfig.values()) {
+            if (tab.getCode().equals(code)) {
+                return tab.name;
             }
         }
         return null;
     }
 
-    public static String getPath(String type) {
-        for (FunctionType tabType : FunctionType.values()) {
-            if (tabType.getType().equals(type)) {
-                return tabType.path;
+    public static String getPath(String code) {
+        for (FunctionConfig tab : FunctionConfig.values()) {
+            if (tab.getCode().equals(code)) {
+                return tab.path;
+            }
+        }
+        return null;
+    }
+
+    public static String getMenuId(String code) {
+        for (FunctionConfig tab : FunctionConfig.values()) {
+            if (tab.getCode().equals(code)) {
+                return tab.menuId;
+            }
+        }
+        return null;
+    }
+
+    public static String getLogFolder(String code) {
+        for (FunctionConfig tab : FunctionConfig.values()) {
+            if (tab.getCode().equals(code)) {
+                return tab.logFolder;
             }
         }
         return null;
