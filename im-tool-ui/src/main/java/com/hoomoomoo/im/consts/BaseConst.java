@@ -91,6 +91,8 @@ public class BaseConst {
     public static final String STR_MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件[ license.init ]";
     public static final String STR_MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止[ %s ]";
     public static final String STR_MSG_LICENSE_NOT_AUTH = "未授权[ %s ]功能";
+    public static final String STR_MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * *";
+
 
     public static final String STR_CONFIG_PREFIX = "#################### ";
     public static final String STR_CONFIG_APP_TITLE = "应用信息";

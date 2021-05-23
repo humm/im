@@ -23,7 +23,7 @@ public class MainStarter extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        LoggerUtils.writeAppLog(STR_SYMBOL_NEXT_LINE_2);
+        LoggerUtils.info(STR_MSG_DIVIDE_LINE);
         LoggerUtils.info(String.format(STR_MSG_START, "应用启动"));
         FileUtils.UnJar("/conf/app.conf");
         LoggerUtils.info(String.format(STR_MSG_UPDATE, "配置文件"));
