@@ -1,7 +1,10 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.utils.CommonUtils;
+import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.application.Platform;
@@ -43,8 +46,11 @@ public class ScriptUpdateController implements Initializable {
     private double progress = 0;
 
     @FXML
-    void executeSubmit(ActionEvent event) {
+    void executeSubmit(ActionEvent event) throws Exception {
         LoggerUtils.info(String.format(STR_MSG_USE, SCRIPT_UPDATE.getName()));
+        if (!CommonUtils.checkConfig(target, FunctionConfig.SCRIPT_UPDATE.getCode())) {
+            return;
+        }
         setProgress(0);
         updateProgress();
         generateScript();
@@ -94,7 +100,6 @@ public class ScriptUpdateController implements Initializable {
                 Date date = new Date();
                 OutputUtils.clearLog(target);
                 String sourceScript = source.getText();
-                List<String> logList = new ArrayList<>(16);
                 if (StringUtils.isNotBlank(sourceScript)) {
                     List<String> deleteSqlList = new ArrayList<>(16);
                     String[] items = sourceScript.split(STR_SYMBOL_SEMICOLON);
@@ -158,6 +163,8 @@ public class ScriptUpdateController implements Initializable {
                             }
                         }
                     }
+                    List<String> logList = new ArrayList<>(16);
+                    List<String> scriptList = new ArrayList<>(16);
                     if (CollectionUtils.isNotEmpty(deleteSqlList)) {
                         // 组装sql语句
                         for (int i = 0; i < items.length; i++) {
@@ -168,9 +175,11 @@ public class ScriptUpdateController implements Initializable {
                             if (sql.toLowerCase().startsWith("insert")) {
                                 OutputUtils.info(target, deleteSqlList.get(i) + STR_SYMBOL_NEXT_LINE);
                                 logList.add(deleteSqlList.get(i));
+                                scriptList.add(deleteSqlList.get(i));
                             }
                             OutputUtils.info(target, sql + STR_SYMBOL_SEMICOLON + STR_SYMBOL_NEXT_LINE);
                             logList.add(sql.replace(STR_SYMBOL_NEXT_LINE, STR_SPACE) + STR_SYMBOL_SEMICOLON);
+                            scriptList.add(sql + STR_SYMBOL_SEMICOLON + STR_SYMBOL_NEXT_LINE);
                         }
                     } else {
                         OutputUtils.clearLog(target);
@@ -178,6 +187,10 @@ public class ScriptUpdateController implements Initializable {
                     }
                     // 写日志文件
                     LoggerUtils.writeScriptUpdateInfo(date, logList);
+                    if (appConfigDto.getScriptUpdateGenerateFile()) {
+                        String path = new URL("file:" + appConfigDto.getScriptUpdateGeneratePath() + "/script.sql").getFile();
+                        FileUtils.writeFile(path, scriptList, STR_1.equals(appConfigDto.getScriptGenerateMode()));
+                    }
                 }
             } catch (Exception e) {
                 LoggerUtils.info(e);

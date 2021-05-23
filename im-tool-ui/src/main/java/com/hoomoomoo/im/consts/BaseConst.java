@@ -37,6 +37,7 @@ public class BaseConst {
     public static final String FILE_TYPE_LOG = ".log";
     public static final String FILE_TYPE_JAR = ".jar";
     public static final String FILE_TYPE_BAK = ".bak";
+    public static final String FILE_TYPE_SQL = ".sql";
 
     public static final String STR_NAME_VALUES = "values";
     public static final String STR_NAME_CONF = "conf";
@@ -75,13 +76,13 @@ public class BaseConst {
     public static final String STR_MSG_FUND_GENERATE_PATH = "请设置[ fund.generate.path ]";
     public static final String STR_MSG_PROCESS_GENERATE_PATH_SCHEDULE = "请设置[ process.generate.path.schedule ]";
     public static final String STR_MSG_PROCESS_GENERATE_PATH_TRANS = "请设置[ process.generate.path.trans ]";
+    public static final String STR_MSG_SCRIPT_UPDATE_GENERATE_PATH = "请设置[ script.update.generate.path ]";
 
     public static final String STR_MSG_OPEN = "打开[ %s ] 功能界面";
     public static final String STR_MSG_USE = "使用[ %s ] 功能";
     public static final String STR_MSG_UPDATE = "更新[ %s ] 完成";
     public static final String STR_MSG_LOAD = "加载[ %s ] 完成";
     public static final String STR_MSG_INIT = "初始化[ %s ] 完成";
-    public static final String STR_MSG_INIT_EXCEPTION = "初始化[ %s ] 异常";
     public static final String STR_MSG_ENCRYPT = "加密[ %s ] 完成";
     public static final String STR_MSG_CHECK = "校验[ %s ] 完成";
     public static final String STR_MSG_START = "开始[ %s ]";

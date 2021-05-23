@@ -55,8 +55,15 @@ public class AppConfigDto extends BaseDto {
 
     private List<LinkedHashMap<String, List<String>>> scriptUpdateTable;
 
+    private LicenseDto license;
+
     private Boolean scriptUpdateSkip;
 
-    private LicenseDto license;
+    private Boolean scriptUpdateGenerateFile;
+
+    private String scriptGenerateMode;
+
+    private String scriptUpdateGeneratePath;
+
 
 }

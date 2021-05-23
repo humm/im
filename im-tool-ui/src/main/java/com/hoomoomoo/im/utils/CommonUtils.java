@@ -112,10 +112,10 @@ public class CommonUtils {
     }
 
 
-    public static Boolean checkConfig(TextArea log, String functionType) throws Exception {
+    public static Boolean checkConfig(TextArea log, String functionCode) throws Exception {
         boolean flag = true;
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        if (functionType.equals(FunctionConfig.SVN_LOG.getCode())) {
+        if (functionCode.equals(FunctionConfig.SVN_LOG.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_SYMBOL_NEXT_LINE);
                 flag = false;
@@ -129,7 +129,7 @@ public class CommonUtils {
                 flag = false;
             }
         }
-        if (functionType.equals(FunctionConfig.SVN_UPDATE.getCode())) {
+        if (functionCode.equals(FunctionConfig.SVN_UPDATE.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_SYMBOL_NEXT_LINE);
                 flag = false;
@@ -141,6 +141,14 @@ public class CommonUtils {
             if (CollectionUtils.isEmpty(appConfigDto.getSvnUpdatePath())) {
                 OutputUtils.info(log, STR_MSG_SVN_UPDATE_TA6 + STR_SYMBOL_NEXT_LINE);
                 flag = false;
+            }
+        }
+        if (functionCode.equals(FunctionConfig.SCRIPT_UPDATE.getCode())) {
+            if (appConfigDto.getScriptUpdateGenerateFile()) {
+                if (StringUtils.isBlank(appConfigDto.getScriptUpdateGeneratePath())) {
+                    OutputUtils.info(log, STR_MSG_SCRIPT_UPDATE_GENERATE_PATH + STR_SYMBOL_NEXT_LINE);
+                    flag = false;
+                }
             }
         }
         return flag;

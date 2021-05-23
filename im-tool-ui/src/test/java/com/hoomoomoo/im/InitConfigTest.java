@@ -196,6 +196,9 @@ public class InitConfigTest {
         keys.add("process.generate.path.trans");
         keys.add("process.generate.path.schedule");
 
+        keys.add("script.update.table.tbscheduletask");
+        keys.add("script.update.generate.path");
+
         String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {
