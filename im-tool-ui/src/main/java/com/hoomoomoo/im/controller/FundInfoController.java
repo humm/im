@@ -99,30 +99,34 @@ public class FundInfoController implements Initializable {
     }
 
     @FXML
-    void executeSubmit(ActionEvent event) throws Exception {
-        LoggerUtils.info(String.format(STR_MSG_USE, FUND_INFO.getName()));
-        if (!CommonUtils.checkConfig(fundLog, FunctionConfig.FUND_INFO.getCode())) {
-            return;
+    void executeSubmit(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_USE, FUND_INFO.getName()));
+            if (!CommonUtils.checkConfig(fundLog, FunctionConfig.FUND_INFO.getCode())) {
+                return;
+            }
+            setProgress(0);
+            if (StringUtils.isBlank(filePath.getText())) {
+                infoMsg("请选择基金信息Excel文件");
+                return;
+            }
+            boolean selectModeAll = modeAll.isSelected();
+            boolean selectModeUpdate = modeUpdate.isSelected();
+            if (selectModeAll == false && selectModeUpdate == false) {
+                OutputUtils.selected(modeAll, true);
+                OutputUtils.selected(modeUpdate, false);
+            }
+            selectModeAll = modeAll.isSelected();
+            if (selectModeAll) {
+                SCRIPT_TYPE = String.valueOf(modeAll.getUserData());
+            } else {
+                SCRIPT_TYPE = String.valueOf(modeUpdate.getUserData());
+            }
+            updateProgress();
+            generateScript();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
-        setProgress(0);
-        if (StringUtils.isBlank(filePath.getText())) {
-            infoMsg("请选择基金信息Excel文件");
-            return;
-        }
-        boolean selectModeAll = modeAll.isSelected();
-        boolean selectModeUpdate = modeUpdate.isSelected();
-        if (selectModeAll == false && selectModeUpdate == false) {
-            OutputUtils.selected(modeAll, true);
-            OutputUtils.selected(modeUpdate, false);
-        }
-        selectModeAll = modeAll.isSelected();
-        if (selectModeAll) {
-            SCRIPT_TYPE = String.valueOf(modeAll.getUserData());
-        } else {
-            SCRIPT_TYPE = String.valueOf(modeUpdate.getUserData());
-        }
-        updateProgress();
-        generateScript();
     }
 
     private void updateProgress() {

@@ -314,13 +314,13 @@ public class FileUtils {
      * @date: 2021/04/26
      * @return:
      */
-    public static URL getFilePath(String path) throws MalformedURLException {
+    public static URL getFilePath(String path, Boolean skipJar) throws MalformedURLException {
         URL url = FileUtils.class.getResource(path);
         if (url == null) {
             String folder = FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-            url = new URL(STR_NAME_FILE + folder + path.substring(1));
+            url = new URL(STR_NAME_FILE + folder + path);
         }
-        if (url.getPath().contains(START_MODE_JAR)) {
+        if (!skipJar && url.getPath().contains(START_MODE_JAR)) {
             String jarPath = url.getPath();
             int jarIndex = jarPath.indexOf(START_MODE_JAR);
             String filePath = jarPath.substring(jarIndex + 1);
@@ -333,6 +333,18 @@ public class FileUtils {
     }
 
     /**
+     * 获取文件路径
+     *
+     * @param path
+     * @author: humm23693
+     * @date: 2021/04/26
+     * @return:
+     */
+    public static URL getFilePath(String path) throws MalformedURLException {
+        return getFilePath(path, false);
+    }
+
+    /**
      * 解压jar包
      *
      * @param path
@@ -340,8 +352,8 @@ public class FileUtils {
      * @date: 2021/04/26
      * @return:
      */
-    public static void UnJar(String path) throws Exception {
-        URL sourceUrl = FileUtils.class.getResource(path);
+    public static void unJar(String path) throws Exception {
+        URL sourceUrl = getFilePath(path, true);
         if (sourceUrl.getPath().contains(START_MODE_JAR)) {
             URL url = getFilePath(path);
             File file = new File(url.getPath());
@@ -370,10 +382,12 @@ public class FileUtils {
             // 删除历史解压文件
             File confFolder = file.getParentFile();
             File[] oldFileList = confFolder.listFiles();
-            for (File item : oldFileList) {
-                deleteFile(item);
+            if (oldFileList != null) {
+                for (File item : oldFileList) {
+                    deleteFile(item);
+                }
+                deleteFile(confFolder);
             }
-            deleteFile(confFolder);
 
             // 解压文件
             String jarPath = sourceUrl.getPath().replace(STR_NAME_FILE_SLASH, STR_EMPTY);

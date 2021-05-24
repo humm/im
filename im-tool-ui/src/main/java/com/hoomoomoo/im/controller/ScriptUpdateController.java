@@ -46,14 +46,18 @@ public class ScriptUpdateController implements Initializable {
     private double progress = 0;
 
     @FXML
-    void executeSubmit(ActionEvent event) throws Exception {
-        LoggerUtils.info(String.format(STR_MSG_USE, SCRIPT_UPDATE.getName()));
-        if (!CommonUtils.checkConfig(target, FunctionConfig.SCRIPT_UPDATE.getCode())) {
-            return;
+    void executeSubmit(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_USE, SCRIPT_UPDATE.getName()));
+            if (!CommonUtils.checkConfig(target, FunctionConfig.SCRIPT_UPDATE.getCode())) {
+                return;
+            }
+            setProgress(0);
+            updateProgress();
+            generateScript();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
-        setProgress(0);
-        updateProgress();
-        generateScript();
     }
 
     @Override

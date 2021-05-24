@@ -65,80 +65,108 @@ public class StarterController implements Initializable {
     private TabPane functionTab;
 
     @FXML
-    void openSvnLog(ActionEvent event) throws IOException {
-        LoggerUtils.info(String.format(STR_MSG_OPEN, SVN_LOG.getName()));
-        Tab tab = isOpen(SVN_LOG.getName());
-        if (tab == null) {
-            tab = getFunctionTab(SVN_LOG.getPath(), SVN_LOG.getName());
-            functionTab.getTabs().add(tab);
+    void openSvnLog(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_OPEN, SVN_LOG.getName()));
+            Tab tab = isOpen(SVN_LOG.getName());
+            if (tab == null) {
+                tab = getFunctionTab(SVN_LOG.getPath(), SVN_LOG.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
-        functionTab.getSelectionModel().select(tab);
     }
 
     @FXML
-    void openSvnUpdate(ActionEvent event) throws IOException {
-        LoggerUtils.info(String.format(STR_MSG_OPEN, SVN_UPDATE.getName()));
-        Tab tab = isOpen(SVN_UPDATE.getName());
-        if (tab == null) {
-            tab = getFunctionTab(SVN_UPDATE.getPath(), SVN_UPDATE.getName());
-            functionTab.getTabs().add(tab);
+    void openSvnUpdate(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_OPEN, SVN_UPDATE.getName()));
+            Tab tab = isOpen(SVN_UPDATE.getName());
+            if (tab == null) {
+                tab = getFunctionTab(SVN_UPDATE.getPath(), SVN_UPDATE.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
-        functionTab.getSelectionModel().select(tab);
     }
 
     @FXML
-    void openFundInfo(ActionEvent event) throws IOException {
-        LoggerUtils.info(String.format(STR_MSG_OPEN, FUND_INFO.getName()));
-        Tab tab = isOpen(FUND_INFO.getName());
-        if (tab == null) {
-            tab = getFunctionTab(FUND_INFO.getPath(), FUND_INFO.getName());
-            functionTab.getTabs().add(tab);
+    void openFundInfo(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_OPEN, FUND_INFO.getName()));
+            Tab tab = isOpen(FUND_INFO.getName());
+            if (tab == null) {
+                tab = getFunctionTab(FUND_INFO.getPath(), FUND_INFO.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
-        functionTab.getSelectionModel().select(tab);
     }
 
     @FXML
-    void openProcessInfo(ActionEvent event) throws IOException {
-        LoggerUtils.info(String.format(STR_MSG_OPEN, PROCESS_INFO.getName()));
-        Tab tab = isOpen(PROCESS_INFO.getName());
-        if (tab == null) {
-            tab = getFunctionTab(PROCESS_INFO.getPath(), PROCESS_INFO.getName());
-            functionTab.getTabs().add(tab);
+    void openProcessInfo(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_OPEN, PROCESS_INFO.getName()));
+            Tab tab = isOpen(PROCESS_INFO.getName());
+            if (tab == null) {
+                tab = getFunctionTab(PROCESS_INFO.getPath(), PROCESS_INFO.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
-        functionTab.getSelectionModel().select(tab);
     }
 
     @FXML
-    void openScriptUpdate(ActionEvent event) throws IOException {
-        LoggerUtils.info(String.format(STR_MSG_OPEN, SCRIPT_UPDATE.getName()));
-        Tab tab = isOpen(SCRIPT_UPDATE.getName());
-        if (tab == null) {
-            tab = getFunctionTab(SCRIPT_UPDATE.getPath(), SCRIPT_UPDATE.getName());
-            functionTab.getTabs().add(tab);
+    void openScriptUpdate(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_OPEN, SCRIPT_UPDATE.getName()));
+            Tab tab = isOpen(SCRIPT_UPDATE.getName());
+            if (tab == null) {
+                tab = getFunctionTab(SCRIPT_UPDATE.getPath(), SCRIPT_UPDATE.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
-        functionTab.getSelectionModel().select(tab);
     }
 
     @FXML
-    void openStatInfo(ActionEvent event) throws IOException {
-        LoggerUtils.info(String.format(STR_MSG_OPEN, STAT_INFO.getName()));
-        Tab tab = isOpen(STAT_INFO.getName());
-        if (tab == null) {
-            tab = getFunctionTab(STAT_INFO.getPath(), STAT_INFO.getName());
-            functionTab.getTabs().add(tab);
+    void openStatInfo(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_OPEN, STAT_INFO.getName()));
+            Tab tab = isOpen(STAT_INFO.getName());
+            if (tab == null) {
+                tab = getFunctionTab(STAT_INFO.getPath(), STAT_INFO.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
-        functionTab.getSelectionModel().select(tab);
     }
 
     @FXML
-    void openAboutInfo(ActionEvent event) throws IOException {
-        LoggerUtils.info(String.format(STR_MSG_OPEN, ABOUT_INFO.getName()));
-        Tab tab = isOpen(ABOUT_INFO.getName());
-        if (tab == null) {
-            tab = getFunctionTab(ABOUT_INFO.getPath(), ABOUT_INFO.getName());
-            functionTab.getTabs().add(tab);
+    void openAboutInfo(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_OPEN, ABOUT_INFO.getName()));
+            Tab tab = isOpen(ABOUT_INFO.getName());
+            if (tab == null) {
+                tab = getFunctionTab(ABOUT_INFO.getPath(), ABOUT_INFO.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
-        functionTab.getSelectionModel().select(tab);
     }
 
     @Override

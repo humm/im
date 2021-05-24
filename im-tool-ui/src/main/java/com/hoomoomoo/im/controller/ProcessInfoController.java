@@ -78,18 +78,22 @@ public class ProcessInfoController implements Initializable {
     }
 
     @FXML
-    void executeSubmit(ActionEvent event) throws Exception {
-        LoggerUtils.info(String.format(STR_MSG_USE, PROCESS_INFO.getName()));
-        if (!CommonUtils.checkConfig(log, FunctionConfig.PROCESS_INFO.getCode())) {
-            return;
+    void executeSubmit(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_USE, PROCESS_INFO.getName()));
+            if (!CommonUtils.checkConfig(log, FunctionConfig.PROCESS_INFO.getCode())) {
+                return;
+            }
+            setProgress(0);
+            if (StringUtils.isBlank(filePath.getText())) {
+                OutputUtils.info(log, "请选择流程信息Excel文件");
+                return;
+            }
+            updateProgress();
+            generateScript();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
         }
-        setProgress(0);
-        if (StringUtils.isBlank(filePath.getText())) {
-            OutputUtils.info(log, "请选择流程信息Excel文件");
-            return;
-        }
-        updateProgress();
-        generateScript();
     }
 
     private void updateProgress() {

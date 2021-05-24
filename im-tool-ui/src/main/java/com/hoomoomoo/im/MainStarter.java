@@ -22,22 +22,26 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
 public class MainStarter extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        LoggerUtils.info(STR_MSG_DIVIDE_LINE);
-        LoggerUtils.info(String.format(STR_MSG_START, "应用启动"));
-        FileUtils.UnJar("/conf/app.conf");
-        LoggerUtils.info(String.format(STR_MSG_UPDATE, "配置文件"));
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        LoggerUtils.info(String.format(STR_MSG_LOAD, "配置信息"));
-        primaryStage.getIcons().add(new Image("/conf/image/icon.png"));
-        Parent root = FXMLLoader.load(FileUtils.getFilePath("/conf/fxml/starter.fxml"));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(FileUtils.getFilePath("/conf/style/progressIndicator.css").toExternalForm());
-        primaryStage.setTitle(appConfigDto.getAppName());
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-        primaryStage.show();
-        LoggerUtils.info(String.format(STR_MSG_COMPLETE, "应用启动"));
+    public void start(Stage primaryStage) {
+        try {
+            LoggerUtils.info(STR_MSG_DIVIDE_LINE);
+            LoggerUtils.info(String.format(STR_MSG_START, "应用启动"));
+            FileUtils.unJar("/conf/app.conf");
+            LoggerUtils.info(String.format(STR_MSG_UPDATE, "配置文件"));
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            LoggerUtils.info(String.format(STR_MSG_LOAD, "配置信息"));
+            primaryStage.getIcons().add(new Image("/conf/image/icon.png"));
+            Parent root = FXMLLoader.load(FileUtils.getFilePath("/conf/fxml/starter.fxml"));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(FileUtils.getFilePath("/conf/style/progressIndicator.css").toExternalForm());
+            primaryStage.setTitle(appConfigDto.getAppName());
+            primaryStage.setScene(scene);
+            primaryStage.setResizable(false);
+            primaryStage.show();
+            LoggerUtils.info(String.format(STR_MSG_COMPLETE, "应用启动"));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
     }
 
     public static void main(String[] args) {
