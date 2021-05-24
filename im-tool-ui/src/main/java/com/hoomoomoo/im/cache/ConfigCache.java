@@ -42,14 +42,14 @@ public class ConfigCache {
     }
 
     private void init() throws Exception {
-        String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
+        String confPath = FileUtils.getFilePath("/conf/app.conf");
         // 读取配置文件
         appConfigDto = (AppConfigDto) FileUtils.readConfigFileToObject(confPath, AppConfigDto.class);
         appConfigDto.setSvnUpdatePath(new ArrayList<>(16));
         appConfigDto.setScriptUpdateTable(new ArrayList<>(16));
 
         // 加载证书信息
-        String licensePath = FileUtils.getFilePath("/conf/init/license.init").getPath();
+        String licensePath = FileUtils.getFilePath("/conf/init/license.init");
         List<String> licenseContent = FileUtils.readNormalFile(licensePath, false);
         StringBuilder license = new StringBuilder();
         if (CollectionUtils.isEmpty(licenseContent)) {

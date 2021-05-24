@@ -36,7 +36,7 @@ public class InitConfigTest {
      */
     @Test
     public void buildLicense() throws Exception {
-        String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
+        String confPath = FileUtils.getFilePath("/conf/app.conf");
         List<String> content = FileUtils.readNormalFile(confPath, false);
         // 生成证书信息
         String appFunction = content.get(1);
@@ -66,7 +66,7 @@ public class InitConfigTest {
         }
         // 加密写文件
         String licenseContent = SecurityUtils.getEncryptString(JSON.toJSONString(license));
-        String licensePath = FileUtils.getFilePath("/conf/init/license.init").getPath();
+        String licensePath = FileUtils.getFilePath("/conf/init/license.init");
         FileUtils.writeFile(licensePath, licenseContent, false);
         // 生成功能配置描述信息
         buildFunctionDescribe(license);
@@ -87,7 +87,7 @@ public class InitConfigTest {
             describe.append(functionDto.getFunctionCode() + STR_SYMBOL_COLON + FunctionConfig.getName(functionDto.getFunctionCode()));
             describe.append(STR_SPACE);
         }
-        String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
+        String confPath = FileUtils.getFilePath("/conf/app.conf");
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {
             content.set(7, describe.toString());
@@ -199,7 +199,7 @@ public class InitConfigTest {
         keys.add("script.update.table.tbscheduletask");
         keys.add("script.update.generate.path");
 
-        String confPath = FileUtils.getFilePath("/conf/app.conf").getPath();
+        String confPath = FileUtils.getFilePath("/conf/app.conf");
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {
             for (int i = 0; i < content.size(); i++) {
@@ -225,7 +225,7 @@ public class InitConfigTest {
     @Test
     public void updateVersionConfig() {
         try {
-            String versionFilePath = FileUtils.getFilePath("/conf/init/version.init").getPath();
+            String versionFilePath = FileUtils.getFilePath("/conf/init/version.init");
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
             StringBuilder statLog = new StringBuilder();
             statLog.append("首发版本: ").append("2021.04.17").append(STR_SYMBOL_NEXT_LINE);

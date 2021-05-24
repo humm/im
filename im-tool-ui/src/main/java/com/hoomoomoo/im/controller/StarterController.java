@@ -20,6 +20,7 @@ import javafx.scene.control.TabPane;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -225,8 +226,8 @@ public class StarterController implements Initializable {
      * @return:
      */
     private Tab getFunctionTab(String tabPath, String tabName) throws IOException {
-        Parent svnLog = FXMLLoader.load(FileUtils.getFilePath(tabPath));
-        return new Tab(tabName, svnLog);
+        Parent tab = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(tabPath)));
+        return new Tab(tabName, tab);
     }
 
     /**

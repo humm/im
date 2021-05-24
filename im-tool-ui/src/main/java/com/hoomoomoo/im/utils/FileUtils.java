@@ -314,7 +314,7 @@ public class FileUtils {
      * @date: 2021/04/26
      * @return:
      */
-    public static URL getFilePath(String path, Boolean skipJar) throws MalformedURLException {
+    public static String getFilePath(String path, Boolean skipJar) throws MalformedURLException {
         URL url = FileUtils.class.getResource(path);
         if (url == null) {
             String folder = FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getFile();
@@ -327,9 +327,9 @@ public class FileUtils {
             filePath = filePath.substring(filePath.indexOf(STR_SYMBOL_SLASH));
             String folderPath = jarPath.substring(0, jarIndex);
             folderPath = folderPath.substring(0, folderPath.lastIndexOf(STR_SYMBOL_SLASH));
-            return new URL(folderPath + filePath);
+            url = new URL(folderPath + filePath);
         }
-        return url;
+        return url.getPath().replaceAll("%20", STR_SPACE);
     }
 
     /**
@@ -340,8 +340,20 @@ public class FileUtils {
      * @date: 2021/04/26
      * @return:
      */
-    public static URL getFilePath(String path) throws MalformedURLException {
+    public static String getFilePath(String path) throws MalformedURLException {
         return getFilePath(path, false);
+    }
+
+    /**
+     * 获取文件路径
+     *
+     * @param path
+     * @author: humm23693
+     * @date: 2021/04/26
+     * @return:
+     */
+    public static URL getFilePathUrl(String path) throws MalformedURLException {
+        return new URL(STR_NAME_FILE + getFilePath(path, false));
     }
 
     /**
@@ -353,10 +365,10 @@ public class FileUtils {
      * @return:
      */
     public static void unJar(String path) throws Exception {
-        URL sourceUrl = getFilePath(path, true);
-        if (sourceUrl.getPath().contains(START_MODE_JAR)) {
-            URL url = getFilePath(path);
-            File file = new File(url.getPath());
+        String sourceUrl = getFilePath(path, true);
+        if (sourceUrl.contains(START_MODE_JAR)) {
+            String url = getFilePath(path);
+            File file = new File(url);
             Map<String, String> oldAppConfig = new HashMap<>(16);
 
             // 临时备份历史配置文件名称及路径
@@ -366,7 +378,7 @@ public class FileUtils {
 
             if (file.exists()) {
                 // 读取历史配置文件
-                oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(url.getPath());
+                oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(url);
 
                 // 备份历史配置文件
                 copyFile(file, new File(bakFile));
@@ -390,13 +402,12 @@ public class FileUtils {
             }
 
             // 解压文件
-            String jarPath = sourceUrl.getPath().replace(STR_NAME_FILE_SLASH, STR_EMPTY);
+            String jarPath = sourceUrl.replace(STR_NAME_FILE_SLASH, STR_EMPTY);
             int jarIndex = jarPath.indexOf(START_MODE_JAR);
             String filePath = jarPath.substring(0, jarIndex);
             String fileName = filePath.substring(0, jarIndex) + FILE_TYPE_JAR;
             String folder = filePath.substring(0, filePath.lastIndexOf(STR_SYMBOL_SLASH));
             String tempFolder = folder + STR_SYMBOL_SLASH + "im-tool-ui.temp" + STR_SYMBOL_SLASH;
-
             // 生成临时解压文件夹
             File temp = new File(tempFolder);
             deleteFile(temp);
@@ -414,7 +425,7 @@ public class FileUtils {
 
             // 更新配置文件
             List<String> updateContent = new ArrayList<>(16);
-            List<String> content = FileUtils.readNormalFile(url.getPath(), false);
+            List<String> content = FileUtils.readNormalFile(url, false);
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i);
                 // 获取历史svn代码更新配置
@@ -443,7 +454,7 @@ public class FileUtils {
                 }
                 updateContent.add(item);
             }
-            FileUtils.writeFile(url.getPath(), updateContent, false);
+            FileUtils.writeFile(url, updateContent, false);
 
             // 删除 备份历史配置文件
             deleteFile(new File(bakFile));

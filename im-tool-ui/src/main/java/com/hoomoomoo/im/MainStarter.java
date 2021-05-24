@@ -11,6 +11,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.FileInputStream;
+
 import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
@@ -31,9 +33,10 @@ public class MainStarter extends Application {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             LoggerUtils.info(String.format(STR_MSG_LOAD, "配置信息"));
             primaryStage.getIcons().add(new Image("/conf/image/icon.png"));
-            Parent root = FXMLLoader.load(FileUtils.getFilePath("/conf/fxml/starter.fxml"));
+            Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath("/conf/fxml/starter.fxml")));
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(FileUtils.getFilePath("/conf/style/progressIndicator.css").toExternalForm());
+            // 不支持路径含空格
+            scene.getStylesheets().add(FileUtils.getFilePathUrl("/conf/style/progressIndicator.css").toExternalForm());
             primaryStage.setTitle(appConfigDto.getAppName());
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);

@@ -36,7 +36,7 @@ public class LoggerUtils {
             String logFilePath = "/logs/appLog/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
             StringBuilder log = new StringBuilder(CommonUtils.getCurrentDateTime1(new Date())).append(STR_SPACE);
             log.append(mgs).append(STR_SYMBOL_NEXT_LINE_2);
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -50,7 +50,7 @@ public class LoggerUtils {
             for (int i = 0; i < stackTraceElements.length; i++) {
                 log.append(getLineIndentation()).append(stackTraceElements[i].toString()).append(STR_SYMBOL_NEXT_LINE);
             }
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -86,9 +86,9 @@ public class LoggerUtils {
             log.append("svn版本个数:").append(svnLogDtoList.size()).append(STR_SPACE);
             log.append("文件个数:").append(fileNum).append(STR_SYMBOL_NEXT_LINE_2);
             String logFilePath = "/logs/svnLog/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
             // 写统计文件
-            String statFilePath = FileUtils.getFilePath("/logs/svnLog/00000000.log").getPath();
+            String statFilePath = FileUtils.getFilePath("/logs/svnLog/00000000.log");
             writeStatFile(statFilePath);
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -116,9 +116,9 @@ public class LoggerUtils {
             log.append(FunctionConfig.getName(STR_2)).append(STR_SPACE);
             log.append("耗时:").append(costTime).append("秒").append(STR_SYMBOL_NEXT_LINE_2);
             String logFilePath = "/logs/svnUpdate/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
             // 写统计文件
-            String statFilePath = FileUtils.getFilePath("/logs/svnUpdate/00000000.log").getPath();
+            String statFilePath = FileUtils.getFilePath("/logs/svnUpdate/00000000.log");
             writeStatFile(statFilePath);
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -144,9 +144,9 @@ public class LoggerUtils {
             log.append(FunctionConfig.getName(STR_3)).append(STR_SPACE);
             log.append("耗时:").append(costTime).append("秒").append(STR_SYMBOL_NEXT_LINE_2);
             String logFilePath = "/logs/fundInfo/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
             // 写统计文件
-            String statFilePath = FileUtils.getFilePath("/logs/fundInfo/00000000.log").getPath();
+            String statFilePath = FileUtils.getFilePath("/logs/fundInfo/00000000.log");
             writeStatFile(statFilePath);
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -174,9 +174,9 @@ public class LoggerUtils {
             log.append(FunctionConfig.getName(STR_4)).append(STR_SPACE);
             log.append("耗时:").append(costTime).append("秒").append(STR_SYMBOL_NEXT_LINE_2);
             String logFilePath = "/logs/processInfo/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
             // 写统计文件
-            String statFilePath = FileUtils.getFilePath("/logs/processInfo/00000000.log").getPath();
+            String statFilePath = FileUtils.getFilePath("/logs/processInfo/00000000.log");
             writeStatFile(statFilePath);
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -204,9 +204,9 @@ public class LoggerUtils {
             log.append(FunctionConfig.getName(STR_5)).append(STR_SPACE);
             log.append("耗时:").append(costTime).append("秒").append(STR_SYMBOL_NEXT_LINE_2);
             String logFilePath = "/logs/scriptUpdate/" + CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG;
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath).getPath(), log.toString(), true);
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
             // 写统计文件
-            String statFilePath = FileUtils.getFilePath("/logs/scriptUpdate/00000000.log").getPath();
+            String statFilePath = FileUtils.getFilePath("/logs/scriptUpdate/00000000.log");
             writeStatFile(statFilePath);
         } catch (Exception e) {
             LoggerUtils.info(e);

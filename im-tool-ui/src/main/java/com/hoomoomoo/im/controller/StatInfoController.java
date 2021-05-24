@@ -89,11 +89,11 @@ public class StatInfoController implements Initializable {
             try {
                 OutputUtils.clearLog(stat);
                 OutputUtils.info(stat, functionDto.getFunctionName() + STR_SYMBOL_NEXT_LINE_2);
-                File statFile = new File(FileUtils.getFilePath(logPath).getPath());
+                File statFile = new File(FileUtils.getFilePath(logPath));
                 if (!statFile.exists()) {
                     continue;
                 }
-                List<String> logStat = FileUtils.readNormalFile(FileUtils.getFilePath(logPath).getPath(), false);
+                List<String> logStat = FileUtils.readNormalFile(FileUtils.getFilePath(logPath), false);
                 outputStatInfo(stat, logStat);
             } catch (Exception e) {
                 if (e instanceof FileNotFoundException) {
