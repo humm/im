@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -124,6 +125,10 @@ public class SvnLogController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 svnSchedule.setProgress(progress);
+                Text text = (Text) svnSchedule.lookup(".percentage");
+                if (text != null) {
+                    text.setText((value) + "");
+                }
             });
             svnSchedule.requestFocus();
         } catch (Exception e) {

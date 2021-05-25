@@ -35,7 +35,7 @@ public class MainStarter extends Application {
             primaryStage.getIcons().add(new Image("/conf/image/icon.png"));
             Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath("/conf/fxml/starter.fxml")));
             Scene scene = new Scene(root);
-            // 不支持路径含空格
+            // 中文空格显示有问题
             scene.getStylesheets().add(FileUtils.getFilePathUrl("/conf/style/progressIndicator.css").toExternalForm());
             primaryStage.setTitle(appConfigDto.getAppName());
             primaryStage.setScene(scene);

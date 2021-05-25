@@ -314,7 +314,7 @@ public class FileUtils {
      * @date: 2021/04/26
      * @return:
      */
-    public static String getFilePath(String path, Boolean skipJar) throws MalformedURLException {
+    public static String getFilePath(String path, Boolean skipJar, Boolean skipSpace) throws MalformedURLException {
         URL url = FileUtils.class.getResource(path);
         if (url == null) {
             String folder = FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getFile();
@@ -329,7 +329,7 @@ public class FileUtils {
             folderPath = folderPath.substring(0, folderPath.lastIndexOf(STR_SYMBOL_SLASH));
             url = new URL(folderPath + filePath);
         }
-        return url.getPath().replaceAll("%20", STR_SPACE);
+        return skipSpace ? url.getPath() : url.getPath().replaceAll("%20", STR_SPACE);
     }
 
     /**
@@ -341,7 +341,7 @@ public class FileUtils {
      * @return:
      */
     public static String getFilePath(String path) throws MalformedURLException {
-        return getFilePath(path, false);
+        return getFilePath(path, false, false);
     }
 
     /**
@@ -353,7 +353,7 @@ public class FileUtils {
      * @return:
      */
     public static URL getFilePathUrl(String path) throws MalformedURLException {
-        return new URL(STR_NAME_FILE + getFilePath(path, false));
+        return new URL(STR_NAME_FILE + getFilePath(path, false, true));
     }
 
     /**
@@ -365,7 +365,7 @@ public class FileUtils {
      * @return:
      */
     public static void unJar(String path) throws Exception {
-        String sourceUrl = getFilePath(path, true);
+        String sourceUrl = getFilePath(path, true, false);
         if (sourceUrl.contains(START_MODE_JAR)) {
             String url = getFilePath(path);
             File file = new File(url);
