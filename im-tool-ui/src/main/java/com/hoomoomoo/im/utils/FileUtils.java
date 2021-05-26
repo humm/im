@@ -43,7 +43,7 @@ public class FileUtils {
      * @return:
      */
     public static Map<String, String> readConfigFileToMapIncludePoint(String filePath) throws IOException {
-        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, null), false);
+        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, false), false);
     }
 
     /**
@@ -55,7 +55,7 @@ public class FileUtils {
      * @return:
      */
     public static Map<String, String> readConfigFileToMap(String filePath) throws IOException {
-        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, null), true);
+        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, false), true);
     }
 
 
@@ -67,7 +67,7 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
-    public static List<String> readNormalFile(String filePath, Boolean skipAnnotation) throws IOException {
+    public static List<String> readNormalFile(String filePath, boolean skipAnnotation) throws IOException {
         return (List<String>) readFile(filePath, FILE_TYPE_NORMAL, skipAnnotation);
     }
 
@@ -80,7 +80,7 @@ public class FileUtils {
      * @date: 2021/04/28
      * @return:
      */
-    public static void writeFile(String filePath, List<String> contentList, Boolean isAppend) throws IOException {
+    public static void writeFile(String filePath, List<String> contentList, boolean isAppend) throws IOException {
         if (CollectionUtils.isEmpty(contentList)) {
             return;
         }
@@ -100,7 +100,7 @@ public class FileUtils {
      * @date: 2021/04/28
      * @return:
      */
-    public static void writeFile(String filePath, String content, Boolean isAppend) throws IOException {
+    public static void writeFile(String filePath, String content, boolean isAppend) throws IOException {
         // 判断文件夹是否存在
         String folderPath = filePath.substring(0, filePath.lastIndexOf(STR_SYMBOL_SLASH));
         File file = new File(folderPath);
@@ -124,7 +124,7 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    private static Object readFile(String filePath, String fileType, Boolean skipAnnotation) throws IOException {
+    private static Object readFile(String filePath, String fileType, boolean skipAnnotation) throws IOException {
         List<String> fileContent = new LinkedList();
         HashMap<String, String> fileContentMap = new HashMap<>(16);
         BufferedReader bufferedReader;
@@ -149,7 +149,7 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    private static void buildFileContent(List<String> fileContent, String content, Boolean skipAnnotation) {
+    private static void buildFileContent(List<String> fileContent, String content, boolean skipAnnotation) {
         if (skipAnnotation && content.startsWith(ANNOTATION_NORMAL)) {
             return;
         }
@@ -314,7 +314,7 @@ public class FileUtils {
      * @date: 2021/04/26
      * @return:
      */
-    public static String getFilePath(String path, Boolean skipJar, Boolean skipSpace) throws MalformedURLException {
+    public static String getFilePath(String path, boolean skipJar, boolean skipSpace) throws MalformedURLException {
         URL url = FileUtils.class.getResource(path);
         if (url == null) {
             String folder = FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getFile();

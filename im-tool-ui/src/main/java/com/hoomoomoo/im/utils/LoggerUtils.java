@@ -59,7 +59,7 @@ public class LoggerUtils {
     public static void writeSvnLogInfo(Date startDate, List<LogDto> svnLogDtoList) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (!appConfigDto.getEnableLog()) {
+            if (!appConfigDto.getAppLogEnable()) {
                 return;
             }
             Date endDate = new Date();
@@ -98,7 +98,7 @@ public class LoggerUtils {
     public static void writeSvnUpdateInfo(Date startDate, List<String> filePath) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (!appConfigDto.getEnableLog()) {
+            if (!appConfigDto.getAppLogEnable()) {
                 return;
             }
             // 写日志文件
@@ -128,7 +128,7 @@ public class LoggerUtils {
     public static void writeFundInfo(Date startDate, String filePath) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (!appConfigDto.getEnableLog()) {
+            if (!appConfigDto.getAppLogEnable()) {
                 return;
             }
             // 写日志文件
@@ -156,7 +156,7 @@ public class LoggerUtils {
     public static void writeProcessInfo(Date startDate, List<String> filePathList) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (!appConfigDto.getEnableLog()) {
+            if (!appConfigDto.getAppLogEnable()) {
                 return;
             }
             // 写日志文件
@@ -186,7 +186,7 @@ public class LoggerUtils {
     public static void writeScriptUpdateInfo(Date startDate, List<String> filePath) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (!appConfigDto.getEnableLog()) {
+            if (!appConfigDto.getAppLogEnable()) {
                 return;
             }
             // 写日志文件

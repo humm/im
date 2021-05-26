@@ -187,7 +187,7 @@ public class StarterController implements Initializable {
             // 控制菜单功能
             CommonUtils.showAuthFunction(menuFunction);
 
-            String showTab = appConfigDto.getShowTab();
+            String showTab = appConfigDto.getAppTabShow();
             if (StringUtils.isNotBlank(showTab)) {
                 String[] tabs = showTab.split(STR_SYMBOL_COMMA);
                 for (String tab : tabs) {

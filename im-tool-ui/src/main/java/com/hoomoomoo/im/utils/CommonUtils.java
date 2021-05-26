@@ -112,7 +112,7 @@ public class CommonUtils {
     }
 
 
-    public static Boolean checkConfig(TextArea log, String functionCode) throws Exception {
+    public static boolean checkConfig(TextArea log, String functionCode) throws Exception {
         boolean flag = true;
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionCode.equals(FunctionConfig.SVN_LOG.getCode())) {
@@ -154,7 +154,7 @@ public class CommonUtils {
         return flag;
     }
 
-    public static Boolean checkConfig(TableView<?> log, String functionType) throws Exception {
+    public static boolean checkConfig(TableView<?> log, String functionType) throws Exception {
         boolean flag = true;
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionType.equals(FunctionConfig.FUND_INFO.getCode())) {
@@ -176,7 +176,7 @@ public class CommonUtils {
         return flag;
     }
 
-    public static Boolean checkLicense(String functionCode) throws Exception {
+    public static boolean checkLicense(String functionCode) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         LicenseDto licenseDto = appConfigDto.getLicense();
         if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {

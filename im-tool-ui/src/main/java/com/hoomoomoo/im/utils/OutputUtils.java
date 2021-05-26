@@ -44,7 +44,7 @@ public class OutputUtils {
         });
     }
 
-    public static void selected(Object obj, Boolean selected) {
+    public static void selected(Object obj, boolean selected) {
         Platform.runLater(() -> {
             if (obj instanceof RadioButton) {
                 ((RadioButton) obj).setSelected(selected);

@@ -17,7 +17,7 @@ public class AppConfigDto extends BaseDto {
 
     private String appName;
 
-    private String showTab;
+    private String appTabShow;
 
     private String svnUrl;
 
@@ -31,7 +31,7 @@ public class AppConfigDto extends BaseDto {
 
     private String svnDeletePrefix;
 
-    private Boolean enableLog;
+    private Boolean appLogEnable;
 
     private String fundExcelPath;
 
@@ -65,5 +65,13 @@ public class AppConfigDto extends BaseDto {
 
     private String scriptUpdateGeneratePath;
 
+    private Boolean appLicenseShow;
 
+    public AppConfigDto() {
+        this.appLogEnable = false;
+        this.svnDefaultAppendBiz = false;
+        this.scriptUpdateSkip = false;
+        this.scriptUpdateGenerateFile = false;
+        this.appLicenseShow = false;
+    }
 }
