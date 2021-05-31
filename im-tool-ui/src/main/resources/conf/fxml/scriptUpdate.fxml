@@ -22,27 +22,35 @@
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
-                                <SplitPane dividerPositions="0.20676691729323307" layoutX="68.0" layoutY="21.0"
+                                <SplitPane dividerPositions="0.17669172932330826" layoutX="68.0" layoutY="21.0"
                                            orientation="VERTICAL" prefHeight="242.0" prefWidth="598.0"
                                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                     <items>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="46.0" prefWidth="596.0">
+                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="39.0" prefWidth="596.0">
                                             <children>
-                                                <Button fx:id="submit" layoutX="326.0" layoutY="13.0"
+                                                <Button fx:id="submit" layoutX="457.0" layoutY="9.0"
                                                         mnemonicParsing="false" onAction="#executeSubmit"
                                                         prefHeight="35.0" prefWidth="120.0" text="执行">
                                                     <padding>
                                                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
                                                     </padding>
                                                 </Button>
-                                                <ProgressIndicator fx:id="schedule" layoutX="278.0" layoutY="21.0"
+                                                <ProgressIndicator fx:id="schedule" layoutX="377.0" layoutY="15.0"
                                                                    progress="0.0"/>
+                                                <Label fx:id="scheduleText" layoutX="405.0" layoutY="19.0" text="0%"/>
+                                                <Label layoutX="156.0" layoutY="19.0" text="文件模式"/>
+                                                <RadioButton fx:id="rewrite" layoutX="219.0" layoutY="18.0"
+                                                             mnemonicParsing="false" onAction="#selectRewrite"
+                                                             text="重写"/>
+                                                <RadioButton fx:id="append" layoutX="284.0" layoutY="18.0"
+                                                             mnemonicParsing="false" onAction="#selectAppend"
+                                                             text="追加"/>
                                             </children>
                                         </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="210.0" prefWidth="596.0">
                                             <children>
-                                                <TextArea fx:id="target" layoutX="48.0" layoutY="-3.0"
+                                                <TextArea fx:id="target" editable="false" layoutX="48.0" layoutY="-3.0"
                                                           prefHeight="193.0" prefWidth="596.0"
                                                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>

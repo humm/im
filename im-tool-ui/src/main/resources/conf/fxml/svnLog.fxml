@@ -26,15 +26,15 @@
                                         <TextField fx:id="svnTimes" layoutX="80.0" layoutY="42.0" prefHeight="23.0"
                                                    prefWidth="117.0"/>
                                         <Button fx:id="svnSubmit" layoutX="120.0" layoutY="100.0"
-                                                mnemonicParsing="false"
-                                                onAction="#executeSubmit" prefHeight="35.0"
+                                                mnemonicParsing="false" onAction="#executeSubmit" prefHeight="35.0"
                                                 prefWidth="100.0" text="执行">
                                             <padding>
                                                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
                                             </padding>
                                         </Button>
-                                        <ProgressIndicator fx:id="svnSchedule" layoutX="270.0" layoutY="23.0"
+                                        <ProgressIndicator fx:id="svnSchedule" layoutX="260.0" layoutY="23.0"
                                                            progress="0.0"/>
+                                        <Label fx:id="scheduleText" layoutX="290.0" layoutY="26.0" text="0%"/>
                                         <Label fx:id="svnName" layoutX="80.0" layoutY="15.0" prefHeight="15.0"
                                                prefWidth="133.0" AnchorPane.topAnchor="15.0"/>
                                     </children>
@@ -73,9 +73,9 @@
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="598.0">
                     <children>
-                        <TextArea fx:id="fileLog" layoutX="1.0" layoutY="-14.0" prefHeight="215.0" prefWidth="598.0"
-                                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                  AnchorPane.topAnchor="0.0"/>
+                        <TextArea fx:id="fileLog" editable="false" layoutX="1.0" layoutY="-14.0" prefHeight="215.0"
+                                  prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
                     </children>
                 </AnchorPane>
             </items>

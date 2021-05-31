@@ -58,6 +58,9 @@ public class FundInfoController implements Initializable {
     @FXML
     private TableView<?> fundLog;
 
+    @FXML
+    private Label scheduleText;
+
     private double progress = 0;
 
     Map<String, String> COMPONENT_KIND = new ConcurrentHashMap(16);
@@ -116,8 +119,8 @@ public class FundInfoController implements Initializable {
                 OutputUtils.selected(modeAll, true);
                 OutputUtils.selected(modeUpdate, false);
             }
-            selectModeAll = modeAll.isSelected();
-            if (selectModeAll) {
+            boolean mode = modeAll.isSelected();
+            if (mode) {
                 SCRIPT_TYPE = String.valueOf(modeAll.getUserData());
             } else {
                 SCRIPT_TYPE = String.valueOf(modeUpdate.getUserData());
@@ -154,8 +157,9 @@ public class FundInfoController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 fundSchedule.setProgress(progress);
+                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                fundSchedule.requestFocus();
             });
-            fundSchedule.requestFocus();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

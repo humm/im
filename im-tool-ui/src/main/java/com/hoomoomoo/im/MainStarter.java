@@ -28,7 +28,7 @@ public class MainStarter extends Application {
         try {
             LoggerUtils.info(STR_MSG_DIVIDE_LINE);
             LoggerUtils.info(String.format(STR_MSG_START, "应用启动"));
-            FileUtils.unJar("/conf/app.conf");
+            FileUtils.unJar(STR_PATH_APP);
             LoggerUtils.info(String.format(STR_MSG_UPDATE, "配置文件"));
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             LoggerUtils.info(String.format(STR_MSG_LOAD, "配置信息"));

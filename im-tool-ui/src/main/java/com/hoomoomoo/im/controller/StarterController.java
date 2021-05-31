@@ -45,6 +45,9 @@ public class StarterController implements Initializable {
     private Menu menuHelp;
 
     @FXML
+    private Menu menuStat;
+
+    @FXML
     private MenuItem menuItemSvnlog;
 
     @FXML
@@ -57,10 +60,16 @@ public class StarterController implements Initializable {
     private MenuItem menuItemScriptUpdate;
 
     @FXML
-    private MenuItem menuStat;
+    private MenuItem menuAbout;
 
     @FXML
-    private MenuItem menuAbout;
+    private MenuItem menuItemFunctionStat;
+
+    @FXML
+    private MenuItem menuItemSvnRealtimeStat;
+
+    @FXML
+    private MenuItem menuItemSvnHistoryStat;
 
     @FXML
     private TabPane functionTab;
@@ -141,12 +150,42 @@ public class StarterController implements Initializable {
     }
 
     @FXML
-    void openStatInfo(ActionEvent event) {
+    void openFunctionStatInfo(ActionEvent event) {
         try {
-            LoggerUtils.info(String.format(STR_MSG_OPEN, STAT_INFO.getName()));
-            Tab tab = isOpen(STAT_INFO.getName());
+            LoggerUtils.info(String.format(STR_MSG_OPEN, FUNCTION_STAT_INFO.getName()));
+            Tab tab = isOpen(FUNCTION_STAT_INFO.getName());
             if (tab == null) {
-                tab = getFunctionTab(STAT_INFO.getPath(), STAT_INFO.getName());
+                tab = getFunctionTab(FUNCTION_STAT_INFO.getPath(), FUNCTION_STAT_INFO.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    @FXML
+    void openSvnRealtimeStat(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_OPEN, SVN_REALTIME_STAT.getName()));
+            Tab tab = isOpen(SVN_REALTIME_STAT.getName());
+            if (tab == null) {
+                tab = getFunctionTab(SVN_REALTIME_STAT.getPath(), SVN_REALTIME_STAT.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    @FXML
+    void openSvnHistoryStat(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(STR_MSG_OPEN, SVN_HISTORY_STAT.getName()));
+            Tab tab = isOpen(SVN_HISTORY_STAT.getName());
+            if (tab == null) {
+                tab = getFunctionTab(SVN_HISTORY_STAT.getPath(), SVN_HISTORY_STAT.getName());
                 functionTab.getTabs().add(tab);
             }
             functionTab.getSelectionModel().select(tab);
@@ -178,7 +217,7 @@ public class StarterController implements Initializable {
             // 校验证书是否过期
             if (!CommonUtils.checkLicense(null)) {
                 menuFunction.getItems().clear();
-                menuHelp.getItems().remove(0);
+                menuStat.getItems().clear();
                 return;
             }
 
@@ -186,6 +225,7 @@ public class StarterController implements Initializable {
 
             // 控制菜单功能
             CommonUtils.showAuthFunction(menuFunction);
+            CommonUtils.showAuthFunction(menuStat);
 
             String showTab = appConfigDto.getAppTabShow();
             if (StringUtils.isNotBlank(showTab)) {

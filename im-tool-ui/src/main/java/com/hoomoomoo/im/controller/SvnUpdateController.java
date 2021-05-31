@@ -46,6 +46,9 @@ public class SvnUpdateController implements Initializable {
     @FXML
     private TextArea fileLog;
 
+    @FXML
+    private Label scheduleText;
+
     private double progress = 0;
 
     @FXML
@@ -116,9 +119,9 @@ public class SvnUpdateController implements Initializable {
                     break;
                 }
                 if (progress <= 0.6) {
-                    setProgress(progress + 0.02);
-                } else if (progress < 0.9) {
                     setProgress(progress + 0.01);
+                } else if (progress < 0.9) {
+                    setProgress(progress + 0.005);
                 }
                 try {
                     Thread.sleep(1000);
@@ -134,8 +137,9 @@ public class SvnUpdateController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 schedule.setProgress(progress);
+                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                schedule.requestFocus();
             });
-            schedule.requestFocus();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

@@ -10,7 +10,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.text.Text;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,8 +18,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_MSG_USE;
-import static com.hoomoomoo.im.consts.BaseConst.STR_SPACE;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.SVN_LOG;
 
 /**
@@ -48,6 +46,9 @@ public class SvnLogController implements Initializable {
 
     @FXML
     private ProgressIndicator svnSchedule;
+
+    @FXML
+    private Label scheduleText;
 
     private double progress = 0;
 
@@ -125,12 +126,9 @@ public class SvnLogController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 svnSchedule.setProgress(progress);
-                Text text = (Text) svnSchedule.lookup(".percentage");
-                if (text != null) {
-                    text.setText((value) + "");
-                }
+                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                svnSchedule.requestFocus();
             });
-            svnSchedule.requestFocus();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

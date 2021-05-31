@@ -12,10 +12,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import jxl.Sheet;
@@ -57,6 +54,9 @@ public class ProcessInfoController implements Initializable {
 
     @FXML
     private TableView<?> log;
+
+    @FXML
+    private Label scheduleText;
 
     private double progress = 0;
 
@@ -121,8 +121,9 @@ public class ProcessInfoController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 schedule.setProgress(progress);
+                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                schedule.requestFocus();
             });
-            schedule.requestFocus();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

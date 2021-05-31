@@ -27,8 +27,9 @@
                                                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
                                             </padding>
                                         </Button>
-                                        <ProgressIndicator fx:id="schedule" layoutX="270.0" layoutY="14.0"
+                                        <ProgressIndicator fx:id="schedule" layoutX="265.0" layoutY="14.0"
                                                            progress="0.0"/>
+                                        <Label fx:id="scheduleText" layoutX="295.0" layoutY="17.0" text="0%"/>
                                         <TextField fx:id="filePath" layoutX="81.0" layoutY="11.0" prefHeight="23.0"
                                                    prefWidth="130.0"/>
                                         <Button fx:id="selectFile" layoutX="220.0" layoutY="12.0"

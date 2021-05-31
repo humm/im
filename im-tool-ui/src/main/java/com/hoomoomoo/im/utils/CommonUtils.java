@@ -13,6 +13,7 @@ import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,8 +21,7 @@ import java.util.List;
 import java.util.ListIterator;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.ABOUT_INFO;
-import static com.hoomoomoo.im.consts.FunctionConfig.STAT_INFO;
+import static com.hoomoomoo.im.consts.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -35,6 +35,7 @@ public class CommonUtils {
     private final static String PATTERN2 = "yyyyMMddHHmmss";
     private final static String PATTERN3 = "yyyyMMdd";
     private final static String PATTERN4 = "yyyy-MM-dd";
+    private final static String PATTERN5 = "HH:mm:ss";
 
     /**
      * 获取当前系统时间
@@ -111,6 +112,41 @@ public class CommonUtils {
         return date.substring(0, 4) + STR_SYMBOL_HYPHEN + date.substring(4, 6) + STR_SYMBOL_HYPHEN + date.substring(6);
     }
 
+    /**
+     * 格式化日期
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static Date getCurrentDateTime6(String time) throws ParseException {
+        return new SimpleDateFormat(PATTERN1).parse(new SimpleDateFormat(PATTERN4).format(new Date()) + " " + time);
+    }
+
+    /**
+     * 格式化日期
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static Date getCurrentDateTime7(String date) throws ParseException {
+        return new SimpleDateFormat(PATTERN1).parse(date);
+    }
+
+    /**
+     * 获取指定时间
+     *
+     * @param date
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
+    public static String getCurrentDateTime8(Date date) {
+        return new SimpleDateFormat(PATTERN5).format(date);
+    }
 
     public static boolean checkConfig(TextArea log, String functionCode) throws Exception {
         boolean flag = true;
@@ -151,6 +187,28 @@ public class CommonUtils {
                 }
             }
         }
+        if (functionCode.equals(SVN_REALTIME_STAT.getCode())) {
+            if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
+                OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_SYMBOL_NEXT_LINE);
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
+                OutputUtils.info(log, STR_MSG_SVN_PASSWORD + STR_SYMBOL_NEXT_LINE);
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getSvnUrl())) {
+                OutputUtils.info(log, STR_MSG_SVN_URL + STR_SYMBOL_NEXT_LINE);
+                flag = false;
+            }
+            if (appConfigDto.getSvnStatUser().size() == 0) {
+                OutputUtils.info(log, STR_MSG_SVN_STAT_USER + STR_SYMBOL_NEXT_LINE);
+                flag = false;
+            }
+            if (appConfigDto.getSvnStatInterval() < 5) {
+                OutputUtils.info(log, STR_MSG_SVN_STAT_INTERVAL + STR_SYMBOL_NEXT_LINE);
+                flag = false;
+            }
+        }
         return flag;
     }
 
@@ -186,7 +244,7 @@ public class CommonUtils {
         if (StringUtils.isBlank(functionCode)) {
             return true;
         }
-        if (ABOUT_INFO.getCode().equals(functionCode) || STAT_INFO.getCode().equals(functionCode)) {
+        if (ABOUT_INFO.getCode().equals(functionCode) || FUNCTION_STAT_INFO.getCode().equals(functionCode)) {
             return true;
         }
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
@@ -224,6 +282,9 @@ public class CommonUtils {
         while (iterator.hasNext()) {
             MenuItem item = iterator.next();
             for (FunctionDto functionDto : functionDtoList) {
+                if (ABOUT_INFO.getMenuId().equals(item.getId()) || FUNCTION_STAT_INFO.getMenuId().equals(item.getId())) {
+                    continue outer;
+                }
                 if (FunctionConfig.getMenuId(functionDto.getFunctionCode()).equals(item.getId())) {
                     continue outer;
                 }

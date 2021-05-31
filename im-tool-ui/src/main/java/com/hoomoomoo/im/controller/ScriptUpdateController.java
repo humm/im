@@ -11,9 +11,7 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ProgressIndicator;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,6 +41,15 @@ public class ScriptUpdateController implements Initializable {
     @FXML
     private TextArea target;
 
+    @FXML
+    private RadioButton rewrite;
+
+    @FXML
+    private RadioButton append;
+
+    @FXML
+    private Label scheduleText;
+
     private double progress = 0;
 
     @FXML
@@ -52,6 +59,15 @@ public class ScriptUpdateController implements Initializable {
             if (!CommonUtils.checkConfig(target, FunctionConfig.SCRIPT_UPDATE.getCode())) {
                 return;
             }
+            boolean selectRewrite = rewrite.isSelected();
+            boolean selectAppend = append.isSelected();
+            if (selectRewrite == false && selectAppend == false) {
+                OutputUtils.selected(rewrite, true);
+                OutputUtils.selected(append, false);
+            }
+            boolean mode = rewrite.isSelected();
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            appConfigDto.setScriptGenerateMode(mode ? STR_1 : STR_2);
             setProgress(0);
             updateProgress();
             generateScript();
@@ -62,7 +78,39 @@ public class ScriptUpdateController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            String mode = appConfigDto.getScriptGenerateMode();
+            if (StringUtils.isBlank(mode)) {
+                OutputUtils.selected(rewrite, false);
+                OutputUtils.selected(append, false);
+                return;
+            }
+            if (STR_1.equals(mode)) {
+                OutputUtils.selected(rewrite, true);
+                OutputUtils.selected(append, false);
+                return;
+            }
+            if (STR_2.equals(mode)) {
+                OutputUtils.selected(rewrite, false);
+                OutputUtils.selected(append, true);
+                return;
+            }
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
 
+    @FXML
+    void selectAppend(ActionEvent event) {
+        OutputUtils.selected(append, true);
+        OutputUtils.selected(rewrite, false);
+    }
+
+    @FXML
+    void selectRewrite(ActionEvent event) {
+        OutputUtils.selected(rewrite, true);
+        OutputUtils.selected(append, false);
     }
 
     private void updateProgress() {
@@ -90,8 +138,9 @@ public class ScriptUpdateController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 schedule.setProgress(progress);
+                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                schedule.requestFocus();
             });
-            schedule.requestFocus();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -193,7 +242,7 @@ public class ScriptUpdateController implements Initializable {
                     LoggerUtils.writeScriptUpdateInfo(date, logList);
                     if (appConfigDto.getScriptUpdateGenerateFile()) {
                         String path = new URL("file:" + appConfigDto.getScriptUpdateGeneratePath() + "/script.sql").getFile();
-                        FileUtils.writeFile(path, scriptList, STR_1.equals(appConfigDto.getScriptGenerateMode()));
+                        FileUtils.writeFile(path, scriptList, STR_2.equals(appConfigDto.getScriptGenerateMode()));
                     }
                 }
             } catch (Exception e) {

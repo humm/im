@@ -42,14 +42,12 @@ public class ConfigCache {
     }
 
     private void init() throws Exception {
-        String confPath = FileUtils.getFilePath("/conf/app.conf");
+        String confPath = FileUtils.getFilePath(STR_PATH_APP);
         // 读取配置文件
         appConfigDto = (AppConfigDto) FileUtils.readConfigFileToObject(confPath, AppConfigDto.class);
-        appConfigDto.setSvnUpdatePath(new ArrayList<>(16));
-        appConfigDto.setScriptUpdateTable(new ArrayList<>(16));
 
         // 加载证书信息
-        String licensePath = FileUtils.getFilePath("/conf/init/license.init");
+        String licensePath = FileUtils.getFilePath(STR_PATH_LICENSE);
         List<String> licenseContent = FileUtils.readNormalFile(licensePath, false);
         StringBuilder license = new StringBuilder();
         if (CollectionUtils.isEmpty(licenseContent)) {
@@ -93,6 +91,15 @@ public class ConfigCache {
                         LinkedHashMap table = new LinkedHashMap(2);
                         table.put(name.toLowerCase(), columnConfig);
                         appConfigDto.getScriptUpdateTable().add(table);
+                    }
+                }
+                // svn统计配置
+                if (item.startsWith(KEY_SVN_STAT_USER)) {
+                    int index = item.indexOf(STR_SYMBOL_EQUALS);
+                    String code = item.substring(KEY_SVN_STAT_USER.length(), index);
+                    String name = item.substring(index + 1);
+                    if (StringUtils.isNotBlank(name)) {
+                        appConfigDto.getSvnStatUser().put(code.toLowerCase(), name);
                     }
                 }
             }

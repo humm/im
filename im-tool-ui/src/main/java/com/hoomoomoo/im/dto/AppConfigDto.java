@@ -2,6 +2,7 @@ package com.hoomoomoo.im.dto;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -67,11 +68,20 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean appLicenseShow;
 
+    private String svnStat;
+
+    private Integer svnStatInterval;
+
+    private LinkedHashMap<String, String> svnStatUser;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
         this.scriptUpdateSkip = false;
         this.scriptUpdateGenerateFile = false;
         this.appLicenseShow = false;
+        this.svnUpdatePath = new ArrayList<>(16);
+        this.scriptUpdateTable = new ArrayList<>(16);
+        this.svnStatUser = new LinkedHashMap<>();
     }
 }

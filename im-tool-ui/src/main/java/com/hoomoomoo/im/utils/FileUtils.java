@@ -436,6 +436,7 @@ public class FileUtils {
                         continue;
                     }
                 }
+                // 更新历史升级脚本配置
                 if (item.startsWith(KEY_SCRIPT_UPDATE)) {
                     List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SCRIPT_UPDATE);
                     updateContent.addAll(updateConfig);
@@ -443,6 +444,7 @@ public class FileUtils {
                         continue;
                     }
                 }
+                // 更新历史配置项
                 Iterator<String> iterator = oldAppConfig.keySet().iterator();
                 while (iterator.hasNext()) {
                     String key = iterator.next();
@@ -453,6 +455,40 @@ public class FileUtils {
                     }
                 }
                 updateContent.add(item);
+            }
+            // 读取svn统计配置信息
+            if (StringUtils.isNotBlank(oldAppConfig.get(KEY_SVN_STAT))) {
+                // 读取模板配置项信息
+                String svnStatPath = FileUtils.getFilePath(STR_PATH_SVN_STAT);
+                List<String> svnStatContent = FileUtils.readNormalFile(svnStatPath, false);
+                StringBuilder svnStat = new StringBuilder();
+                List<String> updateSvnStatContent = new ArrayList<>(16);
+                for (String item : svnStatContent) {
+                    svnStat.append(item);
+                }
+                svnStatContent = Arrays.asList(SecurityUtils.getDecryptString(svnStat.toString()).split(STR_SYMBOL_NEXT_LINE));
+                for (String item : svnStatContent) {
+                    // 更新svn统计用户信息
+                    if (item.startsWith(KEY_SVN_STAT_USER)) {
+                        List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_STAT_USER);
+                        updateSvnStatContent.addAll(updateConfig);
+                        if (CollectionUtils.isNotEmpty(updateConfig)) {
+                            continue;
+                        }
+                    }
+                    // 更新历史配置项
+                    Iterator<String> iterator = oldAppConfig.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        String key = iterator.next();
+                        String value = oldAppConfig.get(key);
+                        if (item.startsWith(key + STR_SYMBOL_EQUALS)) {
+                            int index = item.indexOf(STR_SYMBOL_EQUALS) + 1;
+                            item = item.substring(0, index) + value;
+                        }
+                    }
+                    updateSvnStatContent.add(item);
+                }
+                updateContent.addAll(updateSvnStatContent);
             }
             FileUtils.writeFile(url, updateContent, false);
 
@@ -601,4 +637,5 @@ public class FileUtils {
         }
         return exist;
     }
+
 }

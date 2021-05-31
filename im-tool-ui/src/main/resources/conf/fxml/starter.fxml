@@ -21,10 +21,20 @@
                                   text="升级脚本"/>
                     </items>
                 </Menu>
+                <Menu fx:id="menuStat" mnemonicParsing="false" text="统计">
+                    <items>
+                        <MenuItem fx:id="menuItemFunctionStat" mnemonicParsing="false" onAction="#openFunctionStatInfo"
+                                  text="功能使用统计"/>
+                        <MenuItem fx:id="menuItemSvnRealtimeStat" mnemonicParsing="false"
+                                  onAction="#openSvnRealtimeStat"
+                                  text="svn实时统计"/>
+                        <MenuItem fx:id="menuItemSvnHistoryStat" mnemonicParsing="false"
+                                  onAction="#openSvnHistoryStat"
+                                  text="svn历史统计"/>
+                    </items>
+                </Menu>
                 <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">
                     <items>
-                        <MenuItem fx:id="menuItemStat" mnemonicParsing="false" onAction="#openStatInfo"
-                                  text="统计分析"/>
                         <MenuItem fx:id="menuItemAbout" mnemonicParsing="false" onAction="#openAboutInfo"
                                   text="关于"/>
                     </items>

@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -41,12 +42,16 @@ public class AboutInfoController implements Initializable {
             OutputUtils.info(about, appConfigDto.getAppName() + STR_SYMBOL_NEXT_LINE_2);
             List<String> version = new ArrayList<>(16);
             try {
-                version = FileUtils.readNormalFile(FileUtils.getFilePath("/conf/init/version.init"), false);
+                version = FileUtils.readNormalFile(FileUtils.getFilePath(STR_PATH_VERSION), false);
             } catch (IOException e) {
                 LoggerUtils.info(e);
             }
             if (CollectionUtils.isNotEmpty(version)) {
                 for (String item : version) {
+                    if (StringUtils.isBlank(item)) {
+                        OutputUtils.info(about, STR_SYMBOL_NEXT_LINE);
+                        continue;
+                    }
                     OutputUtils.info(about, STR_SPACE_4 + item + STR_SYMBOL_NEXT_LINE_2);
                 }
             }

@@ -18,7 +18,11 @@ public enum FunctionConfig {
 
     SCRIPT_UPDATE("5", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "menuItemScriptUpdate", "scriptUpdate"),
 
-    STAT_INFO("98", "统计分析", "/conf/fxml/statInfo.fxml", "menuItemStat", ""),
+    SVN_REALTIME_STAT("96", "svn实时统计", "/conf/fxml/svnRealtimeStat.fxml", "menuItemSvnRealtimeStat", "svnRealtimeStat"),
+
+    SVN_HISTORY_STAT("97", "svn历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),
+
+    FUNCTION_STAT_INFO("98", "功能使用统计", "/conf/fxml/functionStatInfo.fxml", "menuItemFunctionStat", ""),
 
     ABOUT_INFO("99", "关于", "/conf/fxml/aboutInfo.fxml", "menuItemAbout", "");
 
