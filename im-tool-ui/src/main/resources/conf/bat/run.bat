@@ -1,3 +1,5 @@
 @echo off
+
+:: Æô¶¯
 for %%i in ("./*.jar") do ( set jarName=%%~nxi )
-java -jar %jarName%
+tool-ui -jar %jarName%

@@ -45,19 +45,19 @@
                                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="version" editable="false" prefWidth="130"
+                                                <TableColumn id="version" editable="false" prefWidth="140"
                                                              sortable="false" text="版本号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="version"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="time" editable="false" prefWidth="182" sortable="false"
+                                                <TableColumn id="time" editable="false" prefWidth="192" sortable="false"
                                                              text="提交时间">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="time"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="num" editable="false" prefWidth="150" sortable="false"
+                                                <TableColumn id="num" editable="false" prefWidth="160" sortable="false"
                                                              text="文件数量">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="num"/>

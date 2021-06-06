@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 
@@ -36,12 +37,23 @@ public class MainStarter extends Application {
             Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath("/conf/fxml/starter.fxml")));
             Scene scene = new Scene(root);
             // 中文空格显示有问题
-            scene.getStylesheets().add(FileUtils.getFilePathUrl("/conf/style/progressIndicator.css").toExternalForm());
+            scene.getStylesheets().add(FileUtils.getFileUrl("/conf/style/progressIndicator.css").toExternalForm());
             primaryStage.setTitle(appConfigDto.getAppName());
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
             primaryStage.show();
             LoggerUtils.info(String.format(STR_MSG_COMPLETE, "应用启动"));
+            primaryStage.setOnCloseRequest(event -> {
+                primaryStage.close();
+                try {
+                    if (FileUtils.startByJar(STR_PATH_APP)) {
+                        String processName = FileUtils.getJarName().replace(FILE_TYPE_JAR, FILE_TYPE_EXE);
+                        Runtime.getRuntime().exec(String.format(STR_CMD_KILL_APP, processName));
+                    }
+                } catch (IOException e) {
+                    LoggerUtils.info(e);
+                }
+            });
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

@@ -68,9 +68,11 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean appLicenseShow;
 
-    private String svnStat;
-
     private Integer svnStatInterval;
+
+    private Boolean svnStatReset;
+
+    private Boolean svnStat;
 
     private LinkedHashMap<String, String> svnStatUser;
 
@@ -83,5 +85,8 @@ public class AppConfigDto extends BaseDto {
         this.svnUpdatePath = new ArrayList<>(16);
         this.scriptUpdateTable = new ArrayList<>(16);
         this.svnStatUser = new LinkedHashMap<>();
+        this.svnStatReset = true;
+        this.svnStat = false;
+        this.svnStatInterval = 0;
     }
 }

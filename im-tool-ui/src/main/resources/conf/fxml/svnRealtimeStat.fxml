@@ -5,11 +5,11 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.hoomoomoo.im.controller.SvnRealtimeStatController">
     <children>
-        <SplitPane dividerPositions="0.09" layoutX="116.0" layoutY="42.0" orientation="VERTICAL" prefHeight="400.0"
-                   prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+        <SplitPane dividerPositions="0.08542713567839195" layoutX="116.0" layoutY="42.0" orientation="VERTICAL"
+                   prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="43.0" prefWidth="598.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="24.0" prefWidth="598.0">
                     <children>
                         <Label layoutX="15.0" layoutY="12.0" text="统计时间"/>
                         <Label fx:id="statTime" layoutX="70.0" layoutY="12.0"/>
@@ -87,7 +87,7 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                     <children>
-                                        <Label fx:id="notice" layoutX="14.0" layoutY="8.0"/>
+                                        <Label fx:id="notice" layoutX="15.0" layoutY="10.0"/>
                                     </children>
                                 </AnchorPane>
                             </items>

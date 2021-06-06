@@ -148,6 +148,18 @@ public class CommonUtils {
         return new SimpleDateFormat(PATTERN5).format(date);
     }
 
+    /**
+     * 获取指定时间
+     *
+     * @param date
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
+    public static String getCurrentDateTime9(Date date) {
+        return new SimpleDateFormat(PATTERN3).format(date);
+    }
+
     public static boolean checkConfig(TextArea log, String functionCode) throws Exception {
         boolean flag = true;
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
@@ -187,7 +199,7 @@ public class CommonUtils {
                 }
             }
         }
-        if (functionCode.equals(SVN_REALTIME_STAT.getCode())) {
+        if (functionCode.equals(SVN_REALTIME_STAT.getCode()) || functionCode.equals(SVN_HISTORY_STAT.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_SYMBOL_NEXT_LINE);
                 flag = false;
@@ -271,6 +283,7 @@ public class CommonUtils {
     }
 
     public static void showAuthFunction(Menu menu) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
         if (CollectionUtils.isEmpty(functionDtoList)) {
             menu.getItems().clear();
@@ -281,6 +294,11 @@ public class CommonUtils {
         outer:
         while (iterator.hasNext()) {
             MenuItem item = iterator.next();
+            if (!appConfigDto.getSvnStat()) {
+                if (SVN_REALTIME_STAT.getMenuId().equals(item.getId()) || SVN_HISTORY_STAT.getMenuId().equals(item.getId())) {
+                    iterator.remove();
+                }
+            }
             for (FunctionDto functionDto : functionDtoList) {
                 if (ABOUT_INFO.getMenuId().equals(item.getId()) || FUNCTION_STAT_INFO.getMenuId().equals(item.getId())) {
                     continue outer;
@@ -290,21 +308,6 @@ public class CommonUtils {
                 }
             }
             iterator.remove();
-        }
-    }
-
-    public static void deleteMenuItem(Menu menu, String menuId) {
-        if (menu == null) {
-            return;
-        }
-        ObservableList<MenuItem> list = menu.getItems();
-        ListIterator<MenuItem> iterator = list.listIterator();
-        while (iterator.hasNext()) {
-            MenuItem item = iterator.next();
-            if (item.getId().equals(menuId)) {
-                iterator.remove();
-                break;
-            }
         }
     }
 }

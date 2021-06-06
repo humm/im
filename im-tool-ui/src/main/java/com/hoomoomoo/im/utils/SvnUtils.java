@@ -88,6 +88,7 @@ public class SvnUtils {
                 svnStatDto.setFileNum(0);
                 svnStatDto.setFileTimes(0);
                 svnStatDto.setFile(new LinkedHashMap<>());
+                svnStatDto.setSvnNum(new LinkedHashMap<>());
                 svnStat.put(userCode, svnStatDto);
             }
             if (notice) {
@@ -103,37 +104,41 @@ public class SvnUtils {
             String userName = appConfigDto.getSvnStatUser().get(svnLogEntry.getAuthor());
             if (StringUtils.isNotBlank(userName)) {
                 SvnStatDto svnStatDto = svnStat.get(svnLogEntry.getAuthor());
-                if (StringUtils.isBlank(svnStatDto.getFirstTime())) {
-                    svnStatDto.setFirstTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
-                }
-                svnStatDto.setLastTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
-                svnStatDto.setSubmitTimes(svnStatDto.getSubmitTimes() + 1);
-                Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
-                Iterator<String> iterator = logMap.keySet().iterator();
-                while (iterator.hasNext()) {
-                    String key = iterator.next();
-                    SVNLogEntryPath value = logMap.get(key);
-                    String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), STR_EMPTY);
-                    if (svnStatDto.getFile().get(path) == null) {
-                        svnStatDto.getFile().put(path, 1);
-                        svnStatDto.setFileNum(svnStatDto.getFileNum() + 1);
-                        svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
-                    } else {
-                        svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
+                if (svnStatDto != null && svnStatDto.getSvnNum().get(svnLogEntry.getRevision()) == null) {
+                    svnStatDto.getSvnNum().put(svnLogEntry.getRevision(), svnLogEntry.getRevision());
+                    if (StringUtils.isBlank(svnStatDto.getFirstTime())) {
+                        svnStatDto.setFirstTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
                     }
-                }
-                String msg = svnLogEntry.getMessage();
-                if (StringUtils.isNotBlank(msg)) {
-                    String[] message = msg.split(STR_SYMBOL_NEXT_LINE);
-                    for (String item : message) {
-                        if (item.startsWith("[需求描述]")) {
-                            msg = item.split("]")[1];
-                            break;
+                    svnStatDto.setLastTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
+                    svnStatDto.setSubmitTimes(svnStatDto.getSubmitTimes() + 1);
+                    Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
+                    Iterator<String> iterator = logMap.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        String key = iterator.next();
+                        SVNLogEntryPath value = logMap.get(key);
+                        String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), STR_EMPTY);
+                        if (svnStatDto.getFile().get(path) == null) {
+                            svnStatDto.getFile().put(path, 1);
+                            svnStatDto.setFileNum(svnStatDto.getFileNum() + 1);
+                            svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
+                        } else {
+                            svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
                         }
                     }
-                }
-                if (notice) {
-                    svnStat.get(KEY_NOTICE).setNotice(userName + STR_SPACE_3 + svnStatDto.getLastTime() + STR_SPACE_3 + msg + STR_SPACE_3 + svnLogEntry.getRevision());
+                    String msg = svnLogEntry.getMessage();
+                    if (StringUtils.isNotBlank(msg)) {
+                        String[] message = msg.split(STR_SYMBOL_NEXT_LINE);
+                        for (String item : message) {
+                            if (item.startsWith("[需求描述]")) {
+                                msg = item.split("]")[1];
+                                break;
+                            }
+                        }
+                    }
+                    if (notice) {
+                        String noticeMsg = String.format(STR_MSG_SVN_REALTIME_STAT, userName, svnStatDto.getLastTime(), msg, svnLogEntry.getRevision());
+                        svnStat.get(KEY_NOTICE).setNotice(noticeMsg);
+                    }
                 }
             }
         });

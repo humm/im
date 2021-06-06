@@ -15,6 +15,8 @@ public class FunctionDto {
 
     private String functionName;
 
+    private Integer useTimes;
+
     public FunctionDto() {
     }
 

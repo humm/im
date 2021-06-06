@@ -71,6 +71,7 @@ public class SvnRealtimeStatController implements Initializable {
             setProgress(0);
             updateProgress();
             stat();
+            LoggerUtils.writeSvnRealtimeStatInfo();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -83,17 +84,23 @@ public class SvnRealtimeStatController implements Initializable {
                 while (true) {
                     try {
                         setProgress(0);
-                        OutputUtils.clearLog(stat1);
-                        OutputUtils.clearLog(stat2);
-                        OutputUtils.clearLog(stat3);
-                        OutputUtils.info(notice, STR_SPACE);
-                        OutputUtils.info(costTime, STR_SPACE);
                         if (startDate == null) {
                             startDate = CommonUtils.getCurrentDateTime6("00:00:00");
                         }
                         Date date = new Date();
+                        if (appConfigDto.getSvnStatReset()) {
+                            if (!CommonUtils.getCurrentDateTime9(startDate).equals(CommonUtils.getCurrentDateTime9(date))) {
+                                svnStat.clear();
+                                LoggerUtils.writeSvnRealtimeStatInfo();
+                            }
+                        }
                         OutputUtils.info(statTime, CommonUtils.getCurrentDateTime8(date));
                         SvnUtils.getSvnLog(startDate, date, svnStat, true);
+                        OutputUtils.info(notice, STR_SPACE);
+                        OutputUtils.info(costTime, STR_SPACE);
+                        OutputUtils.clearLog(stat1);
+                        OutputUtils.clearLog(stat2);
+                        OutputUtils.clearLog(stat3);
                         LinkedHashMap<String, String> userList = appConfigDto.getSvnStatUser();
                         int num = userList.size();
                         List<TextArea> statList = new ArrayList<>();

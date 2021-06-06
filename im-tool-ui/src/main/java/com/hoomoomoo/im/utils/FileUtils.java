@@ -42,7 +42,7 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
-    public static Map<String, String> readConfigFileToMapIncludePoint(String filePath) throws IOException {
+    public static LinkedHashMap<String, String> readConfigFileToMapIncludePoint(String filePath) throws IOException {
         return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, false), false);
     }
 
@@ -54,8 +54,8 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
-    public static Map<String, String> readConfigFileToMap(String filePath) throws IOException {
-        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, false), true);
+    public static LinkedHashMap<String, String> readConfigFileToMap(String filePath) throws IOException {
+        return convertMap((LinkedHashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, false), true);
     }
 
 
@@ -124,9 +124,9 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    private static Object readFile(String filePath, String fileType, boolean skipAnnotation) throws IOException {
+    public static Object readFile(String filePath, String fileType, boolean skipAnnotation) throws IOException {
         List<String> fileContent = new LinkedList();
-        HashMap<String, String> fileContentMap = new HashMap<>(16);
+        LinkedHashMap<String, String> fileContentMap = new LinkedHashMap<>(16);
         BufferedReader bufferedReader;
         bufferedReader = getBufferedReader(filePath);
         String content;
@@ -149,7 +149,7 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    private static void buildFileContent(List<String> fileContent, String content, boolean skipAnnotation) {
+    public static void buildFileContent(List<String> fileContent, String content, boolean skipAnnotation) {
         if (skipAnnotation && content.startsWith(ANNOTATION_NORMAL)) {
             return;
         }
@@ -165,7 +165,7 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    private static void buildFileContentMap(Map<String, String> fileContentMap, String content) {
+    public static void buildFileContentMap(Map<String, String> fileContentMap, String content) {
         if (StringUtils.isBlank(content) && StringUtils.isBlank(content.trim())) {
             return;
         }
@@ -215,7 +215,7 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
-    private static BufferedReader getBufferedReader(String filePath) throws FileNotFoundException,
+    public static BufferedReader getBufferedReader(String filePath) throws FileNotFoundException,
             UnsupportedEncodingException {
         String fileEncode = getFileEncode(filePath);
         return new BufferedReader(new InputStreamReader(new FileInputStream(filePath), fileEncode));
@@ -229,7 +229,7 @@ public class FileUtils {
      * @date: 2020/09/03
      * @return:
      */
-    private static String convertUnicodeToChar(String str) {
+    public static String convertUnicodeToChar(String str) {
         Matcher matcher = STR_PATTERN.matcher(str);
         // 迭代，将str中的所有unicode转换为正常字符
         while (matcher.find()) {
@@ -254,7 +254,7 @@ public class FileUtils {
      * @date: 2020/12/02
      * @return:
      */
-    private static Object mapToObject(Map<String, String> map, Class<?> clazz) throws Exception {
+    public static Object mapToObject(Map<String, String> map, Class<?> clazz) throws Exception {
         if (map == null) {
             return null;
         }
@@ -271,7 +271,7 @@ public class FileUtils {
      * @date: 2020/12/02
      * @return:
      */
-    private static LinkedHashMap<String, String> convertMap(HashMap<String, String> map, boolean deletePoint) {
+    public static LinkedHashMap<String, String> convertMap(HashMap<String, String> map, boolean deletePoint) {
         if (map == null) {
             return null;
         }
@@ -314,46 +314,73 @@ public class FileUtils {
      * @date: 2021/04/26
      * @return:
      */
-    public static String getFilePath(String path, boolean skipJar, boolean skipSpace) throws MalformedURLException {
-        URL url = FileUtils.class.getResource(path);
-        if (url == null) {
-            String folder = FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getFile();
-            url = new URL(STR_NAME_FILE + folder + path);
+    public static String getFilePath(String path) {
+        String fileAbsolute = getPathFolder() + path;
+        if (fileAbsolute.contains(START_MODE_JAR)) {
+            fileAbsolute = new File(STR_EMPTY).getAbsolutePath() + path;
         }
-        if (!skipJar && url.getPath().contains(START_MODE_JAR)) {
-            String jarPath = url.getPath();
-            int jarIndex = jarPath.indexOf(START_MODE_JAR);
-            String filePath = jarPath.substring(jarIndex + 1);
+        if (fileAbsolute.startsWith(STR_SYMBOL_SLASH)) {
+            fileAbsolute = fileAbsolute.substring(1);
+        }
+        System.out.println(fileAbsolute);
+        return fileAbsolute.replaceAll("%20", " ");
+    }
+
+    /**
+     * 获取文件路径
+     *
+     * @param path
+     * @author: humm23693
+     * @date: 2021/04/26
+     * @return:
+     */
+    public static URL getFileUrl(String path) throws MalformedURLException {
+        String file = getPathFolder() + path;
+        if (file.contains(START_MODE_JAR)) {
+            int jarIndex = file.indexOf(START_MODE_JAR);
+            String filePath = file.substring(jarIndex + 1);
             filePath = filePath.substring(filePath.indexOf(STR_SYMBOL_SLASH));
-            String folderPath = jarPath.substring(0, jarIndex);
+            String folderPath = file.substring(0, jarIndex);
             folderPath = folderPath.substring(0, folderPath.lastIndexOf(STR_SYMBOL_SLASH));
-            url = new URL(folderPath + filePath);
+            file = folderPath + filePath;
+        } else {
+            file = STR_NAME_FILE + file;
         }
-        return skipSpace ? url.getPath() : url.getPath().replaceAll("%20", STR_SPACE);
+        return new URL(file);
+    }
+
+
+    public static String getPathFolder() {
+        return FileUtils.class.getProtectionDomain().getCodeSource().getLocation().getFile();
     }
 
     /**
-     * 获取文件路径
+     * jar启动
      *
      * @param path
      * @author: humm23693
-     * @date: 2021/04/26
+     * @date: 2021/06/03
      * @return:
      */
-    public static String getFilePath(String path) throws MalformedURLException {
-        return getFilePath(path, false, false);
+    public static boolean startByJar(String path) {
+        return getPathFolder().contains(START_MODE_JAR);
     }
 
     /**
-     * 获取文件路径
+     * 获取jar名称
      *
-     * @param path
      * @author: humm23693
-     * @date: 2021/04/26
+     * @date: 2021/06/03
      * @return:
      */
-    public static URL getFilePathUrl(String path) throws MalformedURLException {
-        return new URL(STR_NAME_FILE + getFilePath(path, false, true));
+    public static String getJarName() {
+        // todo 不支持中心 空格
+        String jarPath = getPathFolder().replace(STR_NAME_FILE_SLASH, STR_EMPTY);
+        System.out.println(jarPath);
+        int jarIndex = jarPath.indexOf(START_MODE_JAR);
+        String filePath = jarPath.substring(0, jarIndex);
+        System.out.println(filePath.substring(0, jarIndex));
+        return filePath.substring(0, jarIndex) + FILE_TYPE_JAR;
     }
 
     /**
@@ -365,81 +392,111 @@ public class FileUtils {
      * @return:
      */
     public static void unJar(String path) throws Exception {
-        String sourceUrl = getFilePath(path, true, false);
-        if (sourceUrl.contains(START_MODE_JAR)) {
-            String url = getFilePath(path);
-            File file = new File(url);
-            Map<String, String> oldAppConfig = new HashMap<>(16);
+        if (!startByJar(path)) {
+            return;
+        }
+        String url = getFilePath(path);
+        File file = new File(url);
+        LinkedHashMap<String, String> oldAppConfig = new LinkedHashMap<>(16);
 
-            // 临时备份历史配置文件名称及路径
-            String bakFileName = file.getName() + FILE_TYPE_BAK;
-            String bakFilePath = file.getParentFile().getParentFile().getPath();
-            String bakFile = bakFilePath + STR_SYMBOL_SLASH + bakFileName;
+        // 临时备份历史配置文件名称及路径
+        String bakFileName = file.getName() + FILE_TYPE_BAK;
+        String bakFilePath = file.getParentFile().getParentFile().getPath();
+        String bakFile = bakFilePath + STR_SYMBOL_SLASH + bakFileName;
 
-            if (file.exists()) {
-                // 读取历史配置文件
-                oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(url);
+        if (file.exists()) {
+            // 读取历史配置文件
+            oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(url);
 
-                // 备份历史配置文件
-                copyFile(file, new File(bakFile));
+            // 备份历史配置文件
+            copyFile(file, new File(bakFile));
 
-            } else {
-                // 读取备份配置文件
-                File bak = new File(bakFile);
-                if (bak.exists()) {
-                    oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(bakFile);
-                }
+        } else {
+            // 读取备份配置文件
+            File bak = new File(bakFile);
+            if (bak.exists()) {
+                oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(bakFile);
             }
+        }
 
-            // 删除历史解压文件
-            File confFolder = file.getParentFile();
-            File[] oldFileList = confFolder.listFiles();
-            if (oldFileList != null) {
-                for (File item : oldFileList) {
-                    deleteFile(item);
-                }
-                deleteFile(confFolder);
-            }
-
-            // 解压文件
-            String jarPath = sourceUrl.replace(STR_NAME_FILE_SLASH, STR_EMPTY);
-            int jarIndex = jarPath.indexOf(START_MODE_JAR);
-            String filePath = jarPath.substring(0, jarIndex);
-            String fileName = filePath.substring(0, jarIndex) + FILE_TYPE_JAR;
-            String folder = filePath.substring(0, filePath.lastIndexOf(STR_SYMBOL_SLASH));
-            String tempFolder = folder + STR_SYMBOL_SLASH + "im-tool-ui.temp" + STR_SYMBOL_SLASH;
-            // 生成临时解压文件夹
-            File temp = new File(tempFolder);
-            deleteFile(temp);
-            temp.mkdirs();
-            UnZipRarUtils.unZip(new File(fileName), tempFolder);
-
-            // 复制文件
-            copyFolder(tempFolder + STR_NAME_CONF, folder);
-            File[] fileList = new File(tempFolder).listFiles();
-            for (File item : fileList) {
+        // 删除历史解压文件
+        File confFolder = file.getParentFile();
+        File[] oldFileList = confFolder.listFiles();
+        if (oldFileList != null) {
+            for (File item : oldFileList) {
                 deleteFile(item);
             }
-            // 删除解压零时文件夹
-            deleteFile(new File(tempFolder));
+            deleteFile(confFolder);
+        }
 
-            // 更新配置文件
-            List<String> updateContent = new ArrayList<>(16);
-            List<String> content = FileUtils.readNormalFile(url, false);
-            for (int i = 0; i < content.size(); i++) {
-                String item = content.get(i);
-                // 获取历史svn代码更新配置
-                if (item.startsWith(KEY_SVN_UPDATE)) {
-                    List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_UPDATE);
-                    updateContent.addAll(updateConfig);
-                    if (CollectionUtils.isNotEmpty(updateConfig)) {
-                        continue;
-                    }
+        // 解压文件  todo 不支持中文 空格
+        String folder = new File(STR_EMPTY).getAbsolutePath();
+        String tempFolder = folder + STR_SYMBOL_SLASH + "im-tool-ui.temp" + STR_SYMBOL_SLASH;
+        // 生成临时解压文件夹
+        File temp = new File(tempFolder);
+        deleteFile(temp);
+        temp.mkdirs();
+
+        UnZipRarUtils.unZip(new File(getJarName()), tempFolder);
+
+        // 复制文件
+        copyFolder(tempFolder + STR_NAME_CONF, folder);
+        File[] fileList = new File(tempFolder).listFiles();
+        for (File item : fileList) {
+            deleteFile(item);
+        }
+        // 删除解压零时文件夹
+        deleteFile(new File(tempFolder));
+
+        // 更新配置文件
+        List<String> updateContent = new ArrayList<>(16);
+        List<String> content = FileUtils.readNormalFile(url, false);
+        for (int i = 0; i < content.size(); i++) {
+            String item = content.get(i);
+            // 获取历史svn代码更新配置
+            if (item.startsWith(KEY_SVN_UPDATE)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_UPDATE);
+                updateContent.addAll(updateConfig);
+                if (CollectionUtils.isNotEmpty(updateConfig)) {
+                    continue;
                 }
-                // 更新历史升级脚本配置
-                if (item.startsWith(KEY_SCRIPT_UPDATE)) {
-                    List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SCRIPT_UPDATE);
-                    updateContent.addAll(updateConfig);
+            }
+            // 更新历史升级脚本配置
+            if (item.startsWith(KEY_SCRIPT_UPDATE)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SCRIPT_UPDATE);
+                updateContent.addAll(updateConfig);
+                if (CollectionUtils.isNotEmpty(updateConfig)) {
+                    continue;
+                }
+            }
+            // 更新历史配置项
+            Iterator<String> iterator = oldAppConfig.keySet().iterator();
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                String value = oldAppConfig.get(key);
+                if (item.startsWith(key + STR_SYMBOL_EQUALS)) {
+                    int index = item.indexOf(STR_SYMBOL_EQUALS) + 1;
+                    item = item.substring(0, index) + value;
+                }
+            }
+            updateContent.add(item);
+        }
+        // 读取svn统计配置信息
+        if (StringUtils.isNotBlank(oldAppConfig.get(KEY_SVN_STAT))) {
+            // 读取模板配置项信息
+            String svnStatPath = FileUtils.getFilePath(STR_PATH_SVN_STAT);
+            List<String> svnStatContent = FileUtils.readNormalFile(svnStatPath, false);
+            StringBuilder svnStat = new StringBuilder();
+            List<String> updateSvnStatContent = new ArrayList<>(16);
+            for (String item : svnStatContent) {
+                svnStat.append(item);
+            }
+            svnStatContent = Arrays.asList(SecurityUtils.getDecryptString(svnStat.toString()).split(STR_SYMBOL_NEXT_LINE));
+            for (String item : svnStatContent) {
+                // 更新svn统计用户信息
+                if (item.startsWith(KEY_SVN_STAT_USER)) {
+                    List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_STAT_USER);
+                    updateSvnStatContent.addAll(updateConfig);
                     if (CollectionUtils.isNotEmpty(updateConfig)) {
                         continue;
                     }
@@ -454,50 +511,17 @@ public class FileUtils {
                         item = item.substring(0, index) + value;
                     }
                 }
-                updateContent.add(item);
+                updateSvnStatContent.add(item);
             }
-            // 读取svn统计配置信息
-            if (StringUtils.isNotBlank(oldAppConfig.get(KEY_SVN_STAT))) {
-                // 读取模板配置项信息
-                String svnStatPath = FileUtils.getFilePath(STR_PATH_SVN_STAT);
-                List<String> svnStatContent = FileUtils.readNormalFile(svnStatPath, false);
-                StringBuilder svnStat = new StringBuilder();
-                List<String> updateSvnStatContent = new ArrayList<>(16);
-                for (String item : svnStatContent) {
-                    svnStat.append(item);
-                }
-                svnStatContent = Arrays.asList(SecurityUtils.getDecryptString(svnStat.toString()).split(STR_SYMBOL_NEXT_LINE));
-                for (String item : svnStatContent) {
-                    // 更新svn统计用户信息
-                    if (item.startsWith(KEY_SVN_STAT_USER)) {
-                        List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_STAT_USER);
-                        updateSvnStatContent.addAll(updateConfig);
-                        if (CollectionUtils.isNotEmpty(updateConfig)) {
-                            continue;
-                        }
-                    }
-                    // 更新历史配置项
-                    Iterator<String> iterator = oldAppConfig.keySet().iterator();
-                    while (iterator.hasNext()) {
-                        String key = iterator.next();
-                        String value = oldAppConfig.get(key);
-                        if (item.startsWith(key + STR_SYMBOL_EQUALS)) {
-                            int index = item.indexOf(STR_SYMBOL_EQUALS) + 1;
-                            item = item.substring(0, index) + value;
-                        }
-                    }
-                    updateSvnStatContent.add(item);
-                }
-                updateContent.addAll(updateSvnStatContent);
-            }
-            FileUtils.writeFile(url, updateContent, false);
-
-            // 删除 备份历史配置文件
-            deleteFile(new File(bakFile));
+            updateContent.addAll(updateSvnStatContent);
         }
+        FileUtils.writeFile(url, updateContent, false);
+
+        // 删除 备份历史配置文件
+        deleteFile(new File(bakFile));
     }
 
-    private static List<String> getUpdateConfig(Map<String, String> content, String keyWord) {
+    public static List<String> getUpdateConfig(Map<String, String> content, String keyWord) {
         List<String> update = new ArrayList<>(16);
         Iterator<String> iterator = content.keySet().iterator();
         while (iterator.hasNext()) {

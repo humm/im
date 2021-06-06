@@ -31,4 +31,6 @@ public class SvnStatDto {
     private String notice;
 
     private Map<String, Integer> file;
+
+    private Map<Long, Long> svnNum;
 }

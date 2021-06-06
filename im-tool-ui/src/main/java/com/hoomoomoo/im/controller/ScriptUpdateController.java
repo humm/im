@@ -206,7 +206,7 @@ public class ScriptUpdateController implements Initializable {
                                                 deleteSql.append("1=1");
                                             }
                                         } else {
-                                            deleteSql.append(cloumnItem.toLowerCase() + "=" + sqlInfo.get(cloumnItem.toLowerCase()));
+                                            deleteSql.append(cloumnItem.toLowerCase() + " = " + sqlInfo.get(cloumnItem.toLowerCase()));
                                         }
                                     }
                                     deleteSql.append(STR_SYMBOL_SEMICOLON);

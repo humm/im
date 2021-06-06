@@ -1,1 +1,1 @@
-wscript.createobject("wscript.shell").run "run.bat /start",0
+wscript.createobject("wscript.shell").run "run-silence.bat /start",0

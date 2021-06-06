@@ -8,6 +8,7 @@ import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -39,6 +41,12 @@ public class FunctionStatInfoController implements Initializable {
     @FXML
     private TextArea stat3;
 
+    @FXML
+    private Label notice;
+
+    @FXML
+    private Label title;
+
     private static int statNum = 3;
 
     @Override
@@ -49,7 +57,7 @@ public class FunctionStatInfoController implements Initializable {
         OutputUtils.clearLog(stat2);
         OutputUtils.clearLog(stat3);
 
-        List<FunctionDto> functionDtoList = null;
+        List<FunctionDto> functionDtoList = new ArrayList<>();
         try {
             functionDtoList = CommonUtils.getAuthFunction();
         } catch (Exception e) {
@@ -74,9 +82,11 @@ public class FunctionStatInfoController implements Initializable {
                     break;
             }
         }
+        OutputUtils.info(title, "授权功能总数:  " + (num - 2));
         for (int i = 0; i < functionDtoList.size(); i++) {
             FunctionDto functionDto = functionDtoList.get(i);
             if (FUNCTION_STAT_INFO.getCode().equals(functionDto.getFunctionCode()) || ABOUT_INFO.getCode().equals(functionDto.getFunctionCode())) {
+                functionDto.setUseTimes(0);
                 continue;
             }
             String logPath = "/logs/" + FunctionConfig.getLogFolder(functionDto.getFunctionCode()) + "/00000000.log";
@@ -92,6 +102,7 @@ public class FunctionStatInfoController implements Initializable {
                     logStat = FileUtils.readNormalFile(FileUtils.getFilePath(logPath), false);
                 }
                 outputStatInfo(stat, logStat);
+                functionDto.setUseTimes(getUseTimes(logStat));
             } catch (Exception e) {
                 if (e instanceof FileNotFoundException) {
                     continue;
@@ -99,6 +110,35 @@ public class FunctionStatInfoController implements Initializable {
                 LoggerUtils.info(e);
             }
         }
+        OutputUtils.info(notice, getOrderInfo(functionDtoList));
+    }
+
+    private int getUseTimes(List<String> logStat) {
+        if (CollectionUtils.isEmpty(logStat) || logStat.size() != 3) {
+            return 0;
+        }
+        String timeLine = logStat.get(2);
+        if (timeLine.contains(STR_SYMBOL_COLON)) {
+            return Integer.valueOf(timeLine.split(STR_SYMBOL_COLON)[1].trim());
+        }
+        return 0;
+    }
+
+    private String getOrderInfo(List<FunctionDto> functionDtoList) {
+        StringBuilder order = new StringBuilder("使用次数排序:  ");
+        Collections.sort(functionDtoList, (o1, o2) -> o2.getUseTimes() - o1.getUseTimes());
+        for (int i = 0; i < functionDtoList.size(); i++) {
+            FunctionDto item = functionDtoList.get(i);
+            if (i > 12) {
+                break;
+            }
+            if (FUNCTION_STAT_INFO.getCode().equals(item.getFunctionCode()) || ABOUT_INFO.getCode().equals(item.getFunctionCode())) {
+                continue;
+            }
+            order.append(item.getFunctionName()).append(STR_SPACE_2);
+        }
+        return order.toString();
+
     }
 
     private void outputStatInfo(TextArea stat, List<String> logStat) {
@@ -111,4 +151,5 @@ public class FunctionStatInfoController implements Initializable {
             OutputUtils.info(stat, STR_SPACE_4 + item + STR_SYMBOL_NEXT_LINE_2);
         }
     }
+
 }

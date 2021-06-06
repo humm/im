@@ -213,6 +213,34 @@ public class LoggerUtils {
         }
     }
 
+    public static void writeSvnRealtimeStatInfo() {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (!appConfigDto.getAppLogEnable()) {
+                return;
+            }
+            // 写统计文件
+            String statFilePath = FileUtils.getFilePath("/logs/svnRealtimeStat/00000000.log");
+            writeStatFile(statFilePath);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    public static void writeSvnHistoryStatInfo() {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (!appConfigDto.getAppLogEnable()) {
+                return;
+            }
+            // 写统计文件
+            String statFilePath = FileUtils.getFilePath("/logs/svnHistoryStat/00000000.log");
+            writeStatFile(statFilePath);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
     private static void writeStatFile(String filePath) throws IOException {
         File file = new File(filePath);
         String date = CommonUtils.getCurrentDateTime1();

@@ -45,19 +45,19 @@
                                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="version" editable="false" prefWidth="130"
+                                                <TableColumn id="version" editable="false" prefWidth="140"
                                                              sortable="false" text="版本号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="version"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="name" editable="false" prefWidth="160" sortable="false"
+                                                <TableColumn id="name" editable="false" prefWidth="170" sortable="false"
                                                              text="名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="time" editable="false" prefWidth="170" sortable="false"
+                                                <TableColumn id="time" editable="false" prefWidth="182" sortable="false"
                                                              text="更新时间">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="time"/>

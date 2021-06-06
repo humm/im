@@ -48,6 +48,9 @@ public class SvnHistoryQueryController implements Initializable {
     @FXML
     private TextArea stat3;
 
+    @FXML
+    private Label notice;
+
     private static int statNum = 3;
 
     private double progress = 0;
@@ -58,6 +61,7 @@ public class SvnHistoryQueryController implements Initializable {
             setProgress(0);
             updateProgress();
             stat();
+            LoggerUtils.writeSvnHistoryStatInfo();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -79,6 +83,7 @@ public class SvnHistoryQueryController implements Initializable {
                     LinkedHashMap<String, String> userList = appConfigDto.getSvnStatUser();
                     int num = userList.size();
                     List<TextArea> statList = new ArrayList<>();
+                    List<SvnStatDto> svnStatDtoList = new ArrayList<>();
                     for (int i = 1; i <= num; i++) {
                         int remainder = i % statNum;
                         switch (remainder) {
@@ -102,7 +107,9 @@ public class SvnHistoryQueryController implements Initializable {
                         String userCode = iterator.next();
                         outputStatInfo(statList.get(index), svnStat.get(userCode));
                         index++;
+                        svnStatDtoList.add(svnStat.get(userCode));
                     }
+                    OutputUtils.info(notice, getOrderInfo(svnStatDtoList));
                 } catch (Exception e) {
                     LoggerUtils.info(e);
                 } finally {
@@ -132,6 +139,20 @@ public class SvnHistoryQueryController implements Initializable {
                 }
             }
         }).start();
+    }
+
+    private String getOrderInfo(List<SvnStatDto> svnStatDtoList) {
+        StringBuilder order = new StringBuilder("提交次数排序:  ");
+        Collections.sort(svnStatDtoList, (o1, o2) -> o2.getSubmitTimes() - o1.getSubmitTimes());
+        for (int i = 0; i < svnStatDtoList.size(); i++) {
+            SvnStatDto item = svnStatDtoList.get(i);
+            if (i > 10) {
+                break;
+            }
+            order.append(item.getUserName()).append(STR_SPACE_2);
+        }
+        return order.toString();
+
     }
 
     private void outputStatInfo(TextArea stat, SvnStatDto svnStatDto) {

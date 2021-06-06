@@ -2,11 +2,11 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.hoomoomoo.im.controller.SvnHistoryQueryController">
     <children>
-        <SplitPane dividerPositions="0.09" layoutX="116.0" layoutY="42.0" orientation="VERTICAL" prefHeight="400.0"
-                   prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+        <SplitPane dividerPositions="0.0829145728643216" layoutX="116.0" layoutY="42.0" orientation="VERTICAL"
+                   prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="43.0" prefWidth="598.0">
@@ -20,30 +20,22 @@
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="598.0">
                     <children>
-                        <SplitPane dividerPositions="0.33" layoutX="76.0" layoutY="59.0" prefHeight="359.0"
-                                   prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane dividerPositions="0.91" layoutX="47.0" layoutY="192.0" orientation="VERTICAL"
+                                   prefHeight="362.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
+                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                     <children>
-                                        <TextArea fx:id="stat1" editable="false" layoutX="-20.0" layoutY="54.0"
-                                                  prefHeight="357.0" prefWidth="194.0" AnchorPane.bottomAnchor="0.0"
-                                                  AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                  AnchorPane.topAnchor="0.0"/>
-                                    </children>
-                                </AnchorPane>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                                    <children>
-                                        <SplitPane dividerPositions="0.5" layoutX="82.0" layoutY="67.0"
-                                                   prefHeight="357.0" prefWidth="396.0" AnchorPane.bottomAnchor="0.0"
+                                        <SplitPane dividerPositions="0.33" layoutX="127.0" layoutY="117.0"
+                                                   prefHeight="321.0" prefWidth="596.0" AnchorPane.bottomAnchor="0.0"
                                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                    AnchorPane.topAnchor="0.0">
                                             <items>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
                                                             prefWidth="100.0">
                                                     <children>
-                                                        <TextArea fx:id="stat2" editable="false" layoutX="-20.0"
-                                                                  layoutY="78.0" prefHeight="355.0" prefWidth="194.0"
+                                                        <TextArea fx:id="stat1" editable="false" layoutX="-21.0"
+                                                                  layoutY="60.0" prefHeight="319.0" prefWidth="193.0"
                                                                   AnchorPane.bottomAnchor="0.0"
                                                                   AnchorPane.leftAnchor="0.0"
                                                                   AnchorPane.rightAnchor="0.0"
@@ -53,16 +45,48 @@
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0"
                                                             prefWidth="100.0">
                                                     <children>
-                                                        <TextArea fx:id="stat3" editable="false" layoutX="-38.0"
-                                                                  layoutY="56.0" prefHeight="355.0" prefWidth="194.0"
-                                                                  AnchorPane.bottomAnchor="0.0"
-                                                                  AnchorPane.leftAnchor="0.0"
-                                                                  AnchorPane.rightAnchor="0.0"
-                                                                  AnchorPane.topAnchor="0.0"/>
+                                                        <SplitPane dividerPositions="0.5" layoutX="98.0" layoutY="58.0"
+                                                                   prefHeight="319.0" prefWidth="395.0"
+                                                                   AnchorPane.bottomAnchor="0.0"
+                                                                   AnchorPane.leftAnchor="0.0"
+                                                                   AnchorPane.rightAnchor="0.0"
+                                                                   AnchorPane.topAnchor="0.0">
+                                                            <items>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0"
+                                                                            prefHeight="160.0" prefWidth="100.0">
+                                                                    <children>
+                                                                        <TextArea fx:id="stat2" editable="false"
+                                                                                  layoutX="-20.0" layoutY="74.0"
+                                                                                  prefHeight="317.0" prefWidth="194.0"
+                                                                                  AnchorPane.bottomAnchor="0.0"
+                                                                                  AnchorPane.leftAnchor="0.0"
+                                                                                  AnchorPane.rightAnchor="0.0"
+                                                                                  AnchorPane.topAnchor="0.0"/>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0"
+                                                                            prefHeight="160.0" prefWidth="100.0">
+                                                                    <children>
+                                                                        <TextArea fx:id="stat3" editable="false"
+                                                                                  layoutX="-21.0" layoutY="47.0"
+                                                                                  prefHeight="317.0" prefWidth="193.0"
+                                                                                  AnchorPane.bottomAnchor="0.0"
+                                                                                  AnchorPane.leftAnchor="0.0"
+                                                                                  AnchorPane.rightAnchor="0.0"
+                                                                                  AnchorPane.topAnchor="0.0"/>
+                                                                    </children>
+                                                                </AnchorPane>
+                                                            </items>
+                                                        </SplitPane>
                                                     </children>
                                                 </AnchorPane>
                                             </items>
                                         </SplitPane>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                                    <children>
+                                        <Label fx:id="notice" layoutX="15.0" layoutY="10.0"/>
                                     </children>
                                 </AnchorPane>
                             </items>

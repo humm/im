@@ -44,6 +44,7 @@ public class BaseConst {
     public static final String FILE_TYPE_JAR = ".jar";
     public static final String FILE_TYPE_BAK = ".bak";
     public static final String FILE_TYPE_SQL = ".sql";
+    public static final String FILE_TYPE_EXE = ".exe";
 
     public static final String STR_NAME_VALUES = "values";
     public static final String STR_NAME_CONF = "conf";
@@ -101,12 +102,15 @@ public class BaseConst {
     public static final String STR_MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止[ %s ]";
     public static final String STR_MSG_LICENSE_NOT_AUTH = "未授权[ %s ]功能";
     public static final String STR_MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * *";
+    public static final String STR_MSG_SVN_REALTIME_STAT = "[ %s ] [ %s ] [ %s ] [ %s ]";
 
 
     public static final String STR_CONFIG_PREFIX = "#################### ";
     public static final String STR_CONFIG_APP_TITLE = "应用信息";
     public static final String STR_CONFIG_SVN_TITLE = "svn用户信息";
     public static final String STR_CONFIG_SVN_STAT_TITLE = "svn统计";
+
+    public static final String STR_CMD_KILL_APP = "taskill /f /t /im %s";
 
 
     public static final String STR_PATH_APP = "/conf/app.conf";
