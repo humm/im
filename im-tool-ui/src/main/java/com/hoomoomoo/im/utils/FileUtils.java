@@ -322,7 +322,6 @@ public class FileUtils {
         if (fileAbsolute.startsWith(STR_SYMBOL_SLASH)) {
             fileAbsolute = fileAbsolute.substring(1);
         }
-        System.out.println(fileAbsolute);
         return fileAbsolute.replaceAll("%20", " ");
     }
 
@@ -374,12 +373,10 @@ public class FileUtils {
      * @return:
      */
     public static String getJarName() {
-        // todo 不支持中心 空格
+        // todo 不支持中文 空格
         String jarPath = getPathFolder().replace(STR_NAME_FILE_SLASH, STR_EMPTY);
-        System.out.println(jarPath);
         int jarIndex = jarPath.indexOf(START_MODE_JAR);
-        String filePath = jarPath.substring(0, jarIndex);
-        System.out.println(filePath.substring(0, jarIndex));
+        String filePath = jarPath.substring(0, jarIndex).replaceAll("%20", " ");
         return filePath.substring(0, jarIndex) + FILE_TYPE_JAR;
     }
 
@@ -430,7 +427,7 @@ public class FileUtils {
         }
 
         // 解压文件  todo 不支持中文 空格
-        String folder = new File(STR_EMPTY).getAbsolutePath();
+        String folder = new File(STR_EMPTY).getAbsolutePath().replaceAll("%20", " ");
         String tempFolder = folder + STR_SYMBOL_SLASH + "im-tool-ui.temp" + STR_SYMBOL_SLASH;
         // 生成临时解压文件夹
         File temp = new File(tempFolder);

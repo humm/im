@@ -44,15 +44,15 @@ public class MainStarter extends Application {
             primaryStage.show();
             LoggerUtils.info(String.format(STR_MSG_COMPLETE, "应用启动"));
             primaryStage.setOnCloseRequest(event -> {
-                primaryStage.close();
                 try {
                     if (FileUtils.startByJar(STR_PATH_APP)) {
                         String processName = FileUtils.getJarName().replace(FILE_TYPE_JAR, FILE_TYPE_EXE);
+                        processName = processName.substring(processName.lastIndexOf(STR_SYMBOL_SLASH) + 1);
                         Runtime.getRuntime().exec(String.format(STR_CMD_KILL_APP, processName));
                     }
                 } catch (IOException e) {
-                    LoggerUtils.info(e);
                 }
+                primaryStage.close();
             });
         } catch (Exception e) {
             LoggerUtils.info(e);
