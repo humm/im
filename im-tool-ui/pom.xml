@@ -24,6 +24,8 @@
         <junit.version>4.12</junit.version>
         <slf4j.version>1.7.26</slf4j.version>
         <fastjson.version>1.2.70</fastjson.version>
+        <jsoup.version>1.13.1</jsoup.version>
+        <junrar.version>7.3.0</junrar.version>
     </properties>
 
     <dependencies>
@@ -82,6 +84,16 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>${jsoup.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hswebframework</groupId>
+            <artifactId>hsweb-utils</artifactId>
+            <version>${hsweb-utils.version}</version>
         </dependency>
     </dependencies>
 

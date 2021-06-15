@@ -27,12 +27,12 @@ public class MainStarter extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            LoggerUtils.info(STR_MSG_DIVIDE_LINE);
-            LoggerUtils.info(String.format(STR_MSG_START, "应用启动"));
-            FileUtils.unJar(STR_PATH_APP);
-            LoggerUtils.info(String.format(STR_MSG_UPDATE, "配置文件"));
+            LoggerUtils.info(MSG_DIVIDE_LINE);
+            LoggerUtils.info(String.format(MSG_START, "应用启动"));
+            FileUtils.unJar(PATH_APP);
+            LoggerUtils.info(String.format(MSG_UPDATE, "配置文件"));
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            LoggerUtils.info(String.format(STR_MSG_LOAD, "配置信息"));
+            LoggerUtils.info(String.format(MSG_LOAD, "配置信息"));
             primaryStage.getIcons().add(new Image("/conf/image/icon.png"));
             Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath("/conf/fxml/starter.fxml")));
             Scene scene = new Scene(root);
@@ -42,17 +42,17 @@ public class MainStarter extends Application {
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
             primaryStage.show();
-            LoggerUtils.info(String.format(STR_MSG_COMPLETE, "应用启动"));
+            LoggerUtils.info(String.format(MSG_COMPLETE, "应用启动"));
             primaryStage.setOnCloseRequest(event -> {
                 try {
-                    if (FileUtils.startByJar(STR_PATH_APP)) {
+                    primaryStage.close();
+                    if (FileUtils.startByJar(PATH_APP)) {
                         String processName = FileUtils.getJarName().replace(FILE_TYPE_JAR, FILE_TYPE_EXE);
-                        processName = processName.substring(processName.lastIndexOf(STR_SYMBOL_SLASH) + 1);
-                        Runtime.getRuntime().exec(String.format(STR_CMD_KILL_APP, processName));
+                        processName = processName.substring(processName.lastIndexOf(SYMBOL_SLASH) + 1);
+                        Runtime.getRuntime().exec(String.format(CMD_KILL_APP, processName));
                     }
                 } catch (IOException e) {
                 }
-                primaryStage.close();
             });
         } catch (Exception e) {
             LoggerUtils.info(e);

@@ -109,7 +109,7 @@ public class CommonUtils {
         if (date.length() != 8) {
             return date;
         }
-        return date.substring(0, 4) + STR_SYMBOL_HYPHEN + date.substring(4, 6) + STR_SYMBOL_HYPHEN + date.substring(6);
+        return date.substring(0, 4) + SYMBOL_HYPHEN + date.substring(4, 6) + SYMBOL_HYPHEN + date.substring(6);
     }
 
     /**
@@ -165,59 +165,59 @@ public class CommonUtils {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionCode.equals(FunctionConfig.SVN_LOG.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
-                OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_USERNAME + SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
-                OutputUtils.info(log, STR_MSG_SVN_PASSWORD + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_PASSWORD + SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnUrl())) {
-                OutputUtils.info(log, STR_MSG_SVN_URL + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_URL + SYMBOL_NEXT_LINE);
                 flag = false;
             }
         }
         if (functionCode.equals(FunctionConfig.SVN_UPDATE.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
-                OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_USERNAME + SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
-                OutputUtils.info(log, STR_MSG_SVN_PASSWORD + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_PASSWORD + SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (CollectionUtils.isEmpty(appConfigDto.getSvnUpdatePath())) {
-                OutputUtils.info(log, STR_MSG_SVN_UPDATE_TA6 + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_UPDATE_TA6 + SYMBOL_NEXT_LINE);
                 flag = false;
             }
         }
         if (functionCode.equals(FunctionConfig.SCRIPT_UPDATE.getCode())) {
             if (appConfigDto.getScriptUpdateGenerateFile()) {
                 if (StringUtils.isBlank(appConfigDto.getScriptUpdateGeneratePath())) {
-                    OutputUtils.info(log, STR_MSG_SCRIPT_UPDATE_GENERATE_PATH + STR_SYMBOL_NEXT_LINE);
+                    OutputUtils.info(log, MSG_SCRIPT_UPDATE_GENERATE_PATH + SYMBOL_NEXT_LINE);
                     flag = false;
                 }
             }
         }
         if (functionCode.equals(SVN_REALTIME_STAT.getCode()) || functionCode.equals(SVN_HISTORY_STAT.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
-                OutputUtils.info(log, STR_MSG_SVN_USERNAME + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_USERNAME + SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
-                OutputUtils.info(log, STR_MSG_SVN_PASSWORD + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_PASSWORD + SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnUrl())) {
-                OutputUtils.info(log, STR_MSG_SVN_URL + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_URL + SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (appConfigDto.getSvnStatUser().size() == 0) {
-                OutputUtils.info(log, STR_MSG_SVN_STAT_USER + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_STAT_USER + SYMBOL_NEXT_LINE);
                 flag = false;
             }
             if (appConfigDto.getSvnStatInterval() < 5) {
-                OutputUtils.info(log, STR_MSG_SVN_STAT_INTERVAL + STR_SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_STAT_INTERVAL + SYMBOL_NEXT_LINE);
                 flag = false;
             }
         }
@@ -229,17 +229,17 @@ public class CommonUtils {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionType.equals(FunctionConfig.FUND_INFO.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getFundGeneratePath())) {
-                OutputUtils.info(log, STR_MSG_FUND_GENERATE_PATH);
+                OutputUtils.info(log, MSG_FUND_GENERATE_PATH);
                 flag = false;
             }
         }
         if (functionType.equals(FunctionConfig.PROCESS_INFO.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathSchedule())) {
-                OutputUtils.info(log, STR_MSG_PROCESS_GENERATE_PATH_SCHEDULE);
+                OutputUtils.info(log, MSG_PROCESS_GENERATE_PATH_SCHEDULE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathTrans())) {
-                OutputUtils.info(log, STR_MSG_PROCESS_GENERATE_PATH_TRANS);
+                OutputUtils.info(log, MSG_PROCESS_GENERATE_PATH_TRANS);
                 flag = false;
             }
         }
@@ -250,7 +250,7 @@ public class CommonUtils {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         LicenseDto licenseDto = appConfigDto.getLicense();
         if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
-            LoggerUtils.info(String.format(STR_MSG_LICENSE_EXPIRE, licenseDto.getEffectiveDate()));
+            LoggerUtils.info(String.format(MSG_LICENSE_EXPIRE, licenseDto.getEffectiveDate()));
             return false;
         }
         if (StringUtils.isBlank(functionCode)) {
@@ -261,7 +261,7 @@ public class CommonUtils {
         }
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
         if (CollectionUtils.isEmpty(functionDtoList)) {
-            LoggerUtils.info(String.format(STR_MSG_LICENSE_NOT_AUTH, FunctionConfig.getName(functionCode)));
+            LoggerUtils.info(String.format(MSG_LICENSE_NOT_AUTH, FunctionConfig.getName(functionCode)));
             return false;
         }
         for (FunctionDto functionDto : functionDtoList) {
@@ -269,7 +269,7 @@ public class CommonUtils {
                 return true;
             }
         }
-        LoggerUtils.info(String.format(STR_MSG_LICENSE_NOT_AUTH, FunctionConfig.getName(functionCode)));
+        LoggerUtils.info(String.format(MSG_LICENSE_NOT_AUTH, FunctionConfig.getName(functionCode)));
         return false;
     }
 

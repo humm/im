@@ -42,18 +42,18 @@ public class ConfigCache {
     }
 
     private void init() throws Exception {
-        String confPath = FileUtils.getFilePath(STR_PATH_APP);
+        String confPath = FileUtils.getFilePath(PATH_APP);
         // 读取配置文件
         appConfigDto = (AppConfigDto) FileUtils.readConfigFileToObject(confPath, AppConfigDto.class);
 
         // 加载证书信息
-        String licensePath = FileUtils.getFilePath(STR_PATH_LICENSE);
+        String licensePath = FileUtils.getFilePath(PATH_LICENSE);
         List<String> licenseContent = FileUtils.readNormalFile(licensePath, false);
         StringBuilder license = new StringBuilder();
         if (CollectionUtils.isEmpty(licenseContent)) {
-            LoggerUtils.info(STR_MSG_LICENSE_NOT_EXIST);
+            LoggerUtils.info(MSG_LICENSE_NOT_EXIST);
             LicenseDto licenseDto = new LicenseDto();
-            licenseDto.setEffectiveDate("0");
+            licenseDto.setEffectiveDate(STR_0);
             licenseDto.setFunction(new ArrayList<>());
             appConfigDto.setLicense(licenseDto);
         } else {
@@ -64,16 +64,16 @@ public class ConfigCache {
             appConfigDto.setLicense(licenseDto);
         }
 
-        LoggerUtils.info(String.format(STR_MSG_LOAD, "授权证书信息"));
+        LoggerUtils.info(String.format(MSG_LOAD, "授权证书信息"));
 
         // 读取svn代码更新配置
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {
             for (String item : content) {
                 // svn代码更新配置
-                if (item.startsWith(KEY_SVN_UPDATE)) {
-                    int index = item.indexOf(STR_SYMBOL_EQUALS);
-                    String name = item.substring(KEY_SVN_UPDATE.length(), index);
+                if (item.startsWith(KEY_SVN_UPDATE_LOCATION)) {
+                    int index = item.indexOf(SYMBOL_EQUALS);
+                    String name = item.substring(KEY_SVN_UPDATE_LOCATION.length(), index);
                     String path = item.substring(index + 1);
                     if (StringUtils.isNotBlank(path)) {
                         LinkedHashMap version = new LinkedHashMap(2);
@@ -82,12 +82,12 @@ public class ConfigCache {
                     }
                 }
                 // 升级脚本配置
-                if (item.startsWith(KEY_SCRIPT_UPDATE)) {
-                    int index = item.indexOf(STR_SYMBOL_EQUALS);
-                    String name = item.substring(KEY_SCRIPT_UPDATE.length(), index);
+                if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
+                    int index = item.indexOf(SYMBOL_EQUALS);
+                    String name = item.substring(KEY_SCRIPT_UPDATE_TABLE.length(), index);
                     String column = item.substring(index + 1);
                     if (StringUtils.isNotBlank(column)) {
-                        List<String> columnConfig = Arrays.asList(column.split(STR_SYMBOL_COMMA));
+                        List<String> columnConfig = Arrays.asList(column.split(SYMBOL_COMMA));
                         LinkedHashMap table = new LinkedHashMap(2);
                         table.put(name.toLowerCase(), columnConfig);
                         appConfigDto.getScriptUpdateTable().add(table);
@@ -95,7 +95,7 @@ public class ConfigCache {
                 }
                 // svn统计配置
                 if (item.startsWith(KEY_SVN_STAT_USER)) {
-                    int index = item.indexOf(STR_SYMBOL_EQUALS);
+                    int index = item.indexOf(SYMBOL_EQUALS);
                     String code = item.substring(KEY_SVN_STAT_USER.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
@@ -106,7 +106,7 @@ public class ConfigCache {
         }
 
         // 解密
-        if (appConfigDto != null && appConfigDto.getSvnPassword().endsWith(STR_SECURITY_FLAG)) {
+        if (appConfigDto != null && appConfigDto.getSvnPassword().endsWith(SECURITY_FLAG)) {
             String password = appConfigDto.getSvnPassword();
             password = SecurityUtils.getDecryptString(password.substring(0, password.length() - 3));
             appConfigDto.setSvnPassword(password);
@@ -116,10 +116,10 @@ public class ConfigCache {
         if (CollectionUtils.isNotEmpty(content)) {
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i);
-                if (item.contains(STR_SYMBOL_EQUALS) && item.startsWith(KEY_SVN_PASSWORD) && !item.endsWith(STR_SECURITY_FLAG)) {
-                    int index = item.indexOf(STR_SYMBOL_EQUALS) + 1;
+                if (item.contains(SYMBOL_EQUALS) && item.startsWith(KEY_SVN_PASSWORD) && !item.endsWith(SECURITY_FLAG)) {
+                    int index = item.indexOf(SYMBOL_EQUALS) + 1;
                     if (StringUtils.isNotBlank(item.substring(index))) {
-                        String password = SecurityUtils.getEncryptString(item.substring(index)) + STR_SECURITY_FLAG;
+                        String password = SecurityUtils.getEncryptString(item.substring(index)) + SECURITY_FLAG;
                         item = item.substring(0, index) + password;
                         content.set(i, item);
                     }
@@ -127,7 +127,7 @@ public class ConfigCache {
             }
         }
 
-        LoggerUtils.info(String.format(STR_MSG_ENCRYPT, "用户信息"));
+        LoggerUtils.info(String.format(MSG_ENCRYPT, "用户信息"));
 
         FileUtils.writeFile(confPath, content, false);
     }

@@ -64,7 +64,7 @@ public class SvnRealtimeStatController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            LoggerUtils.info(String.format(STR_MSG_USE, SVN_REALTIME_STAT.getName()));
+            LoggerUtils.info(String.format(MSG_USE, SVN_REALTIME_STAT.getName()));
             if (!CommonUtils.checkConfig(stat1, FunctionConfig.SVN_REALTIME_STAT.getCode())) {
                 return;
             }
@@ -96,8 +96,8 @@ public class SvnRealtimeStatController implements Initializable {
                         }
                         OutputUtils.info(statTime, CommonUtils.getCurrentDateTime8(date));
                         SvnUtils.getSvnLog(startDate, date, svnStat, true);
-                        OutputUtils.info(notice, STR_SPACE);
-                        OutputUtils.info(costTime, STR_SPACE);
+                        OutputUtils.info(notice, SYMBOL_SPACE);
+                        OutputUtils.info(costTime, SYMBOL_SPACE);
                         OutputUtils.clearLog(stat1);
                         OutputUtils.clearLog(stat2);
                         OutputUtils.clearLog(stat3);
@@ -122,7 +122,7 @@ public class SvnRealtimeStatController implements Initializable {
                         int index = 0;
                         while (iterator.hasNext()) {
                             if (index >= statNum) {
-                                OutputUtils.info(statList.get(index), STR_SYMBOL_NEXT_LINE_2);
+                                OutputUtils.info(statList.get(index), SYMBOL_NEXT_LINE_2);
                             }
                             String userCode = iterator.next();
                             outputStatInfo(statList.get(index), svnStat.get(userCode));
@@ -165,12 +165,12 @@ public class SvnRealtimeStatController implements Initializable {
     }
 
     private void outputStatInfo(TextArea stat, SvnStatDto svnStatDto) {
-        OutputUtils.info(stat, svnStatDto.getUserName() + STR_SYMBOL_NEXT_LINE_2);
-        OutputUtils.info(stat, STR_SPACE_4 + "首次提交时间: " + svnStatDto.getFirstTime() + STR_SYMBOL_NEXT_LINE_2);
-        OutputUtils.info(stat, STR_SPACE_4 + "末次提交时间: " + svnStatDto.getLastTime() + STR_SYMBOL_NEXT_LINE_2);
-        OutputUtils.info(stat, STR_SPACE_4 + "提交代码次数: " + svnStatDto.getSubmitTimes() + STR_SYMBOL_NEXT_LINE_2);
-        OutputUtils.info(stat, STR_SPACE_4 + "修改文件个数: " + svnStatDto.getFileNum() + STR_SYMBOL_NEXT_LINE_2);
-        OutputUtils.info(stat, STR_SPACE_4 + "修改文件次数: " + svnStatDto.getFileTimes() + STR_SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, svnStatDto.getUserName() + SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, SYMBOL_SPACE_4 + "首次提交时间: " + svnStatDto.getFirstTime() + SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, SYMBOL_SPACE_4 + "末次提交时间: " + svnStatDto.getLastTime() + SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, SYMBOL_SPACE_4 + "提交代码次数: " + svnStatDto.getSubmitTimes() + SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, SYMBOL_SPACE_4 + "修改文件个数: " + svnStatDto.getFileNum() + SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, SYMBOL_SPACE_4 + "修改文件次数: " + svnStatDto.getFileTimes() + SYMBOL_NEXT_LINE_2);
     }
 
     synchronized private void setProgress(double value) {
@@ -178,7 +178,7 @@ public class SvnRealtimeStatController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 schedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
                 schedule.requestFocus();
             });
         } catch (Exception e) {

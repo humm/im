@@ -76,6 +76,8 @@ public class AppConfigDto extends BaseDto {
 
     private LinkedHashMap<String, String> svnStatUser;
 
+    private String svnStatHistoryOrderType;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;

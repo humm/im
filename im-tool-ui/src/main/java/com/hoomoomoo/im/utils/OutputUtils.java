@@ -7,7 +7,7 @@ import javafx.scene.control.*;
 
 import java.util.List;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_EMPTY;
+import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
 
 /**
  * @author humm23693
@@ -69,7 +69,7 @@ public class OutputUtils {
             } else if (obj instanceof TextField) {
                 ((TextField) obj).clear();
             } else if (obj instanceof Label) {
-                ((Label) obj).setText(STR_EMPTY);
+                ((Label) obj).setText(SYMBOL_EMPTY);
             }
         });
     }

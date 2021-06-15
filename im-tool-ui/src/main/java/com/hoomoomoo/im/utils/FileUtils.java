@@ -84,9 +84,9 @@ public class FileUtils {
         if (CollectionUtils.isEmpty(contentList)) {
             return;
         }
-        String content = STR_EMPTY;
+        String content = SYMBOL_EMPTY;
         for (String item : contentList) {
-            content += item + STR_SYMBOL_NEXT_LINE;
+            content += item + SYMBOL_NEXT_LINE;
         }
         writeFile(filePath, content, isAppend);
     }
@@ -102,7 +102,7 @@ public class FileUtils {
      */
     public static void writeFile(String filePath, String content, boolean isAppend) throws IOException {
         // 判断文件夹是否存在
-        String folderPath = filePath.substring(0, filePath.lastIndexOf(STR_SYMBOL_SLASH));
+        String folderPath = filePath.substring(0, filePath.lastIndexOf(SYMBOL_SLASH));
         File file = new File(folderPath);
         if (!file.exists()) {
             file.mkdirs();
@@ -150,7 +150,7 @@ public class FileUtils {
      * @return:
      */
     public static void buildFileContent(List<String> fileContent, String content, boolean skipAnnotation) {
-        if (skipAnnotation && content.startsWith(ANNOTATION_NORMAL)) {
+        if (skipAnnotation && content.startsWith(ANNOTATION_TYPE_NORMAL)) {
             return;
         }
         fileContent.add(content);
@@ -169,20 +169,20 @@ public class FileUtils {
         if (StringUtils.isBlank(content) && StringUtils.isBlank(content.trim())) {
             return;
         }
-        if (content.startsWith(ANNOTATION_CONFIG)) {
+        if (content.startsWith(ANNOTATION_TYPE_CONFIG)) {
             return;
         }
-        if (!content.contains(STR_SYMBOL_EQUALS)) {
+        if (!content.contains(SYMBOL_EQUALS)) {
             return;
         }
-        String[] item = content.split(STR_SYMBOL_EQUALS);
+        String[] item = content.split(SYMBOL_EQUALS);
         if (item.length == 2) {
             fileContentMap.put(item[0], convertUnicodeToChar(item[1]));
         } else if (item.length > 2) {
-            int index = content.indexOf(STR_SYMBOL_EQUALS) + 1;
+            int index = content.indexOf(SYMBOL_EQUALS) + 1;
             fileContentMap.put(item[0], convertUnicodeToChar(content.substring(index)));
         } else {
-            fileContentMap.put(item[0], STR_EMPTY);
+            fileContentMap.put(item[0], SYMBOL_EMPTY);
         }
     }
 
@@ -240,7 +240,7 @@ public class FileUtils {
             // 将匹配出的数字按照16进制转换为10进制，转换为char类型，就是对应的正常字符了
             char singleChar = (char) Integer.parseInt(unicodeNum, 16);
             // 替换原始字符串中的unicode码
-            str = str.replace(unicodeFull, singleChar + STR_EMPTY);
+            str = str.replace(unicodeFull, singleChar + SYMBOL_EMPTY);
         }
         return str;
     }
@@ -286,7 +286,7 @@ public class FileUtils {
                 boolean isPoint = false;
                 for (int i = 0; i < key.length(); i++) {
                     char single = key.charAt(i);
-                    if (String.valueOf(single).equals(STR_SYMBOL_POINT)) {
+                    if (String.valueOf(single).equals(SYMBOL_POINT)) {
                         isPoint = true;
                         continue;
                     } else {
@@ -317,9 +317,9 @@ public class FileUtils {
     public static String getFilePath(String path) {
         String fileAbsolute = getPathFolder() + path;
         if (fileAbsolute.contains(START_MODE_JAR)) {
-            fileAbsolute = new File(STR_EMPTY).getAbsolutePath() + path;
+            fileAbsolute = new File(SYMBOL_EMPTY).getAbsolutePath() + path;
         }
-        if (fileAbsolute.startsWith(STR_SYMBOL_SLASH)) {
+        if (fileAbsolute.startsWith(SYMBOL_SLASH)) {
             fileAbsolute = fileAbsolute.substring(1);
         }
         return fileAbsolute.replaceAll("%20", " ");
@@ -338,12 +338,12 @@ public class FileUtils {
         if (file.contains(START_MODE_JAR)) {
             int jarIndex = file.indexOf(START_MODE_JAR);
             String filePath = file.substring(jarIndex + 1);
-            filePath = filePath.substring(filePath.indexOf(STR_SYMBOL_SLASH));
+            filePath = filePath.substring(filePath.indexOf(SYMBOL_SLASH));
             String folderPath = file.substring(0, jarIndex);
-            folderPath = folderPath.substring(0, folderPath.lastIndexOf(STR_SYMBOL_SLASH));
+            folderPath = folderPath.substring(0, folderPath.lastIndexOf(SYMBOL_SLASH));
             file = folderPath + filePath;
         } else {
-            file = STR_NAME_FILE + file;
+            file = KEY_FILE + file;
         }
         return new URL(file);
     }
@@ -373,11 +373,10 @@ public class FileUtils {
      * @return:
      */
     public static String getJarName() {
-        // todo 不支持中文 空格
-        String jarPath = getPathFolder().replace(STR_NAME_FILE_SLASH, STR_EMPTY);
+        String jarPath = getPathFolder().replace(KEY_FILE_SLASH, SYMBOL_EMPTY);
         int jarIndex = jarPath.indexOf(START_MODE_JAR);
-        String filePath = jarPath.substring(0, jarIndex).replaceAll("%20", " ");
-        return filePath.substring(0, jarIndex) + FILE_TYPE_JAR;
+        String filePath = jarPath.substring(0, jarIndex);
+        return filePath.substring(0, jarIndex).replaceAll("%20", " ") + FILE_TYPE_JAR;
     }
 
     /**
@@ -399,7 +398,7 @@ public class FileUtils {
         // 临时备份历史配置文件名称及路径
         String bakFileName = file.getName() + FILE_TYPE_BAK;
         String bakFilePath = file.getParentFile().getParentFile().getPath();
-        String bakFile = bakFilePath + STR_SYMBOL_SLASH + bakFileName;
+        String bakFile = bakFilePath + SYMBOL_SLASH + bakFileName;
 
         if (file.exists()) {
             // 读取历史配置文件
@@ -426,9 +425,9 @@ public class FileUtils {
             deleteFile(confFolder);
         }
 
-        // 解压文件  todo 不支持中文 空格
-        String folder = new File(STR_EMPTY).getAbsolutePath().replaceAll("%20", " ");
-        String tempFolder = folder + STR_SYMBOL_SLASH + "im-tool-ui.temp" + STR_SYMBOL_SLASH;
+        // 解压文件
+        String folder = new File(SYMBOL_EMPTY).getAbsolutePath().replaceAll("%20", " ");
+        String tempFolder = folder + SYMBOL_SLASH + "im-tool-ui.temp" + SYMBOL_SLASH;
         // 生成临时解压文件夹
         File temp = new File(tempFolder);
         deleteFile(temp);
@@ -437,7 +436,7 @@ public class FileUtils {
         UnZipRarUtils.unZip(new File(getJarName()), tempFolder);
 
         // 复制文件
-        copyFolder(tempFolder + STR_NAME_CONF, folder);
+        copyFolder(tempFolder + KEY_CONF, folder);
         File[] fileList = new File(tempFolder).listFiles();
         for (File item : fileList) {
             deleteFile(item);
@@ -451,16 +450,16 @@ public class FileUtils {
         for (int i = 0; i < content.size(); i++) {
             String item = content.get(i);
             // 获取历史svn代码更新配置
-            if (item.startsWith(KEY_SVN_UPDATE)) {
-                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_UPDATE);
+            if (item.startsWith(KEY_SVN_UPDATE_LOCATION)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_UPDATE_LOCATION);
                 updateContent.addAll(updateConfig);
                 if (CollectionUtils.isNotEmpty(updateConfig)) {
                     continue;
                 }
             }
             // 更新历史升级脚本配置
-            if (item.startsWith(KEY_SCRIPT_UPDATE)) {
-                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SCRIPT_UPDATE);
+            if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SCRIPT_UPDATE_TABLE);
                 updateContent.addAll(updateConfig);
                 if (CollectionUtils.isNotEmpty(updateConfig)) {
                     continue;
@@ -471,8 +470,8 @@ public class FileUtils {
             while (iterator.hasNext()) {
                 String key = iterator.next();
                 String value = oldAppConfig.get(key);
-                if (item.startsWith(key + STR_SYMBOL_EQUALS)) {
-                    int index = item.indexOf(STR_SYMBOL_EQUALS) + 1;
+                if (item.startsWith(key + SYMBOL_EQUALS)) {
+                    int index = item.indexOf(SYMBOL_EQUALS) + 1;
                     item = item.substring(0, index) + value;
                 }
             }
@@ -481,14 +480,14 @@ public class FileUtils {
         // 读取svn统计配置信息
         if (StringUtils.isNotBlank(oldAppConfig.get(KEY_SVN_STAT))) {
             // 读取模板配置项信息
-            String svnStatPath = FileUtils.getFilePath(STR_PATH_SVN_STAT);
+            String svnStatPath = FileUtils.getFilePath(PATH_SVN_STAT);
             List<String> svnStatContent = FileUtils.readNormalFile(svnStatPath, false);
             StringBuilder svnStat = new StringBuilder();
             List<String> updateSvnStatContent = new ArrayList<>(16);
             for (String item : svnStatContent) {
                 svnStat.append(item);
             }
-            svnStatContent = Arrays.asList(SecurityUtils.getDecryptString(svnStat.toString()).split(STR_SYMBOL_NEXT_LINE));
+            svnStatContent = Arrays.asList(SecurityUtils.getDecryptString(svnStat.toString()).split(SYMBOL_NEXT_LINE));
             for (String item : svnStatContent) {
                 // 更新svn统计用户信息
                 if (item.startsWith(KEY_SVN_STAT_USER)) {
@@ -503,8 +502,8 @@ public class FileUtils {
                 while (iterator.hasNext()) {
                     String key = iterator.next();
                     String value = oldAppConfig.get(key);
-                    if (item.startsWith(key + STR_SYMBOL_EQUALS)) {
-                        int index = item.indexOf(STR_SYMBOL_EQUALS) + 1;
+                    if (item.startsWith(key + SYMBOL_EQUALS)) {
+                        int index = item.indexOf(SYMBOL_EQUALS) + 1;
                         item = item.substring(0, index) + value;
                     }
                 }
@@ -525,7 +524,7 @@ public class FileUtils {
             String key = iterator.next();
             String value = content.get(key);
             if (key.startsWith(keyWord)) {
-                String item = key + STR_SYMBOL_EQUALS + value;
+                String item = key + SYMBOL_EQUALS + value;
                 update.add(item);
             }
         }

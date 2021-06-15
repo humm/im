@@ -36,15 +36,15 @@ public class InitConfigTest {
      */
     @Test
     public void buildLicense() throws Exception {
-        String confPath = FileUtils.getFilePath(STR_PATH_APP);
+        String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);
         // 生成证书信息
         String appFunction = content.get(1);
         String effectiveDate = content.get(3);
         String svnStat = content.get(5);
-        int indexFunction = appFunction.indexOf(STR_SYMBOL_EQUALS) + 1;
-        int indexEffectiveDate = effectiveDate.indexOf(STR_SYMBOL_EQUALS) + 1;
-        int indexSvnStat = svnStat.indexOf(STR_SYMBOL_EQUALS) + 1;
+        int indexFunction = appFunction.indexOf(SYMBOL_EQUALS) + 1;
+        int indexEffectiveDate = effectiveDate.indexOf(SYMBOL_EQUALS) + 1;
+        int indexSvnStat = svnStat.indexOf(SYMBOL_EQUALS) + 1;
         appFunction = appFunction.substring(indexFunction);
         effectiveDate = effectiveDate.substring(indexEffectiveDate);
         svnStat = svnStat.substring(indexSvnStat);
@@ -59,7 +59,7 @@ public class InitConfigTest {
             }
         } else {
             // 配置功能
-            String[] functionConfig = appFunction.split(STR_SYMBOL_COMMA);
+            String[] functionConfig = appFunction.split(SYMBOL_COMMA);
             for (String code : functionConfig) {
                 String name = FunctionConfig.getName(code);
                 if (StringUtils.isNotBlank(name)) {
@@ -69,7 +69,7 @@ public class InitConfigTest {
         }
         // 加密写文件
         String licenseContent = SecurityUtils.getEncryptString(JSON.toJSONString(license));
-        String licensePath = FileUtils.getFilePath(STR_PATH_LICENSE);
+        String licensePath = FileUtils.getFilePath(PATH_LICENSE);
         FileUtils.writeFile(licensePath, licenseContent, false);
         buildAppConfig(license, svnStat);
     }
@@ -94,10 +94,10 @@ public class InitConfigTest {
             ) {
                 continue;
             }
-            describe.append(functionDto.getFunctionCode() + STR_SYMBOL_COLON + FunctionConfig.getName(functionDto.getFunctionCode()));
-            describe.append(STR_SPACE);
+            describe.append(functionDto.getFunctionCode() + SYMBOL_COLON + FunctionConfig.getName(functionDto.getFunctionCode()));
+            describe.append(SYMBOL_SPACE);
         }
-        String confPath = FileUtils.getFilePath(STR_PATH_APP);
+        String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {
             content.set(7, describe.toString());
@@ -113,20 +113,36 @@ public class InitConfigTest {
         List<String> scriptUpdate = new ArrayList<>(16);
         List<String> svnStat = new ArrayList<>(16);
         List<String> realtimeStat = new ArrayList<>(16);
+        List<String> historyStat = new ArrayList<>(16);
         int configType = -1;
         int times = 0;
+        boolean append = false;
         for (String item : content) {
-            if (item.contains(STR_CONFIG_PREFIX + STR_CONFIG_APP_TITLE)
-                    || item.contains(STR_CONFIG_PREFIX + STR_CONFIG_SVN_TITLE)
-                    || item.contains(STR_CONFIG_PREFIX + STR_CONFIG_SVN_STAT_TITLE)
-                    || item.contains(STR_CONFIG_PREFIX + SVN_LOG.getName())
-                    || item.contains(STR_CONFIG_PREFIX + SVN_UPDATE.getName())
-                    || item.contains(STR_CONFIG_PREFIX + FUND_INFO.getName())
-                    || item.contains(STR_CONFIG_PREFIX + PROCESS_INFO.getName())
-                    || item.contains(STR_CONFIG_PREFIX + SCRIPT_UPDATE.getName())
-                    || item.contains(STR_CONFIG_PREFIX + SVN_REALTIME_STAT.getName())
+            if (item.contains(CONFIG_PREFIX + CONFIG_APP_TITLE)
+                    || item.contains(CONFIG_PREFIX + CONFIG_SVN_TITLE)
+                    || item.contains(CONFIG_PREFIX + CONFIG_SVN_STAT_TITLE)
+                    || item.contains(CONFIG_PREFIX + SVN_LOG.getName())
+                    || item.contains(CONFIG_PREFIX + SVN_UPDATE.getName())
+                    || item.contains(CONFIG_PREFIX + FUND_INFO.getName())
+                    || item.contains(CONFIG_PREFIX + PROCESS_INFO.getName())
+                    || item.contains(CONFIG_PREFIX + SCRIPT_UPDATE.getName())
+                    || item.contains(CONFIG_PREFIX + SVN_REALTIME_STAT.getName())
             ) {
                 times++;
+            }
+
+            if (item.startsWith(KEY_SVN_UPDATE_LOCATION) || item.startsWith(KEY_SCRIPT_UPDATE_TABLE) || item.startsWith(KEY_SVN_STAT_USER)) {
+                if (!append) {
+                    append = true;
+                    if (item.startsWith(KEY_SVN_UPDATE_LOCATION)) {
+                        svnUpdate.add("svn.update.ta6=");
+                    } else if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
+                        scriptUpdate.add("script.update.table.tbscheduletask=");
+                    } else {
+                        svnStat.add("svn.stat.user.zhangsan10000=张三");
+                    }
+                }
+                continue;
             }
             switch (configType) {
                 case -1:
@@ -156,11 +172,15 @@ public class InitConfigTest {
                 case 96:
                     realtimeStat.add(item);
                     break;
+                case 97:
+                    historyStat.add(item);
+                    break;
                 default:
                     break;
             }
             if (StringUtils.isBlank(item.trim()) && times == 2) {
                 times = 0;
+                append = false;
                 if (configType == 5) {
                     configType = 95;
                 } else {
@@ -171,7 +191,11 @@ public class InitConfigTest {
         List<String> config = new ArrayList<>(16);
         List<String> svnStatConfig = new ArrayList<>(16);
         config.addAll(appInfo);
-        if (authFunction(licenseDto.getFunction(), SVN_LOG.getCode()) || authFunction(licenseDto.getFunction(), SVN_UPDATE.getCode())) {
+        if (authFunction(licenseDto.getFunction(), SVN_LOG.getCode())
+                || authFunction(licenseDto.getFunction(), SVN_UPDATE.getCode())
+                || authFunction(licenseDto.getFunction(), SVN_REALTIME_STAT.getCode())
+                || authFunction(licenseDto.getFunction(), SVN_HISTORY_STAT.getCode())
+        ) {
             config.addAll(svnInfo);
         }
         if (authFunction(licenseDto.getFunction(), SVN_LOG.getCode())) {
@@ -195,6 +219,9 @@ public class InitConfigTest {
         if (authFunction(licenseDto.getFunction(), SVN_REALTIME_STAT.getCode())) {
             svnStatConfig.addAll(realtimeStat);
         }
+        if (authFunction(licenseDto.getFunction(), SVN_HISTORY_STAT.getCode())) {
+            svnStatConfig.addAll(historyStat);
+        }
         if (svnStatFlag.equals(KEY_TRUE)) {
             config.addAll(svnStatConfig);
         }
@@ -202,11 +229,11 @@ public class InitConfigTest {
         FileUtils.writeFile(confPath, config, false);
 
         // 保存svn统计配置信息
-        String svnStatPath = FileUtils.getFilePath(STR_PATH_SVN_STAT);
+        String svnStatPath = FileUtils.getFilePath(PATH_SVN_STAT);
         // 数据加密
         StringBuilder svnStatContent = new StringBuilder();
         for (String item : svnStatConfig) {
-            svnStatContent.append(item + STR_SYMBOL_NEXT_LINE);
+            svnStatContent.append(item + SYMBOL_NEXT_LINE);
         }
         FileUtils.writeFile(svnStatPath, SecurityUtils.getEncryptString(svnStatContent.toString()), false);
     }
@@ -230,8 +257,6 @@ public class InitConfigTest {
         keys.add("svn.url");
         keys.add("svn.default.append.path");
 
-        keys.add("svn.update.ta6");
-
         keys.add("fund.excel.path");
         keys.add("fund.generate.path");
 
@@ -239,19 +264,18 @@ public class InitConfigTest {
         keys.add("process.generate.path.trans");
         keys.add("process.generate.path.schedule");
 
-        keys.add("script.update.table.tbscheduletask");
         keys.add("script.update.generate.path");
 
         keys.add("app.license.show");
 
-        String confPath = FileUtils.getFilePath(STR_PATH_APP);
+        String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i);
                 if (isUpdate(item, keys)) {
-                    int index = item.indexOf(STR_SYMBOL_EQUALS) + 1;
-                    item = item.substring(0, index) + STR_EMPTY;
+                    int index = item.indexOf(SYMBOL_EQUALS) + 1;
+                    item = item.substring(0, index) + SYMBOL_EMPTY;
                     content.set(i, item);
                 }
             }
@@ -270,7 +294,7 @@ public class InitConfigTest {
     @Test
     public void updateVersionConfig() {
         try {
-            String versionFilePath = FileUtils.getFilePath(STR_PATH_VERSION);
+            String versionFilePath = FileUtils.getFilePath(PATH_VERSION);
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
             List<String> content = FileUtils.readNormalFile(versionFilePath, false);
             String subVersion = "00";
@@ -280,10 +304,10 @@ public class InitConfigTest {
                     if (item.startsWith("当前版本:")) {
                         int index = item.indexOf(":") + 1;
                         String version = item.substring(index);
-                        int versionIndex = version.lastIndexOf(STR_SYMBOL_POINT);
+                        int versionIndex = version.lastIndexOf(SYMBOL_POINT);
                         String versionDate = version.substring(0, versionIndex).trim();
                         String versionNo = version.substring(versionIndex + 1);
-                        if (CommonUtils.getCurrentDateTime3().equals(versionDate.replace(STR_SYMBOL_POINT, STR_EMPTY))) {
+                        if (CommonUtils.getCurrentDateTime3().equals(versionDate.replace(SYMBOL_POINT, SYMBOL_EMPTY))) {
                             subVersion = String.valueOf(Integer.valueOf(versionNo) + 1);
                             if (subVersion.length() == 1) {
                                 subVersion = STR_0 + subVersion;
@@ -294,10 +318,10 @@ public class InitConfigTest {
                 }
             }
             StringBuilder statLog = new StringBuilder();
-            statLog.append("首发版本: ").append("2021.05.06.00").append(STR_SYMBOL_NEXT_LINE);
-            statLog.append("发布时间: ").append("2021-05-06 23:17:56").append(STR_SYMBOL_NEXT_LINE_2);
-            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime4().replace(STR_SYMBOL_HYPHEN, STR_SYMBOL_POINT)).append(STR_SYMBOL_POINT).append(subVersion).append(STR_SYMBOL_NEXT_LINE);
-            statLog.append("发布时间: ").append(CommonUtils.getCurrentDateTime1()).append(STR_SYMBOL_NEXT_LINE);
+            statLog.append("首发版本: ").append("2021.05.06.00").append(SYMBOL_NEXT_LINE);
+            statLog.append("发布时间: ").append("2021-05-06 23:17:56").append(SYMBOL_NEXT_LINE_2);
+            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime4().replace(SYMBOL_HYPHEN, SYMBOL_POINT)).append(SYMBOL_POINT).append(subVersion).append(SYMBOL_NEXT_LINE);
+            statLog.append("发布时间: ").append(CommonUtils.getCurrentDateTime1()).append(SYMBOL_NEXT_LINE);
             FileUtils.writeFile(versionFilePath, statLog.toString(), false);
             FileUtils.writeFile(versionFilePathSource, statLog.toString(), false);
         } catch (Exception e) {
@@ -315,7 +339,7 @@ public class InitConfigTest {
      * @return:
      */
     private boolean isUpdate(String item, List<String> keys) {
-        if (!item.contains(STR_SYMBOL_EQUALS)) {
+        if (!item.contains(SYMBOL_EQUALS)) {
             return false;
         }
         for (String key : keys) {

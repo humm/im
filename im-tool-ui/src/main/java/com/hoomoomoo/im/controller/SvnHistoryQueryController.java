@@ -102,14 +102,14 @@ public class SvnHistoryQueryController implements Initializable {
                     int index = 0;
                     while (iterator.hasNext()) {
                         if (index >= statNum) {
-                            OutputUtils.info(statList.get(index), STR_SYMBOL_NEXT_LINE_2);
+                            OutputUtils.info(statList.get(index), SYMBOL_NEXT_LINE_2);
                         }
                         String userCode = iterator.next();
                         outputStatInfo(statList.get(index), svnStat.get(userCode));
                         index++;
                         svnStatDtoList.add(svnStat.get(userCode));
                     }
-                    OutputUtils.info(notice, getOrderInfo(svnStatDtoList));
+                    OutputUtils.info(notice, getOrderInfo(svnStatDtoList, appConfigDto));
                 } catch (Exception e) {
                     LoggerUtils.info(e);
                 } finally {
@@ -141,27 +141,37 @@ public class SvnHistoryQueryController implements Initializable {
         }).start();
     }
 
-    private String getOrderInfo(List<SvnStatDto> svnStatDtoList) {
-        StringBuilder order = new StringBuilder("提交次数排序:  ");
-        Collections.sort(svnStatDtoList, (o1, o2) -> o2.getSubmitTimes() - o1.getSubmitTimes());
+    private String getOrderInfo(List<SvnStatDto> svnStatDtoList, AppConfigDto appConfigDto) {
+        StringBuilder order = new StringBuilder("提交代码次数排序:  ");
+        if (STR_2.equals(appConfigDto.getSvnStatHistoryOrderType())) {
+            order = new StringBuilder("修改文件个数排序:  ");
+        }
+        Collections.sort(svnStatDtoList, (o1, o2) -> {
+            if (STR_1.equals(appConfigDto.getSvnStatHistoryOrderType())) {
+                return o2.getSubmitTimes() - o1.getSubmitTimes();
+            } else {
+                return o2.getFileNum() - o1.getFileNum();
+            }
+
+        });
         for (int i = 0; i < svnStatDtoList.size(); i++) {
             SvnStatDto item = svnStatDtoList.get(i);
             if (i > 10) {
                 break;
             }
-            order.append(item.getUserName()).append(STR_SPACE_2);
+            order.append(item.getUserName()).append(SYMBOL_SPACE_2);
         }
         return order.toString();
 
     }
 
     private void outputStatInfo(TextArea stat, SvnStatDto svnStatDto) {
-        OutputUtils.info(stat, svnStatDto.getUserName() + STR_SYMBOL_NEXT_LINE_2);
-        OutputUtils.info(stat, STR_SPACE_4 + "首次提交时间: " + svnStatDto.getFirstTime() + STR_SYMBOL_NEXT_LINE_2);
-        OutputUtils.info(stat, STR_SPACE_4 + "末次提交时间: " + svnStatDto.getLastTime() + STR_SYMBOL_NEXT_LINE_2);
-        OutputUtils.info(stat, STR_SPACE_4 + "提交代码次数: " + svnStatDto.getSubmitTimes() + STR_SYMBOL_NEXT_LINE_2);
-        OutputUtils.info(stat, STR_SPACE_4 + "修改文件个数: " + svnStatDto.getFileNum() + STR_SYMBOL_NEXT_LINE_2);
-        OutputUtils.info(stat, STR_SPACE_4 + "修改文件次数: " + svnStatDto.getFileTimes() + STR_SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, svnStatDto.getUserName() + SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, SYMBOL_SPACE_4 + "首次提交时间: " + svnStatDto.getFirstTime() + SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, SYMBOL_SPACE_4 + "末次提交时间: " + svnStatDto.getLastTime() + SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, SYMBOL_SPACE_4 + "提交代码次数: " + svnStatDto.getSubmitTimes() + SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, SYMBOL_SPACE_4 + "修改文件个数: " + svnStatDto.getFileNum() + SYMBOL_NEXT_LINE_2);
+        OutputUtils.info(stat, SYMBOL_SPACE_4 + "修改文件次数: " + svnStatDto.getFileTimes() + SYMBOL_NEXT_LINE_2);
     }
 
     synchronized private void setProgress(double value) {
@@ -169,7 +179,7 @@ public class SvnHistoryQueryController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 schedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
                 schedule.requestFocus();
             });
         } catch (Exception e) {

@@ -53,7 +53,7 @@ public class SvnUpdateController implements Initializable {
 
     @FXML
     void executeSubmit(ActionEvent event) {
-        LoggerUtils.info(String.format(STR_MSG_USE, SVN_UPDATE.getName()));
+        LoggerUtils.info(String.format(MSG_USE, SVN_UPDATE.getName()));
         try {
             if (!CommonUtils.checkConfig(fileLog, FunctionConfig.SVN_UPDATE.getCode())) {
                 return;
@@ -68,7 +68,7 @@ public class SvnUpdateController implements Initializable {
             getSvnUpdate();
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + e.toString());
+            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + e.toString());
         }
     }
 
@@ -87,16 +87,16 @@ public class SvnUpdateController implements Initializable {
                             String name = iterator.next();
                             String path = item.get(name);
                             updatePath.add(path);
-                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + "更新[ " + name + " ]开始\n");
-                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE_4 + path + "\n");
+                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + "更新[ " + name + " ]开始\n");
+                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE_4 + path + "\n");
                             if (FileUtils.isSuffixDirectory(new File(path), FILE_TYPE_SVN)) {
                                 Long version = SvnUtils.updateSvn(path);
                                 infoMsg(name, version, "更新完成");
                             } else {
-                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + "[ " + name + " ]非svn目录,无需更新\n");
+                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + "[ " + name + " ]非svn目录,无需更新\n");
                                 infoMsg(name, -1L, "无需更新");
                             }
-                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + "更新[ " + name + " ]结束\n");
+                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + "更新[ " + name + " ]结束\n");
                         }
                         OutputUtils.info(workspaceNum, String.valueOf(Integer.valueOf(workspaceNum.getText()) - 1));
                     }
@@ -105,7 +105,7 @@ public class SvnUpdateController implements Initializable {
                 LoggerUtils.writeSvnUpdateInfo(date, updatePath);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + ExceptionMsgUtils.getMsg(e));
+                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
             } finally {
                 svnSubmit.setDisable(false);
             }
@@ -137,7 +137,7 @@ public class SvnUpdateController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 schedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
                 schedule.requestFocus();
             });
         } catch (Exception e) {

@@ -104,7 +104,7 @@ public class FundInfoController implements Initializable {
     @FXML
     void executeSubmit(ActionEvent event) {
         try {
-            LoggerUtils.info(String.format(STR_MSG_USE, FUND_INFO.getName()));
+            LoggerUtils.info(String.format(MSG_USE, FUND_INFO.getName()));
             if (!CommonUtils.checkConfig(fundLog, FunctionConfig.FUND_INFO.getCode())) {
                 return;
             }
@@ -157,7 +157,7 @@ public class FundInfoController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 fundSchedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
                 fundSchedule.requestFocus();
             });
         } catch (Exception e) {
@@ -317,7 +317,7 @@ public class FundInfoController implements Initializable {
         for (int i = 1; i < rows; i++) {
             String column = getCellReal(sheet, 4, i);
             String kind = getCellReal(sheet, 11, i);
-            if (STR_EMPTY.equals(kind.trim())) {
+            if (SYMBOL_EMPTY.equals(kind.trim())) {
                 COMPONENT_KIND.put(column, "'1'");
             } else {
                 COMPONENT_KIND.put(column, "'" + kind + "'");
@@ -350,7 +350,7 @@ public class FundInfoController implements Initializable {
      */
     private String getCellReal(Sheet sheet, int i, int j) {
         if (sheet.getCell(i, j).getContents().equals("")) {
-            return STR_SPACE;
+            return SYMBOL_SPACE;
         } else {
             return sheet.getCell(i, j).getContents();
         }
@@ -390,17 +390,17 @@ public class FundInfoController implements Initializable {
             bufferedWriter.write("delete from tbdataelement;\n");
         }
         for (int i = 1; i < rows; i++) {
-            if (STR_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
+                if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
                     continue;
                 }
                 bufferedWriter.write("delete from tbdataelement where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, dict_key, rel_table, rel_field, rel_condition, reserve) values (";
-            if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
                 sql = "-- insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, dict_key, rel_table, rel_field, rel_condition, reserve) values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -451,20 +451,20 @@ public class FundInfoController implements Initializable {
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (STR_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 2, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
                 continue;
             }
             if (!STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
+                if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
                     continue;
                 }
                 bufferedWriter.write("delete from tbprdtemplate where template_code = " + getCell(sheet, 2, i) + ";\n");
             }
             String sql = "insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) values (";
-            if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
                 sql = "-- insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -496,20 +496,20 @@ public class FundInfoController implements Initializable {
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (STR_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 1, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
                 continue;
             }
             if (!STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
+                if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
                     continue;
                 }
                 bufferedWriter.write("delete from tbelementgroup where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) values (";
-            if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
                 sql = "-- insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -546,20 +546,20 @@ public class FundInfoController implements Initializable {
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (STR_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 1, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
                 continue;
             }
             if (!STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
+                if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
                     continue;
                 }
                 bufferedWriter.write("delete from tbtemplaterelgroup where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) values (";
-            if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
                 sql = "-- insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -587,20 +587,20 @@ public class FundInfoController implements Initializable {
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (STR_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 1, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
                 continue;
             }
             if (!STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
+                if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
                     continue;
                 }
                 bufferedWriter.write("delete from tbpageelement where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) values (";
-            if (getCellReal(sheet, 0, i).contains(ANNOTATION_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
                 sql = "-- insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) values (";
             }
             // 获取component_kind

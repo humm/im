@@ -80,7 +80,7 @@ public class ProcessInfoController implements Initializable {
     @FXML
     void executeSubmit(ActionEvent event) {
         try {
-            LoggerUtils.info(String.format(STR_MSG_USE, PROCESS_INFO.getName()));
+            LoggerUtils.info(String.format(MSG_USE, PROCESS_INFO.getName()));
             if (!CommonUtils.checkConfig(log, FunctionConfig.PROCESS_INFO.getCode())) {
                 return;
             }
@@ -121,7 +121,7 @@ public class ProcessInfoController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 schedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
                 schedule.requestFocus();
             });
         } catch (Exception e) {
@@ -215,8 +215,8 @@ public class ProcessInfoController implements Initializable {
                     // step 3 读group流程，绑定task
                     String[] sheetNames = sheet.getName().split("&");
                     // step 3.1 命名检查
-                    String groupName = STR_SPACE;
-                    String groupCode = STR_SPACE;
+                    String groupName = SYMBOL_SPACE;
+                    String groupCode = SYMBOL_SPACE;
                     if (sheet.getName().compareTo("自由节点") != 0) {
                         if (sheetNames.length != 2) {
                             OutputUtils.info(log, sheet.getName() + "命名不规范,正常的格式为中文名&英文名,请检查");
@@ -239,7 +239,7 @@ public class ProcessInfoController implements Initializable {
                 writeTaskRegistry(bufferedWriter);
                 OutputUtils.info(log, "tbscheduletaskregistry生成结束");
 
-                bufferedWriter.write(STR_EMPTY);
+                bufferedWriter.write(SYMBOL_EMPTY);
                 bufferedWriter.close();
                 schedule.setProgress(1);
                 List<String> path = new ArrayList<>();
@@ -530,10 +530,7 @@ public class ProcessInfoController implements Initializable {
                                 + (map.get(TaskMemoryCache.SCHE_TASK_RESERVE).equals("") ? " " : map.get(TaskMemoryCache.SCHE_TASK_RESERVE)) + "' );";
                         // 写 子task SCHE_JOB_CODE 字段填写空
                         bufferedWriter.write(subTaskSql + "\n");
-                        // TaskMemoryCache.setExistMap(functionId);
-
                     }
-                    // parentSubTaskCode = (String) subMap.get(TaskMemoryCache.SCHE_TASK_CODE);
                 }
 
                 parentTaskCode = taskCode;

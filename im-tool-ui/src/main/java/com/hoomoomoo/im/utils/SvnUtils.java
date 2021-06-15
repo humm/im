@@ -38,10 +38,10 @@ public class SvnUtils {
         List<LogDto> logList = new ArrayList<>();
         // 最后一次提交记录
         long endRevision = -1;
-        SVNDirEntry lastSVNDirEntry = repository.info(".", endRevision);
+        SVNDirEntry lastSVNDirEntry = repository.info(SYMBOL_POINT, endRevision);
         // 开始版本号
         long startRevision = lastSVNDirEntry.getRevision() - Integer.valueOf(appConfigDto.getSvnMaxRevision());
-        repository.log(new String[]{""}, startRevision, endRevision, true, true, svnLogEntry -> {
+        repository.log(new String[]{SYMBOL_EMPTY}, startRevision, endRevision, true, true, svnLogEntry -> {
             if (svnLogEntry.getAuthor().equals(appConfigDto.getSvnUsername())) {
                 LogDto svnLogDto = new LogDto();
                 logList.add(svnLogDto);
@@ -55,11 +55,11 @@ public class SvnUtils {
                 while (iterator.hasNext()) {
                     String key = iterator.next();
                     SVNLogEntryPath value = logMap.get(key);
-                    String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), STR_EMPTY);
-                    if ("D".equals(String.valueOf(value.getType()))) {
-                        path += " 删除";
+                    String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), SYMBOL_EMPTY);
+                    if (OPERATE_TYPE_DELETE.equals(String.valueOf(value.getType()))) {
+                        path += NAME_DELETE;
                     }
-                    pathList.add(path + STR_SYMBOL_NEXT_LINE);
+                    pathList.add(path + SYMBOL_NEXT_LINE);
                 }
             }
         });
@@ -82,8 +82,8 @@ public class SvnUtils {
                 SvnStatDto svnStatDto = new SvnStatDto();
                 svnStatDto.setUserCode(userCode);
                 svnStatDto.setUserName(userName);
-                svnStatDto.setFirstTime(STR_EMPTY);
-                svnStatDto.setLastTime(STR_EMPTY);
+                svnStatDto.setFirstTime(SYMBOL_EMPTY);
+                svnStatDto.setLastTime(SYMBOL_EMPTY);
                 svnStatDto.setSubmitTimes(0);
                 svnStatDto.setFileNum(0);
                 svnStatDto.setFileTimes(0);
@@ -93,7 +93,7 @@ public class SvnUtils {
             }
             if (notice) {
                 SvnStatDto svnStatDto = new SvnStatDto();
-                svnStatDto.setNotice(STR_EMPTY);
+                svnStatDto.setNotice(SYMBOL_EMPTY);
                 svnStat.put(KEY_NOTICE, svnStatDto);
             }
         }
@@ -116,7 +116,7 @@ public class SvnUtils {
                     while (iterator.hasNext()) {
                         String key = iterator.next();
                         SVNLogEntryPath value = logMap.get(key);
-                        String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), STR_EMPTY);
+                        String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), SYMBOL_EMPTY);
                         if (svnStatDto.getFile().get(path) == null) {
                             svnStatDto.getFile().put(path, 1);
                             svnStatDto.setFileNum(svnStatDto.getFileNum() + 1);
@@ -127,16 +127,16 @@ public class SvnUtils {
                     }
                     String msg = svnLogEntry.getMessage();
                     if (StringUtils.isNotBlank(msg)) {
-                        String[] message = msg.split(STR_SYMBOL_NEXT_LINE);
+                        String[] message = msg.split(SYMBOL_NEXT_LINE);
                         for (String item : message) {
-                            if (item.startsWith("[需求描述]")) {
-                                msg = item.split("]")[1];
+                            if (item.startsWith(NAME_SVN_DESCRIBE)) {
+                                msg = item.split(SYMBOL_BRACKETS_1_RIGHT)[1];
                                 break;
                             }
                         }
                     }
                     if (notice) {
-                        String noticeMsg = String.format(STR_MSG_SVN_REALTIME_STAT, userName, svnStatDto.getLastTime(), msg, svnLogEntry.getRevision());
+                        String noticeMsg = String.format(MSG_SVN_REALTIME_STAT, userName, svnStatDto.getLastTime(), msg, svnLogEntry.getRevision());
                         svnStat.get(KEY_NOTICE).setNotice(noticeMsg);
                     }
                 }

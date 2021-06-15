@@ -51,7 +51,7 @@ public class FunctionStatInfoController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        LoggerUtils.info(String.format(STR_MSG_USE, FUNCTION_STAT_INFO.getName()));
+        LoggerUtils.info(String.format(MSG_USE, FUNCTION_STAT_INFO.getName()));
 
         OutputUtils.clearLog(stat1);
         OutputUtils.clearLog(stat2);
@@ -89,13 +89,13 @@ public class FunctionStatInfoController implements Initializable {
                 functionDto.setUseTimes(0);
                 continue;
             }
-            String logPath = "/logs/" + FunctionConfig.getLogFolder(functionDto.getFunctionCode()) + "/00000000.log";
+            String logPath = String.format(PATH_STAT, FunctionConfig.getLogFolder(functionDto.getFunctionCode())) + FILE_TYPE_STAT;
             try {
                 TextArea stat = statList.get(i);
                 if (i >= statNum) {
-                    OutputUtils.info(stat, STR_SYMBOL_NEXT_LINE_2);
+                    OutputUtils.info(stat, SYMBOL_NEXT_LINE_2);
                 }
-                OutputUtils.info(stat, functionDto.getFunctionName() + STR_SYMBOL_NEXT_LINE_2);
+                OutputUtils.info(stat, functionDto.getFunctionName() + SYMBOL_NEXT_LINE_2);
                 File statFile = new File(FileUtils.getFilePath(logPath));
                 List<String> logStat = new ArrayList<>();
                 if (statFile.exists()) {
@@ -118,8 +118,8 @@ public class FunctionStatInfoController implements Initializable {
             return 0;
         }
         String timeLine = logStat.get(2);
-        if (timeLine.contains(STR_SYMBOL_COLON)) {
-            return Integer.valueOf(timeLine.split(STR_SYMBOL_COLON)[1].trim());
+        if (timeLine.contains(SYMBOL_COLON)) {
+            return Integer.valueOf(timeLine.split(SYMBOL_COLON)[1].trim());
         }
         return 0;
     }
@@ -135,7 +135,7 @@ public class FunctionStatInfoController implements Initializable {
             if (FUNCTION_STAT_INFO.getCode().equals(item.getFunctionCode()) || ABOUT_INFO.getCode().equals(item.getFunctionCode())) {
                 continue;
             }
-            order.append(item.getFunctionName()).append(STR_SPACE_2);
+            order.append(item.getFunctionName()).append(SYMBOL_SPACE_2);
         }
         return order.toString();
 
@@ -148,7 +148,7 @@ public class FunctionStatInfoController implements Initializable {
             logStat.add("使用次数: 0");
         }
         for (String item : logStat) {
-            OutputUtils.info(stat, STR_SPACE_4 + item + STR_SYMBOL_NEXT_LINE_2);
+            OutputUtils.info(stat, SYMBOL_SPACE_4 + item + SYMBOL_NEXT_LINE_2);
         }
     }
 

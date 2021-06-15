@@ -55,7 +55,7 @@ public class ScriptUpdateController implements Initializable {
     @FXML
     void executeSubmit(ActionEvent event) {
         try {
-            LoggerUtils.info(String.format(STR_MSG_USE, SCRIPT_UPDATE.getName()));
+            LoggerUtils.info(String.format(MSG_USE, SCRIPT_UPDATE.getName()));
             if (!CommonUtils.checkConfig(target, FunctionConfig.SCRIPT_UPDATE.getCode())) {
                 return;
             }
@@ -138,7 +138,7 @@ public class ScriptUpdateController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 schedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
                 schedule.requestFocus();
             });
         } catch (Exception e) {
@@ -155,16 +155,16 @@ public class ScriptUpdateController implements Initializable {
                 String sourceScript = source.getText();
                 if (StringUtils.isNotBlank(sourceScript)) {
                     List<String> deleteSqlList = new ArrayList<>(16);
-                    String[] items = sourceScript.split(STR_SYMBOL_SEMICOLON);
-                    String[] itemsAfter = sourceScript.replace(STR_SYMBOL_NEXT_LINE, STR_EMPTY).split(STR_SYMBOL_SEMICOLON);
+                    String[] items = sourceScript.split(SYMBOL_SEMICOLON);
+                    String[] itemsAfter = sourceScript.replace(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).split(SYMBOL_SEMICOLON);
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     for (String item : itemsAfter) {
                         // 获取sql字段和值
-                        String[] sql = item.split(STR_NAME_VALUES);
+                        String[] sql = item.split(KEY_VALUES);
                         if (sql.length != 2) {
-                            sql = item.split(STR_NAME_VALUES.toUpperCase());
+                            sql = item.split(KEY_VALUES.toUpperCase());
                             if (sql.length != 2) {
-                                throw new Exception("sql语句未包含或者包含多个" + STR_NAME_VALUES + STR_SYMBOL_NEXT_LINE + item);
+                                throw new Exception("sql语句未包含或者包含多个" + KEY_VALUES + SYMBOL_NEXT_LINE + item);
                             }
                         }
                         Map<String, String> sqlInfo = new LinkedHashMap<>(16);
@@ -172,13 +172,13 @@ public class ScriptUpdateController implements Initializable {
                         String[] values = null;
                         for (int i = 0; i < sql.length; i++) {
                             String sqlItem = sql[i];
-                            int indexStart = sqlItem.indexOf(STR_SYMBOL_BRACKETS_LEFT) + 1;
-                            int indexEnd = sqlItem.lastIndexOf(STR_SYMBOL_BRACKETS_RIGHT);
+                            int indexStart = sqlItem.indexOf(SYMBOL_BRACKETS_LEFT) + 1;
+                            int indexEnd = sqlItem.lastIndexOf(SYMBOL_BRACKETS_RIGHT);
                             String subSql = sqlItem.substring(indexStart, indexEnd);
                             if (i == 0) {
-                                columns = subSql.split(STR_SYMBOL_COMMA);
+                                columns = subSql.split(SYMBOL_COMMA);
                             } else {
-                                values = subSql.split(STR_SYMBOL_COMMA);
+                                values = subSql.split(SYMBOL_COMMA);
                             }
                         }
                         if (columns != null && values != null) {
@@ -209,7 +209,7 @@ public class ScriptUpdateController implements Initializable {
                                             deleteSql.append(cloumnItem.toLowerCase() + " = " + sqlInfo.get(cloumnItem.toLowerCase()));
                                         }
                                     }
-                                    deleteSql.append(STR_SYMBOL_SEMICOLON);
+                                    deleteSql.append(SYMBOL_SEMICOLON);
                                     deleteSqlList.add(deleteSql.toString());
                                     break outer;
                                 }
@@ -222,17 +222,17 @@ public class ScriptUpdateController implements Initializable {
                         // 组装sql语句
                         for (int i = 0; i < items.length; i++) {
                             String sql = items[i].trim();
-                            if (sql.equals(STR_EMPTY)) {
+                            if (sql.equals(SYMBOL_EMPTY)) {
                                 continue;
                             }
                             if (sql.toLowerCase().startsWith("insert")) {
-                                OutputUtils.info(target, deleteSqlList.get(i) + STR_SYMBOL_NEXT_LINE);
+                                OutputUtils.info(target, deleteSqlList.get(i) + SYMBOL_NEXT_LINE);
                                 logList.add(deleteSqlList.get(i));
                                 scriptList.add(deleteSqlList.get(i));
                             }
-                            OutputUtils.info(target, sql + STR_SYMBOL_SEMICOLON + STR_SYMBOL_NEXT_LINE);
-                            logList.add(sql.replace(STR_SYMBOL_NEXT_LINE, STR_SPACE) + STR_SYMBOL_SEMICOLON);
-                            scriptList.add(sql + STR_SYMBOL_SEMICOLON + STR_SYMBOL_NEXT_LINE);
+                            OutputUtils.info(target, sql + SYMBOL_SEMICOLON + SYMBOL_NEXT_LINE);
+                            logList.add(sql.replace(SYMBOL_NEXT_LINE, SYMBOL_SPACE) + SYMBOL_SEMICOLON);
+                            scriptList.add(sql + SYMBOL_SEMICOLON + SYMBOL_NEXT_LINE);
                         }
                     } else {
                         OutputUtils.clearLog(target);

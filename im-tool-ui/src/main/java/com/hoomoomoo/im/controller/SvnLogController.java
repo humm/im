@@ -14,6 +14,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -54,7 +55,7 @@ public class SvnLogController implements Initializable {
 
     @FXML
     void executeSubmit(ActionEvent event) {
-        LoggerUtils.info(String.format(STR_MSG_USE, SVN_LOG.getName()));
+        LoggerUtils.info(String.format(MSG_USE, SVN_LOG.getName()));
         try {
             if (!CommonUtils.checkConfig(fileLog, FunctionConfig.SVN_LOG.getCode())) {
                 return;
@@ -68,7 +69,7 @@ public class SvnLogController implements Initializable {
             getSvnLog(Integer.valueOf(svnTimes.getText()));
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + e.toString());
+            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + e.toString());
         }
     }
 
@@ -78,23 +79,30 @@ public class SvnLogController implements Initializable {
                 svnSubmit.setDisable(true);
                 Date date = new Date();
                 List<LogDto> logDtoList = SvnUtils.getSvnLog(svnTimes);
+                List<String> fileList = new ArrayList<>();
                 for (LogDto svnLogDto : logDtoList) {
                     OutputUtils.info(svnLog, svnLogDto);
                     OutputUtils.info(fileLog, svnLogDto.getFile());
+                    fileList.addAll(svnLogDto.getFile());
                 }
                 if (CollectionUtils.isEmpty(logDtoList)) {
                     OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录\n");
                 } else {
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     if (appConfigDto.getSvnDefaultAppendBiz() && StringUtils.isNotBlank(appConfigDto.getSvnDefaultAppendPath())) {
-                        OutputUtils.info(fileLog, appConfigDto.getSvnDefaultAppendPath());
+                        for (String file : fileList) {
+                            if (file.endsWith(FILE_TYPE_VUE)) {
+                                OutputUtils.info(fileLog, appConfigDto.getSvnDefaultAppendPath());
+                                break;
+                            }
+                        }
                     }
                 }
                 setProgress(1);
                 LoggerUtils.writeSvnLogInfo(date, logDtoList);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + ExceptionMsgUtils.getMsg(e));
+                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
             } finally {
                 svnSubmit.setDisable(false);
             }
@@ -126,7 +134,7 @@ public class SvnLogController implements Initializable {
             progress = value;
             Platform.runLater(() -> {
                 svnSchedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(STR_SYMBOL_POINT_SLASH)[0] + "%");
+                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
                 svnSchedule.requestFocus();
             });
         } catch (Exception e) {
