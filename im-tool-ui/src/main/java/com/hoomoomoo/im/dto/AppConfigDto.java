@@ -60,6 +60,8 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean scriptUpdateSkip;
 
+    private Boolean scriptUpdateAnnotationSkip;
+
     private Boolean scriptUpdateGenerateFile;
 
     private String scriptGenerateMode;
@@ -83,6 +85,7 @@ public class AppConfigDto extends BaseDto {
         this.svnDefaultAppendBiz = false;
         this.scriptUpdateSkip = false;
         this.scriptUpdateGenerateFile = false;
+        this.scriptUpdateAnnotationSkip = false;
         this.appLicenseShow = false;
         this.svnUpdatePath = new ArrayList<>(16);
         this.scriptUpdateTable = new ArrayList<>(16);

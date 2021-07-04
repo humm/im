@@ -50,6 +50,9 @@ public class ScriptUpdateController implements Initializable {
     @FXML
     private Label scheduleText;
 
+    @FXML
+    private TextField param;
+
     private double progress = 0;
 
     @FXML
@@ -159,6 +162,14 @@ public class ScriptUpdateController implements Initializable {
                     String[] itemsAfter = sourceScript.replace(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).split(SYMBOL_SEMICOLON);
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     for (String item : itemsAfter) {
+                        // 注释处理
+                        if (item.startsWith(ANNOTATION_TYPE_NORMAL)) {
+                            if (appConfigDto.getScriptUpdateAnnotationSkip()) {
+                                item = item.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY);
+                            } else {
+                                continue;
+                            }
+                        }
                         // 获取sql字段和值
                         String[] sql = item.split(KEY_VALUES);
                         if (sql.length != 2) {
@@ -219,11 +230,27 @@ public class ScriptUpdateController implements Initializable {
                     List<String> logList = new ArrayList<>(16);
                     List<String> scriptList = new ArrayList<>(16);
                     if (CollectionUtils.isNotEmpty(deleteSqlList)) {
+                        String paramControl = param.getText().trim();
+                        String paramSql = "\n from (select count(1) param_exists from tbparam where param_id = '" + paramControl + "') a where param_exists = 1";
                         // 组装sql语句
                         for (int i = 0; i < items.length; i++) {
                             String sql = items[i].trim();
                             if (sql.equals(SYMBOL_EMPTY)) {
                                 continue;
+                            }
+                            // 注释处理
+                            if (sql.startsWith(ANNOTATION_TYPE_NORMAL)) {
+                                if (appConfigDto.getScriptUpdateAnnotationSkip()) {
+                                    sql = sql.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY);
+                                } else {
+                                    continue;
+                                }
+                            }
+                            // 参数处理
+                            if (StringUtils.isNotEmpty(paramControl)) {
+                                sql = sql.replace("values(", " select ");
+                                int index = sql.lastIndexOf(SYMBOL_BRACKETS_RIGHT);
+                                sql = sql.substring(0, index) + paramSql;
                             }
                             if (sql.toLowerCase().startsWith("insert")) {
                                 OutputUtils.info(target, deleteSqlList.get(i) + SYMBOL_NEXT_LINE);

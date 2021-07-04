@@ -91,7 +91,7 @@ public class SvnLogController implements Initializable {
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     if (appConfigDto.getSvnDefaultAppendBiz() && StringUtils.isNotBlank(appConfigDto.getSvnDefaultAppendPath())) {
                         for (String file : fileList) {
-                            if (file.endsWith(FILE_TYPE_VUE)) {
+                            if (file.trim().endsWith(FILE_TYPE_VUE)) {
                                 OutputUtils.info(fileLog, appConfigDto.getSvnDefaultAppendPath());
                                 break;
                             }

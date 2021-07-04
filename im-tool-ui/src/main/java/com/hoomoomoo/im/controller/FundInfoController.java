@@ -399,9 +399,10 @@ public class FundInfoController implements Initializable {
                 }
                 bufferedWriter.write("delete from tbdataelement where id = " + getCell(sheet, 1, i) + ";\n");
             }
-            String sql = "insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, dict_key, rel_table, rel_field, rel_condition, reserve) values (";
+            String sql = "insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, " +
+                    "dict_key, rel_table, rel_field, rel_condition, reserve) \nvalues (";
             if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
-                sql = "-- insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, dict_key, rel_table, rel_field, rel_condition, reserve) values (";
+                sql = "-- insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, dict_key, rel_table, rel_field, rel_condition, reserve) \n-- values (";
             }
             sql += getCell(sheet, 1, i) + ","
                     + getCell(sheet, 2, i) + ","
@@ -433,8 +434,8 @@ public class FundInfoController implements Initializable {
         }
         infoMsg(CURRENT_TEMPLATE_NAME + " 头部信息生成 开始");
         bufferedWriter.write("-- " + CURRENT_TEMPLATE_NAME + " 头部信息 开始 \n");
-        bufferedWriter.write("delete from tbprdtemplate where template_code like '" + CURRENT_TEMPLATE_CODE + "%';\n");
-        bufferedWriter.write("delete from tbtemplaterelgroup where template_code like '" + CURRENT_TEMPLATE_CODE + "%';\n");
+        bufferedWriter.write("delete from tbprdtemplate where prd_type = '5' and template_code = '" + CURRENT_TEMPLATE_CODE + "';\n");
+        bufferedWriter.write("delete from tbtemplaterelgroup where template_code = '" + CURRENT_TEMPLATE_CODE + "';\n");
         bufferedWriter.write("delete from tbpageelement where id like '" + CURRENT_TEMPLATE_CODE + "%';\n");
         bufferedWriter.write("delete from tbelementgroup where id like '" + CURRENT_TEMPLATE_CODE + "%';\n");
         bufferedWriter.write("-- " + CURRENT_TEMPLATE_NAME + " 头部信息 结束 \n\n");
@@ -463,9 +464,9 @@ public class FundInfoController implements Initializable {
                 }
                 bufferedWriter.write("delete from tbprdtemplate where template_code = " + getCell(sheet, 2, i) + ";\n");
             }
-            String sql = "insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) values (";
+            String sql = "insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) \nvalues (";
             if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
-                sql = "-- insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) values (";
+                sql = "-- insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) \n-- values (";
             }
             sql += getCell(sheet, 1, i) + ","
                     + getCell(sheet, 2, i) + ","
@@ -508,9 +509,9 @@ public class FundInfoController implements Initializable {
                 }
                 bufferedWriter.write("delete from tbelementgroup where id = " + getCell(sheet, 1, i) + ";\n");
             }
-            String sql = "insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) values (";
+            String sql = "insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) \nvalues (";
             if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
-                sql = "-- insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) values (";
+                sql = "-- insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) \n-- values (";
             }
             sql += getCell(sheet, 1, i) + ","
                     + getCell(sheet, 2, i) + ","
@@ -558,9 +559,9 @@ public class FundInfoController implements Initializable {
                 }
                 bufferedWriter.write("delete from tbtemplaterelgroup where id = " + getCell(sheet, 1, i) + ";\n");
             }
-            String sql = "insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) values (";
+            String sql = "insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) \nvalues (";
             if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
-                sql = "-- insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) values (";
+                sql = "-- insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) \n-- values (";
             }
             sql += getCell(sheet, 1, i) + ","
                     + getCell(sheet, 2, i) + ","
@@ -599,9 +600,9 @@ public class FundInfoController implements Initializable {
                 }
                 bufferedWriter.write("delete from tbpageelement where id = " + getCell(sheet, 1, i) + ";\n");
             }
-            String sql = "insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) values (";
+            String sql = "insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) \nvalues (";
             if (getCellReal(sheet, 0, i).contains(ANNOTATION_TYPE_NORMAL)) {
-                sql = "-- insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) values (";
+                sql = "-- insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) \n-- values (";
             }
             // 获取component_kind
             String componentKind = getComponentKind(sheet.getName(), getCellReal(sheet, 5, i));
@@ -662,10 +663,13 @@ public class FundInfoController implements Initializable {
             // 选择框
             if ("'A'".equals(COMPONENT_KIND.get(column)) || "'H'".equals(COMPONENT_KIND.get(column))) {
                 componentKind = "'Z'";
-            }
-            // 日期选择框
-            if ("'5'".equals(COMPONENT_KIND.get(column))) {
+            } else if ("'5'".equals(COMPONENT_KIND.get(column))) {
+                // 日期选择框
                 componentKind = "'L'";
+            } else {
+                if (!"'1'".equals(COMPONENT_KIND.get(column))) {
+                    componentKind = COMPONENT_KIND.get(column);
+                }
             }
         } else {
             // 新增 修改页面

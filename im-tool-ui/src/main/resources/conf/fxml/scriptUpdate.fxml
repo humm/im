@@ -29,23 +29,26 @@
                                     <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="39.0" prefWidth="596.0">
                                             <children>
-                                                <Button fx:id="submit" layoutX="457.0" layoutY="9.0"
+                                                <Button fx:id="submit" layoutX="557.0" layoutY="9.0"
                                                         mnemonicParsing="false" onAction="#executeSubmit"
                                                         prefHeight="35.0" prefWidth="120.0" text="执行">
                                                     <padding>
                                                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
                                                     </padding>
                                                 </Button>
-                                                <ProgressIndicator fx:id="schedule" layoutX="377.0" layoutY="15.0"
+                                                <ProgressIndicator fx:id="schedule" layoutX="477.0" layoutY="15.0"
                                                                    progress="0.0"/>
-                                                <Label fx:id="scheduleText" layoutX="405.0" layoutY="19.0" text="0%"/>
-                                                <Label layoutX="156.0" layoutY="19.0" text="文件模式"/>
-                                                <RadioButton fx:id="rewrite" layoutX="219.0" layoutY="18.0"
+                                                <Label fx:id="scheduleText" layoutX="505.0" layoutY="19.0" text="0%"/>
+                                                <Label layoutX="256.0" layoutY="19.0" text="文件模式"/>
+                                                <RadioButton fx:id="rewrite" layoutX="319.0" layoutY="18.0"
                                                              mnemonicParsing="false" onAction="#selectRewrite"
                                                              text="重写"/>
-                                                <RadioButton fx:id="append" layoutX="284.0" layoutY="18.0"
+                                                <RadioButton fx:id="append" layoutX="384.0" layoutY="18.0"
                                                              mnemonicParsing="false" onAction="#selectAppend"
                                                              text="追加"/>
+                                                <Label layoutX="15.0" layoutY="19.0" text="参数"/>
+                                                <TextField fx:id="param" layoutX="50.0" layoutY="15.0"
+                                                           prefHeight="25.0" prefWidth="180.0"/>
                                             </children>
                                         </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="210.0" prefWidth="596.0">
