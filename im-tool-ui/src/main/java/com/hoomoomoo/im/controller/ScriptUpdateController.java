@@ -165,7 +165,7 @@ public class ScriptUpdateController implements Initializable {
                         // 注释处理
                         if (item.startsWith(ANNOTATION_TYPE_NORMAL)) {
                             if (appConfigDto.getScriptUpdateAnnotationSkip()) {
-                                item = item.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY);
+                                item = item.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY).trim();
                             } else {
                                 continue;
                             }
@@ -241,9 +241,7 @@ public class ScriptUpdateController implements Initializable {
                             // 注释处理
                             if (sql.startsWith(ANNOTATION_TYPE_NORMAL)) {
                                 if (appConfigDto.getScriptUpdateAnnotationSkip()) {
-                                    sql = sql.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY);
-                                } else {
-                                    continue;
+                                    sql = sql.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY).replaceAll(" values", "values").trim();
                                 }
                             }
                             // 参数处理

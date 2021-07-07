@@ -42,7 +42,7 @@ public class SvnUtils {
         // 开始版本号
         long startRevision = lastSVNDirEntry.getRevision() - Integer.valueOf(appConfigDto.getSvnMaxRevision());
         repository.log(new String[]{SYMBOL_EMPTY}, startRevision, endRevision, true, true, svnLogEntry -> {
-            if (svnLogEntry.getAuthor().equals(appConfigDto.getSvnUsername())) {
+            if (StringUtils.equals(svnLogEntry.getAuthor(), appConfigDto.getSvnUsername())) {
                 LogDto svnLogDto = new LogDto();
                 logList.add(svnLogDto);
                 svnLogDto.setVersion(svnLogEntry.getRevision());
