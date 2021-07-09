@@ -35,6 +35,7 @@ public class BaseConst {
     public static final String KEY_NOTICE = "notice";
     public static final String KEY_TRUE = "true";
     public static final String KEY_VALUES = "values";
+    public static final String KEY_INSERT_INTO = "into";
     public static final String KEY_CONF = "conf";
     public static final String KEY_FILE_SLASH = "file:/";
     public static final String KEY_FILE = "file:";
@@ -66,6 +67,7 @@ public class BaseConst {
     public static final String SYMBOL_COLON = ":";
     public static final String SYMBOL_HYPHEN = "-";
     public final static String SYMBOL_POINT = ".";
+    public final static String SYMBOL_$_SLASH = "\\$";
     public final static String SYMBOL_POINT_SLASH = "\\.";
     public static final String SYMBOL_SLASH = "/";
     public static final String SYMBOL_BRACKETS_LEFT = "(";

@@ -12,7 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -157,11 +157,12 @@ public class ScriptUpdateController implements Initializable {
                 OutputUtils.clearLog(target);
                 String sourceScript = source.getText();
                 if (StringUtils.isNotBlank(sourceScript)) {
-                    List<String> deleteSqlList = new ArrayList<>(16);
+                    Map<String, String> deleteSqlMap = new LinkedHashMap<>(16);
                     String[] items = sourceScript.split(SYMBOL_SEMICOLON);
                     String[] itemsAfter = sourceScript.replace(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).split(SYMBOL_SEMICOLON);
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                    for (String item : itemsAfter) {
+                    for (int j = 0; j < itemsAfter.length; j++) {
+                        String item = itemsAfter[j];
                         // 注释处理
                         if (item.startsWith(ANNOTATION_TYPE_NORMAL)) {
                             if (appConfigDto.getScriptUpdateAnnotationSkip()) {
@@ -197,17 +198,19 @@ public class ScriptUpdateController implements Initializable {
                                 sqlInfo.put(columns[i].toLowerCase().trim(), values[i].trim());
                             }
                         }
+                        // 获取表名称
+                        String tableName = getTableName(item);
                         // 生成delete语句
                         List<LinkedHashMap<String, List<String>>> tableConfig = appConfigDto.getScriptUpdateTable();
                         outer:
                         for (LinkedHashMap<String, List<String>> table : tableConfig) {
                             Iterator<String> iterator = table.keySet().iterator();
                             while (iterator.hasNext()) {
-                                String tableName = iterator.next();
-                                if (item.contains(tableName)) {
+                                String tableNameConfig = iterator.next();
+                                if (tableNameConfig.contains(tableName + SYMBOL_POINT)) {
                                     StringBuilder deleteSql = new StringBuilder();
                                     deleteSql.append("delete from " + tableName + " where");
-                                    List<String> cloumn = table.get(tableName);
+                                    List<String> cloumn = table.get(tableNameConfig);
                                     for (String cloumnItem : cloumn) {
                                         getConnect(deleteSql);
                                         if ("null".equals(sqlInfo.get(cloumnItem.toLowerCase()))) {
@@ -221,20 +224,25 @@ public class ScriptUpdateController implements Initializable {
                                         }
                                     }
                                     deleteSql.append(SYMBOL_SEMICOLON);
-                                    deleteSqlList.add(deleteSql.toString());
-                                    break outer;
+                                    String sqlKey = items[j].trim();
+                                    if (StringUtils.isEmpty(deleteSqlMap.get(sqlKey))) {
+                                        deleteSqlMap.put(sqlKey, deleteSql.toString());
+                                    } else {
+                                        deleteSqlMap.put(sqlKey, deleteSqlMap.get(sqlKey) + SYMBOL_NEXT_LINE + deleteSql);
+                                    }
                                 }
                             }
                         }
                     }
                     List<String> logList = new ArrayList<>(16);
                     List<String> scriptList = new ArrayList<>(16);
-                    if (CollectionUtils.isNotEmpty(deleteSqlList)) {
+                    if (!MapUtils.isEmpty(deleteSqlMap)) {
                         String paramControl = param.getText().trim();
                         String paramSql = "\n from (select count(1) param_exists from tbparam where param_id = '" + paramControl + "') a where param_exists = 1";
                         // 组装sql语句
                         for (int i = 0; i < items.length; i++) {
                             String sql = items[i].trim();
+                            String sqlKey = sql;
                             if (sql.equals(SYMBOL_EMPTY)) {
                                 continue;
                             }
@@ -246,14 +254,14 @@ public class ScriptUpdateController implements Initializable {
                             }
                             // 参数处理
                             if (StringUtils.isNotEmpty(paramControl)) {
-                                sql = sql.replace("values(", " select ");
+                                sql = sql.replace("values(", " select ").replace("values (", " select ");
                                 int index = sql.lastIndexOf(SYMBOL_BRACKETS_RIGHT);
                                 sql = sql.substring(0, index) + paramSql;
                             }
                             if (sql.toLowerCase().startsWith("insert")) {
-                                OutputUtils.info(target, deleteSqlList.get(i) + SYMBOL_NEXT_LINE);
-                                logList.add(deleteSqlList.get(i));
-                                scriptList.add(deleteSqlList.get(i));
+                                OutputUtils.info(target, deleteSqlMap.get(sqlKey) + SYMBOL_NEXT_LINE);
+                                logList.add(deleteSqlMap.get(sqlKey));
+                                scriptList.add(deleteSqlMap.get(sqlKey));
                             }
                             OutputUtils.info(target, sql + SYMBOL_SEMICOLON + SYMBOL_NEXT_LINE);
                             logList.add(sql.replace(SYMBOL_NEXT_LINE, SYMBOL_SPACE) + SYMBOL_SEMICOLON);
@@ -279,6 +287,12 @@ public class ScriptUpdateController implements Initializable {
             }
             setProgress(1);
         }).start();
+    }
+
+    private static String getTableName(String sql) {
+        int tableNameStartIndex = sql.toLowerCase().indexOf(KEY_INSERT_INTO);
+        int tableNameStartEnd = sql.toLowerCase().indexOf(SYMBOL_BRACKETS_LEFT);
+        return sql.substring(tableNameStartIndex + 4, tableNameStartEnd).toLowerCase().trim();
     }
 
     private static StringBuilder getConnect(StringBuilder sql) {

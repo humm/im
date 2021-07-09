@@ -84,13 +84,18 @@ public class ConfigCache {
                 // 升级脚本配置
                 if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
-                    String name = item.substring(KEY_SCRIPT_UPDATE_TABLE.length(), index);
-                    String column = item.substring(index + 1);
-                    if (StringUtils.isNotBlank(column)) {
-                        List<String> columnConfig = Arrays.asList(column.split(SYMBOL_COMMA));
-                        LinkedHashMap table = new LinkedHashMap(2);
-                        table.put(name.toLowerCase(), columnConfig);
-                        appConfigDto.getScriptUpdateTable().add(table);
+                    String tableName = item.substring(KEY_SCRIPT_UPDATE_TABLE.length(), index).toLowerCase() + SYMBOL_POINT;
+                    String tableColumn = item.substring(index + 1);
+                    if (StringUtils.isNotBlank(tableColumn)) {
+                        String[] columns = tableColumn.split(SYMBOL_$_SLASH);
+                        for (int i = 0; i < columns.length; i++) {
+                            tableName += i;
+                            String column = columns[i];
+                            List<String> columnConfig = Arrays.asList(column.split(SYMBOL_COMMA));
+                            LinkedHashMap table = new LinkedHashMap(2);
+                            table.put(tableName, columnConfig);
+                            appConfigDto.getScriptUpdateTable().add(table);
+                        }
                     }
                 }
                 // svn统计配置
