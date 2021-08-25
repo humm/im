@@ -42,7 +42,7 @@
         <spring-session.version>2.1.2.RELEASE</spring-session.version>
         <lombok.version>1.16.4</lombok.version>
         <spring-test.version>5.0.7.RELEASE</spring-test.version>
-        <xstream.version>1.4.11.1</xstream.version>
+        <xstream.version>1.4.18</xstream.version>
         <poi.version>3.17</poi.version>
         <jsoup.version>1.13.1</jsoup.version>
         <junrar.version>7.3.0</junrar.version>
