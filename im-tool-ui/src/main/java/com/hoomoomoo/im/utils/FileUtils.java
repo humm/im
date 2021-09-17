@@ -441,7 +441,7 @@ public class FileUtils {
         for (File item : fileList) {
             deleteFile(item);
         }
-        // 删除解压零时文件夹
+        // 删除解压临时文件夹
         deleteFile(new File(tempFolder));
 
         // 更新配置文件
@@ -450,14 +450,14 @@ public class FileUtils {
         for (int i = 0; i < content.size(); i++) {
             String item = content.get(i);
             // 获取历史svn代码更新配置
-            if (item.startsWith(KEY_SVN_UPDATE_LOCATION)) {
-                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_UPDATE_LOCATION);
+            if (item.startsWith(KEY_SVN_UPDATE)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_UPDATE);
                 updateContent.addAll(updateConfig);
                 if (CollectionUtils.isNotEmpty(updateConfig)) {
                     continue;
                 }
             }
-            // 更新历史升级脚本配置
+            // 获取历史升级脚本配置
             if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
                 List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SCRIPT_UPDATE_TABLE);
                 updateContent.addAll(updateConfig);
@@ -465,6 +465,16 @@ public class FileUtils {
                     continue;
                 }
             }
+
+            // 获取历史svn统计用户信息
+            if (item.startsWith(KEY_SVN_STAT_USER)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_STAT_USER);
+                updateContent.addAll(updateConfig);
+                if (CollectionUtils.isNotEmpty(updateConfig)) {
+                    continue;
+                }
+            }
+
             // 更新历史配置项
             Iterator<String> iterator = oldAppConfig.keySet().iterator();
             while (iterator.hasNext()) {
@@ -476,40 +486,6 @@ public class FileUtils {
                 }
             }
             updateContent.add(item);
-        }
-        // 读取svn统计配置信息
-        if (StringUtils.isNotBlank(oldAppConfig.get(KEY_SVN_STAT))) {
-            // 读取模板配置项信息
-            String svnStatPath = FileUtils.getFilePath(PATH_SVN_STAT);
-            List<String> svnStatContent = FileUtils.readNormalFile(svnStatPath, false);
-            StringBuilder svnStat = new StringBuilder();
-            List<String> updateSvnStatContent = new ArrayList<>(16);
-            for (String item : svnStatContent) {
-                svnStat.append(item);
-            }
-            svnStatContent = Arrays.asList(SecurityUtils.getDecryptString(svnStat.toString()).split(SYMBOL_NEXT_LINE));
-            for (String item : svnStatContent) {
-                // 更新svn统计用户信息
-                if (item.startsWith(KEY_SVN_STAT_USER)) {
-                    List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_STAT_USER);
-                    updateSvnStatContent.addAll(updateConfig);
-                    if (CollectionUtils.isNotEmpty(updateConfig)) {
-                        continue;
-                    }
-                }
-                // 更新历史配置项
-                Iterator<String> iterator = oldAppConfig.keySet().iterator();
-                while (iterator.hasNext()) {
-                    String key = iterator.next();
-                    String value = oldAppConfig.get(key);
-                    if (item.startsWith(key + SYMBOL_EQUALS)) {
-                        int index = item.indexOf(SYMBOL_EQUALS) + 1;
-                        item = item.substring(0, index) + value;
-                    }
-                }
-                updateSvnStatContent.add(item);
-            }
-            updateContent.addAll(updateSvnStatContent);
         }
         FileUtils.writeFile(url, updateContent, false);
 

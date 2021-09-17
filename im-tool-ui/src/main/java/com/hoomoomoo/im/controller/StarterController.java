@@ -60,7 +60,10 @@ public class StarterController implements Initializable {
     private MenuItem menuItemScriptUpdate;
 
     @FXML
-    private MenuItem menuAbout;
+    private MenuItem menuItemAbout;
+
+    @FXML
+    private MenuItem menuItemConfigSet;
 
     @FXML
     private MenuItem menuItemFunctionStat;
@@ -201,6 +204,21 @@ public class StarterController implements Initializable {
             Tab tab = isOpen(ABOUT_INFO.getName());
             if (tab == null) {
                 tab = getFunctionTab(ABOUT_INFO.getPath(), ABOUT_INFO.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    @FXML
+    void openConfigSet(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(MSG_OPEN, CONFIG_SET.getName()));
+            Tab tab = isOpen(CONFIG_SET.getName());
+            if (tab == null) {
+                tab = getFunctionTab(CONFIG_SET.getPath(), CONFIG_SET.getName());
                 functionTab.getTabs().add(tab);
             }
             functionTab.getSelectionModel().select(tab);

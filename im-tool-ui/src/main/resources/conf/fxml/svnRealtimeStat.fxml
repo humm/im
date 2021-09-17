@@ -11,12 +11,12 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="24.0" prefWidth="598.0">
                     <children>
-                        <Label layoutX="15.0" layoutY="12.0" text="统计时间"/>
-                        <Label fx:id="statTime" layoutX="70.0" layoutY="12.0"/>
-                        <Label layoutX="140.0" layoutY="12.0" text="统计耗时"/>
-                        <Label fx:id="costTime" layoutX="195.0" layoutY="12.0"/>
+                        <Label layoutX="15.0" layoutY="13.0" text="统计时间"/>
+                        <Label fx:id="statTime" layoutX="85.0" layoutY="13.0"/>
+                        <Label layoutX="160.0" layoutY="13.0" text="统计耗时"/>
+                        <Label fx:id="costTime" layoutX="230.0" layoutY="13.0"/>
                         <ProgressIndicator fx:id="schedule" layoutX="273.0" layoutY="10.0" progress="0.0"/>
-                        <Label fx:id="scheduleText" layoutX="303.0" layoutY="13.0" text="0%"/>
+                        <Label fx:id="scheduleText" layoutX="313.0" layoutY="13.0" text="0%"/>
                     </children>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="598.0">

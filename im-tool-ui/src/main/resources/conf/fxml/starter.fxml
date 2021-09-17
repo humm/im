@@ -2,7 +2,7 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox prefHeight="530.0" prefWidth="850.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+<VBox prefHeight="650.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.hoomoomoo.im.controller.StarterController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
@@ -35,6 +35,8 @@
                 </Menu>
                 <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">
                     <items>
+                        <MenuItem fx:id="menuItemConfigSet" mnemonicParsing="false" onAction="#openConfigSet"
+                                  text="参数设置"/>
                         <MenuItem fx:id="menuItemAbout" mnemonicParsing="false" onAction="#openAboutInfo"
                                   text="关于"/>
                     </items>

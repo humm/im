@@ -352,7 +352,7 @@ public class ProcessInfoController implements Initializable {
             // 自由节点特殊处理，通过job删除
             bufferedWriter.write("delete from tbschedulejob where ta_code='" + taCode + "' and sche_group_code =' '  and sche_job_code like 'fund_free_job%';\n");
         } else {
-            bufferedWriter.write("delete from tbschedulejob where ta_code='" + taCode + "' and sche_group_code like '" + groupCode.substring(0, 13) + "%';\n");
+            bufferedWriter.write("delete from tbschedulejob where ta_code='" + taCode + "' and sche_group_code = '" + groupCode + "';\n");
         }
         for (int k = 2; k < rows; k++) {
 

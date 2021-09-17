@@ -21,6 +21,10 @@ public class LogDto extends BaseDto implements Comparable<LogDto> {
 
     private Integer num;
 
+    private Integer getNum;
+
+    private String match;
+
     private Long version;
 
     private List<String> file;

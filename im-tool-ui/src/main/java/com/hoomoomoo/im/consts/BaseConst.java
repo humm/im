@@ -27,7 +27,7 @@ public class BaseConst {
     public static final String START_MODE_JAR = ".jar!";
 
     public static final String KEY_SVN_PASSWORD = "svn.password";
-    public static final String KEY_SVN_UPDATE_LOCATION = "svn.update.";
+    public static final String KEY_SVN_UPDATE = "svn.update.";
     public static final String KEY_SCRIPT_UPDATE_TABLE = "script.update.table.";
     public static final String KEY_SVN_STAT_USER = "svn.stat.user.";
     public static final String KEY_SVN_STAT = "svn.stat";
@@ -52,6 +52,7 @@ public class BaseConst {
     public static final String FILE_TYPE_STAT = ".stat";
 
     public static final String NAME_DELETE = " 删除";
+    public static final String NAME_END = "结束";
     public static final String NAME_SVN_DESCRIBE = "[需求描述]";
 
     public final static String SECURITY_FLAG = "+++";
@@ -119,6 +120,7 @@ public class BaseConst {
     public static final String CMD_KILL_APP = "taskill /f /t /im %s";
 
     public static final String PATH_APP = "/conf/app.conf";
+    public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
     public static final String PATH_SVN_STAT = "/conf/init/svnStat.init";
     public static final String PATH_VERSION = "/conf/init/version.init";

@@ -10,13 +10,15 @@ import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.SecurityUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -24,7 +26,7 @@ import static com.hoomoomoo.im.consts.FunctionConfig.*;
  * @package com.hoomoomoo.im
  * @date 2021/05/09
  */
-
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class InitConfigTest {
 
     /**
@@ -35,22 +37,19 @@ public class InitConfigTest {
      * @return:
      */
     @Test
-    public void buildLicense() throws Exception {
-        String confPath = FileUtils.getFilePath(PATH_APP);
-        List<String> content = FileUtils.readNormalFile(confPath, false);
+    public void config_01_buildLicense() throws Exception {
+        String pathAuth = FileUtils.getFilePath(PATH_AUTH);
+        List<String> content = FileUtils.readNormalFile(pathAuth, false);
         // 生成证书信息
         String appFunction = content.get(1);
         String effectiveDate = content.get(3);
-        String svnStat = content.get(5);
         int indexFunction = appFunction.indexOf(SYMBOL_EQUALS) + 1;
         int indexEffectiveDate = effectiveDate.indexOf(SYMBOL_EQUALS) + 1;
-        int indexSvnStat = svnStat.indexOf(SYMBOL_EQUALS) + 1;
         appFunction = appFunction.substring(indexFunction);
         effectiveDate = effectiveDate.substring(indexEffectiveDate);
-        svnStat = svnStat.substring(indexSvnStat);
         List<FunctionDto> function = new ArrayList<>(16);
         LicenseDto license = new LicenseDto();
-        license.setEffectiveDate(effectiveDate);
+        license.setEffectiveDate(StringUtils.isBlank(effectiveDate) ? "20991231" : effectiveDate);
         license.setFunction(function);
         if (StringUtils.isBlank(appFunction)) {
             // 全功能
@@ -67,175 +66,53 @@ public class InitConfigTest {
                 }
             }
         }
-        // 加密写文件
         String licenseContent = SecurityUtils.getEncryptString(JSON.toJSONString(license));
         String licensePath = FileUtils.getFilePath(PATH_LICENSE);
         FileUtils.writeFile(licensePath, licenseContent, false);
-        buildAppConfig(license, svnStat);
+        FileUtils.writeFile(pathAuth, SYMBOL_EMPTY, false);
     }
 
     /**
-     * 生成功能配置描述信息
+     * 生成配置文件
      *
-     * @param licenseDto
      * @author: humm23693
      * @date: 2021/05/22
      * @return:
      */
-    private void buildAppConfig(LicenseDto licenseDto, String svnStatFlag) throws Exception {
-        StringBuilder describe = new StringBuilder("# 默认展示tab页,多个逗号分隔 ");
-        List<FunctionDto> function = licenseDto.getFunction();
-        for (FunctionDto functionDto : function) {
-            if (functionDto.getFunctionCode().equals(SVN_REALTIME_STAT.getCode())
-                    || functionDto.getFunctionCode().equals(SVN_HISTORY_STAT.getCode())
-                    || functionDto.getFunctionCode().equals(SVN_HISTORY_STAT.getCode())
-                    || functionDto.getFunctionCode().equals(FUNCTION_STAT_INFO.getCode())
-                    || functionDto.getFunctionCode().equals(ABOUT_INFO.getCode())
-            ) {
-                continue;
-            }
-            describe.append(functionDto.getFunctionCode() + SYMBOL_COLON + FunctionConfig.getName(functionDto.getFunctionCode()));
-            describe.append(SYMBOL_SPACE);
-        }
-        String confPath = FileUtils.getFilePath(PATH_APP);
-        List<String> content = FileUtils.readNormalFile(confPath, false);
-        if (CollectionUtils.isNotEmpty(content)) {
-            content.set(7, describe.toString());
-        }
-        // 获取功能配置信息
-        content = content.subList(6, content.size());
-        List<String> appInfo = new ArrayList<>(16);
-        List<String> svnInfo = new ArrayList<>(16);
-        List<String> svnLog = new ArrayList<>(16);
-        List<String> svnUpdate = new ArrayList<>(16);
-        List<String> fundInfo = new ArrayList<>(16);
-        List<String> processInfo = new ArrayList<>(16);
-        List<String> scriptUpdate = new ArrayList<>(16);
-        List<String> svnStat = new ArrayList<>(16);
-        List<String> realtimeStat = new ArrayList<>(16);
-        List<String> historyStat = new ArrayList<>(16);
-        int configType = -1;
-        int times = 0;
-        boolean append = false;
-        for (String item : content) {
-            if (item.contains(CONFIG_PREFIX + CONFIG_APP_TITLE)
-                    || item.contains(CONFIG_PREFIX + CONFIG_SVN_TITLE)
-                    || item.contains(CONFIG_PREFIX + CONFIG_SVN_STAT_TITLE)
-                    || item.contains(CONFIG_PREFIX + SVN_LOG.getName())
-                    || item.contains(CONFIG_PREFIX + SVN_UPDATE.getName())
-                    || item.contains(CONFIG_PREFIX + FUND_INFO.getName())
-                    || item.contains(CONFIG_PREFIX + PROCESS_INFO.getName())
-                    || item.contains(CONFIG_PREFIX + SCRIPT_UPDATE.getName())
-                    || item.contains(CONFIG_PREFIX + SVN_REALTIME_STAT.getName())
-            ) {
-                times++;
-            }
-
-            if (item.startsWith(KEY_SVN_UPDATE_LOCATION) || item.startsWith(KEY_SCRIPT_UPDATE_TABLE) || item.startsWith(KEY_SVN_STAT_USER)) {
-                if (!append) {
-                    append = true;
-                    if (item.startsWith(KEY_SVN_UPDATE_LOCATION)) {
-                        svnUpdate.add("svn.update.ta6=");
-                    } else if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
-                        scriptUpdate.add("script.update.table.tbscheduletask=");
-                    } else {
-                        svnStat.add("svn.stat.user.zhangsan10000=张三");
-                    }
-                }
-                continue;
-            }
-            switch (configType) {
-                case -1:
-                    appInfo.add(item);
-                    break;
-                case 0:
-                    svnInfo.add(item);
-                    break;
-                case 1:
-                    svnLog.add(item);
-                    break;
-                case 2:
-                    svnUpdate.add(item);
-                    break;
-                case 3:
-                    fundInfo.add(item);
-                    break;
-                case 4:
-                    processInfo.add(item);
-                    break;
-                case 5:
-                    scriptUpdate.add(item);
-                    break;
-                case 95:
-                    svnStat.add(item);
-                    break;
-                case 96:
-                    realtimeStat.add(item);
-                    break;
-                case 97:
-                    historyStat.add(item);
-                    break;
-                default:
-                    break;
-            }
-            if (StringUtils.isBlank(item.trim()) && times == 2) {
-                times = 0;
-                append = false;
-                if (configType == 5) {
-                    configType = 95;
+    @Test
+    public void config_02_buildConfig() throws Exception {
+        String pathApp = FileUtils.getFilePath(PATH_APP);
+        List<String> content = FileUtils.readNormalFile(pathApp, false);
+        ListIterator<String> iterator = content.listIterator();
+        boolean svnUpdate = false;
+        boolean scriptUpdateTable = false;
+        boolean svnStatUser = false;
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            if (item.startsWith(KEY_SVN_UPDATE)) {
+                if (svnUpdate) {
+                    iterator.remove();
                 } else {
-                    configType++;
+                    svnUpdate = true;
+                    iterator.set("svn.update.demo=D:/workspace/demo");
+                }
+            } else if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
+                if (scriptUpdateTable) {
+                    iterator.remove();
+                } else {
+                    scriptUpdateTable = true;
+                    iterator.set("script.update.table.demo=id");
+                }
+            } else if (item.startsWith(KEY_SVN_STAT_USER)) {
+                if (svnStatUser) {
+                    iterator.remove();
+                } else {
+                    svnStatUser = true;
+                    iterator.set("svn.stat.user.zhangsan10000=张三");
                 }
             }
         }
-        List<String> config = new ArrayList<>(16);
-        List<String> svnStatConfig = new ArrayList<>(16);
-        config.addAll(appInfo);
-        if (authFunction(licenseDto.getFunction(), SVN_LOG.getCode())
-                || authFunction(licenseDto.getFunction(), SVN_UPDATE.getCode())
-                || authFunction(licenseDto.getFunction(), SVN_REALTIME_STAT.getCode())
-                || authFunction(licenseDto.getFunction(), SVN_HISTORY_STAT.getCode())
-        ) {
-            config.addAll(svnInfo);
-        }
-        if (authFunction(licenseDto.getFunction(), SVN_LOG.getCode())) {
-            config.addAll(svnLog);
-        }
-        if (authFunction(licenseDto.getFunction(), SVN_UPDATE.getCode())) {
-            config.addAll(svnUpdate);
-        }
-        if (authFunction(licenseDto.getFunction(), FUND_INFO.getCode())) {
-            config.addAll(fundInfo);
-        }
-        if (authFunction(licenseDto.getFunction(), PROCESS_INFO.getCode())) {
-            config.addAll(processInfo);
-        }
-        if (authFunction(licenseDto.getFunction(), SCRIPT_UPDATE.getCode())) {
-            config.addAll(scriptUpdate);
-        }
-        if (authFunction(licenseDto.getFunction(), SVN_REALTIME_STAT.getCode()) || authFunction(licenseDto.getFunction(), SVN_HISTORY_STAT.getCode())) {
-            svnStatConfig.addAll(svnStat);
-        }
-        if (authFunction(licenseDto.getFunction(), SVN_REALTIME_STAT.getCode())) {
-            svnStatConfig.addAll(realtimeStat);
-        }
-        if (authFunction(licenseDto.getFunction(), SVN_HISTORY_STAT.getCode())) {
-            svnStatConfig.addAll(historyStat);
-        }
-        if (svnStatFlag.equals(KEY_TRUE)) {
-            config.addAll(svnStatConfig);
-        }
-        // 保存授权功能配置信息 删除授权证书相关配置项
-        FileUtils.writeFile(confPath, config, false);
-
-        // 保存svn统计配置信息
-        String svnStatPath = FileUtils.getFilePath(PATH_SVN_STAT);
-        // 数据加密
-        StringBuilder svnStatContent = new StringBuilder();
-        for (String item : svnStatConfig) {
-            svnStatContent.append(item + SYMBOL_NEXT_LINE);
-        }
-        FileUtils.writeFile(svnStatPath, SecurityUtils.getEncryptString(svnStatContent.toString()), false);
+        FileUtils.writeFile(pathApp, content, false);
     }
 
     /**
@@ -247,7 +124,7 @@ public class InitConfigTest {
      * @return:
      */
     @Test
-    public void updateAppConfig() throws Exception {
+    public void config_02_updateConfig() throws Exception {
         List<String> keys = new ArrayList<>(16);
         keys.add("show.tab");
 
@@ -292,7 +169,7 @@ public class InitConfigTest {
      * @return:
      */
     @Test
-    public void updateVersionConfig() {
+    public void config_04_updateVersionConfig() {
         try {
             String versionFilePath = FileUtils.getFilePath(PATH_VERSION);
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
@@ -349,27 +226,6 @@ public class InitConfigTest {
         }
         for (String key : keys) {
             if (item.startsWith(key)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 是否开通对应功能
-     *
-     * @param function
-     * @param functionCode
-     * @author: humm23693
-     * @date: 2021/05/22
-     * @return:
-     */
-    private boolean authFunction(List<FunctionDto> function, String functionCode) {
-        if (CollectionUtils.isEmpty(function)) {
-            return false;
-        }
-        for (FunctionDto functionDto : function) {
-            if (functionCode.equals(functionDto.getFunctionCode())) {
                 return true;
             }
         }

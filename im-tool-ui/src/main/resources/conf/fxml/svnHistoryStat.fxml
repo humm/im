@@ -12,8 +12,8 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="43.0" prefWidth="598.0">
                     <children>
                         <ProgressIndicator fx:id="schedule" layoutX="245.0" layoutY="9.0" progress="0.0"/>
-                        <Label fx:id="scheduleText" layoutX="275.0" layoutY="12.0" text="0%"/>
-                        <DatePicker fx:id="date" layoutX="80.0" layoutY="8.0" onAction="#execute" prefHeight="23.0"
+                        <Label fx:id="scheduleText" layoutX="285.0" layoutY="12.0" text="0%"/>
+                        <DatePicker fx:id="date" layoutX="90.0" layoutY="8.0" onAction="#execute" prefHeight="23.0"
                                     prefWidth="133.0"/>
                         <Label layoutX="15.0" layoutY="12.0" text="统计时间"/>
                     </children>

@@ -37,6 +37,10 @@ public class ConfigCache {
         return configCache;
     }
 
+    public static void initCache() throws Exception {
+        configCache = new ConfigCache();
+    }
+
     private ConfigCache() throws Exception {
         init();
     }
@@ -71,9 +75,9 @@ public class ConfigCache {
         if (CollectionUtils.isNotEmpty(content)) {
             for (String item : content) {
                 // svn代码更新配置
-                if (item.startsWith(KEY_SVN_UPDATE_LOCATION)) {
+                if (item.startsWith(KEY_SVN_UPDATE)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
-                    String name = item.substring(KEY_SVN_UPDATE_LOCATION.length(), index);
+                    String name = item.substring(KEY_SVN_UPDATE.length(), index);
                     String path = item.substring(index + 1);
                     if (StringUtils.isNotBlank(path)) {
                         LinkedHashMap version = new LinkedHashMap(2);

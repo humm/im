@@ -80,7 +80,10 @@ public class SvnLogController implements Initializable {
                 Date date = new Date();
                 List<LogDto> logDtoList = SvnUtils.getSvnLog(svnTimes);
                 List<String> fileList = new ArrayList<>();
+                int length = logDtoList.size();
                 for (LogDto svnLogDto : logDtoList) {
+                    svnLogDto.setGetNum(length);
+                    svnLogDto.setMatch(svnTimes == length ? "匹配" : "未匹配");
                     OutputUtils.info(svnLog, svnLogDto);
                     OutputUtils.info(fileLog, svnLogDto.getFile());
                     fileList.addAll(svnLogDto.getFile());
