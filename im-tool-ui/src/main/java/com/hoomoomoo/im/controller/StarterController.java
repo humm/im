@@ -42,10 +42,13 @@ public class StarterController implements Initializable {
     private Menu menuFunction;
 
     @FXML
-    private Menu menuHelp;
+    private Menu menuStat;
 
     @FXML
-    private Menu menuStat;
+    private Menu menuSet;
+
+    @FXML
+    private Menu menuHelp;
 
     @FXML
     private MenuItem menuItemSvnlog;
@@ -236,6 +239,7 @@ public class StarterController implements Initializable {
             if (!CommonUtils.checkLicense(null)) {
                 menuFunction.getItems().clear();
                 menuStat.getItems().clear();
+                menuSet.getItems().clear();
                 return;
             }
 

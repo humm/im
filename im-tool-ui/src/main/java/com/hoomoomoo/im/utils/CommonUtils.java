@@ -283,7 +283,6 @@ public class CommonUtils {
     }
 
     public static void showAuthFunction(Menu menu) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
         if (CollectionUtils.isEmpty(functionDtoList)) {
             menu.getItems().clear();
@@ -294,13 +293,8 @@ public class CommonUtils {
         outer:
         while (iterator.hasNext()) {
             MenuItem item = iterator.next();
-            if (!appConfigDto.getSvnStat()) {
-                if (SVN_REALTIME_STAT.getMenuId().equals(item.getId()) || SVN_HISTORY_STAT.getMenuId().equals(item.getId())) {
-                    iterator.remove();
-                }
-            }
             for (FunctionDto functionDto : functionDtoList) {
-                if (ABOUT_INFO.getMenuId().equals(item.getId()) || FUNCTION_STAT_INFO.getMenuId().equals(item.getId())) {
+                if (ABOUT_INFO.getMenuId().equals(item.getId()) || CONFIG_SET.getMenuId().equals(item.getId())) {
                     continue outer;
                 }
                 if (FunctionConfig.getMenuId(functionDto.getFunctionCode()).equals(item.getId())) {

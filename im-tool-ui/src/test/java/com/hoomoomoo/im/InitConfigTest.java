@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -39,14 +40,10 @@ public class InitConfigTest {
     @Test
     public void config_01_buildLicense() throws Exception {
         String pathAuth = FileUtils.getFilePath(PATH_AUTH);
-        List<String> content = FileUtils.readNormalFile(pathAuth, false);
+        LinkedHashMap<String, String> content = FileUtils.readConfigFileToMapIncludePoint(pathAuth);
         // 生成证书信息
-        String appFunction = content.get(1);
-        String effectiveDate = content.get(3);
-        int indexFunction = appFunction.indexOf(SYMBOL_EQUALS) + 1;
-        int indexEffectiveDate = effectiveDate.indexOf(SYMBOL_EQUALS) + 1;
-        appFunction = appFunction.substring(indexFunction);
-        effectiveDate = effectiveDate.substring(indexEffectiveDate);
+        String appFunction = content.get("app.license.function");
+        String effectiveDate = content.get("app.license.effective.date");
         List<FunctionDto> function = new ArrayList<>(16);
         LicenseDto license = new LicenseDto();
         license.setEffectiveDate(StringUtils.isBlank(effectiveDate) ? "20991231" : effectiveDate);
@@ -142,8 +139,6 @@ public class InitConfigTest {
         keys.add("process.generate.path.schedule");
 
         keys.add("script.update.generate.path");
-
-        keys.add("app.license.show");
 
         String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);

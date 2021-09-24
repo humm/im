@@ -3,6 +3,7 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
+import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -45,6 +46,7 @@ public class ConfigSetController implements Initializable {
         FileUtils.writeFile(confPath, content, false);
         ConfigCache.initCache();
         OutputUtils.info(tips, "配置文件已修改并重新加载  " + CommonUtils.getCurrentDateTime8(new Date()));
+        LoggerUtils.writeConfigSetInfo();
         submit.setDisable(false);
     }
 

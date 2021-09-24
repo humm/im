@@ -33,10 +33,14 @@
                                   text="功能使用统计"/>
                     </items>
                 </Menu>
-                <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">
+                <Menu fx:id="menuSet" mnemonicParsing="false" text="设置">
                     <items>
                         <MenuItem fx:id="menuItemConfigSet" mnemonicParsing="false" onAction="#openConfigSet"
                                   text="参数设置"/>
+                    </items>
+                </Menu>
+                <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">
+                    <items>
                         <MenuItem fx:id="menuItemAbout" mnemonicParsing="false" onAction="#openAboutInfo"
                                   text="关于"/>
                     </items>

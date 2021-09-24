@@ -246,6 +246,16 @@ public class LoggerUtils {
         }
     }
 
+    public static void writeConfigSetInfo() {
+        try {
+            // 写统计文件
+            String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, CONFIG_SET.getLogFolder() + FILE_TYPE_STAT));
+            writeStatFile(statFilePath);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
     private static void writeStatFile(String filePath) throws IOException {
         File file = new File(filePath);
         String date = CommonUtils.getCurrentDateTime1();

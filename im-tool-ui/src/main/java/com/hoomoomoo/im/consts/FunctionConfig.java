@@ -22,13 +22,12 @@ public enum FunctionConfig {
 
     SVN_HISTORY_STAT("970", "svn历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),
 
-    FUNCTION_STAT_INFO("980", "功能使用统计", "/conf/fxml/functionStatInfo.fxml", "menuItemFunctionStat", "functionStatInfo"),
+    CONFIG_SET("980", "参数设置", "/conf/fxml/configSet.fxml", "menuItemConfigSet", "configSet"),
 
-    CONFIG_SET("990", "参数设置", "/conf/fxml/configSet.fxml", "menuItemConfigSet", "configSet"),
+    FUNCTION_STAT_INFO("990", "功能使用统计", "/conf/fxml/functionStatInfo.fxml", "menuItemFunctionStat", "functionStatInfo"),
 
     ABOUT_INFO("999", "关于", "/conf/fxml/aboutInfo.fxml", "menuItemAbout", "aboutInfo");
-
-
+    
     private String code;
 
     private String name;

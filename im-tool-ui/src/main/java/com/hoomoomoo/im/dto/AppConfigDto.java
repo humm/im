@@ -74,8 +74,6 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean svnStatReset;
 
-    private Boolean svnStat;
-
     private LinkedHashMap<String, String> svnStatUser;
 
     private String svnStatHistoryOrderType;
@@ -91,7 +89,6 @@ public class AppConfigDto extends BaseDto {
         this.scriptUpdateTable = new ArrayList<>(16);
         this.svnStatUser = new LinkedHashMap<>();
         this.svnStatReset = true;
-        this.svnStat = false;
         this.svnStatInterval = 0;
     }
 }
