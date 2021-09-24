@@ -20,6 +20,7 @@ public class OutputUtils {
     public static void info(TableView tableView, BaseDto baseDto) {
         Platform.runLater(() -> {
             tableView.getItems().add(baseDto);
+            tableView.scrollTo(tableView.getItems().size());
         });
     }
 
