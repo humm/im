@@ -1,22 +1,22 @@
 @echo off
 
-:: ÀúÊ·½ø³Ì´¦Àí
+:: å†å²è¿›ç¨‹å¤„ç†
 tasklist | findstr tool-ui.exe>Nul
 if errorlevel 1 (
-	@echo Î´·¢ÏÖÀúÊ·½ø³Ì
+	@echo æœªå‘ç°å†å²è¿›ç¨‹
 ) else (
-	@echo Í£Ö¹ÀúÊ·½ø³Ì
+	@echo åœæ­¢å†å²è¿›ç¨‹
 	taskkill /f /t /im tool-ui.exe
 )
 
-:: ×Ô¶¨ÒåÆô¶¯ÃüÁî
+:: è‡ªå®šä¹‰å¯åŠ¨å‘½ä»¤
 if not exist "%JAVA_HOME%"\bin\tool-ui.exe (
-	@echo Ê×´ÎÔËĞĞÇëÓÃ¹ÜÀíÔ±Ö´ĞĞ
+	@echo é¦–æ¬¡è¿è¡Œè¯·ç”¨ç®¡ç†å‘˜å¯åŠ¨
 	copy "%JAVA_HOME%"\bin\java.exe %~dp0
 	rename %~dp0\java.exe tool-ui.exe
 	move %~dp0\tool-ui.exe "%JAVA_HOME%"\bin
 )
 
-:: Æô¶¯
+:: å¯åŠ¨
 for %%i in ("./*.jar") do ( set jarName=%%~nxi )
 tool-ui -jar %jarName%
