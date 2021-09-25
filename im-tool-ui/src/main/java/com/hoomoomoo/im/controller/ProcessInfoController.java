@@ -322,9 +322,18 @@ public class ProcessInfoController implements Initializable {
 
             } else {
                 bufferedWriter.write("-- 流程组配置脚本 begin\n");
+                if (!StringUtils.equals("fund_daily_opera_process", sheet.getCell(1, k).getContents())) {
+                    bufferedWriter.write("-- ");
+                }
                 bufferedWriter.write("delete from tbschedulegroup where sche_group_code='" + sheet.getCell(1, k).getContents() + "';\n");
-                bufferedWriter.write("insert into tbschedulegroup (sche_page_code,sche_group_code,sche_group_name,sche_group_isuse,sche_group_type) \nvalues ('" + sheet.getCell(0, k).getContents() +
-                        "' , '" + sheet.getCell(1, k).getContents() + "' , '" + sheet.getCell(2, k).getContents() + "' , '" + sheet.getCell(3, k).getContents() + "' , '" + sheet.getCell(4, k).getContents() + "');\n");
+                if (!StringUtils.equals("fund_daily_opera_process", sheet.getCell(1, k).getContents())) {
+                    bufferedWriter.write("-- ");
+                }
+                bufferedWriter.write("insert into tbschedulegroup (sche_page_code,sche_group_code,sche_group_name,sche_group_isuse,sche_group_type) \n");
+                if (!StringUtils.equals("fund_daily_opera_process", sheet.getCell(1, k).getContents())) {
+                    bufferedWriter.write("-- ");
+                }
+                bufferedWriter.write("values ('" + sheet.getCell(0, k).getContents() + "' , '" + sheet.getCell(1, k).getContents() + "' , '" + sheet.getCell(2, k).getContents() + "' , '" + sheet.getCell(3, k).getContents() + "' , '" + sheet.getCell(4, k).getContents() + "');\n");
                 bufferedWriter.write("-- 流程组配置脚本 end\n\n");
             }
         }
@@ -551,7 +560,7 @@ public class ProcessInfoController implements Initializable {
         bufferedWriter.write("\n-- tbscheduletaskregistry 配置 begin\n");
         String sql = "-- 删除fund的 registry\n" +
                 "delete from tbscheduletaskregistry where substr(sche_task_code, 1, 4) = 'fund';\n" +
-                "/* 主库交易广播配置 */\n" +
+                "-- 主库交易广播配置 \n" +
                 "insert into tbscheduletaskregistry (sche_task_code, app_name, app_group, app_version, \n" +
                 "       app_url, sche_app_isuse)\n" +
                 "select a.sche_task_code, 'ta-fund-parameter-batch' app_name, 'group' app_group, '1.0' app_version, \n" +
@@ -561,7 +570,7 @@ public class ProcessInfoController implements Initializable {
                 "   and substr(a.function_id, 1, 4) = 'PUB9'\n" +
                 "   and a.ta_code = '000000';\n" +
                 "\n" +
-                "/* 交易库交易广播配置 多个分库的情况下，修改针对不同的app_name多次执行 */\n" +
+                "-- 交易库交易广播配置 多个分库的情况下，修改针对不同的app_name多次执行 \n" +
                 "insert into tbscheduletaskregistry (sche_task_code, app_name, app_group, app_version, \n" +
                 "       app_url, sche_app_isuse)\n" +
                 "select a.sche_task_code, concat('ta-fund-trans-batch', b.area_num) app_name, 'group' app_group, '1.0' app_version, \n" +
@@ -591,7 +600,7 @@ public class ProcessInfoController implements Initializable {
                 "   and substr(a.function_id, 1, 4) = 'FUND'\n" +
                 "   and a.ta_code = '000000';\n" +
                 "\n" +
-                "/* 账户库交易广播配置 多个分库的情况下，修改针对不同的app_name多次执行 */\n" +
+                "-- 账户库交易广播配置 多个分库的情况下，修改针对不同的app_name多次执行 \n" +
                 "insert into tbscheduletaskregistry (sche_task_code, app_name, app_group, app_version, \n" +
                 "       app_url, sche_app_isuse)\n" +
                 "select a.sche_task_code, concat('ta-fund-account-batch', b.area_num) app_name, 'group' app_group, '1" +

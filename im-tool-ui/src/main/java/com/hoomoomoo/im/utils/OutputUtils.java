@@ -30,6 +30,7 @@ public class OutputUtils {
         logDto.setMsg(msg);
         Platform.runLater(() -> {
             tableView.getItems().add(logDto);
+            tableView.scrollTo(tableView.getItems().size());
         });
     }
 

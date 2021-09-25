@@ -256,7 +256,7 @@ public class CommonUtils {
         if (StringUtils.isBlank(functionCode)) {
             return true;
         }
-        if (ABOUT_INFO.getCode().equals(functionCode) || FUNCTION_STAT_INFO.getCode().equals(functionCode)) {
+        if (ABOUT_INFO.getCode().equals(functionCode) || CONFIG_SET.getCode().equals(functionCode) || FUNCTION_STAT_INFO.getCode().equals(functionCode)) {
             return true;
         }
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
@@ -294,7 +294,7 @@ public class CommonUtils {
         while (iterator.hasNext()) {
             MenuItem item = iterator.next();
             for (FunctionDto functionDto : functionDtoList) {
-                if (ABOUT_INFO.getMenuId().equals(item.getId()) || CONFIG_SET.getMenuId().equals(item.getId())) {
+                if (ABOUT_INFO.getMenuId().equals(item.getId()) || CONFIG_SET.getMenuId().equals(item.getId()) || FUNCTION_STAT_INFO.getMenuId().equals(item.getId())) {
                     continue outer;
                 }
                 if (FunctionConfig.getMenuId(functionDto.getFunctionCode()).equals(item.getId())) {

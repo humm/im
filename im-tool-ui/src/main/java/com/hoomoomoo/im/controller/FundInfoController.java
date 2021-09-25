@@ -226,10 +226,10 @@ public class FundInfoController implements Initializable {
                 Sheet[] sheetList = workbook.getSheets();
 
                 // 字段信息
-                Sheet dataElement = workbook.getSheet("基金&tbdataelement");
+                Sheet dataElement = workbook.getSheet("基金tbdataelement");
 
                 // 模板信息
-                Sheet prdTemplate = workbook.getSheet("基金模板&tbprdtemplate");
+                Sheet prdTemplate = workbook.getSheet("基金模板tbprdtemplate");
 
                 // 2.1获取ComponentKind
                 if (dataElement != null) {
@@ -260,33 +260,33 @@ public class FundInfoController implements Initializable {
                     }
 
                     // 2.5写 tbelementgroup 数据
-                    Sheet elementGroup = workbook.getSheet("基金分组&tbelementgroup");
+                    Sheet elementGroup = workbook.getSheet("基金分组tbelementgroup");
                     if (elementGroup != null) {
                         writeElementGroup(bufferedWriter, elementGroup);
                     }
 
                     // 2.6写 tbtemplaterelgroup 数据
-                    Sheet templateRelGroup = workbook.getSheet("分组模板&tbtemplaterelgroup");
+                    Sheet templateRelGroup = workbook.getSheet("分组模板tbtemplaterelgroup");
                     if (templateRelGroup != null) {
                         writeTemplateRelGroup(bufferedWriter, templateRelGroup);
                     }
 
                     //2.8 写其他sheet页配置信息 列表 新增 修改
                     for (Sheet sheet : sheetList) {
-                        if (sheet.getName().equals("基金列表&tbpageelement") || sheet.getName().equals("基金新增&tbpageelement") || sheet.getName().equals("基金修改&tbpageelement")) {
+                        if (sheet.getName().equals("基金列表tbpageelement") || sheet.getName().equals("基金新增tbpageelement") || sheet.getName().equals("基金修改tbpageelement")) {
                             // 写tbpageelement数据
                             writePageElement(bufferedWriter, sheet);
                         }
-                        if (sheet.getName().equals("基金&tbdataelement")) {
+                        if (sheet.getName().equals("基金tbdataelement")) {
                             continue;
                         }
-                        if (sheet.getName().equals("基金分组&tbelementgroup")) {
+                        if (sheet.getName().equals("基金分组tbelementgroup")) {
                             continue;
                         }
-                        if (sheet.getName().equals("分组模板&tbtemplaterelgroup")) {
+                        if (sheet.getName().equals("分组模板tbtemplaterelgroup")) {
                             continue;
                         }
-                        if (sheet.getName().equals("基金模板&tbprdtemplate")) {
+                        if (sheet.getName().equals("基金模板tbprdtemplate")) {
                             continue;
                         }
                     }
@@ -659,7 +659,7 @@ public class FundInfoController implements Initializable {
     private String getComponentKind(String sheetName, String column) {
         String componentKind = "' '";
         // 列表页面
-        if (sheetName.equals("基金列表&tbpageelement")) {
+        if (sheetName.equals("基金列表tbpageelement")) {
             // 选择框
             if ("'A'".equals(COMPONENT_KIND.get(column)) || "'H'".equals(COMPONENT_KIND.get(column))) {
                 componentKind = "'Z'";
