@@ -27,7 +27,7 @@ public class MainStarter extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            LoggerUtils.info(MSG_DIVIDE_LINE);
+            LoggerUtils.info(MSG_DIVIDE_LINE, false);
             LoggerUtils.info(String.format(MSG_START, "应用启动"));
             FileUtils.unJar(PATH_APP);
             LoggerUtils.info(String.format(MSG_UPDATE, "配置文件"));

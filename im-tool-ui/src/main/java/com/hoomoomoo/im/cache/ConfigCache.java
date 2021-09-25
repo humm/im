@@ -108,7 +108,9 @@ public class ConfigCache {
                     String code = item.substring(KEY_SVN_STAT_USER.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
-                        appConfigDto.getSvnStatUser().put(code.toLowerCase(), name);
+                        if (!"demo10000".equals(code.toLowerCase())) {
+                            appConfigDto.getSvnStatUser().put(code.toLowerCase(), name);
+                        }
                     }
                 }
             }

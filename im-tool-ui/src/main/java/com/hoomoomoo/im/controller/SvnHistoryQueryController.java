@@ -1,12 +1,10 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.SvnStatDto;
-import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.LoggerUtils;
-import com.hoomoomoo.im.utils.OutputUtils;
-import com.hoomoomoo.im.utils.SvnUtils;
+import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,6 +19,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.SVN_HISTORY_STAT;
 
 /**
  * @author humm23693
@@ -58,6 +57,10 @@ public class SvnHistoryQueryController implements Initializable {
     @FXML
     void execute(ActionEvent event) {
         try {
+            LoggerUtils.info(String.format(MSG_USE, SVN_HISTORY_STAT.getName()));
+            if (!CommonUtils.checkConfig(stat1, FunctionConfig.SVN_REALTIME_STAT.getCode())) {
+                return;
+            }
             setProgress(0);
             updateProgress();
             stat();
@@ -111,11 +114,13 @@ public class SvnHistoryQueryController implements Initializable {
                     }
                     OutputUtils.info(notice, getOrderInfo(svnStatDtoList, appConfigDto));
                 } catch (Exception e) {
+                    OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
                     LoggerUtils.info(e);
                 } finally {
                 }
                 setProgress(1);
             } catch (Exception e) {
+                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
                 LoggerUtils.info(e);
             }
         }).start();

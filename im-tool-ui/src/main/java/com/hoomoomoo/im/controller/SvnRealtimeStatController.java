@@ -4,10 +4,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.SvnStatDto;
-import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.LoggerUtils;
-import com.hoomoomoo.im.utils.OutputUtils;
-import com.hoomoomoo.im.utils.SvnUtils;
+import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -132,6 +129,7 @@ public class SvnRealtimeStatController implements Initializable {
                         OutputUtils.info(notice, svnStat.get(KEY_NOTICE).getNotice());
                         OutputUtils.info(costTime, (System.currentTimeMillis() - date.getTime()) / 1000 + "秒");
                     } catch (Exception e) {
+                        OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
                         LoggerUtils.info(e);
                     } finally {
                     }
@@ -139,6 +137,7 @@ public class SvnRealtimeStatController implements Initializable {
                     Thread.sleep(appConfigDto.getSvnStatInterval() * 1000);
                 }
             } catch (Exception e) {
+                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
                 LoggerUtils.info(e);
             }
         }).start();

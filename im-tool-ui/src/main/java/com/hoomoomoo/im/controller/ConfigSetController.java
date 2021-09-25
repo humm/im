@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.CONFIG_SET;
 
 /**
  * @author humm23693
@@ -40,6 +41,7 @@ public class ConfigSetController implements Initializable {
 
     @FXML
     void onSave(ActionEvent event) throws Exception {
+        LoggerUtils.info(String.format(MSG_USE, CONFIG_SET.getName()));
         submit.setDisable(true);
         String content = config.getText();
         String confPath = FileUtils.getFilePath(PATH_APP);

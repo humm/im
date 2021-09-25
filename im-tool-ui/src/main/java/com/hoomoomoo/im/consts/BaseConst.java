@@ -108,14 +108,11 @@ public class BaseConst {
     public static final String MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件[ license.init ]";
     public static final String MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止[ %s ]";
     public static final String MSG_LICENSE_NOT_AUTH = "未授权[ %s ]功能";
-    public static final String MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * *";
+    public static final String MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ";
     public static final String MSG_SVN_REALTIME_STAT = "%s  %s  %s  %s";
 
 
     public static final String CONFIG_PREFIX = "#################### ";
-    public static final String CONFIG_APP_TITLE = "应用信息";
-    public static final String CONFIG_SVN_TITLE = "svn用户信息";
-    public static final String CONFIG_SVN_STAT_TITLE = "svn统计";
 
     public static final String CMD_KILL_APP = "taskill /f /t /im %s";
 

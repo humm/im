@@ -98,14 +98,14 @@ public class InitConfigTest {
                     iterator.remove();
                 } else {
                     scriptUpdateTable = true;
-                    iterator.set("script.update.table.demo=id");
+                    iterator.set("script.update.table.demo=demo");
                 }
             } else if (item.startsWith(KEY_SVN_STAT_USER)) {
                 if (svnStatUser) {
                     iterator.remove();
                 } else {
                     svnStatUser = true;
-                    iterator.set("svn.stat.user.zhangsan10000=张三");
+                    iterator.set("svn.stat.user.demo10000=演示");
                 }
             }
         }

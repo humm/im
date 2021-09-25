@@ -30,8 +30,17 @@ public class LoggerUtils {
     private final static String FILE_NUM = "文件个数:";
 
     public static void info(String msg) {
-        System.out.println(CommonUtils.getCurrentDateTime1(new Date()) + SYMBOL_SPACE + msg + SYMBOL_NEXT_LINE);
-        writeAppLog(msg);
+        info(msg, true);
+    }
+
+    public static void info(String msg, boolean includeDate) {
+        StringBuilder log = new StringBuilder();
+        if (includeDate) {
+            log.append(CommonUtils.getCurrentDateTime1(new Date()) + SYMBOL_SPACE);
+        }
+        log.append(msg).append(SYMBOL_NEXT_LINE);
+        System.out.println(log);
+        writeAppLog(msg, includeDate);
     }
 
     public static void info(Exception exception) {
@@ -39,10 +48,13 @@ public class LoggerUtils {
         writeAppLog(exception);
     }
 
-    public static void writeAppLog(String mgs) {
+    public static void writeAppLog(String mgs, boolean includeDate) {
         try {
             String logFilePath = String.format(PATH_LOG, KEY_APP_LOG, CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
-            StringBuilder log = new StringBuilder(CommonUtils.getCurrentDateTime1(new Date())).append(SYMBOL_SPACE);
+            StringBuilder log = new StringBuilder();
+            if (includeDate) {
+                log.append(CommonUtils.getCurrentDateTime1(new Date())).append(SYMBOL_SPACE);
+            }
             log.append(mgs).append(SYMBOL_NEXT_LINE_2);
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
         } catch (Exception e) {
