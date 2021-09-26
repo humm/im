@@ -248,11 +248,8 @@ public class ScriptUpdateController implements Initializable {
                         // 组装sql语句
                         for (int i = 0; i < items.length; i++) {
                             String sqlKey = items[i].trim();
-                            String sql = items[i].replaceAll(" values", "values").trim();
+                            String sql = items[i].replaceAll(" values", "values").replaceAll(" insert", "insert").trim();
                             if (sql.equals(SYMBOL_EMPTY)) {
-                                continue;
-                            }
-                            if (sql.toLowerCase().startsWith(KEY_DELETE)) {
                                 continue;
                             }
                             // 注释处理
@@ -260,6 +257,9 @@ public class ScriptUpdateController implements Initializable {
                                 if (appConfigDto.getScriptUpdateAnnotationSkip()) {
                                     sql = sql.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY);
                                 }
+                            }
+                            if (sql.toLowerCase().startsWith(KEY_DELETE)) {
+                                continue;
                             }
                             // 参数处理
                             if (StringUtils.isNotEmpty(paramControl)) {
