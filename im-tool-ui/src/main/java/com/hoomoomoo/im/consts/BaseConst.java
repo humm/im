@@ -38,6 +38,7 @@ public class BaseConst {
     public static final String KEY_FILE_SLASH = "file:/";
     public static final String KEY_FILE = "file:";
     public static final String KEY_APP_LOG = "appLog";
+    public static final String KEY_DELETE = "delete";
 
     public static final String APP_USER_IM = "im";
 

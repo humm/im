@@ -162,7 +162,13 @@ public class ScriptUpdateController implements Initializable {
                     String[] itemsAfter = sourceScript.replace(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).split(SYMBOL_SEMICOLON);
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     for (int j = 0; j < itemsAfter.length; j++) {
-                        String item = itemsAfter[j];
+                        String item = itemsAfter[j].trim();
+                        if (StringUtils.isEmpty(item)) {
+                            continue;
+                        }
+                        if (item.toLowerCase().startsWith(KEY_DELETE)) {
+                            continue;
+                        }
                         // 注释处理
                         if (item.startsWith(ANNOTATION_TYPE_NORMAL)) {
                             if (appConfigDto.getScriptUpdateAnnotationSkip()) {
@@ -241,15 +247,18 @@ public class ScriptUpdateController implements Initializable {
                         String paramSql = "\n from (select count(1) param_exists from tbparam where param_id = '" + paramControl + "') a where param_exists = 1";
                         // 组装sql语句
                         for (int i = 0; i < items.length; i++) {
-                            String sql = items[i].trim();
-                            String sqlKey = sql;
+                            String sqlKey = items[i].trim();
+                            String sql = items[i].replaceAll(" values", "values").trim();
                             if (sql.equals(SYMBOL_EMPTY)) {
+                                continue;
+                            }
+                            if (sql.toLowerCase().startsWith(KEY_DELETE)) {
                                 continue;
                             }
                             // 注释处理
                             if (sql.startsWith(ANNOTATION_TYPE_NORMAL)) {
                                 if (appConfigDto.getScriptUpdateAnnotationSkip()) {
-                                    sql = sql.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY).replaceAll(" values", "values").trim();
+                                    sql = sql.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY);
                                 }
                             }
                             // 参数处理
