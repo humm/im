@@ -30,16 +30,16 @@ public class BaseConst {
     public static final String KEY_SVN_UPDATE = "svn.update.";
     public static final String KEY_SCRIPT_UPDATE_TABLE = "script.update.table.";
     public static final String KEY_SVN_STAT_USER = "svn.stat.user.";
-    public static final String KEY_SVN_STAT = "svn.stat";
 
     public static final String KEY_NOTICE = "notice";
-    public static final String KEY_TRUE = "true";
     public static final String KEY_VALUES = "values";
     public static final String KEY_INSERT_INTO = "into";
     public static final String KEY_CONF = "conf";
     public static final String KEY_FILE_SLASH = "file:/";
     public static final String KEY_FILE = "file:";
     public static final String KEY_APP_LOG = "appLog";
+
+    public static final String APP_USER_IM = "im";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
@@ -108,9 +108,9 @@ public class BaseConst {
     public static final String MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件[ license.init ]";
     public static final String MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止[ %s ]";
     public static final String MSG_LICENSE_NOT_AUTH = "未授权[ %s ]功能";
+    public static final String MSG_LICENSE_NOT_USE = "未启用[ %s ]功能";
     public static final String MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ";
     public static final String MSG_SVN_REALTIME_STAT = "%s  %s  %s  %s";
-
 
     public static final String CONFIG_PREFIX = "#################### ";
 
@@ -119,7 +119,6 @@ public class BaseConst {
     public static final String PATH_APP = "/conf/app.conf";
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
-    public static final String PATH_SVN_STAT = "/conf/init/svnStat.init";
     public static final String PATH_VERSION = "/conf/init/version.init";
     public static final String PATH_LOG = "/logs/%s/%s";
     public static final String PATH_STAT = "/stats/%s";

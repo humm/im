@@ -140,6 +140,8 @@ public class InitConfigTest {
 
         keys.add("script.update.generate.path");
 
+        keys.add("app.user");
+
         String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {

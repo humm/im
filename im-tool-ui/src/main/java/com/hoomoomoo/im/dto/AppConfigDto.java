@@ -78,6 +78,8 @@ public class AppConfigDto extends BaseDto {
 
     private String svnStatHistoryOrderType;
 
+    private String appUser;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;

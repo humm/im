@@ -27,7 +27,7 @@ public enum FunctionConfig {
     FUNCTION_STAT_INFO("990", "功能使用统计", "/conf/fxml/functionStatInfo.fxml", "menuItemFunctionStat", "functionStatInfo"),
 
     ABOUT_INFO("999", "关于", "/conf/fxml/aboutInfo.fxml", "menuItemAbout", "aboutInfo");
-    
+
     private String code;
 
     private String name;
@@ -70,6 +70,15 @@ public enum FunctionConfig {
     public static String getName(String code) {
         for (FunctionConfig tab : FunctionConfig.values()) {
             if (tab.getCode().equals(code)) {
+                return tab.name;
+            }
+        }
+        return null;
+    }
+
+    public static String getNameBymenuId(String menuId) {
+        for (FunctionConfig tab : FunctionConfig.values()) {
+            if (tab.getMenuId().equals(menuId)) {
                 return tab.name;
             }
         }

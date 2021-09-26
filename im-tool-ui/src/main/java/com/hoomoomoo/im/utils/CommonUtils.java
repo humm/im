@@ -256,7 +256,11 @@ public class CommonUtils {
         if (StringUtils.isBlank(functionCode)) {
             return true;
         }
-        if (ABOUT_INFO.getCode().equals(functionCode) || CONFIG_SET.getCode().equals(functionCode) || FUNCTION_STAT_INFO.getCode().equals(functionCode)) {
+        if (!checkUse(appConfigDto, STR_1, functionCode)) {
+            LoggerUtils.info(String.format(MSG_LICENSE_NOT_USE, FunctionConfig.getName(functionCode)));
+            return false;
+        }
+        if (checkAuth(STR_1, functionCode)) {
             return true;
         }
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
@@ -283,6 +287,7 @@ public class CommonUtils {
     }
 
     public static void showAuthFunction(Menu menu) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
         if (CollectionUtils.isEmpty(functionDtoList)) {
             menu.getItems().clear();
@@ -294,7 +299,12 @@ public class CommonUtils {
         while (iterator.hasNext()) {
             MenuItem item = iterator.next();
             for (FunctionDto functionDto : functionDtoList) {
-                if (ABOUT_INFO.getMenuId().equals(item.getId()) || CONFIG_SET.getMenuId().equals(item.getId()) || FUNCTION_STAT_INFO.getMenuId().equals(item.getId())) {
+                if (!checkUse(appConfigDto, STR_2, item.getId())) {
+                    LoggerUtils.info(String.format(MSG_LICENSE_NOT_USE, FunctionConfig.getNameBymenuId(item.getId())));
+                    iterator.remove();
+                    continue outer;
+                }
+                if (checkAuth(STR_2, item.getId())) {
                     continue outer;
                 }
                 if (FunctionConfig.getMenuId(functionDto.getFunctionCode()).equals(item.getId())) {
@@ -303,5 +313,28 @@ public class CommonUtils {
             }
             iterator.remove();
         }
+    }
+
+    public static boolean checkAuth(String checkType, String functionCode) {
+        if (STR_1.equals(checkType)) {
+            return ABOUT_INFO.getCode().equals(functionCode) || CONFIG_SET.getCode().equals(functionCode) || FUNCTION_STAT_INFO.getCode().equals(functionCode);
+        } else if (STR_2.equals(checkType)) {
+            return ABOUT_INFO.getMenuId().equals(functionCode) || CONFIG_SET.getMenuId().equals(functionCode) || FUNCTION_STAT_INFO.getMenuId().equals(functionCode);
+        }
+        return false;
+    }
+
+    public static boolean checkUse(AppConfigDto appConfigDto, String checkType, String functionCode) {
+        String appUser = appConfigDto.getAppUser();
+        if (STR_1.equals(checkType)) {
+            if (SVN_REALTIME_STAT.getCode().equals(functionCode) || SVN_HISTORY_STAT.getCode().equals(functionCode)) {
+                return APP_USER_IM.equals(appUser);
+            }
+        } else if (STR_2.equals(checkType)) {
+            if (SVN_REALTIME_STAT.getMenuId().equals(functionCode) || SVN_HISTORY_STAT.getMenuId().equals(functionCode)) {
+                return APP_USER_IM.equals(appUser);
+            }
+        }
+        return true;
     }
 }
