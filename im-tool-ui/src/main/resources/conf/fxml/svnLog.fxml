@@ -46,7 +46,7 @@
                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
                                                 <TableColumn id="match" editable="false" prefWidth="120"
-                                                             sortable="false" text="记录数匹配">
+                                                             sortable="false" text="匹配标志">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="match"/>
                                                     </cellValueFactory>
@@ -70,7 +70,7 @@
                                                     </cellValueFactory>
                                                 </TableColumn>
                                                 <TableColumn id="getNum" editable="false" prefWidth="120"
-                                                             sortable="false" text="已获取提交次数">
+                                                             sortable="false" text="获取提交次数">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="getNum"/>
                                                     </cellValueFactory>
