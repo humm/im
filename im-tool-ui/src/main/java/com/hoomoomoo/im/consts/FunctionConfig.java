@@ -18,6 +18,8 @@ public enum FunctionConfig {
 
     SCRIPT_UPDATE("50", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "menuItemScriptUpdate", "scriptUpdate"),
 
+    GENERATE_CODE("60", "模板代码", "/conf/fxml/generateCode.fxml", "menuItemGenerateCode", "generateCode"),
+
     SVN_REALTIME_STAT("960", "svn实时统计", "/conf/fxml/svnRealtimeStat.fxml", "menuItemSvnRealtimeStat", "svnRealtimeStat"),
 
     SVN_HISTORY_STAT("970", "svn历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),

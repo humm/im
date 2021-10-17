@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.*;
@@ -36,6 +38,9 @@ public class CommonUtils {
     private final static String PATTERN3 = "yyyyMMdd";
     private final static String PATTERN4 = "yyyy-MM-dd";
     private final static String PATTERN5 = "HH:mm:ss";
+    private final static String PATTERN6 = "yyyy/MM/dd";
+
+    private static Pattern LINE_PATTERN = Pattern.compile("_(\\w)");
 
     /**
      * 获取当前系统时间
@@ -110,6 +115,18 @@ public class CommonUtils {
             return date;
         }
         return date.substring(0, 4) + SYMBOL_HYPHEN + date.substring(4, 6) + SYMBOL_HYPHEN + date.substring(6);
+    }
+
+    /**
+     * 获取当前日期
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static String getCurrentDateTime6() {
+        return new SimpleDateFormat(PATTERN6).format(new Date());
     }
 
     /**
@@ -337,4 +354,30 @@ public class CommonUtils {
         }
         return true;
     }
+
+    public static String initialUpper(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    public static String initialLower(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return str;
+        }
+        return str.substring(0, 1).toLowerCase() + str.substring(1);
+    }
+
+    public static String lineToHump(String str) {
+        str = str.toLowerCase();
+        Matcher matcher = LINE_PATTERN.matcher(str);
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            matcher.appendReplacement(sb, matcher.group(1).toUpperCase());
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
+
 }

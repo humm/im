@@ -1,7 +1,6 @@
 package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import org.apache.commons.collections.CollectionUtils;
@@ -90,7 +89,7 @@ public class LoggerUtils {
             Date endDate = new Date();
             StringBuilder log = new StringBuilder();
             log.append(CommonUtils.getCurrentDateTime1(startDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_1)).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
+            log.append(SVN_LOG.getCode()).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
             int fileNum = 0;
             if (CollectionUtils.isNotEmpty(svnLogDtoList)) {
                 for (LogDto item : svnLogDtoList) {
@@ -102,10 +101,10 @@ public class LoggerUtils {
                 }
             }
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_1)).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
+            log.append(SVN_LOG.getCode()).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
             long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_1)).append(SYMBOL_SPACE);
+            log.append(SVN_LOG.getCode()).append(SYMBOL_SPACE);
             log.append(COST).append(costTime).append(UNIT).append(SYMBOL_SPACE);
             log.append(SVN_NUM).append(svnLogDtoList.size()).append(SYMBOL_SPACE);
             log.append(FILE_NUM).append(fileNum).append(SYMBOL_NEXT_LINE_2);
@@ -130,15 +129,15 @@ public class LoggerUtils {
             Date endDate = new Date();
             StringBuilder log = new StringBuilder();
             log.append(CommonUtils.getCurrentDateTime1(startDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_2)).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
+            log.append(SVN_UPDATE.getCode()).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
             for (String item : filePath) {
                 log.append(getLineIndentation()).append(item).append(SYMBOL_NEXT_LINE);
             }
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_2)).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
+            log.append(SVN_UPDATE.getCode()).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
             long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_2)).append(SYMBOL_SPACE);
+            log.append(SVN_UPDATE.getCode()).append(SYMBOL_SPACE);
             log.append(COST).append(costTime).append(UNIT).append(SYMBOL_NEXT_LINE_2);
             String logFilePath = String.format(PATH_LOG, SVN_UPDATE.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
@@ -161,13 +160,13 @@ public class LoggerUtils {
             Date endDate = new Date();
             StringBuilder log = new StringBuilder();
             log.append(CommonUtils.getCurrentDateTime1(startDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_3)).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
+            log.append(FUND_INFO.getCode()).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
             log.append(getLineIndentation()).append(filePath).append(SYMBOL_NEXT_LINE);
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_3)).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
+            log.append(FUND_INFO.getCode()).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
             long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_3)).append(SYMBOL_SPACE);
+            log.append(FUND_INFO.getCode()).append(SYMBOL_SPACE);
             log.append(COST).append(costTime).append(UNIT).append(SYMBOL_NEXT_LINE_2);
             String logFilePath = String.format(PATH_LOG, FUND_INFO.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
@@ -190,15 +189,15 @@ public class LoggerUtils {
             Date endDate = new Date();
             StringBuilder log = new StringBuilder();
             log.append(CommonUtils.getCurrentDateTime1(startDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_4)).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
+            log.append(PROCESS_INFO.getCode()).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
             for (String item : filePathList) {
                 log.append(getLineIndentation()).append(item).append(SYMBOL_NEXT_LINE);
             }
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_4)).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
+            log.append(PROCESS_INFO.getCode()).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
             long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_4)).append(SYMBOL_SPACE);
+            log.append(PROCESS_INFO.getCode()).append(SYMBOL_SPACE);
             log.append(COST).append(costTime).append(UNIT).append(SYMBOL_NEXT_LINE_2);
             String logFilePath = String.format(PATH_LOG, PROCESS_INFO.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
@@ -221,17 +220,48 @@ public class LoggerUtils {
             Date endDate = new Date();
             StringBuilder log = new StringBuilder();
             log.append(CommonUtils.getCurrentDateTime1(startDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_5)).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
+            log.append(SCRIPT_UPDATE.getCode()).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
             for (String item : filePath) {
                 log.append(getLineIndentation()).append(item).append(SYMBOL_NEXT_LINE);
             }
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_5)).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
+            log.append(SCRIPT_UPDATE.getCode()).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
             long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(FunctionConfig.getName(STR_5)).append(SYMBOL_SPACE);
+            log.append(SCRIPT_UPDATE.getCode()).append(SYMBOL_SPACE);
             log.append(COST).append(costTime).append(UNIT).append(SYMBOL_NEXT_LINE_2);
             String logFilePath = String.format(PATH_LOG, SCRIPT_UPDATE.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    public static void writeGenerateCodeInfo(Date startDate, List<String> fileName) {
+        try {
+            // 写统计文件
+            String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, GENERATE_CODE.getLogFolder() + FILE_TYPE_STAT));
+            writeStatFile(statFilePath);
+
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (!appConfigDto.getAppLogEnable()) {
+                return;
+            }
+            // 写日志文件
+            Date endDate = new Date();
+            StringBuilder log = new StringBuilder();
+            log.append(CommonUtils.getCurrentDateTime1(startDate)).append(SYMBOL_SPACE);
+            log.append(GENERATE_CODE.getCode()).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
+            for (String item : fileName) {
+                log.append(getLineIndentation()).append(item).append(SYMBOL_NEXT_LINE);
+            }
+            log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
+            log.append(GENERATE_CODE.getCode()).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
+            long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
+            log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
+            log.append(GENERATE_CODE.getCode()).append(SYMBOL_SPACE);
+            log.append(COST).append(costTime).append(UNIT).append(SYMBOL_NEXT_LINE_2);
+            String logFilePath = String.format(PATH_LOG, GENERATE_CODE.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
         } catch (Exception e) {
             LoggerUtils.info(e);

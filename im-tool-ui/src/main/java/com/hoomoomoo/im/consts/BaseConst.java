@@ -39,6 +39,18 @@ public class BaseConst {
     public static final String KEY_FILE = "file:";
     public static final String KEY_APP_LOG = "appLog";
     public static final String KEY_DELETE = "delete";
+    public static final String KEY_COLUMN_UNDERLINE = "column_underline";
+    public static final String KEY_COLUMN = "column";
+    public static final String KEY_COLUMN_TYPE = "column_type";
+    public static final String KEY_PRECISION = "precision";
+    public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP = "transCodeAndSubTransCode";
+    public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE = "trans_code_and_sub_trans_code";
+    public static final String KEY_VARCHAR2 = "varchar2";
+    public static final String KEY_INTEGER = "integer";
+    public static final String KEY_NUMBER = "number";
+    public static final String KEY_PRD_CODE = "prdCode";
+    public static final String KEY_SELLER_CODE = "sellerCode";
+    public static final String KEY_BRANCH_NO = "branchNo";
 
     public static final String APP_USER_IM = "im";
 
@@ -51,6 +63,8 @@ public class BaseConst {
     public static final String FILE_TYPE_EXE = ".exe";
     public static final String FILE_TYPE_VUE = ".vue";
     public static final String FILE_TYPE_STAT = ".stat";
+    public static final String FILE_TYPE_JAVA = ".java";
+    public static final String FILE_TYPE_SQL = ".sql";
 
     public static final String NAME_DELETE = " 删除";
     public static final String NAME_END = "结束";
@@ -70,6 +84,7 @@ public class BaseConst {
     public static final String SYMBOL_HYPHEN = "-";
     public final static String SYMBOL_POINT = ".";
     public final static String SYMBOL_$_SLASH = "\\$";
+    public final static String SYMBOL_S_SLASH = "\\s+";
     public final static String SYMBOL_POINT_SLASH = "\\.";
     public static final String SYMBOL_SLASH = "/";
     public static final String SYMBOL_BRACKETS_LEFT = "(";
@@ -123,5 +138,47 @@ public class BaseConst {
     public static final String PATH_VERSION = "/conf/init/version.init";
     public static final String PATH_LOG = "/logs/%s/%s";
     public static final String PATH_STAT = "/stats/%s";
+
+    public static final String PACKAGE_NAME_PREFIX = "com.hundsun.lcpt.fund.";
+
+    public static final String METHOD_RETURN_PARAM_IDATASET = "com.hundsun.jres.interfaces.share.dataset.IDataset";
+    public static final String METHOD_RETURN_PARAM_QUERY_STAT_INFO = "com.hundsun.lcpt.ta.base.webmanager.QueryStatInfo";
+    public static final String METHOD_RETURN_PARAM_HS_SQL_STRING = "com.hundsun.lcpt.util.HsSqlString";
+    public static final String METHOD_RETURN_PARAM_LIST = "java.util.List<%s>";
+    public static final String METHOD_RETURN_PARAM_STRING = "java.lang.String";
+
+    public static final String METHOD_REQUEST_PARAM_STRING = "dataset";
+    public static final String METHOD_REQUEST_PARAM_TABLE_NAME = "tableName";
+    public static final String METHOD_REQUEST_PARAM_AUDIT_TABLE_NAME = "auditTableName";
+    public static final String METHOD_REQUEST_PARAM_ENTITY_DETAILS = "entityDetails";
+    public static final String METHOD_REQUEST_PARAM_SESSION = "session";
+    public static final String METHOD_REQUEST_PARAM_DTO = "dto";
+    public static final String METHOD_REQUEST_PARAM_MAP = "map";
+    public static final String METHOD_REQUEST_PARAM_WORK_PROCESS_DTO = "workProcessDTO";
+    public static final String METHOD_REQUEST_PARAM_ASYN_AUDIT_DTO = "asynAuditDTO";
+    public static final String METHOD_REQUEST_PARAM_ENTRY_SERIAL_NO = "entrySerialNo";
+    public static final String METHOD_REQUEST_PARAM_ENTRY_ORDER_NO = "entryOrderNo";
+    public static final String METHOD_REQUEST_PARAM_OPERATOR_MODE = "operatorMode";
+    public static final String METHOD_REQUEST_PARAM_FLAG = "flag";
+
+    public static final String METHOD_TYPE_QUERY = "查询";
+    public static final String METHOD_TYPE_ADD = "新增";
+    public static final String METHOD_TYPE_EDIT = "修改";
+    public static final String METHOD_TYPE_DELETE = "删除";
+    public static final String METHOD_TYPE_IMPORT = "导入";
+    public static final String METHOD_TYPE_EXPORT = "导出";
+
+    public static final String SUB_TRANSCODE_ADD = "Add";
+    public static final String SUB_TRANSCODE_EDIT = "Edit";
+    public static final String SUB_TRANSCODE_DELETE = "Delete";
+    public static final String SUB_TRANSCODE_IMPORT = "Import";
+
+    public static final String DB_TYPE_PUB = "pub";
+    public static final String DB_TYPE_TRANS = "trans";
+    public static final String DB_TYPE_TRANS_QUERY = "query";
+    public static final String DB_TYPE_TRANS_ORDER = "order";
+
+    public static final String PAGE_TYPE_SET = "1";
+    public static final String PAGE_TYPE_QUERY = "2";
 
 }

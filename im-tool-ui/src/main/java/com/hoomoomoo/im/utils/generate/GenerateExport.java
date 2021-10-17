@@ -1,0 +1,53 @@
+package com.hoomoomoo.im.utils.generate;
+
+import com.hoomoomoo.im.dto.GenerateCodeDto;
+import com.hoomoomoo.im.utils.CommonUtils;
+
+import java.util.Iterator;
+import java.util.Map;
+
+import static com.hoomoomoo.im.consts.BaseConst.*;
+
+/**
+ * @author humm23693
+ * @description TODO
+ * @package com.hoomoomoo.im.utils.generate
+ * @date 2021/10/15
+ */
+public class GenerateExport {
+
+    public static String init(GenerateCodeDto generateCodeDto) throws Exception {
+        String fileName = CommonUtils.initialUpper(generateCodeDto.getClassCode()) + "ExportConfig";
+        String packageName = PACKAGE_NAME_PREFIX + "bean.exportconfig";
+
+        generateCodeDto.setExportName(fileName);
+        generateCodeDto.setExportPackageName(packageName + SYMBOL_POINT + fileName);
+
+        StringBuilder content = new StringBuilder(GenerateCommon.generateFileDescribe(generateCodeDto, fileName, packageName));
+
+        content.append("import com.hundsun.lcpt.fund.annotation.FundExcelExportField;").append(SYMBOL_NEXT_LINE);
+        content.append("import lombok.Data;").append(SYMBOL_NEXT_LINE);
+        content.append("import static com.hundsun.lcpt.fund.annotation.FundExcelExportField.*;").append(SYMBOL_NEXT_LINE_2);
+
+        content.append(GenerateCommon.generateClassDescribe(generateCodeDto, fileName));
+
+        content.append("@Data").append(SYMBOL_NEXT_LINE);
+        content.append("public class " + fileName + " {").append(SYMBOL_NEXT_LINE_2);
+        content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(SYMBOL_NEXT_LINE_2);
+        Map<String, Map<String, String>> tableColumn = generateCodeDto.getColumnMap();
+        Iterator<String> iterator = tableColumn.keySet().iterator();
+        Map<String, String> dictMap = generateCodeDto.getDictMap();
+        Map<String, String> primaryKeyMap = generateCodeDto.getPrimaryKeyMap();
+        while (iterator.hasNext()) {
+            String column = iterator.next();
+            if (GenerateCommon.skipColumn(column)) {
+                continue;
+            }
+            Map<String, String> columnInfo = tableColumn.get(column);
+            content.append("    @FundExcelExportField(title = \"\", type = \"\")").append(SYMBOL_NEXT_LINE);
+            content.append("    private String " + column + ";").append(SYMBOL_NEXT_LINE_2);
+        }
+        content.append("}").append(SYMBOL_NEXT_LINE_2);
+        return GenerateCommon.generateFile(generateCodeDto, packageName, fileName, content.toString());
+    }
+}

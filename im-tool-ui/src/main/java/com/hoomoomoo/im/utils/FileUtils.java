@@ -101,6 +101,19 @@ public class FileUtils {
      * @return:
      */
     public static void writeFile(String filePath, String content, boolean isAppend) throws IOException {
+        writeFile(filePath, content, null, isAppend);
+    }
+
+    /**
+     * 写文件
+     *
+     * @param filePath
+     * @param content
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static void writeFile(String filePath, String content, String encode, boolean isAppend) throws IOException {
         // 判断文件夹是否存在
         String folderPath = filePath.substring(0, filePath.lastIndexOf(SYMBOL_SLASH));
         File file = new File(folderPath);
@@ -108,12 +121,14 @@ public class FileUtils {
             file.mkdirs();
         }
         file = new File(filePath);
-        PrintWriter printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, isAppend), getFileEncode(filePath))));
+        if (encode == null) {
+            encode = getFileEncode(filePath);
+        }
+        PrintWriter printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, isAppend), encode)));
         printWriter.write(content);
         printWriter.flush();
         printWriter.close();
     }
-
 
     /**
      * 读取文件
