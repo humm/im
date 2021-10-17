@@ -2,6 +2,7 @@ package com.hoomoomoo.im.utils.generate;
 
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -35,9 +36,11 @@ public class GenerateImport {
         content.append("@Data").append(SYMBOL_NEXT_LINE);
         content.append("public class " + fileName + " {").append(SYMBOL_NEXT_LINE_2);
         content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(SYMBOL_NEXT_LINE_2);
+
+        content.append("    // 请检查各项配置数据是否正确, 特别是配置项isRequired").append(SYMBOL_NEXT_LINE_2);
+
         Map<String, Map<String, String>> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
-        Map<String, String> dictMap = generateCodeDto.getDictMap();
         Map<String, String> primaryKeyMap = generateCodeDto.getPrimaryKeyMap();
         while (iterator.hasNext()) {
             String column = iterator.next();
@@ -45,9 +48,9 @@ public class GenerateImport {
                 continue;
             }
             Map<String, String> columnInfo = tableColumn.get(column);
-            content.append("    @FundExcelUpLoadField(title = \"\", colum = 1, claz = " + fileName + ".class, isRequired = true");
-            if (dictMap.containsKey(columnInfo.get(KEY_COLUMN_UNDERLINE))) {
-                content.append(", type = DICT, dict = \"" + dictMap.get(columnInfo.get(KEY_COLUMN_UNDERLINE)) + "\"");
+            content.append("    @FundExcelUpLoadField(title = \"" + columnInfo.get(KEY_COLUMN_NAME) + "\", colum = 1, claz = " + fileName + ".class, isRequired = true");
+            if (StringUtils.isNotEmpty(columnInfo.get(KEY_COLUMN_DICT))) {
+                content.append(", type = DICT, dict = \"" + columnInfo.get(KEY_COLUMN_DICT) + "\"");
             }
             if (primaryKeyMap.containsKey(columnInfo.get(KEY_COLUMN_UNDERLINE))) {
                 content.append(", primaryKey = true");
@@ -67,7 +70,7 @@ public class GenerateImport {
     }
 
     public static void getPackageName(GenerateCodeDto generateCodeDto) {
-        String fileName = CommonUtils.initialUpper(generateCodeDto.getClassCode()) + "ExcelConfig";
+        String fileName = CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "ExcelConfig";
         String packageName = PACKAGE_NAME_PREFIX + "bean.excelconfig";
 
         generateCodeDto.setImportName(fileName);

@@ -17,7 +17,7 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
 public class GenerateExport {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
-        String fileName = CommonUtils.initialUpper(generateCodeDto.getClassCode()) + "ExportConfig";
+        String fileName = CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "ExportConfig";
         String packageName = PACKAGE_NAME_PREFIX + "bean.exportconfig";
 
         generateCodeDto.setExportName(fileName);
@@ -34,17 +34,25 @@ public class GenerateExport {
         content.append("@Data").append(SYMBOL_NEXT_LINE);
         content.append("public class " + fileName + " {").append(SYMBOL_NEXT_LINE_2);
         content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(SYMBOL_NEXT_LINE_2);
+
+        content.append("    // 请检查各项配置数据是否正确, 特别是配置项type").append(SYMBOL_NEXT_LINE_2);
+
         Map<String, Map<String, String>> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
-        Map<String, String> dictMap = generateCodeDto.getDictMap();
-        Map<String, String> primaryKeyMap = generateCodeDto.getPrimaryKeyMap();
         while (iterator.hasNext()) {
             String column = iterator.next();
             if (GenerateCommon.skipColumn(column)) {
                 continue;
             }
             Map<String, String> columnInfo = tableColumn.get(column);
-            content.append("    @FundExcelExportField(title = \"\", type = \"\")").append(SYMBOL_NEXT_LINE);
+            String columnType = columnInfo.get(KEY_COLUMN_TYPE);
+            content.append("    @FundExcelExportField(title = \"" + columnInfo.get(KEY_COLUMN_NAME) + "\"");
+            if (KEY_INTEGER.equals(columnType)) {
+                content.append(", type = FundExcelExportField.DATE");
+            } else {
+                content.append(", type = \"\"");
+            }
+            content.append(")").append(SYMBOL_NEXT_LINE);
             content.append("    private String " + column + ";").append(SYMBOL_NEXT_LINE_2);
         }
         content.append("}").append(SYMBOL_NEXT_LINE_2);

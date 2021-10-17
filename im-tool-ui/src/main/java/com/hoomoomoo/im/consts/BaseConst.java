@@ -42,6 +42,8 @@ public class BaseConst {
     public static final String KEY_COLUMN_UNDERLINE = "column_underline";
     public static final String KEY_COLUMN = "column";
     public static final String KEY_COLUMN_TYPE = "column_type";
+    public static final String KEY_COLUMN_NAME = "column_name";
+    public static final String KEY_COLUMN_DICT = "column_dict";
     public static final String KEY_PRECISION = "precision";
     public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP = "transCodeAndSubTransCode";
     public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE = "trans_code_and_sub_trans_code";

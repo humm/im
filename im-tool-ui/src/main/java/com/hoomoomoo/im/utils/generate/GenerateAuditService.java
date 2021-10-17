@@ -180,8 +180,8 @@ public class GenerateAuditService {
     }
 
     public static void getPackageName(GenerateCodeDto generateCodeDto) {
-        String fileName = CommonUtils.initialUpper(generateCodeDto.getClassCode()) + "AuditService";
-        String packageName = PACKAGE_NAME_PREFIX + "impl." + generateCodeDto.getPackageCode().split(SYMBOL_POINT_SLASH)[0];
+        String fileName = CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "AuditService";
+        String packageName = PACKAGE_NAME_PREFIX + "impl." + generateCodeDto.getMenuList().get(0)[0];
 
         generateCodeDto.setAuditServiceName(fileName);
         generateCodeDto.setAuditServicePackageName(packageName + SYMBOL_POINT + fileName);

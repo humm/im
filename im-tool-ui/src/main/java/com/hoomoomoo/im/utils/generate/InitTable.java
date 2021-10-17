@@ -4,7 +4,6 @@ import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -28,23 +27,39 @@ public class InitTable {
         generateCodeDto.setColumnMap(tableColumn);
 
         String asyTable = generateCodeDto.getAsyTable();
-        Map<String, Map<String, String>> asyTableColumn = getColumn(generateCodeDto, asyTable, false);
-        generateCodeDto.setAsyColumnMap(asyTableColumn);
+        if (StringUtils.isNotEmpty(asyTable)) {
+            Map<String, Map<String, String>> asyTableColumn = getColumn(generateCodeDto, asyTable, false);
+            generateCodeDto.setAsyColumnMap(asyTableColumn);
+        }
 
-        Map dictMap = new HashMap(16);
-        String dictColumn = generateCodeDto.getDictColumn();
-        if (StringUtils.isNotEmpty(dictColumn)) {
-            String[] dictConfig = dictColumn.split(SYMBOL_SEMICOLON);
+        String column = generateCodeDto.getColumn();
+        if (StringUtils.isNotEmpty(column)) {
+            String[] dictConfig = column.split(SYMBOL_SEMICOLON);
             if (dictConfig != null) {
                 for (String item : dictConfig) {
                     String[] dictItem = item.split(SYMBOL_COLON);
-                    if (dictItem != null && dictItem.length == 2) {
-                        dictMap.put(dictItem[0], dictItem[1]);
+                    if (dictItem != null) {
+                        if (dictItem.length >= 2) {
+                            tableColumn.get(CommonUtils.lineToHump(dictItem[0])).put(KEY_COLUMN_NAME, dictItem[1]);
+                        } else if (dictItem.length == 3) {
+                            tableColumn.get(CommonUtils.lineToHump(dictItem[0])).put(KEY_COLUMN_DICT, dictItem[2]);
+                        }
                     }
                 }
             }
         }
-        generateCodeDto.setDictMap(dictMap);
+
+        String[] menuCode = generateCodeDto.getMenuCode().split(SYMBOL_POINT_SLASH);
+        String[] menuName = generateCodeDto.getMenuName().split(SYMBOL_POINT_SLASH);
+        for (int i = 0; i < menuCode.length; i++) {
+            String[] item = new String[2];
+            item[0] = menuCode[i];
+            item[1] = menuName[i];
+            generateCodeDto.getMenuList().add(item);
+        }
+
+        generateCodeDto.setFunctionCode(menuCode[2]);
+        generateCodeDto.setFunctionName(menuName[2]);
     }
 
     private static Map<String, Map<String, String>> getColumn(GenerateCodeDto generateCodeDto, String table,
@@ -91,6 +106,8 @@ public class InitTable {
             columnInfo.put(KEY_COLUMN_UNDERLINE, columnUnderline);
             columnInfo.put(KEY_COLUMN_TYPE, columnType.split("\\(")[0].toLowerCase());
             columnInfo.put(KEY_PRECISION, precision);
+            columnInfo.put(KEY_COLUMN_NAME, SYMBOL_EMPTY);
+            columnInfo.put(KEY_COLUMN_DICT, SYMBOL_EMPTY);
             columnMap.put(column, columnInfo);
         }
 

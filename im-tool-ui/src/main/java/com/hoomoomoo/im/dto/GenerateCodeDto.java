@@ -2,9 +2,7 @@ package com.hoomoomoo.im.dto;
 
 import lombok.Data;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
 
@@ -18,18 +16,17 @@ import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
 public class GenerateCodeDto {
 
     private String javaPath;
+    private String menuCode;
+    private String menuName;
     private String sqlPath;
-    private String packageCode;
-    private String classCode;
     private String dtoName;
     private String author;
-    private String describe;
     private String table;
     private String asyTable;
     private Map<String, Map<String, String>> columnMap;
     private Map<String, Map<String, String>> asyColumnMap;
-    private Map<String, String> dictMap;
     private Map<String, String> primaryKeyMap;
+    private List<String[]> menuList;
     private String dtoPackageName;
     private String dtoNameDto;
     private String interfacePackageName;
@@ -47,23 +44,20 @@ public class GenerateCodeDto {
     private String tableName;
     private String primaryKey;
     private String dbType;
-    private String dictColumn;
+    private String column;
     private String pageType;
-    private String secondMenuName;
+    private String functionCode;
+    private String functionName;
 
     public GenerateCodeDto() {
         this.javaPath = SYMBOL_EMPTY;
         this.sqlPath = SYMBOL_EMPTY;
-        this.packageCode = SYMBOL_EMPTY;
-        this.classCode = SYMBOL_EMPTY;
         this.dtoName = SYMBOL_EMPTY;
         this.author = SYMBOL_EMPTY;
-        this.describe = SYMBOL_EMPTY;
         this.table = SYMBOL_EMPTY;
         this.asyTable = SYMBOL_EMPTY;
         this.columnMap = new LinkedHashMap<>(16);
         this.asyColumnMap = new LinkedHashMap<>(16);
-        this.dictMap = new HashMap<>(16);
         this.primaryKeyMap = new HashMap<>(16);
         this.dtoPackageName = SYMBOL_EMPTY;
         this.dtoNameDto = SYMBOL_EMPTY;
@@ -80,9 +74,13 @@ public class GenerateCodeDto {
         this.tableName = SYMBOL_EMPTY;
         this.primaryKey = SYMBOL_EMPTY;
         this.dbType = SYMBOL_EMPTY;
-        this.dictColumn = SYMBOL_EMPTY;
+        this.column = SYMBOL_EMPTY;
         this.pageType = SYMBOL_EMPTY;
-        this.secondMenuName = SYMBOL_EMPTY;
+        this.menuCode = SYMBOL_EMPTY;
+        this.menuName = SYMBOL_EMPTY;
+        this.menuList = new ArrayList<>();
+        this.functionCode = SYMBOL_EMPTY;
+        this.functionName = SYMBOL_EMPTY;
     }
 
 }

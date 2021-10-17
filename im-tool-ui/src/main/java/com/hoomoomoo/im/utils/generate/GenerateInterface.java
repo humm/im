@@ -14,8 +14,8 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
 public class GenerateInterface {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
-        String fileName = "I" + CommonUtils.initialUpper(generateCodeDto.getClassCode()) + "Service";
-        String packageName = PACKAGE_NAME_PREFIX + "interfaces." + generateCodeDto.getPackageCode().split(SYMBOL_POINT_SLASH)[0];
+        String fileName = "I" + CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "Service";
+        String packageName = PACKAGE_NAME_PREFIX + "interfaces." + generateCodeDto.getMenuList().get(0)[0];
 
         generateCodeDto.setInterfaceName(fileName);
         generateCodeDto.setInterfacePackageName(packageName + SYMBOL_POINT + fileName);

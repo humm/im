@@ -24,7 +24,7 @@ public class GenerateCommon {
         content.append(" * 系统名称: 理财登记过户平台").append(SYMBOL_NEXT_LINE);
         content.append(" * 模块名称:").append(SYMBOL_NEXT_LINE);
         content.append(" * 软件版权: 恒生电子股份有限公司").append(SYMBOL_NEXT_LINE);
-        content.append(" * 功能说明: " + generateCodeDto.getDescribe() + "").append(SYMBOL_NEXT_LINE);
+        content.append(" * 功能说明: " + generateCodeDto.getFunctionName() + "").append(SYMBOL_NEXT_LINE);
         content.append(" * 系统版本: 6.0.0.0").append(SYMBOL_NEXT_LINE);
         content.append(" * 开发人员: " + generateCodeDto.getAuthor() + "").append(SYMBOL_NEXT_LINE);
         content.append(" * 开发时间: " + CommonUtils.getCurrentDateTime4() + "").append(SYMBOL_NEXT_LINE);
@@ -43,7 +43,7 @@ public class GenerateCommon {
         StringBuilder content = new StringBuilder();
         content.append("/**").append(SYMBOL_NEXT_LINE);
         content.append(" * @ClassName " + fileName + "").append(SYMBOL_NEXT_LINE);
-        content.append(" * @Description " + generateCodeDto.getDescribe() + "").append(SYMBOL_NEXT_LINE);
+        content.append(" * @Description " + generateCodeDto.getFunctionName() + "").append(SYMBOL_NEXT_LINE);
         content.append(" * @Author " + generateCodeDto.getAuthor() + "").append(SYMBOL_NEXT_LINE);
         content.append(" * @Date " + CommonUtils.getCurrentDateTime1() + "").append(SYMBOL_NEXT_LINE);
         content.append(" **/").append(SYMBOL_NEXT_LINE);
@@ -63,7 +63,7 @@ public class GenerateCommon {
             requestParam = new String[]{"dto"};
         }
         if (StringUtils.isEmpty(describe)) {
-            describe = generateCodeDto.getDescribe() + "-" + operateType;
+            describe = generateCodeDto.getFunctionName() + "-" + operateType;
         }
         StringBuilder content = new StringBuilder();
         content.append("    /**").append(SYMBOL_NEXT_LINE);
@@ -93,7 +93,7 @@ public class GenerateCommon {
     }
 
     public static String generateSubTransCode(GenerateCodeDto generateCodeDto, String operateType) throws IOException {
-        return "    public static final String SUB_TRANSCODE_" + operateType.toUpperCase() + " = ManageUtil.appendSplit(\"$\", \"" + generateCodeDto.getClassCode() + "\", \"" + generateCodeDto.getClassCode() + operateType + "\");" + SYMBOL_NEXT_LINE;
+        return "    public static final String SUB_TRANSCODE_" + operateType.toUpperCase() + " = ManageUtil.appendSplit(\"$\", \"" + generateCodeDto.getFunctionCode() + "\", \"" + generateCodeDto.getFunctionCode() + operateType + "\");" + SYMBOL_NEXT_LINE;
     }
 
     public static String getDBSession(GenerateCodeDto generateCodeDto) {

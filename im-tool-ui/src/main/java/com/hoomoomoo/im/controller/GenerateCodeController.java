@@ -29,14 +29,12 @@ public class GenerateCodeController implements Initializable {
 
     private static final String javaPath = "E:\\workspace\\ta6\\lcpt-server\\ta-web\\ta-web-manager-fund\\ta-web-manager-fund-core\\src\\main\\java";
     private static final String sqlPath = "E:\\workspace\\ta6\\lcpt-server\\ta-web\\ta-web-manager-fund\\ta-web-manager-fund-core\\src\\main\\java";
-    private static final String packageCode = "fundsysinfo.funddiscount";
-    private static final String secondMenuName = "优惠信息设置";
-    private static final String classCode = "FundPropFavourDemoSet";
+    private static final String menuCode = "fundsysinfo.funddiscount.FundPropFavourDemoSet";
+    private static final String menuName = "信息维护.优惠信息.测试功能设置";
     private static final String dtoName = "FundPropFavourDemo";
     private static final String author = "humm23693";
-    private static final String describe = "模板代码";
     private static final String dbType = "pub";
-    private static final String dictColumn = "busin_code:F_C20110;amt_way:F_C20111;";
+    private static final String column = "busin_code:业务代码:F_C20110;amt_way:对齐方式:F_C20111;";
     private static final String pageType = "1";
     private static final String table = "create table tbfundprdpropfavour(\n" +
             "    ta_code                   VARCHAR2(18)         default ' ' not null,\n" +
@@ -98,25 +96,23 @@ public class GenerateCodeController implements Initializable {
         GenerateCodeDto generateCodeDto = new GenerateCodeDto();
         generateCodeDto.setJavaPath(javaPath);
         generateCodeDto.setSqlPath(sqlPath);
-        generateCodeDto.setPackageCode(packageCode);
-        generateCodeDto.setClassCode(classCode);
         generateCodeDto.setDtoName(dtoName);
         generateCodeDto.setAuthor(author);
-        generateCodeDto.setDescribe(describe);
         generateCodeDto.setTable(table);
         generateCodeDto.setAsyTable(asyTable);
         generateCodeDto.setDbType(dbType);
-        generateCodeDto.setDictColumn(dictColumn);
+        generateCodeDto.setColumn(column);
         generateCodeDto.setPageType(pageType);
-        generateCodeDto.setSecondMenuName(secondMenuName);
+        generateCodeDto.setMenuCode(menuCode);
+        generateCodeDto.setMenuName(menuName);
         // 控制判断 默认值处理
         try {
             List<String> fileLog = new ArrayList<>();
 
+            InitTable.init(generateCodeDto);
+
             GenerateAuditService.getPackageName(generateCodeDto);
             GenerateImport.getPackageName(generateCodeDto);
-
-            InitTable.init(generateCodeDto);
 
             String dtoFile = GenerateDao.init(generateCodeDto);
             if (StringUtils.isNotEmpty(dtoFile)) {

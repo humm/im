@@ -19,7 +19,7 @@ public class GenerateDao {
 
     public static String init(GenerateCodeDto generateCodeDto) throws IOException {
         String fileName = CommonUtils.initialUpper(generateCodeDto.getDtoName()) + "DTO";
-        String packageName = PACKAGE_NAME_PREFIX + "dto." + generateCodeDto.getPackageCode();
+        String packageName = PACKAGE_NAME_PREFIX + "dto." + generateCodeDto.getMenuList().get(0)[0] + generateCodeDto.getMenuList().get(0)[1];
 
         generateCodeDto.setDtoNameDto(fileName);
         generateCodeDto.setDtoPackageName(packageName + SYMBOL_POINT + fileName);

@@ -18,8 +18,8 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
 public class GenerateService {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
-        String fileName = CommonUtils.initialUpper(generateCodeDto.getClassCode()) + "Service";
-        String packageName = PACKAGE_NAME_PREFIX + "impl." + generateCodeDto.getPackageCode().split(SYMBOL_POINT_SLASH)[0];
+        String fileName = CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "Service";
+        String packageName = PACKAGE_NAME_PREFIX + "impl." + generateCodeDto.getMenuList().get(0)[0];
 
         generateCodeDto.setServiceName(fileName);
         generateCodeDto.setServicePackageName(packageName + SYMBOL_POINT + fileName);
@@ -340,7 +340,7 @@ public class GenerateService {
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "获取导入数据",
                     String.format(METHOD_RETURN_PARAM_LIST, generateCodeDto.getDtoPackageName()), SYMBOL_EMPTY));
             content.append("    private List<" + generateCodeDto.getDtoNameDto() + "> getData() throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
-            content.append("        return FundCommonUtil.getImportData(\"" + generateCodeDto.getClassCode() + "Import.xlsx\", " + generateCodeDto.getClassCode() + "ExcelConfig.class, " + generateCodeDto.getDtoNameDto() + ".class);").append(SYMBOL_NEXT_LINE);
+            content.append("        return FundCommonUtil.getImportData(\"" + generateCodeDto.getFunctionCode() + "Import.xlsx\", " + generateCodeDto.getFunctionCode() + "ExcelConfig.class, " + generateCodeDto.getDtoNameDto() + ".class);").append(SYMBOL_NEXT_LINE);
             content.append("    }").append(SYMBOL_NEXT_LINE_2);
         }
         content.append("}").append(SYMBOL_NEXT_LINE_2);
@@ -419,7 +419,6 @@ public class GenerateService {
     }
 
     private static String initCondition(GenerateCodeDto generateCodeDto) {
-        Map dictMap = generateCodeDto.getDictMap();
         StringBuilder content = new StringBuilder();
         Map<String, Map<String, String>> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
@@ -459,7 +458,7 @@ public class GenerateService {
             } else {
                 String columnType = columnInfo.get(KEY_COLUMN_TYPE);
                 String columnUnderline = columnInfo.get(KEY_COLUMN_UNDERLINE);
-                if (dictMap.containsKey(columnUnderline)) {
+                if (StringUtils.isNotEmpty(columnInfo.get(KEY_COLUMN_DICT))) {
                     content.append("        String " + column + " = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
                     content.append("        if (!DataUtil.isNullStr(" + column + ")) {").append(SYMBOL_NEXT_LINE);
                     content.append("            if (" + column + ".contains(IFundConst.CNST_PUNCTUATION_COMMA)) {").append(SYMBOL_NEXT_LINE);

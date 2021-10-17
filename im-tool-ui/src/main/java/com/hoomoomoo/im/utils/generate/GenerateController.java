@@ -14,8 +14,8 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
 public class GenerateController {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
-        String fileName = CommonUtils.initialUpper(generateCodeDto.getClassCode()) + "Controller";
-        String packageName = PACKAGE_NAME_PREFIX + "controller." + generateCodeDto.getPackageCode().split(SYMBOL_POINT_SLASH)[0];
+        String fileName = CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "Controller";
+        String packageName = PACKAGE_NAME_PREFIX + "controller." + generateCodeDto.getMenuList().get(0)[0];
 
         generateCodeDto.setControllerName(fileName);
         generateCodeDto.setControllerPackageName(packageName + SYMBOL_POINT + fileName);
@@ -44,7 +44,7 @@ public class GenerateController {
         content.append("    private " + generateCodeDto.getInterfaceName() + " " + serviceName + ";").append(SYMBOL_NEXT_LINE_2);
 
         content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, METHOD_TYPE_QUERY, null, METHOD_RETURN_PARAM_STRING, METHOD_REQUEST_PARAM_DTO));
-        content.append("    @PostMapping(value = \"/" + generateCodeDto.getClassCode() + "/" + generateCodeDto.getClassCode() + "Query\")").append(SYMBOL_NEXT_LINE);
+        content.append("    @PostMapping(value = \"/" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Query\")").append(SYMBOL_NEXT_LINE);
         content.append("    public String queryService(" + generateCodeDto.getDtoNameDto() + " dto) throws Exception {").append(SYMBOL_NEXT_LINE);
         content.append("        TaDtoUtil.setPageRange(dto);").append(SYMBOL_NEXT_LINE);
         content.append("        return RequestResponseUtil.getResultJsonString(" + serviceName + ".queryService(dto));").append(SYMBOL_NEXT_LINE);
@@ -52,25 +52,25 @@ public class GenerateController {
 
         if (PAGE_TYPE_SET.equals(generateCodeDto.getPageType())) {
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, METHOD_TYPE_ADD, null, METHOD_RETURN_PARAM_STRING, METHOD_REQUEST_PARAM_DTO));
-            content.append("    @PostMapping(value = \"/" + generateCodeDto.getClassCode() + "/" + generateCodeDto.getClassCode() + "Add\")").append(SYMBOL_NEXT_LINE);
+            content.append("    @PostMapping(value = \"/" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Add\")").append(SYMBOL_NEXT_LINE);
             content.append("    public String addService(" + generateCodeDto.getDtoNameDto() + " dto) throws Exception {").append(SYMBOL_NEXT_LINE);
             content.append("        return RequestResponseUtil.getResultJsonString(" + serviceName + ".addService(dto));").append(SYMBOL_NEXT_LINE);
             content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, METHOD_TYPE_EDIT, null, METHOD_RETURN_PARAM_STRING, METHOD_REQUEST_PARAM_DTO));
-            content.append("    @PostMapping(value = \"/" + generateCodeDto.getClassCode() + "/" + generateCodeDto.getClassCode() + "Edit\")").append(SYMBOL_NEXT_LINE);
+            content.append("    @PostMapping(value = \"/" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Edit\")").append(SYMBOL_NEXT_LINE);
             content.append("    public String editService(" + generateCodeDto.getDtoNameDto() + " dto) throws Exception {").append(SYMBOL_NEXT_LINE);
             content.append("        return RequestResponseUtil.getResultJsonString(" + serviceName + ".editService(dto));").append(SYMBOL_NEXT_LINE);
             content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, METHOD_TYPE_DELETE, null, METHOD_RETURN_PARAM_STRING, METHOD_REQUEST_PARAM_DTO));
-            content.append("    @PostMapping(value = \"/" + generateCodeDto.getClassCode() + "/" + generateCodeDto.getClassCode() + "Delete\")").append(SYMBOL_NEXT_LINE);
+            content.append("    @PostMapping(value = \"/" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Delete\")").append(SYMBOL_NEXT_LINE);
             content.append("    public String deleteService(" + generateCodeDto.getDtoNameDto() + " dto) throws Exception {").append(SYMBOL_NEXT_LINE);
             content.append("        return RequestResponseUtil.getResultJsonString(" + serviceName + ".deleteService(dto));").append(SYMBOL_NEXT_LINE);
             content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, METHOD_TYPE_IMPORT, null, METHOD_RETURN_PARAM_STRING, METHOD_REQUEST_PARAM_DTO));
-            content.append("    @PostMapping(value = \"/" + generateCodeDto.getClassCode() + "/" + generateCodeDto.getClassCode() + "Import\")").append(SYMBOL_NEXT_LINE);
+            content.append("    @PostMapping(value = \"/" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Import\")").append(SYMBOL_NEXT_LINE);
             content.append("    public String importService(" + generateCodeDto.getDtoNameDto() + " dto) throws Exception {").append(SYMBOL_NEXT_LINE);
             content.append("        return RequestResponseUtil.getResultJsonString(" + serviceName + ".importService(dto));").append(SYMBOL_NEXT_LINE);
             content.append("    }").append(SYMBOL_NEXT_LINE_2);
