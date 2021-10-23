@@ -4,6 +4,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.FunctionDto;
+import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.dto.LicenseDto;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Menu;
@@ -258,6 +259,92 @@ public class CommonUtils {
             if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathTrans())) {
                 OutputUtils.info(log, MSG_PROCESS_GENERATE_PATH_TRANS);
                 flag = false;
+            }
+        }
+        return flag;
+    }
+
+    public static boolean checkConfigGenerateCode(TableView<?> log, GenerateCodeDto generateCodeDto) throws Exception {
+        boolean flag = true;
+        if (StringUtils.isBlank(generateCodeDto.getJavaPath())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_PATH, "java文件路径"));
+            flag = false;
+        }
+        if (StringUtils.isBlank(generateCodeDto.getVuePath())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_PATH, "vue文件路径"));
+            flag = false;
+        }
+        if (StringUtils.isBlank(generateCodeDto.getSqlPath())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_PATH, "sql文件路径"));
+            flag = false;
+        }
+        if (StringUtils.isBlank(generateCodeDto.getRoutePath())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_PATH, "route文件路径"));
+            flag = false;
+        }
+        if (StringUtils.isBlank(generateCodeDto.getPageType())) {
+            OutputUtils.info(log, "请选择[ 页面类型 ] ");
+            flag = false;
+        }
+        if (StringUtils.isBlank(generateCodeDto.getAuthor())) {
+            OutputUtils.info(log, "请设置[ 作者 ] ");
+            flag = false;
+        }
+        if (StringUtils.isBlank(generateCodeDto.getDbType())) {
+            OutputUtils.info(log, "请选择[ 数据源 ] ");
+            flag = false;
+        }
+        if (StringUtils.isBlank(generateCodeDto.getDtoCode())) {
+            OutputUtils.info(log, "请设置[ dto代码 ] ");
+            flag = false;
+        }
+        if (StringUtils.isBlank(generateCodeDto.getMenuCode())) {
+            OutputUtils.info(log, "请设置[ 菜单代码 ] ");
+            flag = false;
+        } else {
+            if (generateCodeDto.getMenuCode().split(SYMBOL_POINT_SLASH).length != 3) {
+                OutputUtils.info(log, "[ 菜单代码 ] 格式错误");
+                OutputUtils.info(log, "[ 一级菜单.二级菜单.三级菜单 ]");
+                flag = false;
+            }
+        }
+        if (StringUtils.isBlank(generateCodeDto.getMenuName())) {
+            OutputUtils.info(log, "请设置[ 菜单名称 ] ");
+            flag = false;
+        } else {
+            if (generateCodeDto.getMenuName().split(SYMBOL_POINT_SLASH).length != 3) {
+                OutputUtils.info(log, "[ 菜单名称 ] 格式错误");
+                OutputUtils.info(log, "[ 一级菜单.二级菜单.三级菜单 ]");
+                flag = false;
+            }
+        }
+        if (StringUtils.isBlank(generateCodeDto.getTable())) {
+            OutputUtils.info(log, "请设置[ 正式表结构 ] ");
+            flag = false;
+        }
+        if (PAGE_TYPE_SET.equals(generateCodeDto.getPageType()) && StringUtils.isBlank(generateCodeDto.getAsyTable())) {
+            OutputUtils.info(log, "请设置[ 复核表结构 ] ");
+            flag = false;
+        }
+        if (StringUtils.isBlank(generateCodeDto.getColumn())) {
+            OutputUtils.info(log, "请设置[ 字段信息 ] ");
+            flag = false;
+        } else {
+            String[] columnInfo = generateCodeDto.getColumn().split(SYMBOL_SEMICOLON);
+            boolean tip = false;
+            if (columnInfo != null) {
+                for (String item : columnInfo) {
+                    String[] subItem = item.split(SYMBOL_COLON);
+                    if (subItem == null || subItem.length < 2 || subItem.length > 3) {
+                        if (!tip) {
+                            OutputUtils.info(log, "[ 字段信息 ] 格式错误");
+                            OutputUtils.info(log, "[字段代码:字段名称:字典]");
+                            tip = true;
+                        }
+                        OutputUtils.info(log, item);
+                        flag = false;
+                    }
+                }
             }
         }
         return flag;

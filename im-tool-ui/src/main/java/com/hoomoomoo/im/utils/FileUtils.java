@@ -464,7 +464,7 @@ public class FileUtils {
         List<String> content = FileUtils.readNormalFile(url, false);
         for (int i = 0; i < content.size(); i++) {
             String item = content.get(i);
-            // 获取历史svn代码更新配置
+            // 获取历史代码更新配置
             if (item.startsWith(KEY_SVN_UPDATE)) {
                 List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_UPDATE);
                 updateContent.addAll(updateConfig);

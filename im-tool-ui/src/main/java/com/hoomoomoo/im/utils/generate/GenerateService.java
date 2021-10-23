@@ -344,7 +344,7 @@ public class GenerateService {
             content.append("    }").append(SYMBOL_NEXT_LINE_2);
         }
         content.append("}").append(SYMBOL_NEXT_LINE_2);
-        return GenerateCommon.generateFile(generateCodeDto, packageName, fileName, content.toString());
+        return GenerateCommon.generateJavaFile(generateCodeDto, packageName, fileName, content.toString());
     }
 
     private static String initTranslate(GenerateCodeDto generateCodeDto, String type) {

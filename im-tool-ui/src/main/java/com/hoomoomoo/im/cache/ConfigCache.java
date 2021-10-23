@@ -70,11 +70,11 @@ public class ConfigCache {
 
         LoggerUtils.info(String.format(MSG_LOAD, "授权证书信息"));
 
-        // 读取svn代码更新配置
+        // 读取代码更新配置
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {
             for (String item : content) {
-                // svn代码更新配置
+                // 代码更新配置
                 if (item.startsWith(KEY_SVN_UPDATE)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
                     String name = item.substring(KEY_SVN_UPDATE.length(), index);

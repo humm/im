@@ -129,6 +129,7 @@ public class FundInfoController implements Initializable {
             generateScript();
         } catch (Exception e) {
             LoggerUtils.info(e);
+            OutputUtils.info(fundLog, e.toString());
         }
     }
 

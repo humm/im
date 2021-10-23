@@ -13,8 +13,8 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
 public class GenerateSql {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
-        String menuFile = "07console-fund-ta-vue-menu.sql";
-        String flowFile = "tbworkflowsubtrans-fund.sql";
+        String menuFile = "07console-fund-ta-vue-menu";
+        String flowFile = "tbworkflowsubtrans-fund";
         StringBuilder content = new StringBuilder();
         String firstMenu = generateCodeDto.getMenuList().get(0)[0];
         String secondMenu = generateCodeDto.getMenuList().get(1)[0];

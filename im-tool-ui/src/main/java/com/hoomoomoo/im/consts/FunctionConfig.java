@@ -8,9 +8,9 @@ package com.hoomoomoo.im.consts;
  */
 public enum FunctionConfig {
 
-    SVN_LOG("10", "svn提交记录", "/conf/fxml/svnLog.fxml", "menuItemSvnLog", "svnLog"),
+    SVN_LOG("10", "提交记录", "/conf/fxml/svnLog.fxml", "menuItemSvnLog", "svnLog"),
 
-    SVN_UPDATE("20", "svn代码更新", "/conf/fxml/svnUpdate.fxml", "menuItemSvnUpdate", "svnUpdate"),
+    SVN_UPDATE("20", "代码更新", "/conf/fxml/svnUpdate.fxml", "menuItemSvnUpdate", "svnUpdate"),
 
     FUND_INFO("30", "基金信息", "/conf/fxml/fundInfo.fxml", "menuItemFundInfo", "fundInfo"),
 
@@ -20,13 +20,13 @@ public enum FunctionConfig {
 
     GENERATE_CODE("60", "模板代码", "/conf/fxml/generateCode.fxml", "menuItemGenerateCode", "generateCode"),
 
-    SVN_REALTIME_STAT("960", "svn实时统计", "/conf/fxml/svnRealtimeStat.fxml", "menuItemSvnRealtimeStat", "svnRealtimeStat"),
+    SVN_REALTIME_STAT("960", "实时统计", "/conf/fxml/svnRealtimeStat.fxml", "menuItemSvnRealtimeStat", "svnRealtimeStat"),
 
-    SVN_HISTORY_STAT("970", "svn历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),
+    SVN_HISTORY_STAT("970", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),
 
     CONFIG_SET("980", "参数设置", "/conf/fxml/configSet.fxml", "menuItemConfigSet", "configSet"),
 
-    FUNCTION_STAT_INFO("990", "功能使用统计", "/conf/fxml/functionStatInfo.fxml", "menuItemFunctionStat", "functionStatInfo"),
+    FUNCTION_STAT_INFO("990", "使用统计", "/conf/fxml/functionStatInfo.fxml", "menuItemFunctionStat", "functionStatInfo"),
 
     ABOUT_INFO("999", "关于", "/conf/fxml/aboutInfo.fxml", "menuItemAbout", "aboutInfo");
 

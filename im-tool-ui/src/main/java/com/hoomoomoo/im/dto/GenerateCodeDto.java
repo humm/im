@@ -16,10 +16,12 @@ import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
 public class GenerateCodeDto {
 
     private String javaPath;
+    private String sqlPath;
+    private String vuePath;
+    private String routePath;
     private String menuCode;
     private String menuName;
-    private String sqlPath;
-    private String dtoName;
+    private String dtoCode;
     private String author;
     private String table;
     private String asyTable;
@@ -50,12 +52,6 @@ public class GenerateCodeDto {
     private String functionName;
 
     public GenerateCodeDto() {
-        this.javaPath = SYMBOL_EMPTY;
-        this.sqlPath = SYMBOL_EMPTY;
-        this.dtoName = SYMBOL_EMPTY;
-        this.author = SYMBOL_EMPTY;
-        this.table = SYMBOL_EMPTY;
-        this.asyTable = SYMBOL_EMPTY;
         this.columnMap = new LinkedHashMap<>(16);
         this.asyColumnMap = new LinkedHashMap<>(16);
         this.primaryKeyMap = new HashMap<>(16);
@@ -73,11 +69,6 @@ public class GenerateCodeDto {
         this.importName = SYMBOL_EMPTY;
         this.tableName = SYMBOL_EMPTY;
         this.primaryKey = SYMBOL_EMPTY;
-        this.dbType = SYMBOL_EMPTY;
-        this.column = SYMBOL_EMPTY;
-        this.pageType = SYMBOL_EMPTY;
-        this.menuCode = SYMBOL_EMPTY;
-        this.menuName = SYMBOL_EMPTY;
         this.menuList = new ArrayList<>();
         this.functionCode = SYMBOL_EMPTY;
         this.functionName = SYMBOL_EMPTY;

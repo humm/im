@@ -67,6 +67,7 @@ public class BaseConst {
     public static final String FILE_TYPE_STAT = ".stat";
     public static final String FILE_TYPE_JAVA = ".java";
     public static final String FILE_TYPE_SQL = ".sql";
+    public static final String FILE_TYPE_ROUTE = ".js";
 
     public static final String NAME_DELETE = " 删除";
     public static final String NAME_END = "结束";
@@ -112,6 +113,7 @@ public class BaseConst {
     public static final String MSG_SCRIPT_UPDATE_GENERATE_PATH = "请设置[ script.update.generate.path ]";
     public static final String MSG_SVN_STAT_USER = "请设置[ svn.stat.user. ]";
     public static final String MSG_SVN_STAT_INTERVAL = "请设置[ svn.stat.interval ]大于等于5";
+    public static final String MSG_GENERATE_CODE_PATH = "请设置[ %s ]路径";
 
     public static final String MSG_OPEN = "打开[ %s ] 功能界面";
     public static final String MSG_USE = "使用[ %s ] 功能";
@@ -175,10 +177,10 @@ public class BaseConst {
     public static final String SUB_TRANSCODE_DELETE = "Delete";
     public static final String SUB_TRANSCODE_IMPORT = "Import";
 
-    public static final String DB_TYPE_PUB = "pub";
-    public static final String DB_TYPE_TRANS = "trans";
-    public static final String DB_TYPE_TRANS_QUERY = "query";
-    public static final String DB_TYPE_TRANS_ORDER = "order";
+    public static final String DB_TYPE_PUB = "1";
+    public static final String DB_TYPE_TRANS = "2";
+    public static final String DB_TYPE_TRANS_QUERY = "3";
+    public static final String DB_TYPE_TRANS_ORDER = "4";
 
     public static final String PAGE_TYPE_SET = "1";
     public static final String PAGE_TYPE_QUERY = "2";

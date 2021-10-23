@@ -142,6 +142,11 @@ public class InitConfigTest {
 
         keys.add("app.user");
 
+        keys.add("generate.code.java.path");
+        keys.add("generate.code.sql.path");
+        keys.add("generate.code.vue.path");
+        keys.add("generate.code.route.path");
+
         String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {

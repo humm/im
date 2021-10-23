@@ -130,7 +130,11 @@ public class SvnUtils {
                         String[] message = msg.split(SYMBOL_NEXT_LINE);
                         for (String item : message) {
                             if (item.startsWith(NAME_SVN_DESCRIBE)) {
-                                msg = item.split(SYMBOL_BRACKETS_1_RIGHT)[1];
+                                if (item.split(SYMBOL_BRACKETS_1_RIGHT).length <= 1) {
+                                    msg = item;
+                                } else {
+                                    msg = item.split(SYMBOL_BRACKETS_1_RIGHT)[1];
+                                }
                                 break;
                             }
                         }

@@ -80,6 +80,20 @@ public class AppConfigDto extends BaseDto {
 
     private String appUser;
 
+    private String generateCodeJavaPath;
+
+    private String generateCodeSqlPath;
+
+    private String generateCodeVuePath;
+
+    private String generateCodeRoutePath;
+
+    private String generateCodeAuthor;
+
+    private String generateCodeDbType;
+
+    private String generateCodePageType;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;

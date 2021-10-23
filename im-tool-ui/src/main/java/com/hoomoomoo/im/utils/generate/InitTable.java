@@ -37,7 +37,7 @@ public class InitTable {
             String[] dictConfig = column.split(SYMBOL_SEMICOLON);
             if (dictConfig != null) {
                 for (String item : dictConfig) {
-                    String[] dictItem = item.split(SYMBOL_COLON);
+                    String[] dictItem = item.replaceAll(SYMBOL_S_SLASH, SYMBOL_EMPTY).split(SYMBOL_COLON);
                     if (dictItem != null) {
                         if (dictItem.length >= 2) {
                             tableColumn.get(CommonUtils.lineToHump(dictItem[0])).put(KEY_COLUMN_NAME, dictItem[1]);

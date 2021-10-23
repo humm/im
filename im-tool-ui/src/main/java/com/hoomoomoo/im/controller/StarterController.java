@@ -39,10 +39,10 @@ import static com.hoomoomoo.im.consts.FunctionConfig.*;
 public class StarterController implements Initializable {
 
     @FXML
-    private Menu menuFunction;
+    private Menu menuOther;
 
     @FXML
-    private Menu menuStat;
+    private Menu menuSvn;
 
     @FXML
     private Menu menuSet;
@@ -76,6 +76,9 @@ public class StarterController implements Initializable {
 
     @FXML
     private MenuItem menuItemSvnHistoryStat;
+
+    @FXML
+    private MenuItem menuItemGenerateCode;
 
     @FXML
     private TabPane functionTab;
@@ -147,6 +150,21 @@ public class StarterController implements Initializable {
             Tab tab = isOpen(SCRIPT_UPDATE.getName());
             if (tab == null) {
                 tab = getFunctionTab(SCRIPT_UPDATE.getPath(), SCRIPT_UPDATE.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    @FXML
+    void openGenerateCode(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(MSG_OPEN, GENERATE_CODE.getName()));
+            Tab tab = isOpen(GENERATE_CODE.getName());
+            if (tab == null) {
+                tab = getFunctionTab(GENERATE_CODE.getPath(), GENERATE_CODE.getName());
                 functionTab.getTabs().add(tab);
             }
             functionTab.getSelectionModel().select(tab);
@@ -237,8 +255,8 @@ public class StarterController implements Initializable {
 
             // 校验证书是否过期
             if (!CommonUtils.checkLicense(null)) {
-                menuFunction.getItems().clear();
-                menuStat.getItems().clear();
+                menuOther.getItems().clear();
+                menuSvn.getItems().clear();
                 menuSet.getItems().clear();
                 return;
             }
@@ -246,8 +264,8 @@ public class StarterController implements Initializable {
             LoggerUtils.info(String.format(MSG_CHECK, "证书有效日期"));
 
             // 控制菜单功能
-            CommonUtils.showAuthFunction(menuFunction);
-            CommonUtils.showAuthFunction(menuStat);
+            CommonUtils.showAuthFunction(menuOther);
+            CommonUtils.showAuthFunction(menuSvn);
 
             String showTab = appConfigDto.getAppTabShow();
             if (StringUtils.isNotBlank(showTab)) {

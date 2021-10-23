@@ -1,9 +1,18 @@
 package com.hoomoomoo.im.controller;
 
+import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
+import com.hoomoomoo.im.utils.OutputUtils;
 import com.hoomoomoo.im.utils.generate.*;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -12,7 +21,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_COMMA;
+import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.GENERATE_CODE;
 
 /**
  * @author humm23693
@@ -22,143 +32,325 @@ import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_COMMA;
  */
 public class GenerateCodeController implements Initializable {
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
+    @FXML
+    private AnchorPane generateCode;
 
+    @FXML
+    private TextField javaPath;
+
+    @FXML
+    private TextField vuePath;
+
+    @FXML
+    private TextField sqlPath;
+
+    @FXML
+    private TextField routePath;
+
+    @FXML
+    private RadioButton set;
+
+    @FXML
+    private RadioButton query;
+
+    @FXML
+    private RadioButton dbPub;
+
+    @FXML
+    private RadioButton dbTrans;
+
+    @FXML
+    private RadioButton dbQuery;
+
+    @FXML
+    private RadioButton dbOrder;
+
+    @FXML
+    private TextField author;
+
+    @FXML
+    private TextField dtoCode;
+
+    @FXML
+    private TextField menuCode;
+
+    @FXML
+    private TextField menuName;
+
+    @FXML
+    private TextArea table;
+
+    @FXML
+    private TextArea asyTable;
+
+    @FXML
+    private TextArea column;
+
+    @FXML
+    private TableView<?> log;
+
+    @FXML
+    private ProgressIndicator schedule;
+
+    @FXML
+    private Label scheduleText;
+
+    @FXML
+    private Button execute;
+
+    private double progress = 0;
+
+    private GenerateCodeDto generateCodeDto = new GenerateCodeDto();
+
+    @FXML
+    void selectSet(ActionEvent event) {
+        OutputUtils.selected(set, true);
+        OutputUtils.selected(query, false);
     }
 
-    private static final String javaPath = "E:\\workspace\\ta6\\lcpt-server\\ta-web\\ta-web-manager-fund\\ta-web-manager-fund-core\\src\\main\\java";
-    private static final String sqlPath = "E:\\workspace\\ta6\\lcpt-server\\ta-web\\ta-web-manager-fund\\ta-web-manager-fund-core\\src\\main\\java";
-    private static final String menuCode = "fundsysinfo.funddiscount.FundPropFavourDemoSet";
-    private static final String menuName = "信息维护.优惠信息.测试功能设置";
-    private static final String dtoName = "FundPropFavourDemo";
-    private static final String author = "humm23693";
-    private static final String dbType = "pub";
-    private static final String column = "busin_code:业务代码:F_C20110;amt_way:对齐方式:F_C20111;";
-    private static final String pageType = "1";
-    private static final String table = "create table tbfundprdpropfavour(\n" +
-            "    ta_code                   VARCHAR2(18)         default ' ' not null,\n" +
-            "    invest_direction          VARCHAR2(1)          default ' ' not null,\n" +
-            "    busin_code                VARCHAR2(6)          default ' ' not null,\n" +
-            "    id_type                   VARCHAR2(18)         default ' ' not null,\n" +
-            "    prd_code                VARCHAR2(6)          default ' ' not null,\n" +
-            "    branch_no                VARCHAR2(6)          default ' ' not null,\n" +
-            "    seller_code               VARCHAR2(9)          default ' ' not null,\n" +
-            "    amt_way                   VARCHAR2(2)          default ' ' not null,\n" +
-            "    trans_way                 VARCHAR2(1)          default ' ' not null,\n" +
-            "    ori_source_flag           VARCHAR2(1)          default ' ' not null,\n" +
-            "    source_flag               VARCHAR2(1)          default ' ' not null,\n" +
-            "    targ_invest_direction     VARCHAR2(1)          default ' ' not null,\n" +
-            "    min_amt                   NUMBER(18,2)         default 0.0 not null,\n" +
-            "    max_amt                   NUMBER(18,2)         default 0.0 not null,\n" +
-            "    min_hold                  NUMBER(18,3)         default 0.0 not null,\n" +
-            "    max_hold                  NUMBER(18,3)         default 0.0 not null,\n" +
-            "    begin_date                INTEGER              default 0 not null,\n" +
-            "    end_date                  INTEGER              default 0 not null,\n" +
-            "    fare_type                 VARCHAR2(1)          default ' ' not null,\n" +
-            "    favor_ratio               NUMBER(18,4)         default 0.0 not null,\n" +
-            "    favor_type                VARCHAR2(1)          default ' ' not null,\n" +
-            "    op_times                  INTEGER              default 0 not null,\n" +
-            "    constraint pk_fundprdpropfavour primary key (invest_direction, busin_code, seller_code, amt_way, trans_way, ori_source_flag, source_flag, targ_invest_direction, begin_date, min_amt, min_hold, fare_type, favor_type)\n" +
-            ")  ;";
-    private static final String asyTable = "create table tbfundprdpropfavourasy(\n" +
-            "    ta_code                   VARCHAR2(18)         default ' ' not null,\n" +
-            "    invest_direction          VARCHAR2(1)          default ' ' not null,\n" +
-            "    busin_code                VARCHAR2(6)          default ' ' not null,\n" +
-            "    id_type                   VARCHAR2(18)         default ' ' not null,\n" +
-            "    prd_code                VARCHAR2(6)          default ' ' not null,\n" +
-            "    branch_no                VARCHAR2(6)          default ' ' not null,\n" +
-            "    seller_code               VARCHAR2(9)          default ' ' not null,\n" +
-            "    amt_way                   VARCHAR2(2)          default ' ' not null,\n" +
-            "    trans_way                 VARCHAR2(1)          default ' ' not null,\n" +
-            "    ori_source_flag           VARCHAR2(1)          default ' ' not null,\n" +
-            "    source_flag               VARCHAR2(1)          default ' ' not null,\n" +
-            "    targ_invest_direction     VARCHAR2(1)          default ' ' not null,\n" +
-            "    min_amt                   NUMBER(18,2)         default 0.0 not null,\n" +
-            "    max_amt                   NUMBER(18,2)         default 0.0 not null,\n" +
-            "    min_hold                  NUMBER(18,3)         default 0.0 not null,\n" +
-            "    max_hold                  NUMBER(18,3)         default 0.0 not null,\n" +
-            "    begin_date                INTEGER              default 0 not null,\n" +
-            "    end_date                  INTEGER              default 0 not null,\n" +
-            "    fare_type                 VARCHAR2(1)          default ' ' not null,\n" +
-            "    favor_ratio               NUMBER(18,4)         default 0.0 not null,\n" +
-            "    favor_type                VARCHAR2(1)          default ' ' not null,\n" +
-            "    op_times                  INTEGER              default 0 not null,\n" +
-            "    entry_serial_no           VARCHAR2(32)         default ' ' not null,\n" +
-            "    entry_order_no            INTEGER              default 0 not null,\n" +
-            "    oper_no                   VARCHAR2(32)         default ' ' not null,\n" +
-            "    serial_status             VARCHAR2(1)          default ' ' not null,\n" +
-            "    op_dir                    VARCHAR2(1)          default ' ' not null,\n" +
-            "    constraint pk_tbfundprdpropfavourasy primary key (entry_serial_no, entry_order_no)\n" +
-            ")  ;";
+    @FXML
+    void selectQuery(ActionEvent event) {
+        OutputUtils.selected(set, false);
+        OutputUtils.selected(query, true);
+    }
 
-    public static void main(String[] args) {
-        GenerateCodeDto generateCodeDto = new GenerateCodeDto();
-        generateCodeDto.setJavaPath(javaPath);
-        generateCodeDto.setSqlPath(sqlPath);
-        generateCodeDto.setDtoName(dtoName);
-        generateCodeDto.setAuthor(author);
-        generateCodeDto.setTable(table);
-        generateCodeDto.setAsyTable(asyTable);
-        generateCodeDto.setDbType(dbType);
-        generateCodeDto.setColumn(column);
-        generateCodeDto.setPageType(pageType);
-        generateCodeDto.setMenuCode(menuCode);
-        generateCodeDto.setMenuName(menuName);
-        // 控制判断 默认值处理
+    @FXML
+    void selectDbPub(ActionEvent event) {
+        OutputUtils.selected(dbPub, true);
+        OutputUtils.selected(dbTrans, false);
+        OutputUtils.selected(dbQuery, false);
+        OutputUtils.selected(dbOrder, false);
+    }
+
+    @FXML
+    void selectDbTrans(ActionEvent event) {
+        OutputUtils.selected(dbPub, false);
+        OutputUtils.selected(dbTrans, true);
+        OutputUtils.selected(dbQuery, false);
+        OutputUtils.selected(dbOrder, false);
+    }
+
+    @FXML
+    void selectDbQuery(ActionEvent event) {
+        OutputUtils.selected(dbPub, false);
+        OutputUtils.selected(dbTrans, false);
+        OutputUtils.selected(dbQuery, true);
+        OutputUtils.selected(dbOrder, false);
+    }
+
+    @FXML
+    void selectDbOrder(ActionEvent event) {
+        OutputUtils.selected(dbPub, false);
+        OutputUtils.selected(dbTrans, false);
+        OutputUtils.selected(dbQuery, false);
+        OutputUtils.selected(dbOrder, true);
+    }
+
+    void initGenerateCodeDto() {
+        generateCodeDto.getColumnMap().clear();
+        generateCodeDto.getAsyColumnMap().clear();
+        generateCodeDto.getPrimaryKeyMap().clear();
+        generateCodeDto.getMenuList().clear();
+        generateCodeDto.setJavaPath(javaPath.getText());
+        generateCodeDto.setVuePath(vuePath.getText());
+        generateCodeDto.setSqlPath(sqlPath.getText());
+        generateCodeDto.setRoutePath(routePath.getText());
+        generateCodeDto.setAuthor(author.getText());
+        generateCodeDto.setDtoCode(dtoCode.getText());
+        generateCodeDto.setMenuCode(menuCode.getText());
+        generateCodeDto.setMenuName(menuName.getText());
+        generateCodeDto.setTable(table.getText().trim());
+        generateCodeDto.setAsyTable(asyTable.getText().trim());
+        generateCodeDto.setColumn(column.getText().trim());
+        if (set.isSelected()) {
+            generateCodeDto.setPageType(String.valueOf(set.getUserData()));
+        } else {
+            generateCodeDto.setPageType(String.valueOf(query.getUserData()));
+        }
+
+        if (dbPub.isSelected()) {
+            generateCodeDto.setDbType(String.valueOf(dbPub.getUserData()));
+        } else if (dbTrans.isSelected()) {
+            generateCodeDto.setDbType(String.valueOf(dbTrans.getUserData()));
+        } else if (dbQuery.isSelected()) {
+            generateCodeDto.setDbType(String.valueOf(dbQuery.getUserData()));
+        } else {
+            generateCodeDto.setDbType(String.valueOf(dbOrder.getUserData()));
+        }
+    }
+
+    @FXML
+    void execute(ActionEvent event) {
         try {
-            List<String> fileLog = new ArrayList<>();
-
-            InitTable.init(generateCodeDto);
-
-            GenerateAuditService.getPackageName(generateCodeDto);
-            GenerateImport.getPackageName(generateCodeDto);
-
-            String dtoFile = GenerateDao.init(generateCodeDto);
-            if (StringUtils.isNotEmpty(dtoFile)) {
-                fileLog.add(dtoFile);
+            OutputUtils.clearLog(log);
+            LoggerUtils.info(String.format(MSG_USE, GENERATE_CODE.getName()));
+            initGenerateCodeDto();
+            if (!CommonUtils.checkConfigGenerateCode(log, generateCodeDto)) {
+                return;
             }
+            setProgress(0);
+            generateCode(generateCodeDto);
+            updateProgress();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(log, e.toString());
+        }
+    }
 
-            String interfaceFile = GenerateInterface.init(generateCodeDto);
-            if (StringUtils.isNotEmpty(interfaceFile)) {
-                fileLog.add(interfaceFile);
+    private void generateCode(GenerateCodeDto generateCodeDto) throws Exception {
+
+        new Thread(() -> {
+            try {
+                execute.setDisable(true);
+                List<String> fileLog = new ArrayList<>();
+
+                InitTable.init(generateCodeDto);
+                OutputUtils.info(log, "表结构解析成功");
+
+                GenerateAuditService.getPackageName(generateCodeDto);
+                GenerateImport.getPackageName(generateCodeDto);
+
+                String dtoFile = GenerateDto.init(generateCodeDto);
+                if (StringUtils.isNotEmpty(dtoFile)) {
+                    fileLog.add(dtoFile);
+                    OutputUtils.info(log, "dto文件生成成功");
+                }
+
+                String interfaceFile = GenerateInterface.init(generateCodeDto);
+                if (StringUtils.isNotEmpty(interfaceFile)) {
+                    fileLog.add(interfaceFile);
+                    OutputUtils.info(log, "interface文件生成成功");
+                }
+
+                String serviceFile = GenerateService.init(generateCodeDto);
+                if (StringUtils.isNotEmpty(serviceFile)) {
+                    fileLog.add(serviceFile);
+                    OutputUtils.info(log, "service文件生成成功");
+                }
+
+                String auditServiceFile = GenerateAuditService.init(generateCodeDto);
+                if (StringUtils.isNotEmpty(auditServiceFile)) {
+                    fileLog.add(auditServiceFile);
+                    OutputUtils.info(log, "auditService文件生成成功");
+                }
+
+                String controllerFile = GenerateController.init(generateCodeDto);
+                if (StringUtils.isNotEmpty(controllerFile)) {
+                    fileLog.add(controllerFile);
+                    OutputUtils.info(log, "controller文件生成成功");
+                }
+
+                String importFile = GenerateImport.init(generateCodeDto);
+                if (StringUtils.isNotEmpty(importFile)) {
+                    fileLog.add(importFile);
+                    OutputUtils.info(log, "import文件生成成功");
+                }
+
+                String exportFile = GenerateExport.init(generateCodeDto);
+                if (StringUtils.isNotEmpty(exportFile)) {
+                    fileLog.add(exportFile);
+                    OutputUtils.info(log, "export文件生成成功");
+                }
+
+                String sqlFile = GenerateSql.init(generateCodeDto);
+                if (StringUtils.isNotEmpty(sqlFile)) {
+                    String[] sql = sqlFile.split(SYMBOL_COMMA);
+                    for (String item : sql) {
+                        fileLog.add(item);
+                    }
+                    OutputUtils.info(log, "sql文件生成成功");
+                }
+
+                LoggerUtils.writeGenerateCodeInfo(new Date(), fileLog);
+                setProgress(1);
+            } catch (Exception e) {
+                LoggerUtils.info(e);
+                OutputUtils.info(log, e.toString());
+            } finally {
+                execute.setDisable(false);
             }
+        }).start();
+    }
 
-            String serviceFile = GenerateService.init(generateCodeDto);
-            if (StringUtils.isNotEmpty(serviceFile)) {
-                fileLog.add(serviceFile);
-            }
-
-            String auditServiceFile = GenerateAuditService.init(generateCodeDto);
-            if (StringUtils.isNotEmpty(auditServiceFile)) {
-                fileLog.add(auditServiceFile);
-            }
-
-            String controllerFile = GenerateController.init(generateCodeDto);
-            if (StringUtils.isNotEmpty(controllerFile)) {
-                fileLog.add(controllerFile);
-            }
-
-            String importFile = GenerateImport.init(generateCodeDto);
-            if (StringUtils.isNotEmpty(importFile)) {
-                fileLog.add(importFile);
-            }
-
-            String exportFile = GenerateExport.init(generateCodeDto);
-            if (StringUtils.isNotEmpty(exportFile)) {
-                fileLog.add(exportFile);
-            }
-
-            String sqlFile = GenerateSql.init(generateCodeDto);
-            if (StringUtils.isNotEmpty(sqlFile)) {
-                String[] sql = sqlFile.split(SYMBOL_COMMA);
-                for (String item : sql) {
-                    fileLog.add(item);
+    private void updateProgress() {
+        new Thread(() -> {
+            while (true) {
+                if (progress >= 0.95) {
+                    break;
+                }
+                if (progress <= 0.6) {
+                    setProgress(progress + 0.05);
+                } else if (progress < 0.9) {
+                    setProgress(progress + 0.01);
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    LoggerUtils.info(e);
                 }
             }
-            LoggerUtils.writeGenerateCodeInfo(new Date(), fileLog);
+        }).start();
+    }
+
+    synchronized private void setProgress(double value) {
+        try {
+            progress = value;
+            Platform.runLater(() -> {
+                schedule.setProgress(progress);
+                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
+                schedule.requestFocus();
+            });
         } catch (Exception e) {
-            e.printStackTrace();
+            LoggerUtils.info(e);
+        }
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        AppConfigDto appConfigDto = null;
+        try {
+            appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeJavaPath())) {
+                OutputUtils.info(javaPath, appConfigDto.getGenerateCodeJavaPath());
+            }
+            if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeSqlPath())) {
+                OutputUtils.info(sqlPath, appConfigDto.getGenerateCodeSqlPath());
+            }
+            if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeVuePath())) {
+                OutputUtils.info(vuePath, appConfigDto.getGenerateCodeVuePath());
+            }
+            if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeRoutePath())) {
+                OutputUtils.info(routePath, appConfigDto.getGenerateCodeRoutePath());
+            }
+            if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeAuthor())) {
+                OutputUtils.info(author, appConfigDto.getGenerateCodeAuthor());
+            }
+            String pageType = appConfigDto.getGenerateCodePageType();
+            if (PAGE_TYPE_SET.equals(pageType)) {
+                selectSet(null);
+            } else if (PAGE_TYPE_QUERY.equals(pageType)) {
+                selectQuery(null);
+            }
+            String dbType = appConfigDto.getGenerateCodeDbType();
+            if (DB_TYPE_PUB.equals(dbType)) {
+                selectDbPub(null);
+            } else if (DB_TYPE_TRANS.equals(dbType)) {
+                selectDbTrans(null);
+            } else if (DB_TYPE_TRANS_QUERY.equals(dbType)) {
+                selectDbQuery(null);
+            } else if (DB_TYPE_TRANS_ORDER.equals(dbType)) {
+                selectDbOrder(null);
+            }
+            generateCodeDto.setJavaPath(appConfigDto.getGenerateCodeJavaPath());
+            generateCodeDto.setVuePath(appConfigDto.getGenerateCodeVuePath());
+            generateCodeDto.setSqlPath(appConfigDto.getGenerateCodeSqlPath());
+            generateCodeDto.setRoutePath(appConfigDto.getGenerateCodeRoutePath());
+            generateCodeDto.setPageType(appConfigDto.getGenerateCodePageType());
+            generateCodeDto.setAuthor(appConfigDto.getGenerateCodeAuthor());
+            generateCodeDto.setDbType(appConfigDto.getGenerateCodeDbType());
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(log, e.toString());
         }
     }
 }

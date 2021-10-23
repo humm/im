@@ -79,15 +79,27 @@ public class GenerateCommon {
         return content.toString();
     }
 
-    public static String generateFile(GenerateCodeDto generateCodeDto, String packageName, String fileName,
-                                      String content) throws IOException {
+    public static String generateJavaFile(GenerateCodeDto generateCodeDto, String packageName, String fileName,
+                                          String content) throws IOException {
         String pathName = generateCodeDto.getJavaPath() + SYMBOL_SLASH + packageName.replace(SYMBOL_POINT, SYMBOL_SLASH) + SYMBOL_SLASH + fileName + FILE_TYPE_JAVA;
         FileUtils.writeFile(pathName, content, ENCODING_UTF8, false);
         return pathName;
     }
 
     public static String generateSqlFile(GenerateCodeDto generateCodeDto, String fileName, String content) throws IOException {
-        String pathName = generateCodeDto.getJavaPath() + SYMBOL_SLASH + fileName + FILE_TYPE_SQL;
+        String pathName = generateCodeDto.getSqlPath() + SYMBOL_SLASH + fileName + FILE_TYPE_SQL;
+        FileUtils.writeFile(pathName, content, ENCODING_UTF8, false);
+        return pathName;
+    }
+
+    public static String generateVueFile(GenerateCodeDto generateCodeDto, String fileName, String content) throws IOException {
+        String pathName = generateCodeDto.getVuePath() + SYMBOL_SLASH + fileName + FILE_TYPE_VUE;
+        FileUtils.writeFile(pathName, content, ENCODING_UTF8, false);
+        return pathName;
+    }
+    
+    public static String generateRouteFile(GenerateCodeDto generateCodeDto, String fileName, String content) throws IOException {
+        String pathName = generateCodeDto.getRoutePath() + SYMBOL_SLASH + fileName + FILE_TYPE_ROUTE;
         FileUtils.writeFile(pathName, content, ENCODING_UTF8, false);
         return pathName;
     }

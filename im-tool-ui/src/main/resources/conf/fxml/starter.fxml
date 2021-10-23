@@ -7,30 +7,30 @@
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
-                <Menu fx:id="menuFunction" mnemonicParsing="false" text="功能">
+                <Menu fx:id="menuSvn" mnemonicParsing="false" text="SVN">
                     <items>
                         <MenuItem fx:id="menuItemSvnLog" mnemonicParsing="false" onAction="#openSvnLog"
-                                  text="svn提交记录"/>
+                                  text="提交记录"/>
                         <MenuItem fx:id="menuItemSvnUpdate" mnemonicParsing="false" onAction="#openSvnUpdate"
-                                  text="svn代码更新"/>
+                                  text="代码更新"/>
+                        <MenuItem fx:id="menuItemSvnRealtimeStat" mnemonicParsing="false"
+                                  onAction="#openSvnRealtimeStat"
+                                  text="实时统计"/>
+                        <MenuItem fx:id="menuItemSvnHistoryStat" mnemonicParsing="false"
+                                  onAction="#openSvnHistoryStat"
+                                  text="历史统计"/>
+                    </items>
+                </Menu>
+                <Menu fx:id="menuOther" mnemonicParsing="false" text="其他">
+                    <items>
                         <MenuItem fx:id="menuItemFundInfo" mnemonicParsing="false" onAction="#openFundInfo"
                                   text="基金信息"/>
                         <MenuItem fx:id="menuItemProcessInfo" mnemonicParsing="false" onAction="#openProcessInfo"
                                   text="流程信息"/>
+                        <MenuItem fx:id="menuItemGenerateCode" mnemonicParsing="false" onAction="#openGenerateCode"
+                                  text="模板代码"/>
                         <MenuItem fx:id="menuItemScriptUpdate" mnemonicParsing="false" onAction="#openScriptUpdate"
                                   text="升级脚本"/>
-                    </items>
-                </Menu>
-                <Menu fx:id="menuStat" mnemonicParsing="false" text="统计">
-                    <items>
-                        <MenuItem fx:id="menuItemSvnRealtimeStat" mnemonicParsing="false"
-                                  onAction="#openSvnRealtimeStat"
-                                  text="svn实时统计"/>
-                        <MenuItem fx:id="menuItemSvnHistoryStat" mnemonicParsing="false"
-                                  onAction="#openSvnHistoryStat"
-                                  text="svn历史统计"/>
-                        <MenuItem fx:id="menuItemFunctionStat" mnemonicParsing="false" onAction="#openFunctionStatInfo"
-                                  text="功能使用统计"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuSet" mnemonicParsing="false" text="设置">
@@ -41,6 +41,8 @@
                 </Menu>
                 <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">
                     <items>
+                        <MenuItem fx:id="menuItemFunctionStat" mnemonicParsing="false" onAction="#openFunctionStatInfo"
+                                  text="使用统计"/>
                         <MenuItem fx:id="menuItemAbout" mnemonicParsing="false" onAction="#openAboutInfo"
                                   text="关于"/>
                     </items>

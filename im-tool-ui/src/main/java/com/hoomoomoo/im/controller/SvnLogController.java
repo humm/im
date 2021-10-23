@@ -24,7 +24,7 @@ import static com.hoomoomoo.im.consts.FunctionConfig.SVN_LOG;
 
 /**
  * @author humm23693
- * @description svn提交记录
+ * @description 提交记录
  * @package com.hoomoomoo.im.controller
  * @date 2021/04/18
  */
