@@ -92,12 +92,12 @@ public class GenerateCommon {
         return pathName;
     }
 
-    public static String generateVueFile(GenerateCodeDto generateCodeDto, String fileName, String content) throws IOException {
-        String pathName = generateCodeDto.getVuePath() + SYMBOL_SLASH + fileName + FILE_TYPE_VUE;
+    public static String generateVueFile(GenerateCodeDto generateCodeDto, String packageName, String fileName, String content) throws IOException {
+        String pathName = generateCodeDto.getVuePath() + SYMBOL_SLASH + packageName.replace(SYMBOL_POINT, SYMBOL_SLASH) + SYMBOL_SLASH + fileName + FILE_TYPE_VUE;
         FileUtils.writeFile(pathName, content, ENCODING_UTF8, false);
         return pathName;
     }
-    
+
     public static String generateRouteFile(GenerateCodeDto generateCodeDto, String fileName, String content) throws IOException {
         String pathName = generateCodeDto.getRoutePath() + SYMBOL_SLASH + fileName + FILE_TYPE_ROUTE;
         FileUtils.writeFile(pathName, content, ENCODING_UTF8, false);

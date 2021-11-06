@@ -2,6 +2,7 @@ package com.hoomoomoo.im.utils.generate;
 
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -14,11 +15,11 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @package com.hoomoomoo.im.utils.generate
  * @date 2021/10/15
  */
-public class GenerateExport {
+public class GenerateExportConfig {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
         String fileName = CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "ExportConfig";
-        String packageName = PACKAGE_NAME_PREFIX + "bean.exportconfig";
+        String packageName = PACKAGE_JAVA_PREFIX + "bean.exportconfig";
 
         generateCodeDto.setExportName(fileName);
         generateCodeDto.setExportPackageName(packageName + SYMBOL_POINT + fileName);
@@ -46,11 +47,18 @@ public class GenerateExport {
             }
             Map<String, String> columnInfo = tableColumn.get(column);
             String columnType = columnInfo.get(KEY_COLUMN_TYPE);
+            if (!KEY_COLUMN_TYPE_INTEGER.equals(columnType) && !KEY_COLUMN_TYPE_NUMBER.equals(columnType) && !KEY_COLUMN_TYPE_DATE.equals(columnType)) {
+                continue;
+            }
             content.append("    @FundExcelExportField(title = \"" + columnInfo.get(KEY_COLUMN_NAME) + "\"");
-            if (KEY_INTEGER.equals(columnType)) {
+            if (KEY_COLUMN_TYPE_DATE.equals(columnType)) {
                 content.append(", type = FundExcelExportField.DATE");
-            } else {
-                content.append(", type = \"\"");
+            } else if (KEY_COLUMN_TYPE_NUMBER.equals(columnType)) {
+                content.append(", type = FundExcelExportField.AMOUNT");
+                String precision = columnInfo.get(KEY_COLUMN_PRECISION);
+                if (StringUtils.isNotEmpty(precision) && !STR_2.equals(precision)) {
+                    content.append(", suffixNum= " + precision);
+                }
             }
             content.append(")").append(SYMBOL_NEXT_LINE);
             content.append("    private String " + column + ";").append(SYMBOL_NEXT_LINE_2);

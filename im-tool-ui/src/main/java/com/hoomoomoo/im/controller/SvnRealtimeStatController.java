@@ -24,19 +24,13 @@ import static com.hoomoomoo.im.consts.FunctionConfig.SVN_REALTIME_STAT;
  * @package com.hoomoomoo.im.controller
  * @date 2021/05/30
  */
-public class SvnRealtimeStatController implements Initializable {
+public class SvnRealtimeStatController extends BaseController implements Initializable {
 
     @FXML
     private Label statTime;
 
     @FXML
     private Label costTime;
-
-    @FXML
-    private ProgressIndicator schedule;
-
-    @FXML
-    private Label scheduleText;
 
     @FXML
     private TextArea stat1;
@@ -55,8 +49,6 @@ public class SvnRealtimeStatController implements Initializable {
     private LinkedHashMap<String, SvnStatDto> svnStat = new LinkedHashMap<>(16);
 
     private static int statNum = 3;
-
-    private double progress = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -143,26 +135,6 @@ public class SvnRealtimeStatController implements Initializable {
         }).start();
     }
 
-    private void updateProgress() {
-        new Thread(() -> {
-            while (true) {
-                if (progress >= 0.95) {
-                    break;
-                }
-                if (progress <= 0.6) {
-                    setProgress(progress + 0.01);
-                } else if (progress < 0.9) {
-                    setProgress(progress + 0.005);
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    LoggerUtils.info(e);
-                }
-            }
-        }).start();
-    }
-
     private void outputStatInfo(TextArea stat, SvnStatDto svnStatDto) {
         OutputUtils.info(stat, svnStatDto.getUserName() + SYMBOL_NEXT_LINE_2);
         OutputUtils.info(stat, SYMBOL_SPACE_4 + "首次提交时间: " + svnStatDto.getFirstTime() + SYMBOL_NEXT_LINE_2);
@@ -170,18 +142,5 @@ public class SvnRealtimeStatController implements Initializable {
         OutputUtils.info(stat, SYMBOL_SPACE_4 + "提交代码次数: " + svnStatDto.getSubmitTimes() + SYMBOL_NEXT_LINE_2);
         OutputUtils.info(stat, SYMBOL_SPACE_4 + "修改文件个数: " + svnStatDto.getFileNum() + SYMBOL_NEXT_LINE_2);
         OutputUtils.info(stat, SYMBOL_SPACE_4 + "修改文件次数: " + svnStatDto.getFileTimes() + SYMBOL_NEXT_LINE_2);
-    }
-
-    synchronized private void setProgress(double value) {
-        try {
-            progress = value;
-            Platform.runLater(() -> {
-                schedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
-                schedule.requestFocus();
-            });
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-        }
     }
 }

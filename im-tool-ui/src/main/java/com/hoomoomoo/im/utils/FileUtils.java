@@ -122,7 +122,11 @@ public class FileUtils {
         }
         file = new File(filePath);
         if (encode == null) {
-            encode = getFileEncode(filePath);
+            if (!file.exists()) {
+                encode = ENCODING_GBK;
+            } else {
+                encode = getFileEncode(filePath);
+            }
         }
         PrintWriter printWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file, isAppend), encode)));
         printWriter.write(content);
@@ -484,6 +488,15 @@ public class FileUtils {
             // 获取历史svn统计用户信息
             if (item.startsWith(KEY_SVN_STAT_USER)) {
                 List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_STAT_USER);
+                updateContent.addAll(updateConfig);
+                if (CollectionUtils.isNotEmpty(updateConfig)) {
+                    continue;
+                }
+            }
+
+            // 获取历史复制代码版本配置
+            if (item.startsWith(KEY_COPY_CODE_VERSION)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_COPY_CODE_VERSION);
                 updateContent.addAll(updateConfig);
                 if (CollectionUtils.isNotEmpty(updateConfig)) {
                     continue;

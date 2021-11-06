@@ -27,16 +27,13 @@ import static com.hoomoomoo.im.consts.FunctionConfig.SCRIPT_UPDATE;
  * @package com.hoomoomoo.im.controller
  * @date 2021/05/14
  */
-public class ScriptUpdateController implements Initializable {
+public class ScriptUpdateController extends BaseController implements Initializable {
 
     @FXML
     private TextArea source;
 
     @FXML
     private Button submit;
-
-    @FXML
-    private ProgressIndicator schedule;
 
     @FXML
     private TextArea target;
@@ -48,12 +45,7 @@ public class ScriptUpdateController implements Initializable {
     private RadioButton append;
 
     @FXML
-    private Label scheduleText;
-
-    @FXML
     private TextField param;
-
-    private double progress = 0;
 
     @FXML
     void executeSubmit(ActionEvent event) {
@@ -84,6 +76,11 @@ public class ScriptUpdateController implements Initializable {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String mode = appConfigDto.getScriptGenerateMode();
+            if (!appConfigDto.getScriptUpdateGenerateFile()) {
+                rewrite.setDisable(true);
+                append.setDisable(true);
+                return;
+            }
             if (StringUtils.isBlank(mode)) {
                 OutputUtils.selected(rewrite, false);
                 OutputUtils.selected(append, false);
@@ -114,39 +111,6 @@ public class ScriptUpdateController implements Initializable {
     void selectRewrite(ActionEvent event) {
         OutputUtils.selected(rewrite, true);
         OutputUtils.selected(append, false);
-    }
-
-    private void updateProgress() {
-        new Thread(() -> {
-            while (true) {
-                if (progress >= 0.95) {
-                    break;
-                }
-                if (progress <= 0.6) {
-                    setProgress(progress + 0.05);
-                } else if (progress < 0.9) {
-                    setProgress(progress + 0.01);
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    LoggerUtils.info(e);
-                }
-            }
-        }).start();
-    }
-
-    synchronized private void setProgress(double value) {
-        try {
-            progress = value;
-            Platform.runLater(() -> {
-                schedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
-                schedule.requestFocus();
-            });
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-        }
     }
 
     public void generateScript() {

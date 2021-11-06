@@ -15,7 +15,7 @@ public class GenerateInterface {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
         String fileName = "I" + CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "Service";
-        String packageName = PACKAGE_NAME_PREFIX + "interfaces." + generateCodeDto.getMenuList().get(0)[0];
+        String packageName = PACKAGE_JAVA_PREFIX + "interfaces." + generateCodeDto.getMenuList().get(0)[0];
 
         generateCodeDto.setInterfaceName(fileName);
         generateCodeDto.setInterfacePackageName(packageName + SYMBOL_POINT + fileName);

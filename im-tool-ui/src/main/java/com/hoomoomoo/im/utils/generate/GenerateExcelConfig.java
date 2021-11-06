@@ -15,7 +15,7 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @package com.hoomoomoo.im.utils.generate
  * @date 2021/10/15
  */
-public class GenerateImport {
+public class GenerateExcelConfig {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
         if (PAGE_TYPE_QUERY.equals(generateCodeDto.getPageType())) {
@@ -48,7 +48,8 @@ public class GenerateImport {
                 continue;
             }
             Map<String, String> columnInfo = tableColumn.get(column);
-            content.append("    @FundExcelUpLoadField(title = \"" + columnInfo.get(KEY_COLUMN_NAME) + "\", colum = 1, claz = " + fileName + ".class, isRequired = true");
+            boolean required = STR_1.equals(columnInfo.get(KEY_COLUMN_REQUIRED));
+            content.append("    @FundExcelUpLoadField(title = \"" + columnInfo.get(KEY_COLUMN_NAME) + "\", colum = 1, claz = " + fileName + ".class, isRequired = " + required);
             if (StringUtils.isNotEmpty(columnInfo.get(KEY_COLUMN_DICT))) {
                 content.append(", type = DICT, dict = \"" + columnInfo.get(KEY_COLUMN_DICT) + "\"");
             }
@@ -71,7 +72,7 @@ public class GenerateImport {
 
     public static void getPackageName(GenerateCodeDto generateCodeDto) {
         String fileName = CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "ExcelConfig";
-        String packageName = PACKAGE_NAME_PREFIX + "bean.excelconfig";
+        String packageName = PACKAGE_JAVA_PREFIX + "bean.excelconfig";
 
         generateCodeDto.setImportName(fileName);
         generateCodeDto.setImportPackageName(packageName + SYMBOL_POINT + fileName);

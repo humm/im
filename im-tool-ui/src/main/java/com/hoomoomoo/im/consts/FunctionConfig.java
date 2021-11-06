@@ -20,6 +20,8 @@ public enum FunctionConfig {
 
     GENERATE_CODE("60", "模板代码", "/conf/fxml/generateCode.fxml", "menuItemGenerateCode", "generateCode"),
 
+    COPY_CODE("70", "复制代码", "/conf/fxml/copyCode.fxml", "menuItemCopyCode", "copyCode"),
+
     SVN_REALTIME_STAT("960", "实时统计", "/conf/fxml/svnRealtimeStat.fxml", "menuItemSvnRealtimeStat", "svnRealtimeStat"),
 
     SVN_HISTORY_STAT("970", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),

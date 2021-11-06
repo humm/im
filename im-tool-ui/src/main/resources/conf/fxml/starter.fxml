@@ -21,7 +21,7 @@
                                   text="历史统计"/>
                     </items>
                 </Menu>
-                <Menu fx:id="menuOther" mnemonicParsing="false" text="其他">
+                <Menu fx:id="menuOther" mnemonicParsing="false" text="功能">
                     <items>
                         <MenuItem fx:id="menuItemFundInfo" mnemonicParsing="false" onAction="#openFundInfo"
                                   text="基金信息"/>
@@ -29,6 +29,8 @@
                                   text="流程信息"/>
                         <MenuItem fx:id="menuItemGenerateCode" mnemonicParsing="false" onAction="#openGenerateCode"
                                   text="模板代码"/>
+                        <MenuItem fx:id="menuItemCopyCode" mnemonicParsing="false" onAction="#openCopyCode"
+                                  text="复制代码"/>
                         <MenuItem fx:id="menuItemScriptUpdate" mnemonicParsing="false" onAction="#openScriptUpdate"
                                   text="升级脚本"/>
                     </items>

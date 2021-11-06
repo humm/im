@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
@@ -16,10 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -300,51 +298,59 @@ public class CommonUtils {
         }
         if (StringUtils.isBlank(generateCodeDto.getMenuCode())) {
             OutputUtils.info(log, "请设置[ 菜单代码 ] ");
+            OutputUtils.info(log, "格式[ 一级菜单.二级菜单.三级菜单 ]");
             flag = false;
         } else {
             if (generateCodeDto.getMenuCode().split(SYMBOL_POINT_SLASH).length != 3) {
-                OutputUtils.info(log, "[ 菜单代码 ] 格式错误");
-                OutputUtils.info(log, "[ 一级菜单.二级菜单.三级菜单 ]");
+                OutputUtils.info(log, "[ 菜单代码 ]格式错误");
+                OutputUtils.info(log, "格式[ 一级菜单.二级菜单.三级菜单 ]");
                 flag = false;
             }
         }
         if (StringUtils.isBlank(generateCodeDto.getMenuName())) {
             OutputUtils.info(log, "请设置[ 菜单名称 ] ");
+            OutputUtils.info(log, "格式[ 一级菜单.二级菜单.三级菜单 ]");
             flag = false;
         } else {
             if (generateCodeDto.getMenuName().split(SYMBOL_POINT_SLASH).length != 3) {
-                OutputUtils.info(log, "[ 菜单名称 ] 格式错误");
-                OutputUtils.info(log, "[ 一级菜单.二级菜单.三级菜单 ]");
+                OutputUtils.info(log, "[ 菜单名称 ]格式错误");
+                OutputUtils.info(log, "格式[ 一级菜单.二级菜单.三级菜单 ]");
                 flag = false;
             }
         }
         if (StringUtils.isBlank(generateCodeDto.getTable())) {
             OutputUtils.info(log, "请设置[ 正式表结构 ] ");
+            OutputUtils.info(log, "格式[ oracle建表语句 ] ");
             flag = false;
         }
         if (PAGE_TYPE_SET.equals(generateCodeDto.getPageType()) && StringUtils.isBlank(generateCodeDto.getAsyTable())) {
             OutputUtils.info(log, "请设置[ 复核表结构 ] ");
+            OutputUtils.info(log, "格式[ oracle建表语句 ] ");
             flag = false;
         }
+        StringBuilder columnTip = new StringBuilder();
+        columnTip.append("{").append(SYMBOL_NEXT_LINE);
+        columnTip.append("    字段代码: {").append(SYMBOL_NEXT_LINE);
+        columnTip.append("        name: '字段名称',").append(SYMBOL_NEXT_LINE);
+        columnTip.append("        dict: '字典',").append(SYMBOL_NEXT_LINE);
+        columnTip.append("        multi: '是否多选 0:单选 1:多选',").append(SYMBOL_NEXT_LINE);
+        columnTip.append("        required: '是否必填 0:非必填 1:必填'").append(SYMBOL_NEXT_LINE);
+        columnTip.append("        date: '是否日期 0:非日期 1:日期'").append(SYMBOL_NEXT_LINE);
+        columnTip.append("        precision: '精度 不指定则取表结构'").append(SYMBOL_NEXT_LINE);
+        columnTip.append("    }").append(SYMBOL_NEXT_LINE);
+        columnTip.append("}").append(SYMBOL_NEXT_LINE);
         if (StringUtils.isBlank(generateCodeDto.getColumn())) {
             OutputUtils.info(log, "请设置[ 字段信息 ] ");
+            OutputUtils.info(log, columnTip.toString());
             flag = false;
         } else {
-            String[] columnInfo = generateCodeDto.getColumn().split(SYMBOL_SEMICOLON);
-            boolean tip = false;
-            if (columnInfo != null) {
-                for (String item : columnInfo) {
-                    String[] subItem = item.split(SYMBOL_COLON);
-                    if (subItem == null || subItem.length < 2 || subItem.length > 3) {
-                        if (!tip) {
-                            OutputUtils.info(log, "[ 字段信息 ] 格式错误");
-                            OutputUtils.info(log, "[字段代码:字段名称:字典]");
-                            tip = true;
-                        }
-                        OutputUtils.info(log, item);
-                        flag = false;
-                    }
-                }
+            String columnInfo = generateCodeDto.getColumn();
+            try {
+                JSONObject.parseObject(columnInfo, Map.class);
+            } catch (Exception e) {
+                OutputUtils.info(log, "[ 字段信息 ]格式错误");
+                OutputUtils.info(log, columnInfo);
+                flag = false;
             }
         }
         return flag;

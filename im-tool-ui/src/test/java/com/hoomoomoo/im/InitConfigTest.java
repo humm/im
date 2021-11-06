@@ -14,10 +14,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.ListIterator;
+import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 
@@ -84,6 +81,7 @@ public class InitConfigTest {
         boolean svnUpdate = false;
         boolean scriptUpdateTable = false;
         boolean svnStatUser = false;
+        boolean copyCode = false;
         while (iterator.hasNext()) {
             String item = iterator.next();
             if (item.startsWith(KEY_SVN_UPDATE)) {
@@ -107,6 +105,13 @@ public class InitConfigTest {
                     svnStatUser = true;
                     iterator.set("svn.stat.user.demo10000=演示");
                 }
+            }  else if (item.startsWith(KEY_COPY_CODE_VERSION)) {
+                if (copyCode) {
+                    iterator.remove();
+                } else {
+                    copyCode = true;
+                    iterator.set("copy.code.version.demo10000=E:/workspace");
+                }
             }
         }
         FileUtils.writeFile(pathApp, content, false);
@@ -122,30 +127,36 @@ public class InitConfigTest {
      */
     @Test
     public void config_02_updateConfig() throws Exception {
-        List<String> keys = new ArrayList<>(16);
-        keys.add("show.tab");
+        Map<String, String> keys = new LinkedHashMap<>();
+        keys.put("show.tab", null);
 
-        keys.add("svn.username");
-        keys.add("svn.password");
+        keys.put("svn.username", null);
+        keys.put("svn.password", null);
 
-        keys.add("svn.url");
-        keys.add("svn.default.append.path");
+        keys.put("svn.url", null);
+        keys.put("svn.default.append.path", null);
 
-        keys.add("fund.excel.path");
-        keys.add("fund.generate.path");
+        keys.put("fund.excel.path", null);
+        keys.put("fund.generate.path", null);
 
-        keys.add("process.excel.path");
-        keys.add("process.generate.path.trans");
-        keys.add("process.generate.path.schedule");
+        keys.put("process.excel.path", null);
+        keys.put("process.generate.path.trans", null);
+        keys.put("process.generate.path.schedule", null);
 
-        keys.add("script.update.generate.path");
+        keys.put("script.update.generate.path", null);
 
-        keys.add("app.user");
+        keys.put("app.user", null);
 
-        keys.add("generate.code.java.path");
-        keys.add("generate.code.sql.path");
-        keys.add("generate.code.vue.path");
-        keys.add("generate.code.route.path");
+        keys.put("generate.code.java.path", null);
+        keys.put("generate.code.sql.path", null);
+        keys.put("generate.code.vue.path", null);
+        keys.put("generate.code.route.path", null);
+        keys.put("generate.code.author", null);
+
+        keys.put("app.tab.show", "10");
+
+        keys.put("copy.code.default.source", null);
+        keys.put("copy.code.default.target", null);
 
         String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);
@@ -154,7 +165,11 @@ public class InitConfigTest {
                 String item = content.get(i);
                 if (isUpdate(item, keys)) {
                     int index = item.indexOf(SYMBOL_EQUALS) + 1;
-                    item = item.substring(0, index) + SYMBOL_EMPTY;
+                    item = item.substring(0, index);
+                    String value = keys.get(item.replace(SYMBOL_EQUALS, SYMBOL_EMPTY));
+                    if (StringUtils.isNotEmpty(value)) {
+                        item += value;
+                    }
                     content.set(i, item);
                 }
             }
@@ -222,11 +237,13 @@ public class InitConfigTest {
      * @date: 2021/05/22
      * @return:
      */
-    private boolean isUpdate(String item, List<String> keys) {
+    private boolean isUpdate(String item, Map<String, String> keys) {
         if (!item.contains(SYMBOL_EQUALS)) {
             return false;
         }
-        for (String key : keys) {
+        Iterator<String> iterator = keys.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
             if (item.startsWith(key)) {
                 return true;
             }

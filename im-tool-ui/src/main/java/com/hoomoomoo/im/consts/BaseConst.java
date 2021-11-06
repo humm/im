@@ -10,6 +10,10 @@ import java.util.regex.Pattern;
  */
 public class BaseConst {
 
+    public static final String APP_USER_IM = "im";
+
+    public static final String USER_DEMO = "demo10000";
+
     public static final String STR_0 = "0";
     public static final String STR_1 = "1";
     public static final String STR_2 = "2";
@@ -30,6 +34,7 @@ public class BaseConst {
     public static final String KEY_SVN_UPDATE = "svn.update.";
     public static final String KEY_SCRIPT_UPDATE_TABLE = "script.update.table.";
     public static final String KEY_SVN_STAT_USER = "svn.stat.user.";
+    public static final String KEY_COPY_CODE_VERSION = "copy.code.version.";
 
     public static final String KEY_NOTICE = "notice";
     public static final String KEY_VALUES = "values";
@@ -39,22 +44,35 @@ public class BaseConst {
     public static final String KEY_FILE = "file:";
     public static final String KEY_APP_LOG = "appLog";
     public static final String KEY_DELETE = "delete";
-    public static final String KEY_COLUMN_UNDERLINE = "column_underline";
     public static final String KEY_COLUMN = "column";
+    public static final String KEY_COLUMN_UNDERLINE = "column_underline";
     public static final String KEY_COLUMN_TYPE = "column_type";
     public static final String KEY_COLUMN_NAME = "column_name";
     public static final String KEY_COLUMN_DICT = "column_dict";
+    public static final String KEY_COLUMN_MULTI = "column_multi";
+    public static final String KEY_COLUMN_REQUIRED = "column_required";
+    public static final String KEY_COLUMN_PRECISION = "column_precision";
+    public static final String KEY_DICT = "dict";
+    public static final String KEY_MULTI = "multi";
+    public static final String KEY_NAME = "name";
     public static final String KEY_PRECISION = "precision";
+    public static final String KEY_COLUMN_TYPE_DATE = "date";
+    public static final String KEY_COLUMN_TYPE_INTEGER = "integer";
+    public static final String KEY_COLUMN_TYPE_NUMBER = "number";
+    public static final String KEY_COLUMN_TYPE_VARCHAR2 = "varchar2";
+    public static final String KEY_REQUIRED = "required";
     public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP = "transCodeAndSubTransCode";
     public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE = "trans_code_and_sub_trans_code";
-    public static final String KEY_VARCHAR2 = "varchar2";
-    public static final String KEY_INTEGER = "integer";
-    public static final String KEY_NUMBER = "number";
     public static final String KEY_PRD_CODE = "prdCode";
     public static final String KEY_SELLER_CODE = "sellerCode";
     public static final String KEY_BRANCH_NO = "branchNo";
+    public static final String KEY_QUERY_FORM = "query_form";
+    public static final String KEY_ADD_FORM = "add_form";
+    public static final String KEY_EDIT_FORM = "edit_form";
+    public static final String KEY_BATCH_EDIT_FORM = "batch_edit_form";
 
-    public static final String APP_USER_IM = "im";
+    public static final String KEY_LOCATION_SOURCES_APP = "/Sources/app";
+    public static final String KEY_LOCATION_TRUNK_SOURCES_APP = "/trunk/Sources/app";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
@@ -124,6 +142,7 @@ public class BaseConst {
     public static final String MSG_CHECK = "校验[ %s ] 完成";
     public static final String MSG_START = "开始[ %s ]";
     public static final String MSG_COMPLETE = "完成[ %s ]";
+    public static final String MSG_FILE_GENERATE = "%s文件生成成功";
     public static final String MSG_FUNCTION_NOT_EXIST = "不存在[ %s ]功能";
     public static final String MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件[ license.init ]";
     public static final String MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止[ %s ]";
@@ -143,7 +162,8 @@ public class BaseConst {
     public static final String PATH_LOG = "/logs/%s/%s";
     public static final String PATH_STAT = "/stats/%s";
 
-    public static final String PACKAGE_NAME_PREFIX = "com.hundsun.lcpt.fund.";
+    public static final String PACKAGE_JAVA_PREFIX = "com.hundsun.lcpt.fund.";
+    public static final String PACKAGE_VUE_PREFIX = "src.biz.console-fund-ta-vue.views.";
 
     public static final String METHOD_RETURN_PARAM_IDATASET = "com.hundsun.jres.interfaces.share.dataset.IDataset";
     public static final String METHOD_RETURN_PARAM_QUERY_STAT_INFO = "com.hundsun.lcpt.ta.base.webmanager.QueryStatInfo";

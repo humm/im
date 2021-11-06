@@ -30,7 +30,7 @@
                                                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
                                             </padding>
                                         </Button>
-                                        <ProgressIndicator fx:id="fundSchedule" layoutX="390.0" layoutY="30.0"
+                                        <ProgressIndicator fx:id="schedule" layoutX="390.0" layoutY="30.0"
                                                            progress="0.0"/>
                                         <Label fx:id="scheduleText" layoutX="430.0" layoutY="33.0" text="0%"/>
                                         <TextField fx:id="filePath" layoutX="90.0" layoutY="11.0" prefHeight="23.0"

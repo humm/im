@@ -82,7 +82,7 @@ public class FunctionStatInfoController implements Initializable {
                     break;
             }
         }
-        OutputUtils.info(title, "授权功能数  " + (num - 2));
+        OutputUtils.info(title, "授权功能  " + (num - 2));
         for (int i = 0; i < functionDtoList.size(); i++) {
             FunctionDto functionDto = functionDtoList.get(i);
             if (FUNCTION_STAT_INFO.getCode().equals(functionDto.getFunctionCode()) || ABOUT_INFO.getCode().equals(functionDto.getFunctionCode())) {

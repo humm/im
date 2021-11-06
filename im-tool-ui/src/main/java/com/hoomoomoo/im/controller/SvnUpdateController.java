@@ -26,16 +26,13 @@ import static com.hoomoomoo.im.consts.FunctionConfig.SVN_UPDATE;
  * @package com.hoomoomoo.im.controller
  * @date 2021/05/09
  */
-public class SvnUpdateController implements Initializable {
+public class SvnUpdateController extends BaseController implements Initializable {
 
     @FXML
     private Label workspaceNum;
 
     @FXML
     private Button svnSubmit;
-
-    @FXML
-    private ProgressIndicator schedule;
 
     @FXML
     private Label svnName;
@@ -45,11 +42,6 @@ public class SvnUpdateController implements Initializable {
 
     @FXML
     private TextArea fileLog;
-
-    @FXML
-    private Label scheduleText;
-
-    private double progress = 0;
 
     @FXML
     void executeSubmit(ActionEvent event) {
@@ -110,39 +102,6 @@ public class SvnUpdateController implements Initializable {
                 svnSubmit.setDisable(false);
             }
         }).start();
-    }
-
-    private void updateProgress() {
-        new Thread(() -> {
-            while (true) {
-                if (progress >= 0.95) {
-                    break;
-                }
-                if (progress <= 0.6) {
-                    setProgress(progress + 0.01);
-                } else if (progress < 0.9) {
-                    setProgress(progress + 0.005);
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    LoggerUtils.info(e);
-                }
-            }
-        }).start();
-    }
-
-    synchronized private void setProgress(double value) {
-        try {
-            progress = value;
-            Platform.runLater(() -> {
-                schedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
-                schedule.requestFocus();
-            });
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-        }
     }
 
     @Override

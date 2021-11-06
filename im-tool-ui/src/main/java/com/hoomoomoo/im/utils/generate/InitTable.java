@@ -1,9 +1,12 @@
 package com.hoomoomoo.im.utils.generate;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -34,17 +37,27 @@ public class InitTable {
 
         String column = generateCodeDto.getColumn();
         if (StringUtils.isNotEmpty(column)) {
-            String[] dictConfig = column.split(SYMBOL_SEMICOLON);
-            if (dictConfig != null) {
-                for (String item : dictConfig) {
-                    String[] dictItem = item.replaceAll(SYMBOL_S_SLASH, SYMBOL_EMPTY).split(SYMBOL_COLON);
-                    if (dictItem != null) {
-                        if (dictItem.length >= 2) {
-                            tableColumn.get(CommonUtils.lineToHump(dictItem[0])).put(KEY_COLUMN_NAME, dictItem[1]);
-                        } else if (dictItem.length == 3) {
-                            tableColumn.get(CommonUtils.lineToHump(dictItem[0])).put(KEY_COLUMN_DICT, dictItem[2]);
-                        }
+            Map<String, Map<String, String>> columnInfo = JSONObject.parseObject(column, Map.class);
+            if (MapUtils.isNotEmpty(columnInfo)) {
+                Iterator<String> iterator = columnInfo.keySet().iterator();
+                while (iterator.hasNext()) {
+                    String key = iterator.next();
+                    Map<String, String> item = columnInfo.get(key);
+                    String columnCode = CommonUtils.lineToHump(key);
+                    String columnName = item.get(KEY_NAME);
+                    String columnDict = item.get(KEY_DICT);
+                    String columnMulti = item.get(KEY_MULTI);
+                    String columnDate = item.get(KEY_COLUMN_TYPE_DATE);
+                    String columnPrecision = item.get(KEY_PRECISION);
+                    String columnRequired = item.get(KEY_REQUIRED);
+                    tableColumn.get(columnCode).put(KEY_COLUMN_NAME, columnName);
+                    tableColumn.get(columnCode).put(KEY_COLUMN_DICT, columnDict);
+                    tableColumn.get(columnCode).put(KEY_COLUMN_MULTI, columnMulti);
+                    tableColumn.get(columnCode).put(KEY_COLUMN_REQUIRED, columnRequired);
+                    if (STR_1.equals(columnDate)) {
+                        tableColumn.get(columnCode).put(KEY_COLUMN_TYPE, KEY_COLUMN_TYPE_DATE);
                     }
+                    tableColumn.get(columnCode).put(KEY_COLUMN_PRECISION, columnPrecision);
                 }
             }
         }
@@ -104,8 +117,12 @@ public class InitTable {
             Map columnInfo = new LinkedHashMap(16);
             columnInfo.put(KEY_COLUMN, column);
             columnInfo.put(KEY_COLUMN_UNDERLINE, columnUnderline);
-            columnInfo.put(KEY_COLUMN_TYPE, columnType.split("\\(")[0].toLowerCase());
-            columnInfo.put(KEY_PRECISION, precision);
+            String columnTypeLast = columnType.split("\\(")[0].toLowerCase();
+            if (KEY_COLUMN_TYPE_INTEGER.equals(columnTypeLast) && column.endsWith("Date")) {
+                columnTypeLast = KEY_COLUMN_TYPE_DATE;
+            }
+            columnInfo.put(KEY_COLUMN_TYPE, columnTypeLast);
+            columnInfo.put(KEY_COLUMN_PRECISION, precision);
             columnInfo.put(KEY_COLUMN_NAME, SYMBOL_EMPTY);
             columnInfo.put(KEY_COLUMN_DICT, SYMBOL_EMPTY);
             columnMap.put(column, columnInfo);
@@ -114,8 +131,8 @@ public class InitTable {
         Map transCode = new LinkedHashMap(16);
         transCode.put(KEY_COLUMN, KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP);
         transCode.put(KEY_COLUMN_UNDERLINE, KEY_TRANS_CODE_AND_SUB_TRANS_CODE);
-        transCode.put(KEY_COLUMN_TYPE, KEY_VARCHAR2);
-        transCode.put(KEY_PRECISION, SYMBOL_EMPTY);
+        transCode.put(KEY_COLUMN_TYPE, KEY_COLUMN_TYPE_VARCHAR2);
+        transCode.put(KEY_COLUMN_PRECISION, SYMBOL_EMPTY);
         columnMap.put(KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP, transCode);
 
         return columnMap;

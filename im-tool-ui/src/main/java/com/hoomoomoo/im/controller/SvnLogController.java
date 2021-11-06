@@ -10,6 +10,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,13 +29,16 @@ import static com.hoomoomoo.im.consts.FunctionConfig.SVN_LOG;
  * @package com.hoomoomoo.im.controller
  * @date 2021/04/18
  */
-public class SvnLogController implements Initializable {
+public class SvnLogController extends BaseController implements Initializable {
 
     @FXML
     private Label svnName;
 
     @FXML
     private TextField svnTimes;
+
+    @FXML
+    private TextField version;
 
     @FXML
     private Button svnSubmit;
@@ -46,12 +50,10 @@ public class SvnLogController implements Initializable {
     private TextArea fileLog;
 
     @FXML
-    private ProgressIndicator svnSchedule;
-
-    @FXML
-    private Label scheduleText;
-
-    private double progress = 0;
+    void showVersion(MouseEvent event) {
+        Long ver = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getVersion();
+        OutputUtils.info(version, String.valueOf(ver));
+    }
 
     @FXML
     void executeSubmit(ActionEvent event) {
@@ -65,25 +67,38 @@ public class SvnLogController implements Initializable {
             OutputUtils.clearLog(fileLog);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             appConfigDto.setSvnRecentTime(svnTimes.getText());
+            String times = svnTimes.getText().trim();
+            String ver = version.getText().trim();
+            if (StringUtils.isBlank(times) && StringUtils.isBlank(ver)) {
+                return;
+            }
+            if (StringUtils.isBlank(times)) {
+                times = STR_0;
+            }
+            if (StringUtils.isBlank(ver)) {
+                ver = STR_0;
+            }
             updateProgress();
-            getSvnLog(Integer.valueOf(svnTimes.getText()));
+            getSvnLog(Integer.valueOf(times), Integer.valueOf(ver));
+        } catch (NumberFormatException e) {
+            LoggerUtils.info(e);
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + e.toString());
         }
     }
 
-    private void getSvnLog(Integer svnTimes) {
+    private void getSvnLog(int times, int version) {
         new Thread(() -> {
             try {
                 svnSubmit.setDisable(true);
                 Date date = new Date();
-                List<LogDto> logDtoList = SvnUtils.getSvnLog(svnTimes);
+                List<LogDto> logDtoList = SvnUtils.getSvnLog(times, version);
                 List<String> fileList = new ArrayList<>();
                 int length = logDtoList.size();
                 for (LogDto svnLogDto : logDtoList) {
                     svnLogDto.setGetNum(length);
-                    svnLogDto.setMatch(svnTimes == length ? "匹配" : "未匹配");
+                    svnLogDto.setMatch(times == length ? "匹配" : "未匹配");
                     OutputUtils.info(svnLog, svnLogDto);
                     OutputUtils.info(fileLog, svnLogDto.getFile());
                     fileList.addAll(svnLogDto.getFile());
@@ -110,39 +125,6 @@ public class SvnLogController implements Initializable {
                 svnSubmit.setDisable(false);
             }
         }).start();
-    }
-
-    private void updateProgress() {
-        new Thread(() -> {
-            while (true) {
-                if (progress >= 0.95) {
-                    break;
-                }
-                if (progress <= 0.6) {
-                    setProgress(progress + 0.05);
-                } else if (progress < 0.9) {
-                    setProgress(progress + 0.01);
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    LoggerUtils.info(e);
-                }
-            }
-        }).start();
-    }
-
-    synchronized private void setProgress(double value) {
-        try {
-            progress = value;
-            Platform.runLater(() -> {
-                svnSchedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
-                svnSchedule.requestFocus();
-            });
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-        }
     }
 
     @Override

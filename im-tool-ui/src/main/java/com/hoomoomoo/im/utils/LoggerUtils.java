@@ -268,6 +268,37 @@ public class LoggerUtils {
         }
     }
 
+    public static void writeCopyCodeInfo(Date startDate, List<String> fileName) {
+        try {
+            // 写统计文件
+            String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, COPY_CODE.getLogFolder() + FILE_TYPE_STAT));
+            writeStatFile(statFilePath);
+
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (!appConfigDto.getAppLogEnable()) {
+                return;
+            }
+            // 写日志文件
+            Date endDate = new Date();
+            StringBuilder log = new StringBuilder();
+            log.append(CommonUtils.getCurrentDateTime1(startDate)).append(SYMBOL_SPACE);
+            log.append(COPY_CODE.getCode()).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
+            for (String item : fileName) {
+                log.append(getLineIndentation()).append(item).append(SYMBOL_NEXT_LINE);
+            }
+            log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
+            log.append(COPY_CODE.getCode()).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
+            long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
+            log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
+            log.append(COPY_CODE.getCode()).append(SYMBOL_SPACE);
+            log.append(COST).append(costTime).append(UNIT).append(SYMBOL_NEXT_LINE_2);
+            String logFilePath = String.format(PATH_LOG, COPY_CODE.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
     public static void writeSvnRealtimeStatInfo() {
         try {
             // 写统计文件

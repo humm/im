@@ -15,7 +15,7 @@ public class GenerateController {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
         String fileName = CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "Controller";
-        String packageName = PACKAGE_NAME_PREFIX + "controller." + generateCodeDto.getMenuList().get(0)[0];
+        String packageName = PACKAGE_JAVA_PREFIX + "controller." + generateCodeDto.getMenuList().get(0)[0];
 
         generateCodeDto.setControllerName(fileName);
         generateCodeDto.setControllerPackageName(packageName + SYMBOL_POINT + fileName);

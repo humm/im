@@ -27,13 +27,7 @@ import static com.hoomoomoo.im.consts.FunctionConfig.SVN_HISTORY_STAT;
  * @package com.hoomoomoo.im.controller
  * @date 2021/05/31
  */
-public class SvnHistoryQueryController implements Initializable {
-
-    @FXML
-    private ProgressIndicator schedule;
-
-    @FXML
-    private Label scheduleText;
+public class SvnHistoryQueryController extends BaseController implements Initializable {
 
     @FXML
     private DatePicker date;
@@ -51,8 +45,6 @@ public class SvnHistoryQueryController implements Initializable {
     private Label notice;
 
     private static int statNum = 3;
-
-    private double progress = 0;
 
     @FXML
     void execute(ActionEvent event) {
@@ -126,26 +118,6 @@ public class SvnHistoryQueryController implements Initializable {
         }).start();
     }
 
-    private void updateProgress() {
-        new Thread(() -> {
-            while (true) {
-                if (progress >= 0.95) {
-                    break;
-                }
-                if (progress <= 0.6) {
-                    setProgress(progress + 0.01);
-                } else if (progress < 0.9) {
-                    setProgress(progress + 0.005);
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    LoggerUtils.info(e);
-                }
-            }
-        }).start();
-    }
-
     private String getOrderInfo(List<SvnStatDto> svnStatDtoList, AppConfigDto appConfigDto) {
         StringBuilder order = new StringBuilder("提交代码次数排序:  ");
         if (STR_2.equals(appConfigDto.getSvnStatHistoryOrderType())) {
@@ -177,19 +149,6 @@ public class SvnHistoryQueryController implements Initializable {
         OutputUtils.info(stat, SYMBOL_SPACE_4 + "提交代码次数: " + svnStatDto.getSubmitTimes() + SYMBOL_NEXT_LINE_2);
         OutputUtils.info(stat, SYMBOL_SPACE_4 + "修改文件个数: " + svnStatDto.getFileNum() + SYMBOL_NEXT_LINE_2);
         OutputUtils.info(stat, SYMBOL_SPACE_4 + "修改文件次数: " + svnStatDto.getFileTimes() + SYMBOL_NEXT_LINE_2);
-    }
-
-    synchronized private void setProgress(double value) {
-        try {
-            progress = value;
-            Platform.runLater(() -> {
-                schedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
-                schedule.requestFocus();
-            });
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-        }
     }
 
     @Override

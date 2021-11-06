@@ -32,16 +32,13 @@ import static com.hoomoomoo.im.consts.FunctionConfig.PROCESS_INFO;
  * @package com.hoomoomoo.im.controller
  * @date 2021/05/07
  */
-public class ProcessInfoController implements Initializable {
+public class ProcessInfoController extends BaseController implements Initializable {
 
     @FXML
     private AnchorPane processInfo;
 
     @FXML
     private Button submit;
-
-    @FXML
-    private ProgressIndicator schedule;
 
     @FXML
     private TextField filePath;
@@ -54,12 +51,6 @@ public class ProcessInfoController implements Initializable {
 
     @FXML
     private TableView<?> log;
-
-    @FXML
-    private Label scheduleText;
-
-    private double progress = 0;
-
 
     @FXML
     void executeSelect(ActionEvent event) {
@@ -94,39 +85,6 @@ public class ProcessInfoController implements Initializable {
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.toString());
-        }
-    }
-
-    private void updateProgress() {
-        new Thread(() -> {
-            while (true) {
-                if (progress >= 0.95) {
-                    break;
-                }
-                if (progress <= 0.6) {
-                    setProgress(progress + 0.05);
-                } else if (progress < 0.9) {
-                    setProgress(progress + 0.01);
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    LoggerUtils.info(e);
-                }
-            }
-        }).start();
-    }
-
-    synchronized private void setProgress(double value) {
-        try {
-            progress = value;
-            Platform.runLater(() -> {
-                schedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
-                schedule.requestFocus();
-            });
-        } catch (Exception e) {
-            LoggerUtils.info(e);
         }
     }
 

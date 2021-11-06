@@ -81,6 +81,9 @@ public class StarterController implements Initializable {
     private MenuItem menuItemGenerateCode;
 
     @FXML
+    private MenuItem menuItemCopyCode;
+
+    @FXML
     private TabPane functionTab;
 
     @FXML
@@ -165,6 +168,21 @@ public class StarterController implements Initializable {
             Tab tab = isOpen(GENERATE_CODE.getName());
             if (tab == null) {
                 tab = getFunctionTab(GENERATE_CODE.getPath(), GENERATE_CODE.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    @FXML
+    void openCopyCode(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(MSG_OPEN, COPY_CODE.getName()));
+            Tab tab = isOpen(COPY_CODE.getName());
+            if (tab == null) {
+                tab = getFunctionTab(COPY_CODE.getPath(), COPY_CODE.getName());
                 functionTab.getTabs().add(tab);
             }
             functionTab.getSelectionModel().select(tab);

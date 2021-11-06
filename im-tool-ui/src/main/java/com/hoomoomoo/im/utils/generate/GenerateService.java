@@ -19,7 +19,7 @@ public class GenerateService {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
         String fileName = CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "Service";
-        String packageName = PACKAGE_NAME_PREFIX + "impl." + generateCodeDto.getMenuList().get(0)[0];
+        String packageName = PACKAGE_JAVA_PREFIX + "impl." + generateCodeDto.getMenuList().get(0)[0];
 
         generateCodeDto.setServiceName(fileName);
         generateCodeDto.setServicePackageName(packageName + SYMBOL_POINT + fileName);
@@ -340,7 +340,7 @@ public class GenerateService {
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "获取导入数据",
                     String.format(METHOD_RETURN_PARAM_LIST, generateCodeDto.getDtoPackageName()), SYMBOL_EMPTY));
             content.append("    private List<" + generateCodeDto.getDtoNameDto() + "> getData() throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
-            content.append("        return FundCommonUtil.getImportData(\"" + generateCodeDto.getFunctionCode() + "Import.xlsx\", " + generateCodeDto.getFunctionCode() + "ExcelConfig.class, " + generateCodeDto.getDtoNameDto() + ".class);").append(SYMBOL_NEXT_LINE);
+            content.append("        return FundCommonUtil.getImportData(\"" + generateCodeDto.getFunctionCode() + "Import.xlsx\", " + CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "ExcelConfig.class, " + generateCodeDto.getDtoNameDto() + ".class);").append(SYMBOL_NEXT_LINE);
             content.append("    }").append(SYMBOL_NEXT_LINE_2);
         }
         content.append("}").append(SYMBOL_NEXT_LINE_2);
@@ -467,7 +467,14 @@ public class GenerateService {
                     content.append("                hss.setWhere(\"a." + columnUnderline + "\", " + column + ");").append(SYMBOL_NEXT_LINE);
                     content.append("            }").append(SYMBOL_NEXT_LINE);
                     content.append("        }").append(SYMBOL_NEXT_LINE);
-                } else if (KEY_INTEGER.equals(columnType) || KEY_NUMBER.equals(columnType)) {
+                } else if (KEY_COLUMN_TYPE_DATE.equals(columnType)) {
+                    content.append("        String " + column + " = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
+                    content.append("        if (!DataUtil.isNullStr(" + column + ") && " + column + ".contains(IFundConst.CNST_PUNCTUATION_COMMA)) {").append(SYMBOL_NEXT_LINE);
+                    content.append("            String[] " + column + "Split = " + column + ".split(IFundConst.CNST_PUNCTUATION_COMMA);").append(SYMBOL_NEXT_LINE);
+                    content.append("            hss.setWhere(\"a." + columnUnderline + "\", \" >= \", " + column + "Split[0]);").append(SYMBOL_NEXT_LINE);
+                    content.append("            hss.setWhere(\"a." + columnUnderline + "\", \" <= \", " + column + "Split[1]);").append(SYMBOL_NEXT_LINE);
+                    content.append("        }").append(SYMBOL_NEXT_LINE);
+                } else if (KEY_COLUMN_TYPE_INTEGER.equals(columnType) || KEY_COLUMN_TYPE_NUMBER.equals(columnType)) {
                     content.append("        String " + column + " = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
                     content.append("        if (!DataUtil.isNullStr(" + column + ")) {").append(SYMBOL_NEXT_LINE);
                     content.append("            String[] " + column + "Arr = " + column + ".split(IFundConst.CNST_PUNCTUATION_COMMA);").append(SYMBOL_NEXT_LINE);

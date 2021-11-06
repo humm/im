@@ -32,16 +32,13 @@ import static com.hoomoomoo.im.consts.FunctionConfig.FUND_INFO;
  * @package com.hoomoomoo.im.controller
  * @date 2021/05/03
  */
-public class FundInfoController implements Initializable {
+public class FundInfoController extends BaseController implements Initializable {
 
     @FXML
     private AnchorPane fundInfo;
 
     @FXML
     private Button scriptSubmit;
-
-    @FXML
-    private ProgressIndicator fundSchedule;
 
     @FXML
     private TextField filePath;
@@ -57,11 +54,6 @@ public class FundInfoController implements Initializable {
 
     @FXML
     private TableView<?> fundLog;
-
-    @FXML
-    private Label scheduleText;
-
-    private double progress = 0;
 
     Map<String, String> COMPONENT_KIND = new ConcurrentHashMap(16);
 
@@ -130,39 +122,6 @@ public class FundInfoController implements Initializable {
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(fundLog, e.toString());
-        }
-    }
-
-    private void updateProgress() {
-        new Thread(() -> {
-            while (true) {
-                if (progress >= 0.95) {
-                    break;
-                }
-                if (progress <= 0.6) {
-                    setProgress(progress + 0.05);
-                } else if (progress < 0.9) {
-                    setProgress(progress + 0.01);
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    LoggerUtils.info(e);
-                }
-            }
-        }).start();
-    }
-
-    synchronized private void setProgress(double value) {
-        try {
-            progress = value;
-            Platform.runLater(() -> {
-                fundSchedule.setProgress(progress);
-                scheduleText.setText(String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
-                fundSchedule.requestFocus();
-            });
-        } catch (Exception e) {
-            LoggerUtils.info(e);
         }
     }
 
@@ -294,7 +253,7 @@ public class FundInfoController implements Initializable {
                 }
                 bufferedWriter.write("commit;\n");
                 bufferedWriter.close();
-                fundSchedule.setProgress(1);
+                schedule.setProgress(1);
                 LoggerUtils.writeFundInfo(date, productPath);
             } catch (Exception e) {
                 LoggerUtils.info(e);

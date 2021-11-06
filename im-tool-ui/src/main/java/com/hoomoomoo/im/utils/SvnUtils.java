@@ -6,10 +6,7 @@ import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.dto.SvnStatDto;
 import org.apache.commons.lang3.StringUtils;
-import org.tmatesoft.svn.core.SVNDepth;
-import org.tmatesoft.svn.core.SVNDirEntry;
-import org.tmatesoft.svn.core.SVNLogEntryPath;
-import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
@@ -32,7 +29,7 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  */
 public class SvnUtils {
 
-    public static List<LogDto> getSvnLog(int times) throws Exception {
+    public static List<LogDto> getSvnLog(int times, int version) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         SVNRepository repository = getSVNRepository(appConfigDto);
         List<LogDto> logList = new ArrayList<>();
@@ -41,6 +38,10 @@ public class SvnUtils {
         SVNDirEntry lastSVNDirEntry = repository.info(SYMBOL_POINT, endRevision);
         // 开始版本号
         long startRevision = lastSVNDirEntry.getRevision() - Integer.valueOf(appConfigDto.getSvnMaxRevision());
+        if (version != 0) {
+            startRevision = version;
+            endRevision = version;
+        }
         repository.log(new String[]{SYMBOL_EMPTY}, startRevision, endRevision, true, true, svnLogEntry -> {
             if (StringUtils.equals(svnLogEntry.getAuthor(), appConfigDto.getSvnUsername())) {
                 LogDto svnLogDto = new LogDto();
@@ -51,6 +52,7 @@ public class SvnUtils {
                 svnLogDto.setNum(logMap.size());
                 List<String> pathList = new ArrayList<>();
                 svnLogDto.setFile(pathList);
+                svnLogDto.setMsg(getSvnMsg(svnLogEntry));
                 Iterator<String> iterator = logMap.keySet().iterator();
                 while (iterator.hasNext()) {
                     String key = iterator.next();
@@ -125,20 +127,7 @@ public class SvnUtils {
                             svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
                         }
                     }
-                    String msg = svnLogEntry.getMessage();
-                    if (StringUtils.isNotBlank(msg)) {
-                        String[] message = msg.split(SYMBOL_NEXT_LINE);
-                        for (String item : message) {
-                            if (item.startsWith(NAME_SVN_DESCRIBE)) {
-                                if (item.split(SYMBOL_BRACKETS_1_RIGHT).length <= 1) {
-                                    msg = item;
-                                } else {
-                                    msg = item.split(SYMBOL_BRACKETS_1_RIGHT)[1];
-                                }
-                                break;
-                            }
-                        }
-                    }
+                    String msg = getSvnMsg(svnLogEntry);
                     if (notice) {
                         String noticeMsg = String.format(MSG_SVN_REALTIME_STAT, userName, svnStatDto.getLastTime(), msg, svnLogEntry.getRevision());
                         svnStat.get(KEY_NOTICE).setNotice(noticeMsg);
@@ -147,6 +136,24 @@ public class SvnUtils {
             }
         });
         return svnStat;
+    }
+
+    private static String getSvnMsg(SVNLogEntry svnLogEntry) {
+        String msg = svnLogEntry.getMessage();
+        if (StringUtils.isNotBlank(msg)) {
+            String[] message = msg.split(SYMBOL_NEXT_LINE);
+            for (String item : message) {
+                if (item.startsWith(NAME_SVN_DESCRIBE)) {
+                    if (item.split(SYMBOL_BRACKETS_1_RIGHT).length <= 1) {
+                        msg = item;
+                    } else {
+                        msg = item.split(SYMBOL_BRACKETS_1_RIGHT)[1];
+                    }
+                    break;
+                }
+            }
+        }
+        return msg;
     }
 
     private static SVNRepository getSVNRepository(AppConfigDto appConfigDto) throws Exception {

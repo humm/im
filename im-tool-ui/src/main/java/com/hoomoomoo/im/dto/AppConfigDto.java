@@ -1,10 +1,12 @@
 package com.hoomoomoo.im.dto;
 
+import com.sun.imageio.plugins.common.LZWCompressor;
 import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author humm23693
@@ -94,6 +96,12 @@ public class AppConfigDto extends BaseDto {
 
     private String generateCodePageType;
 
+    private String copyCodeDefaultSource;
+
+    private String copyCodeDefaultTarget;
+
+    private Map<String, String> copyCodeVersion;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
@@ -103,8 +111,9 @@ public class AppConfigDto extends BaseDto {
         this.appLicenseShow = false;
         this.svnUpdatePath = new ArrayList<>(16);
         this.scriptUpdateTable = new ArrayList<>(16);
-        this.svnStatUser = new LinkedHashMap<>();
+        this.svnStatUser = new LinkedHashMap<>(16);
         this.svnStatReset = true;
         this.svnStatInterval = 0;
+        this.copyCodeVersion = new LinkedHashMap(16);
     }
 }

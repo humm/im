@@ -38,7 +38,7 @@ public class MainStarter extends Application {
             Scene scene = new Scene(root);
             // 中文空格显示有问题
             scene.getStylesheets().add(FileUtils.getFileUrl("/conf/style/progressIndicator.css").toExternalForm());
-            primaryStage.setTitle(appConfigDto.getAppName() + SYMBOL_SPACE_4 + FileUtils.getVersion());
+            primaryStage.setTitle(appConfigDto.getAppName());
             primaryStage.setScene(scene);
             primaryStage.setResizable(false);
             primaryStage.show();

@@ -157,10 +157,10 @@ public class GenerateAuditService {
         content.append("        doCheckFail(asynAuditDto);").append(SYMBOL_NEXT_LINE);
         content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
-        content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "查询服务", SYMBOL_EMPTY, METHOD_REQUEST_PARAM_WORK_PROCESS_DTO));
+        content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "待复核数据查询", SYMBOL_EMPTY, METHOD_REQUEST_PARAM_WORK_PROCESS_DTO));
         content.append("    @Override").append(SYMBOL_NEXT_LINE);
         content.append("    public String queryDataService(WorkProcessDTO workProcessDTO) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
-        content.append("        return FundCommonUtil.queryRecheckData(workProcessDTO, service, this, this.getClass());").append(SYMBOL_NEXT_LINE);
+        content.append("        return FundCommonUtil." + getCommonMethod(generateCodeDto, STR_1) + "(workProcessDTO, service, this, this.getClass());").append(SYMBOL_NEXT_LINE);
         content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
         content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "未审批流程撤回后业务逻辑", SYMBOL_EMPTY, METHOD_REQUEST_PARAM_WORK_PROCESS_DTO));
@@ -175,15 +175,55 @@ public class GenerateAuditService {
         content.append("        doDel(FundCommonUtil.delService(workProcessDTO, TABLE_NAME, AUDIT_TABLE_NAME));").append(SYMBOL_NEXT_LINE);
         content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
+        content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "查询日志详情接口", SYMBOL_EMPTY, METHOD_REQUEST_PARAM_WORK_PROCESS_DTO));
+        content.append("    @Override").append(SYMBOL_NEXT_LINE);
+        content.append("    public void queryLogDataService(WorkProcessDTO workProcessDTO) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
+        content.append("        FundCommonUtil." + getCommonMethod(generateCodeDto, STR_2) + "(workProcessDTO, service, this, this.getClass());").append(SYMBOL_NEXT_LINE);
+        content.append("    }").append(SYMBOL_NEXT_LINE_2);
+
         content.append("}").append(SYMBOL_NEXT_LINE_2);
         return GenerateCommon.generateJavaFile(generateCodeDto, packageName, fileName, content.toString());
     }
 
     public static void getPackageName(GenerateCodeDto generateCodeDto) {
         String fileName = CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "AuditService";
-        String packageName = PACKAGE_NAME_PREFIX + "impl." + generateCodeDto.getMenuList().get(0)[0];
+        String packageName = PACKAGE_JAVA_PREFIX + "impl." + generateCodeDto.getMenuList().get(0)[0];
 
         generateCodeDto.setAuditServiceName(fileName);
         generateCodeDto.setAuditServicePackageName(packageName + SYMBOL_POINT + fileName);
+    }
+
+    private static String getCommonMethod(GenerateCodeDto generateCodeDto, String type) {
+        String methodName = SYMBOL_EMPTY;
+        if (STR_1.equals(type)) {
+            switch (generateCodeDto.getDbType()) {
+                case DB_TYPE_TRANS:
+                    methodName = "queryRecheckDataByTrans";
+                    break;
+                case DB_TYPE_TRANS_ORDER:
+                    methodName = "queryRecheckDataByOrder";
+                    break;
+                case DB_TYPE_PUB:
+                case DB_TYPE_TRANS_QUERY:
+                default:
+                    methodName = "queryRecheckData";
+                    break;
+            }
+        } else {
+            switch (generateCodeDto.getDbType()) {
+                case DB_TYPE_TRANS:
+                    methodName = "queryLogDataByTrans";
+                    break;
+                case DB_TYPE_TRANS_ORDER:
+                    methodName = "queryLogDataByOrder";
+                    break;
+                case DB_TYPE_PUB:
+                case DB_TYPE_TRANS_QUERY:
+                default:
+                    methodName = "queryLogData";
+                    break;
+            }
+        }
+        return methodName;
     }
 }
