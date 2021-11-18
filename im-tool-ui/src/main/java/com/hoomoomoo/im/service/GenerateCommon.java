@@ -1,4 +1,4 @@
-package com.hoomoomoo.im.utils.generate;
+package com.hoomoomoo.im.service;
 
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
@@ -12,7 +12,7 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
 /**
  * @author humm23693
  * @description TODO
- * @package com.hoomoomoo.im.utils.generate
+ * @package com.hoomoomoo.im.service.generate
  * @date 2021/10/15
  */
 public class GenerateCommon {
