@@ -81,4 +81,9 @@ public class MainTest {
         LocalDateTime datetime = LocalDateTime.parse(datetimeText, formatter);
         System.out.println(datetime);
     }
+
+    @Test
+    public void test() {
+        System.out.println(new BigDecimal("-1").compareTo(BigDecimal.ZERO) >= 0);
+    }
 }
