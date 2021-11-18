@@ -53,17 +53,24 @@ public class SvnLogController extends BaseController implements Initializable {
     void showVersion(MouseEvent event) {
         Long ver = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getVersion();
         OutputUtils.info(version, String.valueOf(ver));
+        execute(false);
     }
 
     @FXML
     void executeSubmit(ActionEvent event) {
+        execute(true);
+    }
+
+    private void execute(boolean updateLog) {
         LoggerUtils.info(String.format(MSG_USE, SVN_LOG.getName()));
         try {
             if (!CommonUtils.checkConfig(fileLog, FunctionConfig.SVN_LOG.getCode())) {
                 return;
             }
             setProgress(0);
-            OutputUtils.clearLog(svnLog);
+            if (updateLog) {
+                OutputUtils.clearLog(svnLog);
+            }
             OutputUtils.clearLog(fileLog);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             appConfigDto.setSvnRecentTime(svnTimes.getText());
@@ -79,7 +86,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 ver = STR_0;
             }
             updateProgress();
-            getSvnLog(Integer.valueOf(times), Integer.valueOf(ver));
+            getSvnLog(Integer.valueOf(times), Integer.valueOf(ver), updateLog);
         } catch (NumberFormatException e) {
             LoggerUtils.info(e);
         } catch (Exception e) {
@@ -88,7 +95,7 @@ public class SvnLogController extends BaseController implements Initializable {
         }
     }
 
-    private void getSvnLog(int times, int version) {
+    private void getSvnLog(int times, int version, boolean updateLog) {
         new Thread(() -> {
             try {
                 svnSubmit.setDisable(true);
@@ -99,7 +106,9 @@ public class SvnLogController extends BaseController implements Initializable {
                 for (LogDto svnLogDto : logDtoList) {
                     svnLogDto.setGetNum(length);
                     svnLogDto.setMatch(times == length ? "匹配" : "未匹配");
-                    OutputUtils.info(svnLog, svnLogDto);
+                    if (updateLog) {
+                        OutputUtils.info(svnLog, svnLogDto);
+                    }
                     OutputUtils.info(fileLog, svnLogDto.getFile());
                     fileList.addAll(svnLogDto.getFile());
                 }

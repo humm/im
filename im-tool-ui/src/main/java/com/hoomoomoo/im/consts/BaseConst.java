@@ -62,17 +62,15 @@ public class BaseConst {
     public static final String KEY_COLUMN_TYPE_VARCHAR2 = "varchar2";
     public static final String KEY_REQUIRED = "required";
     public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP = "transCodeAndSubTransCode";
+    public static final String KEY_TA_CODE = "taCode";
     public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE = "trans_code_and_sub_trans_code";
     public static final String KEY_PRD_CODE = "prdCode";
     public static final String KEY_SELLER_CODE = "sellerCode";
     public static final String KEY_BRANCH_NO = "branchNo";
-    public static final String KEY_QUERY_FORM = "query_form";
-    public static final String KEY_ADD_FORM = "add_form";
-    public static final String KEY_EDIT_FORM = "edit_form";
-    public static final String KEY_BATCH_EDIT_FORM = "batch_edit_form";
-
-    public static final String KEY_LOCATION_SOURCES_APP = "/Sources/app";
-    public static final String KEY_LOCATION_TRUNK_SOURCES_APP = "/trunk/Sources/app";
+    public static final String KEY_SEARCH_FORM = "searchForm.";
+    public static final String KEY_ADD_FORM = "addForm.";
+    public static final String KEY_UPDATE_FORM = "updateForm.";
+    public static final String KEY_BATCH_UPDATE_FORM = "batchUpdateForm.";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 

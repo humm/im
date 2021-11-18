@@ -2,14 +2,11 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
-import com.hoomoomoo.im.utils.generate.*;
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,7 +23,6 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.COPY_CODE;
-import static com.hoomoomoo.im.consts.FunctionConfig.GENERATE_CODE;
 
 /**
  * @author humm23693
@@ -120,19 +116,30 @@ public class CopyCodeController extends BaseController implements Initializable 
                 successNum = 0;
                 String filePathConfig = filePath.getText().trim();
                 if (StringUtils.isNotBlank(filePathConfig)) {
+                    AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     List<String> fileLog = new ArrayList<>(16);
                     String[] fileList = filePathConfig.split(SYMBOL_NEXT_LINE);
                     if (fileList != null && fileList.length != 0) {
                         for (int i=0; i<fileList.length; i++) {
                             String item = fileList[i].trim();
-                            if (item.startsWith(ANNOTATION_TYPE_NORMAL)) {
+                            if (StringUtils.isBlank(item) || item.startsWith(ANNOTATION_TYPE_NORMAL)) {
                                 continue;
                             }
-                            String fileLocation = (sourcePath.getText() + SYMBOL_SLASH + item)
-                                    .replace(KEY_LOCATION_SOURCES_APP, SYMBOL_EMPTY).replace(KEY_LOCATION_TRUNK_SOURCES_APP, SYMBOL_EMPTY);
 
-                            String targetFileLocation = (targetPath.getText() + SYMBOL_SLASH + item)
-                                    .replace(KEY_LOCATION_SOURCES_APP, SYMBOL_EMPTY).replace(KEY_LOCATION_TRUNK_SOURCES_APP, SYMBOL_EMPTY);
+                            String copyCodePrefix = appConfigDto.getCopyCodePrefix();
+                            if (StringUtils.isNotBlank(copyCodePrefix)) {
+                                String[] items = copyCodePrefix.split(SYMBOL_COMMA);
+                                for (String prefix : items) {
+                                    int index = item.indexOf(prefix);
+                                    if (index != -1) {
+                                        item = item.substring(index + prefix.length());
+                                    }
+                                }
+                            }
+
+                            String fileLocation = (sourcePath.getText() + SYMBOL_SLASH + item);
+                            String targetFileLocation = (targetPath.getText() + SYMBOL_SLASH + item);
+
                             if (fileLocation.equals(targetFileLocation)) {
                                 infoMsg(getFileName(targetFileLocation) + " 同路径同名文件不复制");
                                 continue;

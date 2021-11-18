@@ -100,6 +100,8 @@ public class AppConfigDto extends BaseDto {
 
     private String copyCodeDefaultTarget;
 
+    private String copyCodePrefix;
+
     private Map<String, String> copyCodeVersion;
 
     public AppConfigDto() {

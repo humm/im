@@ -518,7 +518,7 @@ public class ProcessInfoController extends BaseController implements Initializab
     private void writeTaskRegistry(BufferedWriter bufferedWriter) throws IOException {
         bufferedWriter.write("\n-- tbscheduletaskregistry 配置 begin\n");
         String sql = "-- 删除fund的 registry\n" +
-                "delete from tbscheduletaskregistry where substr(sche_task_code, 1, 4) = 'fund' and instr(app_name, '-self-') = 0;\n" +
+                "delete from tbscheduletaskregistry where substr(sche_task_code, 1, 4) = 'fund' and instr(app_name, '-self-') = 0 and instr(app_name, '-aop-') = 0;\n" +
                 "-- 主库交易广播配置 \n" +
                 "insert into tbscheduletaskregistry (sche_task_code, app_name, app_group, app_version, \n" +
                 "       app_url, sche_app_isuse)\n" +

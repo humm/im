@@ -37,6 +37,7 @@ public class GenerateSql {
 
         content.append("insert into tsys_subtrans (trans_code, sub_trans_code, sub_trans_name, rel_serv, rel_url, ctrl_flag, login_flag, remark, ext_field_1, ext_field_2, ext_field_3)").append(SYMBOL_NEXT_LINE);
         content.append("values ('" + functionCode + "', '" + functionCode + "Query', '" + functionName + "查询', ' ', ' ', '0', '1', ' ', '1', ' ', ' ');").append(SYMBOL_NEXT_LINE);
+
         if (PAGE_TYPE_SET.equals(generateCodeDto.getPageType())) {
             content.append("insert into tsys_subtrans (trans_code, sub_trans_code, sub_trans_name, rel_serv, rel_url, ctrl_flag, login_flag, remark, ext_field_1, ext_field_2, ext_field_3)").append(SYMBOL_NEXT_LINE);
             content.append("values ('" + functionCode + "', '" + functionCode + "Add', '" + functionName + "新增', ' ', ' ', '0', '1', ' ', '1', ' ', ' ');").append(SYMBOL_NEXT_LINE);
@@ -50,8 +51,32 @@ public class GenerateSql {
             content.append("insert into tsys_subtrans (trans_code, sub_trans_code, sub_trans_name, rel_serv, rel_url, ctrl_flag, login_flag, remark, ext_field_1, ext_field_2, ext_field_3)").append(SYMBOL_NEXT_LINE);
             content.append("values ('" + functionCode + "', '" + functionCode + "Import', '" + functionName + "导入', ' ', ' ', '0', '1', ' ', '1', ' ', ' ');").append(SYMBOL_NEXT_LINE);
         }
+
         content.append("insert into tsys_subtrans (trans_code, sub_trans_code, sub_trans_name, rel_serv, rel_url, ctrl_flag, login_flag, remark, ext_field_1, ext_field_2, ext_field_3)").append(SYMBOL_NEXT_LINE);
         content.append("values ('" + functionCode + "', '" + functionCode + "Export', '" + functionName + "导出', ' ', ' ', '0', '1', ' ', '1', ' ', ' ');").append(SYMBOL_NEXT_LINE);
+
+        content.append(SYMBOL_NEXT_LINE_2);
+        content.append("-- 自建业务 -- 三级目录 - " + firstMenuName + " - " + secondMenuName + " - " + functionName).append(SYMBOL_NEXT_LINE);
+        content.append("delete from tsys_subtrans_ext where trans_code = '" + functionCode + "' and sub_trans_code = '" + functionCode + "Query';").append(SYMBOL_NEXT_LINE);
+        content.append("insert into tsys_subtrans_ext (trans_code, sub_trans_code, op_dir, remark, need_active, ta_status_ctrl, active_flag)").append(SYMBOL_NEXT_LINE);
+        content.append("values ('" + functionCode + "', '" + functionCode + "Query','4', ' ', '1', ' ', ' ');").append(SYMBOL_NEXT_LINE);
+        if (PAGE_TYPE_SET.equals(generateCodeDto.getPageType())) {
+            content.append("delete from tsys_subtrans_ext where trans_code = '" + functionCode + "' and sub_trans_code = '" + functionCode + "Add';").append(SYMBOL_NEXT_LINE);
+            content.append("insert into tsys_subtrans_ext (trans_code, sub_trans_code, op_dir, remark, need_active, ta_status_ctrl, active_flag)").append(SYMBOL_NEXT_LINE);
+            content.append("values ('" + functionCode + "', '" + functionCode + "Add','0', ' ', '1', ' ', ' ');").append(SYMBOL_NEXT_LINE);
+            content.append("delete from tsys_subtrans_ext where trans_code = '" + functionCode + "' and sub_trans_code = '" + functionCode + "Edit';").append(SYMBOL_NEXT_LINE);
+            content.append("insert into tsys_subtrans_ext (trans_code, sub_trans_code, op_dir, remark, need_active, ta_status_ctrl, active_flag)").append(SYMBOL_NEXT_LINE);
+            content.append("values ('" + functionCode + "', '" + functionCode + "Edit','1', ' ', '1', ' ', ' ');").append(SYMBOL_NEXT_LINE);
+            content.append("delete from tsys_subtrans_ext where trans_code = '" + functionCode + "' and sub_trans_code = '" + functionCode + "Delete';").append(SYMBOL_NEXT_LINE);
+            content.append("insert into tsys_subtrans_ext (trans_code, sub_trans_code, op_dir, remark, need_active, ta_status_ctrl, active_flag)").append(SYMBOL_NEXT_LINE);
+            content.append("values ('" + functionCode + "', '" + functionCode + "Delete','2', ' ', '1', ' ', ' ');").append(SYMBOL_NEXT_LINE);
+            content.append("delete from tsys_subtrans_ext where trans_code = '" + functionCode + "' and sub_trans_code = '" + functionCode + "Import';").append(SYMBOL_NEXT_LINE);
+            content.append("insert into tsys_subtrans_ext (trans_code, sub_trans_code, op_dir, remark, need_active, ta_status_ctrl, active_flag)").append(SYMBOL_NEXT_LINE);
+            content.append("values ('" + functionCode + "', '" + functionCode + "Import','6', ' ', '1', ' ', ' ');").append(SYMBOL_NEXT_LINE);
+        }
+        content.append("delete from tsys_subtrans_ext where trans_code = '" + functionCode + "' and sub_trans_code = '" + functionCode + "Export';").append(SYMBOL_NEXT_LINE);
+        content.append("insert into tsys_subtrans_ext (trans_code, sub_trans_code, op_dir, remark, need_active, ta_status_ctrl, active_flag)").append(SYMBOL_NEXT_LINE);
+        content.append("values ('" + functionCode + "', '" + functionCode + "Export','5', ' ', '1', ' ', ' ');").append(SYMBOL_NEXT_LINE);
 
         String sqlFile = GenerateCommon.generateSqlFile(generateCodeDto, menuFile, content.toString());
 

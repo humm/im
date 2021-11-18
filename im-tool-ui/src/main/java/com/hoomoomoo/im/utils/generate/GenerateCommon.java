@@ -140,6 +140,6 @@ public class GenerateCommon {
     }
 
     public static boolean skipColumn(String column) {
-        return KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP.equals(column);
+        return KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP.equals(column) || KEY_TA_CODE.equals(column);
     }
 }

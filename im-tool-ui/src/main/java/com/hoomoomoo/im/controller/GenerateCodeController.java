@@ -229,112 +229,112 @@ public class GenerateCodeController extends BaseController implements Initializa
                 "\tconstraint pk_tbfundprdpropfavourasy primary key (entry_serial_no, entry_order_no)\n" +
                 ");");
         generateCodeDto.setColumn("{\n" +
-                "\tinvest_direction: {\n" +
-                "\t\tname: '投资方向',\n" +
+                "\tinvest_direction:{\n" +
+                "\t\tname:'投资方向',\n" +
                 "\t\tdict:'F_C20010',\n" +
                 "\t\tmulti:'1'\n" +
                 "\t},\n" +
                 "\tbusin_code:{\n" +
-                "\t\tname: '业务类型',\n" +
-                "\t\tdict:'F_C30001',\n" +
+                "\t\tname:'业务类型',\n" +
+                "\t\tdict:'F_C30001'\n" +
                 "\t},\n" +
                 "\tid_type:{\n" +
-                "\t\tname: '证件号码',\n" +
+                "\t\tname:'证件号码',\n" +
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tprd_code:{\n" +
-                "\t\tname: '基金代码',\n" +
+                "\t\tname:'基金代码',\n" +
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tbranch_no:{\n" +
-                "\t\tname: '网点代码',\n" +
+                "\t\tname:'网点代码',\n" +
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tseller_code:{\n" +
-                "\t\tname: '销售商代码',\n" +
+                "\t\tname:'销售商代码',\n" +
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tamt_way:{\n" +
-                "\t\tname: '资金方式',\n" +
+                "\t\tname:'资金方式',\n" +
                 "\t\tdict:'F_C20057',\n" +
                 "\t\trequired:'1',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\ttrans_way:{\n" +
-                "\t\tname: '交易方式',\n" +
+                "\t\tname:'交易方式',\n" +
                 "\t\tdict:'F_C20043',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tori_source_flag:{\n" +
-                "\t\tname: '份额原始来源',\n" +
+                "\t\tname:'份额原始来源',\n" +
                 "\t\tdict:'F_C20004',\n" +
                 "\t\tmulti:'1'\n" +
                 "\t},\n" +
                 "\tsource_flag:{\n" +
-                "\t\tname: '份额来源',\n" +
+                "\t\tname:'份额来源',\n" +
                 "\t\tdict:'F_C20004',\n" +
                 "\t\tmulti:'1'\n" +
                 "\t},\n" +
                 "\ttarg_invest_direction:{\n" +
-                "\t\tname: '对方投资方向',\n" +
+                "\t\tname:'对方投资方向',\n" +
                 "\t\tdict:'F_C20010',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tmin_amt:{\n" +
-                "\t\tname: '金额最小',\n" +
+                "\t\tname:'金额最小',\n" +
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tmax_amt:{\n" +
-                "\t\tname: '金额最大',\n" +
+                "\t\tname:'金额最大',\n" +
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tmin_hold:{\n" +
-                "\t\tname: '存续天数最小',\n" +
+                "\t\tname:'存续天数最小',\n" +
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tmax_hold:{\n" +
-                "\t\tname: '存续天数最大',\n" +
+                "\t\tname:'存续天数最大',\n" +
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tbegin_date:{\n" +
-                "\t\tname: '优惠开始日期',\n" +
+                "\t\tname:'优惠开始日期',\n" +
                 "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
+                "\t\tmulti:'',\n" +
                 "\t\tdate:'1'\n" +
                 "\t},\n" +
                 "\tend_date:{\n" +
-                "\t\tname: '优惠截止日期',\n" +
+                "\t\tname:'优惠截止日期',\n" +
                 "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
+                "\t\tmulti:'',\n" +
                 "\t\tdate:'1'\n" +
                 "\t},\n" +
                 "\tfare_type:{\n" +
-                "\t\tname: '费用类型',\n" +
+                "\t\tname:'费用类型',\n" +
                 "\t\tdict:'F_C20015',\n" +
                 "\t\tmulti:'1'\n" +
                 "\t},\n" +
                 "\tfavor_ratio:{\n" +
-                "\t\tname: '优惠费率',\n" +
+                "\t\tname:'优惠费率',\n" +
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
                 "\t},\n" +
                 "\tfavor_type:{\n" +
-                "\t\tname: '优惠类型',\n" +
+                "\t\tname:'优惠类型',\n" +
                 "\t\tdict:'F_C20170',\n" +
                 "\t},\n" +
                 "\top_times:{\n" +
-                "\t\tname: '1年最多优惠次数',\n" +
+                "\t\tname:'1年最多优惠次数',\n" +
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
-                "\t},\n" +
+                "\t}\n" +
                 "}");
     }
 
