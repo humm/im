@@ -12,7 +12,7 @@ public class BaseConst {
 
     public static final String APP_USER_IM = "im";
 
-    public static final String USER_DEMO = "demo10000";
+    public static final String DEMO = "demo10000";
 
     public static final String STR_0 = "0";
     public static final String STR_1 = "1";
@@ -35,6 +35,7 @@ public class BaseConst {
     public static final String KEY_SCRIPT_UPDATE_TABLE = "script.update.table.";
     public static final String KEY_SVN_STAT_USER = "svn.stat.user.";
     public static final String KEY_COPY_CODE_VERSION = "copy.code.version.";
+    public static final String KEY_SVN_URL = "svn.url.";
 
     public static final String KEY_NOTICE = "notice";
     public static final String KEY_VALUES = "values";
@@ -44,14 +45,6 @@ public class BaseConst {
     public static final String KEY_FILE = "file:";
     public static final String KEY_APP_LOG = "appLog";
     public static final String KEY_DELETE = "delete";
-    public static final String KEY_COLUMN = "column";
-    public static final String KEY_COLUMN_UNDERLINE = "column_underline";
-    public static final String KEY_COLUMN_TYPE = "column_type";
-    public static final String KEY_COLUMN_NAME = "column_name";
-    public static final String KEY_COLUMN_DICT = "column_dict";
-    public static final String KEY_COLUMN_MULTI = "column_multi";
-    public static final String KEY_COLUMN_REQUIRED = "column_required";
-    public static final String KEY_COLUMN_PRECISION = "column_precision";
     public static final String KEY_DICT = "dict";
     public static final String KEY_MULTI = "multi";
     public static final String KEY_NAME = "name";

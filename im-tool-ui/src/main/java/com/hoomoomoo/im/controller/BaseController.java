@@ -26,14 +26,14 @@ public class BaseController {
 
     public double progress = 0;
 
-    public void updateProgress() {
+    public void updateProgress(double step) {
         new Thread(() -> {
             while (true) {
-                if (progress >= 0.95) {
+                if (progress >= 0.98) {
                     break;
                 }
                 if (progress <= 0.6) {
-                    setProgress(progress + 0.05);
+                    setProgress(progress + step);
                 } else if (progress < 0.98) {
                     setProgress(progress + 0.01);
                 }
@@ -44,6 +44,10 @@ public class BaseController {
                 }
             }
         }).start();
+    }
+
+    public void updateProgress() {
+        updateProgress(0.05);
     }
 
     synchronized public void setProgress(double value) {

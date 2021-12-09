@@ -8,12 +8,15 @@ import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.SecurityUtils;
+import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -111,6 +114,13 @@ public class InitConfigTest {
                 } else {
                     copyCode = true;
                     iterator.set("copy.code.version.demo10000=E:/workspace");
+                }
+            } else if (item.startsWith(KEY_SVN_URL)) {
+                if (copyCode) {
+                    iterator.remove();
+                } else {
+                    copyCode = true;
+                    iterator.set("svn.url.demo10000=https://192.168.57.56/bank/depone/BTA6.0/trunk");
                 }
             }
         }

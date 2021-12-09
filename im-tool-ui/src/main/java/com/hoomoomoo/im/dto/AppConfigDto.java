@@ -22,8 +22,6 @@ public class AppConfigDto extends BaseDto {
 
     private String appTabShow;
 
-    private String svnUrl;
-
     private String svnUsername;
 
     private String svnPassword;
@@ -104,6 +102,12 @@ public class AppConfigDto extends BaseDto {
 
     private Map<String, String> copyCodeVersion;
 
+    private Map<String, String> svnUrl;
+
+    private String svnRep;
+
+    private String svnStartPrefix;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
@@ -117,5 +121,6 @@ public class AppConfigDto extends BaseDto {
         this.svnStatReset = true;
         this.svnStatInterval = 0;
         this.copyCodeVersion = new LinkedHashMap(16);
+        this.svnUrl = new LinkedHashMap(16);
     }
 }

@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import org.apache.commons.collections.MapUtils;
@@ -26,12 +27,12 @@ public class InitTable {
         String[] tableName = table.substring(0, tableStart).split(SYMBOL_S_SLASH);
         generateCodeDto.setTableName(tableName[tableName.length - 1]);
 
-        Map<String, Map<String, String>> tableColumn = getColumn(generateCodeDto, table, true);
+        Map<String, ColumnInfoDto> tableColumn = getColumn(generateCodeDto, table, true);
         generateCodeDto.setColumnMap(tableColumn);
 
         String asyTable = generateCodeDto.getAsyTable();
         if (StringUtils.isNotEmpty(asyTable)) {
-            Map<String, Map<String, String>> asyTableColumn = getColumn(generateCodeDto, asyTable, false);
+            Map<String, ColumnInfoDto> asyTableColumn = getColumn(generateCodeDto, asyTable, false);
             generateCodeDto.setAsyColumnMap(asyTableColumn);
         }
 
@@ -50,14 +51,14 @@ public class InitTable {
                     String columnDate = item.get(KEY_COLUMN_TYPE_DATE);
                     String columnPrecision = item.get(KEY_PRECISION);
                     String columnRequired = item.get(KEY_REQUIRED);
-                    tableColumn.get(columnCode).put(KEY_COLUMN_NAME, columnName);
-                    tableColumn.get(columnCode).put(KEY_COLUMN_DICT, columnDict);
-                    tableColumn.get(columnCode).put(KEY_COLUMN_MULTI, columnMulti);
-                    tableColumn.get(columnCode).put(KEY_COLUMN_REQUIRED, columnRequired);
+                    tableColumn.get(columnCode).setColumnName(columnName);
+                    tableColumn.get(columnCode).setColumnDict(columnDict);
+                    tableColumn.get(columnCode).setColumnMulti(columnMulti);
+                    tableColumn.get(columnCode).setColumnRequired(columnRequired);
                     if (STR_1.equals(columnDate)) {
-                        tableColumn.get(columnCode).put(KEY_COLUMN_TYPE, KEY_COLUMN_TYPE_DATE);
+                        tableColumn.get(columnCode).setColumnType(KEY_COLUMN_TYPE_DATE);
                     }
-                    tableColumn.get(columnCode).put(KEY_COLUMN_PRECISION, columnPrecision);
+                    tableColumn.get(columnCode).setColumnPrecision(columnPrecision);
                 }
             }
         }
@@ -75,9 +76,9 @@ public class InitTable {
         generateCodeDto.setFunctionName(menuName[2]);
     }
 
-    private static Map<String, Map<String, String>> getColumn(GenerateCodeDto generateCodeDto, String table,
+    private static Map<String, ColumnInfoDto> getColumn(GenerateCodeDto generateCodeDto, String table,
                                                               boolean primaryKey) throws Exception {
-        Map<String, Map<String, String>> columnMap = new LinkedHashMap<>(16);
+        Map<String, ColumnInfoDto> columnMap = new LinkedHashMap<>(16);
         int tableStart = table.indexOf(SYMBOL_BRACKETS_LEFT);
         int tableEnd = table.lastIndexOf(SYMBOL_BRACKETS_RIGHT);
         String[] columnList = table.substring(tableStart + 1, tableEnd).split("not null,");
@@ -114,25 +115,25 @@ public class InitTable {
                 precision = columnType.substring(columnType.indexOf(SYMBOL_COMMA) + 1, columnType.indexOf(SYMBOL_BRACKETS_RIGHT));
             }
             String column = CommonUtils.lineToHump(columnUnderline);
-            Map columnInfo = new LinkedHashMap(16);
-            columnInfo.put(KEY_COLUMN, column);
-            columnInfo.put(KEY_COLUMN_UNDERLINE, columnUnderline);
+            ColumnInfoDto columnInfo = new ColumnInfoDto();
+            columnInfo.setColumn(column);
+            columnInfo.setColumnUnderline(columnUnderline);
             String columnTypeLast = columnType.split("\\(")[0].toLowerCase();
             if (KEY_COLUMN_TYPE_INTEGER.equals(columnTypeLast) && column.endsWith("Date")) {
                 columnTypeLast = KEY_COLUMN_TYPE_DATE;
             }
-            columnInfo.put(KEY_COLUMN_TYPE, columnTypeLast);
-            columnInfo.put(KEY_COLUMN_PRECISION, precision);
-            columnInfo.put(KEY_COLUMN_NAME, SYMBOL_EMPTY);
-            columnInfo.put(KEY_COLUMN_DICT, SYMBOL_EMPTY);
+            columnInfo.setColumnType(columnTypeLast);
+            columnInfo.setColumnPrecision(precision);
+            columnInfo.setColumnName(SYMBOL_EMPTY);
+            columnInfo.setColumnDict(SYMBOL_EMPTY);
             columnMap.put(column, columnInfo);
         }
 
-        Map transCode = new LinkedHashMap(16);
-        transCode.put(KEY_COLUMN, KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP);
-        transCode.put(KEY_COLUMN_UNDERLINE, KEY_TRANS_CODE_AND_SUB_TRANS_CODE);
-        transCode.put(KEY_COLUMN_TYPE, KEY_COLUMN_TYPE_VARCHAR2);
-        transCode.put(KEY_COLUMN_PRECISION, SYMBOL_EMPTY);
+        ColumnInfoDto transCode = new ColumnInfoDto();
+        transCode.setColumn(KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP);
+        transCode.setColumnUnderline(KEY_TRANS_CODE_AND_SUB_TRANS_CODE);
+        transCode.setColumnType(KEY_COLUMN_TYPE_VARCHAR2);
+        transCode.setColumnPrecision(SYMBOL_EMPTY);
         columnMap.put(KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP, transCode);
 
         return columnMap;

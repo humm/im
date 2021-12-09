@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.service;
 
+import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -38,24 +39,24 @@ public class GenerateExportConfig {
 
         content.append("    // 请检查各项配置数据是否正确, 特别是配置项type").append(SYMBOL_NEXT_LINE_2);
 
-        Map<String, Map<String, String>> tableColumn = generateCodeDto.getColumnMap();
+        Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
         while (iterator.hasNext()) {
             String column = iterator.next();
             if (GenerateCommon.skipColumn(column)) {
                 continue;
             }
-            Map<String, String> columnInfo = tableColumn.get(column);
-            String columnType = columnInfo.get(KEY_COLUMN_TYPE);
+            ColumnInfoDto columnInfo = tableColumn.get(column);
+            String columnType = columnInfo.getColumnType();
             if (!KEY_COLUMN_TYPE_INTEGER.equals(columnType) && !KEY_COLUMN_TYPE_NUMBER.equals(columnType) && !KEY_COLUMN_TYPE_DATE.equals(columnType)) {
                 continue;
             }
-            content.append("    @FundExcelExportField(title = \"" + columnInfo.get(KEY_COLUMN_NAME) + "\"");
+            content.append("    @FundExcelExportField(title = \"" + columnInfo.getColumnName() + "\"");
             if (KEY_COLUMN_TYPE_DATE.equals(columnType)) {
                 content.append(", type = FundExcelExportField.DATE");
             } else if (KEY_COLUMN_TYPE_NUMBER.equals(columnType)) {
                 content.append(", type = FundExcelExportField.AMOUNT");
-                String precision = columnInfo.get(KEY_COLUMN_PRECISION);
+                String precision = columnInfo.getColumnPrecision();
                 if (StringUtils.isNotEmpty(precision) && !STR_2.equals(precision)) {
                     content.append(", suffixNum= " + precision);
                 }

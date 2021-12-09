@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.service;
 
+import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +40,7 @@ public class GenerateExcelConfig {
 
         content.append("    // 请检查各项配置数据是否正确, 特别是配置项isRequired").append(SYMBOL_NEXT_LINE_2);
 
-        Map<String, Map<String, String>> tableColumn = generateCodeDto.getColumnMap();
+        Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
         Map<String, String> primaryKeyMap = generateCodeDto.getPrimaryKeyMap();
         while (iterator.hasNext()) {
@@ -47,13 +48,13 @@ public class GenerateExcelConfig {
             if (GenerateCommon.skipColumn(column)) {
                 continue;
             }
-            Map<String, String> columnInfo = tableColumn.get(column);
-            boolean required = STR_1.equals(columnInfo.get(KEY_COLUMN_REQUIRED));
-            content.append("    @FundExcelUpLoadField(title = \"" + columnInfo.get(KEY_COLUMN_NAME) + "\", colum = 1, claz = " + fileName + ".class, isRequired = " + required);
-            if (StringUtils.isNotEmpty(columnInfo.get(KEY_COLUMN_DICT))) {
-                content.append(", type = DICT, dict = \"" + columnInfo.get(KEY_COLUMN_DICT) + "\"");
+            ColumnInfoDto columnInfo = tableColumn.get(column);
+            boolean required = STR_1.equals(columnInfo.getColumnRequired());
+            content.append("    @FundExcelUpLoadField(title = \"" + columnInfo.getColumnName() + "\", colum = 1, claz = " + fileName + ".class, isRequired = " + required);
+            if (StringUtils.isNotEmpty(columnInfo.getColumnDict())) {
+                content.append(", type = DICT, dict = \"" + columnInfo.getColumnDict() + "\"");
             }
-            if (primaryKeyMap.containsKey(columnInfo.get(KEY_COLUMN_UNDERLINE))) {
+            if (primaryKeyMap.containsKey(columnInfo.getColumnUnderline())) {
                 content.append(", primaryKey = true");
             }
             if (KEY_PRD_CODE.equals(column)) {

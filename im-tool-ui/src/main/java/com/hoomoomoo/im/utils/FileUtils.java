@@ -503,6 +503,15 @@ public class FileUtils {
                 }
             }
 
+            // 获取svnUrl配置
+            if (item.startsWith(KEY_SVN_URL)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SVN_URL);
+                updateContent.addAll(updateConfig);
+                if (CollectionUtils.isNotEmpty(updateConfig)) {
+                    continue;
+                }
+            }
+
             // 更新历史配置项
             Iterator<String> iterator = oldAppConfig.keySet().iterator();
             while (iterator.hasNext()) {

@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.service;
 
+import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -118,6 +119,7 @@ public class GenerateVue {
         content.append("</template>").append(SYMBOL_NEXT_LINE);
         content.append("<script>").append(SYMBOL_NEXT_LINE);
         content.append(buildImport(generateCodeDto)).append(SYMBOL_NEXT_LINE);
+        content.append(buildExport(generateCodeDto)).append(SYMBOL_NEXT_LINE);
         content.append("</script>").append(SYMBOL_NEXT_LINE_2);
         content.append("<style scoped lang='scss'>").append(SYMBOL_NEXT_LINE);
         content.append("  .btn-hidden {").append(SYMBOL_NEXT_LINE);
@@ -129,7 +131,124 @@ public class GenerateVue {
 
     private static String buildImport(GenerateCodeDto generateCodeDto) {
         StringBuilder content = new StringBuilder();
-        
+        content.append("  import {").append(SYMBOL_NEXT_LINE);
+        content.append("    getValidator,").append(SYMBOL_NEXT_LINE);
+        content.append("    addTitleSearchCondition,").append(SYMBOL_NEXT_LINE);
+        content.append("    selectCurrentRow,").append(SYMBOL_NEXT_LINE);
+        content.append("    openDetail,").append(SYMBOL_NEXT_LINE);
+        content.append("    translateRender,").append(SYMBOL_NEXT_LINE);
+        content.append("    dateRender,").append(SYMBOL_NEXT_LINE);
+        content.append("    amountRender,").append(SYMBOL_NEXT_LINE);
+        content.append("    percentRender").append(SYMBOL_NEXT_LINE);
+        content.append("  } from '@ConsoleFundTaVue/api/bizSys/fundCommonUtil'").append(SYMBOL_NEXT_LINE);
+
+        content.append("  import uploadExcel from '@ConsoleFundTaVue/components/uploadExcel'").append(SYMBOL_NEXT_LINE);
+        content.append("  import HPanel from '@frame/components/HPanel'").append(SYMBOL_NEXT_LINE);
+        content.append("  import HDatagrid from '@frame/components/HDatagrid'").append(SYMBOL_NEXT_LINE);
+        content.append("  import {_pickFund, formatDate, formatPostDate, hasBtnAuth} from '@frame/api/bizSys/commonUtil'").append(SYMBOL_NEXT_LINE);
+        content.append("  import multTaSelect from '@frame/components/multTaSelect'").append(SYMBOL_NEXT_LINE);
+        return content.toString();
+    }
+
+    private static String buildExport(GenerateCodeDto generateCodeDto) {
+        String functionCode = generateCodeDto.getFunctionCode();
+        StringBuilder content = new StringBuilder();
+        content.append("  export default {").append(SYMBOL_NEXT_LINE);
+        content.append("    name: '" + generateCodeDto.getFunctionCode() + "',").append(SYMBOL_NEXT_LINE);
+        content.append("    components: {").append(SYMBOL_NEXT_LINE);
+        content.append("      DialogSelect,").append(SYMBOL_NEXT_LINE);
+        content.append("      uploadExcel,").append(SYMBOL_NEXT_LINE);
+        content.append("      HPanel,").append(SYMBOL_NEXT_LINE);
+        content.append("      HDatagrid,").append(SYMBOL_NEXT_LINE);
+        content.append("      multTaSelect").append(SYMBOL_NEXT_LINE);
+        content.append("    },").append(SYMBOL_NEXT_LINE);
+        content.append("    data() {").append(SYMBOL_NEXT_LINE);
+        content.append("      return {").append(SYMBOL_NEXT_LINE);
+        // todo data补充
+        content.append("      }").append(SYMBOL_NEXT_LINE);
+        content.append("    },").append(SYMBOL_NEXT_LINE);
+        content.append("    computed: {},").append(SYMBOL_NEXT_LINE);
+        content.append("    watch: {},").append(SYMBOL_NEXT_LINE);
+        content.append("    created() {").append(SYMBOL_NEXT_LINE);
+        content.append("      this.authObj.query = hasBtnAuth('" + functionCode + "$" + functionCode + "Query')").append(SYMBOL_NEXT_LINE);
+        content.append("      this.authObj.add = hasBtnAuth('" + functionCode + "$" + functionCode + "Add')").append(SYMBOL_NEXT_LINE);
+        content.append("      this.authObj.edit = hasBtnAuth('" + functionCode + "$" + functionCode + "Edit')").append(SYMBOL_NEXT_LINE);
+        content.append("      this.authObj.delete = hasBtnAuth('" + functionCode + "$" + functionCode + "Delete')").append(SYMBOL_NEXT_LINE);
+        content.append("      this.authObj.import = hasBtnAuth('" + functionCode + "$" + functionCode + "Import')").append(SYMBOL_NEXT_LINE);
+        content.append("      this.authObj.export = hasBtnAuth('" + functionCode + "$" + functionCode + "Export')").append(SYMBOL_NEXT_LINE);
+        content.append("    },").append(SYMBOL_NEXT_LINE);
+        content.append("    mounted() {").append(SYMBOL_NEXT_LINE);
+        content.append("      addTitleSearchCondition()").append(SYMBOL_NEXT_LINE);
+        content.append("      this.handleResize()").append(SYMBOL_NEXT_LINE);
+        content.append("      this.formSearch()").append(SYMBOL_NEXT_LINE);
+        content.append("      on(window, 'resize', this.handleResize)").append(SYMBOL_NEXT_LINE);
+        content.append("    },").append(SYMBOL_NEXT_LINE);
+        content.append("    activated() {").append(SYMBOL_NEXT_LINE);
+        content.append("      this.handleResize()").append(SYMBOL_NEXT_LINE);
+        content.append("      on(window, 'resize', this.handleResize)").append(SYMBOL_NEXT_LINE);
+        content.append("    },").append(SYMBOL_NEXT_LINE);
+        content.append("    deactivated() {").append(SYMBOL_NEXT_LINE);
+        content.append("      off(window, 'resize', this.handleResize)").append(SYMBOL_NEXT_LINE);
+        content.append("    },").append(SYMBOL_NEXT_LINE);
+        content.append("    beforeDestroy() {").append(SYMBOL_NEXT_LINE);
+        content.append("      off(window, 'resize', this.handleResize)").append(SYMBOL_NEXT_LINE);
+        content.append("    },").append(SYMBOL_NEXT_LINE);
+        content.append("    methods: {").append(SYMBOL_NEXT_LINE);
+        // todo 新增 修改 删除 补充
+        content.append("      // 导入").append(SYMBOL_NEXT_LINE);
+        content.append("      handleExcelImport() {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.showImport = true").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.uploadexcel.templateShow = true").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.uploadexcel.value = true").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.uploadexcel.fileName = ''").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.uploadexcel.$refs.fileinput.value = null").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 导出").append(SYMBOL_NEXT_LINE);
+        content.append("      handleExcelExport(name) {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$nextTick(() => {").append(SYMBOL_NEXT_LINE);
+        content.append("          this.$refs.datagrid.downloadZip(name)").append(SYMBOL_NEXT_LINE);
+        content.append("        })").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 查看详情").append(SYMBOL_NEXT_LINE);
+        content.append("      handleOpenDetail(row) {").append(SYMBOL_NEXT_LINE);
+        content.append("        openDetail(this, this.columns, row)").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 设置autoselect的数据来源").append(SYMBOL_NEXT_LINE);
+        content.append("      setDictList(data, key) {").append(SYMBOL_NEXT_LINE);
+        content.append("        this[`${key}List`] = data[0]").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 查询").append(SYMBOL_NEXT_LINE);
+        content.append("      formSearch(pageNo = 1) {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.queryDisabled = true").append(SYMBOL_NEXT_LINE);
+        content.append("        this.ids = []").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.datagrid.dataChange(1)").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 重置").append(SYMBOL_NEXT_LINE);
+        content.append("      formSearchReset() {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.searchForm.resetFields()").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 选中行").append(SYMBOL_NEXT_LINE);
+        content.append("      handleSelectClick(arr) {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.ids = arr").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 点击分页，恢复按钮初始状态").append(SYMBOL_NEXT_LINE);
+        content.append("      handlePageChange(pageNo, pageSize) {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.currentSelectRow = []").append(SYMBOL_NEXT_LINE);
+        content.append("        this.currentSelectList = []").append(SYMBOL_NEXT_LINE);
+        content.append("        this.currentSelectRowInx = []").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 自适应").append(SYMBOL_NEXT_LINE);
+        content.append("      handleResize() {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$nextTick(() => {").append(SYMBOL_NEXT_LINE);
+        content.append("          this.$refs.datagrid.selfAdaption()").append(SYMBOL_NEXT_LINE);
+        content.append("        })").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // TA代码联动").append(SYMBOL_NEXT_LINE);
+        content.append("      searchChange(val) {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.downloadParams.multTaCode = val").append(SYMBOL_NEXT_LINE);
+        content.append("      }").append(SYMBOL_NEXT_LINE);
+        content.append("    },").append(SYMBOL_NEXT_LINE);
+        content.append("  }").append(SYMBOL_NEXT_LINE);
         return content.toString();
     }
 
@@ -138,7 +257,7 @@ public class GenerateVue {
         StringBuilder queryForm = new StringBuilder();
         StringBuilder addForm = new StringBuilder();
         StringBuilder updateForm = new StringBuilder();
-        Map<String, Map<String, String>> columnInfo = generateCodeDto.getColumnMap();
+        Map<String, ColumnInfoDto> columnInfo = generateCodeDto.getColumnMap();
         Iterator<String> iterator = columnInfo.keySet().iterator();
 
         queryForm.append("              <h-form-item label='TA代码' prop='multTaCode' required v-if='isMultTa'>").append(SYMBOL_NEXT_LINE);
@@ -156,16 +275,13 @@ public class GenerateVue {
 
         while (iterator.hasNext()) {
             String columnCode = iterator.next();
-            Map<String, String> item = columnInfo.get(columnCode);
+            ColumnInfoDto item = columnInfo.get(columnCode);
             if (GenerateCommon.skipColumn(columnCode)) {
                 continue;
             }
-            String columnName = item.get(KEY_COLUMN_NAME);
-            String columnType = item.get(KEY_COLUMN_TYPE);
-            String columnDict = item.get(KEY_COLUMN_DICT);
-            String columnMulti = item.get(KEY_COLUMN_MULTI);
-            String columnRequired = item.get(KEY_COLUMN_REQUIRED);
-            String columnPrecision = item.get(KEY_COLUMN_PRECISION);
+            String columnName = item.getColumnName();
+            String columnType = item.getColumnType();
+            String columnDict = item.getColumnDict();
 
             queryForm.append("              <h-form-item label='" + columnName + "' prop='" + columnCode + "'>").append(SYMBOL_NEXT_LINE);
             addForm.append("        <h-form-item label='" + columnName + "' prop='" + columnCode + "'>").append(SYMBOL_NEXT_LINE);
@@ -211,7 +327,7 @@ public class GenerateVue {
         return component;
     }
 
-    private static void getPrdCodeQueryForm(StringBuilder queryForm, String columnCode, Map<String, String> item) {
+    private static void getPrdCodeQueryForm(StringBuilder queryForm, String columnCode, ColumnInfoDto item) {
         queryForm.append("                <dialog-select").append(SYMBOL_NEXT_LINE);
         queryForm.append("                  v-model='" + columnCode + "'").append(SYMBOL_NEXT_LINE);
         queryForm.append("                  multiple").append(SYMBOL_NEXT_LINE);
@@ -221,8 +337,8 @@ public class GenerateVue {
         queryForm.append("                  :alias=\"{value: 'prdCode', label: 'prdCode:prdName'}\"/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getPrdCodeAddUpdateForm(StringBuilder addForm, String columnCode, Map<String, String> item) {
-        String columnMulti = item.get(KEY_COLUMN_MULTI);
+    private static void getPrdCodeAddUpdateForm(StringBuilder addForm, String columnCode, ColumnInfoDto item) {
+        String columnMulti = item.getColumnMulti();
         addForm.append("          <dialog-select").append(SYMBOL_NEXT_LINE);
         addForm.append("            v-model='" + columnCode + "'").append(SYMBOL_NEXT_LINE);
         if (STR_1.equals(columnMulti)) {
@@ -235,7 +351,7 @@ public class GenerateVue {
         addForm.append("            :alias=\"{value: 'prdCode', label: 'prdCode:prdName'}\"/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getSellerCodeQueryForm(StringBuilder queryForm, String columnCode, Map<String, String> item) {
+    private static void getSellerCodeQueryForm(StringBuilder queryForm, String columnCode, ColumnInfoDto item) {
         queryForm.append("                <simple-auto-select").append(SYMBOL_NEXT_LINE);
         queryForm.append("                  v-model='" + columnCode + "'").append(SYMBOL_NEXT_LINE);
         queryForm.append("                  transfer").append(SYMBOL_NEXT_LINE);
@@ -246,8 +362,8 @@ public class GenerateVue {
         queryForm.append("                  :alias=\"{value: 'sellerCode', label: 'sellerCode:sellerName'}\"/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getSellerCodeAddUpdateForm(StringBuilder addForm, String columnCode, Map<String, String> item) {
-        String columnMulti = item.get(KEY_COLUMN_MULTI);
+    private static void getSellerCodeAddUpdateForm(StringBuilder addForm, String columnCode, ColumnInfoDto item) {
+        String columnMulti = item.getColumnMulti();
         addForm.append("          <simple-auto-select").append(SYMBOL_NEXT_LINE);
         addForm.append("            v-model='" + columnCode + "'").append(SYMBOL_NEXT_LINE);
         addForm.append("            transfer").append(SYMBOL_NEXT_LINE);
@@ -262,7 +378,7 @@ public class GenerateVue {
         addForm.append("            :alias=\"{value: 'sellerCode', label: 'sellerCode:sellerName'}\"/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getBranchNoQueryForm(StringBuilder queryForm, String columnCode, Map<String, String> item) {
+    private static void getBranchNoQueryForm(StringBuilder queryForm, String columnCode, ColumnInfoDto item) {
         queryForm.append("                <simple-auto-select").append(SYMBOL_NEXT_LINE);
         queryForm.append("                  v-model='" + columnCode + "'").append(SYMBOL_NEXT_LINE);
         queryForm.append("                  transfer").append(SYMBOL_NEXT_LINE);
@@ -274,8 +390,8 @@ public class GenerateVue {
         queryForm.append("                  :alias=\"{value: 'branchNo', label: 'branchNo:branchName'}\"/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getBranchNoAddUpdateForm(StringBuilder addForm, String columnCode, Map<String, String> item) {
-        String columnMulti = item.get(KEY_COLUMN_MULTI);
+    private static void getBranchNoAddUpdateForm(StringBuilder addForm, String columnCode, ColumnInfoDto item) {
+        String columnMulti = item.getColumnMulti();
         addForm.append("          <simple-auto-select").append(SYMBOL_NEXT_LINE);
         addForm.append("            v-model='" + columnCode + "'").append(SYMBOL_NEXT_LINE);
         addForm.append("            transfer").append(SYMBOL_NEXT_LINE);
@@ -291,15 +407,15 @@ public class GenerateVue {
         addForm.append("            :alias=\"{value: 'branchNo', label: 'branchNo:branchName'}\"/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getDictQueryForm(StringBuilder queryForm, String columnCode, Map<String, String> item) {
-        String columnDict = item.get(KEY_COLUMN_DICT);
+    private static void getDictQueryForm(StringBuilder queryForm, String columnCode, ColumnInfoDto item) {
+        String columnDict = item.getColumnDict();
         queryForm.append("                <auto-select transfer multiple multClearable isCheckall v-model='" + columnCode + "'").append(SYMBOL_NEXT_LINE);
         queryForm.append("                             dictName='" + columnDict + "'/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getDictAddUpdateForm(StringBuilder addForm, String columnCode, Map<String, String> item) {
-        String columnMulti = item.get(KEY_COLUMN_MULTI);
-        String columnDict = item.get(KEY_COLUMN_DICT);
+    private static void getDictAddUpdateForm(StringBuilder addForm, String columnCode, ColumnInfoDto item) {
+        String columnMulti = item.getColumnMulti();
+        String columnDict = item.getColumnDict();
         addForm.append("          <auto-select transfer");
         if (STR_1.equals(columnMulti)) {
             addForm.append(" multiple multClearable isCheckall");
@@ -307,27 +423,27 @@ public class GenerateVue {
         addForm.append(" v-model='" + columnCode + "' dictName='" + columnDict + "'/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getDateQueryForm(StringBuilder queryForm, String columnCode, Map<String, String> item) {
+    private static void getDateQueryForm(StringBuilder queryForm, String columnCode, ColumnInfoDto item) {
         queryForm.append("                <h-date-picker transfer type='daterange' v-model='" + columnCode + "' autoPlacement />").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getDateAddUpdateForm(StringBuilder addForm, String columnCode, Map<String, String> item) {
+    private static void getDateAddUpdateForm(StringBuilder addForm, String columnCode, ColumnInfoDto item) {
         addForm.append("          <h-date-picker transfer type='date' v-model='" + columnCode + "' autoPlacement />").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getNumberQueryForm(StringBuilder queryForm, String columnCode, Map<String, String> item) {
+    private static void getNumberQueryForm(StringBuilder queryForm, String columnCode, ColumnInfoDto item) {
         queryForm.append("                <scope-input v-model='" + columnCode + "' suffixNum='-1' placeholder='请输入'/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getNumberAddUpdateForm(StringBuilder addForm, String columnCode, Map<String, String> item) {
+    private static void getNumberAddUpdateForm(StringBuilder addForm, String columnCode, ColumnInfoDto item) {
         addForm.append("          <h-input v-model='" + columnCode + "'/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getTextQueryForm(StringBuilder queryForm, String columnCode, Map<String, String> item) {
+    private static void getTextQueryForm(StringBuilder queryForm, String columnCode, ColumnInfoDto item) {
         queryForm.append("                <h-input v-model='" + columnCode + "'/>").append(SYMBOL_NEXT_LINE);
     }
 
-    private static void getTextAddUpdateForm(StringBuilder addForm, String columnCode, Map<String, String> item) {
+    private static void getTextAddUpdateForm(StringBuilder addForm, String columnCode, ColumnInfoDto item) {
         addForm.append("          <h-input v-model='" + columnCode + "'/>").append(SYMBOL_NEXT_LINE);
     }
 }

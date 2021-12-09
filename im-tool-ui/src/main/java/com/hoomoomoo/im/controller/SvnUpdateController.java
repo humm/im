@@ -56,7 +56,7 @@ public class SvnUpdateController extends BaseController implements Initializable
             OutputUtils.clearLog(workspaceNum);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             OutputUtils.info(workspaceNum, String.valueOf(appConfigDto.getSvnUpdatePath().size()));
-            updateProgress();
+            updateProgress(0.01);
             getSvnUpdate();
         } catch (Exception e) {
             LoggerUtils.info(e);

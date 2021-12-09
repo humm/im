@@ -7,7 +7,6 @@ import com.hoomoomoo.im.service.*;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
-import com.hoomoomoo.im.service.generate.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

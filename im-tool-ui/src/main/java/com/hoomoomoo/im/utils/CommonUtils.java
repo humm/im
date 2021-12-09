@@ -13,6 +13,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
@@ -188,7 +189,7 @@ public class CommonUtils {
                 OutputUtils.info(log, MSG_SVN_PASSWORD + SYMBOL_NEXT_LINE);
                 flag = false;
             }
-            if (StringUtils.isBlank(appConfigDto.getSvnUrl())) {
+            if (MapUtils.isEmpty(appConfigDto.getSvnUrl())) {
                 OutputUtils.info(log, MSG_SVN_URL + SYMBOL_NEXT_LINE);
                 flag = false;
             }
@@ -224,7 +225,7 @@ public class CommonUtils {
                 OutputUtils.info(log, MSG_SVN_PASSWORD + SYMBOL_NEXT_LINE);
                 flag = false;
             }
-            if (StringUtils.isBlank(appConfigDto.getSvnUrl())) {
+            if (MapUtils.isEmpty(appConfigDto.getSvnUrl())) {
                 OutputUtils.info(log, MSG_SVN_URL + SYMBOL_NEXT_LINE);
                 flag = false;
             }

@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.service;
 
+import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 
@@ -37,7 +38,7 @@ public class GenerateDto {
         content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(SYMBOL_NEXT_LINE_2);
 
         content.append("    private static final long serialVersionUID = " + GenerateCommon.getSerialVersionUid() + ";").append(SYMBOL_NEXT_LINE);
-        Map<String, Map<String, String>> columnMap = generateCodeDto.getColumnMap();
+        Map<String, ColumnInfoDto> columnMap = generateCodeDto.getColumnMap();
         Iterator<String> iterator = columnMap.keySet().iterator();
         while (iterator.hasNext()) {
             String column = iterator.next();

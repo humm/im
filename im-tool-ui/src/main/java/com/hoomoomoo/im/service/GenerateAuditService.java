@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.service;
 
+import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -65,8 +66,8 @@ public class GenerateAuditService {
         content.append("    private String getUniqueCondition(IDataset dataset) {").append(SYMBOL_NEXT_LINE);
         content.append("        StringBuilder deleteCondition = new StringBuilder();").append(SYMBOL_NEXT_LINE);
         StringBuilder deleteCondition = new StringBuilder();
-        Map<String, Map<String, String>> tableColumn = generateCodeDto.getColumnMap();
-        Map<String, Map<String, String>> asyTableColumn = generateCodeDto.getAsyColumnMap();
+        Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
+        Map<String, ColumnInfoDto> asyTableColumn = generateCodeDto.getAsyColumnMap();
         if (StringUtils.isNotEmpty(generateCodeDto.getPrimaryKey())) {
             String[] keys = generateCodeDto.getPrimaryKey().split(SYMBOL_COMMA);
             for (int i = 0; i < keys.length; i++) {
@@ -115,7 +116,7 @@ public class GenerateAuditService {
         content.append("        }").append(SYMBOL_NEXT_LINE);
         content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
-        content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "复核不通过后处理", SYMBOL_EMPTY, METHOD_REQUEST_PARAM_WORK_PROCESS_DTO));
+        content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "复核通过后处理", SYMBOL_EMPTY, METHOD_REQUEST_PARAM_WORK_PROCESS_DTO));
         content.append("    @Override").append(SYMBOL_NEXT_LINE);
         content.append("    public void afterFhService(WorkProcessDTO workProcessDTO) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
         content.append("    }").append(SYMBOL_NEXT_LINE);

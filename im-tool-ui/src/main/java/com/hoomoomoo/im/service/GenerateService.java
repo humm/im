@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.service;
 
+import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -179,7 +180,7 @@ public class GenerateService {
             content.append("                // 工作流交易码").append(SYMBOL_NEXT_LINE);
             content.append("                editDto.setTransCodeAndSubTransCode(" + generateCodeDto.getAuditServiceName() + ".SUB_TRANSCODE_EDIT);").append(SYMBOL_NEXT_LINE);
             content.append("                // 调用公共方法操作数据库").append(SYMBOL_NEXT_LINE);
-            content.append("                 returnDataset = addAsyRecord(session, editDto, entrySerialNo, i + 1, BizAuditExtendEntity.OPERATOR_MODE_UPDATE, i == dtoListTmp.size() - 1);").append(SYMBOL_NEXT_LINE);
+            content.append("                returnDataset = addAsyRecord(session, editDto, entrySerialNo, i + 1, BizAuditExtendEntity.OPERATOR_MODE_UPDATE, i == dtoListTmp.size() - 1);").append(SYMBOL_NEXT_LINE);
             content.append("            }").append(SYMBOL_NEXT_LINE);
             content.append("            session.endTransaction();").append(SYMBOL_NEXT_LINE);
             content.append("        } catch (SQLException e) {").append(SYMBOL_NEXT_LINE);
@@ -298,8 +299,8 @@ public class GenerateService {
             content.append("    private void checkHasAddAsy(" + generateCodeDto.getDtoNameDto() + " dto) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
             content.append(GenerateCommon.getDBSession(generateCodeDto)).append(SYMBOL_NEXT_LINE);
             content.append("        try {").append(SYMBOL_NEXT_LINE);
-            content.append("                        String sql = \"select count(1) cnt from \" + FundPropFavourSetAuditService.AUDIT_TABLE_NAME + \" a where \" + getUniqueCondition(dto) +").append(SYMBOL_NEXT_LINE);
-            content.append("                                \"and (serial_status = ? or serial_status = ? or serial_status = ?)\";").append(SYMBOL_NEXT_LINE);
+            content.append("            String sql = \"select count(1) cnt from \" + FundPropFavourSetAuditService.AUDIT_TABLE_NAME + \" a where \" + getUniqueCondition(dto) +").append(SYMBOL_NEXT_LINE);
+            content.append("                    \"and (serial_status = ? or serial_status = ? or serial_status = ?)\";").append(SYMBOL_NEXT_LINE);
             content.append("            if (session.account(sql, BizAuditExtendEntity.STATUS_UNCHECK, BizAuditExtendEntity.STATUS_RETURN, BizAuditExtendEntity.STATUS_SAVE) > 0) {").append(SYMBOL_NEXT_LINE);
             content.append("                throw new BizBussinessException(\"存在未复核流水\");").append(SYMBOL_NEXT_LINE);
             content.append("            }").append(SYMBOL_NEXT_LINE);
@@ -317,15 +318,15 @@ public class GenerateService {
             content.append("                                  int entryOrderNo, String operatorMode, boolean flag) throws BizBussinessException, SQLException {").append(SYMBOL_NEXT_LINE);
             content.append("        UserInfo userInfo = UserInfoSessionUtil.getCurrUserInfo();").append(SYMBOL_NEXT_LINE);
             content.append("        HsSqlString hss = new HsSqlString(" + generateCodeDto.getAuditServiceName() + ".AUDIT_TABLE_NAME, HsSqlString.TypeInsert);").append(SYMBOL_NEXT_LINE);
-            Map<String, Map<String, String>> columnMap = generateCodeDto.getColumnMap();
+            Map<String, ColumnInfoDto> columnMap = generateCodeDto.getColumnMap();
             Iterator<String> iterator = columnMap.keySet().iterator();
             while (iterator.hasNext()) {
                 String column = iterator.next();
                 if (GenerateCommon.skipColumn(column)) {
                     continue;
                 }
-                Map<String, String> columnInfo = columnMap.get(column);
-                content.append("        hss.set(\"" + columnInfo.get(KEY_COLUMN_UNDERLINE) + "\", dto.get" + CommonUtils.initialUpper(column) + "());").append(SYMBOL_NEXT_LINE);
+                ColumnInfoDto columnInfo = columnMap.get(column);
+                content.append("        hss.set(\"" + columnInfo.getColumnUnderline() + "\", " + getAsyRecordColumnValue(columnInfo) + ");").append(SYMBOL_NEXT_LINE);
             }
             content.append("        ApplyConsoleAdapter.setOperationInfo(hss, entrySerialNo, entryOrderNo, BizAuditExtendEntity.STATUS_UNCHECK, operatorMode);").append(SYMBOL_NEXT_LINE);
             content.append("        session.executeByList(hss.getSqlString(), hss.getParamList());").append(SYMBOL_NEXT_LINE);
@@ -337,8 +338,7 @@ public class GenerateService {
             content.append("        return DatasetService.getDefaultInstance().getDataset();").append(SYMBOL_NEXT_LINE);
             content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
-            content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "获取导入数据",
-                    String.format(METHOD_RETURN_PARAM_LIST, generateCodeDto.getDtoPackageName()), SYMBOL_EMPTY));
+            content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "获取导入数据", String.format(METHOD_RETURN_PARAM_LIST, generateCodeDto.getDtoPackageName()), SYMBOL_EMPTY));
             content.append("    private List<" + generateCodeDto.getDtoNameDto() + "> getData() throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
             content.append("        return FundCommonUtil.getImportData(\"" + generateCodeDto.getFunctionCode() + "Import.xlsx\", " + CommonUtils.initialUpper(generateCodeDto.getFunctionCode()) + "ExcelConfig.class, " + generateCodeDto.getDtoNameDto() + ".class);").append(SYMBOL_NEXT_LINE);
             content.append("    }").append(SYMBOL_NEXT_LINE_2);
@@ -347,9 +347,21 @@ public class GenerateService {
         return GenerateCommon.generateJavaFile(generateCodeDto, packageName, fileName, content.toString());
     }
 
+    private static String getAsyRecordColumnValue(ColumnInfoDto columnInfo) {
+        String column = columnInfo.getColumn();
+        String value = "dto.get" + CommonUtils.initialUpper(column) + "()";
+        String columnType = columnInfo.getColumnType();
+        if (KEY_COLUMN_TYPE_DATE.equals(columnType) || KEY_COLUMN_TYPE_INTEGER.equals(columnType) ) {
+            value = "StringUtils.isEmpty(" + value + ") ? 0 : Integer.valueOf(" + value + ")";
+        } else if (KEY_COLUMN_TYPE_NUMBER.equals(columnType)) {
+            value = "StringUtils.isEmpty(" + value + ") ? 0 : Double.valueOf(" + value + ")";
+        }
+        return value;
+    }
+
     private static String initTranslate(GenerateCodeDto generateCodeDto, String type) {
         StringBuilder content = new StringBuilder();
-        Map<String, Map<String, String>> tableColumn = generateCodeDto.getColumnMap();
+        Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
         if (tableColumn.containsKey(KEY_PRD_CODE)) {
             if (STR_0.equals(type)) {
                 content.append("import com.hundsun.lcpt.ta.pub.fund.domain.bean.FundProduct;").append(SYMBOL_NEXT_LINE);
@@ -403,15 +415,15 @@ public class GenerateService {
 
     private static String initQueryColumn(GenerateCodeDto generateCodeDto) {
         StringBuilder content = new StringBuilder("               ");
-        Map<String, Map<String, String>> tableColumn = generateCodeDto.getColumnMap();
+        Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
         while (iterator.hasNext()) {
             String column = iterator.next();
-            Map<String, String> columnInfo = tableColumn.get(column);
+            ColumnInfoDto columnInfo = tableColumn.get(column);
             if (GenerateCommon.skipColumn(column)) {
                 continue;
             }
-            content.append("\"a." + columnInfo.get(KEY_COLUMN_UNDERLINE) + ",\"\n                + ");
+            content.append("\"a." + columnInfo.getColumnUnderline() + ",\"\n                + ");
         }
         String queryColumn = content.toString();
         int indexEnd = queryColumn.lastIndexOf(",");
@@ -420,11 +432,11 @@ public class GenerateService {
 
     private static String initCondition(GenerateCodeDto generateCodeDto) {
         StringBuilder content = new StringBuilder();
-        Map<String, Map<String, String>> tableColumn = generateCodeDto.getColumnMap();
+        Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
         while (iterator.hasNext()) {
             String column = iterator.next();
-            Map<String, String> columnInfo = tableColumn.get(column);
+            ColumnInfoDto columnInfo = tableColumn.get(column);
             if (GenerateCommon.skipColumn(column)) {
                 continue;
             }
@@ -456,9 +468,9 @@ public class GenerateService {
                 content.append("            }").append(SYMBOL_NEXT_LINE);
                 content.append("        }").append(SYMBOL_NEXT_LINE);
             } else {
-                String columnType = columnInfo.get(KEY_COLUMN_TYPE);
-                String columnUnderline = columnInfo.get(KEY_COLUMN_UNDERLINE);
-                if (StringUtils.isNotEmpty(columnInfo.get(KEY_COLUMN_DICT))) {
+                String columnType = columnInfo.getColumnType();
+                String columnUnderline = columnInfo.getColumnUnderline();
+                if (StringUtils.isNotEmpty(columnInfo.getColumnDict())) {
                     content.append("        String " + column + " = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
                     content.append("        if (!DataUtil.isNullStr(" + column + ")) {").append(SYMBOL_NEXT_LINE);
                     content.append("            if (" + column + ".contains(IFundConst.CNST_PUNCTUATION_COMMA)) {").append(SYMBOL_NEXT_LINE);

@@ -5,6 +5,7 @@ import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.CommonUtils;
+import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.application.Platform;
@@ -16,6 +17,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -171,7 +173,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 Workbook workbook = Workbook.getWorkbook(new File(filePath.getText()));
 
                 // 生成基金配置数据
-                String fileName = "15fund-product-field.sql";
+                String fileName = "15fund-product-field-oracle.sql";
                 String productPath = appConfigDto.getFundGeneratePath() + "/" + fileName;
                 File productFile = new File(productPath);
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(productFile), ENCODING_UTF8));
@@ -253,8 +255,31 @@ public class FundInfoController extends BaseController implements Initializable 
                 }
                 bufferedWriter.write("commit;\n");
                 bufferedWriter.close();
+
+                List<String> content = FileUtils.readNormalFile(productPath, false);
+
+                infoMsg("mysql版本生成 开始");
+                String fileNameMysql = "15fund-product-field-mysql.sql";
+                String productPathMysql = appConfigDto.getFundGeneratePath() + "/" + fileNameMysql;
+                FileUtils.writeFile(productPathMysql, content, false);
+                infoMsg("mysql版本生成 结束");
+
+                infoMsg("pg版本生成 开始");
+                String fileNamePg = "15fund-product-field-pg.sql";
+                String productPathPg = appConfigDto.getFundGeneratePath() + "/" + fileNamePg;
+                if (CollectionUtils.isNotEmpty(content)) {
+                    for (int j=0; j<content.size(); j++) {
+                        String item = content.get(j);
+                        item = item.replace("delete from tbpageelement where id like", "delete from tbpageelement where cast(id as varchar) like");
+                        item = item.replace("delete from tbelementgroup where id like", "delete from tbelementgroup where cast(id as varchar) like");
+                        content.set(j, item);
+                    }
+                }
+                FileUtils.writeFile(productPathPg, content, false);
+                infoMsg("pg版本生成 结束");
                 schedule.setProgress(1);
                 LoggerUtils.writeFundInfo(date, productPath);
+                LoggerUtils.writeFundInfo(date, productPathMysql);
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 infoMsg(e.toString());
@@ -347,7 +372,7 @@ public class FundInfoController extends BaseController implements Initializable 
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " 开始 \n");
         if (STR_1.equals(SCRIPT_TYPE)) {
-            bufferedWriter.write("delete from tbdataelement;\n");
+            bufferedWriter.write("delete from tbdataelement where table_name = 'tbfundproduct';\n");
         }
         for (int i = 1; i < rows; i++) {
             if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {

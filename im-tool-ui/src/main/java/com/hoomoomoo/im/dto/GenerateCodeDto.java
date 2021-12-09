@@ -25,8 +25,8 @@ public class GenerateCodeDto {
     private String author;
     private String table;
     private String asyTable;
-    private Map<String, Map<String, String>> columnMap;
-    private Map<String, Map<String, String>> asyColumnMap;
+    private Map<String, ColumnInfoDto> columnMap;
+    private Map<String, ColumnInfoDto> asyColumnMap;
     private Map<String, String> primaryKeyMap;
     private List<String[]> menuList;
     private String dtoPackageName;

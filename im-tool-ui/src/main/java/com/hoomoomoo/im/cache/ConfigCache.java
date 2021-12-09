@@ -108,7 +108,7 @@ public class ConfigCache {
                     String code = item.substring(KEY_SVN_STAT_USER.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
-                        if (!USER_DEMO.equals(code.toLowerCase())) {
+                        if (!DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getSvnStatUser().put(code.toLowerCase(), name);
                         }
                     }
@@ -120,11 +120,24 @@ public class ConfigCache {
                     String code = item.substring(KEY_COPY_CODE_VERSION.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
-                        if (!USER_DEMO.equals(code.toLowerCase())) {
+                        if (!DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getCopyCodeVersion().put(code.toLowerCase(), name);
                         }
                     }
                 }
+
+                // svnUrl配置
+                if (item.startsWith(KEY_SVN_URL)) {
+                    int index = item.indexOf(SYMBOL_EQUALS);
+                    String code = item.substring(KEY_SVN_URL.length(), index);
+                    String name = item.substring(index + 1);
+                    if (StringUtils.isNotBlank(name)) {
+                        if (!DEMO.equalsIgnoreCase(code)) {
+                            appConfigDto.getSvnUrl().put(code.toLowerCase(), name);
+                        }
+                    }
+                }
+
             }
         }
 
