@@ -85,6 +85,7 @@ public class InitConfigTest {
         boolean scriptUpdateTable = false;
         boolean svnStatUser = false;
         boolean copyCode = false;
+        boolean svnUrl = false;
         while (iterator.hasNext()) {
             String item = iterator.next();
             if (item.startsWith(KEY_SVN_UPDATE)) {
@@ -116,10 +117,10 @@ public class InitConfigTest {
                     iterator.set("copy.code.version.demo10000=E:/workspace");
                 }
             } else if (item.startsWith(KEY_SVN_URL)) {
-                if (copyCode) {
+                if (svnUrl) {
                     iterator.remove();
                 } else {
-                    copyCode = true;
+                    svnUrl = true;
                     iterator.set("svn.url.demo10000=https://192.168.57.56/bank/depone/BTA6.0/trunk");
                 }
             }
