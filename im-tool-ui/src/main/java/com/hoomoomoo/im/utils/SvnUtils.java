@@ -5,6 +5,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.dto.SvnStatDto;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
@@ -19,6 +20,7 @@ import java.io.File;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static org.apache.commons.beanutils.BeanUtils.copyProperties;
 
 
 /**
@@ -74,6 +76,8 @@ public class SvnUtils {
 
     public static LinkedHashMap<String, SvnStatDto> getSvnLog(Date start, Date end, LinkedHashMap<String, SvnStatDto> svnStat, boolean notice) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto item = new AppConfigDto();
+        copyProperties(item, appConfigDto);
         if (svnStat.isEmpty()) {
             // 构建数据
             LinkedHashMap<String, String> userList = appConfigDto.getSvnStatUser();
@@ -99,42 +103,48 @@ public class SvnUtils {
                 svnStat.put(KEY_NOTICE, svnStatDto);
             }
         }
-        SVNRepository repository = getSVNRepository(appConfigDto);
-        long startRevision = repository.getDatedRevision(start);
-        long endRevision = repository.getDatedRevision(end);
-        repository.log(new String[]{""}, startRevision, endRevision, true, true, svnLogEntry -> {
-            String userName = appConfigDto.getSvnStatUser().get(svnLogEntry.getAuthor());
-            if (StringUtils.isNotBlank(userName)) {
-                SvnStatDto svnStatDto = svnStat.get(svnLogEntry.getAuthor());
-                if (svnStatDto != null && svnStatDto.getSvnNum().get(svnLogEntry.getRevision()) == null) {
-                    svnStatDto.getSvnNum().put(svnLogEntry.getRevision(), svnLogEntry.getRevision());
-                    if (StringUtils.isBlank(svnStatDto.getFirstTime())) {
-                        svnStatDto.setFirstTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
-                    }
-                    svnStatDto.setLastTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
-                    svnStatDto.setSubmitTimes(svnStatDto.getSubmitTimes() + 1);
-                    Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
-                    Iterator<String> iterator = logMap.keySet().iterator();
-                    while (iterator.hasNext()) {
-                        String key = iterator.next();
-                        SVNLogEntryPath value = logMap.get(key);
-                        String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), SYMBOL_EMPTY);
-                        if (svnStatDto.getFile().get(path) == null) {
-                            svnStatDto.getFile().put(path, 1);
-                            svnStatDto.setFileNum(svnStatDto.getFileNum() + 1);
-                            svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
-                        } else {
-                            svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
+        Map<String, String> svnRep = appConfigDto.getSvnUrl();
+        Iterator<String> svnIterator = svnRep.keySet().iterator();
+        while (svnIterator.hasNext()) {
+            String rep = svnIterator.next();
+            item.setSvnRep(rep);
+            SVNRepository repository = getSVNRepository(item);
+            long startRevision = repository.getDatedRevision(start);
+            long endRevision = repository.getDatedRevision(end);
+            repository.log(new String[]{""}, startRevision, endRevision, true, true, svnLogEntry -> {
+                String userName = appConfigDto.getSvnStatUser().get(svnLogEntry.getAuthor());
+                if (StringUtils.isNotBlank(userName)) {
+                    SvnStatDto svnStatDto = svnStat.get(svnLogEntry.getAuthor());
+                    if (svnStatDto != null && svnStatDto.getSvnNum().get(svnLogEntry.getRevision()) == null) {
+                        svnStatDto.getSvnNum().put(svnLogEntry.getRevision(), svnLogEntry.getRevision());
+                        if (StringUtils.isBlank(svnStatDto.getFirstTime())) {
+                            svnStatDto.setFirstTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
+                        }
+                        svnStatDto.setLastTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
+                        svnStatDto.setSubmitTimes(svnStatDto.getSubmitTimes() + 1);
+                        Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
+                        Iterator<String> iterator = logMap.keySet().iterator();
+                        while (iterator.hasNext()) {
+                            String key = iterator.next();
+                            SVNLogEntryPath value = logMap.get(key);
+                            String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), SYMBOL_EMPTY);
+                            if (svnStatDto.getFile().get(path) == null) {
+                                svnStatDto.getFile().put(path, 1);
+                                svnStatDto.setFileNum(svnStatDto.getFileNum() + 1);
+                                svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
+                            } else {
+                                svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
+                            }
+                        }
+                        String msg = getSvnMsg(svnLogEntry);
+                        if (notice) {
+                            String noticeMsg = String.format(MSG_SVN_REALTIME_STAT, userName, svnStatDto.getLastTime(), msg, svnLogEntry.getRevision());
+                            svnStat.get(KEY_NOTICE).setNotice(noticeMsg);
                         }
                     }
-                    String msg = getSvnMsg(svnLogEntry);
-                    if (notice) {
-                        String noticeMsg = String.format(MSG_SVN_REALTIME_STAT, userName, svnStatDto.getLastTime(), msg, svnLogEntry.getRevision());
-                        svnStat.get(KEY_NOTICE).setNotice(noticeMsg);
-                    }
                 }
-            }
-        });
+            });
+        }
         return svnStat;
     }
 

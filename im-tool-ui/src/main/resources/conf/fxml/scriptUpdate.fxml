@@ -47,7 +47,15 @@
 
                                                 <Button fx:id="submit" layoutX="677.0" layoutY="14.0"
                                                         mnemonicParsing="false" onAction="#executeSubmit"
-                                                        prefHeight="35.0" prefWidth="120.0" text="执行">
+                                                        prefHeight="35.0" prefWidth="100.0" text="执行">
+                                                    <padding>
+                                                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
+                                                    </padding>
+                                                </Button>
+
+                                                <Button fx:id="copy" layoutX="800.0" layoutY="14.0"
+                                                        mnemonicParsing="false" onAction="#executeCopy"
+                                                        prefHeight="35.0" prefWidth="100.0" text="复制内容">
                                                     <padding>
                                                         <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
                                                     </padding>

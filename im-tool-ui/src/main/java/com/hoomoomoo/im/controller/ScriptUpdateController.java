@@ -12,11 +12,17 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.SCRIPT_UPDATE;
@@ -36,6 +42,9 @@ public class ScriptUpdateController extends BaseController implements Initializa
     private Button submit;
 
     @FXML
+    private Button copy;
+
+    @FXML
     private TextArea target;
 
     @FXML
@@ -46,6 +55,12 @@ public class ScriptUpdateController extends BaseController implements Initializa
 
     @FXML
     private TextField param;
+
+    @FXML
+    void executeCopy(ActionEvent event) {
+        schedule.requestFocus();
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(target.getText()), null);
+    }
 
     @FXML
     void executeSubmit(ActionEvent event) {

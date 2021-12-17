@@ -11,13 +11,20 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.SVN_LOG;
@@ -43,6 +50,9 @@ public class SvnLogController extends BaseController implements Initializable {
     private Button svnSubmit;
 
     @FXML
+    private Button copy;
+
+    @FXML
     private TableView<?> svnLog;
 
     @FXML
@@ -63,6 +73,12 @@ public class SvnLogController extends BaseController implements Initializable {
         execute(true);
     }
 
+    @FXML
+    void executeCopy(ActionEvent event) {
+        schedule.requestFocus();
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(fileLog.getText()), null);
+    }
+
     private void execute(boolean updateLog) {
         LoggerUtils.info(String.format(MSG_USE, SVN_LOG.getName()));
         try {
@@ -76,9 +92,7 @@ public class SvnLogController extends BaseController implements Initializable {
             OutputUtils.clearLog(fileLog);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             appConfigDto.setSvnRecentTime(svnTimes.getText());
-            if (StringUtils.isEmpty(appConfigDto.getSvnRep())) {
-                appConfigDto.setSvnRep((String)svnRep.getSelectionModel().getSelectedItem());
-            }
+            appConfigDto.setSvnRep((String)svnRep.getSelectionModel().getSelectedItem());
             String times = svnTimes.getText().trim();
             String ver = version.getText().trim();
             if (StringUtils.isBlank(times) && StringUtils.isBlank(ver)) {
