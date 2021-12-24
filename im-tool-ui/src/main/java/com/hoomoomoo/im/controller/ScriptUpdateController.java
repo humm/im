@@ -137,25 +137,21 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 String sourceScript = source.getText();
                 if (StringUtils.isNotBlank(sourceScript)) {
                     Map<String, String> deleteSqlMap = new LinkedHashMap<>(16);
-                    String[] items = sourceScript.split(SYMBOL_SEMICOLON);
-                    String[] itemsAfter = sourceScript.replace(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).split(SYMBOL_SEMICOLON);
+                    String[] source = sourceScript.split(SYMBOL_NEXT_LINE);
+                    StringBuilder itemsTemp = new StringBuilder();
+                    for (int k=0; k<source.length; k++) {
+                        String item = source[k];
+                        if (StringUtils.isEmpty(item) || item.startsWith(ANNOTATION_TYPE_NORMAL) || item.toLowerCase().startsWith(KEY_DELETE)) {
+                            continue;
+                        }
+                        itemsTemp.append(item.trim() + SYMBOL_NEXT_LINE);
+                    }
+                    int indexLast = itemsTemp.toString().lastIndexOf(SYMBOL_NEXT_LINE);
+                    List<String> items = Arrays.asList(itemsTemp.toString().substring(0, indexLast).split(SYMBOL_SEMICOLON));
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                    for (int j = 0; j < itemsAfter.length; j++) {
-                        String item = itemsAfter[j].trim();
-                        if (StringUtils.isEmpty(item)) {
-                            continue;
-                        }
-                        if (item.toLowerCase().startsWith(KEY_DELETE)) {
-                            continue;
-                        }
-                        // 注释处理
-                        if (item.startsWith(ANNOTATION_TYPE_NORMAL)) {
-                            if (appConfigDto.getScriptUpdateAnnotationSkip()) {
-                                item = item.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY).trim();
-                            } else {
-                                continue;
-                            }
-                        }
+                    for (int j = 0; j < items.size(); j++) {
+                        String item = items.get(j).replace(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).trim();
+
                         // 获取sql字段和值
                         String[] sql = item.split(KEY_VALUES);
                         if (sql.length != 2) {
@@ -209,7 +205,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                                         }
                                     }
                                     deleteSql.append(SYMBOL_SEMICOLON);
-                                    String sqlKey = items[j].trim();
+                                    String sqlKey = items.get(j).trim();
                                     if (StringUtils.isEmpty(deleteSqlMap.get(sqlKey))) {
                                         deleteSqlMap.put(sqlKey, deleteSql.toString());
                                     } else {
@@ -225,17 +221,11 @@ public class ScriptUpdateController extends BaseController implements Initializa
                         String paramControl = param.getText().trim();
                         String paramSql = "\n from (select count(1) param_exists from tbparam where param_id = '" + paramControl + "') a where param_exists = 1";
                         // 组装sql语句
-                        for (int i = 0; i < items.length; i++) {
-                            String sqlKey = items[i].trim();
-                            String sql = items[i].replaceAll(" values", "values").replaceAll(" insert", "insert").trim();
+                        for (int i = 0; i < items.size(); i++) {
+                            String sqlKey = items.get(i);
+                            String sql = items.get(i).replaceAll(" values", "values").replaceAll(" insert", "insert").trim();
                             if (sql.equals(SYMBOL_EMPTY)) {
                                 continue;
-                            }
-                            // 注释处理
-                            if (sql.startsWith(ANNOTATION_TYPE_NORMAL)) {
-                                if (appConfigDto.getScriptUpdateAnnotationSkip()) {
-                                    sql = sql.replace(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY);
-                                }
                             }
                             if (sql.toLowerCase().startsWith(KEY_DELETE)) {
                                 continue;

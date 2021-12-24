@@ -139,12 +139,11 @@ public class InitConfigTest {
     @Test
     public void config_02_updateConfig() throws Exception {
         Map<String, String> keys = new LinkedHashMap<>();
-        keys.put("show.tab", null);
+        keys.put("app.tab.show", "10");
 
         keys.put("svn.username", null);
         keys.put("svn.password", null);
 
-        keys.put("svn.url", null);
         keys.put("svn.default.append.path", null);
 
         keys.put("fund.excel.path", null);
@@ -163,8 +162,6 @@ public class InitConfigTest {
         keys.put("generate.code.vue.path", null);
         keys.put("generate.code.route.path", null);
         keys.put("generate.code.author", null);
-
-        keys.put("app.tab.show", "10");
 
         keys.put("copy.code.default.source", null);
         keys.put("copy.code.default.target", null);
