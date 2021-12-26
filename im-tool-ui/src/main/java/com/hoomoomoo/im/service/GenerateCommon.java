@@ -81,7 +81,7 @@ public class GenerateCommon {
 
     public static String generateJavaFile(GenerateCodeDto generateCodeDto, String packageName, String fileName,
                                           String content) throws IOException {
-        String pathName = generateCodeDto.getJavaPath() + SYMBOL_SLASH + packageName.replace(SYMBOL_POINT, SYMBOL_SLASH) + SYMBOL_SLASH + fileName + FILE_TYPE_JAVA;
+        String pathName = generateCodeDto.getJavaPath() + PATH_JAVA_PREFIX + packageName.replace(SYMBOL_POINT, SYMBOL_SLASH) + SYMBOL_SLASH + fileName + FILE_TYPE_JAVA;
         FileUtils.writeFile(pathName, content, ENCODING_UTF8, false);
         return pathName;
     }
@@ -131,10 +131,15 @@ public class GenerateCommon {
     }
 
     public static String getSerialVersionUid() {
-        StringBuilder serialVersionUid = new StringBuilder("-");
+        StringBuilder serialVersionUid = new StringBuilder();
         for (int i = 0; i < 19; i++) {
             int num = (int) (Math.random() * 10);
-            serialVersionUid.append(num > 9 ? 9 : num);
+            if (num > 9) {
+                num = 9;
+            } else if (num == 0) {
+                num = 1;
+            }
+            serialVersionUid.append(num);
         }
         return serialVersionUid.append("L").toString().replace("-9999999999999999999L", "-8999999999999999999L");
     }

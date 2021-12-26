@@ -20,6 +20,7 @@ public class BaseConst {
     public static final String STR_3 = "3";
     public static final String STR_4 = "4";
     public static final String STR_5 = "5";
+    public static final String STR_999999999 = "999999999";
 
     public final static String ENCODING_UTF8 = "UTF-8";
     public final static String ENCODING_GBK = "GBK";
@@ -45,15 +46,6 @@ public class BaseConst {
     public static final String KEY_FILE = "file:";
     public static final String KEY_APP_LOG = "appLog";
     public static final String KEY_DELETE = "delete";
-    public static final String KEY_DICT = "dict";
-    public static final String KEY_MULTI = "multi";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_PRECISION = "precision";
-    public static final String KEY_COLUMN_TYPE_DATE = "date";
-    public static final String KEY_COLUMN_TYPE_INTEGER = "integer";
-    public static final String KEY_COLUMN_TYPE_NUMBER = "number";
-    public static final String KEY_COLUMN_TYPE_VARCHAR2 = "varchar2";
-    public static final String KEY_REQUIRED = "required";
     public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP = "transCodeAndSubTransCode";
     public static final String KEY_TA_CODE = "taCode";
     public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE = "trans_code_and_sub_trans_code";
@@ -64,6 +56,17 @@ public class BaseConst {
     public static final String KEY_ADD_FORM = "addForm.";
     public static final String KEY_UPDATE_FORM = "updateForm.";
     public static final String KEY_BATCH_UPDATE_FORM = "batchUpdateForm.";
+
+    public static final String KEY_DICT = "dict";
+    public static final String KEY_MULTI = "multi";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_REQUIRED = "required";
+    public static final String KEY_COLUMN_TYPE_DATE = "date";
+    public static final String KEY_PRECISION = "precision";
+    public static final String KEY_ORDER = "order";
+    public static final String KEY_COLUMN_TYPE_INTEGER = "integer";
+    public static final String KEY_COLUMN_TYPE_NUMBER = "number";
+    public static final String KEY_COLUMN_TYPE_VARCHAR2 = "varchar2";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
@@ -154,6 +157,7 @@ public class BaseConst {
     public static final String PATH_STAT = "/stats/%s";
 
     public static final String PACKAGE_JAVA_PREFIX = "com.hundsun.lcpt.fund.";
+    public static final String PATH_JAVA_PREFIX = "/ta-web-manager-fund-core/src/main/java/";
     public static final String PACKAGE_VUE_PREFIX = "src.biz.console-fund-ta-vue.views.";
 
     public static final String METHOD_RETURN_PARAM_IDATASET = "com.hundsun.jres.interfaces.share.dataset.IDataset";

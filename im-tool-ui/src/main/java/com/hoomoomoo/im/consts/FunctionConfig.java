@@ -18,7 +18,7 @@ public enum FunctionConfig {
 
     SCRIPT_UPDATE("50", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "menuItemScriptUpdate", "scriptUpdate"),
 
-    GENERATE_CODE("60", "模板代码", "/conf/fxml/generateCode.fxml", "menuItemGenerateCode", "generateCode"),
+    GENERATE_CODE("60", "生成代码", "/conf/fxml/generateCode.fxml", "menuItemGenerateCode", "generateCode"),
 
     COPY_CODE("70", "复制代码", "/conf/fxml/copyCode.fxml", "menuItemCopyCode", "copyCode"),
 

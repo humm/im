@@ -178,8 +178,8 @@ public class GenerateAuditService {
 
         content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "查询日志详情接口", SYMBOL_EMPTY, METHOD_REQUEST_PARAM_WORK_PROCESS_DTO));
         content.append("    @Override").append(SYMBOL_NEXT_LINE);
-        content.append("    public void queryLogDataService(WorkProcessDTO workProcessDTO) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
-        content.append("        FundCommonUtil." + getCommonMethod(generateCodeDto, STR_2) + "(workProcessDTO, service, this, this.getClass());").append(SYMBOL_NEXT_LINE);
+        content.append("    public String queryLogDataService(WorkProcessDTO workProcessDTO) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
+        content.append("        return FundCommonUtil." + getCommonMethod(generateCodeDto, STR_2) + "(workProcessDTO, service, this, this.getClass());").append(SYMBOL_NEXT_LINE);
         content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
         content.append("}").append(SYMBOL_NEXT_LINE_2);

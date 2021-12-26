@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2021/11/18
  */
 @Data
-public class ColumnInfoDto {
+public class ColumnInfoDto implements Comparable<ColumnInfoDto>{
 
     private String column;
     private String columnUnderline;
@@ -19,4 +19,10 @@ public class ColumnInfoDto {
     private String columnMulti;
     private String columnRequired;
     private String columnPrecision;
+    private String columnOrder;
+
+    @Override
+    public int compareTo(ColumnInfoDto o) {
+        return Integer.valueOf(this.getColumnOrder()) - Integer.valueOf(o.getColumnOrder());
+    }
 }

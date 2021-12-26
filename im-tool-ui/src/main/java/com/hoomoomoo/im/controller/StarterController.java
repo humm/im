@@ -39,7 +39,7 @@ import static com.hoomoomoo.im.consts.FunctionConfig.*;
 public class StarterController implements Initializable {
 
     @FXML
-    private Menu menuOther;
+    private Menu menuScript;
 
     @FXML
     private Menu menuSvn;
@@ -51,37 +51,7 @@ public class StarterController implements Initializable {
     private Menu menuHelp;
 
     @FXML
-    private MenuItem menuItemSvnlog;
-
-    @FXML
-    private MenuItem menuItemFundInfo;
-
-    @FXML
-    private MenuItem menuItemProcessInfo;
-
-    @FXML
-    private MenuItem menuItemScriptUpdate;
-
-    @FXML
-    private MenuItem menuItemAbout;
-
-    @FXML
-    private MenuItem menuItemConfigSet;
-
-    @FXML
-    private MenuItem menuItemFunctionStat;
-
-    @FXML
-    private MenuItem menuItemSvnRealtimeStat;
-
-    @FXML
-    private MenuItem menuItemSvnHistoryStat;
-
-    @FXML
-    private MenuItem menuItemGenerateCode;
-
-    @FXML
-    private MenuItem menuItemCopyCode;
+    private Menu menuCode;
 
     @FXML
     private TabPane functionTab;
@@ -273,17 +243,22 @@ public class StarterController implements Initializable {
 
             // 校验证书是否过期
             if (!CommonUtils.checkLicense(null)) {
-                menuOther.getItems().clear();
+                menuScript.getItems().clear();
                 menuSvn.getItems().clear();
                 menuSet.getItems().clear();
+                menuCode.getItems().clear();
+                menuHelp.getItems().clear();
                 return;
             }
 
             LoggerUtils.info(String.format(MSG_CHECK, "证书有效日期"));
 
             // 控制菜单功能
-            CommonUtils.showAuthFunction(menuOther);
+            CommonUtils.showAuthFunction(menuScript);
             CommonUtils.showAuthFunction(menuSvn);
+            CommonUtils.showAuthFunction(menuSet);
+            CommonUtils.showAuthFunction(menuCode);
+            CommonUtils.showAuthFunction(menuHelp);
 
             String showTab = appConfigDto.getAppTabShow();
             if (StringUtils.isNotBlank(showTab)) {

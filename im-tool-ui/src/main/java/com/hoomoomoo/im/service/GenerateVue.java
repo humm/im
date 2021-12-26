@@ -213,10 +213,6 @@ public class GenerateVue {
         content.append("      handleOpenDetail(row) {").append(SYMBOL_NEXT_LINE);
         content.append("        openDetail(this, this.columns, row)").append(SYMBOL_NEXT_LINE);
         content.append("      },").append(SYMBOL_NEXT_LINE);
-        content.append("      // 设置autoselect的数据来源").append(SYMBOL_NEXT_LINE);
-        content.append("      setDictList(data, key) {").append(SYMBOL_NEXT_LINE);
-        content.append("        this[`${key}List`] = data[0]").append(SYMBOL_NEXT_LINE);
-        content.append("      },").append(SYMBOL_NEXT_LINE);
         content.append("      // 查询").append(SYMBOL_NEXT_LINE);
         content.append("      formSearch(pageNo = 1) {").append(SYMBOL_NEXT_LINE);
         content.append("        this.queryDisabled = true").append(SYMBOL_NEXT_LINE);

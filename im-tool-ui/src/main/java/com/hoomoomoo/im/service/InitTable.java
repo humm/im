@@ -4,12 +4,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 
@@ -51,10 +50,14 @@ public class InitTable {
                     String columnDate = item.get(KEY_COLUMN_TYPE_DATE);
                     String columnPrecision = item.get(KEY_PRECISION);
                     String columnRequired = item.get(KEY_REQUIRED);
+                    String columnOrder = item.get(KEY_ORDER);
                     tableColumn.get(columnCode).setColumnName(columnName);
                     tableColumn.get(columnCode).setColumnDict(columnDict);
                     tableColumn.get(columnCode).setColumnMulti(columnMulti);
                     tableColumn.get(columnCode).setColumnRequired(columnRequired);
+                    if (StringUtils.isNotBlank(columnOrder)) {
+                        tableColumn.get(columnCode).setColumnOrder(columnOrder);
+                    }
                     if (STR_1.equals(columnDate)) {
                         tableColumn.get(columnCode).setColumnType(KEY_COLUMN_TYPE_DATE);
                     }
@@ -62,6 +65,8 @@ public class InitTable {
                 }
             }
         }
+
+        generateCodeDto.setColumnMap(order(tableColumn));
 
         String[] menuCode = generateCodeDto.getMenuCode().split(SYMBOL_POINT_SLASH);
         String[] menuName = generateCodeDto.getMenuName().split(SYMBOL_POINT_SLASH);
@@ -126,6 +131,7 @@ public class InitTable {
             columnInfo.setColumnPrecision(precision);
             columnInfo.setColumnName(SYMBOL_EMPTY);
             columnInfo.setColumnDict(SYMBOL_EMPTY);
+            columnInfo.setColumnOrder(String.valueOf(i));
             columnMap.put(column, columnInfo);
         }
 
@@ -134,9 +140,19 @@ public class InitTable {
         transCode.setColumnUnderline(KEY_TRANS_CODE_AND_SUB_TRANS_CODE);
         transCode.setColumnType(KEY_COLUMN_TYPE_VARCHAR2);
         transCode.setColumnPrecision(SYMBOL_EMPTY);
+        transCode.setColumnOrder(STR_999999999);
         columnMap.put(KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP, transCode);
 
         return columnMap;
     }
 
+    private static LinkedHashMap<String, ColumnInfoDto> order(Map<String, ColumnInfoDto> request) {
+        LinkedHashMap<String, ColumnInfoDto> result = new LinkedHashMap<>(request.size());
+        List<ColumnInfoDto> list = new ArrayList<>(request.values());
+        Collections.sort(list);
+        for (ColumnInfoDto item : list) {
+            result.put(item.getColumn(), item);
+        }
+        return result;
+    }
 }

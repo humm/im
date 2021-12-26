@@ -27,14 +27,14 @@ public class GenerateDto {
 
         StringBuilder content = new StringBuilder(GenerateCommon.generateFileDescribe(generateCodeDto, fileName, packageName));
 
-        content.append("import com.hundsun.lcpt.ta.pub.dto.TaBaseDto;").append(SYMBOL_NEXT_LINE);
+        content.append("import com.hundsun.lcpt.fund.dto.FundBaseDto;").append(SYMBOL_NEXT_LINE);
         content.append("import lombok.Data;").append(SYMBOL_NEXT_LINE);
         content.append("import java.io.Serializable;").append(SYMBOL_NEXT_LINE_2);
 
         content.append(GenerateCommon.generateClassDescribe(generateCodeDto, fileName));
 
         content.append("@Data").append(SYMBOL_NEXT_LINE);
-        content.append("public class " + fileName + " extends TaBaseDto implements Serializable {").append(SYMBOL_NEXT_LINE_2);
+        content.append("public class " + fileName + " extends FundBaseDto implements Serializable {").append(SYMBOL_NEXT_LINE_2);
         content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(SYMBOL_NEXT_LINE_2);
 
         content.append("    private static final long serialVersionUID = " + GenerateCommon.getSerialVersionUid() + ";").append(SYMBOL_NEXT_LINE);
