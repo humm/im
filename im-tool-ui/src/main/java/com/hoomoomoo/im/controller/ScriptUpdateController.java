@@ -222,7 +222,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                         String paramSql = "\n from (select count(1) param_exists from tbparam where param_id = '" + paramControl + "') a where param_exists = 1";
                         // 组装sql语句
                         for (int i = 0; i < items.size(); i++) {
-                            String sqlKey = items.get(i);
+                            String sqlKey = items.get(i).trim();
                             String sql = items.get(i).replaceAll(" values", "values").replaceAll(" insert", "insert").trim();
                             if (sql.equals(SYMBOL_EMPTY)) {
                                 continue;

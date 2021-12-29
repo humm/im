@@ -173,7 +173,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 Workbook workbook = Workbook.getWorkbook(new File(filePath.getText()));
 
                 // 生成基金配置数据
-                String fileName = "15fund-product-field-oracle.sql";
+                String fileName = "15fund-product-field.oracle.sql";
                 String productPath = appConfigDto.getFundGeneratePath() + "/" + fileName;
                 File productFile = new File(productPath);
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(productFile), ENCODING_UTF8));
@@ -259,13 +259,13 @@ public class FundInfoController extends BaseController implements Initializable 
                 List<String> content = FileUtils.readNormalFile(productPath, false);
 
                 infoMsg("mysql版本生成 开始");
-                String fileNameMysql = "15fund-product-field-mysql.sql";
+                String fileNameMysql = "15fund-product-field.mysql.sql";
                 String productPathMysql = appConfigDto.getFundGeneratePath() + "/" + fileNameMysql;
                 FileUtils.writeFile(productPathMysql, content, false);
                 infoMsg("mysql版本生成 结束");
 
                 infoMsg("pg版本生成 开始");
-                String fileNamePg = "15fund-product-field-pg.sql";
+                String fileNamePg = "15fund-product-field.pg.sql";
                 String productPathPg = appConfigDto.getFundGeneratePath() + "/" + fileNamePg;
                 if (CollectionUtils.isNotEmpty(content)) {
                     for (int j=0; j<content.size(); j++) {

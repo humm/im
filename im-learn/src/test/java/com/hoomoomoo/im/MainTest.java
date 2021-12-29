@@ -1,13 +1,18 @@
 package com.hoomoomoo.im;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author
@@ -83,7 +88,32 @@ public class MainTest {
     }
 
     @Test
-    public void test() {
-        System.out.println(new BigDecimal("-1").compareTo(BigDecimal.ZERO) >= 0);
+    public void test() throws ParseException {
+        String operateType = "0";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date parse = sdf.parse("20211124");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(parse);
+        if ("0".equals(operateType)) {
+            calendar.add(Calendar.DATE, - 1);
+        } else {
+            calendar.add(Calendar.DATE, 1);
+        }
+        System.out.println(Integer.parseInt(sdf.format(calendar.getTime())));
+    }
+
+    @Test
+    public void build() throws ParseException {
+        String operateType = "0";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        Date parse = sdf.parse("20211124");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(parse);
+        if ("0".equals(operateType)) {
+            calendar.add(Calendar.DATE, - 1);
+        } else {
+            calendar.add(Calendar.DATE, 1);
+        }
+        System.out.println(Integer.parseInt(sdf.format(calendar.getTime())));
     }
 }

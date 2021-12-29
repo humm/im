@@ -7,7 +7,7 @@
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
-                <Menu fx:id="menuSvn" mnemonicParsing="false" text="SVN">
+                <Menu fx:id="menuSvn" mnemonicParsing="false" text="仓库">
                     <items>
                         <MenuItem fx:id="menuItemSvnLog" mnemonicParsing="false" onAction="#openSvnLog"
                                   text="提交记录"/>
