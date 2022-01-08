@@ -62,7 +62,9 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean scriptUpdateGenerateFile;
 
-    private String scriptGenerateMode;
+    private String scriptUpdateGenerateMode;
+
+    private String scriptUpdateIgnoreSkip;
 
     private String scriptUpdateGeneratePath;
 

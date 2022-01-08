@@ -77,10 +77,10 @@ public class ScriptUpdateController extends BaseController implements Initializa
             }
             boolean mode = rewrite.isSelected();
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            appConfigDto.setScriptGenerateMode(mode ? STR_1 : STR_2);
+            appConfigDto.setScriptUpdateGenerateMode(mode ? STR_1 : STR_2);
             setProgress(0);
             updateProgress();
-            generateScript();
+            generateScript(appConfigDto);
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -90,7 +90,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
     public void initialize(URL location, ResourceBundle resources) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            String mode = appConfigDto.getScriptGenerateMode();
+            String mode = appConfigDto.getScriptUpdateGenerateMode();
             if (!appConfigDto.getScriptUpdateGenerateFile()) {
                 rewrite.setDisable(true);
                 append.setDisable(true);
@@ -128,7 +128,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
         OutputUtils.selected(append, false);
     }
 
-    public void generateScript() {
+    public void generateScript(AppConfigDto appConfigDto) {
         new Thread(() -> {
             try {
                 submit.setDisable(true);
@@ -141,14 +141,34 @@ public class ScriptUpdateController extends BaseController implements Initializa
                     StringBuilder itemsTemp = new StringBuilder();
                     for (int k=0; k<source.length; k++) {
                         String item = source[k];
-                        if (StringUtils.isEmpty(item) || item.startsWith(ANNOTATION_TYPE_NORMAL) || item.toLowerCase().startsWith(KEY_DELETE)) {
+                        if (StringUtils.isEmpty(item)  || item.toLowerCase().startsWith(KEY_DELETE)) {
                             continue;
+                        }
+                        if (item.startsWith(ANNOTATION_TYPE_NORMAL)) {
+                            boolean isContinue = true;
+                            String scriptUpdateIgnoreSkip = appConfigDto.getScriptUpdateIgnoreSkip();
+                            if (StringUtils.isNotBlank(scriptUpdateIgnoreSkip)) {
+                                String[] items = scriptUpdateIgnoreSkip.split(SYMBOL_COMMA);
+                                inner: for (String skip : items) {
+                                    if (item.toLowerCase().indexOf(skip.toLowerCase()) != -1) {
+                                        item = item.replaceAll(ANNOTATION_TYPE_NORMAL, SYMBOL_EMPTY);
+                                        isContinue = false;
+                                        break inner;
+                                    }
+                                }
+                            }
+                            if (isContinue) {
+                                continue;
+                            }
                         }
                         itemsTemp.append(item.trim() + SYMBOL_NEXT_LINE);
                     }
                     int indexLast = itemsTemp.toString().lastIndexOf(SYMBOL_NEXT_LINE);
+                    if (indexLast == -1) {
+                        setProgress(1);
+                        return;
+                    }
                     List<String> items = Arrays.asList(itemsTemp.toString().substring(0, indexLast).split(SYMBOL_SEMICOLON));
-                    AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     for (int j = 0; j < items.size(); j++) {
                         String item = items.get(j).replace(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).trim();
 
@@ -253,7 +273,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                     LoggerUtils.writeScriptUpdateInfo(date, logList);
                     if (appConfigDto.getScriptUpdateGenerateFile()) {
                         String path = new URL("file:" + appConfigDto.getScriptUpdateGeneratePath() + "/script.sql").getFile();
-                        FileUtils.writeFile(path, scriptList, STR_2.equals(appConfigDto.getScriptGenerateMode()));
+                        FileUtils.writeFile(path, scriptList, STR_2.equals(appConfigDto.getScriptUpdateGenerateMode()));
                     }
                 }
             } catch (Exception e) {
