@@ -22,7 +22,7 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @package com.hoomoomoo.im
  * @date 2021/04/18
  */
-public class MainStarter extends Application {
+public class Starter extends Application {
 
     @Override
     public void start(Stage primaryStage) {
