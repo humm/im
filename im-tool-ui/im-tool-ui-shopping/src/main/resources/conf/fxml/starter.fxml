@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<VBox prefHeight="650.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.hoomoomoo.im.controller.StarterController">
+    <children>
+        <MenuBar VBox.vgrow="NEVER">
+            <menus>
+                <Menu fx:id="menuSvn" mnemonicParsing="false" text="仓库">
+                    <items>
+                        <MenuItem fx:id="menuItemSvnLog" mnemonicParsing="false" onAction="#openSvnLog"
+                                  text="提交记录"/>
+                        <MenuItem fx:id="menuItemSvnUpdate" mnemonicParsing="false" onAction="#openSvnUpdate"
+                                  text="代码更新"/>
+                        <MenuItem fx:id="menuItemSvnRealtimeStat" mnemonicParsing="false"
+                                  onAction="#openSvnRealtimeStat"
+                                  text="实时统计"/>
+                        <MenuItem fx:id="menuItemSvnHistoryStat" mnemonicParsing="false"
+                                  onAction="#openSvnHistoryStat"
+                                  text="历史统计"/>
+                    </items>
+                </Menu>
+                <Menu fx:id="menuCode" mnemonicParsing="false" text="代码">
+                    <items>
+                        <MenuItem fx:id="menuItemCopyCode" mnemonicParsing="false" onAction="#openCopyCode"
+                                  text="复制代码"/>
+                        <MenuItem fx:id="menuItemGenerateCode" mnemonicParsing="false" onAction="#openGenerateCode"
+                                  text="生成代码"/>
+                    </items>
+                </Menu>
+                <Menu fx:id="menuScript" mnemonicParsing="false" text="脚本">
+                    <items>
+                        <MenuItem fx:id="menuItemFundInfo" mnemonicParsing="false" onAction="#openFundInfo"
+                                  text="基金信息"/>
+                        <MenuItem fx:id="menuItemProcessInfo" mnemonicParsing="false" onAction="#openProcessInfo"
+                                  text="流程信息"/>
+                        <MenuItem fx:id="menuItemScriptUpdate" mnemonicParsing="false" onAction="#openScriptUpdate"
+                                  text="升级脚本"/>
+                    </items>
+                </Menu>
+                <Menu fx:id="menuSet" mnemonicParsing="false" text="设置">
+                    <items>
+                        <MenuItem fx:id="menuItemConfigSet" mnemonicParsing="false" onAction="#openConfigSet"
+                                  text="参数设置"/>
+                    </items>
+                </Menu>
+                <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">
+                    <items>
+                        <MenuItem fx:id="menuItemFunctionStat" mnemonicParsing="false" onAction="#openFunctionStatInfo"
+                                  text="使用统计"/>
+                        <MenuItem fx:id="menuItemAbout" mnemonicParsing="false" onAction="#openAboutInfo"
+                                  text="关于"/>
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+            <children>
+                <TabPane fx:id="functionTab" layoutX="74.0" layoutY="33.0" prefHeight="375.0" prefWidth="640.0"
+                         AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                         AnchorPane.topAnchor="0.0"/>
+            </children>
+        </AnchorPane>
+    </children>
+</VBox>

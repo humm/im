@@ -1,0 +1,17 @@
+package im.api;
+
+import im.model.DemoModel;
+
+import java.util.List;
+
+/**
+ * @author hoomoomoo
+ * @description TODO
+ * @package im.api
+ * @date 2020/08/22
+ */
+
+public interface DemoService {
+
+    List<DemoModel> getDemoData();
+}
