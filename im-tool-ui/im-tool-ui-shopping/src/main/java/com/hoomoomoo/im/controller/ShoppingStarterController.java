@@ -34,7 +34,7 @@ import static com.hoomoomoo.im.consts.FunctionConfig.*;
  * @package com.hoomoomoo.im.start
  * @date 2021/04/18
  */
-public class StarterController implements Initializable {
+public class ShoppingStarterController implements Initializable {
 
     @FXML
     private Menu menuJd;

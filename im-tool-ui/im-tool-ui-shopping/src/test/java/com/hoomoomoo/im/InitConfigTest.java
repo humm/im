@@ -38,7 +38,7 @@ public class InitConfigTest {
      */
     @Test
     public void config_01_buildLicense() throws Exception {
-        ConfigCache.initAppCodeCache(APP_CODE_TA);
+        ConfigCache.initAppCodeCache(APP_CODE_SHOPPING);
         String pathAuth = FileUtils.getFilePath(PATH_AUTH);
         LinkedHashMap<String, String> content = FileUtils.readConfigFileToMapIncludePoint(pathAuth);
         // 生成证书信息
@@ -78,15 +78,11 @@ public class InitConfigTest {
      */
     @Test
     public void config_02_buildConfig() throws Exception {
-        ConfigCache.initAppCodeCache(APP_CODE_TA);
+        ConfigCache.initAppCodeCache(APP_CODE_SHOPPING);
         String pathApp = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(pathApp, false);
         ListIterator<String> iterator = content.listIterator();
         boolean svnUpdate = false;
-        boolean scriptUpdateTable = false;
-        boolean svnStatUser = false;
-        boolean copyCode = false;
-        boolean svnUrl = false;
         while (iterator.hasNext()) {
             String item = iterator.next();
             if (item.startsWith(KEY_SVN_UPDATE)) {
@@ -95,34 +91,6 @@ public class InitConfigTest {
                 } else {
                     svnUpdate = true;
                     iterator.set("svn.update.demo=D:/workspace/demo");
-                }
-            } else if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
-                if (scriptUpdateTable) {
-                    iterator.remove();
-                } else {
-                    scriptUpdateTable = true;
-                    iterator.set("script.update.table.demo=demo");
-                }
-            } else if (item.startsWith(KEY_SVN_STAT_USER)) {
-                if (svnStatUser) {
-                    iterator.remove();
-                } else {
-                    svnStatUser = true;
-                    iterator.set("svn.stat.user.demo10000=演示");
-                }
-            }  else if (item.startsWith(KEY_COPY_CODE_VERSION)) {
-                if (copyCode) {
-                    iterator.remove();
-                } else {
-                    copyCode = true;
-                    iterator.set("copy.code.version.demo10000=E:/workspace");
-                }
-            } else if (item.startsWith(KEY_SVN_URL)) {
-                if (svnUrl) {
-                    iterator.remove();
-                } else {
-                    svnUrl = true;
-                    iterator.set("svn.url.demo10000=https://192.168.57.56/bank/depone/BTA6.0/trunk");
                 }
             }
         }
@@ -142,30 +110,9 @@ public class InitConfigTest {
         Map<String, String> keys = new LinkedHashMap<>();
         keys.put("app.tab.show", "10");
 
-        keys.put("svn.username", null);
-        keys.put("svn.password", null);
-
-        keys.put("svn.default.append.path", null);
-
-        keys.put("fund.excel.path", null);
-        keys.put("fund.generate.path", null);
-
-        keys.put("process.excel.path", null);
-        keys.put("process.generate.path.trans", null);
-        keys.put("process.generate.path.schedule", null);
-
-        keys.put("script.update.generate.path", null);
-
         keys.put("app.user", null);
 
-        keys.put("generate.code.java.path", null);
-        keys.put("generate.code.sql.path", null);
-        keys.put("generate.code.vue.path", null);
-        keys.put("generate.code.route.path", null);
-        keys.put("generate.code.author", null);
-
-        keys.put("copy.code.default.source", null);
-        keys.put("copy.code.default.target", null);
+        keys.put("jd.cookie", null);
 
         String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);
@@ -197,12 +144,12 @@ public class InitConfigTest {
     @Test
     public void config_04_updateVersionConfig() {
         try {
-            ConfigCache.initAppCodeCache(APP_CODE_TA);
+            ConfigCache.initAppCodeCache(APP_CODE_SHOPPING);
             String versionFilePath = FileUtils.getFilePath(PATH_VERSION);
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
             List<String> content = FileUtils.readNormalFile(versionFilePath, false);
             String subVersion = "00";
-            int times = 60;
+            int times = 1;
             if (CollectionUtils.isNotEmpty(content)) {
                 for (int i = 0; i < content.size(); i++) {
                     String item = content.get(i);
@@ -226,8 +173,8 @@ public class InitConfigTest {
                 }
             }
             StringBuilder statLog = new StringBuilder();
-            statLog.append("首发版本: ").append("2021.05.06.00").append(SYMBOL_NEXT_LINE);
-            statLog.append("发布时间: ").append("2021-05-06 23:17:56").append(SYMBOL_NEXT_LINE_2);
+            statLog.append("首发版本: ").append("2022.01.09.00").append(SYMBOL_NEXT_LINE);
+            statLog.append("发布时间: ").append("2022-01-09 23:17:56").append(SYMBOL_NEXT_LINE_2);
             statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime4().replace(SYMBOL_HYPHEN, SYMBOL_POINT)).append(SYMBOL_POINT).append(subVersion).append(SYMBOL_NEXT_LINE);
             statLog.append("发布时间: ").append(CommonUtils.getCurrentDateTime1()).append(SYMBOL_NEXT_LINE_2);
             statLog.append("发版次数: ").append(times).append(SYMBOL_NEXT_LINE);
@@ -248,11 +195,11 @@ public class InitConfigTest {
      */
     @Test
     public void config_05_copyBaseConfig() {
-        ConfigCache.initAppCodeCache(APP_CODE_TA);
-        String pathFxml = FileUtils.getFilePath(PATH_FXML).replaceAll(APP_CODE_TA, APP_CODE_BASE);
+        ConfigCache.initAppCodeCache(APP_CODE_SHOPPING);
+        String pathFxml = FileUtils.getFilePath(PATH_FXML).replaceAll(APP_CODE_SHOPPING, APP_CODE_BASE);
         copyFile(pathFxml);
 
-        String pathStyle = FileUtils.getFilePath(PATH_STYLE).replaceAll(APP_CODE_TA, APP_CODE_BASE);
+        String pathStyle = FileUtils.getFilePath(PATH_STYLE).replaceAll(APP_CODE_SHOPPING, APP_CODE_BASE);
         copyFile(pathStyle);
     }
 
@@ -269,7 +216,7 @@ public class InitConfigTest {
         for (File file : StyleFileList) {
             String filePath = file.getAbsolutePath();
             try {
-                File targetFile = new File(filePath.replaceAll(APP_CODE_BASE, APP_CODE_TA));
+                File targetFile = new File(filePath.replaceAll(APP_CODE_BASE, APP_CODE_SHOPPING));
                 targetFile.getParentFile().mkdirs();
                 FileUtils.copyFile(new File(filePath), targetFile);
             } catch (Exception e) {

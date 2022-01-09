@@ -1,22 +1,24 @@
-package im;
+package com.hoomoomoo.im;
 
 import com.alibaba.fastjson.JSON;
-import im.consts.FunctionConfig;
-import im.dto.FunctionDto;
-import im.dto.LicenseDto;
-import im.utils.CommonUtils;
-import im.utils.FileUtils;
-import im.utils.LoggerUtils;
-import im.utils.SecurityUtils;
+import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.dto.FunctionDto;
+import com.hoomoomoo.im.dto.LicenseDto;
+import com.hoomoomoo.im.utils.CommonUtils;
+import com.hoomoomoo.im.utils.FileUtils;
+import com.hoomoomoo.im.utils.LoggerUtils;
+import com.hoomoomoo.im.utils.SecurityUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import java.io.File;
 import java.util.*;
 
-import static im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
  * @author humm23693
@@ -36,6 +38,7 @@ public class InitConfigTest {
      */
     @Test
     public void config_01_buildLicense() throws Exception {
+        ConfigCache.initAppCodeCache(APP_CODE_TA);
         String pathAuth = FileUtils.getFilePath(PATH_AUTH);
         LinkedHashMap<String, String> content = FileUtils.readConfigFileToMapIncludePoint(pathAuth);
         // 生成证书信息
@@ -75,6 +78,7 @@ public class InitConfigTest {
      */
     @Test
     public void config_02_buildConfig() throws Exception {
+        ConfigCache.initAppCodeCache(APP_CODE_TA);
         String pathApp = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(pathApp, false);
         ListIterator<String> iterator = content.listIterator();
@@ -134,7 +138,7 @@ public class InitConfigTest {
      * @return:
      */
     @Test
-    public void config_02_updateConfig() throws Exception {
+    public void config_03_updateConfig() throws Exception {
         Map<String, String> keys = new LinkedHashMap<>();
         keys.put("app.tab.show", "10");
 
@@ -193,6 +197,7 @@ public class InitConfigTest {
     @Test
     public void config_04_updateVersionConfig() {
         try {
+            ConfigCache.initAppCodeCache(APP_CODE_TA);
             String versionFilePath = FileUtils.getFilePath(PATH_VERSION);
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
             List<String> content = FileUtils.readNormalFile(versionFilePath, false);
@@ -230,6 +235,46 @@ public class InitConfigTest {
             FileUtils.writeFile(versionFilePathSource, statLog.toString(), false);
         } catch (Exception e) {
             LoggerUtils.info(e);
+        }
+    }
+
+    /**
+     * 复制base模块fxml信息
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2022/1/9
+     * @return: void
+     */
+    @Test
+    public void config_05_copyBaseConfig() {
+        ConfigCache.initAppCodeCache(APP_CODE_TA);
+        String pathFxml = FileUtils.getFilePath(PATH_FXML).replaceAll(APP_CODE_TA, APP_CODE_BASE);
+        copyFile(pathFxml);
+
+        String pathStyle = FileUtils.getFilePath(PATH_STYLE).replaceAll(APP_CODE_TA, APP_CODE_BASE);
+        copyFile(pathStyle);
+    }
+
+    /**
+     * 复制文件
+     *
+     * @param path
+     * @author: humm23693
+     * @date: 2022/1/9
+     * @return: void
+     */
+    private void copyFile(String path) {
+        File[] StyleFileList = new File(path).listFiles();
+        for (File file : StyleFileList) {
+            String filePath = file.getAbsolutePath();
+            try {
+                File targetFile = new File(filePath.replaceAll(APP_CODE_BASE, APP_CODE_TA));
+                targetFile.getParentFile().mkdirs();
+                FileUtils.copyFile(new File(filePath), targetFile);
+            } catch (Exception e) {
+                LoggerUtils.info(e);
+            }
         }
     }
 

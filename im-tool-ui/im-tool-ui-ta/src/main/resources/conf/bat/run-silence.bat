@@ -21,4 +21,4 @@ if not exist "%JAVA_HOME%"\bin\tool-ui.exe (
 :: for %%i in ("./*.jar") do ( set jarName=%%~nxi )
 :: tool-ui -jar %jarName%
 
-tool-ui -jar im-tool-ui-final.jar
+tool-ui -jar im-tool-ui-ta-1.0.0.0.jar

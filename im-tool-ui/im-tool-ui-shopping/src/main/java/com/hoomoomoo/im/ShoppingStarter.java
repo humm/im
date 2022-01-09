@@ -22,12 +22,12 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @package im
  * @date 2021/04/18
  */
-public class TaStarter extends Application {
+public class ShoppingStarter extends Application {
 
     @Override
     public void start(Stage primaryStage) {
         try {
-            ConfigCache.initAppCodeCache(APP_CODE_TA);
+            ConfigCache.initAppCodeCache(APP_CODE_SHOPPING);
             LoggerUtils.info(MSG_DIVIDE_LINE, false);
             LoggerUtils.info(String.format(MSG_START, "应用启动"));
             FileUtils.unJar(PATH_APP);

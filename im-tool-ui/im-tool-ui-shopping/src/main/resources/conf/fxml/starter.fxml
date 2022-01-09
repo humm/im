@@ -3,40 +3,20 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <VBox prefHeight="650.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.hoomoomoo.im.controller.StarterController">
+      fx:controller="com.hoomoomoo.im.controller.ShoppingStarterController">
     <children>
         <MenuBar VBox.vgrow="NEVER">
             <menus>
-                <Menu fx:id="menuSvn" mnemonicParsing="false" text="仓库">
+                <Menu fx:id="menuJd" mnemonicParsing="false" text="京东">
                     <items>
-                        <MenuItem fx:id="menuItemSvnLog" mnemonicParsing="false" onAction="#openSvnLog"
-                                  text="提交记录"/>
-                        <MenuItem fx:id="menuItemSvnUpdate" mnemonicParsing="false" onAction="#openSvnUpdate"
-                                  text="代码更新"/>
-                        <MenuItem fx:id="menuItemSvnRealtimeStat" mnemonicParsing="false"
-                                  onAction="#openSvnRealtimeStat"
-                                  text="实时统计"/>
-                        <MenuItem fx:id="menuItemSvnHistoryStat" mnemonicParsing="false"
-                                  onAction="#openSvnHistoryStat"
-                                  text="历史统计"/>
-                    </items>
-                </Menu>
-                <Menu fx:id="menuCode" mnemonicParsing="false" text="代码">
-                    <items>
-                        <MenuItem fx:id="menuItemCopyCode" mnemonicParsing="false" onAction="#openCopyCode"
-                                  text="复制代码"/>
-                        <MenuItem fx:id="menuItemGenerateCode" mnemonicParsing="false" onAction="#openGenerateCode"
-                                  text="生成代码"/>
-                    </items>
-                </Menu>
-                <Menu fx:id="menuScript" mnemonicParsing="false" text="脚本">
-                    <items>
-                        <MenuItem fx:id="menuItemFundInfo" mnemonicParsing="false" onAction="#openFundInfo"
-                                  text="基金信息"/>
-                        <MenuItem fx:id="menuItemProcessInfo" mnemonicParsing="false" onAction="#openProcessInfo"
-                                  text="流程信息"/>
-                        <MenuItem fx:id="menuItemScriptUpdate" mnemonicParsing="false" onAction="#openScriptUpdate"
-                                  text="升级脚本"/>
+                        <MenuItem fx:id="menuItemWaitAppraise" mnemonicParsing="false" onAction="#openWaitAppraise"
+                                  text="待评价"/>
+                        <MenuItem fx:id="menuItemShowOrder" mnemonicParsing="false" onAction="#openShowOrder"
+                                  text="待晒单"/>
+                        <MenuItem fx:id="menuItemAppendAppraise" mnemonicParsing="false" onAction="#openAppendAppraise"
+                                  text="待追评"/>
+                        <MenuItem fx:id="menuItemServiceAppraise" mnemonicParsing="false" onAction="#openServiceAppraise"
+                                  text="服务评价"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuSet" mnemonicParsing="false" text="设置">

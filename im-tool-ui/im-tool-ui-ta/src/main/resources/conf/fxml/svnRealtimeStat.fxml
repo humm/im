@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="im.controller.SvnRealtimeStatController">
+            fx:controller="com.hoomoomoo.im.controller.SvnRealtimeStatController">
     <children>
         <SplitPane dividerPositions="0.08542713567839195" layoutX="116.0" layoutY="42.0" orientation="VERTICAL"
                    prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
