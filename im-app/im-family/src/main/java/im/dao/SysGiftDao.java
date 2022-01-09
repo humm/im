@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description 随礼信息dao
- * @package im.dao
+ * @package com.hoomoomoo.im.dao
  * @date 2019/09/07
  */
 

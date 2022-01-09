@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * @author hoomoomoo
  * @description 首页数据Dao
- * @package im.dao
+ * @package com.hoomoomoo.im.dao
  * @date 2019/10/27
  */
 

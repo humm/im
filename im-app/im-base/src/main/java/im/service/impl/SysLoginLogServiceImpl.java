@@ -27,7 +27,7 @@ import static im.consts.BaseCueConst.*;
 /**
  * @author hoomoomoo
  * @description
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2019/10/22
  */
 

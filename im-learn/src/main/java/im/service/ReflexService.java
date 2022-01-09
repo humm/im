@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * @author
  * @description TODO
- * @package im.service
+ * @package com.hoomoomoo.im.service
  * @date 2020/11/20
  */
 public interface ReflexService {

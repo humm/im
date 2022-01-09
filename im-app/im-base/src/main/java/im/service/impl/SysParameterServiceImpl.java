@@ -28,7 +28,7 @@ import static im.consts.ParameterConst.BACKUP_LOCATION;
 /**
  * @author hoomoomoo
  * @description 参数信息服务实现类
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2019/10/20
  */
 

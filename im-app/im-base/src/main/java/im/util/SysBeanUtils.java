@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * @author hoomoomoo
  * @description bean map 转换工具类
- * @package im.util
+ * @package com.hoomoomoo.im.util
  * @date 2019/08/08
  */
 

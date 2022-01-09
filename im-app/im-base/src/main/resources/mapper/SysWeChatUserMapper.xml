@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hoomoomoo.im.dao.SysWeChatUserDao">
+<mapper namespace="im.dao.SysWeChatUserDao">
 
     <sql id="Base_Column_List">
         wechat_user_id weChatUserId, wechat_public_id weChatPublicId,
@@ -9,8 +9,8 @@
         create_user createUser, modify_user modifyUser
     </sql>
 
-    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysWeChatUserQueryModel"
-            resultType="com.hoomoomoo.im.model.SysWeChatUserModel">
+    <select id="selectOne" parameterType="im.model.SysWeChatUserQueryModel"
+            resultType="im.model.SysWeChatUserModel">
         select
             <include refid="Base_Column_List"/>
         from sys_wechat_user
@@ -30,8 +30,8 @@
         </where>
     </select>
 
-    <select id="selectList" parameterType="com.hoomoomoo.im.model.SysWeChatUserQueryModel"
-            resultType="com.hoomoomoo.im.model.SysWeChatUserModel">
+    <select id="selectList" parameterType="im.model.SysWeChatUserQueryModel"
+            resultType="im.model.SysWeChatUserModel">
         select
             <include refid="Base_Column_List"/>
         from sys_wechat_user
@@ -51,7 +51,7 @@
         </where>
     </select>
 
-    <delete id="delete" parameterType="com.hoomoomoo.im.model.SysWeChatUserModel">
+    <delete id="delete" parameterType="im.model.SysWeChatUserModel">
         delete from sys_wechat_user
         <where>
             <if test="weChatUserId != null" >
@@ -63,7 +63,7 @@
         </where>
     </delete>
 
-    <update id="insert" parameterType="com.hoomoomoo.im.model.SysWeChatUserModel">
+    <update id="insert" parameterType="im.model.SysWeChatUserModel">
         insert into sys_wechat_user(
             wechat_user_id,
             wechat_public_id,
@@ -86,7 +86,7 @@
         )
     </update>
 
-    <select id="update" parameterType="com.hoomoomoo.im.model.SysWeChatUserModel">
+    <select id="update" parameterType="im.model.SysWeChatUserModel">
         update sys_wechat_user
         <set>
             <if test="isAuth != null" >

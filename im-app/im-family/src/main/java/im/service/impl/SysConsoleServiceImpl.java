@@ -32,7 +32,7 @@ import static im.consts.BaseCueConst.*;
 /**
  * @author hoomoomoo
  * @description 首页信息服务实现类
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2019/10/27
  */
 

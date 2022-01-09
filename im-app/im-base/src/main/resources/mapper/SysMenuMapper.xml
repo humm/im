@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hoomoomoo.im.dao.SysMenuDao">
+<mapper namespace="im.dao.SysMenuDao">
 
-    <select id="selectMenuTree" parameterType="com.hoomoomoo.im.model.SysMenuTreeQueryModel"
-            resultType="com.hoomoomoo.im.model.SysMenuTreeModel">
+    <select id="selectMenuTree" parameterType="im.model.SysMenuTreeQueryModel"
+            resultType="im.model.SysMenuTreeModel">
         select
             a.menu_id id,
             a.menu_title title,
@@ -30,7 +30,7 @@
         order by a.menu_order
     </select>
 
-    <select id="selectDataAuthority" parameterType="com.hoomoomoo.im.model.SysMenuTreeQueryModel"
+    <select id="selectDataAuthority" parameterType="im.model.SysMenuTreeQueryModel"
             resultType="java.lang.String">
         select
             case when count(1) > 0 then '1' else '0' end dataAuthority
@@ -44,7 +44,7 @@
         and a.menu_type = '4'
     </select>
 
-    <select id="selectDataAuthorityByUserId" parameterType="com.hoomoomoo.im.model.SysMenuTreeQueryModel"
+    <select id="selectDataAuthorityByUserId" parameterType="im.model.SysMenuTreeQueryModel"
             resultType="java.lang.Boolean">
         select
             case when count(1) > 0 then '1' else '0' end dataAuthority
@@ -60,8 +60,8 @@
         and a.menu_type = '4'
     </select>
 
-    <select id="selectMenu" parameterType="com.hoomoomoo.im.model.SysMenuQueryModel"
-            resultType="com.hoomoomoo.im.model.SysMenuModel">
+    <select id="selectMenu" parameterType="im.model.SysMenuQueryModel"
+            resultType="im.model.SysMenuModel">
         select
             a.menu_id menuId,
             a.parent_id parentId,
@@ -88,8 +88,8 @@
         order by a.menu_order
     </select>
 
-    <select id="selectAllMenu" parameterType="com.hoomoomoo.im.model.SysMenuQueryModel"
-            resultType="com.hoomoomoo.im.model.SysMenuModel">
+    <select id="selectAllMenu" parameterType="im.model.SysMenuQueryModel"
+            resultType="im.model.SysMenuModel">
         select
             a.menu_id menuId,
             a.parent_id parentId,
@@ -111,7 +111,7 @@
         order by a.menu_order
     </select>
 
-    <select id="selectUrlMenu" resultType="com.hoomoomoo.im.model.SysMenuModel">
+    <select id="selectUrlMenu" resultType="im.model.SysMenuModel">
         select
             a.menu_id menuId,
             a.parent_id parentId,
@@ -124,12 +124,12 @@
         order by a.menu_order
     </select>
 
-    <select id="updateMenu" resultType="com.hoomoomoo.im.model.SysMenuModel">
+    <select id="updateMenu" resultType="im.model.SysMenuModel">
         update sys_menu set is_enable = #{isEnable}
         where instr(#{menuId}, menu_id) > 0
     </select>
 
-    <select id="selectMenuAuthority" parameterType="com.hoomoomoo.im.model.SysMenuQueryModel" resultType="java.lang.Boolean">
+    <select id="selectMenuAuthority" parameterType="im.model.SysMenuQueryModel" resultType="java.lang.Boolean">
         select case count(1) when 0 then 0 else 1 end
         from sys_user a, sys_user_role b, sys_role_menu c
         where a.user_id = b.user_id

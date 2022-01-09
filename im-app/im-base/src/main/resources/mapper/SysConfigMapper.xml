@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hoomoomoo.im.dao.SysConfigDao">
+<mapper namespace="im.dao.SysConfigDao">
 
-    <select id="selectModule" parameterType="com.hoomoomoo.im.model.SysConfigQueryModel"
-            resultType="com.hoomoomoo.im.model.SysConfigModel">
+    <select id="selectModule" parameterType="im.model.SysConfigQueryModel"
+            resultType="im.model.SysConfigModel">
         select
             module_group_code moduleGroupCode,
             module_group_name moduleGroupName,
@@ -34,7 +34,7 @@
         </where>
     </select>
 
-    <update id="save" parameterType="com.hoomoomoo.im.model.SysConfigModel">
+    <update id="save" parameterType="im.model.SysConfigModel">
         merge into sys_config a
         using (
           select

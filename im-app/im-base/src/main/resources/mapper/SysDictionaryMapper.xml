@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hoomoomoo.im.dao.SysDictionaryDao">
+<mapper namespace="im.dao.SysDictionaryDao">
 
     <sql id="Base_Column_List">
          dictionary_code dictionaryCode, dictionary_item dictionaryItem,
@@ -9,8 +9,8 @@
          user_id userId, is_open isOpen
     </sql>
 
-    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysDictionaryQueryModel"
-            resultType="com.hoomoomoo.im.model.SysDictionaryModel">
+    <select id="selectPage" parameterType="im.model.SysDictionaryQueryModel"
+            resultType="im.model.SysDictionaryModel">
         select
             <include refid="Base_Column_List"/>
         from sys_dictionary
@@ -35,8 +35,8 @@
         </if>
     </select>
 
-    <select id="selectSysDictionary" parameterType="com.hoomoomoo.im.model.SysDictionaryQueryModel"
-            resultType="com.hoomoomoo.im.model.SysDictionaryModel">
+    <select id="selectSysDictionary" parameterType="im.model.SysDictionaryQueryModel"
+            resultType="im.model.SysDictionaryModel">
         select
             <include refid="Base_Column_List"/>
         from sys_dictionary
@@ -54,7 +54,7 @@
         order by code_order, item_order
     </select>
 
-    <select id="selectSysDictionaryCondition" resultType="com.hoomoomoo.im.model.SysDictionaryModel">
+    <select id="selectSysDictionaryCondition" resultType="im.model.SysDictionaryModel">
         select
             dictionary_code dictionaryCode,
             dictionary_code || '-' || dictionary_item dictionaryItem,
@@ -77,7 +77,7 @@
         order by codeOrder, itemOrder
     </select>
 
-    <delete id="delete" parameterType="com.hoomoomoo.im.model.SysDictionaryModel">
+    <delete id="delete" parameterType="im.model.SysDictionaryModel">
         delete from sys_dictionary
         where dictionary_code = #{dictionaryCode}
         and dictionary_item != '#'
@@ -86,13 +86,13 @@
         </if>
     </delete>
 
-    <update id="update" parameterType="com.hoomoomoo.im.model.SysDictionaryModel">
+    <update id="update" parameterType="im.model.SysDictionaryModel">
         update sys_dictionary
         set dictionary_caption = #{dictionaryCaption}, item_order = #{itemOrder}, user_id = #{userId}
         where dictionary_code = #{dictionaryCode} and dictionary_item = #{dictionaryItem}
     </update>
 
-    <insert id="save" parameterType="com.hoomoomoo.im.model.SysDictionaryModel">
+    <insert id="save" parameterType="im.model.SysDictionaryModel">
         insert into sys_dictionary (
             dictionary_code,
             dictionary_item,

@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author hoomoomoo
  * @description 微信消息服务类
- * @package im.service
+ * @package com.hoomoomoo.im.service
  * @date 2020/02/27
  */
 

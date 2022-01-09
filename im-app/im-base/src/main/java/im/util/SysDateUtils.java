@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * @author hoomoomoo
  * @description 时间工具类
- * @package im.util
+ * @package com.hoomoomoo.im.util
  * @date 2019/08/08
  */
 

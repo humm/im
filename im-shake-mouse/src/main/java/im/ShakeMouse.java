@@ -5,7 +5,7 @@ import java.awt.*;
 /**
  * @author humm23693
  * @description TODO
- * @package im.utils
+ * @package com.hoomoomoo.im.utils
  * @date 2021/12/29
  */
 public class ShakeMouse {

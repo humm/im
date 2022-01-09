@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * @author
  * @description TODO
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2020/10/24
  */
 

@@ -9,7 +9,7 @@ import lombok.Data;
 /**
  * @author hoomoomoo
  * @description 查询dto
- * @package im.model.common
+ * @package com.hoomoomoo.im.model.common
  * @date 2019/08/10
  */
 

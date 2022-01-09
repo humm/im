@@ -26,7 +26,7 @@ import static im.consts.WeChatConst.*;
 /**
  * @author hoomoomoo
  * @description 微信流程步骤服务体实现类
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2020/02/29
  */
 

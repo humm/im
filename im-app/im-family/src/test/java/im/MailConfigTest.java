@@ -14,7 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 /**
  * @author hoomoomoo
  * @description 邮件测试
- * @package im.test
+ * @package com.hoomoomoo.im.test
  * @date 2019/08/03
  */
 

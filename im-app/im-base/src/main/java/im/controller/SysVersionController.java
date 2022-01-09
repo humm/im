@@ -3,7 +3,7 @@ package im.controller;
 /**
  * @author hoomoomoo
  * @description 修订信息控制类
- * @package im.controller
+ * @package com.hoomoomoo.im.controller
  * @date 2019/11/23
  */
 

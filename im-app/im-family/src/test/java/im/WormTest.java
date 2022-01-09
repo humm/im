@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * @Author Administrator
  * @Description
- * @package im.test
+ * @package com.hoomoomoo.im.test
  * @Date 2020/04/18
  */
 public class WormTest {

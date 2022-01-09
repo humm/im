@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hoomoomoo.im.dao.SysIncomeDao">
+<mapper namespace="im.dao.SysIncomeDao">
 
     <sql id="Base_Column_List">
         a.income_id incomeId, a.user_id userId, a.income_type incomeType,
@@ -12,8 +12,8 @@
         substr(a.income_company, instr(a.income_company, '-') + 1) incomeCompanyCode
     </sql>
 
-    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
-            resultType="com.hoomoomoo.im.model.SysIncomeModel">
+    <select id="selectPage" parameterType="im.model.SysIncomeQueryModel"
+            resultType="im.model.SysIncomeModel">
         select
             <include refid="Base_Column_List"/>
         from sys_income a, sys_user b
@@ -63,8 +63,8 @@
         </where>
     </delete>
 
-    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
-            resultType="com.hoomoomoo.im.model.SysIncomeModel">
+    <select id="selectOne" parameterType="im.model.SysIncomeQueryModel"
+            resultType="im.model.SysIncomeModel">
         select
             <include refid="Base_Column_List"/>
         from sys_income a
@@ -90,8 +90,8 @@
         </where>
     </select>
 
-    <select id="selectIncomeLast" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
-            resultType="com.hoomoomoo.im.model.SysIncomeModel">
+    <select id="selectIncomeLast" parameterType="im.model.SysIncomeQueryModel"
+            resultType="im.model.SysIncomeModel">
         select
             <include refid="Base_Column_List"/>
         from sys_income a, sys_user b
@@ -104,8 +104,8 @@
         )
     </select>
 
-    <select id="selectLastType" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
-            resultType="com.hoomoomoo.im.model.LastType">
+    <select id="selectLastType" parameterType="im.model.SysIncomeQueryModel"
+            resultType="im.model.LastType">
         select s.income_type as incomeType
         from (
             select t.income_type
@@ -116,8 +116,8 @@
         where rownum = 1
     </select>
 
-    <select id="selectLastTypeIncomeCompany" parameterType="com.hoomoomoo.im.model.SysIncomeQueryModel"
-            resultType="com.hoomoomoo.im.model.LastType">
+    <select id="selectLastTypeIncomeCompany" parameterType="im.model.SysIncomeQueryModel"
+            resultType="im.model.LastType">
         select s.income_company as incomeCompany
         from (
             select t.income_company
@@ -128,7 +128,7 @@
         where rownum = 1
     </select>
 
-    <update id="save" parameterType="com.hoomoomoo.im.model.SysIncomeModel">
+    <update id="save" parameterType="im.model.SysIncomeModel">
         merge into sys_income a
         using (select #{incomeId} as income_id from dual) b
         on (a.income_id = b.income_id)

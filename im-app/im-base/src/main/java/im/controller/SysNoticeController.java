@@ -28,7 +28,7 @@ import static im.consts.BaseCueConst.*;
 /**
  * @author hoomoomoo
  * @description 消息通知控制类
- * @package im.controller
+ * @package com.hoomoomoo.im.controller
  * @date 2019/10/26
  */
 

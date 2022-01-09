@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description 微信用户信息服务类
- * @package im.service
+ * @package com.hoomoomoo.im.service
  * @date 2020/02/28
  */
 

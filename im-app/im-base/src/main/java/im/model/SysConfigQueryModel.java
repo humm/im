@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * @author hoomoomoo
  * @description 配置信息查询实体类
- * @package im.model
+ * @package com.hoomoomoo.im.model
  * @date 2019/11/26
  */
 

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hoomoomoo.im.dao.SysLoginLogDao">
+<mapper namespace="im.dao.SysLoginLogDao">
 
     <sql id="Base_Column_List">
         log_id logId, user_id userId,
@@ -10,8 +10,8 @@
 
     </sql>
 
-    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysLoginLogQueryModel"
-            resultType="com.hoomoomoo.im.model.SysLoginLogModel">
+    <select id="selectPage" parameterType="im.model.SysLoginLogQueryModel"
+            resultType="im.model.SysLoginLogModel">
         select
             <include refid="Base_Column_List"/>
         from sys_login_log
@@ -50,7 +50,7 @@
         </if>
     </select>
 
-    <insert id="save" parameterType="com.hoomoomoo.im.model.SysLoginLogModel">
+    <insert id="save" parameterType="im.model.SysLoginLogModel">
         insert into sys_login_log(
             log_id,
             user_id,
@@ -66,7 +66,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="com.hoomoomoo.im.model.SysLoginLogModel">
+    <update id="update" parameterType="im.model.SysLoginLogModel">
         update sys_login_log
         set logout_date = #{logoutDate}
         where log_id = (
@@ -77,8 +77,8 @@
         )
     </update>
 
-    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysLoginLogQueryModel"
-            resultType="com.hoomoomoo.im.model.SysLoginLogModel">
+    <select id="selectOne" parameterType="im.model.SysLoginLogQueryModel"
+            resultType="im.model.SysLoginLogModel">
         select
             <include refid="Base_Column_List"/>
         from sys_login_log

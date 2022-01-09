@@ -1,4 +1,4 @@
-package com.hoomoomoo.im.config;
+package im.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .enable(true)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.hoomoomoo.im"))
+                .apis(RequestHandlerSelectors.basePackage("im"))
                 .paths(PathSelectors.any())
                 .build();
     }

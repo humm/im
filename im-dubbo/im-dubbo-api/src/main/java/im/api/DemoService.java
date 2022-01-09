@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description TODO
- * @package im.api
+ * @package com.hoomoomoo.im.api
  * @date 2020/08/22
  */
 

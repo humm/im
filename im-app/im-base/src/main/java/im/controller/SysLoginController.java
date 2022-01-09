@@ -23,7 +23,7 @@ import static im.consts.ParameterConst.VERSION;
 /**
  * @author hoomoomoo
  * @description 用户登录控制类
- * @package im.controller
+ * @package com.hoomoomoo.im.controller
  * @date 2019/10/14
  */
 

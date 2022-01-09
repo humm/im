@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description 系统级别公用Dao
- * @package im.dao
+ * @package com.hoomoomoo.im.dao
  * @date 2019/08/08
  */
 

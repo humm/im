@@ -24,7 +24,7 @@ import static im.consts.BaseCueConst.*;
 /**
  * @author hoomoomoo
  * @description session配置
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2019/09/01
  */
 

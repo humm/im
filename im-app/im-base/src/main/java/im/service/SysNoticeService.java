@@ -8,7 +8,7 @@ import im.model.base.ResultData;
 /**
  * @author hoomoomoo
  * @description 消息通知服务类
- * @package im.service
+ * @package com.hoomoomoo.im.service
  * @date 2019/09/06
  */
 

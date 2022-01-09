@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 /**
  * @author hoomoomoo
  * @description 命令行执行工具类
- * @package im.util
+ * @package com.hoomoomoo.im.util
  * @date 2019/11/30
  */
 

@@ -19,7 +19,7 @@ import static im.consts.BaseConst.*;
 /**
  * @author hoomoomoo
  * @description 通用工具类
- * @package im.utils
+ * @package com.hoomoomoo.im.utils
  * @date 2020/09/12
  */
 public class CommonUtils {

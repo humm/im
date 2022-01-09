@@ -14,7 +14,7 @@ import static im.consts.BaseConst.SYMBOL_EMPTY;
 /**
  * @author
  * @description svn工具类
- * @package im.utils
+ * @package com.hoomoomoo.im.utils
  * @date 2020/09/10
  */
 public class SvnUtils {

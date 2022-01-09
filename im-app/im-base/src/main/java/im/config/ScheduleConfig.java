@@ -24,7 +24,7 @@ import java.util.concurrent.Executor;
 /**
  * @author hoomoomoo
  * @description 定时任务配置
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2019/08/29
  */
 

@@ -34,7 +34,7 @@ import static im.consts.ParameterConst.START_MAIL;
 /**
  * @author hoomoomoo
  * @description 接口信息服务实现类
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2020/02/09
  */
 

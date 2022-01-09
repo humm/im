@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description 修订信息dao
- * @package im.dao
+ * @package com.hoomoomoo.im.dao
  * @date 2019/11/23
  */
 

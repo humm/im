@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hoomoomoo.im.dao.SysRoleDao">
+<mapper namespace="im.dao.SysRoleDao">
 
     <sql id="Base_Column_List">
         role_id roleId, role_code roleCode,
@@ -9,8 +9,8 @@
         create_user createUser, modify_user modifyUser
     </sql>
 
-    <select id="selectSysRole" parameterType="com.hoomoomoo.im.model.SysRoleQueryModel"
-            resultType="com.hoomoomoo.im.model.SysRoleModel">
+    <select id="selectSysRole" parameterType="im.model.SysRoleQueryModel"
+            resultType="im.model.SysRoleModel">
         select
             <include refid="Base_Column_List"/>
         from sys_role
@@ -27,8 +27,8 @@
         </where>
     </select>
 
-    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysRoleQueryModel"
-            resultType="com.hoomoomoo.im.model.SysRoleModel">
+    <select id="selectPage" parameterType="im.model.SysRoleQueryModel"
+            resultType="im.model.SysRoleModel">
         select
             <include refid="Base_Column_List"/>
         from sys_role
@@ -65,8 +65,8 @@
         </where>
     </delete>
 
-    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysRoleQueryModel"
-            resultType="com.hoomoomoo.im.model.SysRoleModel">
+    <select id="selectOne" parameterType="im.model.SysRoleQueryModel"
+            resultType="im.model.SysRoleModel">
         select
             <include refid="Base_Column_List"/>
         from sys_role
@@ -83,7 +83,7 @@
         </where>
     </select>
 
-    <update id="save" parameterType="com.hoomoomoo.im.model.SysRoleModel">
+    <update id="save" parameterType="im.model.SysRoleModel">
         merge into sys_role a
         using (select #{roleId} as role_id from dual) b
         on (a.role_id = b.role_id)
@@ -128,7 +128,7 @@
             )
     </update>
 
-    <select id="checkRoleCode" parameterType="com.hoomoomoo.im.model.SysRoleQueryModel"
+    <select id="checkRoleCode" parameterType="im.model.SysRoleQueryModel"
             resultType="java.lang.Boolean">
         select case when count(1) > 0 then '0' else '1' end isExist
         from sys_role
@@ -138,15 +138,15 @@
         </if>
     </select>
 
-    <delete id="deleteRoleMenu" parameterType="com.hoomoomoo.im.model.SysRoleMenuModel">
+    <delete id="deleteRoleMenu" parameterType="im.model.SysRoleMenuModel">
         delete from sys_role_menu where role_id = #{roleId}
     </delete>
 
-    <delete id="deleteRoleUser" parameterType="com.hoomoomoo.im.model.SysUserModel">
+    <delete id="deleteRoleUser" parameterType="im.model.SysUserModel">
         delete from sys_user_role where role_id = #{roleId}
     </delete>
 
-    <insert id="saveRoleMenu" parameterType="com.hoomoomoo.im.model.SysRoleMenuModel">
+    <insert id="saveRoleMenu" parameterType="im.model.SysRoleMenuModel">
         insert into sys_role_menu(
             role_menu_id,
             menu_id,

@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description 系统级别公用服务
- * @package im.service.common
+ * @package com.hoomoomoo.im.service.common
  * @date 2019/08/04
  */
 

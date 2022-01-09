@@ -5,7 +5,7 @@ import lombok.Data;
 /**
  * @author
  * @description TODO
- * @package im.model
+ * @package com.hoomoomoo.im.model
  * @date 2020/11/20
  */
 @Data

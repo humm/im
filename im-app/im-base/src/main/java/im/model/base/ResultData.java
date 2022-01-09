@@ -9,7 +9,7 @@ import static im.consts.BaseCueConst.OPERATE_SUCCESS;
 /**
  * @author hoomoomoo
  * @description 返回结果集
- * @package im.model.common
+ * @package com.hoomoomoo.im.model.common
  * @date 2019/08/05
  */
 

@@ -9,7 +9,7 @@ import static im.consts.BaseConst.STR_1;
 /**
  * @author hoomoomoo
  * @description 模块配置实体类
- * @package im.model
+ * @package com.hoomoomoo.im.model
  * @date 2019/11/02
  */
 

@@ -24,7 +24,7 @@ import static im.consts.BaseCueConst.LOG_OPERATE_TYPE_SELECT;
 /**
  * @Author hoomoomoo
  * @Description 首页控制类
- * @package im.controller
+ * @package com.hoomoomoo.im.controller
  * @Date 2020/06/20
  */
 

@@ -12,7 +12,7 @@ import static im.config.RunDataConfig.LOG_REQUEST_TAG;
 /**
  * @author hoomoomoo
  * @description 日志工具类
- * @package im.util
+ * @package com.hoomoomoo.im.util
  * @date 2019/08/12
  */
 

@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * @author hoomoomoo
  * @description 最近一次操作类型
- * @package im.model.common
+ * @package com.hoomoomoo.im.model.common
  * @date 2019/09/01
  */
 

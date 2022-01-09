@@ -7,7 +7,7 @@ import lombok.Data;
 /**
  * @author hoomoomoo
  * @description 邮件配置实体类
- * @package im.config.bean
+ * @package com.hoomoomoo.im.config.bean
  * @date 2019/08/04
  */
 

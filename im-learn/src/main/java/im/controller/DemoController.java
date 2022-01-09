@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * @author
  * @description TODO
- * @package im.controller
+ * @package com.hoomoomoo.im.controller
  * @date 2020/10/24
  */
 

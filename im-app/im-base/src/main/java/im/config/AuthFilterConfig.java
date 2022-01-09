@@ -25,7 +25,7 @@ import static im.consts.WeChatConst.WECHAT_REQUEST;
 /**
  * @author hoomoomoo
  * @description 权限过滤器
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2020/03/21
  */
 

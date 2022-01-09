@@ -11,7 +11,7 @@ import java.util.Date;
 /**
  * @author hoomoomoo
  * @description 登入日志实体类
- * @package im.model
+ * @package com.hoomoomoo.im.model
  * @date 2019/10/26
  */
 

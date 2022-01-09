@@ -35,7 +35,7 @@ import static im.consts.ParameterConst.USER_DEFAULT_PASSWORD;
 /**
  * @author hoomoomoo
  * @description 用户信息服务实现类
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2019/08/11
  */
 

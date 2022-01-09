@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * @author hoomoomoo
  * @description json工具类
- * @package im.util
+ * @package com.hoomoomoo.im.util
  * @date 2020/02/08
  */
 

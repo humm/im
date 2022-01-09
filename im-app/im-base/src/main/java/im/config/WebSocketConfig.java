@@ -8,7 +8,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 /**
  * @author hoomoomoo
  * @description WebSocket配置类
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2019/08/09
  */
 

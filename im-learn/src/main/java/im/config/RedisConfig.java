@@ -18,7 +18,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 /**
  * @author
  * @description TODO
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2020/11/07
  */
 

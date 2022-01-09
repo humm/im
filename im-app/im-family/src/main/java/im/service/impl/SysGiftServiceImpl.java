@@ -32,7 +32,7 @@ import static im.consts.DictionaryConst.*;
 /**
  * @author hoomoomoo
  * @description 随礼信息实现类
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2019/09/07
  */
 

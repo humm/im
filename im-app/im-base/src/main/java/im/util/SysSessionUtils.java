@@ -5,7 +5,7 @@ import im.model.base.SessionBean;
 /**
  * @author hoomoomoo
  * @description Session 工具类
- * @package im.util
+ * @package com.hoomoomoo.im.util
  * @date 2019/08/08
  */
 

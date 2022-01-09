@@ -16,7 +16,7 @@ import static im.consts.BaseConst.*;
 /**
  * @author hoomoomoo
  * @description 配置sql服务实现类
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2019/11/23
  */
 

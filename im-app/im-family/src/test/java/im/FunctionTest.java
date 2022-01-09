@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * @author hoomoomoo
  * @description 功能测试
- * @package im.test
+ * @package com.hoomoomoo.im.test
  * @date 2019/08/08
  */
 

@@ -19,7 +19,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 /**
  * @author hoomoomoo
  * @description Swagger配置
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2019/08/08
  */
 

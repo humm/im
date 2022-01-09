@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author hoomoomoo
  * @description 公用参数配置类
- * @package im.config.bean
+ * @package com.hoomoomoo.im.config.bean
  * @date 2019/08/29
  */
 

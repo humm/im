@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * @author hoomoomoo
  * @description 微信文本消息实体类
- * @package im.model
+ * @package com.hoomoomoo.im.model
  * @date 2020/02/27
  */
 

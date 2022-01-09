@@ -19,7 +19,7 @@ import static im.consts.BaseCueConst.*;
 /**
  * @author hoomoomoo
  * @description 系统参数控制类
- * @package im.controller
+ * @package com.hoomoomoo.im.controller
  * @date 2019/10/20
  */
 

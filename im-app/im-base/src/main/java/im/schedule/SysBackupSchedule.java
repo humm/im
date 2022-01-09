@@ -21,7 +21,7 @@ import static im.consts.BaseCueConst.*;
 /**
  * @author hoomoomoo
  * @description 系统备份处理定时任务
- * @package im.schedule
+ * @package com.hoomoomoo.im.schedule
  * @date 2020/02/10
  */
 

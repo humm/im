@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author hoomoomoo
  * @description 数据库连接配置类
- * @package im.config.bean
+ * @package com.hoomoomoo.im.config.bean
  * @date 2019/11/23
  */
 

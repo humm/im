@@ -9,7 +9,7 @@ import im.model.base.ResultData;
 /**
  * @author hoomoomoo
  * @description 收入信息服务类
- * @package im.service.common
+ * @package com.hoomoomoo.im.service.common
  * @date 2019/08/10
  */
 

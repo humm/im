@@ -10,7 +10,7 @@ import java.util.Date;
 /**
  * @author hoomoomoo
  * @description 实体dto
- * @package im.model.common
+ * @package com.hoomoomoo.im.model.common
  * @date 2019/08/08
  */
 

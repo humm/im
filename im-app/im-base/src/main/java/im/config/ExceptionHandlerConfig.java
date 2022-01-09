@@ -24,7 +24,7 @@ import static javax.servlet.RequestDispatcher.ERROR_STATUS_CODE;
 /**
  * @author hoomoomoo
  * @description 全局异常处理
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2019/10/19
  */
 

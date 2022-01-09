@@ -56,7 +56,7 @@ import static im.consts.ParameterConst.*;
 /**
  * @author hoomoomoo
  * @description 系统级别公用服务
- * @package im.service.common.imp
+ * @package com.hoomoomoo.im.service.common.imp
  * @date 2019/08/04
  */
 

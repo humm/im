@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description 用户信息服务类
- * @package im.service
+ * @package com.hoomoomoo.im.service
  * @date 2019/08/11
  */
 

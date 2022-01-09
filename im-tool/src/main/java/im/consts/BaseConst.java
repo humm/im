@@ -3,7 +3,7 @@ package im.consts;
 /**
  * @author hoomoomoo
  * @description 常量类
- * @package im.consts
+ * @package com.hoomoomoo.im.consts
  * @date 2020/09/10
  */
 

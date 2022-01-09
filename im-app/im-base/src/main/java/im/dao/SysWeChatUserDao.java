@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description 微信用户信息dao
- * @package im.dao
+ * @package com.hoomoomoo.im.dao
  * @date 2020/02/28
  */
 

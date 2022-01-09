@@ -1,8 +1,8 @@
-package com.hoomoomoo.im;
+package im;
 
-import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.SvnUtils;
-import com.hoomoomoo.im.utils.UnZipRarUtils;
+import im.utils.CommonUtils;
+import im.utils.SvnUtils;
+import im.utils.UnZipRarUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiConsole;
@@ -15,16 +15,16 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static com.hoomoomoo.im.consts.BaseConst.*;
+import static im.consts.BaseConst.*;
 
 /**
  * @Author hoomoomoo
  * @Description 文件工具类
- * @package com.hoomoomoo.im
+ * @package im
  * @Date 2020/06/07
  */
 
-public class ImFileUtils {
+public class Starter {
 
     /**
      * 应用名称
@@ -1048,7 +1048,7 @@ public class ImFileUtils {
      */
     private static String checkFile(String fileName, boolean changeName) {
         if (START_MODE_PROJECT.equals(START_MODE) && changeName) {
-            fileName = ImFileUtils.class.getClassLoader().getResource(fileName).getFile();
+            fileName = Starter.class.getClassLoader().getResource(fileName).getFile();
         }
         File file = new File(fileName);
         if (!file.exists() || file.isDirectory()) {
@@ -1066,7 +1066,7 @@ public class ImFileUtils {
      * @return:
      */
     private static void getStartMode() {
-        URL url = ImFileUtils.class.getResource("ImFileUtils.class");
+        URL url = Starter.class.getResource("Starter.class");
         if (url.toString().startsWith(START_MODE_JAR)) {
             START_MODE = START_MODE_JAR;
         } else {

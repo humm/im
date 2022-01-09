@@ -31,7 +31,7 @@ import static im.consts.ParameterConst.COOKIE_TIMEOUT;
 /**
  * @author hoomoomoo
  * @description 用户登录服务实现类
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2019/10/14
  */
 

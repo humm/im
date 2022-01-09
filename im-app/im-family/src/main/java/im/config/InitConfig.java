@@ -14,7 +14,7 @@ import static im.consts.BaseCueConst.*;
 /**
  * @author hoomoomoo
  * @description 初始化配置
- * @package im.config.bean
+ * @package com.hoomoomoo.im.config.bean
  * @date 2019/08/04
  */
 

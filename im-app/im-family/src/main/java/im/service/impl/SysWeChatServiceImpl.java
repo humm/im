@@ -36,7 +36,7 @@ import static im.consts.WeChatConst.*;
 /**
  * @author hoomoomoo
  * @description 微信消息服务实现类
- * @package im.service.impl
+ * @package com.hoomoomoo.im.service.impl
  * @date 2020/02/27
  */
 

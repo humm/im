@@ -18,7 +18,7 @@ import static im.consts.BaseCueConst.LOG_BUSINESS_TYPE_FILTER;
 /**
  * @author hoomoomoo
  * @description 系统拦截器配置
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2019/09/01
  */
 

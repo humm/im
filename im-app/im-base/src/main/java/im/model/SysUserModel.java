@@ -8,7 +8,7 @@ import lombok.Data;
 /**
  * @author hoomoomoo
  * @description 用户信息实体类
- * @package im.model
+ * @package com.hoomoomoo.im.model
  * @date 2019/08/11
  */
 

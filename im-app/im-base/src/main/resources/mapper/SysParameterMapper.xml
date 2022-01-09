@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hoomoomoo.im.dao.SysParameterDao">
+<mapper namespace="im.dao.SysParameterDao">
 
     <sql id="Base_Column_List">
         parameter_code parameterCode,
@@ -14,8 +14,8 @@
         is_edit isEdit
     </sql>
 
-    <select id="selectList" parameterType="com.hoomoomoo.im.model.SysParameterQueryModel"
-            resultType="com.hoomoomoo.im.model.SysParameterModel">
+    <select id="selectList" parameterType="im.model.SysParameterQueryModel"
+            resultType="im.model.SysParameterModel">
         select
             <include refid="Base_Column_List"/>
         from sys_parameter
@@ -28,8 +28,8 @@
         order by parameter_order
     </select>
 
-    <select id="selectSysParameter" parameterType="com.hoomoomoo.im.model.SysParameterQueryModel"
-            resultType="com.hoomoomoo.im.model.SysParameterModel">
+    <select id="selectSysParameter" parameterType="im.model.SysParameterQueryModel"
+            resultType="im.model.SysParameterModel">
         select
             <include refid="Base_Column_List"/>
         from sys_parameter
@@ -40,15 +40,15 @@
         </where>
     </select>
 
-    <select id="save" parameterType="com.hoomoomoo.im.model.SysParameterModel">
+    <select id="save" parameterType="im.model.SysParameterModel">
         update sys_parameter set parameter_value = trim(#{parameterValue}) where parameter_code = #{parameterCode}
     </select>
 
-    <update id="updateBackupDir" parameterType="com.hoomoomoo.im.model.SysParameterModel">
+    <update id="updateBackupDir" parameterType="im.model.SysParameterModel">
         create or replace directory backup_dir as ${parameterValue}
     </update>
 
-    <select id="selectMailConfig" resultType="com.hoomoomoo.im.model.SysParameterModel">
+    <select id="selectMailConfig" resultType="im.model.SysParameterModel">
         select
           <include refid="Base_Column_List"/>
         from sys_parameter

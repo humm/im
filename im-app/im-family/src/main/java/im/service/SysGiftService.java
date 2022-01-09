@@ -8,7 +8,7 @@ import im.model.base.ResultData;
 /**
  * @author hoomoomoo
  * @description 随礼信息服务类
- * @package im.service
+ * @package com.hoomoomoo.im.service
  * @date 2019/09/07
  */
 

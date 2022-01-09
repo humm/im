@@ -3,7 +3,7 @@ package im.consts;
 /**
  * @author hoomoomoo
  * @description 参数信息常量类
- * @package im.consts
+ * @package com.hoomoomoo.im.consts
  * @date 2019/10/25
  */
 public class ParameterConst {

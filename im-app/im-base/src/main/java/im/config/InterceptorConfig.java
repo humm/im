@@ -17,7 +17,7 @@ import static im.consts.BaseCueConst.*;
 /**
  * @author hoomoomoo
  * @description 系统拦截器
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2019/09/01
  */
 

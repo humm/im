@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description 微信流程步骤服务体类
- * @package im.service
+ * @package com.hoomoomoo.im.service
  * @date 2020/02/29
  */
 public interface SysWeChatFlowService {

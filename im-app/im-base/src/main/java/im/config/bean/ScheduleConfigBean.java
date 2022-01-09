@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 /**
  * @author hoomoomoo
  * @description 定时任务配置
- * @package im.config.dto
+ * @package com.hoomoomoo.im.config.dto
  * @date 2019/08/03
  */
 

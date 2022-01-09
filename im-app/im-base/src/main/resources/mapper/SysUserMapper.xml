@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.hoomoomoo.im.dao.SysUserDao">
+<mapper namespace="im.dao.SysUserDao">
 
     <sql id="Base_Column_List">
         user_id userId, user_code userCode,
@@ -11,8 +11,8 @@
         substr(user_status, instr(user_status, '-') + 1) userStatusCode
     </sql>
 
-    <select id="selectSysUser" parameterType="com.hoomoomoo.im.model.SysUserQueryModel"
-            resultType="com.hoomoomoo.im.model.SysUserModel">
+    <select id="selectSysUser" parameterType="im.model.SysUserQueryModel"
+            resultType="im.model.SysUserModel">
         select
             <include refid="Base_Column_List"/>
         from sys_user
@@ -36,8 +36,8 @@
         order by user_id
     </select>
 
-    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysUserQueryModel"
-            resultType="com.hoomoomoo.im.model.SysUserModel">
+    <select id="selectPage" parameterType="im.model.SysUserQueryModel"
+            resultType="im.model.SysUserModel">
         select
             <include refid="Base_Column_List"/>
         from sys_user
@@ -87,8 +87,8 @@
         </where>
     </update>
 
-    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysUserQueryModel"
-            resultType="com.hoomoomoo.im.model.SysUserModel">
+    <select id="selectOne" parameterType="im.model.SysUserQueryModel"
+            resultType="im.model.SysUserModel">
         select
             <include refid="Base_Column_List"/>
         from sys_user
@@ -108,7 +108,7 @@
         </where>
     </select>
 
-    <update id="save" parameterType="com.hoomoomoo.im.model.SysUserModel">
+    <update id="save" parameterType="im.model.SysUserModel">
         merge into sys_user a
         using (select #{userId} as user_id from dual) b
         on (a.user_id = b.user_id)
@@ -160,7 +160,7 @@
             )
     </update>
 
-    <select id="checkUserCode" parameterType="com.hoomoomoo.im.model.SysUserQueryModel"
+    <select id="checkUserCode" parameterType="im.model.SysUserQueryModel"
             resultType="java.lang.Boolean">
         select case when count(1) > 0 then '0' else '1' end isExist
         from sys_user
@@ -170,11 +170,11 @@
         </if>
     </select>
 
-    <delete id="deleteUserRole" parameterType="com.hoomoomoo.im.model.SysUserModel">
+    <delete id="deleteUserRole" parameterType="im.model.SysUserModel">
         delete from sys_user_role where user_id = #{userId}
     </delete>
 
-    <insert id="saveUserRole" parameterType="com.hoomoomoo.im.model.SysUserRoleModel">
+    <insert id="saveUserRole" parameterType="im.model.SysUserRoleModel">
         insert into sys_user_role(
             user_role_id,
             user_id,
@@ -186,8 +186,8 @@
         )
     </insert>
 
-    <select id="selectUserRole" parameterType="com.hoomoomoo.im.model.SysUserQueryModel"
-            resultType="com.hoomoomoo.im.model.SysUserRoleModel">
+    <select id="selectUserRole" parameterType="im.model.SysUserQueryModel"
+            resultType="im.model.SysUserRoleModel">
         select
             user_role_id userRoleId,
             user_id userId,
@@ -196,7 +196,7 @@
         where user_id = #{userId}
     </select>
 
-    <update id="changPassword" parameterType="com.hoomoomoo.im.model.SysUserModel">
+    <update id="changPassword" parameterType="im.model.SysUserModel">
         update sys_user set user_password = #{userPassword} where user_id = #{userId}
     </update>
 

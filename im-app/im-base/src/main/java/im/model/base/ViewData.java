@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * @author hoomoomoo
  * @description 页面返回实体类
- * @package im.model.common
+ * @package com.hoomoomoo.im.model.common
  * @date 2019/08/23
  */
 

@@ -10,7 +10,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author hoomoomoo
  * @description 运行内存数据
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2019/08/08
  */
 

@@ -3,7 +3,7 @@ package im.consts;
 /**
  * @author hoomoomoo
  * @description 字典常量类
- * @package im.consts
+ * @package com.hoomoomoo.im.consts
  * @date 2019/08/23
  */
 public class DictionaryConst {

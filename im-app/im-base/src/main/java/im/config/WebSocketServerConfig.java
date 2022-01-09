@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 /**
  * @author hoomoomoo
  * @description WebSocket服务端
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2019/08/09
  */
 @Component

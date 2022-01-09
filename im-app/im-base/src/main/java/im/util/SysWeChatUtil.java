@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * @author hoomoomoo
  * @description
- * @package im.util
+ * @package com.hoomoomoo.im.util
  * @date 2020/02/27
  */
 public class SysWeChatUtil {

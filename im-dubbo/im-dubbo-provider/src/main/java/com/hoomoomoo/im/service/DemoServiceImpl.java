@@ -1,8 +1,8 @@
-package com.hoomoomoo.im.service;
+package im.service;
 
 import com.alibaba.dubbo.config.annotation.Service;
-import com.hoomoomoo.im.api.DemoService;
-import com.hoomoomoo.im.model.DemoModel;
+import im.api.DemoService;
+import im.model.DemoModel;
 
 import java.util.ArrayList;
 import java.util.List;

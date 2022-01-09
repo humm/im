@@ -3,7 +3,7 @@ package im.consts;
 /**
  * @author hoomoomoo
  * @description 提示信息常量
- * @package im.consts
+ * @package com.hoomoomoo.im.consts
  * @date 2019/08/03
  */
 

@@ -20,7 +20,7 @@ import static im.config.RunDataConfig.CONFIG_SQL;
 /**
  * @author hoomoomoo
  * @description 测试控制类
- * @package im.test.controller
+ * @package com.hoomoomoo.im.test.controller
  * @date 2019/08/08
  */
 

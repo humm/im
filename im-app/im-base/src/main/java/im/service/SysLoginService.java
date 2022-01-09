@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * @author hoomoomoo
  * @description 用户登录服务类
- * @package im.service
+ * @package com.hoomoomoo.im.service
  * @date 2019/10/14
  */
 

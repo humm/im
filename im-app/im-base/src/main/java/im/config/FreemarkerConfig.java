@@ -17,7 +17,7 @@ import java.util.Map;
 /**
  * @author hoomoomoo
  * @description freeMarker配置类
- * @package im.config
+ * @package com.hoomoomoo.im.config
  * @date 2019/08/10
  */
 

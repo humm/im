@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description 接口信息处理返回结果实体类
- * @package im.model
+ * @package com.hoomoomoo.im.model
  * @date 2020/03/05
  */
 

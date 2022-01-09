@@ -5,7 +5,7 @@ import im.model.base.ResultData;
 /**
  * @author hoomoomoo
  * @description 修订信息服务类
- * @package im.service
+ * @package com.hoomoomoo.im.service
  * @date 2019/11/23
  */
 

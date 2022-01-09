@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * @author hoomoomoo
  * @description 配置sql服务类
- * @package im.service
+ * @package com.hoomoomoo.im.service
  * @date 2019/11/23
  */
 
