@@ -123,6 +123,18 @@ public class AppConfigDto extends BaseDto {
 
     private String jdAppraiseWaitService;
 
+    private String jdShowOrder;
+
+    private String jdShowOrderExecute;
+
+    private String jdShowOrderInfo;
+
+    private String jdAppendAppraise;
+
+    private String jdAppendAppraiseExecute;
+
+    private String jdServiceAppraise;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;

@@ -1,8 +1,13 @@
 package com.hoomoomoo.im.util;
 
+import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
+import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
+import com.hoomoomoo.im.utils.OutputUtils;
+import javafx.scene.control.TableView;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Connection;
 
 import java.util.HashMap;
@@ -18,6 +23,19 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @date 2022/1/9
  */
 public class ShoppingCommonUtil {
+
+    public static boolean checkConfig(TableView<?> log, String functionType) throws Exception {
+        boolean flag = true;
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        if (functionType.equals(FunctionConfig.WAIT_APPRAISE.getCode()) || functionType.equals(FunctionConfig.SHOW_ORDER.getCode())
+                || functionType.equals(FunctionConfig.APPEND_APPRAISE.getCode()) || functionType.equals(FunctionConfig.SERVICE_APPRAISE.getCode())) {
+            if (StringUtils.isBlank(appConfigDto.getJdCookie())) {
+                OutputUtils.info(log, MSG_WAIT_APPRAISE_JD_COOKIE);
+                flag = false;
+            }
+        }
+        return flag;
+    }
 
     public static void initCookie(AppConfigDto appConfigDto, Connection connection) {
         connection.header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36");
@@ -50,6 +68,31 @@ public class ShoppingCommonUtil {
             }
         }
         return count.size();
+    }
+
+    public static String getHrefId(String href) {
+        String hrefId = BaseConst.SYMBOL_EMPTY;
+        if (StringUtils.isBlank(href)) {
+            return hrefId;
+        }
+        int indexStart = href.lastIndexOf(BaseConst.SYMBOL_SLASH);
+        int indexEnd = href.lastIndexOf(BaseConst.SYMBOL_POINT);
+        if (indexEnd != -1 && indexEnd > indexStart) {
+            hrefId = href.substring(indexStart + 1, indexEnd);
+        }
+        return hrefId;
+    }
+
+    public static String getJdOrderId(String href) {
+        String orderId = BaseConst.SYMBOL_EMPTY;
+        if (StringUtils.isBlank(href)) {
+            return orderId;
+        }
+        int index = href.lastIndexOf(KEY_ORDER_ID);
+        if (index == -1) {
+            return orderId;
+        }
+        return href.substring(index + KEY_ORDER_ID.length() + 1);
     }
 }
 

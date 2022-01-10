@@ -17,6 +17,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -29,8 +30,7 @@ import java.net.URLEncoder;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.PROCESS_INFO;
-import static com.hoomoomoo.im.consts.FunctionConfig.WAIT_APPRAISE;
+import static com.hoomoomoo.im.consts.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -38,7 +38,7 @@ import static com.hoomoomoo.im.consts.FunctionConfig.WAIT_APPRAISE;
  * @package com.hoomoomoo.im.controller
  * @date 2022/1/8
  */
-public class WaitAppraiseController extends BaseController implements Initializable {
+public class AppendAppraiseController extends BaseController implements Initializable {
 
     @FXML
     private Label orderNum;
@@ -65,9 +65,9 @@ public class WaitAppraiseController extends BaseController implements Initializa
     void execute(ActionEvent event) {
         try {
             OutputUtils.clearLog(log);
-            LoggerUtils.info(String.format(BaseConst.MSG_USE, WAIT_APPRAISE.getName()));
+            LoggerUtils.info(String.format(BaseConst.MSG_USE, SHOW_ORDER.getName()));
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (!ShoppingCommonUtil.checkConfig(log, WAIT_APPRAISE.getCode())) {
+            if (!ShoppingCommonUtil.checkConfig(log, APPEND_APPRAISE.getCode())) {
                 return;
             }
             setProgress(0);
@@ -83,7 +83,7 @@ public class WaitAppraiseController extends BaseController implements Initializa
         new Thread(() -> {
             try {
                 execute.setDisable(true);
-                initWaitAppraise(appConfigDto, true);
+                initAppendAppraise(appConfigDto, true);
                 List<String> logs = new ArrayList<>();
                 Date currentDate = new Date();
                 if (CollectionUtils.isNotEmpty(goodsDtoList)) {
@@ -92,23 +92,23 @@ public class WaitAppraiseController extends BaseController implements Initializa
                         OutputUtils.info(log, goodsDto);
                         ShoppingCommonUtil.initLogs(logs, goodsDto);
                         doGoodsAppraise(appConfigDto, goodsDto);
-                        doServiceAppraise(appConfigDto, goodsDto);
                         Thread.sleep(Integer.valueOf(appConfigDto.getJdIntervalTime()) * 1000);
                         GoodsDto goods = (GoodsDto)BeanUtils.cloneBean(goodsDto);
                         goods.setStatus(NAME_APPRAISE_SUCCESS);
                         OutputUtils.info(log, goods);
                         ShoppingCommonUtil.initLogs(logs, goods);
+                        this.orderNumValue--;
                         this.goodsNumValue--;
                         OutputUtils.info(goodsNum, String.valueOf(goodsNumValue));
-                        OutputUtils.info(orderNum, String.valueOf(ShoppingCommonUtil.getOrderNum(goodsDtoList)));
+                        OutputUtils.info(orderNum, String.valueOf(orderNumValue));
                     }
                     GoodsDto success = new GoodsDto();
                     success.setGoodsName(NAME_APPRAISE_COMPLETE);
                     OutputUtils.info(log, success);
                 }
-                LoggerUtils.writeWaitAppraiseInfo(currentDate, logs);
+                LoggerUtils.writeAppendAppraise(currentDate, logs);
                 setProgress(1);
-                initWaitAppraise(appConfigDto, false);
+                initAppendAppraise(appConfigDto, false);
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 OutputUtils.info(log, e.toString());
@@ -118,73 +118,21 @@ public class WaitAppraiseController extends BaseController implements Initializa
         }).start();
     }
 
-    public static String getGoodsAppraiseInfo(AppConfigDto appConfigDto, String goodsId) throws IOException {
-        int appraiseNum = Integer.valueOf(appConfigDto.getJdAppraiseNum());
-        String appraiseMsg = appConfigDto.getJdAppraiseDefault();
-        Connection connection = Jsoup.connect(appConfigDto.getJdAppraiseInfo() + "?productId=" + goodsId + "&score=0&sortType=5&page=0&pageSize=10&isShadowSku=0&rid=0&fold=1");
-        ShoppingCommonUtil.initCookie(appConfigDto,connection);
-        Document appraise = connection.get();
-        JSONObject appraiseInfo = JSONObject.parseObject(appraise.select("body").text());
-        if (appraiseInfo != null && !appraiseInfo.isEmpty()) {
-            JSONArray appraiseList = (JSONArray)appraiseInfo.get("comments");
-            if (appraiseList != null && !appraiseList.isEmpty()) {
-                if (appraiseList.size() < appraiseNum) {
-                    appraiseMsg = ((JSONObject) appraiseList.get(0)).get("content").toString();
-                } else {
-                    appraiseMsg = BaseConst.SYMBOL_EMPTY;
-                    for (int i=0; i<appraiseNum; i++) {
-                        appraiseMsg += ((JSONObject) appraiseList.get(i)).get("content").toString() + BaseConst.SYMBOL_NEXT_LINE;
-                    }
-                }
-            }
-        }
-        return appraiseMsg;
-    }
-
-    public static Document doServiceAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
-        doServiceAppraise(appConfigDto, goodsDto, STR_1);
-        return doServiceAppraise(appConfigDto, goodsDto, STR_2);
-    }
-
-    private static Document doServiceAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto, String type) throws IOException {
-        Connection connection = Jsoup.connect(appConfigDto.getJdAppraiseWaitService() + "?voteid=145&ruleid=" + goodsDto.getOrderId());
-        ShoppingCommonUtil.initCookie(appConfigDto, connection);
-        Map<String, String> requestData = new HashMap<>(6);
-        requestData.put("oid", goodsDto.getOrderId());
-        requestData.put("gid", BaseConst.STR_69);
-        requestData.put("sid", BaseConst.STR_549656);
-        requestData.put("stid", BaseConst.STR_0);
-        requestData.put("tags", BaseConst.SYMBOL_EMPTY);
-        if (STR_1.equals(type)) {
-            requestData.put("ro1827", "1827A1");
-            requestData.put("ro1828", "1828A1");
-            requestData.put("ro1829", "1829A1");
-        } else {
-            requestData.put("ro591", "591A1");
-            requestData.put("ro592", "592A1");
-            requestData.put("ro593", "593A1");
-            requestData.put("ro899", "899A1");
-            requestData.put("ro900", "900A1");
-        }
-        connection.data(requestData);
-        return connection.post();
-    }
-
     private static Document doGoodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
-        Connection connection = Jsoup.connect(appConfigDto.getJdAppraiseWaitGoods());
+        Connection connection = Jsoup.connect(appConfigDto.getJdAppendAppraiseExecute());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);
         Map<String, String> requestData = new HashMap<>(6);
         requestData.put("orderId", goodsDto.getOrderId());
         requestData.put("productId", goodsDto.getGoodsId());
-        requestData.put("score", BaseConst.STR_5);
-        requestData.put("saveStatus", BaseConst.STR_1);
-        requestData.put("anonymousFlag", BaseConst.STR_1);
         requestData.put("content", URLEncoder.encode(goodsDto.getAppraiseInfo()));
+        requestData.put("imgs", SYMBOL_EMPTY);
+        requestData.put("anonymousFlag", STR_1);
+        requestData.put("score", STR_5);
         connection.data(requestData);
         return connection.post();
     }
 
-    private void initWaitAppraise(AppConfigDto appConfigDto, boolean initLog) {
+    private void initAppendAppraise(AppConfigDto appConfigDto, boolean initLog) {
         orderNumValue = 0;
         goodsNumValue = 0;
         OutputUtils.clearLog(orderGoodsList);
@@ -193,21 +141,26 @@ public class WaitAppraiseController extends BaseController implements Initializa
         }
         goodsDtoList = new ArrayList<>();
         try {
-            Document waitAppraise = getWaitAppraise(appConfigDto);
-            if (waitAppraise.text().contains(NAME_JD_LOGIN)) {
+            Document showOrder = getAppendAppraise(appConfigDto);
+            if (showOrder.text().contains(NAME_JD_LOGIN)) {
                 GoodsDto fail = new GoodsDto();
                 fail.setGoodsName(NAME_JD_LOGIN_FAIL);
                 OutputUtils.info(log, fail);
                 return;
             }
-            Elements orderList = waitAppraise.select("table.td-void.order-tb tbody");
+            Elements orderList = showOrder.select("table.td-void.order-tb tbody tr.tr-bd");
             for (Element order : orderList){
-                String orderId = order.select("tr td span.number a").text();
-                Elements operateList = order.select("tr td div.operate a");
+                Elements goodsIdEle = order.select("div.goods-item div.p-name a");
+                String goodsIdHref = goodsIdEle.attr(KEY_HREF);
+                String goodsName = goodsIdEle.text();
+                String goodsId = ShoppingCommonUtil.getHrefId(goodsIdHref);
+                Elements operateList = order.select("div.operate a");
+                String orderId = SYMBOL_EMPTY;
                 boolean isOperate = false;
                 for (Element operate : operateList) {
                     String operateName = operate.text();
-                    if (NAME_APPRAISE.equals(operateName)) {
+                    if (NAME_JD_APPEND_APPRAISEING.equals(operateName)) {
+                        orderId = ShoppingCommonUtil.getJdOrderId(operate.attr(KEY_HREF));
                         isOperate = true;
                     }
                 }
@@ -215,21 +168,15 @@ public class WaitAppraiseController extends BaseController implements Initializa
                     continue;
                 }
                 this.orderNumValue++;
-                Elements goodsList = order.select("tr td div.p-name a");
-                for (Element goods : goodsList) {
-                    String goodsName = goods.text();
-                    String goodsHref = goods.attr(KEY_HREF);
-                    String goodsId = ShoppingCommonUtil.getHrefId(goodsHref);
-                    String appraiseInfo = getGoodsAppraiseInfo(appConfigDto, goodsId);
-                    GoodsDto goodsDto = new GoodsDto();
-                    goodsDto.setOrderId(orderId);
-                    goodsDto.setGoodsId(goodsId);
-                    goodsDto.setGoodsName(goodsName);
-                    goodsDto.setAppraiseInfo(appraiseInfo);
-                    goodsDtoList.add(goodsDto);
-                    this.goodsNumValue++;
-                    OutputUtils.info(orderGoodsList, goodsDto);
-                }
+                this.goodsNumValue++;
+                String appraiseInfo = WaitAppraiseController.getGoodsAppraiseInfo(appConfigDto, goodsId);
+                GoodsDto goodsDto = new GoodsDto();
+                goodsDto.setOrderId(orderId);
+                goodsDto.setGoodsId(goodsId);
+                goodsDto.setGoodsName(goodsName);
+                goodsDto.setAppraiseInfo(appraiseInfo);
+                goodsDtoList.add(goodsDto);
+                OutputUtils.info(orderGoodsList, goodsDto);
             }
             OutputUtils.info(orderNum, String.valueOf(orderNumValue));
             OutputUtils.info(goodsNum, String.valueOf(goodsNumValue));
@@ -238,8 +185,8 @@ public class WaitAppraiseController extends BaseController implements Initializa
         }
     }
 
-    private static Document getWaitAppraise(AppConfigDto appConfigDto) throws IOException {
-        Connection connection = Jsoup.connect(appConfigDto.getJdAppraiseWait());
+    private static Document getAppendAppraise(AppConfigDto appConfigDto) throws IOException {
+        Connection connection = Jsoup.connect(appConfigDto.getJdAppendAppraise());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);
         return connection.get();
     }
@@ -248,7 +195,7 @@ public class WaitAppraiseController extends BaseController implements Initializa
     public void initialize(URL location, ResourceBundle resources) {
         try {
             /*AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            initWaitAppraise(appConfigDto, true);*/
+            initAppendAppraise(appConfigDto, true);*/
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

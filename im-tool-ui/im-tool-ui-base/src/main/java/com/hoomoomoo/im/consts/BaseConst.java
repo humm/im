@@ -67,6 +67,8 @@ public class BaseConst {
     public static final String KEY_ADD_FORM = "addForm.";
     public static final String KEY_UPDATE_FORM = "updateForm.";
     public static final String KEY_BATCH_UPDATE_FORM = "batchUpdateForm.";
+    public static final String KEY_HREF = "href";
+    public static final String KEY_ORDER_ID = "orderId";
 
     public static final String KEY_DICT = "dict";
     public static final String KEY_MULTI = "multi";
@@ -96,13 +98,21 @@ public class BaseConst {
     public static final String NAME_END = "结束";
     public static final String NAME_SVN_DESCRIBE = "[需求描述]";
     public static final String NAME_APPRAISE = "评价";
+    public static final String NAME_SERVICE_APPRAISE = "服务评价";
+    public static final String NAME_ORDER_DETAIL = "订单详情";
     public static final String NAME_APPRAISEING = "评价中";
     public static final String NAME_APPRAISE_SUCCESS = "成功";
     public static final String NAME_APPRAISE_COMPLETE = "评价完成";
+    public static final String NAME_JD_LOGIN = "欢迎登录";
+    public static final String NAME_JD_LOGIN_FAIL = "未登录，请更新[ jd.cookie ]";
+    public static final String NAME_JD_SHOW_ORDER = "继续晒单";
+    public static final String NAME_JD_APPEND_APPRAISEING = "追评";
 
     public final static String SECURITY_FLAG = "+++";
 
     public final static String SYMBOL_EMPTY = "";
+    public final static String SYMBOL_AND = "&";
+    public final static String SYMBOL_EQUAL = "=";
     public final static String SYMBOL_SPACE = " ";
     public final static String SYMBOL_SPACE_2 = "  ";
     public final static String SYMBOL_SPACE_3 = "   ";
@@ -141,6 +151,8 @@ public class BaseConst {
     public static final String MSG_SVN_STAT_USER = "请设置[ svn.stat.user. ]";
     public static final String MSG_SVN_STAT_INTERVAL = "请设置[ svn.stat.interval ]大于等于5";
     public static final String MSG_GENERATE_CODE_PATH = "请设置[ %s ]路径";
+    public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请设置[ jd.cookie ]";
+
 
     public static final String MSG_OPEN = "打开[ %s ] 功能界面";
     public static final String MSG_USE = "使用[ %s ] 功能";
