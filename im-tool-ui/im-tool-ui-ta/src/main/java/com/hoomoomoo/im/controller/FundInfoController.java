@@ -272,9 +272,12 @@ public class FundInfoController extends BaseController implements Initializable 
                 }
                 FileUtils.writeFile(productPathPg, content, false);
                 infoMsg("pg版本生成 结束");
+                List<String> logList = new ArrayList(3);
+                logList.add(productPath);
+                logList.add(productPathPg);
+                logList.add(productPathMysql);
+                LoggerUtils.writeFundInfo(date, logList);
                 schedule.setProgress(1);
-                LoggerUtils.writeFundInfo(date, productPath);
-                LoggerUtils.writeFundInfo(date, productPathMysql);
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 infoMsg(e.toString());

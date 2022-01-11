@@ -103,10 +103,12 @@ public class BaseConst {
     public static final String NAME_APPRAISEING = "评价中";
     public static final String NAME_APPRAISE_SUCCESS = "成功";
     public static final String NAME_APPRAISE_COMPLETE = "评价完成";
+    public static final String NAME_NO_APPRAISE_GOODS = "无评价商品";
     public static final String NAME_JD_LOGIN = "欢迎登录";
     public static final String NAME_JD_LOGIN_FAIL = "未登录，请更新[ jd.cookie ]";
     public static final String NAME_JD_SHOW_ORDER = "继续晒单";
     public static final String NAME_JD_APPEND_APPRAISEING = "追评";
+    public static final String NAME_APPLICATION_SAVE_SUCCESS = "配置文件修改成功，重新加载完成  ";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -151,7 +153,7 @@ public class BaseConst {
     public static final String MSG_SVN_STAT_USER = "请设置[ svn.stat.user. ]";
     public static final String MSG_SVN_STAT_INTERVAL = "请设置[ svn.stat.interval ]大于等于5";
     public static final String MSG_GENERATE_CODE_PATH = "请设置[ %s ]路径";
-    public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请设置[ jd.cookie ]";
+    public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请更新京东Cookie";
 
 
     public static final String MSG_OPEN = "打开[ %s ] 功能界面";
@@ -177,6 +179,7 @@ public class BaseConst {
     public static final String CMD_KILL_APP = "taskill /f /t /im %s";
 
     public static final String PATH_APP = "/conf/app.conf";
+    public static final String PATH_JD_COOKIE = "/conf/jdCookie.conf";
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
     public static final String PATH_VERSION = "/conf/init/version.init";

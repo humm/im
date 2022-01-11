@@ -135,12 +135,15 @@ public class AppConfigDto extends BaseDto {
 
     private String jdServiceAppraise;
 
+    private Boolean jdInitQuery;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
         this.scriptUpdateSkip = false;
         this.scriptUpdateGenerateFile = false;
         this.appLicenseShow = false;
+        this.jdInitQuery = false;
         this.svnUpdatePath = new ArrayList<>(16);
         this.scriptUpdateTable = new ArrayList<>(16);
         this.svnStatUser = new LinkedHashMap<>(16);

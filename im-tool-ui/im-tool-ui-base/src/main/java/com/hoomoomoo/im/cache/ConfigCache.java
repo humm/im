@@ -156,24 +156,47 @@ public class ConfigCache {
             String password = appConfigDto.getSvnPassword();
             password = SecurityUtils.getDecryptString(password.substring(0, password.length() - 3));
             appConfigDto.setSvnPassword(password);
-            return;
-        }
-        // 加密
-        if (CollectionUtils.isNotEmpty(content)) {
-            for (int i = 0; i < content.size(); i++) {
-                String item = content.get(i);
-                if (item.contains(SYMBOL_EQUALS) && item.startsWith(KEY_SVN_PASSWORD) && !item.endsWith(SECURITY_FLAG)) {
-                    int index = item.indexOf(SYMBOL_EQUALS) + 1;
-                    if (StringUtils.isNotBlank(item.substring(index))) {
-                        String password = SecurityUtils.getEncryptString(item.substring(index)) + SECURITY_FLAG;
-                        item = item.substring(0, index) + password;
-                        content.set(i, item);
+        } else {
+            // 加密
+            if (CollectionUtils.isNotEmpty(content)) {
+                for (int i = 0; i < content.size(); i++) {
+                    String item = content.get(i);
+                    if (item.contains(SYMBOL_EQUALS) && item.startsWith(KEY_SVN_PASSWORD) && !item.endsWith(SECURITY_FLAG)) {
+                        int index = item.indexOf(SYMBOL_EQUALS) + 1;
+                        if (StringUtils.isNotBlank(item.substring(index))) {
+                            String password = SecurityUtils.getEncryptString(item.substring(index)) + SECURITY_FLAG;
+                            item = item.substring(0, index) + password;
+                            content.set(i, item);
+                        }
                     }
+                }
+            }
+            FileUtils.writeFile(confPath, content, false);
+        }
+
+        // 京东配置文件
+        if (appConfigDto != null && APP_CODE_SHOPPING.equals(appCodeCache)) {
+            String jdCookiePath = FileUtils.getFilePath(PATH_JD_COOKIE);
+            List<String> jdCookieContent = FileUtils.readNormalFile(jdCookiePath, false);
+            StringBuilder jdCookie = new StringBuilder();
+            if (!CollectionUtils.isEmpty(jdCookieContent)) {
+                for (String item : jdCookieContent) {
+                    jdCookie.append(item);
+                }
+                String cookie = jdCookie.toString();
+                if (cookie.endsWith(SECURITY_FLAG)) {
+                    // 解密
+                    cookie = SecurityUtils.getDecryptString(cookie.substring(0, cookie.length() - 3));
+                    appConfigDto.setJdCookie(cookie);
+                } else {
+                    // 加密
+                    appConfigDto.setJdCookie(cookie);
+                    cookie = SecurityUtils.getEncryptString(cookie) + SECURITY_FLAG;
+                    FileUtils.writeFile(jdCookiePath, cookie, false);
                 }
             }
         }
 
         LoggerUtils.info(String.format(MSG_ENCRYPT, "用户信息"));
-        FileUtils.writeFile(confPath, content, false);
     }
 }

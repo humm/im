@@ -50,7 +50,7 @@ public class InitConfigTest {
         license.setFunction(function);
         if (StringUtils.isBlank(appFunction)) {
             // 全功能
-            for (FunctionConfig tab : FunctionConfig.values()) {
+            for (FunctionConfig tab : CommonUtils.getAppFunctionConfig(APP_CODE_SHOPPING)) {
                 function.add(new FunctionDto(tab.getCode(), tab.getName()));
             }
         } else {
@@ -108,11 +108,9 @@ public class InitConfigTest {
     @Test
     public void config_03_updateConfig() throws Exception {
         Map<String, String> keys = new LinkedHashMap<>();
-        keys.put("app.tab.show", "10");
+        keys.put("app.tab.show", null);
 
         keys.put("app.user", null);
-
-        keys.put("jd.cookie", null);
 
         String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);
@@ -131,6 +129,10 @@ public class InitConfigTest {
             }
         }
         FileUtils.writeFile(confPath, content, false);
+
+        String jdCookie = FileUtils.getFilePath(PATH_JD_COOKIE);
+        FileUtils.writeFile(jdCookie, new ArrayList<>(), false);
+
     }
 
     /**

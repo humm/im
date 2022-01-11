@@ -247,9 +247,11 @@ public class CommonUtils {
 
     public static boolean checkAuth(String checkType, String functionCode) {
         if (STR_1.equals(checkType)) {
-            return ABOUT_INFO.getCode().equals(functionCode) || CONFIG_SET.getCode().equals(functionCode) || FUNCTION_STAT_INFO.getCode().equals(functionCode);
+            return ABOUT_INFO.getCode().equals(functionCode) || CONFIG_SET.getCode().equals(functionCode)
+                    || FUNCTION_STAT_INFO.getCode().equals(functionCode) || JD_COOKIE.getCode().equals(functionCode);
         } else if (STR_2.equals(checkType)) {
-            return ABOUT_INFO.getMenuId().equals(functionCode) || CONFIG_SET.getMenuId().equals(functionCode) || FUNCTION_STAT_INFO.getMenuId().equals(functionCode);
+            return ABOUT_INFO.getMenuId().equals(functionCode) || CONFIG_SET.getMenuId().equals(functionCode)
+                    || FUNCTION_STAT_INFO.getMenuId().equals(functionCode) || JD_COOKIE.getMenuId().equals(functionCode);
         }
         return false;
     }
@@ -291,6 +293,22 @@ public class CommonUtils {
         }
         matcher.appendTail(sb);
         return sb.toString();
+    }
+
+    public static List<FunctionConfig> getAppFunctionConfig(String appCode) {
+        List<FunctionConfig> functionConfigList = new ArrayList<>();
+        for (FunctionConfig functionConfig : FunctionConfig.values()) {
+            int functionCode = Integer.valueOf(functionConfig.getCode());
+            if (APP_CODE_TA.equals(appCode) && functionCode <= 400) {
+                functionConfigList.add(functionConfig);
+            } else if (APP_CODE_SHOPPING.equals(appCode) && functionCode > 400 && functionCode <= 900) {
+                functionConfigList.add(functionConfig);
+            }
+            if (functionCode > 900) {
+                functionConfigList.add(functionConfig);
+            }
+        }
+        return functionConfigList;
     }
 
 }

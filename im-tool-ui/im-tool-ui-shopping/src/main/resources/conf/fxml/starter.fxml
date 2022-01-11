@@ -24,6 +24,10 @@
                         <MenuItem fx:id="menuItemConfigSet" mnemonicParsing="false" onAction="#openConfigSet"
                                   text="参数设置"/>
                     </items>
+                    <items>
+                        <MenuItem fx:id="menuItemJdCookie" mnemonicParsing="false" onAction="#openJdCookieSet"
+                                  text="京东Cookie设置"/>
+                    </items>
                 </Menu>
                 <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">
                     <items>

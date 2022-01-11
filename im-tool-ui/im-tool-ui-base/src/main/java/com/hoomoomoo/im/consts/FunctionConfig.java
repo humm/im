@@ -8,7 +8,7 @@ package com.hoomoomoo.im.consts;
  */
 public enum FunctionConfig {
 
-    // TA工具组件
+    // TA工具组件 0-400范围
     SVN_LOG("10", "提交记录", "/conf/fxml/svnLog.fxml", "menuItemSvnLog", "svnLog"),
 
     SVN_UPDATE("20", "代码更新", "/conf/fxml/svnUpdate.fxml", "menuItemSvnUpdate", "svnUpdate"),
@@ -23,11 +23,11 @@ public enum FunctionConfig {
 
     COPY_CODE("70", "复制代码", "/conf/fxml/copyCode.fxml", "menuItemCopyCode", "copyCode"),
 
-    SVN_REALTIME_STAT("960", "实时统计", "/conf/fxml/svnRealtimeStat.fxml", "menuItemSvnRealtimeStat", "svnRealtimeStat"),
+    SVN_REALTIME_STAT("390", "实时统计", "/conf/fxml/svnRealtimeStat.fxml", "menuItemSvnRealtimeStat", "svnRealtimeStat"),
 
-    SVN_HISTORY_STAT("970", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),
+    SVN_HISTORY_STAT("400", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),
 
-    // 购物组件
+    // 购物组件 401-900范围
     WAIT_APPRAISE("500", "待评价", "/conf/fxml/waitAppraise.fxml", "menuItemWaitAppraise", "waitAppraise"),
 
     SHOW_ORDER("510", "待晒单", "/conf/fxml/showOrder.fxml", "menuItemShowOrder", "showOrder"),
@@ -36,8 +36,10 @@ public enum FunctionConfig {
 
     SERVICE_APPRAISE("530", "服务评价", "/conf/fxml/serviceAppraise.fxml", "menuItemServiceAppraise", "serviceAppraise"),
 
+    JD_COOKIE("900", "京东Cookie设置", "/conf/fxml/jdCookie.fxml", "menuItemJdCookie", "jdCookie"),
 
-    // 公共组件
+
+    // 公共组件 901-范围
     CONFIG_SET("980", "参数设置", "/conf/fxml/configSet.fxml", "menuItemConfigSet", "configSet"),
 
     FUNCTION_STAT_INFO("990", "使用统计", "/conf/fxml/functionStatInfo.fxml", "menuItemFunctionStat", "functionStatInfo"),
@@ -123,6 +125,15 @@ public enum FunctionConfig {
         for (FunctionConfig tab : FunctionConfig.values()) {
             if (tab.getCode().equals(code)) {
                 return tab.logFolder;
+            }
+        }
+        return null;
+    }
+
+    public static FunctionConfig getFunctionConfig(String code) {
+        for (FunctionConfig tab : FunctionConfig.values()) {
+            if (tab.getCode().equals(code)) {
+                return tab;
             }
         }
         return null;

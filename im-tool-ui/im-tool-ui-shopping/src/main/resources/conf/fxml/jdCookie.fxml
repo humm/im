@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.hoomoomoo.im.controller.JdCookieController">
+    <children>
+        <SplitPane layoutX="170.0" layoutY="63.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="0.0">
+            <items>
+                <SplitPane dividerPositions="0.1" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+                    <items>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="48.0" prefWidth="599.0">
+                            <children>
+                                <Label fx:id="tips" layoutX="100" layoutY="22.0"/>
+                                <Button fx:id="submit" layoutX="550.0" layoutY="11.0" mnemonicParsing="false"
+                                        onAction="#onSave"
+                                        prefHeight="35.0" prefWidth="100.0" text="提交"/>
+                            </children>
+                        </AnchorPane>
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="296.0" prefWidth="599.0">
+                            <children>
+                                <TextArea fx:id="config" layoutX="82.0" layoutY="45.0" prefHeight="348.5041905089245"
+                                          prefWidth="599.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                            </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>

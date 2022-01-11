@@ -7,6 +7,7 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
 import com.hoomoomoo.im.util.ShoppingCommonUtil;
+import com.hoomoomoo.im.utils.ComponentUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.event.ActionEvent;
@@ -55,6 +56,9 @@ public class ServiceAppraiseController extends BaseController implements Initial
     @FXML
     private Button execute;
 
+    @FXML
+    private Button query;
+
     private List<GoodsDto> goodsDtoList;
 
     private int orderNumValue;
@@ -79,10 +83,29 @@ public class ServiceAppraiseController extends BaseController implements Initial
         }
     }
 
+    @FXML
+    void query(ActionEvent event) {
+        new Thread(() -> {
+            try {
+                setProgress(0);
+                updateProgress(0.01);
+                ComponentUtils.setButtonDisabled(execute, query);
+                initServiceAppraise(ConfigCache.getConfigCache().getAppConfigDto(), true);
+                ComponentUtils.setButtonEnabled(execute, query);
+                setProgress(1);
+            } catch (Exception e) {
+                LoggerUtils.info(e);
+                OutputUtils.info(log, e.toString());
+            } finally {
+                ComponentUtils.setButtonEnabled(execute, query);
+            }
+        }).start();
+    }
+
     private void execute(AppConfigDto appConfigDto) throws Exception {
         new Thread(() -> {
             try {
-                execute.setDisable(true);
+                ComponentUtils.setButtonDisabled(execute, query);
                 initServiceAppraise(appConfigDto, true);
                 List<String> logs = new ArrayList<>();
                 Date currentDate = new Date();
@@ -106,6 +129,10 @@ public class ServiceAppraiseController extends BaseController implements Initial
                     GoodsDto success = new GoodsDto();
                     success.setGoodsName(NAME_APPRAISE_COMPLETE);
                     OutputUtils.info(log, success);
+                } else {
+                    GoodsDto noGoods = new GoodsDto();
+                    noGoods.setGoodsName(NAME_NO_APPRAISE_GOODS);
+                    OutputUtils.info(log, noGoods);
                 }
                 LoggerUtils.writeServiceAppraise(currentDate, logs);
                 setProgress(1);
@@ -114,7 +141,7 @@ public class ServiceAppraiseController extends BaseController implements Initial
                 LoggerUtils.info(e);
                 OutputUtils.info(log, e.toString());
             } finally {
-                execute.setDisable(false);
+                ComponentUtils.setButtonEnabled(execute, query);
             }
         }).start();
     }
@@ -181,8 +208,10 @@ public class ServiceAppraiseController extends BaseController implements Initial
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            /*AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            initServiceAppraise(appConfigDto, true);*/
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (appConfigDto.getJdInitQuery()) {
+                initServiceAppraise(appConfigDto, true);
+            }
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

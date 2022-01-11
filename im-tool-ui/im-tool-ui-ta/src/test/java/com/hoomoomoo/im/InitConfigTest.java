@@ -50,7 +50,7 @@ public class InitConfigTest {
         license.setFunction(function);
         if (StringUtils.isBlank(appFunction)) {
             // 全功能
-            for (FunctionConfig tab : FunctionConfig.values()) {
+            for (FunctionConfig tab : CommonUtils.getAppFunctionConfig(APP_CODE_TA)) {
                 function.add(new FunctionDto(tab.getCode(), tab.getName()));
             }
         } else {

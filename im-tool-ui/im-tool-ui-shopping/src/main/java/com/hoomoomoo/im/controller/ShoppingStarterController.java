@@ -154,6 +154,23 @@ public class ShoppingStarterController implements Initializable {
         }
     }
 
+    @FXML
+    void openJdCookieSet(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(BaseConst.MSG_OPEN, JD_COOKIE.getName()));
+            Tab tab = isOpen(JD_COOKIE.getName());
+            if (tab == null) {
+                tab = getFunctionTab(JD_COOKIE.getPath(), JD_COOKIE.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
