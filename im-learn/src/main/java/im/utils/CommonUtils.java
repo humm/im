@@ -311,7 +311,7 @@ public class CommonUtils {
      * @date: 2020/12/02
      * @return:
      */
-    public static Object mapToObject(Map<String, Object> map, Class<?> clazz) {
+    public static Object mapToObject(Map<String, Object> map, Class clazz) {
         if (map == null) {
             return null;
         }

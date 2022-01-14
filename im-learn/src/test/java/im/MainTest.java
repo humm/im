@@ -115,4 +115,9 @@ public class MainTest {
         }
         System.out.println(Integer.parseInt(sdf.format(calendar.getTime())));
     }
+
+    @Test
+    public void test1() throws ParseException {
+        System.out.println(new BigDecimal(1).divide(new BigDecimal(3), 2, BigDecimal.ROUND_HALF_UP));
+    }
 }
