@@ -6,6 +6,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
+import com.hoomoomoo.im.dto.ShoppingDto;
 import com.hoomoomoo.im.util.ShoppingCommonUtil;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.ComponentUtils;
@@ -45,97 +46,15 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
 
     @FXML
     void execute(ActionEvent event) {
-        try {
-            OutputUtils.clearLog(log);
-            LoggerUtils.info(String.format(BaseConst.MSG_USE, SHOW_ORDER.getName()));
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (!ShoppingCommonUtil.checkConfig(log, APPEND_APPRAISE.getCode())) {
-                return;
-            }
-            setProgress(0);
-            this.execute(appConfigDto);
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-            OutputUtils.info(log, e.toString());
-        }
+        super.execute(AppendAppraiseController.class, STR_3, APPEND_APPRAISE);
     }
 
     @FXML
     void query(ActionEvent event) {
-        new Thread(() -> {
-            try {
-                setProgress(0);
-                updateProgress(0.01);
-                ComponentUtils.setButtonDisabled(execute, query);
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
-                    initAppendAppraise(appConfigDto, true);
-                }
-                ComponentUtils.setButtonEnabled(execute, query);
-                setProgress(1);
-            } catch (Exception e) {
-                LoggerUtils.info(e);
-                OutputUtils.info(log, e.toString());
-            } finally {
-                ComponentUtils.setButtonEnabled(execute, query);
-            }
-        }).start();
+        super.executeQuery(AppendAppraiseController.class, STR_3);
     }
 
-    private void execute(AppConfigDto appConfigDto) throws Exception {
-        new Thread(() -> {
-            try {
-                int currentNum = orderNumValue;
-                if(!ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
-                    return;
-                }
-                ComponentUtils.setButtonDisabled(execute, query);
-                List<String> logs = new ArrayList<>();
-                Date currentDate = new Date();
-                if (CollectionUtils.isNotEmpty(goodsDtoList)) {
-                    for (GoodsDto goodsDto : goodsDtoList) {
-                        goodsDto.setStatus(NAME_APPRAISEING);
-                        OutputUtils.info(log, goodsDto);
-                        ShoppingCommonUtil.initLogs(logs, goodsDto);
-                        if (StringUtils.isBlank(goodsDto.getGoodsId())) {
-                            GoodsDto goods = (GoodsDto) BeanUtils.cloneBean(goodsDto);
-                            goods.setGoodsId(NAME_GOODS_NOT_EXIST);
-                            goods.setStatus(NAME_APPRAISE_FAIL);
-                            OutputUtils.info(log, goods);
-                            ShoppingCommonUtil.initLogs(logs, goods);
-                            continue;
-                        }
-                        doGoodsAppraise(appConfigDto, goodsDto);
-                        GoodsDto goods = (GoodsDto) BeanUtils.cloneBean(goodsDto);
-                        goods.setStatus(NAME_APPRAISE_SUCCESS);
-                        OutputUtils.info(log, goods);
-                        ShoppingCommonUtil.initLogs(logs, goods);
-                        orderNumValue--;
-                        OutputUtils.info(orderNum, String.valueOf(orderNumValue));
-                        setProgress(new BigDecimal(currentNum - orderNumValue).divide(new BigDecimal(currentNum), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                        ShoppingCommonUtil.restMoment(appConfigDto, log);
-                    }
-                } else {
-                    ShoppingCommonUtil.noAppraiseGoods(appConfigDto, log);
-                }
-                LoggerUtils.writeAppendAppraise(currentDate, logs);
-                initAppendAppraise(appConfigDto, false);
-                if (orderNumValue > 0 && currentNum != orderNumValue) {
-                    execute(appConfigDto);
-                } else {
-                    ShoppingCommonUtil.appraiseComplete(appConfigDto, log);
-                    setProgress(1);
-                }
-            } catch (Exception e) {
-                LoggerUtils.info(e);
-                OutputUtils.info(log, e.toString());
-            } finally {
-                ComponentUtils.setButtonEnabled(execute, query);
-            }
-        }).start();
-    }
-
-    private static Document doGoodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
+    public static Document goodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
         Connection connection = Jsoup.connect(appConfigDto.getJdAppendAppraiseExecute());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);
         Map<String, String> requestData = new HashMap<>(6);
@@ -149,13 +68,13 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
         return connection.post();
     }
 
-    private void initAppendAppraise(AppConfigDto appConfigDto, boolean initLog) {
-        orderNumValue = 0;
+    public ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {
+        int orderNumValue = 0;
         OutputUtils.clearLog(orderGoodsList);
         if (initLog) {
             OutputUtils.clearLog(log);
         }
-        goodsDtoList = new ArrayList<>();
+        List<GoodsDto> goodsDtoList = new ArrayList<>();
         try {
             Document appendAppraise = getAppendAppraise(appConfigDto);
             orderNumValue = ShoppingCommonUtil.getWaitHandleNum(appendAppraise, STR_3);
@@ -191,9 +110,13 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
         } catch (IOException e) {
             LoggerUtils.info(e);
         }
+        ShoppingDto shoppingDto = new ShoppingDto();
+        shoppingDto.setGoodsDtoList(goodsDtoList);
+        shoppingDto.setOrderNumValue(orderNumValue);
+        return shoppingDto;
     }
 
-    private static Document getAppendAppraise(AppConfigDto appConfigDto) throws IOException {
+    public static Document getAppendAppraise(AppConfigDto appConfigDto) throws IOException {
         Connection connection = Jsoup.connect(appConfigDto.getJdAppendAppraise());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);
         return connection.get();
@@ -201,15 +124,6 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (appConfigDto.getJdInitQuery()) {
-                if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
-                    initAppendAppraise(appConfigDto, true);
-                }
-            }
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-        }
+        super.init(AppendAppraiseController.class, STR_3);
     }
 }

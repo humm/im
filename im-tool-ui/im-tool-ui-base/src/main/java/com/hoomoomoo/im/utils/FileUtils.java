@@ -31,7 +31,7 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    public static BaseDto readConfigFileToObject(String filePath, Class<?> clazz) throws Exception {
+    public static BaseDto readConfigFileToObject(String filePath, Class clazz) throws Exception {
         return (BaseDto) mapToObject(readConfigFileToMap(filePath), clazz);
     }
 
@@ -274,7 +274,7 @@ public class FileUtils {
      * @date: 2020/12/02
      * @return:
      */
-    public static Object mapToObject(Map<String, String> map, Class<?> clazz) throws Exception {
+    public static Object mapToObject(Map<String, String> map, Class clazz) throws Exception {
         if (map == null) {
             return null;
         }

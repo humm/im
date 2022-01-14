@@ -90,7 +90,7 @@ public class TaCommonUtil {
         return flag;
     }
 
-    public static boolean checkConfig(TableView<?> log, String functionType) throws Exception {
+    public static boolean checkConfig(TableView log, String functionType) throws Exception {
         boolean flag = true;
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionType.equals(FunctionConfig.FUND_INFO.getCode())) {
@@ -112,7 +112,7 @@ public class TaCommonUtil {
         return flag;
     }
 
-    public static boolean checkConfigGenerateCode(TableView<?> log, GenerateCodeDto generateCodeDto) throws Exception {
+    public static boolean checkConfigGenerateCode(TableView log, GenerateCodeDto generateCodeDto) throws Exception {
         boolean flag = true;
         if (StringUtils.isBlank(generateCodeDto.getJavaPath())) {
             OutputUtils.info(log, String.format(MSG_GENERATE_CODE_PATH, "java文件路径"));

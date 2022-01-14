@@ -2,23 +2,17 @@ package com.hoomoomoo.im.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
+import com.hoomoomoo.im.dto.ShoppingDto;
 import com.hoomoomoo.im.util.ShoppingCommonUtil;
-import com.hoomoomoo.im.utils.ComponentUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import org.apache.commons.beanutils.BeanUtils;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -26,9 +20,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -44,97 +36,15 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
 
     @FXML
     void execute(ActionEvent event) {
-        try {
-            OutputUtils.clearLog(log);
-            LoggerUtils.info(String.format(BaseConst.MSG_USE, SHOW_ORDER.getName()));
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (!ShoppingCommonUtil.checkConfig(log, SHOW_ORDER.getCode())) {
-                return;
-            }
-            setProgress(0);
-            this.execute(appConfigDto);
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-            OutputUtils.info(log, e.toString());
-        }
+        super.execute(ShowOrderController.class, STR_1, SHOW_ORDER);
     }
 
     @FXML
     void query(ActionEvent event) {
-        new Thread(() -> {
-            try {
-                setProgress(0);
-                updateProgress(0.01);
-                ComponentUtils.setButtonDisabled(execute, query);
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
-                    initShowOrder(appConfigDto, true);
-                }
-                ComponentUtils.setButtonEnabled(execute, query);
-                setProgress(1);
-            } catch (Exception e) {
-                LoggerUtils.info(e);
-                OutputUtils.info(log, e.toString());
-            } finally {
-                ComponentUtils.setButtonEnabled(execute, query);
-            }
-        }).start();
+        super.executeQuery(ShowOrderController.class, STR_1);
     }
 
-    private void execute(AppConfigDto appConfigDto) throws Exception {
-        new Thread(() -> {
-            try {
-                int currentNum = orderNumValue;
-                if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
-                    return;
-                }
-                ComponentUtils.setButtonDisabled(execute, query);
-                List<String> logs = new ArrayList<>();
-                Date currentDate = new Date();
-                if (CollectionUtils.isNotEmpty(goodsDtoList)) {
-                    for (GoodsDto goodsDto : goodsDtoList) {
-                        goodsDto.setStatus(NAME_APPRAISEING);
-                        OutputUtils.info(log, goodsDto);
-                        ShoppingCommonUtil.initLogs(logs, goodsDto);
-                        if (StringUtils.isBlank(goodsDto.getGoodsId())) {
-                            GoodsDto goods = (GoodsDto)BeanUtils.cloneBean(goodsDto);
-                            goods.setGoodsId(NAME_GOODS_NOT_EXIST);
-                            goods.setStatus(NAME_APPRAISE_FAIL);
-                            OutputUtils.info(log, goods);
-                            ShoppingCommonUtil.initLogs(logs, goods);
-                            continue;
-                        }
-                        doGoodsAppraise(appConfigDto, goodsDto);
-                        GoodsDto goods = (GoodsDto)BeanUtils.cloneBean(goodsDto);
-                        goods.setStatus(NAME_APPRAISE_SUCCESS);
-                        OutputUtils.info(log, goods);
-                        ShoppingCommonUtil.initLogs(logs, goods);
-                        this.orderNumValue--;
-                        OutputUtils.info(orderNum, String.valueOf(orderNumValue));
-                        setProgress(new BigDecimal(currentNum - orderNumValue).divide(new BigDecimal(currentNum), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                        ShoppingCommonUtil.restMoment(appConfigDto, log);
-                    }
-                } else {
-                    ShoppingCommonUtil.noAppraiseGoods(appConfigDto, log);
-                }
-                LoggerUtils.writeShowOrderInfo(currentDate, logs);
-                initShowOrder(appConfigDto, false);
-                if (orderNumValue > 0 && currentNum != orderNumValue) {
-                    execute(appConfigDto);
-                } else {
-                    ShoppingCommonUtil.appraiseComplete(appConfigDto, log);
-                    setProgress(1);
-                }
-            } catch (Exception e) {
-                LoggerUtils.info(e);
-                OutputUtils.info(log, e.toString());
-            } finally {
-                ComponentUtils.setButtonEnabled(execute, query);
-            }
-        }).start();
-    }
-
-    private static String getGoodsImgUrl(AppConfigDto appConfigDto, String goodsId) throws IOException {
+    public static String getGoodsImgUrl(AppConfigDto appConfigDto, String goodsId) throws IOException {
         String imgUrl = SYMBOL_EMPTY;
         Connection connection = Jsoup.connect(appConfigDto.getJdShowOrderInfo() + "?productId=" + goodsId);
         ShoppingCommonUtil.initCookie(appConfigDto,connection);
@@ -149,7 +59,7 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
         return imgUrl;
     }
 
-    private static Document doGoodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
+    public static Document goodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
         Connection connection = Jsoup.connect(appConfigDto.getJdShowOrderExecute());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);
         Map<String, String> requestData = new HashMap<>(6);
@@ -161,13 +71,13 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
         return connection.post();
     }
 
-    private void initShowOrder(AppConfigDto appConfigDto, boolean initLog) {
-        orderNumValue = 0;
+    public ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {
+        int orderNumValue = 0;
         OutputUtils.clearLog(orderGoodsList);
         if (initLog) {
             OutputUtils.clearLog(log);
         }
-        goodsDtoList = new ArrayList<>();
+        List<GoodsDto> goodsDtoList = new ArrayList<>();
         try {
             Document showOrder = getShowOrder(appConfigDto);
             orderNumValue = ShoppingCommonUtil.getWaitHandleNum(showOrder, STR_1);
@@ -201,9 +111,13 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
         } catch (IOException e) {
             LoggerUtils.info(e);
         }
+        ShoppingDto shoppingDto = new ShoppingDto();
+        shoppingDto.setGoodsDtoList(goodsDtoList);
+        shoppingDto.setOrderNumValue(orderNumValue);
+        return shoppingDto;
     }
 
-    private static Document getShowOrder(AppConfigDto appConfigDto) throws IOException {
+    public static Document getShowOrder(AppConfigDto appConfigDto) throws IOException {
         Connection connection = Jsoup.connect(appConfigDto.getJdShowOrder());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);
         return connection.get();
@@ -211,15 +125,6 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (appConfigDto.getJdInitQuery()) {
-                if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
-                    initShowOrder(appConfigDto, true);
-                }
-            }
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-        }
+        super.init(ShowOrderController.class, STR_1);
     }
 }

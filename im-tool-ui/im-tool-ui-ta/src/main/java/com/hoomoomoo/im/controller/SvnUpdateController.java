@@ -36,7 +36,7 @@ public class SvnUpdateController extends BaseController implements Initializable
     private Label svnName;
 
     @FXML
-    private TableView<?> svnLog;
+    private TableView svnLog;
 
     @FXML
     private TextArea fileLog;

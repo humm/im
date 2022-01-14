@@ -87,7 +87,7 @@ public class GenerateCodeController extends BaseController implements Initializa
     private TextArea column;
 
     @FXML
-    private TableView<?> log;
+    private TableView log;
 
     @FXML
     private Button execute;

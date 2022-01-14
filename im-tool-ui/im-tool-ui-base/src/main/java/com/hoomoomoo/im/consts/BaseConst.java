@@ -88,6 +88,10 @@ public class BaseConst {
     public static final String KEY_COLUMN_TYPE_NUMBER = "number";
     public static final String KEY_COLUMN_TYPE_VARCHAR2 = "varchar2";
 
+    public static final String METHOD_QUERY_DATA = "queryData";
+    public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
+    public static final String METHOD_SERVICE_APPRAISE = "serviceAppraise";
+
     public static final String OPERATE_TYPE_DELETE = "D";
 
     public static final String FILE_TYPE_SVN = ".svn";

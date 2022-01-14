@@ -50,7 +50,7 @@ public class FundInfoController extends BaseController implements Initializable 
     private RadioButton modeUpdate;
 
     @FXML
-    private TableView<?> fundLog;
+    private TableView fundLog;
 
     Map<String, String> COMPONENT_KIND = new ConcurrentHashMap(16);
 

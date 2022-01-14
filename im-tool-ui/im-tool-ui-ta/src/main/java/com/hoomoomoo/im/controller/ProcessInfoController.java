@@ -49,7 +49,7 @@ public class ProcessInfoController extends BaseController implements Initializab
     private TextField taCode;
 
     @FXML
-    private TableView<?> log;
+    private TableView log;
 
     @FXML
     void executeSelect(ActionEvent event) {

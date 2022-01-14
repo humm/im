@@ -51,13 +51,13 @@ public class SvnLogController extends BaseController implements Initializable {
     private Button copy;
 
     @FXML
-    private TableView<?> svnLog;
+    private TableView svnLog;
 
     @FXML
     private TextArea fileLog;
 
     @FXML
-    private ComboBox<?> svnRep;
+    private ComboBox svnRep;
 
     @FXML
     void showVersion(MouseEvent event) {

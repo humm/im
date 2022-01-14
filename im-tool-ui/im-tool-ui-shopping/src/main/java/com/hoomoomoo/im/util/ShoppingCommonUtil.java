@@ -31,7 +31,7 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  */
 public class ShoppingCommonUtil {
 
-    public static boolean checkConfig(TableView<?> log, String functionType) throws Exception {
+    public static boolean checkConfig(TableView log, String functionType) throws Exception {
         boolean flag = true;
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionType.equals(FunctionConfig.WAIT_APPRAISE.getCode()) || functionType.equals(FunctionConfig.SHOW_ORDER.getCode())
@@ -104,7 +104,7 @@ public class ShoppingCommonUtil {
         return href.substring(index + KEY_SORT.length() + 1);
     }
 
-    public static boolean effectiveJdCookie(Document document, TableView<?> log, Label userName, Label orderNum) {
+    public static boolean effectiveJdCookie(Document document, TableView log, Label userName, Label orderNum) {
         if (document.text().contains(NAME_JD_LOGIN)) {
             GoodsDto fail = new GoodsDto();
             fail.setGoodsName(MSG_WAIT_APPRAISE_JD_COOKIE);
@@ -118,7 +118,7 @@ public class ShoppingCommonUtil {
         return true;
     }
 
-    public static boolean initJdUser(AppConfigDto appConfigDto, TableView<?> log, Label userName, Label orderNum) throws IOException {
+    public static boolean initJdUser(AppConfigDto appConfigDto, TableView log, Label userName, Label orderNum) throws IOException {
         if (appConfigDto.getRefreshConfig()) {
             Connection connection = Jsoup.connect(appConfigDto.getJdUser());
             ShoppingCommonUtil.initCookie(appConfigDto, connection);
@@ -151,20 +151,20 @@ public class ShoppingCommonUtil {
        return num;
     }
 
-    public static void restMoment(AppConfigDto appConfigDto, TableView<?> log) throws InterruptedException {
+    public static void restMoment(AppConfigDto appConfigDto, TableView log) throws InterruptedException {
         GoodsDto goodsDto = new GoodsDto();
         goodsDto.setGoodsName(NAME_REST_MOMENT);
         OutputUtils.info(log, goodsDto);
         Thread.sleep(Integer.valueOf(appConfigDto.getJdIntervalTime()) * 1000);
     }
 
-    public static void noAppraiseGoods(AppConfigDto appConfigDto, TableView<?> log) {
+    public static void noAppraiseGoods(AppConfigDto appConfigDto, TableView log) {
         GoodsDto noGoods = new GoodsDto();
         noGoods.setGoodsName(NAME_NO_APPRAISE_GOODS);
         OutputUtils.info(log, noGoods);
     }
 
-    public static void appraiseComplete(AppConfigDto appConfigDto, TableView<?> log) {
+    public static void appraiseComplete(AppConfigDto appConfigDto, TableView log) {
         GoodsDto noGoods = new GoodsDto();
         noGoods.setGoodsName(NAME_APPRAISE_COMPLETE);
         OutputUtils.info(log, noGoods);

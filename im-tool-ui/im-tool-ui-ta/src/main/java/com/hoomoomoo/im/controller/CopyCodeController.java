@@ -42,13 +42,13 @@ public class CopyCodeController extends BaseController implements Initializable 
     private TextField targetPath;
 
     @FXML
-    private ComboBox<?> sourceVersion;
+    private ComboBox sourceVersion;
 
     @FXML
-    private ComboBox<?> targetVersion;
+    private ComboBox targetVersion;
 
     @FXML
-    private TableView<?> log;
+    private TableView log;
 
     @FXML
     private Button execute;
