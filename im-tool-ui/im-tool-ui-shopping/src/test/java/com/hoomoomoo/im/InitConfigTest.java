@@ -131,7 +131,7 @@ public class InitConfigTest {
         FileUtils.writeFile(confPath, content, false);
 
         String jdCookie = FileUtils.getFilePath(PATH_JD_COOKIE);
-        FileUtils.writeFile(jdCookie, new ArrayList<>(), false);
+        FileUtils.writeFile(jdCookie, SYMBOL_EMPTY, false);
 
     }
 

@@ -121,8 +121,6 @@ public class AppConfigDto extends BaseDto {
 
     private String jdAppraiseWaitGoods;
 
-    private String jdAppraiseWaitService;
-
     private String jdShowOrder;
 
     private String jdShowOrderExecute;
@@ -135,7 +133,15 @@ public class AppConfigDto extends BaseDto {
 
     private String jdServiceAppraise;
 
+    private String jdServiceAppraiseExecute;
+
     private Boolean jdInitQuery;
+
+    private String jdUser;
+
+    private String jdUserCode;
+
+    private Boolean refreshConfig;
 
     public AppConfigDto() {
         this.appLogEnable = false;

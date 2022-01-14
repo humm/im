@@ -69,6 +69,13 @@ public class BaseConst {
     public static final String KEY_BATCH_UPDATE_FORM = "batchUpdateForm.";
     public static final String KEY_HREF = "href";
     public static final String KEY_ORDER_ID = "orderId";
+    public static final String KEY_PRODUCT_ID = "productId";
+    public static final String KEY_SORT = "sort";
+    public static final String KEY_SCORE = "score";
+    public static final String KEY_SAVE_STATUS = "saveStatus";
+    public static final String KEY_ANONYMOUS_FLAG = "anonymousFlag";
+    public static final String KEY_CONTENT = "content";
+    public static final String KEY_IMGS = "imgs";
 
     public static final String KEY_DICT = "dict";
     public static final String KEY_MULTI = "multi";
@@ -102,13 +109,15 @@ public class BaseConst {
     public static final String NAME_ORDER_DETAIL = "订单详情";
     public static final String NAME_APPRAISEING = "评价中";
     public static final String NAME_APPRAISE_SUCCESS = "成功";
+    public static final String NAME_APPRAISE_FAIL = "失败";
+    public static final String NAME_REST_MOMENT = "休息一会儿";
     public static final String NAME_APPRAISE_COMPLETE = "评价完成";
     public static final String NAME_NO_APPRAISE_GOODS = "无评价商品";
     public static final String NAME_JD_LOGIN = "欢迎登录";
-    public static final String NAME_JD_LOGIN_FAIL = "未登录，请更新[ jd.cookie ]";
     public static final String NAME_JD_SHOW_ORDER = "继续晒单";
     public static final String NAME_JD_APPEND_APPRAISEING = "追评";
     public static final String NAME_APPLICATION_SAVE_SUCCESS = "配置文件修改成功，重新加载完成  ";
+    public static final String NAME_GOODS_NOT_EXIST = "商品已下架";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -234,5 +243,8 @@ public class BaseConst {
 
     public static final String PAGE_TYPE_SET = "1";
     public static final String PAGE_TYPE_QUERY = "2";
+
+    public static final Integer JD_APPRAISE_LENGTH_MIN = 20;
+    public static final Integer JD_APPRAISE_LENGTH_MAX = 450;
 
 }
