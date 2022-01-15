@@ -44,6 +44,11 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
         super.executeQuery(ShowOrderController.class, STR_1);
     }
 
+    @FXML
+    void pause(ActionEvent event) {
+        super.executePause(ShowOrderController.class, STR_1);
+    }
+
     public static String getGoodsImgUrl(AppConfigDto appConfigDto, String goodsId) throws IOException {
         String imgUrl = SYMBOL_EMPTY;
         Connection connection = Jsoup.connect(appConfigDto.getJdShowOrderInfo() + "?productId=" + goodsId);

@@ -48,6 +48,11 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
         super.executeQuery(WaitAppraiseController.class, STR_0);
     }
 
+    @FXML
+    void pause(ActionEvent event) {
+        super.executePause(WaitAppraiseController.class, STR_0);
+    }
+
     public static String getGoodsAppraiseInfo(AppConfigDto appConfigDto, String goodsId) throws IOException {
         int appraiseNum = Integer.valueOf(appConfigDto.getJdAppraiseNum());
         String appraiseMsg = appConfigDto.getJdAppraiseDefault();

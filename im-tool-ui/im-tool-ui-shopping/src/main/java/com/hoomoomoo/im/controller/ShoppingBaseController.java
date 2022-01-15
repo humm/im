@@ -53,6 +53,9 @@ public class ShoppingBaseController extends BaseController{
     @FXML
     public Button query;
 
+    @FXML
+    public Button pause;
+
     private List<GoodsDto> goodsDtoList;
 
     private Integer orderNumValue = 0;
@@ -61,23 +64,29 @@ public class ShoppingBaseController extends BaseController{
 
     private Object instanceService;
 
+    private Boolean pauseStatus;
+
+    protected void executePause(Class clazz, String type) {
+        pauseStatus = true;
+        schedule.requestFocus();
+    }
+
     protected void executeQuery(Class clazz, String type) {
         new Thread(() -> {
             try {
                 setProgress(0);
                 updateProgress(0.01);
-                ComponentUtils.setButtonDisabled(execute, query);
+                ComponentUtils.setButtonDisabled(execute, query, pause);
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
                     query(appConfigDto, clazz, true);
                 }
-                ComponentUtils.setButtonEnabled(execute, query);
                 setProgress(1);
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 OutputUtils.info(log, e.toString());
             } finally {
-                ComponentUtils.setButtonEnabled(execute, query);
+                ComponentUtils.setButtonEnabled(execute, query, pause);
             }
         }).start();
     }
@@ -101,6 +110,7 @@ public class ShoppingBaseController extends BaseController{
 
     protected void doExecute(Class clazz, FunctionConfig functionConfig, String type) {
         try {
+            pauseStatus = false;
             int currentNum = orderNumValue;
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             if(!ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
@@ -113,6 +123,9 @@ public class ShoppingBaseController extends BaseController{
             Date currentDate = new Date();
             if (CollectionUtils.isNotEmpty(goodsDtoList)) {
                 for (GoodsDto goodsDto : goodsDtoList) {
+                    if (pauseStatus) {
+                        break;
+                    }
                     goodsDto.setStatus(NAME_APPRAISEING);
                     OutputUtils.info(log, goodsDto);
                     ShoppingCommonUtil.initLogs(logs, goodsDto);
@@ -124,9 +137,9 @@ public class ShoppingBaseController extends BaseController{
                         ShoppingCommonUtil.initLogs(logs, goods);
                         continue;
                     }
-                    goodsAppraise.invoke(instance, appConfigDto, goodsDto);
+//                    goodsAppraise.invoke(instance, appConfigDto, goodsDto);
                     if (STR_0.equals(type)) {
-                        serviceAppraise.invoke(instance, appConfigDto, goodsDto);
+//                        serviceAppraise.invoke(instance, appConfigDto, goodsDto);
                     }
                     GoodsDto goods = (GoodsDto) BeanUtils.cloneBean(goodsDto);
                     goods.setStatus(NAME_APPRAISE_SUCCESS);
@@ -135,6 +148,9 @@ public class ShoppingBaseController extends BaseController{
                     orderNumValue--;
                     OutputUtils.info(orderNum, String.valueOf(orderNumValue));
                     setProgress(new BigDecimal(currentNum - orderNumValue).divide(new BigDecimal(currentNum), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                    if (pauseStatus) {
+                        break;
+                    }
                     ShoppingCommonUtil.restMoment(appConfigDto, log);
                 }
             } else {
@@ -142,6 +158,9 @@ public class ShoppingBaseController extends BaseController{
             }
             LoggerUtils.writeAppraiseInfo(functionConfig.getCode(), currentDate, logs);
             query(appConfigDto, clazz, false);
+            if (pauseStatus) {
+                return;
+            }
             if (orderNumValue > 0 && currentNum != orderNumValue) {
                 doExecute(clazz, functionConfig, type);
             } else {
@@ -160,10 +179,9 @@ public class ShoppingBaseController extends BaseController{
 
     protected void init(Class clazz, String type) {
         try {
-            if (instance == null) {
-                instance = clazz.newInstance();
-                instanceService = ServiceAppraiseController.class.newInstance();
-            }
+            instance = clazz.newInstance();
+            instanceService = ServiceAppraiseController.class.newInstance();
+            pauseStatus = false;
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             if (appConfigDto.getJdInitQuery()) {
                 if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {

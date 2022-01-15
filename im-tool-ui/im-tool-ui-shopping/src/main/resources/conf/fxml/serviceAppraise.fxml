@@ -29,21 +29,30 @@
                                         <Label fx:id="orderNum" layoutX="120.0" layoutY="55.0" prefWidth="240.0"
                                                AnchorPane.topAnchor="55.0" />
 
-                                        <Button fx:id="query" layoutX="300.0" layoutY="28.0"
-                                                mnemonicParsing="false" onAction="#query" prefHeight="35.0"  prefWidth="100.0" text="查询">
+                                        <ProgressIndicator fx:id="schedule" layoutX="280.0" layoutY="35.0"
+                                                           progress="0.0" />
+                                        <Label fx:id="scheduleText" layoutX="320.0" layoutY="40.0" text="0%" />
+
+                                        <Button fx:id="query" layoutX="380.0" layoutY="28.0"
+                                                mnemonicParsing="false" onAction="#query" prefHeight="35.0"
+                                                prefWidth="70.0" text="查询">
                                             <padding>
-                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                            </padding>
+                                        </Button>
+                                        <Button fx:id="pause" layoutX="480.0" layoutY="28.0"
+                                                mnemonicParsing="false" onAction="#pause" prefHeight="35.0"
+                                                prefWidth="70.0" text="暂停">
+                                            <padding>
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </padding>
                                         </Button>
 
-                                        <ProgressIndicator fx:id="schedule" layoutX="440.0" layoutY="35.0"
-                                                           progress="0.0" />
-                                        <Label fx:id="scheduleText" layoutX="480.0" layoutY="40.0" text="0%" />
-
-                                        <Button fx:id="execute" layoutX="540.0" layoutY="28.0"
-                                                mnemonicParsing="false" onAction="#execute" prefHeight="35.0" prefWidth="100.0" text="执行">
+                                        <Button fx:id="execute" layoutX="580.0" layoutY="28.0"
+                                                mnemonicParsing="false" onAction="#execute" prefHeight="35.0"
+                                                prefWidth="70.0" text="评价">
                                             <padding>
-                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                                             </padding>
                                         </Button>
                               <TableView fx:id="orderGoodsList" layoutX="14.0" layoutY="99.0" prefHeight="470.0"

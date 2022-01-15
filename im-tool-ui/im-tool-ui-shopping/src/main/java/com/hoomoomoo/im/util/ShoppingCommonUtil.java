@@ -18,6 +18,7 @@ import org.jsoup.select.Elements;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,13 +50,16 @@ public class ShoppingCommonUtil {
         if (StringUtils.isBlank(appConfigDto.getJdCookie())) {
             return;
         }
+        Map<String, String> cookieMap = new LinkedHashMap<>(16);
         String[] cookies = appConfigDto.getJdCookie().split(BaseConst.SYMBOL_SEMICOLON);
         for (String item : cookies) {
             String[] itemCookie = item.split(BaseConst.SYMBOL_EQUALS);
             if (itemCookie.length == 2) {
-                connection.cookie(itemCookie[0], itemCookie[1]);
+                connection.cookie(itemCookie[0].trim(), itemCookie[1].trim());
+                cookieMap.put(itemCookie[0].trim(), itemCookie[1].trim());
             }
         }
+        appConfigDto.setCookieMap(cookieMap);
     }
 
     public static void initLogs(List<String> logs, GoodsDto goodsDto){
@@ -119,18 +123,18 @@ public class ShoppingCommonUtil {
     }
 
     public static boolean initJdUser(AppConfigDto appConfigDto, TableView log, Label userName, Label orderNum) throws IOException {
-        if (appConfigDto.getRefreshConfig()) {
-            Connection connection = Jsoup.connect(appConfigDto.getJdUser());
-            ShoppingCommonUtil.initCookie(appConfigDto, connection);
-            Document user = connection.get();
-            if (!effectiveJdCookie(user, log, userName, orderNum)) {
-                return false;
-            }
-            String userCode = user.select("div.user-set.userset-lcol div#aliasBefore strong").text();
-            appConfigDto.setJdUserCode(userCode);
+        Connection connection = Jsoup.connect(appConfigDto.getJdUser());
+        ShoppingCommonUtil.initCookie(appConfigDto, connection);
+        Document user = connection.get();
+        if (!effectiveJdCookie(user, log, userName, orderNum)) {
+            return false;
         }
+        String userCode = appConfigDto.getCookieMap().get(KEY_UNICK);
+        if (StringUtils.isBlank(userCode)) {
+            userCode = user.select("div.user-set.userset-lcol div#aliasBefore strong").text();
+        }
+        appConfigDto.setJdUserCode(userCode);
         OutputUtils.info(userName, appConfigDto.getJdUserCode());
-        appConfigDto.setRefreshConfig(false);
         return true;
     }
 

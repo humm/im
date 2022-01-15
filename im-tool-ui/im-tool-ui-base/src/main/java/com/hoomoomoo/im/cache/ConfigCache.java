@@ -60,8 +60,6 @@ public class ConfigCache {
         // 读取配置文件
         appConfigDto = (AppConfigDto) FileUtils.readConfigFileToObject(confPath, AppConfigDto.class);
 
-        appConfigDto.setRefreshConfig(true);
-
         // 加载证书信息
         String licensePath = FileUtils.getFilePath(PATH_LICENSE);
         List<String> licenseContent = FileUtils.readNormalFile(licensePath, false);

@@ -54,6 +54,11 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
         super.executeQuery(AppendAppraiseController.class, STR_3);
     }
 
+    @FXML
+    void pause(ActionEvent event) {
+        super.executePause(AppendAppraiseController.class, STR_3);
+    }
+
     public static Document goodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
         Connection connection = Jsoup.connect(appConfigDto.getJdAppendAppraiseExecute());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);

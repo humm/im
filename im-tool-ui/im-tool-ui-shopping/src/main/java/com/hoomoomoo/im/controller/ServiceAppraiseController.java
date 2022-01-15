@@ -43,6 +43,11 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
         super.executeQuery(ServiceAppraiseController.class, STR_4);
     }
 
+    @FXML
+    void pause(ActionEvent event) {
+        super.executePause(ServiceAppraiseController.class, STR_4);
+    }
+
     public static Document goodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
         goodsAppraise(appConfigDto, goodsDto, STR_1);
         return goodsAppraise(appConfigDto, goodsDto, STR_2);

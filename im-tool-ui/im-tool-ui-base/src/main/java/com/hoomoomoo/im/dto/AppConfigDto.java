@@ -2,10 +2,7 @@ package com.hoomoomoo.im.dto;
 
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author humm23693
@@ -141,7 +138,7 @@ public class AppConfigDto extends BaseDto {
 
     private String jdUserCode;
 
-    private Boolean refreshConfig;
+    private Map<String, String> cookieMap;
 
     public AppConfigDto() {
         this.appLogEnable = false;
@@ -157,5 +154,6 @@ public class AppConfigDto extends BaseDto {
         this.svnStatInterval = 0;
         this.copyCodeVersion = new LinkedHashMap(16);
         this.svnUrl = new LinkedHashMap(16);
+        this.cookieMap = new HashMap<>(16);
     }
 }

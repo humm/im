@@ -76,6 +76,7 @@ public class BaseConst {
     public static final String KEY_ANONYMOUS_FLAG = "anonymousFlag";
     public static final String KEY_CONTENT = "content";
     public static final String KEY_IMGS = "imgs";
+    public static final String KEY_UNICK = "unick";
 
     public static final String KEY_DICT = "dict";
     public static final String KEY_MULTI = "multi";
