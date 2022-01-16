@@ -28,6 +28,7 @@ public class TaCommonUtil {
 
     public static boolean checkConfig(TextArea log, String functionCode) throws Exception {
         boolean flag = true;
+        OutputUtils.clearLog(log);
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionCode.equals(FunctionConfig.SVN_LOG.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
@@ -92,6 +93,7 @@ public class TaCommonUtil {
 
     public static boolean checkConfig(TableView log, String functionType) throws Exception {
         boolean flag = true;
+        OutputUtils.clearLog(log);
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionType.equals(FunctionConfig.FUND_INFO.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getFundGeneratePath())) {
@@ -114,6 +116,7 @@ public class TaCommonUtil {
 
     public static boolean checkConfigGenerateCode(TableView log, GenerateCodeDto generateCodeDto) throws Exception {
         boolean flag = true;
+        OutputUtils.clearLog(log);
         if (StringUtils.isBlank(generateCodeDto.getJavaPath())) {
             OutputUtils.info(log, String.format(MSG_GENERATE_CODE_PATH, "java文件路径"));
             flag = false;

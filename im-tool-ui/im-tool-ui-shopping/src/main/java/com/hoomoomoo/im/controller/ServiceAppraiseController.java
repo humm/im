@@ -1,5 +1,7 @@
 package com.hoomoomoo.im.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
@@ -12,6 +14,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -49,10 +52,26 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
     }
 
     public static Document goodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
-        goodsAppraise(appConfigDto, goodsDto, STR_1);
-        return goodsAppraise(appConfigDto, goodsDto, STR_2);
+        String type = serviceType(appConfigDto, goodsDto);
+        if (StringUtils.isBlank(type)) {
+            return null;
+        }
+        return goodsAppraise(appConfigDto, goodsDto, type);
     }
 
+    public static String serviceType(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
+        Connection connection = Jsoup.connect(appConfigDto.getJdServiceType() + "?sid=145&ot=0&payid=4&shipmentid=70&isCarShopOrder=&isDaojiaOrder=false&oid=" + goodsDto.getOrderId());
+        ShoppingCommonUtil.initCookie(appConfigDto, connection);
+        Document service = connection.get();
+        JSONObject serviceInfo = JSONObject.parseObject(service.select("body").text());
+        int serviceNum = 0;
+         try {
+             serviceNum =  ((JSONArray)(JSONObject.parseObject(((JSONArray)JSONObject.parseObject(serviceInfo.get("list").toString()).get("listGroup")).get(0).toString()).get("listGroup"))).size();
+         } catch (Exception e) {
+             LoggerUtils.info("获取服务评价类型错误 " + e.toString());
+         }
+        return serviceNum == 0 ? SYMBOL_EMPTY : serviceNum == 3 ? STR_1 : serviceNum == 5 ? STR_2 : SYMBOL_EMPTY;
+    }
     public static Document goodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto, String type) throws IOException {
         Connection connection = Jsoup.connect(appConfigDto.getJdServiceAppraiseExecute() + "?voteid=145&ruleid=" + goodsDto.getOrderId());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);

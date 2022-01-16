@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.util.*;
 
+import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
+
 /**
  * @author humm23693
  * @description TODO
@@ -140,6 +142,10 @@ public class AppConfigDto extends BaseDto {
 
     private Map<String, String> cookieMap;
 
+    private String executeType;
+
+    private String jdServiceType;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
@@ -155,5 +161,6 @@ public class AppConfigDto extends BaseDto {
         this.copyCodeVersion = new LinkedHashMap(16);
         this.svnUrl = new LinkedHashMap(16);
         this.cookieMap = new HashMap<>(16);
+        this.executeType = SYMBOL_EMPTY;
     }
 }

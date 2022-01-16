@@ -26,6 +26,7 @@ public class BaseConst {
     public static final String STR_3 = "3";
     public static final String STR_4 = "4";
     public static final String STR_5 = "5";
+    public static final String STR_9 = "9";
     public static final String STR_69 = "69";
     public static final String STR_145 = "145";
     public static final String STR_549656 = "549656";
@@ -112,10 +113,10 @@ public class BaseConst {
     public static final String NAME_APPRAISE = "评价";
     public static final String NAME_SERVICE_APPRAISE = "服务评价";
     public static final String NAME_ORDER_DETAIL = "订单详情";
-    public static final String NAME_APPRAISEING = "评价中";
-    public static final String NAME_APPRAISE_SUCCESS = "成功";
+    public static final String NAME_APPRAISEING = "评价开始";
+    public static final String NAME_APPRAISE_SUCCESS = "评价成功";
     public static final String NAME_APPRAISE_FAIL = "失败";
-    public static final String NAME_REST_MOMENT = "休息一会儿";
+    public static final String NAME_REST_MOMENT = "策略休息下";
     public static final String NAME_APPRAISE_COMPLETE = "评价完成";
     public static final String NAME_NO_APPRAISE_GOODS = "无评价商品";
     public static final String NAME_JD_LOGIN = "欢迎登录";
@@ -123,6 +124,9 @@ public class BaseConst {
     public static final String NAME_JD_APPEND_APPRAISEING = "追评";
     public static final String NAME_APPLICATION_SAVE_SUCCESS = "配置文件修改成功，重新加载完成  ";
     public static final String NAME_GOODS_NOT_EXIST = "商品已下架";
+    public static final String NAME_NET_CONNECT = "请连接网络";
+    public static final String NAME_PAUSE_START = "暂停开始";
+    public static final String NAME_PAUSE_COMPLETE = "暂停完成";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -168,6 +172,7 @@ public class BaseConst {
     public static final String MSG_SVN_STAT_INTERVAL = "请设置[ svn.stat.interval ]大于等于5";
     public static final String MSG_GENERATE_CODE_PATH = "请设置[ %s ]路径";
     public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请更新京东Cookie";
+    public static final String MSG_AUTO_APPRAISE = "自动化评价";
 
 
     public static final String MSG_OPEN = "打开[ %s ] 功能界面";
@@ -187,6 +192,8 @@ public class BaseConst {
     public static final String MSG_LICENSE_NOT_USE = "未启用[ %s ]功能";
     public static final String MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ";
     public static final String MSG_SVN_REALTIME_STAT = "%s  %s  %s  %s";
+    public static final String MSG_EXECUTE = "[%s]执行中,请稍后再试";
+
 
     public static final String CONFIG_PREFIX = "#################### ";
 

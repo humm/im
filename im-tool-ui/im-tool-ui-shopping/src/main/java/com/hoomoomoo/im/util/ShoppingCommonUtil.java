@@ -5,6 +5,7 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
+import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
@@ -16,13 +17,16 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -34,12 +38,36 @@ public class ShoppingCommonUtil {
 
     public static boolean checkConfig(TableView log, String functionType) throws Exception {
         boolean flag = true;
+        OutputUtils.clearLog(log);
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        if (functionType.equals(FunctionConfig.WAIT_APPRAISE.getCode()) || functionType.equals(FunctionConfig.SHOW_ORDER.getCode())
-                || functionType.equals(FunctionConfig.APPEND_APPRAISE.getCode()) || functionType.equals(FunctionConfig.SERVICE_APPRAISE.getCode())) {
+        if (functionType.equals(WAIT_APPRAISE.getCode()) || functionType.equals(SHOW_ORDER.getCode())
+                || functionType.equals(APPEND_APPRAISE.getCode()) || functionType.equals(FunctionConfig.SERVICE_APPRAISE.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getJdCookie())) {
-                OutputUtils.info(log, MSG_WAIT_APPRAISE_JD_COOKIE);
+                ShoppingCommonUtil.info(log, MSG_WAIT_APPRAISE_JD_COOKIE);
                 flag = false;
+            }
+            switch (appConfigDto.getExecuteType()) {
+                case STR_0:
+                    ShoppingCommonUtil.info(log, String.format(MSG_EXECUTE, WAIT_APPRAISE.getName()));
+                    flag = false;
+                    break;
+                case STR_1:
+                    ShoppingCommonUtil.info(log, String.format(MSG_EXECUTE, SHOW_ORDER.getName()));
+                    flag = false;
+                    break;
+                case STR_3:
+                    ShoppingCommonUtil.info(log, String.format(MSG_EXECUTE, APPEND_APPRAISE.getName()));
+                    flag = false;
+                    break;
+                case STR_4:
+                    ShoppingCommonUtil.info(log, String.format(MSG_EXECUTE, SERVICE_APPRAISE.getName()));
+                    flag = false;
+                    break;
+                case STR_9:
+                    ShoppingCommonUtil.info(log, String.format(MSG_EXECUTE, MSG_AUTO_APPRAISE));
+                    flag = false;
+                    break;
+                default:break;
             }
         }
         return flag;
@@ -125,16 +153,24 @@ public class ShoppingCommonUtil {
     public static boolean initJdUser(AppConfigDto appConfigDto, TableView log, Label userName, Label orderNum) throws IOException {
         Connection connection = Jsoup.connect(appConfigDto.getJdUser());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);
-        Document user = connection.get();
-        if (!effectiveJdCookie(user, log, userName, orderNum)) {
-            return false;
+        try {
+            Document user = connection.get();
+            if (!effectiveJdCookie(user, log, userName, orderNum)) {
+                return false;
+            }
+            String userCode = appConfigDto.getCookieMap().get(KEY_UNICK);
+            if (StringUtils.isBlank(userCode)) {
+                userCode = user.select("div.user-set.userset-lcol div#aliasBefore strong").text();
+            } else {
+                userCode = URLDecoder.decode(userCode);
+            }
+            appConfigDto.setJdUserCode(userCode);
+            OutputUtils.info(userName, appConfigDto.getJdUserCode());
+        } catch (UnknownHostException e) {
+            info(log, NAME_NET_CONNECT);
+            LoggerUtils.info(e);
+            throw e;
         }
-        String userCode = appConfigDto.getCookieMap().get(KEY_UNICK);
-        if (StringUtils.isBlank(userCode)) {
-            userCode = user.select("div.user-set.userset-lcol div#aliasBefore strong").text();
-        }
-        appConfigDto.setJdUserCode(userCode);
-        OutputUtils.info(userName, appConfigDto.getJdUserCode());
         return true;
     }
 
@@ -156,21 +192,21 @@ public class ShoppingCommonUtil {
     }
 
     public static void restMoment(AppConfigDto appConfigDto, TableView log) throws InterruptedException {
-        GoodsDto goodsDto = new GoodsDto();
-        goodsDto.setGoodsName(NAME_REST_MOMENT);
-        OutputUtils.info(log, goodsDto);
+        info(log, NAME_REST_MOMENT);
         Thread.sleep(Integer.valueOf(appConfigDto.getJdIntervalTime()) * 1000);
     }
 
     public static void noAppraiseGoods(AppConfigDto appConfigDto, TableView log) {
-        GoodsDto noGoods = new GoodsDto();
-        noGoods.setGoodsName(NAME_NO_APPRAISE_GOODS);
-        OutputUtils.info(log, noGoods);
+        info(log, NAME_NO_APPRAISE_GOODS);
     }
 
     public static void appraiseComplete(AppConfigDto appConfigDto, TableView log) {
+        info(log, NAME_APPRAISE_COMPLETE);
+    }
+
+    public static void info(TableView log, String msg) {
         GoodsDto noGoods = new GoodsDto();
-        noGoods.setGoodsName(NAME_APPRAISE_COMPLETE);
+        noGoods.setGoodsName(msg);
         OutputUtils.info(log, noGoods);
     }
 }

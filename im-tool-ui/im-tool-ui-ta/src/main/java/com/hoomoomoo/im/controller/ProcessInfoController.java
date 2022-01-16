@@ -101,6 +101,7 @@ public class ProcessInfoController extends BaseController implements Initializab
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
+            OutputUtils.info(log, e.toString());
         }
     }
 

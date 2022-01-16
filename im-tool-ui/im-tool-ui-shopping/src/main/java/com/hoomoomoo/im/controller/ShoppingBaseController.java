@@ -68,7 +68,9 @@ public class ShoppingBaseController extends BaseController{
 
     protected void executePause(Class clazz, String type) {
         pauseStatus = true;
+        ShoppingCommonUtil.info(log, NAME_PAUSE_START);
         schedule.requestFocus();
+        ComponentUtils.setButtonDisabled(pause);
     }
 
     protected void executeQuery(Class clazz, String type) {
@@ -84,7 +86,7 @@ public class ShoppingBaseController extends BaseController{
                 setProgress(1);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(log, e.toString());
+                ShoppingCommonUtil.info(log, e.toString());
             } finally {
                 ComponentUtils.setButtonEnabled(execute, query, pause);
             }
@@ -103,16 +105,18 @@ public class ShoppingBaseController extends BaseController{
                 this.doExecute(clazz, functionConfig, type);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(log, e.toString());
+                ShoppingCommonUtil.info(log, e.toString());
             }
         }).start();
     }
 
     protected void doExecute(Class clazz, FunctionConfig functionConfig, String type) {
+        AppConfigDto appConfigDto = null;
         try {
             pauseStatus = false;
             int currentNum = orderNumValue;
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            appConfigDto.setExecuteType(type);
             if(!ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
                 return;
             }
@@ -159,6 +163,8 @@ public class ShoppingBaseController extends BaseController{
             LoggerUtils.writeAppraiseInfo(functionConfig.getCode(), currentDate, logs);
             query(appConfigDto, clazz, false);
             if (pauseStatus) {
+                ShoppingCommonUtil.info(log, NAME_PAUSE_COMPLETE);
+                ComponentUtils.setButtonEnabled(pause);
                 return;
             }
             if (orderNumValue > 0 && currentNum != orderNumValue) {
@@ -171,8 +177,11 @@ public class ShoppingBaseController extends BaseController{
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(log, e.toString());
+            ShoppingCommonUtil.info(log, e.toString());
         } finally {
+            if (appConfigDto != null) {
+                appConfigDto.setExecuteType(SYMBOL_EMPTY);
+            }
             ComponentUtils.setButtonEnabled(execute, query);
         }
     }
