@@ -141,9 +141,9 @@ public class ShoppingBaseController extends BaseController{
                         ShoppingCommonUtil.initLogs(logs, goods);
                         continue;
                     }
-//                    goodsAppraise.invoke(instance, appConfigDto, goodsDto);
+                    goodsAppraise.invoke(instance, appConfigDto, goodsDto);
                     if (STR_0.equals(type)) {
-//                        serviceAppraise.invoke(instance, appConfigDto, goodsDto);
+                        serviceAppraise.invoke(instance, appConfigDto, goodsDto);
                     }
                     GoodsDto goods = (GoodsDto) BeanUtils.cloneBean(goodsDto);
                     goods.setStatus(NAME_APPRAISE_SUCCESS);
@@ -170,7 +170,7 @@ public class ShoppingBaseController extends BaseController{
             if (orderNumValue > 0 && currentNum != orderNumValue) {
                 doExecute(clazz, functionConfig, type);
             } else {
-               if(CollectionUtils.isNotEmpty(goodsDtoList)) {
+               if(currentNum != 0) {
                     ShoppingCommonUtil.appraiseComplete(appConfigDto, log);
                 }
                 setProgress(1);
