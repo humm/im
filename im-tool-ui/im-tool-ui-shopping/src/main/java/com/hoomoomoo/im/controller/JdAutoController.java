@@ -1,0 +1,238 @@
+package com.hoomoomoo.im.controller;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.BaseConst;
+import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.dto.GoodsDto;
+import com.hoomoomoo.im.dto.ShoppingDto;
+import com.hoomoomoo.im.util.ShoppingCommonUtil;
+import com.hoomoomoo.im.utils.ComponentUtils;
+import com.hoomoomoo.im.utils.LoggerUtils;
+import com.hoomoomoo.im.utils.OutputUtils;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableView;
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.util.*;
+
+import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.*;
+
+/**
+ * @author humm23693
+ * @description TODO
+ * @package com.hoomoomoo.im.controller
+ * @date 2022/1/8
+ */
+public class JdAutoController extends ShoppingBaseController implements Initializable {
+
+    @FXML
+    private Label type;
+
+    private List<ShoppingDto> shoppingDtoList;
+
+    private int waitHandlerNum;
+
+    private int handlerNum;
+
+    private Map<String, String> handle = new HashMap<>(16);
+
+    private boolean iscontinue;
+
+    @FXML
+    void execute(ActionEvent event) {
+        handlerNum = 0;
+        new Thread(() -> {
+            try {
+                OutputUtils.clearLog(log);
+                LoggerUtils.info(String.format(BaseConst.MSG_USE, JD_AUTO.getName()));
+                if (!ShoppingCommonUtil.checkConfig(log, JD_AUTO.getCode())) {
+                    return;
+                }
+                setProgress(0);
+                this.doExecute();
+            } catch (Exception e) {
+                LoggerUtils.info(e);
+                ShoppingCommonUtil.info(log, e.toString());
+            }
+        }).start();
+    }
+
+    @FXML
+    void query(ActionEvent event) {
+        new Thread(() -> {
+            try {
+                setProgress(0);
+                updateProgress(0.01);
+                ComponentUtils.setButtonDisabled(execute, query, pause);
+                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, null)) {
+                    queryData(appConfigDto, true);
+                }
+                setProgress(1);
+            } catch (Exception e) {
+                LoggerUtils.info(e);
+                ShoppingCommonUtil.info(log, e.toString());
+            } finally {
+                ComponentUtils.setButtonEnabled(execute, query, pause);
+            }
+        }).start();
+    }
+
+    @FXML
+    void pause(ActionEvent event) {
+        super.executePause(JdAutoController.class, JD_AUTO);
+    }
+
+    public void queryData(AppConfigDto appConfigDto, boolean init) {
+        shoppingDtoList.clear();
+        OutputUtils.clearLog(orderGoodsList);
+        if (init) {
+            OutputUtils.clearLog(log);
+        }
+        ShoppingDto waitAppraise =  WaitAppraiseController.queryData(appConfigDto, true, null, null, null);
+        ShoppingDto showOrder =  ShowOrderController.queryData(appConfigDto, true, null, null, null);
+        ShoppingDto appendAppraise =  AppendAppraiseController.queryData(appConfigDto, true, null, null, null);
+        ShoppingDto serviceAppraise =  ServiceAppraiseController.queryData(appConfigDto, true, null, null, null);
+        shoppingDtoList.add(waitAppraise);
+        shoppingDtoList.add(showOrder);
+        shoppingDtoList.add(appendAppraise);
+        shoppingDtoList.add(serviceAppraise);
+        OutputUtils.infoList(orderGoodsList, shoppingDtoList);
+        waitHandlerNum = waitAppraise.getOrderNumValue() + showOrder.getOrderNumValue() + appendAppraise.getOrderNumValue() + serviceAppraise.getOrderNumValue();
+    }
+
+    protected void doExecute() {
+        AppConfigDto appConfigDto = null;
+        try {
+            pauseStatus = false;
+            handle.clear();
+            appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            appConfigDto.setExecuteType(JD_AUTO.getCode());
+            if(!ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, null)) {
+                return;
+            }
+            ComponentUtils.setButtonDisabled(execute, query);
+            List<String> logs = new ArrayList<>();
+            Date currentDate = new Date();
+
+            for (int i=0; i<4; i++) {
+                iscontinue = true;
+                if (pauseStatus) {
+                    break;
+                }
+                while (true) {
+                    ShoppingDto shoppingDto = shoppingDtoList.get(i);
+                    OutputUtils.info(type, shoppingDto.getTypeName());
+                    FunctionConfig functionConfig = FunctionConfig.getFunctionConfig(shoppingDto.getType());
+                    List<GoodsDto> goodsDtoList = shoppingDto.getGoodsDtoList();
+                    if (pauseStatus || CollectionUtils.isEmpty(goodsDtoList)) {
+                        break;
+                    }
+                    appraise(appConfigDto, shoppingDto, functionConfig, logs);
+                    LoggerUtils.writeAppraiseInfo(functionConfig.getCode(), currentDate, logs);
+                    queryData(appConfigDto, false);
+                    if (!iscontinue) {
+                        break;
+                    }
+                }
+            }
+            if (pauseStatus) {
+                ShoppingCommonUtil.info(log, NAME_PAUSE_COMPLETE);
+                ComponentUtils.setButtonEnabled(pause);
+                return;
+            }
+            ShoppingCommonUtil.appraiseComplete(appConfigDto, log);
+            setProgress(1);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            ShoppingCommonUtil.info(log, e.toString());
+        } finally {
+            if (appConfigDto != null) {
+                appConfigDto.setExecuteType(SYMBOL_EMPTY);
+            }
+            ComponentUtils.setButtonEnabled(execute, query);
+        }
+    }
+
+    private void appraise(AppConfigDto appConfigDto, ShoppingDto shoppingDto,
+                          FunctionConfig functionConfig, List<String> logs) throws Exception {
+        List<GoodsDto> goodsList = shoppingDto.getGoodsDtoList();
+        int orderNumValue = shoppingDto.getOrderNumValue();
+        if (CollectionUtils.isNotEmpty(goodsList)) {
+            for (GoodsDto goodsDto : goodsList) {
+                goodsDto.setTypeName(functionConfig.getName());
+                goodsDto.setType(functionConfig.getCode());
+                if (pauseStatus) {
+                    break;
+                }
+                if (StringUtils.isNotBlank(handle.get(getHandlerKey(goodsDto)))) {
+                    iscontinue = false;
+                    break;
+                }
+                ShoppingCommonUtil.appraiseStart(appConfigDto, log, logs, goodsDto);
+                if (StringUtils.isBlank(goodsDto.getGoodsId())) {
+                    ShoppingCommonUtil.goodsNotExists(appConfigDto, log, logs, (GoodsDto) BeanUtils.cloneBean(goodsDto));
+                    continue;
+                }
+                if (WAIT_APPRAISE.getCode().equals(functionConfig.getCode())) {
+                    WaitAppraiseController.goodsAppraise(appConfigDto, goodsDto);
+                    ServiceAppraiseController.goodsAppraise(appConfigDto, goodsDto);
+                } else if (SHOW_ORDER.getCode().equals(functionConfig.getCode())) {
+                    ShowOrderController.goodsAppraise(appConfigDto, goodsDto);
+                } else if (APPEND_APPRAISE.getCode().equals(functionConfig.getCode())) {
+                    AppendAppraiseController.goodsAppraise(appConfigDto, goodsDto);
+                } else if (SERVICE_APPRAISE.getCode().equals(functionConfig.getCode())) {
+                    ServiceAppraiseController.goodsAppraise(appConfigDto, goodsDto);
+                } else {
+                    ShoppingCommonUtil.typeNotExists(appConfigDto, log, logs, (GoodsDto) BeanUtils.cloneBean(goodsDto));
+                }
+                ShoppingCommonUtil.appraiseComplete(appConfigDto, log, logs, (GoodsDto) BeanUtils.cloneBean(goodsDto));
+                recordHandler(goodsDto);
+                handlerNum++;
+                setProgress(new BigDecimal(handlerNum).divide(new BigDecimal(waitHandlerNum), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                shoppingDto.setOrderNumValue(--orderNumValue);
+                new Thread(() -> {
+                    OutputUtils.clearLog(orderGoodsList);
+                    OutputUtils.infoList(orderGoodsList, shoppingDtoList);
+                }).start();
+                ShoppingCommonUtil.restMoment(appConfigDto, log);
+            }
+        } else {
+            ShoppingCommonUtil.noAppraiseGoods(appConfigDto, log);
+        }
+    }
+
+    private void recordHandler(GoodsDto goods) {
+        String key = getHandlerKey(goods);
+        handle.put(key, key);
+    }
+
+    public String getHandlerKey(GoodsDto goods) {
+        return goods.getOrderId() + SYMBOL_HYPHEN + goods.getGoodsId() + SYMBOL_HYPHEN + goods.getType();
+    }
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        shoppingDtoList = new ArrayList<>();
+        super.init(JdAutoController.class, JD_AUTO);
+    }
+}

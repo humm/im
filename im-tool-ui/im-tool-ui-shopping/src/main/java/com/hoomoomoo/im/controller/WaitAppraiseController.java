@@ -40,17 +40,17 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
 
     @FXML
     void execute(ActionEvent event) {
-        super.execute(WaitAppraiseController.class, STR_0, WAIT_APPRAISE);
+        super.execute(WaitAppraiseController.class, WAIT_APPRAISE);
     }
 
     @FXML
     void query(ActionEvent event) {
-        super.executeQuery(WaitAppraiseController.class, STR_0);
+        super.executeQuery(WaitAppraiseController.class, WAIT_APPRAISE);
     }
 
     @FXML
     void pause(ActionEvent event) {
-        super.executePause(WaitAppraiseController.class, STR_0);
+        super.executePause(WaitAppraiseController.class, WAIT_APPRAISE);
     }
 
     public static String getGoodsAppraiseInfo(AppConfigDto appConfigDto, String goodsId) throws IOException {
@@ -95,7 +95,7 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
         return connection.post();
     }
 
-    public ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {
+    public static ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {
         int orderNumValue = 0;
         OutputUtils.clearLog(orderGoodsList);
         if (initLog) {
@@ -136,13 +136,18 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
                     OutputUtils.info(orderGoodsList, goodsDto);
                 }
             }
-            OutputUtils.info(orderNum, String.valueOf(orderNumValue));
+            if (orderNum != null) {
+                OutputUtils.info(orderNum, String.valueOf(orderNumValue));
+            }
         } catch (IOException e) {
             LoggerUtils.info(e);
+            ShoppingCommonUtil.info(appConfigDto, log, e.toString());
         }
         com.hoomoomoo.im.dto.ShoppingDto shoppingDto = new ShoppingDto();
         shoppingDto.setGoodsDtoList(goodsDtoList);
         shoppingDto.setOrderNumValue(orderNumValue);
+        shoppingDto.setType(WAIT_APPRAISE.getCode());
+        shoppingDto.setTypeName(WAIT_APPRAISE.getName());
         return shoppingDto;
     }
 
@@ -154,6 +159,6 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        super.init(WaitAppraiseController.class, STR_0);
+        super.init(WaitAppraiseController.class, WAIT_APPRAISE);
     }
 }

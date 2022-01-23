@@ -38,17 +38,17 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
 
     @FXML
     void execute(ActionEvent event) {
-        super.execute(ServiceAppraiseController.class, STR_4, SERVICE_APPRAISE);
+        super.execute(ServiceAppraiseController.class, SERVICE_APPRAISE);
     }
 
     @FXML
     void query(ActionEvent event) {
-        super.executeQuery(ServiceAppraiseController.class, STR_4);
+        super.executeQuery(ServiceAppraiseController.class, SERVICE_APPRAISE);
     }
 
     @FXML
     void pause(ActionEvent event) {
-        super.executePause(ServiceAppraiseController.class, STR_4);
+        super.executePause(ServiceAppraiseController.class, SERVICE_APPRAISE);
     }
 
     public static Document goodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
@@ -96,7 +96,7 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
         return connection.post();
     }
 
-    public ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {
+    public static ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {
         int orderNumValue = 0;
         OutputUtils.clearLog(orderGoodsList);
         if (initLog) {
@@ -134,13 +134,18 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
                 goodsDtoList.add(goodsDto);
                 OutputUtils.info(orderGoodsList, goodsDto);
             }
-            OutputUtils.info(orderNum, String.valueOf(orderNumValue));
+            if (orderNum != null) {
+                OutputUtils.info(orderNum, String.valueOf(orderNumValue));
+            }
         } catch (IOException e) {
             LoggerUtils.info(e);
+            ShoppingCommonUtil.info(appConfigDto, log, e.toString());
         }
         ShoppingDto shoppingDto = new ShoppingDto();
         shoppingDto.setGoodsDtoList(goodsDtoList);
         shoppingDto.setOrderNumValue(orderNumValue);
+        shoppingDto.setType(SERVICE_APPRAISE.getCode());
+        shoppingDto.setTypeName(SERVICE_APPRAISE.getName());
         return shoppingDto;
     }
 
@@ -152,6 +157,6 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        super.init(ServiceAppraiseController.class, STR_4);
+        super.init(ServiceAppraiseController.class, SERVICE_APPRAISE);
     }
 }

@@ -2,6 +2,7 @@ package com.hoomoomoo.im.dto;
 
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,5 +16,14 @@ public class ShoppingDto extends BaseDto{
 
     public List<GoodsDto> goodsDtoList;
 
-    public Integer orderNumValue = 0;
+    public Integer orderNumValue;
+
+    public String type;
+
+    public String typeName;
+
+    public ShoppingDto() {
+        this.goodsDtoList = new ArrayList<>();
+        this.orderNumValue = 0;
+    }
 }

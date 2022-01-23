@@ -9,6 +9,8 @@
             <menus>
                 <Menu fx:id="menuJd" mnemonicParsing="false" text="京东">
                     <items>
+                        <MenuItem fx:id="menuItemJdAuto" mnemonicParsing="false" onAction="#openJdAuto"
+                                  text="自动化"/>
                         <MenuItem fx:id="menuItemWaitAppraise" mnemonicParsing="false" onAction="#openWaitAppraise"
                                   text="待评价"/>
                         <MenuItem fx:id="menuItemShowOrder" mnemonicParsing="false" onAction="#openShowOrder"

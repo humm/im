@@ -108,7 +108,7 @@ public class InitConfigTest {
     @Test
     public void config_03_updateConfig() throws Exception {
         Map<String, String> keys = new LinkedHashMap<>();
-        keys.put("app.tab.show", null);
+        keys.put("app.tab.show", "540");
 
         keys.put("app.user", null);
 

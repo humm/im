@@ -157,17 +157,17 @@ public class ProcessInfoController extends BaseController implements Initializab
 
                 // step 3 在输出文件内 写 组信息 和 页 信息
                 Sheet flowSheet = workbook.getSheet("基本流程信息");
-                writeFlowInfo(taCode.getText(), flowSheet, bufferedWriter);
-
                 if (flowSheet == null) {
                     OutputUtils.info(log, "[基本流程信息]sheet页面不存在");
                     return;
                 }
+                writeFlowInfo(taCode.getText(), flowSheet, bufferedWriter);
 
                 Map<String, String> jobWithTaskMap;
                 bufferedWriter.write("delete from tbscheduletask WHERE substr(sche_task_code, 1, 5) = 'fund_' AND ta_code='" + taCode.getText() + "';\n");
                 for (Sheet sheet : sheetList) {
-                    if (sheet.getName().compareTo("首页") == 0 || sheet.getName().compareTo("基本流程信息") == 0 || sheet.getName().compareTo("任务配置") == 0 || sheet.getName().compareTo("交易配置") == 0) {
+                    if (sheet.getName().compareTo("首页") == 0 || sheet.getName().compareTo("基本流程信息") == 0 || sheet.getName().compareTo("任务配置") == 0
+                            || sheet.getName().compareTo("交易配置") == 0 || sheet.getName().compareTo("定时任务配置") == 0) {
                         // 跳过其他页
                         continue;
                     }
@@ -192,6 +192,16 @@ public class ProcessInfoController extends BaseController implements Initializab
                     writeTaskInfo(taCode.getText(), bufferedWriter, jobWithTaskMap);
                     OutputUtils.info(log, "tbscheduletask生成结束");
                 }
+
+                // step 3.2.5 开始写流程文件 tbscheduletrigger
+                OutputUtils.info(log, "tbscheduletrigger生成开始");
+                Sheet triggerSheet = workbook.getSheet("定时任务配置");
+                if (triggerSheet == null) {
+                    OutputUtils.info(log, "[定时任务配置]sheet页面不存在");
+                    return;
+                }
+                writeTriggerInfo(taCode.getText(), triggerSheet, bufferedWriter);
+                OutputUtils.info(log, "tbscheduletrigger生成结束");
 
                 // step 3.3 开始写流程文件 tbscheduletaskregistry
                 OutputUtils.info(log, "tbscheduletaskregistry生成开始");
@@ -328,7 +338,9 @@ public class ProcessInfoController extends BaseController implements Initializab
             if (sheet.getCell(3, k).getContents().equals("1")) {
                 String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name," +
                         "sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url," +
-                        "sche_job_pause,sche_ishidebutton,url_open_mode, sche_job_ishide, sche_job_isskip) \nvalues ('"
+                        "sche_job_pause,sche_ishidebutton,url_open_mode, sche_job_ishide, sche_job_isskip," +
+                        "sche_job_iswait, order_no) \nvalues" +
+                        " ('"
                         + groupCode + "',"
                         + getCell(sheet, 2, k) + ","
                         + getCell(sheet, 0, k) + ","
@@ -340,9 +352,11 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + getCell(sheet, 9, k) + ","
                         + getCell(sheet, 10, k) + ", "
                         + ((getCell(sheet, 11, k).equals("null")) ? "'0'" : "'1'") + ", "
-                        + ((getCell(sheet, 9, k).equals("null")) ? "'0'" : "'1'") + ", "
+                        + ((getCell(sheet, 15, k).equals("null")) ? getCell(sheet, 9, k).equals("null") ? "'0'" : "'1'" : getCell(sheet, 15, k)) + ","
                         + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : "'1'") + ", "
-                        + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : "'1'")
+                        + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : "'1'") + ", "
+                        + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : "'1'") + ", "
+                        + getCell(sheet, 16, k)
                         + ");";
                 parentJobList.add(sql);
             }
@@ -369,7 +383,8 @@ public class ProcessInfoController extends BaseController implements Initializab
             if (!sheet.getCell(3, k).getContents().equals("1")) {
                 String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name," +
                         "sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url," +
-                        "sche_job_pause,sche_ishidebutton,url_open_mode, sche_job_ishide, sche_job_isskip) " +
+                        "sche_job_pause,sche_ishidebutton,url_open_mode, sche_job_ishide, sche_job_isskip," +
+                        "sche_job_iswait, order_no) " +
                         "\nvalues ('"
                         + groupCode + "',"
                         + getCell(sheet, 2, k) + ","
@@ -382,9 +397,11 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + getCell(sheet, 9, k) + ","
                         + getCell(sheet, 10, k) + ","
                         + ((getCell(sheet, 11, k).equals("null")) ? "'0'" : "'1'") + ","
-                        + ((getCell(sheet, 9, k).equals("null")) ? "'0'" : "'1'") + ","
+                        + ((getCell(sheet, 15, k).equals("null")) ? getCell(sheet, 9, k).equals("null") ? "'0'" : "'1'" : getCell(sheet, 15, k)) + ","
                         + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : "'1'") + ","
-                        + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : "'1'")
+                        + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : "'1'") + ","
+                        + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : "'1'") + ","
+                        + getCell(sheet, 16, k)
                         + ");";
                 secondJobList.add(sql);
             }
@@ -397,6 +414,37 @@ public class ProcessInfoController extends BaseController implements Initializab
     }
 
     /**
+     * 生成task脚本
+     *
+     * @param taCode
+     * @param sheet
+     * @param bufferedWriter
+     */
+    private void writeTriggerInfo(String taCode, Sheet sheet, BufferedWriter bufferedWriter) throws IOException {
+        int rows = sheet.getRows();
+
+        bufferedWriter.write("\n-- 定时任务配置脚本 begin \n");
+        bufferedWriter.write("-- delete from tbscheduletrigger where sche_code like 'fund_%'; \n");
+
+        for (int k = 2; k < rows; k++) {
+            String sql = "-- insert into tbscheduletrigger (sche_code_type,sche_code,sche_trigger_status," +
+                    "sche_trigger_lasttime,sche_trigger_nexttime,sche_trigger_cron,is_workday_trigger,enable_flag) " +
+                    " \n-- values ("
+                    + getCell(sheet, 1, k) + ","
+                    + getCell(sheet, 2, k) + ","
+                    + getCell(sheet, 3, k) + ","
+                    + getCell(sheet, 4, k) + ","
+                    + getCell(sheet, 5, k) + ","
+                    + getCell(sheet, 6, k) + ","
+                    + getCell(sheet, 7, k) + ","
+                    + getCell(sheet, 8, k)
+                    + ");";
+            bufferedWriter.write(sql + "\n");
+        }
+        bufferedWriter.write("-- 定时任务配置脚本 end \n\n");
+    }
+
+    /**
      * 获取表格数据
      *
      * @param sheet
@@ -405,6 +453,9 @@ public class ProcessInfoController extends BaseController implements Initializab
      * @return
      */
     public String getCell(Sheet sheet, int i, int j) {
+        if (i >= sheet.getColumns()) {
+            return "null";
+        }
         if (sheet.getCell(i, j).getContents().equals("")) {
             return "null";
         } else {
@@ -432,6 +483,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 Map map = TaskMemoryCache.getCacheMap(taskCode);
                 if (map == null) {
                     OutputUtils.info(log, key + "的TASK[" + taskCode + "]在【任务配置】sheet页中不存在");
+                    LoggerUtils.info(key + "的TASK[" + taskCode + "]在【任务配置】sheet页中不存在");
                     return;
                 }
                 // 写主task

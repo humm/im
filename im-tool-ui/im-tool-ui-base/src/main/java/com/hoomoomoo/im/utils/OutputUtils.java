@@ -18,13 +18,31 @@ import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
 public class OutputUtils {
 
     public static void info(TableView tableView, BaseDto baseDto) {
+        if (tableView == null) {
+            return;
+        }
         Platform.runLater(() -> {
             tableView.getItems().add(baseDto);
             tableView.scrollTo(tableView.getItems().size());
         });
     }
 
+    public static void infoList(TableView tableView, List<? extends BaseDto> baseDtoList) {
+        if (tableView == null) {
+            return;
+        }
+        Platform.runLater(() -> {
+            for (BaseDto baseDto : baseDtoList) {
+                tableView.getItems().add(baseDto);
+            }
+            tableView.scrollTo(tableView.getItems().size());
+        });
+    }
+
     public static void info(TableView tableView, String msg) {
+        if (tableView == null) {
+            return;
+        }
         LogDto logDto = new LogDto();
         logDto.setTime(CommonUtils.getCurrentDateTime1());
         logDto.setMsg(msg);
@@ -35,6 +53,9 @@ public class OutputUtils {
     }
 
     public static void info(Object obj, String text) {
+        if (obj == null) {
+            return;
+        }
         Platform.runLater(() -> {
             if (obj instanceof TextArea) {
                 ((TextArea) obj).appendText(text);
@@ -47,6 +68,9 @@ public class OutputUtils {
     }
 
     public static void selected(Object obj, boolean selected) {
+        if (obj == null) {
+            return;
+        }
         Platform.runLater(() -> {
             if (obj instanceof RadioButton) {
                 ((RadioButton) obj).setSelected(selected);
@@ -55,6 +79,9 @@ public class OutputUtils {
     }
 
     public static void info(TextArea textArea, List<String> text) {
+        if (textArea == null) {
+            return;
+        }
         Platform.runLater(() -> {
             for (String item : text) {
                 textArea.appendText(item);
@@ -63,6 +90,9 @@ public class OutputUtils {
     }
 
     public static void clearLog(Object obj) {
+        if (obj == null) {
+            return;
+        }
         Platform.runLater(() -> {
             if (obj instanceof TableView) {
                 ((TableView) obj).getItems().clear();

@@ -19,6 +19,12 @@ public class GoodsDto extends BaseDto{
 
     private String status;
 
+    private String type;
+
+    private String typeName;
+
+    private String orderNumValue;
+
     private String appraiseInfo;
 
     private String appraiseImgUrl;

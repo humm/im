@@ -36,17 +36,17 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
 
     @FXML
     void execute(ActionEvent event) {
-        super.execute(ShowOrderController.class, STR_1, SHOW_ORDER);
+        super.execute(ShowOrderController.class, SHOW_ORDER);
     }
 
     @FXML
     void query(ActionEvent event) {
-        super.executeQuery(ShowOrderController.class, STR_1);
+        super.executeQuery(ShowOrderController.class, SHOW_ORDER);
     }
 
     @FXML
     void pause(ActionEvent event) {
-        super.executePause(ShowOrderController.class, STR_1);
+        super.executePause(ShowOrderController.class, SHOW_ORDER);
     }
 
     public static String getGoodsImgUrl(AppConfigDto appConfigDto, String goodsId) throws IOException {
@@ -76,7 +76,7 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
         return connection.post();
     }
 
-    public ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {
+    public static ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {
         int orderNumValue = 0;
         OutputUtils.clearLog(orderGoodsList);
         if (initLog) {
@@ -112,13 +112,18 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
                 goodsDtoList.add(goodsDto);
                 OutputUtils.info(orderGoodsList, goodsDto);
             }
-            OutputUtils.info(orderNum, String.valueOf(orderNumValue));
+            if (orderNum != null) {
+                OutputUtils.info(orderNum, String.valueOf(orderNumValue));
+            }
         } catch (IOException e) {
             LoggerUtils.info(e);
+            ShoppingCommonUtil.info(appConfigDto, log, e.toString());
         }
         ShoppingDto shoppingDto = new ShoppingDto();
         shoppingDto.setGoodsDtoList(goodsDtoList);
         shoppingDto.setOrderNumValue(orderNumValue);
+        shoppingDto.setType(SHOW_ORDER.getCode());
+        shoppingDto.setTypeName(SHOW_ORDER.getName());
         return shoppingDto;
     }
 
@@ -130,6 +135,6 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        super.init(ShowOrderController.class, STR_1);
+        super.init(ShowOrderController.class, SHOW_ORDER);
     }
 }

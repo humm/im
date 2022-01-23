@@ -49,6 +49,21 @@ public class ShoppingStarterController implements Initializable {
     private TabPane functionTab;
 
     @FXML
+    void openJdAuto(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(BaseConst.MSG_OPEN, JD_AUTO.getName()));
+            Tab tab = isOpen(JD_AUTO.getName());
+            if (tab == null) {
+                tab = getFunctionTab(JD_AUTO.getPath(), JD_AUTO.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    @FXML
     void openWaitAppraise(ActionEvent event) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_OPEN, WAIT_APPRAISE.getName()));
@@ -168,8 +183,6 @@ public class ShoppingStarterController implements Initializable {
             LoggerUtils.info(e);
         }
     }
-
-
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

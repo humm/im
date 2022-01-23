@@ -26,6 +26,7 @@ public class BaseConst {
     public static final String STR_3 = "3";
     public static final String STR_4 = "4";
     public static final String STR_5 = "5";
+    public static final String STR_8 = "8";
     public static final String STR_9 = "9";
     public static final String STR_69 = "69";
     public static final String STR_145 = "145";
@@ -78,6 +79,7 @@ public class BaseConst {
     public static final String KEY_CONTENT = "content";
     public static final String KEY_IMGS = "imgs";
     public static final String KEY_UNICK = "unick";
+    public static final String KEY_LIB = "/lib";
 
     public static final String KEY_DICT = "dict";
     public static final String KEY_MULTI = "multi";
@@ -115,8 +117,8 @@ public class BaseConst {
     public static final String NAME_ORDER_DETAIL = "订单详情";
     public static final String NAME_APPRAISEING = "评价开始";
     public static final String NAME_APPRAISE_SUCCESS = "评价成功";
-    public static final String NAME_APPRAISE_FAIL = "失败";
-    public static final String NAME_REST_MOMENT = "策略休息下";
+    public static final String NAME_APPRAISE_FAIL = "评价失败";
+    public static final String NAME_REST_MOMENT = "策略休息[%s]秒";
     public static final String NAME_APPRAISE_COMPLETE = "评价完成";
     public static final String NAME_NO_APPRAISE_GOODS = "无评价商品";
     public static final String NAME_JD_LOGIN = "欢迎登录";
@@ -127,6 +129,7 @@ public class BaseConst {
     public static final String NAME_NET_CONNECT = "请连接网络";
     public static final String NAME_PAUSE_START = "暂停开始";
     public static final String NAME_PAUSE_COMPLETE = "暂停完成";
+    public static final String NAME_TYPE_NOT_EXIST = "事件类型不存在";
 
     public final static String SECURITY_FLAG = "+++";
 

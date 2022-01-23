@@ -43,34 +43,31 @@ public class ShoppingCommonUtil {
         if (functionType.equals(WAIT_APPRAISE.getCode()) || functionType.equals(SHOW_ORDER.getCode())
                 || functionType.equals(APPEND_APPRAISE.getCode()) || functionType.equals(FunctionConfig.SERVICE_APPRAISE.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getJdCookie())) {
-                ShoppingCommonUtil.info(log, MSG_WAIT_APPRAISE_JD_COOKIE);
+                ShoppingCommonUtil.info(appConfigDto, log, MSG_WAIT_APPRAISE_JD_COOKIE);
                 flag = false;
             }
-            switch (appConfigDto.getExecuteType()) {
-                case STR_0:
-                    ShoppingCommonUtil.info(log, String.format(MSG_EXECUTE, WAIT_APPRAISE.getName()));
-                    flag = false;
-                    break;
-                case STR_1:
-                    ShoppingCommonUtil.info(log, String.format(MSG_EXECUTE, SHOW_ORDER.getName()));
-                    flag = false;
-                    break;
-                case STR_3:
-                    ShoppingCommonUtil.info(log, String.format(MSG_EXECUTE, APPEND_APPRAISE.getName()));
-                    flag = false;
-                    break;
-                case STR_4:
-                    ShoppingCommonUtil.info(log, String.format(MSG_EXECUTE, SERVICE_APPRAISE.getName()));
-                    flag = false;
-                    break;
-                case STR_9:
-                    ShoppingCommonUtil.info(log, String.format(MSG_EXECUTE, MSG_AUTO_APPRAISE));
-                    flag = false;
-                    break;
-                default:break;
+            if (StringUtils.isNotBlank(appConfigDto.getExecuteType())) {
+                ShoppingCommonUtil.info(appConfigDto, log, String.format(MSG_EXECUTE, getTypeName(appConfigDto.getExecuteType())));
+                flag = false;
             }
         }
         return flag;
+    }
+
+    public static String getTypeName(String type) {
+        String name = SYMBOL_EMPTY;
+        if (type.equals(WAIT_APPRAISE.getCode())) {
+            name = WAIT_APPRAISE.getName();
+        } else if (type.equals(SHOW_ORDER.getCode())) {
+            name = SHOW_ORDER.getName();
+        } else if (type.equals(APPEND_APPRAISE.getCode())) {
+            name = APPEND_APPRAISE.getName();
+        } else if (type.equals(SERVICE_APPRAISE.getCode())) {
+            name = SERVICE_APPRAISE.getName();
+        } else if (type.equals(JD_AUTO.getCode())) {
+            name = JD_AUTO.getName();
+        }
+        return name;
     }
 
     public static void initCookie(AppConfigDto appConfigDto, Connection connection) {
@@ -167,7 +164,7 @@ public class ShoppingCommonUtil {
             appConfigDto.setJdUserCode(userCode);
             OutputUtils.info(userName, appConfigDto.getJdUserCode());
         } catch (UnknownHostException e) {
-            info(log, NAME_NET_CONNECT);
+            info(appConfigDto, log, NAME_NET_CONNECT);
             LoggerUtils.info(e);
             throw e;
         }
@@ -192,22 +189,57 @@ public class ShoppingCommonUtil {
     }
 
     public static void restMoment(AppConfigDto appConfigDto, TableView log) throws InterruptedException {
-        info(log, NAME_REST_MOMENT);
+        info(appConfigDto, log, String.format(NAME_REST_MOMENT, appConfigDto.getJdIntervalTime()));
         Thread.sleep(Integer.valueOf(appConfigDto.getJdIntervalTime()) * 1000);
     }
 
+    public static void goodsNotExists(AppConfigDto appConfigDto, TableView log, List<String> logs, GoodsDto goods) {
+        goods.setGoodsId(NAME_GOODS_NOT_EXIST);
+        goods.setStatus(NAME_APPRAISE_FAIL);
+        OutputUtils.info(log, goods);
+        ShoppingCommonUtil.initLogs(logs, goods);
+    }
+
+    public static void typeNotExists(AppConfigDto appConfigDto, TableView log, List<String> logs, GoodsDto goods) {
+        goods.setStatus(NAME_TYPE_NOT_EXIST);
+        OutputUtils.info(log, goods);
+        ShoppingCommonUtil.initLogs(logs, goods);
+    }
+
+    public static void appraiseStart(AppConfigDto appConfigDto, TableView log, List<String> logs, GoodsDto goods) {
+        goods.setStatus(NAME_APPRAISEING);
+        OutputUtils.info(log, goods);
+        ShoppingCommonUtil.initLogs(logs, goods);
+    }
+
+    public static void appraiseComplete(AppConfigDto appConfigDto, TableView log, List<String> logs, GoodsDto goods) {
+        goods.setStatus(NAME_APPRAISE_SUCCESS);
+        OutputUtils.info(log, goods);
+        ShoppingCommonUtil.initLogs(logs, goods);
+    }
+
     public static void noAppraiseGoods(AppConfigDto appConfigDto, TableView log) {
-        info(log, NAME_NO_APPRAISE_GOODS);
+        info(appConfigDto, log, NAME_NO_APPRAISE_GOODS);
     }
 
     public static void appraiseComplete(AppConfigDto appConfigDto, TableView log) {
-        info(log, NAME_APPRAISE_COMPLETE);
+        info(appConfigDto, log, NAME_APPRAISE_COMPLETE);
+    }
+
+    public static void info(AppConfigDto appConfigDto, TableView log, String msg) {
+        GoodsDto goods = new GoodsDto();
+        goods.setGoodsName(msg);
+        OutputUtils.info(log, goods);
     }
 
     public static void info(TableView log, String msg) {
-        GoodsDto noGoods = new GoodsDto();
-        noGoods.setGoodsName(msg);
-        OutputUtils.info(log, noGoods);
+        try {
+            GoodsDto goods = new GoodsDto();
+            goods.setGoodsName(msg);
+            OutputUtils.info(log, goods);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
     }
 }
 

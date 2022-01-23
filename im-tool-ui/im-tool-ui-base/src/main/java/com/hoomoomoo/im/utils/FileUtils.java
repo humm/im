@@ -358,7 +358,8 @@ public class FileUtils {
         String file = getPathFolder() + path;
         if (file.contains(START_MODE_JAR)) {
             int jarIndex = file.indexOf(START_MODE_JAR);
-            String filePath = file.substring(jarIndex + 1);
+            int lastIndex = file.lastIndexOf(START_MODE_JAR);
+            String filePath = file.substring(lastIndex + 1);
             filePath = filePath.substring(filePath.indexOf(SYMBOL_SLASH));
             String folderPath = file.substring(0, jarIndex);
             folderPath = folderPath.substring(0, folderPath.lastIndexOf(SYMBOL_SLASH));
@@ -366,7 +367,7 @@ public class FileUtils {
         } else {
             file = KEY_FILE + file;
         }
-        file = file.replaceAll(APP_CODE_BASE, ConfigCache.getAppCodeCache());
+        file = file.replaceAll(APP_CODE_BASE, ConfigCache.getAppCodeCache()).replaceAll(KEY_LIB, SYMBOL_EMPTY);
         return new URL(file);
     }
 

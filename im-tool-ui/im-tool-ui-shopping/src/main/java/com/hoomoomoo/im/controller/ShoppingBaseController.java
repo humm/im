@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.WAIT_APPRAISE;
 
 /**
  * @author humm23693
@@ -56,24 +57,24 @@ public class ShoppingBaseController extends BaseController{
     @FXML
     public Button pause;
 
-    private List<GoodsDto> goodsDtoList;
+    public List<GoodsDto> goodsDtoList;
 
-    private Integer orderNumValue = 0;
+    public Integer orderNumValue = 0;
 
     private Object instance;
 
     private Object instanceService;
 
-    private Boolean pauseStatus;
+    public Boolean pauseStatus;
 
-    protected void executePause(Class clazz, String type) {
+    protected void executePause(Class clazz, FunctionConfig functionConfig) {
         pauseStatus = true;
         ShoppingCommonUtil.info(log, NAME_PAUSE_START);
         schedule.requestFocus();
         ComponentUtils.setButtonDisabled(pause);
     }
 
-    protected void executeQuery(Class clazz, String type) {
+    protected void executeQuery(Class clazz, FunctionConfig functionConfig) {
         new Thread(() -> {
             try {
                 setProgress(0);
@@ -93,7 +94,7 @@ public class ShoppingBaseController extends BaseController{
         }).start();
     }
 
-    protected void execute(Class clazz, String type, FunctionConfig functionConfig) {
+    protected void execute(Class clazz, FunctionConfig functionConfig) {
         new Thread(() -> {
             try {
                 OutputUtils.clearLog(log);
@@ -102,7 +103,7 @@ public class ShoppingBaseController extends BaseController{
                     return;
                 }
                 setProgress(0);
-                this.doExecute(clazz, functionConfig, type);
+                this.doExecute(clazz, functionConfig);
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 ShoppingCommonUtil.info(log, e.toString());
@@ -110,13 +111,13 @@ public class ShoppingBaseController extends BaseController{
         }).start();
     }
 
-    protected void doExecute(Class clazz, FunctionConfig functionConfig, String type) {
+    protected void doExecute(Class clazz, FunctionConfig functionConfig) {
         AppConfigDto appConfigDto = null;
         try {
             pauseStatus = false;
             int currentNum = orderNumValue;
             appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            appConfigDto.setExecuteType(type);
+            appConfigDto.setExecuteType(functionConfig.getCode());
             if(!ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
                 return;
             }
@@ -130,31 +131,19 @@ public class ShoppingBaseController extends BaseController{
                     if (pauseStatus) {
                         break;
                     }
-                    goodsDto.setStatus(NAME_APPRAISEING);
-                    OutputUtils.info(log, goodsDto);
-                    ShoppingCommonUtil.initLogs(logs, goodsDto);
+                    ShoppingCommonUtil.appraiseStart(appConfigDto, log, logs, goodsDto);
                     if (StringUtils.isBlank(goodsDto.getGoodsId())) {
-                        GoodsDto goods = (GoodsDto) BeanUtils.cloneBean(goodsDto);
-                        goods.setGoodsId(NAME_GOODS_NOT_EXIST);
-                        goods.setStatus(NAME_APPRAISE_FAIL);
-                        OutputUtils.info(log, goods);
-                        ShoppingCommonUtil.initLogs(logs, goods);
+                        ShoppingCommonUtil.goodsNotExists(appConfigDto, log, logs, (GoodsDto) BeanUtils.cloneBean(goodsDto));
                         continue;
                     }
                     goodsAppraise.invoke(instance, appConfigDto, goodsDto);
-                    if (STR_0.equals(type)) {
+                    if (WAIT_APPRAISE.getCode().equals(functionConfig.getCode())) {
                         serviceAppraise.invoke(instance, appConfigDto, goodsDto);
                     }
-                    GoodsDto goods = (GoodsDto) BeanUtils.cloneBean(goodsDto);
-                    goods.setStatus(NAME_APPRAISE_SUCCESS);
-                    OutputUtils.info(log, goods);
-                    ShoppingCommonUtil.initLogs(logs, goods);
+                    ShoppingCommonUtil.appraiseComplete(appConfigDto, log, logs, (GoodsDto) BeanUtils.cloneBean(goodsDto));
                     orderNumValue--;
                     OutputUtils.info(orderNum, String.valueOf(orderNumValue));
                     setProgress(new BigDecimal(currentNum - orderNumValue).divide(new BigDecimal(currentNum), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
-                    if (pauseStatus) {
-                        break;
-                    }
                     ShoppingCommonUtil.restMoment(appConfigDto, log);
                 }
             } else {
@@ -168,9 +157,9 @@ public class ShoppingBaseController extends BaseController{
                 return;
             }
             if (orderNumValue > 0 && currentNum != orderNumValue) {
-                doExecute(clazz, functionConfig, type);
+                doExecute(clazz, functionConfig);
             } else {
-               if(currentNum != 0) {
+               if(CollectionUtils.isNotEmpty(goodsDtoList)) {
                     ShoppingCommonUtil.appraiseComplete(appConfigDto, log);
                 }
                 setProgress(1);
@@ -186,7 +175,7 @@ public class ShoppingBaseController extends BaseController{
         }
     }
 
-    protected void init(Class clazz, String type) {
+    protected void init(Class clazz, FunctionConfig functionConfig) {
         try {
             instance = clazz.newInstance();
             instanceService = ServiceAppraiseController.class.newInstance();
