@@ -68,6 +68,25 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
+    public static String readNormalFileToString(String filePath, boolean skipAnnotation) throws IOException {
+        List<String> config = (List<String>) readFile(filePath, FILE_TYPE_NORMAL, skipAnnotation);
+        StringBuilder content = new StringBuilder();
+        if (CollectionUtils.isNotEmpty(config)) {
+            for (String item : config) {
+                content.append(item);
+            }
+        }
+        return content.toString();
+    }
+
+    /**
+     * 读取正常文件
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
     public static List<String> readNormalFile(String filePath, boolean skipAnnotation) throws IOException {
         return (List<String>) readFile(filePath, FILE_TYPE_NORMAL, skipAnnotation);
     }
@@ -416,26 +435,17 @@ public class FileUtils {
         }
         String url = getFilePath(path);
         File file = new File(url);
+
         LinkedHashMap<String, String> oldAppConfig = new LinkedHashMap<>(16);
+        String bakFileConf = getOldAppConfig(file, url, oldAppConfig, FILE_TYPE_CONFIG);
 
-        // 临时备份历史配置文件名称及路径
-        String bakFileName = file.getName() + FILE_TYPE_BAK;
-        String bakFilePath = file.getParentFile().getParentFile().getPath();
-        String bakFile = bakFilePath + SYMBOL_SLASH + bakFileName;
-
-        if (file.exists()) {
-            // 读取历史配置文件
-            oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(url);
-
-            // 备份历史配置文件
-            copyFile(file, new File(bakFile));
-
-        } else {
-            // 读取备份配置文件
-            File bak = new File(bakFile);
-            if (bak.exists()) {
-                oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(bakFile);
-            }
+        LinkedHashMap<String, String> jdCookieConfig = new LinkedHashMap<>(16);
+        String jdCookieUrl = null;
+        String bakFileJdCookie = null;
+        if (APP_CODE_SHOPPING.equals(ConfigCache.getAppCodeCache())) {
+            jdCookieUrl = getFilePath(PATH_JD_COOKIE);
+            File jdCookieFile = new File(jdCookieUrl);
+            bakFileJdCookie = getOldAppConfig(jdCookieFile, jdCookieUrl, jdCookieConfig, FILE_TYPE_NORMAL);
         }
 
         // 删除历史解压文件
@@ -455,7 +465,6 @@ public class FileUtils {
         File temp = new File(tempFolder);
         deleteFile(temp);
         temp.mkdirs();
-
         UnZipRarUtils.unZip(new File(getJarName()), tempFolder);
 
         // 复制文件
@@ -530,8 +539,47 @@ public class FileUtils {
         }
         FileUtils.writeFile(url, updateContent, false);
 
+        if (APP_CODE_SHOPPING.equals(ConfigCache.getAppCodeCache())) {
+            FileUtils.writeFile(jdCookieUrl, jdCookieConfig.get(jdCookieUrl), false);
+            deleteFile(new File(bakFileJdCookie));
+        }
+
         // 删除 备份历史配置文件
-        deleteFile(new File(bakFile));
+        deleteFile(new File(bakFileConf));
+    }
+
+    private static String getOldAppConfig(File file, String url, LinkedHashMap<String, String> oldAppConfig,
+                                          String configType) throws Exception {
+        // 临时备份历史配置文件名称及路径
+        String bakFileName = file.getName() + FILE_TYPE_BAK;
+        String bakFilePath = file.getParentFile().getParentFile().getPath();
+        String bakFile = bakFilePath + SYMBOL_SLASH + bakFileName;
+
+        if (file.exists()) {
+            // 读取历史配置文件
+            if (FILE_TYPE_CONFIG.equals(configType)) {
+                oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(url);
+            } else {
+                String config = FileUtils.readNormalFileToString(url, false);
+                oldAppConfig.put(url, config);
+            }
+
+            // 备份历史配置文件
+            copyFile(file, new File(bakFile));
+
+        } else {
+            // 读取备份配置文件
+            File bak = new File(bakFile);
+            if (bak.exists()) {
+                if (FILE_TYPE_CONFIG.equals(configType)) {
+                    oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(bakFile);
+                } else {
+                    String config = FileUtils.readNormalFileToString(url, false);
+                    oldAppConfig.put(url, config);
+                }
+            }
+        }
+        return bakFile;
     }
 
     public static List<String> getUpdateConfig(Map<String, String> content, String keyWord) {
