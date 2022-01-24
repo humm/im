@@ -430,7 +430,7 @@ public class FileUtils {
      * @return:
      */
     public static void unJar(String path) throws Exception {
-        if (!startByJar(path)) {
+       if (!startByJar(path)) {
             return;
         }
         String url = getFilePath(path);
@@ -558,7 +558,7 @@ public class FileUtils {
         if (file.exists()) {
             // 读取历史配置文件
             if (FILE_TYPE_CONFIG.equals(configType)) {
-                oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(url);
+                oldAppConfig.putAll(FileUtils.readConfigFileToMapIncludePoint(url));
             } else {
                 String config = FileUtils.readNormalFileToString(url, false);
                 oldAppConfig.put(url, config);
@@ -572,7 +572,7 @@ public class FileUtils {
             File bak = new File(bakFile);
             if (bak.exists()) {
                 if (FILE_TYPE_CONFIG.equals(configType)) {
-                    oldAppConfig = FileUtils.readConfigFileToMapIncludePoint(bakFile);
+                    oldAppConfig.putAll(FileUtils.readConfigFileToMapIncludePoint(bakFile));
                 } else {
                     String config = FileUtils.readNormalFileToString(url, false);
                     oldAppConfig.put(url, config);
