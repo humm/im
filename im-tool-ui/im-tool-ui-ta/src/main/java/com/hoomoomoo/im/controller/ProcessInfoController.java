@@ -351,11 +351,11 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + taCode + "',"
                         + getCell(sheet, 9, k) + ","
                         + getCell(sheet, 10, k) + ", "
-                        + ((getCell(sheet, 11, k).equals("null")) ? "'0'" : "'1'") + ", "
+                        + ((getCell(sheet, 11, k).equals("null")) ? "'0'" : getCell(sheet, 11, k)) + ", "
                         + ((getCell(sheet, 15, k).equals("null")) ? getCell(sheet, 9, k).equals("null") ? "'0'" : "'1'" : getCell(sheet, 15, k)) + ","
-                        + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : "'1'") + ", "
-                        + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : "'1'") + ", "
-                        + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : "'1'") + ", "
+                        + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : getCell(sheet, 12, k)) + ", "
+                        + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : getCell(sheet, 13, k)) + ", "
+                        + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : getCell(sheet, 14, k)) + ", "
                         + getCell(sheet, 16, k)
                         + ");";
                 parentJobList.add(sql);
@@ -396,11 +396,11 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + taCode + "',"
                         + getCell(sheet, 9, k) + ","
                         + getCell(sheet, 10, k) + ","
-                        + ((getCell(sheet, 11, k).equals("null")) ? "'0'" : "'1'") + ","
+                        + ((getCell(sheet, 11, k).equals("null")) ? "'0'" : getCell(sheet, 11, k)) + ","
                         + ((getCell(sheet, 15, k).equals("null")) ? getCell(sheet, 9, k).equals("null") ? "'0'" : "'1'" : getCell(sheet, 15, k)) + ","
-                        + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : "'1'") + ","
-                        + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : "'1'") + ","
-                        + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : "'1'") + ","
+                        + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : getCell(sheet, 12, k)) + ","
+                        + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : getCell(sheet, 13, k)) + ","
+                        + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : getCell(sheet, 14, k)) + ","
                         + getCell(sheet, 16, k)
                         + ");";
                 secondJobList.add(sql);
