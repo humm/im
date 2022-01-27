@@ -259,7 +259,7 @@ public class BaseConst {
     public static final String PAGE_TYPE_SET = "1";
     public static final String PAGE_TYPE_QUERY = "2";
 
-    public static final Integer JD_APPRAISE_LENGTH_MIN = 20;
+    public static final Integer JD_APPRAISE_LENGTH_MIN = 30;
     public static final Integer JD_APPRAISE_LENGTH_MAX = 450;
 
 }

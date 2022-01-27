@@ -356,7 +356,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : getCell(sheet, 12, k)) + ", "
                         + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : getCell(sheet, 13, k)) + ", "
                         + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : getCell(sheet, 14, k)) + ", "
-                        + getCell(sheet, 16, k)
+                        + ((getCell(sheet, 16, k).equals("null")) ? "'0'" : getCell(sheet, 16, k))
                         + ");";
                 parentJobList.add(sql);
             }
@@ -401,7 +401,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : getCell(sheet, 12, k)) + ","
                         + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : getCell(sheet, 13, k)) + ","
                         + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : getCell(sheet, 14, k)) + ","
-                        + getCell(sheet, 16, k)
+                        + ((getCell(sheet, 16, k).equals("null")) ? "'0'" : getCell(sheet, 16, k))
                         + ");";
                 secondJobList.add(sql);
             }

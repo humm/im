@@ -63,11 +63,12 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
         if (appraiseInfo != null && !appraiseInfo.isEmpty()) {
             JSONArray appraiseList = (JSONArray)appraiseInfo.get("comments");
             if (appraiseList != null && !appraiseList.isEmpty()) {
-                if (appraiseList.size() < appraiseNum) {
-                    appraiseMsg = ((JSONObject) appraiseList.get(0)).get("content").toString();
+                int appraiseSize = appraiseList.size();
+                if (appraiseSize < appraiseNum) {
+                    appraiseMsg = ((JSONObject) appraiseList.get(appraiseSize - 1)).get("content").toString();
                 } else {
                     appraiseMsg = BaseConst.SYMBOL_EMPTY;
-                    for (int i=0; i<appraiseNum; i++) {
+                    for (int i=appraiseSize-1; i<=appraiseSize-appraiseNum; i--) {
                         appraiseMsg += ((JSONObject) appraiseList.get(i)).get("content").toString() + BaseConst.SYMBOL_NEXT_LINE;
                     }
                 }
