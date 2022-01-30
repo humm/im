@@ -171,15 +171,15 @@ public class LoggerUtils {
             Date endDate = new Date();
             StringBuilder log = new StringBuilder();
             log.append(CommonUtils.getCurrentDateTime1(startDate)).append(SYMBOL_SPACE);
-            log.append(functionConfig.getCode()).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
+            log.append(functionConfig.getName()).append(SYMBOL_SPACE).append(START).append(SYMBOL_NEXT_LINE);
             for (String item : logs) {
                 log.append(getLineIndentation()).append(item).append(SYMBOL_NEXT_LINE);
             }
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(functionConfig.getCode()).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
+            log.append(functionConfig.getName()).append(SYMBOL_SPACE).append(END).append(SYMBOL_NEXT_LINE);
             long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(SYMBOL_SPACE);
-            log.append(functionConfig.getCode()).append(SYMBOL_SPACE);
+            log.append(functionConfig.getName()).append(SYMBOL_SPACE);
             log.append(COST).append(costTime).append(UNIT).append(SYMBOL_NEXT_LINE_2);
             String logFilePath = String.format(PATH_LOG, functionConfig.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);

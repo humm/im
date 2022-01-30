@@ -233,6 +233,16 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         shoppingDtoList = new ArrayList<>();
-        super.init(JdAutoController.class, JD_AUTO);
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (appConfigDto.getJdInitQuery()) {
+                if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
+                    query(null);
+                }
+            }
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            ShoppingCommonUtil.info(log, e.toString());
+        }
     }
 }

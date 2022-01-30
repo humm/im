@@ -219,7 +219,7 @@ public class InitConfigTest {
                             }
                         }
                     }
-                    if (item.startsWith("发版次数:")) {
+                    if (item.startsWith("发布次数:")) {
                         int index = item.indexOf(":") + 1;
                         times = Integer.valueOf(item.substring(index).trim()) + 1;
                     }
@@ -230,7 +230,7 @@ public class InitConfigTest {
             statLog.append("发布时间: ").append("2021-05-06 23:17:56").append(SYMBOL_NEXT_LINE_2);
             statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime4().replace(SYMBOL_HYPHEN, SYMBOL_POINT)).append(SYMBOL_POINT).append(subVersion).append(SYMBOL_NEXT_LINE);
             statLog.append("发布时间: ").append(CommonUtils.getCurrentDateTime1()).append(SYMBOL_NEXT_LINE_2);
-            statLog.append("发版次数: ").append(times).append(SYMBOL_NEXT_LINE);
+            statLog.append("发布次数: ").append(times).append(SYMBOL_NEXT_LINE);
             FileUtils.writeFile(versionFilePath, statLog.toString(), false);
             FileUtils.writeFile(versionFilePathSource, statLog.toString(), false);
         } catch (Exception e) {
