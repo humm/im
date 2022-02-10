@@ -209,13 +209,13 @@ public class CopyCodeController extends BaseController implements Initializable 
             if (MapUtils.isNotEmpty(versionIndex)) {
                 if (StringUtils.isNotBlank(defaultSource)) {
                     defaultSource = defaultSource.toLowerCase();
-                    sourceVersion.getSelectionModel().select(versionIndex.get(defaultSource));
+                    sourceVersion.getSelectionModel().select(defaultSource);
                     OutputUtils.info(sourcePath, appConfigDto.getCopyCodeVersion().get(defaultSource));
                 }
                 String defaultTarget = appConfigDto.getCopyCodeDefaultTarget();
                 if (StringUtils.isNotBlank(defaultTarget)) {
                     defaultTarget = defaultTarget.toLowerCase();
-                    targetVersion.getSelectionModel().select(versionIndex.get(defaultTarget));
+                    targetVersion.getSelectionModel().select(defaultTarget);
                     OutputUtils.info(targetPath, appConfigDto.getCopyCodeVersion().get(defaultTarget));
                 }
             }
