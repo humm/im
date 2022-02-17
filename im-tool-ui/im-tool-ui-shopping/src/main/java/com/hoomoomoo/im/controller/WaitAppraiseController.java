@@ -68,12 +68,12 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
                     appraiseMsg = ((JSONObject) appraiseList.get(appraiseSize - 1)).get("content").toString();
                 } else {
                     appraiseMsg = BaseConst.SYMBOL_EMPTY;
-                    for (int i=appraiseSize-1; i<=appraiseSize-appraiseNum; i--) {
+                    for (int i=appraiseSize-1; i>=appraiseSize-appraiseNum; i--) {
                         appraiseMsg += ((JSONObject) appraiseList.get(i)).get("content").toString() + BaseConst.SYMBOL_NEXT_LINE;
                     }
                 }
                 if (appraiseMsg.length() < JD_APPRAISE_LENGTH_MIN) {
-                    appraiseMsg += BaseConst.SYMBOL_NEXT_LINE + appConfigDto.getJdAppraiseDefault();
+                    appraiseMsg = appConfigDto.getJdAppraiseDefault() + BaseConst.SYMBOL_NEXT_LINE + appraiseMsg;
                 } else if (appraiseMsg.length() > JD_APPRAISE_LENGTH_MAX) {
                     appraiseMsg = appraiseMsg.substring(0, JD_APPRAISE_LENGTH_MAX);
                 }
@@ -91,7 +91,7 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
         requestData.put(KEY_SCORE, BaseConst.STR_5);
         requestData.put(KEY_SAVE_STATUS, BaseConst.STR_1);
         requestData.put(KEY_ANONYMOUS_FLAG, BaseConst.STR_1);
-        requestData.put(KEY_CONTENT, URLEncoder.encode(goodsDto.getAppraiseInfo()));
+        requestData.put(KEY_CONTENT, URLEncoder.encode(goodsDto.getAppraiseInfo(), ENCODING_UTF8));
         connection.data(requestData);
         return connection.post();
     }
