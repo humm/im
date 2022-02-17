@@ -65,7 +65,7 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
         Map<String, String> requestData = new HashMap<>(6);
         requestData.put(KEY_ORDER_ID, goodsDto.getOrderId());
         requestData.put(KEY_PRODUCT_ID, goodsDto.getGoodsId());
-        requestData.put(KEY_CONTENT, URLEncoder.encode(goodsDto.getAppraiseInfo()));
+        requestData.put(KEY_CONTENT, URLEncoder.encode(goodsDto.getAppraiseInfo(), ENCODING_UTF8));
         requestData.put(KEY_IMGS, SYMBOL_EMPTY);
         requestData.put(KEY_ANONYMOUS_FLAG, STR_1);
         requestData.put(KEY_SCORE, STR_5);
