@@ -84,6 +84,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                 updateProgress(0.01);
                 ComponentUtils.setButtonDisabled(execute, query, pause);
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                OutputUtils.info(type, SYMBOL_EMPTY);
                 if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, null)) {
                     queryData(appConfigDto, true);
                 }
@@ -208,7 +209,9 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                 ShoppingCommonUtil.appraiseComplete(appConfigDto, log, logs, (GoodsDto) BeanUtils.cloneBean(goodsDto));
                 recordHandler(goodsDto);
                 handlerNum++;
-                setProgress(new BigDecimal(handlerNum).divide(new BigDecimal(waitHandlerNum), 2, BigDecimal.ROUND_HALF_UP).doubleValue());
+                double percent = new BigDecimal(handlerNum).divide(new BigDecimal(waitHandlerNum), 2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                percent = percent > 1 ? 1 : percent;
+                setProgress(percent);
                 shoppingDto.setOrderNumValue(--orderNumValue);
                 new Thread(() -> {
                     OutputUtils.clearLog(orderGoodsList);
