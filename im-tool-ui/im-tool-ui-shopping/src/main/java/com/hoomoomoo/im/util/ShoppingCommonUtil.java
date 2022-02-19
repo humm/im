@@ -241,5 +241,14 @@ public class ShoppingCommonUtil {
             LoggerUtils.info(e);
         }
     }
+
+    public static int getPageInfo(int num) {
+        int num_1 = num / 20;
+        int num_2 = num % 20;
+        if (num_2 > 0) {
+            num_1++;
+        }
+        return num_1;
+    }
 }
 

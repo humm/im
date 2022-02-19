@@ -27,6 +27,7 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.*;
+import static com.hoomoomoo.im.util.ShoppingCommonUtil.getPageInfo;
 
 /**
  * @author humm23693
@@ -104,35 +105,39 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
         }
         List<GoodsDto> goodsDtoList = new ArrayList<>();
         try {
-            Document serviceAppraise = getServiceAppraise(appConfigDto);
+            Document serviceAppraise = getServiceAppraise(appConfigDto, 1);
             orderNumValue = ShoppingCommonUtil.getWaitHandleNum(serviceAppraise, STR_4);
-            Elements orderList = serviceAppraise.select("table.td-void.order-tb tbody tr.tr-bd");
-            for (Element order : orderList){
-                Elements goodsIdEle = order.select("div.goods-item div.p-name a");
-                String goodsIdHref = goodsIdEle.attr(KEY_HREF);
-                String goodsName = goodsIdEle.text();
-                String goodsId = ShoppingCommonUtil.getHrefId(goodsIdHref);
-                String orderId = SYMBOL_EMPTY;
-                Elements operateList = order.select("div.operate a");
-                boolean isOperate = false;
-                for (Element operate : operateList) {
-                    String operateName = operate.text();
-                    if (NAME_SERVICE_APPRAISE.equals(operateName)) {
-                        isOperate = true;
+            int page = getPageInfo(orderNumValue);
+            for (int i=1; i<=page; i++) {
+                serviceAppraise = getServiceAppraise(appConfigDto, i);
+                Elements orderList = serviceAppraise.select("table.td-void.order-tb tbody tr.tr-bd");
+                for (Element order : orderList) {
+                    Elements goodsIdEle = order.select("div.goods-item div.p-name a");
+                    String goodsIdHref = goodsIdEle.attr(KEY_HREF);
+                    String goodsName = goodsIdEle.text();
+                    String goodsId = ShoppingCommonUtil.getHrefId(goodsIdHref);
+                    String orderId = SYMBOL_EMPTY;
+                    Elements operateList = order.select("div.operate a");
+                    boolean isOperate = false;
+                    for (Element operate : operateList) {
+                        String operateName = operate.text();
+                        if (NAME_SERVICE_APPRAISE.equals(operateName)) {
+                            isOperate = true;
+                        }
+                        if (NAME_ORDER_DETAIL.equals(operateName)) {
+                            orderId = operate.attr("oid");
+                        }
                     }
-                    if (NAME_ORDER_DETAIL.equals(operateName)) {
-                        orderId = operate.attr("oid");
+                    if (!isOperate) {
+                        continue;
                     }
+                    GoodsDto goodsDto = new GoodsDto();
+                    goodsDto.setOrderId(orderId);
+                    goodsDto.setGoodsId(goodsId);
+                    goodsDto.setGoodsName(goodsName);
+                    goodsDtoList.add(goodsDto);
+                    OutputUtils.info(orderGoodsList, goodsDto);
                 }
-                if (!isOperate) {
-                    continue;
-                }
-                GoodsDto goodsDto = new GoodsDto();
-                goodsDto.setOrderId(orderId);
-                goodsDto.setGoodsId(goodsId);
-                goodsDto.setGoodsName(goodsName);
-                goodsDtoList.add(goodsDto);
-                OutputUtils.info(orderGoodsList, goodsDto);
             }
             if (orderNum != null) {
                 OutputUtils.info(orderNum, String.valueOf(orderNumValue));
@@ -149,10 +154,8 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
         return shoppingDto;
     }
 
-    public static Document getServiceAppraise(AppConfigDto appConfigDto) throws IOException {
-        Connection connection = Jsoup.connect(appConfigDto.getJdServiceAppraise());
-        ShoppingCommonUtil.initCookie(appConfigDto, connection);
-        return connection.get();
+    public static Document getServiceAppraise(AppConfigDto appConfigDto, int page) throws IOException {
+        return getQueryData(appConfigDto, appConfigDto.getJdServiceAppraise(), page);
     }
 
     @Override

@@ -36,7 +36,7 @@ public enum FunctionConfig {
 
     SERVICE_APPRAISE("530", "服务评价", "/conf/fxml/serviceAppraise.fxml", "menuItemServiceAppraise", "serviceAppraise"),
 
-    JD_AUTO("540", "自动化", "/conf/fxml/jdAuto.fxml", "menuItemJdAuto", "jdAuto"),
+    JD_AUTO("540", "自动评价", "/conf/fxml/jdAuto.fxml", "menuItemJdAuto", "jdAuto"),
 
     JD_COOKIE("900", "京东Cookie设置", "/conf/fxml/jdCookie.fxml", "menuItemJdCookie", "jdCookie"),
 

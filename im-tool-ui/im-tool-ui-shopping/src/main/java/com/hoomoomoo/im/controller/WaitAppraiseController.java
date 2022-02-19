@@ -29,6 +29,7 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.WAIT_APPRAISE;
+import static com.hoomoomoo.im.util.ShoppingCommonUtil.getPageInfo;
 
 /**
  * @author humm23693
@@ -104,37 +105,41 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
         }
         List<GoodsDto> goodsDtoList = new ArrayList<>();
         try {
-            Document waitAppraise = getWaitAppraise(appConfigDto);
+            Document waitAppraise = getWaitAppraise(appConfigDto, 1);
             orderNumValue = ShoppingCommonUtil.getWaitHandleNum(waitAppraise, STR_0);
-            Elements orderList = waitAppraise.select("table.td-void.order-tb tbody");
-            for (Element order : orderList){
-                String orderId = order.select("tr td span.number a").text();
-                Elements operateList = order.select("tr td div.operate a");
-                orderNumValue--;
-                boolean isOperate = false;
-                for (Element operate : operateList) {
-                    String operateName = operate.text();
-                    if (NAME_APPRAISE.equals(operateName)) {
-                        isOperate = true;
+            int page = getPageInfo(orderNumValue);
+            for (int i=1; i<=page; i++) {
+                waitAppraise = getWaitAppraise(appConfigDto, i);
+                Elements orderList = waitAppraise.select("table.td-void.order-tb tbody");
+                for (Element order : orderList){
+                    String orderId = order.select("tr td span.number a").text();
+                    Elements operateList = order.select("tr td div.operate a");
+                    orderNumValue--;
+                    boolean isOperate = false;
+                    for (Element operate : operateList) {
+                        String operateName = operate.text();
+                        if (NAME_APPRAISE.equals(operateName)) {
+                            isOperate = true;
+                        }
                     }
-                }
-                if (!isOperate) {
-                    continue;
-                }
-                Elements goodsList = order.select("tr td div.p-name a");
-                for (Element goods : goodsList) {
-                    orderNumValue++;
-                    String goodsName = goods.text();
-                    String goodsHref = goods.attr(KEY_HREF);
-                    String goodsId = ShoppingCommonUtil.getHrefId(goodsHref);
-                    String appraiseInfo = getGoodsAppraiseInfo(appConfigDto, goodsId);
-                    GoodsDto goodsDto = new GoodsDto();
-                    goodsDto.setOrderId(orderId);
-                    goodsDto.setGoodsId(goodsId);
-                    goodsDto.setGoodsName(goodsName);
-                    goodsDto.setAppraiseInfo(appraiseInfo);
-                    goodsDtoList.add(goodsDto);
-                    OutputUtils.info(orderGoodsList, goodsDto);
+                    if (!isOperate) {
+                        continue;
+                    }
+                    Elements goodsList = order.select("tr td div.p-name a");
+                    for (Element goods : goodsList) {
+                        orderNumValue++;
+                        String goodsName = goods.text();
+                        String goodsHref = goods.attr(KEY_HREF);
+                        String goodsId = ShoppingCommonUtil.getHrefId(goodsHref);
+                        String appraiseInfo = getGoodsAppraiseInfo(appConfigDto, goodsId);
+                        GoodsDto goodsDto = new GoodsDto();
+                        goodsDto.setOrderId(orderId);
+                        goodsDto.setGoodsId(goodsId);
+                        goodsDto.setGoodsName(goodsName);
+                        goodsDto.setAppraiseInfo(appraiseInfo);
+                        goodsDtoList.add(goodsDto);
+                        OutputUtils.info(orderGoodsList, goodsDto);
+                    }
                 }
             }
             if (orderNum != null) {
@@ -152,10 +157,8 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
         return shoppingDto;
     }
 
-    public static Document getWaitAppraise(AppConfigDto appConfigDto) throws IOException {
-        Connection connection = Jsoup.connect(appConfigDto.getJdAppraiseWait());
-        ShoppingCommonUtil.initCookie(appConfigDto, connection);
-        return connection.get();
+    public static Document getWaitAppraise(AppConfigDto appConfigDto, int page) throws IOException {
+        return getQueryData(appConfigDto, appConfigDto.getJdAppraiseWait(), page);
     }
 
     @Override

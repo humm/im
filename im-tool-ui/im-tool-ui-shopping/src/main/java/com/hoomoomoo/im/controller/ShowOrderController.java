@@ -25,6 +25,7 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.*;
+import static com.hoomoomoo.im.util.ShoppingCommonUtil.getPageInfo;
 
 /**
  * @author humm23693
@@ -84,33 +85,37 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
         }
         List<GoodsDto> goodsDtoList = new ArrayList<>();
         try {
-            Document showOrder = getShowOrder(appConfigDto);
+            Document showOrder = getShowOrder(appConfigDto, 1);
             orderNumValue = ShoppingCommonUtil.getWaitHandleNum(showOrder, STR_1);
-            Elements orderList = showOrder.select("div.comt-plists div.comt-plist");
-            for (Element order : orderList){
-                Elements orderInfo = order.select("div.pro-info");
-                String orderId = orderInfo.attr("oid");
-                String goodsId = orderInfo.attr("pid");
-                String goodsName = orderInfo.select("div.p-name a").text();
-                Elements operateList = orderInfo.select("div.op-btns a");
-                boolean isOperate = false;
-                for (Element operate : operateList) {
-                    String operateName = operate.text();
-                    if (NAME_JD_SHOW_ORDER.equals(operateName)) {
-                        isOperate = true;
+            int page = getPageInfo(orderNumValue);
+            for (int i=1; i<=page; i++) {
+                showOrder = getShowOrder(appConfigDto, i);
+                Elements orderList = showOrder.select("div.comt-plists div.comt-plist");
+                for (Element order : orderList){
+                    Elements orderInfo = order.select("div.pro-info");
+                    String orderId = orderInfo.attr("oid");
+                    String goodsId = orderInfo.attr("pid");
+                    String goodsName = orderInfo.select("div.p-name a").text();
+                    Elements operateList = orderInfo.select("div.op-btns a");
+                    boolean isOperate = false;
+                    for (Element operate : operateList) {
+                        String operateName = operate.text();
+                        if (NAME_JD_SHOW_ORDER.equals(operateName)) {
+                            isOperate = true;
+                        }
                     }
+                    if (!isOperate) {
+                        continue;
+                    }
+                    String imgUrl = getGoodsImgUrl(appConfigDto, goodsId);
+                    GoodsDto goodsDto = new GoodsDto();
+                    goodsDto.setOrderId(orderId);
+                    goodsDto.setGoodsId(goodsId);
+                    goodsDto.setGoodsName(goodsName);
+                    goodsDto.setAppraiseImgUrl(imgUrl);
+                    goodsDtoList.add(goodsDto);
+                    OutputUtils.info(orderGoodsList, goodsDto);
                 }
-                if (!isOperate) {
-                    continue;
-                }
-                String imgUrl = getGoodsImgUrl(appConfigDto, goodsId);
-                GoodsDto goodsDto = new GoodsDto();
-                goodsDto.setOrderId(orderId);
-                goodsDto.setGoodsId(goodsId);
-                goodsDto.setGoodsName(goodsName);
-                goodsDto.setAppraiseImgUrl(imgUrl);
-                goodsDtoList.add(goodsDto);
-                OutputUtils.info(orderGoodsList, goodsDto);
             }
             if (orderNum != null) {
                 OutputUtils.info(orderNum, String.valueOf(orderNumValue));
@@ -127,10 +132,8 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
         return shoppingDto;
     }
 
-    public static Document getShowOrder(AppConfigDto appConfigDto) throws IOException {
-        Connection connection = Jsoup.connect(appConfigDto.getJdShowOrder());
-        ShoppingCommonUtil.initCookie(appConfigDto, connection);
-        return connection.get();
+    public static Document getShowOrder(AppConfigDto appConfigDto, int page) throws IOException {
+        return getQueryData(appConfigDto, appConfigDto.getJdShowOrder(), page);
     }
 
     @Override

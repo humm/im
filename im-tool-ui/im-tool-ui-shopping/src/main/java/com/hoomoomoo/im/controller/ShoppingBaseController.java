@@ -17,7 +17,11 @@ import javafx.scene.control.TableView;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -196,5 +200,11 @@ public class ShoppingBaseController extends BaseController{
         ShoppingDto shoppingDto = (ShoppingDto)queryData.invoke(instance, appConfigDto, initLog, orderGoodsList, log, orderNum);
         orderNumValue = shoppingDto.getOrderNumValue();
         goodsDtoList = shoppingDto.getGoodsDtoList();
+    }
+
+    protected static Document getQueryData(AppConfigDto appConfigDto, String requestUrl, int page) throws IOException {
+        Connection connection = Jsoup.connect(requestUrl + "&page=" + page);
+        ShoppingCommonUtil.initCookie(appConfigDto, connection);
+        return connection.get();
     }
 }

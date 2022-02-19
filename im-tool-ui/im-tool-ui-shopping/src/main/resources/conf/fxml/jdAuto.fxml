@@ -10,7 +10,7 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="copyCode" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.JdAutoController">
+<AnchorPane fx:id="jdAuto" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.JdAutoController">
     <children>
         <SplitPane layoutX="98.0" layoutY="100.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -86,7 +86,9 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="550.0">
                                     <children>
-                                        <TableView fx:id="orderGoodsList" layoutY="14.0" prefHeight="188.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <TableView fx:id="waitHandler" layoutY="14.0" prefHeight="188.0"
+                                                   onMouseClicked="#showGoods" prefWidth="201.0"
+                                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
                                                 <TableColumn id="typeName" editable="false" prefWidth="145"
                                                              sortable="false" text="事项">

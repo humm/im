@@ -7,6 +7,7 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
+import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.dto.ShoppingDto;
 import com.hoomoomoo.im.util.ShoppingCommonUtil;
 import com.hoomoomoo.im.utils.ComponentUtils;
@@ -17,18 +18,10 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseEvent;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
@@ -55,7 +48,29 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
 
     private Map<String, String> handle = new HashMap<>(16);
 
-    private boolean iscontinue;
+    private boolean isContinue;
+
+    @FXML
+    public TableView waitHandler;
+
+
+    @FXML
+    void showGoods(MouseEvent event) {
+        if (execute.isDisable()) {
+            return;
+        }
+        OutputUtils.clearLog(log);
+        String type = ((ShoppingDto)waitHandler.getSelectionModel().getSelectedItem()).getType();
+        outer: for (ShoppingDto shoppingDto : shoppingDtoList) {
+            if (type.equals(shoppingDto.getType())) {
+                List<GoodsDto> goodsDtoList = shoppingDto.getGoodsDtoList();
+                for (GoodsDto goodsDto : goodsDtoList) {
+                    OutputUtils.info(log, goodsDto);
+                }
+                break outer;
+            }
+        }
+    }
 
     @FXML
     void execute(ActionEvent event) {
@@ -105,7 +120,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
 
     public void queryData(AppConfigDto appConfigDto, boolean init) {
         shoppingDtoList.clear();
-        OutputUtils.clearLog(orderGoodsList);
+        OutputUtils.clearLog(waitHandler);
         if (init) {
             OutputUtils.clearLog(log);
         }
@@ -117,7 +132,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
         shoppingDtoList.add(appendAppraise);
         shoppingDtoList.add(waitAppraise);
         shoppingDtoList.add(serviceAppraise);
-        OutputUtils.infoList(orderGoodsList, shoppingDtoList);
+        OutputUtils.infoList(waitHandler, shoppingDtoList);
         waitHandlerNum = waitAppraise.getOrderNumValue() + showOrder.getOrderNumValue() + appendAppraise.getOrderNumValue() + serviceAppraise.getOrderNumValue();
     }
 
@@ -136,7 +151,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
             Date currentDate = new Date();
 
             for (int i=0; i<4; i++) {
-                iscontinue = true;
+                isContinue = true;
                 if (pauseStatus) {
                     break;
                 }
@@ -150,8 +165,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                     }
                     appraise(appConfigDto, shoppingDto, functionConfig, logs);
                     LoggerUtils.writeAppraiseInfo(functionConfig.getCode(), currentDate, logs);
-                    queryData(appConfigDto, false);
-                    if (!iscontinue) {
+                    if (!isContinue) {
                         break;
                     }
                 }
@@ -186,7 +200,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                     break;
                 }
                 if (StringUtils.isNotBlank(handle.get(getHandlerKey(goodsDto)))) {
-                    iscontinue = false;
+                    isContinue = false;
                     break;
                 }
                 ShoppingCommonUtil.appraiseStart(appConfigDto, log, logs, goodsDto);
@@ -214,8 +228,8 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                 setProgress(percent);
                 shoppingDto.setOrderNumValue(--orderNumValue);
                 new Thread(() -> {
-                    OutputUtils.clearLog(orderGoodsList);
-                    OutputUtils.infoList(orderGoodsList, shoppingDtoList);
+                    OutputUtils.clearLog(waitHandler);
+                    OutputUtils.infoList(waitHandler, shoppingDtoList);
                 }).start();
                 ShoppingCommonUtil.restMoment(appConfigDto, log);
             }

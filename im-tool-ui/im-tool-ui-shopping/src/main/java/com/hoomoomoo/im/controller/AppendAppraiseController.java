@@ -35,6 +35,7 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.*;
+import static com.hoomoomoo.im.util.ShoppingCommonUtil.getPageInfo;
 
 /**
  * @author humm23693
@@ -81,35 +82,39 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
         }
         List<GoodsDto> goodsDtoList = new ArrayList<>();
         try {
-            Document appendAppraise = getAppendAppraise(appConfigDto);
+            Document appendAppraise = getAppendAppraise(appConfigDto, 1);
             orderNumValue = ShoppingCommonUtil.getWaitHandleNum(appendAppraise, STR_3);
-            Elements orderList = appendAppraise.select("table.td-void.order-tb tbody tr.tr-bd");
-            for (Element order : orderList) {
-                Elements goodsIdEle = order.select("div.goods-item div.p-name a");
-                String goodsIdHref = goodsIdEle.attr(KEY_HREF);
-                String goodsName = goodsIdEle.text();
-                String goodsId = ShoppingCommonUtil.getHrefId(goodsIdHref);
-                Elements operateList = order.select("div.operate a");
-                String orderId = SYMBOL_EMPTY;
-                boolean isOperate = false;
-                for (Element operate : operateList) {
-                    String operateName = operate.text();
-                    if (NAME_JD_APPEND_APPRAISEING.equals(operateName)) {
-                        orderId = ShoppingCommonUtil.getJdOrderId(operate.attr(KEY_HREF));
-                        isOperate = true;
+            int page = getPageInfo(orderNumValue);
+            for (int i=1; i<=page; i++) {
+                appendAppraise = getAppendAppraise(appConfigDto, i);
+                Elements orderList = appendAppraise.select("table.td-void.order-tb tbody tr.tr-bd");
+                for (Element order : orderList) {
+                    Elements goodsIdEle = order.select("div.goods-item div.p-name a");
+                    String goodsIdHref = goodsIdEle.attr(KEY_HREF);
+                    String goodsName = goodsIdEle.text();
+                    String goodsId = ShoppingCommonUtil.getHrefId(goodsIdHref);
+                    Elements operateList = order.select("div.operate a");
+                    String orderId = SYMBOL_EMPTY;
+                    boolean isOperate = false;
+                    for (Element operate : operateList) {
+                        String operateName = operate.text();
+                        if (NAME_JD_APPEND_APPRAISEING.equals(operateName)) {
+                            orderId = ShoppingCommonUtil.getJdOrderId(operate.attr(KEY_HREF));
+                            isOperate = true;
+                        }
                     }
+                    if (!isOperate) {
+                        continue;
+                    }
+                    String appraiseInfo = WaitAppraiseController.getGoodsAppraiseInfo(appConfigDto, goodsId);
+                    GoodsDto goodsDto = new GoodsDto();
+                    goodsDto.setOrderId(orderId);
+                    goodsDto.setGoodsId(goodsId);
+                    goodsDto.setGoodsName(goodsName);
+                    goodsDto.setAppraiseInfo(appraiseInfo);
+                    goodsDtoList.add(goodsDto);
+                    OutputUtils.info(orderGoodsList, goodsDto);
                 }
-                if (!isOperate) {
-                    continue;
-                }
-                String appraiseInfo = WaitAppraiseController.getGoodsAppraiseInfo(appConfigDto, goodsId);
-                GoodsDto goodsDto = new GoodsDto();
-                goodsDto.setOrderId(orderId);
-                goodsDto.setGoodsId(goodsId);
-                goodsDto.setGoodsName(goodsName);
-                goodsDto.setAppraiseInfo(appraiseInfo);
-                goodsDtoList.add(goodsDto);
-                OutputUtils.info(orderGoodsList, goodsDto);
             }
             if (orderNum != null) {
                 OutputUtils.info(orderNum, String.valueOf(orderNumValue));
@@ -126,10 +131,8 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
         return shoppingDto;
     }
 
-    public static Document getAppendAppraise(AppConfigDto appConfigDto) throws IOException {
-        Connection connection = Jsoup.connect(appConfigDto.getJdAppendAppraise());
-        ShoppingCommonUtil.initCookie(appConfigDto, connection);
-        return connection.get();
+    public static Document getAppendAppraise(AppConfigDto appConfigDto, int page) throws IOException {
+        return getQueryData(appConfigDto, appConfigDto.getJdAppendAppraise(), page);
     }
 
     @Override
