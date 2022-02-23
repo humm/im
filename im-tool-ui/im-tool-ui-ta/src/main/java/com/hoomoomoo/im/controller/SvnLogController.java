@@ -25,6 +25,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 
+import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
 import static com.hoomoomoo.im.consts.FunctionConfig.SVN_LOG;
 
 /**
@@ -79,37 +80,41 @@ public class SvnLogController extends BaseController implements Initializable {
 
     private void execute(boolean updateLog) {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, SVN_LOG.getName()));
-        try {
-            if (!TaCommonUtil.checkConfig(fileLog, SVN_LOG.getCode())) {
-                return;
-            }
-            setProgress(0);
-            if (updateLog) {
-                OutputUtils.clearLog(svnLog);
-            }
-            OutputUtils.clearLog(fileLog);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            appConfigDto.setSvnRecentTime(svnTimes.getText());
-            appConfigDto.setSvnRep((String)svnRep.getSelectionModel().getSelectedItem());
-            String times = svnTimes.getText().trim();
-            String ver = version.getText().trim();
-            if (StringUtils.isBlank(times) && StringUtils.isBlank(ver)) {
-                return;
-            }
-            if (StringUtils.isBlank(times)) {
-                times = BaseConst.STR_0;
-            }
-            if (StringUtils.isBlank(ver)) {
-                ver = BaseConst.STR_0;
-            }
-            updateProgress();
-            getSvnLog(Integer.valueOf(times), Integer.valueOf(ver), updateLog);
-        } catch (NumberFormatException e) {
-            LoggerUtils.info(e);
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + e.toString());
+        if (updateLog) {
+            OutputUtils.clearLog(version);
+            OutputUtils.clearLog(svnLog);
         }
+        new Thread(() -> {
+            try {
+                if (!TaCommonUtil.checkConfig(fileLog, SVN_LOG.getCode())) {
+                    return;
+                }
+                Thread.sleep(1000);
+                setProgress(0);
+                OutputUtils.clearLog(fileLog);
+                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                appConfigDto.setSvnRecentTime(svnTimes.getText());
+                appConfigDto.setSvnRep((String)svnRep.getSelectionModel().getSelectedItem());
+                String times = svnTimes.getText().trim();
+                String ver = version.getText().trim();
+                if (StringUtils.isBlank(times) && StringUtils.isBlank(ver)) {
+                    return;
+                }
+                if (StringUtils.isBlank(times)) {
+                    times = BaseConst.STR_0;
+                }
+                if (StringUtils.isBlank(ver)) {
+                    ver = BaseConst.STR_0;
+                }
+                updateProgress();
+                getSvnLog(Integer.valueOf(times), Integer.valueOf(ver), updateLog);
+            } catch (NumberFormatException e) {
+                LoggerUtils.info(e);
+            } catch (Exception e) {
+                LoggerUtils.info(e);
+                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + e.toString());
+            }
+        }).start();
     }
 
     private void getSvnLog(int times, int version, boolean updateLog) {
