@@ -176,6 +176,7 @@ public class BaseConst {
     public static final String MSG_GENERATE_CODE_PATH = "请设置[ %s ]路径";
     public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请更新京东Cookie";
     public static final String MSG_AUTO_APPRAISE = "自动评价评价";
+    public static final String MSG_SET = "请设置[ %s ]";
 
 
     public static final String MSG_OPEN = "打开[ %s ] 功能界面";

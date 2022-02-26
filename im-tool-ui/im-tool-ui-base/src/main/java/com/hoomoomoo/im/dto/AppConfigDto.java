@@ -146,6 +146,12 @@ public class AppConfigDto extends BaseDto {
 
     private String jdServiceType;
 
+    private String generateSqlDatabaseNum;
+
+    private String generateSqlTableNum;
+
+    private String generateSqlType;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;

@@ -28,7 +28,10 @@ import static com.hoomoomoo.im.consts.FunctionConfig.SVN_HISTORY_STAT;
 public class SvnHistoryQueryController extends BaseController implements Initializable {
 
     @FXML
-    private DatePicker date;
+    private DatePicker dateStart;
+
+    @FXML
+    private DatePicker dateEnd;
 
     @FXML
     private TextArea stat1;
@@ -69,9 +72,10 @@ public class SvnHistoryQueryController extends BaseController implements Initial
                     OutputUtils.clearLog(stat1);
                     OutputUtils.clearLog(stat2);
                     OutputUtils.clearLog(stat3);
-                    String selectDate = date.getValue().toString();
-                    Date start = CommonUtils.getCurrentDateTime7(selectDate + " 00:00:00");
-                    Date end = CommonUtils.getCurrentDateTime7(selectDate + " 23:59:59");
+                    String startSelected = dateStart.getValue().toString();
+                    String endSelected = dateEnd.getValue().toString();
+                    Date start = CommonUtils.getCurrentDateTime7(startSelected + " 00:00:00");
+                    Date end = CommonUtils.getCurrentDateTime7(endSelected + " 23:59:59");
                     LinkedHashMap<String, SvnStatDto> svnStat = SvnUtils.getSvnLog(start, end, new LinkedHashMap<>(), false);
                     LinkedHashMap<String, String> userList = appConfigDto.getSvnStatUser();
                     int num = userList.size();
@@ -152,7 +156,8 @@ public class SvnHistoryQueryController extends BaseController implements Initial
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LocalDate yesterday = LocalDate.now().plusDays(-1);
-        date.setValue(yesterday);
+        dateStart.setValue(yesterday);
+        dateEnd.setValue(yesterday);
         execute(null);
     }
 }

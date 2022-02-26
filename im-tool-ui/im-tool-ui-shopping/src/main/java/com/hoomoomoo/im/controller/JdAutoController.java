@@ -1,13 +1,10 @@
 package com.hoomoomoo.im.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
-import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.dto.ShoppingDto;
 import com.hoomoomoo.im.util.ShoppingCommonUtil;
 import com.hoomoomoo.im.utils.ComponentUtils;
@@ -164,7 +161,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                         break;
                     }
                     appraise(appConfigDto, shoppingDto, functionConfig, logs);
-                    LoggerUtils.writeAppraiseInfo(functionConfig.getCode(), currentDate, logs);
+                    LoggerUtils.writeLogInfo(functionConfig.getCode(), currentDate, logs);
                     if (!isContinue) {
                         break;
                     }
@@ -176,6 +173,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                 return;
             }
             ShoppingCommonUtil.appraiseComplete(appConfigDto, log);
+            LoggerUtils.writeLogInfo(JD_AUTO.getCode(), currentDate, logs);
             setProgress(1);
         } catch (Exception e) {
             LoggerUtils.info(e);

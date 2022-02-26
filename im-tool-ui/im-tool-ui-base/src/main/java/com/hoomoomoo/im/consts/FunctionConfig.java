@@ -23,6 +23,8 @@ public enum FunctionConfig {
 
     COPY_CODE("70", "复制代码", "/conf/fxml/copyCode.fxml", "menuItemCopyCode", "copyCode"),
 
+    GENERATE_SQL("80", "分库分表", "/conf/fxml/generateSql.fxml", "menuItemGenerateSql", "generateSql"),
+
     SVN_REALTIME_STAT("390", "实时统计", "/conf/fxml/svnRealtimeStat.fxml", "menuItemSvnRealtimeStat", "svnRealtimeStat"),
 
     SVN_HISTORY_STAT("400", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),

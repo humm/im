@@ -37,6 +37,8 @@
                                   text="流程信息"/>
                         <MenuItem fx:id="menuItemScriptUpdate" mnemonicParsing="false" onAction="#openScriptUpdate"
                                   text="升级脚本"/>
+                        <MenuItem fx:id="menuItemGenerateSql" mnemonicParsing="false" onAction="#openGenerateSql"
+                                  text="分库分表"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuSet" mnemonicParsing="false" text="设置">

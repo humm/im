@@ -117,46 +117,46 @@ public class LoggerUtils {
     }
 
     public static void writeSvnUpdateInfo(Date startDate, List<String> filePath) {
-        writeAppraiseInfo(SVN_UPDATE.getCode(), startDate, filePath);
+        writeLogInfo(SVN_UPDATE.getCode(), startDate, filePath);
     }
 
     public static void writeFundInfo(Date startDate, List<String> filePath) {
-        writeAppraiseInfo(FUND_INFO.getCode(), startDate, filePath);
+        writeLogInfo(FUND_INFO.getCode(), startDate, filePath);
     }
 
     public static void writeProcessInfo(Date startDate, List<String> filePathList) {
-        writeAppraiseInfo(PROCESS_INFO.getCode(), startDate, filePathList);
+        writeLogInfo(PROCESS_INFO.getCode(), startDate, filePathList);
     }
 
     public static void writeScriptUpdateInfo(Date startDate, List<String> filePath) {
-        writeAppraiseInfo(SCRIPT_UPDATE.getCode(), startDate, filePath);
+        writeLogInfo(SCRIPT_UPDATE.getCode(), startDate, filePath);
     }
 
     public static void writeGenerateCodeInfo(Date startDate, List<String> fileName) {
-        writeAppraiseInfo(GENERATE_CODE.getCode(), startDate, fileName);
+        writeLogInfo(GENERATE_CODE.getCode(), startDate, fileName);
     }
 
     public static void writeCopyCodeInfo(Date startDate, List<String> fileName) {
-        writeAppraiseInfo(COPY_CODE.getCode(), startDate, fileName);
+        writeLogInfo(COPY_CODE.getCode(), startDate, fileName);
     }
 
     public static void writeWaitAppraiseInfo(Date startDate, List<String> logs) {
-        writeAppraiseInfo(WAIT_APPRAISE.getCode(), startDate, logs);
+        writeLogInfo(WAIT_APPRAISE.getCode(), startDate, logs);
     }
 
     public static void writeShowOrderInfo(Date startDate, List<String> logs) {
-        writeAppraiseInfo(SHOW_ORDER.getCode(), startDate, logs);
+        writeLogInfo(SHOW_ORDER.getCode(), startDate, logs);
     }
 
     public static void writeAppendAppraise(Date startDate, List<String> logs) {
-        writeAppraiseInfo(APPEND_APPRAISE.getCode(), startDate, logs);
+        writeLogInfo(APPEND_APPRAISE.getCode(), startDate, logs);
     }
 
     public static void writeServiceAppraise(Date startDate, List<String> logs) {
-        writeAppraiseInfo(SERVICE_APPRAISE.getCode(), startDate, logs);
+        writeLogInfo(SERVICE_APPRAISE.getCode(), startDate, logs);
     }
 
-    public static void writeAppraiseInfo(String functionCode, Date startDate, List<String> logs) {
+    public static void writeLogInfo(String functionCode, Date startDate, List<String> logs) {
         try {
             FunctionConfig functionConfig = FunctionConfig.getFunctionConfig(functionCode);
             // 写统计文件

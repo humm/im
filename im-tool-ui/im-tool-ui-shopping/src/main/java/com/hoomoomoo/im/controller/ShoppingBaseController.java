@@ -22,7 +22,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -153,7 +152,7 @@ public class ShoppingBaseController extends BaseController{
             } else {
                 ShoppingCommonUtil.noAppraiseGoods(appConfigDto, log);
             }
-            LoggerUtils.writeAppraiseInfo(functionConfig.getCode(), currentDate, logs);
+            LoggerUtils.writeLogInfo(functionConfig.getCode(), currentDate, logs);
             query(appConfigDto, clazz, false);
             if (pauseStatus) {
                 ShoppingCommonUtil.info(log, NAME_PAUSE_COMPLETE);

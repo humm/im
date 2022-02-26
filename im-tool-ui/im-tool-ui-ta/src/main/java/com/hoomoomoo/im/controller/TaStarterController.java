@@ -130,6 +130,21 @@ public class TaStarterController implements Initializable {
     }
 
     @FXML
+    void openGenerateSql(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(BaseConst.MSG_OPEN, GENERATE_SQL.getName()));
+            Tab tab = isOpen(GENERATE_SQL.getName());
+            if (tab == null) {
+                tab = getFunctionTab(GENERATE_SQL.getPath(), GENERATE_SQL.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    @FXML
     void openGenerateCode(ActionEvent event) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_OPEN, GENERATE_CODE.getName()));
