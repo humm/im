@@ -27,7 +27,7 @@ import java.util.Map;
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = FamilyStarter.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = FimsStarter.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class FunctionTest {
 
     private static final Logger logger = LoggerFactory.getLogger(FunctionTest.class);

@@ -17,12 +17,12 @@ import static im.consts.BaseCueConst.LOG_BUSINESS_TYPE_APP_START;
  */
 @SpringBootApplication
 @ServletComponentScan
-public class FamilyStarter {
+public class FimsStarter {
 
-    private static final Logger logger = LoggerFactory.getLogger(FamilyStarter.class);
+    private static final Logger logger = LoggerFactory.getLogger(FimsStarter.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(FamilyStarter.class, args);
+        SpringApplication.run(FimsStarter.class, args);
         im.util.SysLogUtils.configSuccess(logger, LOG_BUSINESS_TYPE_APP_START);
     }
 

@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
  */
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = FamilyStarter.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(classes = FimsStarter.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class ConfigBeanTest {
 
     private static final Logger logger = LoggerFactory.getLogger(ConfigBeanTest.class);
