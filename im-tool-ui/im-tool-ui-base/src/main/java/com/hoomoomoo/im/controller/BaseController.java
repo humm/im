@@ -29,7 +29,7 @@ public class BaseController {
     public void updateProgress(double step) {
         new Thread(() -> {
             while (true) {
-                if (progress >= 0.98) {
+                if (progress >= 0.98 || progress == -1) {
                     break;
                 }
                 if (progress <= 0.6) {
@@ -54,6 +54,11 @@ public class BaseController {
         try {
             progress = value;
             Platform.runLater(() -> {
+                if (value == -1) {
+                    schedule.setProgress(0);
+                    OutputUtils.info(scheduleText, String.valueOf(0 * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
+                    return;
+                }
                 schedule.setProgress(progress);
                 OutputUtils.info(scheduleText, String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
                 schedule.requestFocus();

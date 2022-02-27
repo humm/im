@@ -78,23 +78,8 @@ public class SvnHistoryQueryController extends BaseController implements Initial
                     Date end = CommonUtils.getCurrentDateTime7(endSelected + " 23:59:59");
                     LinkedHashMap<String, SvnStatDto> svnStat = SvnUtils.getSvnLog(start, end, new LinkedHashMap<>(), false);
                     LinkedHashMap<String, String> userList = appConfigDto.getSvnStatUser();
-                    int num = userList.size();
-                    List<TextArea> statList = new ArrayList<>();
+                    List<TextArea> statList = TaCommonUtil.getUserTextArea(appConfigDto, statNum, stat1, stat2, stat3);
                     List<SvnStatDto> svnStatDtoList = new ArrayList<>();
-                    for (int i = 1; i <= num; i++) {
-                        int remainder = i % statNum;
-                        switch (remainder) {
-                            case 1:
-                                statList.add(stat1);
-                                break;
-                            case 2:
-                                statList.add(stat2);
-                                break;
-                            default:
-                                statList.add(stat3);
-                                break;
-                        }
-                    }
                     Iterator<String> iterator = userList.keySet().iterator();
                     int index = 0;
                     while (iterator.hasNext()) {

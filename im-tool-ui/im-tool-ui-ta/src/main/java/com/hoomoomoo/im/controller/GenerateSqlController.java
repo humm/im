@@ -139,20 +139,20 @@ public class GenerateSqlController extends BaseController implements Initializab
                 execute.setDisable(true);
                 List<String> fileLog = new ArrayList<>();
                 Date currentDate = new Date();
-                int database = Integer.valueOf(databaseNum.getText());
-                int table = Integer.valueOf(tableNum.getText());
-                String databaseCodeCurrent = databaseCode.getText();
-                String tableCodeCurrent = tableCode.getText();
-                String columnCurrent = column.getText();
-                String queryCurrent = query.getText();
+                int database = Integer.valueOf(databaseNum.getText().trim());
+                int table = Integer.valueOf(tableNum.getText().trim());
+                String databaseCodeCurrent = databaseCode.getText().trim();
+                String tableCodeCurrent = tableCode.getText().trim();
+                String columnCurrent = column.getText().trim();
+                String queryCurrent = query.getText().trim();
                 if (StringUtils.isBlank(databaseCodeCurrent)) {
                     OutputUtils.info(sql, String.format(MSG_SET, "分库代码"));
-                    setProgress(1);
+                    setProgress(-1);
                     return;
                 }
                 if (StringUtils.isBlank(tableCodeCurrent)) {
                     OutputUtils.info(sql, String.format(MSG_SET, "分表代码"));
-                    setProgress(1);
+                    setProgress(-1);
                     return;
                 }
                 List<String> contentList = new ArrayList<>();
@@ -192,6 +192,7 @@ public class GenerateSqlController extends BaseController implements Initializab
                 LoggerUtils.writeLogInfo(GENERATE_SQL.getCode(), currentDate, fileLog);
                 setProgress(1);
             } catch (Exception e) {
+                setProgress(-1);
                 LoggerUtils.info(e);
                 OutputUtils.info(sql, e.toString());
             } finally {
@@ -224,6 +225,14 @@ public class GenerateSqlController extends BaseController implements Initializab
 
             if (StringUtils.isNotBlank(appConfigDto.getGenerateSqlTableNum())) {
                 OutputUtils.info(tableNum, appConfigDto.getGenerateSqlTableNum());
+            }
+
+            if (StringUtils.isNotBlank(appConfigDto.getGenerateSqlDatabaseCode())) {
+                OutputUtils.info(databaseCode, appConfigDto.getGenerateSqlDatabaseCode());
+            }
+
+            if (StringUtils.isNotBlank(appConfigDto.getGenerateSqlTableCode())) {
+                OutputUtils.info(tableCode, appConfigDto.getGenerateSqlTableCode());
             }
 
             String sqlType = appConfigDto.getGenerateSqlType();

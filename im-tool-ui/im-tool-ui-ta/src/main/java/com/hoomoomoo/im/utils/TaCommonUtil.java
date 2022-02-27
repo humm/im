@@ -11,6 +11,9 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -85,6 +88,17 @@ public class TaCommonUtil {
             }
             if (appConfigDto.getSvnStatInterval() < 5) {
                 OutputUtils.info(log, MSG_SVN_STAT_INTERVAL + SYMBOL_NEXT_LINE);
+                flag = false;
+            }
+        }
+
+        if (functionCode.equals(FunctionConfig.GENERATE_SQL.getCode())) {
+            if (StringUtils.isBlank(appConfigDto.getGenerateSqlDatabaseNum())) {
+                OutputUtils.info(log, String.format(MSG_SET, "generate.sql.database.num"));
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getGenerateSqlTableNum())) {
+                OutputUtils.info(log, String.format(MSG_SET, "generate.sql.table.num"));
                 flag = false;
             }
         }
@@ -207,5 +221,27 @@ public class TaCommonUtil {
             }
         }
         return flag;
+    }
+
+    public static List<TextArea> getUserTextArea(AppConfigDto appConfigDto, int statNum, TextArea stat1,
+                                                 TextArea stat2, TextArea stat3) {
+        LinkedHashMap<String, String> userList = appConfigDto.getSvnStatUser();
+        int num = userList.size();
+        List<TextArea> statList = new ArrayList<>();
+        for (int i = 1; i <= num; i++) {
+            int remainder = i % statNum;
+            switch (remainder) {
+                case 1:
+                    statList.add(stat1);
+                    break;
+                case 2:
+                    statList.add(stat2);
+                    break;
+                default:
+                    statList.add(stat3);
+                    break;
+            }
+        }
+        return statList;
     }
 }

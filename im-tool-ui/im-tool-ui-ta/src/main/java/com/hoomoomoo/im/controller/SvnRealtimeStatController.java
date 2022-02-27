@@ -88,22 +88,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
                         OutputUtils.clearLog(stat2);
                         OutputUtils.clearLog(stat3);
                         LinkedHashMap<String, String> userList = appConfigDto.getSvnStatUser();
-                        int num = userList.size();
-                        List<TextArea> statList = new ArrayList<>();
-                        for (int i = 1; i <= num; i++) {
-                            int remainder = i % statNum;
-                            switch (remainder) {
-                                case 1:
-                                    statList.add(stat1);
-                                    break;
-                                case 2:
-                                    statList.add(stat2);
-                                    break;
-                                default:
-                                    statList.add(stat3);
-                                    break;
-                            }
-                        }
+                        List<TextArea> statList = TaCommonUtil.getUserTextArea(appConfigDto, statNum, stat1, stat2, stat3);
                         Iterator<String> iterator = userList.keySet().iterator();
                         int index = 0;
                         while (iterator.hasNext()) {

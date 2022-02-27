@@ -152,6 +152,10 @@ public class AppConfigDto extends BaseDto {
 
     private String generateSqlType;
 
+    private String generateSqlDatabaseCode;
+
+    private String generateSqlTableCode;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
