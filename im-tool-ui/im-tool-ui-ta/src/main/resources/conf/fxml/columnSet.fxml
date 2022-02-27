@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<AnchorPane prefHeight="600.0" prefWidth="1150.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.ColumnSetController">
+   <children>
+      <SplitPane dividerPositions="0.0856083584311241" layoutX="59.0" layoutY="81.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Button fx:id="save" layoutX="500.0" layoutY="9.0" mnemonicParsing="false" onAction="#onSave" prefHeight="35.0" prefWidth="100.0" text="保存" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+              <children>
+                  <TableView fx:id="columnInfo" layoutY="14.0" prefHeight="188.0" prefWidth="201.0"
+                             AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                      <columns>
+                          <TableColumn id="columnUnderline" editable="false" sortable="false"
+                                       prefWidth="230" text="代码">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnUnderline" />
+                              </cellValueFactory>
+                          </TableColumn>
+                          <TableColumn id="columnName" editable="true" sortable="false" onEditCommit="#columnNameEdit"
+                                       prefWidth="200" text="名称">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnName" />
+                              </cellValueFactory>
+                          </TableColumn>
+                          <TableColumn id="columnDict" editable="true" sortable="false" onEditCommit="#columnDictEdit"
+                                       prefWidth="120" text="字典">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnDict" />
+                              </cellValueFactory>
+                          </TableColumn>
+                          <TableColumn id="columnMulti" editable="true" sortable="false" onEditCommit="#columnMultiEdit"
+                                       prefWidth="100" text="是否多选">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnMulti" />
+                              </cellValueFactory>
+                          </TableColumn>
+                          <TableColumn id="columnDate" editable="true" sortable="false" onEditCommit="#columnDateEdit"
+                                       prefWidth="100" text="是否日期">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnDate" />
+                              </cellValueFactory>
+                          </TableColumn>
+                          <TableColumn id="columnPrecision" editable="true" sortable="false" onEditCommit="#columnPrecisionEdit"
+                                       prefWidth="100" text="小数位数">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnPrecision" />
+                              </cellValueFactory>
+                          </TableColumn>
+                          <TableColumn id="columnRequired" editable="true" sortable="false" onEditCommit="#columnRequiredEdit"
+                                       prefWidth="100" text="是否必填">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnRequired" />
+                              </cellValueFactory>
+                          </TableColumn>
+                          <TableColumn id="columnDefault" editable="true" sortable="false" onEditCommit="#columnDefaultEdit"
+                                       prefWidth="100" text="默认值">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnDefault" />
+                              </cellValueFactory>
+                          </TableColumn>
+                          <TableColumn id="columnOrder" editable="true" sortable="false" onEditCommit="#columnOrderEdit"
+                                       prefWidth="100" text="排序">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnOrder" />
+                              </cellValueFactory>
+                          </TableColumn>
+                      </columns>
+                  </TableView>
+              </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

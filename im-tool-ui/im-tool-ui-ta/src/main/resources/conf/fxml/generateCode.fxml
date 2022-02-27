@@ -1,113 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
-<?import javafx.scene.layout.*?>
-<AnchorPane fx:id="generateCode" prefHeight="400.0" prefWidth="600.0"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.GenerateCodeController">
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="generateCode" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.GenerateCodeController">
     <children>
-        <SplitPane layoutX="98.0" layoutY="100.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0"
-                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                   AnchorPane.topAnchor="0.0">
+        <SplitPane layoutX="98.0" layoutY="100.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.6226805191130128" layoutX="174.0" layoutY="76.0"
-                                   prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
-                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane dividerPositions="0.6226805191130128" layoutX="174.0" layoutY="76.0" prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
                                     <children>
-                                        <Label layoutX="14.0" layoutY="15.0" prefHeight="15.0" prefWidth="120.0"
-                                               text="java文件路径" AnchorPane.leftAnchor="15.0"
-                                               AnchorPane.topAnchor="15.0"/>
-                                        <TextField fx:id="javaPath" layoutX="120.0" layoutY="11.0" prefHeight="23.0"
-                                                   prefWidth="620.0"/>
+                                        <Label layoutX="14.0" layoutY="15.0" prefHeight="15.0" prefWidth="120.0" text="java文件路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                                        <TextField fx:id="javaPath" layoutX="120.0" layoutY="11.0" prefHeight="23.0" prefWidth="620.0" />
 
-                                        <Label layoutX="14.0" layoutY="55.0" prefHeight="15.0" prefWidth="120.0"
-                                               text="vue文件路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="55.0"/>
-                                        <TextField fx:id="vuePath" layoutX="120.0" layoutY="51.0" prefHeight="23.0"
-                                                   prefWidth="620.0"/>
+                                        <Label layoutX="14.0" layoutY="55.0" prefHeight="15.0" prefWidth="120.0" text="vue文件路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="55.0" />
+                                        <TextField fx:id="vuePath" layoutX="120.0" layoutY="51.0" prefHeight="23.0" prefWidth="620.0" />
 
-                                        <Label layoutX="14.0" layoutY="95.0" prefHeight="15.0" prefWidth="120.0"
-                                               text="sql文件路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="95.0"/>
-                                        <TextField fx:id="sqlPath" layoutX="120.0" layoutY="91.0" prefHeight="23.0"
-                                                   prefWidth="620.0"/>
+                                        <Label layoutX="14.0" layoutY="95.0" prefHeight="15.0" prefWidth="120.0" text="sql文件路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="95.0" />
+                                        <TextField fx:id="sqlPath" layoutX="120.0" layoutY="91.0" prefHeight="23.0" prefWidth="620.0" />
 
-                                        <Label layoutX="14.0" layoutY="135.0" prefHeight="15.0" prefWidth="120.0"
-                                               text="route文件路径" AnchorPane.leftAnchor="15.0"
-                                               AnchorPane.topAnchor="135.0"/>
-                                        <TextField fx:id="routePath" layoutX="120.0" layoutY="131.0" prefHeight="23.0"
-                                                   prefWidth="620.0"/>
+                                        <Label layoutX="14.0" layoutY="135.0" prefHeight="15.0" prefWidth="120.0" text="route文件路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="135.0" />
+                                        <TextField fx:id="routePath" layoutX="120.0" layoutY="131.0" prefHeight="23.0" prefWidth="620.0" />
 
-                                        <Label layoutX="15.0" layoutY="178.0" prefHeight="15.0" prefWidth="80.0"
-                                               text="页面类型"/>
-                                        <RadioButton fx:id="set" layoutX="90.0" layoutY="178.0" mnemonicParsing="false"
-                                                     onAction="#selectSet" text="设置页面" userData="1"/>
-                                        <RadioButton fx:id="query" layoutX="190.0" layoutY="178.0"
-                                                     mnemonicParsing="false" onAction="#selectQuery" text="查询页面"
-                                                     userData="2"/>
+                                        <Label layoutX="15.0" layoutY="178.0" prefHeight="15.0" prefWidth="80.0" text="页面类型" />
+                                        <RadioButton fx:id="set" layoutX="90.0" layoutY="178.0" mnemonicParsing="false" onAction="#selectSet" text="设置页面" userData="1" />
+                                        <RadioButton fx:id="query" layoutX="190.0" layoutY="178.0" mnemonicParsing="false" onAction="#selectQuery" text="查询页面" userData="2" />
 
-                                        <Label layoutX="400.0" layoutY="178.0" prefHeight="15.0" prefWidth="80.0"
-                                               text="作者"/>
-                                        <TextField fx:id="author" layoutX="438.0" layoutY="175.0" prefHeight="23.0"
-                                                   prefWidth="200.0"/>
+                                        <Label layoutX="450.0" layoutY="178.0" prefHeight="15.0" prefWidth="80.0" text="作者" />
+                                        <TextField fx:id="author" layoutX="515.0" layoutY="175.0" prefHeight="23.0" prefWidth="200.0" />
 
-                                        <Label layoutX="15.0" layoutY="221.0" prefHeight="15.0" prefWidth="80.0"
-                                               text="数据源"/>
-                                        <RadioButton fx:id="dbPub" layoutX="90.0" layoutY="221.0"
-                                                     mnemonicParsing="false" onAction="#selectDbPub" text="主库"
-                                                     userData="1"/>
-                                        <RadioButton fx:id="dbTrans" layoutX="160.0" layoutY="221.0"
-                                                     mnemonicParsing="false" onAction="#selectDbTrans" text="交易库"
-                                                     userData="2"/>
-                                        <RadioButton fx:id="dbQuery" layoutX="245.0" layoutY="221.0"
-                                                     mnemonicParsing="false" onAction="#selectDbQuery" text="查询库"
-                                                     userData="3"/>
-                                        <RadioButton fx:id="dbOrder" layoutX="330.0" layoutY="221.0"
-                                                     mnemonicParsing="false" onAction="#selectDbOrder" text="订单库"
-                                                     userData="4"/>
+                                        <Label layoutX="15.0" layoutY="221.0" prefHeight="15.0" prefWidth="80.0" text="数据源" />
+                                        <RadioButton fx:id="dbPub" layoutX="90.0" layoutY="221.0" mnemonicParsing="false" onAction="#selectDbPub" text="主库" userData="1" />
+                                        <RadioButton fx:id="dbTrans" layoutX="160.0" layoutY="221.0" mnemonicParsing="false" onAction="#selectDbTrans" text="交易库" userData="2" />
+                                        <RadioButton fx:id="dbQuery" layoutX="245.0" layoutY="221.0" mnemonicParsing="false" onAction="#selectDbQuery" text="查询库" userData="3" />
+                                        <RadioButton fx:id="dbOrder" layoutX="330.0" layoutY="221.0" mnemonicParsing="false" onAction="#selectDbOrder" text="订单库" userData="4" />
 
-                                        <Label layoutX="450.0" layoutY="221.0" prefHeight="15.0" prefWidth="80.0"
-                                               text="Dto代码"/>
-                                        <TextField fx:id="dtoCode" layoutX="515.0" layoutY="218.0" prefHeight="23.0"
-                                                   prefWidth="200.0"/>
+                                        <Label layoutX="450.0" layoutY="221.0" prefHeight="15.0" prefWidth="80.0" text="Dto代码" />
+                                        <TextField fx:id="dtoCode" layoutX="515.0" layoutY="218.0" prefHeight="23.0" prefWidth="200.0" />
 
-                                        <Label layoutX="14.0" layoutY="261.0" prefHeight="15.0" prefWidth="120.0"
-                                               text="菜单代码" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="261.0"/>
-                                        <TextField fx:id="menuCode" layoutX="90.0" layoutY="257.0" prefHeight="23.0"
-                                                   prefWidth="650.0"/>
+                                        <Label layoutX="14.0" layoutY="261.0" prefHeight="15.0" prefWidth="120.0" text="菜单代码" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="261.0" />
+                                        <TextField fx:id="menuCode" layoutX="90.0" layoutY="257.0" prefHeight="23.0" prefWidth="650.0" />
 
-                                        <Label layoutX="14.0" layoutY="301.0" prefHeight="15.0" prefWidth="120.0"
-                                               text="菜单名称" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="301.0"/>
-                                        <TextField fx:id="menuName" layoutX="90.0" layoutY="297.0" prefHeight="23.0"
-                                                   prefWidth="650.0"/>
+                                        <Label layoutX="14.0" layoutY="301.0" prefHeight="15.0" prefWidth="120.0" text="菜单名称" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="301.0" />
+                                        <TextField fx:id="menuName" layoutX="90.0" layoutY="297.0" prefHeight="23.0" prefWidth="650.0" />
 
-                                        <Label layoutX="85.0" layoutY="341.0" prefHeight="15.0" prefWidth="120.0"
-                                               text="正式表结构" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="341.0"/>
-                                        <TextArea fx:id="table" layoutX="14.0" layoutY="365.0" prefHeight="160.0"
-                                                  prefWidth="230.0"/>
+                                        <Label layoutX="85.0" layoutY="341.0" prefHeight="15.0" prefWidth="120.0" text="正式表结构" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="341.0" />
+                                        <TextArea fx:id="table" layoutX="14.0" layoutY="365.0" prefHeight="160.0" prefWidth="230.0" />
 
-                                        <Label layoutX="335.0" layoutY="341.0" prefHeight="15.0" prefWidth="120.0"
-                                               text="复核表结构" AnchorPane.leftAnchor="335.0" AnchorPane.topAnchor="341.0"/>
-                                        <TextArea fx:id="asyTable" layoutX="263.0" layoutY="365.0" prefHeight="160.0"
-                                                  prefWidth="230.0"/>
+                                        <Label layoutX="335.0" layoutY="341.0" prefHeight="15.0" prefWidth="120.0" text="复核表结构" AnchorPane.leftAnchor="335.0" AnchorPane.topAnchor="341.0" />
+                                        <TextArea fx:id="asyTable" layoutX="263.0" layoutY="365.0" prefHeight="160.0" prefWidth="230.0" />
 
-                                        <Label layoutX="590.0" layoutY="341.0" prefHeight="15.0" prefWidth="120.0"
-                                               text="字段信息" AnchorPane.leftAnchor="590.0" AnchorPane.topAnchor="341.0"/>
-                                        <TextArea fx:id="column" layoutX="509.0" layoutY="365.0" prefHeight="160.0"
-                                                  prefWidth="230.0"/>
+                                        <Button fx:id="columnInfo" layoutX="549.0" layoutY="425.0" mnemonicParsing="false" onAction="#columnConfig" prefHeight="35.0" prefWidth="150.0" text="配置字段信息" />
 
-                                        <ProgressIndicator fx:id="schedule" layoutX="280.0" layoutY="540.0"
-                                                           progress="0.0"/>
-                                        <Label fx:id="scheduleText" layoutX="320.0" layoutY="545.0" text="0%"/>
+                                        <ProgressIndicator fx:id="schedule" layoutX="280.0" layoutY="540.0" progress="0.0" />
+                                        <Label fx:id="scheduleText" layoutX="320.0" layoutY="545.0" text="0%" />
 
-                                        <Button fx:id="execute" layoutX="380.0" layoutY="535.0"
-                                                mnemonicParsing="false" onAction="#execute" prefHeight="35.0"
-                                                prefWidth="100.0" text="执行">
+                                        <Button fx:id="execute" layoutX="380.0" layoutY="535.0" mnemonicParsing="false" onAction="#execute" prefHeight="35.0" prefWidth="100.0" text="执行">
                                             <padding>
-                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
+                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                                             </padding>
                                         </Button>
 
@@ -115,20 +78,18 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="550.0">
                                     <children>
-                                        <TableView fx:id="log" layoutY="14.0" prefHeight="188.0" prefWidth="201.0"
-                                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <TableView fx:id="log" layoutY="14.0" prefHeight="188.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="time" editable="false" prefWidth="170" sortable="false"
-                                                             text="生成时间">
+                                                <TableColumn id="time" editable="false" prefWidth="170"
+                                                             sortable="false" text="生成时间">
                                                     <cellValueFactory>
-                                                        <PropertyValueFactory property="time"/>
+                                                        <PropertyValueFactory property="time" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="275" sortable="false"
-                                                             text="生成日志">
+                                                <TableColumn id="msg" editable="false" prefWidth="275"
+                                                             sortable="false" text="生成日志">
                                                     <cellValueFactory>
-                                                        <PropertyValueFactory property="msg"/>
+                                                        <PropertyValueFactory property="msg" />
                                                     </cellValueFactory>
                                                 </TableColumn>
                                             </columns>

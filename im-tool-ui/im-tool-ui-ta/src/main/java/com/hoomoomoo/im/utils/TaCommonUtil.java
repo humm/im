@@ -195,30 +195,9 @@ public class TaCommonUtil {
             OutputUtils.info(log, "格式[ oracle建表语句 ] ");
             flag = false;
         }
-        StringBuilder columnTip = new StringBuilder();
-        columnTip.append("{").append(SYMBOL_NEXT_LINE);
-        columnTip.append("    字段代码: {").append(SYMBOL_NEXT_LINE);
-        columnTip.append("        name: '字段名称',").append(SYMBOL_NEXT_LINE);
-        columnTip.append("        dict: '字典',").append(SYMBOL_NEXT_LINE);
-        columnTip.append("        multi: '是否多选 0:单选 1:多选',").append(SYMBOL_NEXT_LINE);
-        columnTip.append("        required: '是否必填 0:非必填 1:必填'").append(SYMBOL_NEXT_LINE);
-        columnTip.append("        date: '是否日期 0:非日期 1:日期'").append(SYMBOL_NEXT_LINE);
-        columnTip.append("        precision: '精度 不指定则取表结构'").append(SYMBOL_NEXT_LINE);
-        columnTip.append("    }").append(SYMBOL_NEXT_LINE);
-        columnTip.append("}").append(SYMBOL_NEXT_LINE);
-        if (StringUtils.isBlank(generateCodeDto.getColumn())) {
-            OutputUtils.info(log, "请设置[ 字段信息 ] ");
-            OutputUtils.info(log, columnTip.toString());
+        if (CollectionUtils.isEmpty(generateCodeDto.getColumn())) {
+            OutputUtils.info(log, "请设置[ 配置字段信息 ] ");
             flag = false;
-        } else {
-            String columnInfo = generateCodeDto.getColumn();
-            try {
-                JSONObject.parseObject(columnInfo, Map.class);
-            } catch (Exception e) {
-                OutputUtils.info(log, "[ 字段信息 ]格式错误");
-                OutputUtils.info(log, columnInfo);
-                flag = false;
-            }
         }
         return flag;
     }

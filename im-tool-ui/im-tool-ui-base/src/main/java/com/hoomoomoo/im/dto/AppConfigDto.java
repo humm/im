@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.dto;
 
+import javafx.stage.Stage;
 import lombok.Data;
 
 import java.util.*;
@@ -155,6 +156,10 @@ public class AppConfigDto extends BaseDto {
     private String generateSqlDatabaseCode;
 
     private String generateSqlTableCode;
+
+    private Stage columnStage;
+
+    private GenerateCodeDto generateCodeDto;
 
     public AppConfigDto() {
         this.appLogEnable = false;

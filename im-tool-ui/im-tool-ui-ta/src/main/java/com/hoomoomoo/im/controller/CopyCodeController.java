@@ -36,6 +36,9 @@ public class CopyCodeController extends BaseController implements Initializable 
     private AnchorPane copyCode;
 
     @FXML
+    private AnchorPane xxx;
+
+    @FXML
     private TextField sourcePath;
 
     @FXML

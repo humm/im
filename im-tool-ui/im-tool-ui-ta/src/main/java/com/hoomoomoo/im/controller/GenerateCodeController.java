@@ -4,24 +4,30 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
+import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.service.*;
-import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.LoggerUtils;
-import com.hoomoomoo.im.utils.OutputUtils;
-import com.hoomoomoo.im.utils.TaCommonUtil;
+import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.GENERATE_CODE;
 
 /**
@@ -84,15 +90,13 @@ public class GenerateCodeController extends BaseController implements Initializa
     private TextArea asyTable;
 
     @FXML
-    private TextArea column;
+    private Button columnInfo;
 
     @FXML
     private TableView log;
 
     @FXML
     private Button execute;
-
-    private GenerateCodeDto generateCodeDto = new GenerateCodeDto();
 
     @FXML
     void selectSet(ActionEvent event) {
@@ -138,7 +142,9 @@ public class GenerateCodeController extends BaseController implements Initializa
         OutputUtils.selected(dbOrder, true);
     }
 
-    void initGenerateCodeDto() {
+    void initGenerateCodeDto() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        GenerateCodeDto generateCodeDto = appConfigDto.getGenerateCodeDto();
         generateCodeDto.getColumnMap().clear();
         generateCodeDto.getAsyColumnMap().clear();
         generateCodeDto.getPrimaryKeyMap().clear();
@@ -153,7 +159,6 @@ public class GenerateCodeController extends BaseController implements Initializa
         generateCodeDto.setMenuName(menuName.getText());
         generateCodeDto.setTable(table.getText().trim());
         generateCodeDto.setAsyTable(asyTable.getText().trim());
-        generateCodeDto.setColumn(column.getText().trim());
         if (set.isSelected()) {
             generateCodeDto.setPageType(String.valueOf(set.getUserData()));
         } else {
@@ -228,7 +233,7 @@ public class GenerateCodeController extends BaseController implements Initializa
                 "\top_dir                    VARCHAR2(1)          default ' ' not null,\n" +
                 "\tconstraint pk_tbfundprdpropfavourasy primary key (entry_serial_no, entry_order_no)\n" +
                 ");");
-        generateCodeDto.setColumn("{\n" +
+        /*generateCodeDto.setColumn("{\n" +
                 "\tinvest_direction:{\n" +
                 "\t\tname:'投资方向',\n" +
                 "\t\tdict:'F_C20010',\n" +
@@ -335,7 +340,7 @@ public class GenerateCodeController extends BaseController implements Initializa
                 "\t\tdict:'',\n" +
                 "\t\tmulti:''\n" +
                 "\t}\n" +
-                "}");
+                "}");*/
     }
 
     @FXML
@@ -344,12 +349,44 @@ public class GenerateCodeController extends BaseController implements Initializa
             OutputUtils.clearLog(log);
             LoggerUtils.info(String.format(BaseConst.MSG_USE, GENERATE_CODE.getName()));
             initGenerateCodeDto();
-            if (!TaCommonUtil.checkConfigGenerateCode(log, generateCodeDto)) {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (!TaCommonUtil.checkConfigGenerateCode(log, appConfigDto.getGenerateCodeDto())) {
                 return;
             }
             setProgress(0);
-            generateCode(generateCodeDto);
+            generateCode(appConfigDto.getGenerateCodeDto());
             updateProgress();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(log, e.toString());
+        }
+    }
+
+    @FXML
+    void columnConfig(ActionEvent event) {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            Stage columnStage = appConfigDto.getColumnStage();
+            if (columnStage == null) {
+                initGenerateCodeDto();
+                InitTable.init(appConfigDto.getGenerateCodeDto());
+                Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_COLUMN_SET_FXML)));
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+                columnStage = new Stage();
+                columnStage.getIcons().add(new Image(SET_ICON));
+                columnStage.setScene(scene);
+                columnStage.setTitle("配置字段信息");
+                columnStage.setResizable(false);
+                columnStage.show();
+                appConfigDto.setColumnStage(columnStage);
+                columnStage.setOnCloseRequest(columnEvent -> {
+                    appConfigDto.getColumnStage().close();
+                    appConfigDto.setColumnStage(null);
+                });
+            } else {
+                columnStage.toFront();
+            }
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.toString());
@@ -481,6 +518,8 @@ public class GenerateCodeController extends BaseController implements Initializa
             } else if (BaseConst.DB_TYPE_TRANS_ORDER.equals(dbType)) {
                 selectDbOrder(null);
             }
+            GenerateCodeDto generateCodeDto = new GenerateCodeDto();
+            appConfigDto.setGenerateCodeDto(generateCodeDto);
             generateCodeDto.setJavaPath(appConfigDto.getGenerateCodeJavaPath());
             generateCodeDto.setVuePath(appConfigDto.getGenerateCodeVuePath());
             generateCodeDto.setSqlPath(appConfigDto.getGenerateCodeSqlPath());

@@ -26,6 +26,8 @@ public class BaseConst {
     public static final String STR_3 = "3";
     public static final String STR_4 = "4";
     public static final String STR_5 = "5";
+    public static final String STR_6 = "6";
+    public static final String STR_7 = "7";
     public static final String STR_8 = "8";
     public static final String STR_9 = "9";
     public static final String STR_69 = "69";
@@ -81,13 +83,7 @@ public class BaseConst {
     public static final String KEY_UNICK = "unick";
     public static final String KEY_LIB = "/lib";
 
-    public static final String KEY_DICT = "dict";
-    public static final String KEY_MULTI = "multi";
-    public static final String KEY_NAME = "name";
-    public static final String KEY_REQUIRED = "required";
     public static final String KEY_COLUMN_TYPE_DATE = "date";
-    public static final String KEY_PRECISION = "precision";
-    public static final String KEY_ORDER = "order";
     public static final String KEY_COLUMN_TYPE_INTEGER = "integer";
     public static final String KEY_COLUMN_TYPE_NUMBER = "number";
     public static final String KEY_COLUMN_TYPE_VARCHAR2 = "varchar2";
@@ -213,8 +209,10 @@ public class BaseConst {
     public static final String PATH_LOG = "/logs/%s/%s";
     public static final String PATH_STAT = "/stats/%s";
     public static final String PATH_ICON = "/conf/image/icon.png";
+    public static final String SET_ICON = "/conf/image/set.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
     public static final String PATH_STARTER_CSS = "/conf/style/progressIndicator.css";
+    public static final String PATH_COLUMN_SET_FXML = "/conf/fxml/columnSet.fxml";
 
     public static final String PACKAGE_JAVA_PREFIX = "com.hundsun.lcpt.fund.";
     public static final String PATH_JAVA_PREFIX = "/ta-web-manager-fund-core/src/main/java/";

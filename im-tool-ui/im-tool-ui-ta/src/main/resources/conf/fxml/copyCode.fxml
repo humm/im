@@ -22,7 +22,8 @@
                     <children>
                         <SplitPane dividerPositions="0.6226805191130128" layoutX="174.0" layoutY="76.0" prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
+                                <AnchorPane fx:id="xxx" minHeight="0.0" minWidth="0.0" prefHeight="188.0"
+                                            prefWidth="482.0">
                                     <children>
                                         <Label layoutX="14.0" layoutY="15.0" prefHeight="15.0" prefWidth="120.0" text="源版本" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
                                         <ComboBox fx:id="sourceVersion" layoutX="120.0" layoutY="11.0" onAction="#selectSource" prefWidth="240.0" />

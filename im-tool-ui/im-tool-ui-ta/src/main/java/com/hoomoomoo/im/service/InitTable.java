@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,33 +35,23 @@ public class InitTable {
             generateCodeDto.setAsyColumnMap(asyTableColumn);
         }
 
-        String column = generateCodeDto.getColumn();
-        if (StringUtils.isNotEmpty(column)) {
-            Map<String, Map<String, String>> columnInfo = JSONObject.parseObject(column, Map.class);
-            if (MapUtils.isNotEmpty(columnInfo)) {
-                Iterator<String> iterator = columnInfo.keySet().iterator();
-                while (iterator.hasNext()) {
-                    String key = iterator.next();
-                    Map<String, String> item = columnInfo.get(key);
-                    String columnCode = CommonUtils.lineToHump(key);
-                    String columnName = item.get(KEY_NAME);
-                    String columnDict = item.get(KEY_DICT);
-                    String columnMulti = item.get(KEY_MULTI);
-                    String columnDate = item.get(KEY_COLUMN_TYPE_DATE);
-                    String columnPrecision = item.get(KEY_PRECISION);
-                    String columnRequired = item.get(KEY_REQUIRED);
-                    String columnOrder = item.get(KEY_ORDER);
-                    tableColumn.get(columnCode).setColumnName(columnName);
-                    tableColumn.get(columnCode).setColumnDict(columnDict);
-                    tableColumn.get(columnCode).setColumnMulti(columnMulti);
-                    tableColumn.get(columnCode).setColumnRequired(columnRequired);
-                    if (StringUtils.isNotBlank(columnOrder)) {
-                        tableColumn.get(columnCode).setColumnOrder(columnOrder);
+        List<ColumnInfoDto> column = generateCodeDto.getColumn();
+        if (CollectionUtils.isNotEmpty(column)) {
+            for (ColumnInfoDto item : column) {
+                String columnCode = item.getColumn();
+                ColumnInfoDto tableColumnConfig = tableColumn.get(columnCode);
+                if (tableColumnConfig != null) {
+                    tableColumn.get(columnCode).setColumnName(item.getColumnName());
+                    tableColumn.get(columnCode).setColumnDict(item.getColumnDict());
+                    tableColumn.get(columnCode).setColumnMulti(item.getColumnMulti());
+                    tableColumn.get(columnCode).setColumnRequired(item.getColumnRequired());
+                    if (StringUtils.isNotBlank(item.getColumnOrder())) {
+                        tableColumn.get(columnCode).setColumnOrder(item.getColumnOrder());
                     }
-                    if (STR_1.equals(columnDate)) {
+                    if (STR_1.equals(item.getColumnDict())) {
                         tableColumn.get(columnCode).setColumnType(KEY_COLUMN_TYPE_DATE);
                     }
-                    tableColumn.get(columnCode).setColumnPrecision(columnPrecision);
+                    tableColumn.get(columnCode).setColumnPrecision(item.getColumnPrecision());
                 }
             }
         }
@@ -89,7 +80,7 @@ public class InitTable {
         if (columnList == null || table.length() == 0) {
             throw new Exception("未获取到数据表字段信息");
         }
-
+        int orderNo = 0;
         for (int i = 0; i < columnList.length; i++) {
             String item = columnList[i].trim();
             if (i == columnList.length - 1 && item.contains("primary key")) {
@@ -119,6 +110,9 @@ public class InitTable {
                 precision = columnType.substring(columnType.indexOf(SYMBOL_COMMA) + 1, columnType.indexOf(SYMBOL_BRACKETS_RIGHT));
             }
             String column = CommonUtils.lineToHump(columnUnderline);
+            if (KEY_TA_CODE.equals(column)) {
+                continue;
+            }
             ColumnInfoDto columnInfo = new ColumnInfoDto();
             columnInfo.setColumn(column);
             columnInfo.setColumnUnderline(columnUnderline);
@@ -126,11 +120,12 @@ public class InitTable {
             if (KEY_COLUMN_TYPE_INTEGER.equals(columnTypeLast) && column.endsWith("Date")) {
                 columnTypeLast = KEY_COLUMN_TYPE_DATE;
             }
+            orderNo += 10;
             columnInfo.setColumnType(columnTypeLast);
             columnInfo.setColumnPrecision(precision);
             columnInfo.setColumnName(SYMBOL_EMPTY);
             columnInfo.setColumnDict(SYMBOL_EMPTY);
-            columnInfo.setColumnOrder(String.valueOf(i));
+            columnInfo.setColumnOrder(String.valueOf(orderNo));
             columnMap.put(column, columnInfo);
         }
 
@@ -139,7 +134,7 @@ public class InitTable {
         transCode.setColumnUnderline(KEY_TRANS_CODE_AND_SUB_TRANS_CODE);
         transCode.setColumnType(KEY_COLUMN_TYPE_VARCHAR2);
         transCode.setColumnPrecision(SYMBOL_EMPTY);
-        transCode.setColumnOrder(STR_999999999);
+        transCode.setColumnOrder(String.valueOf(orderNo + 10));
         columnMap.put(KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP, transCode);
 
         return columnMap;

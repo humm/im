@@ -64,13 +64,6 @@ public class InitConfigTest {
                 }
             }
         }
-        Iterator<FunctionDto> iterator = function.iterator();
-        while (iterator.hasNext()) {
-            FunctionDto item = iterator.next();
-            if (GENERATE_CODE.getCode().equals(item.getFunctionCode())) {
-                iterator.remove();
-            }
-        }
         String licenseContent = SecurityUtils.getEncryptString(JSON.toJSONString(license));
         String licensePath = FileUtils.getFilePath(PATH_LICENSE);
         FileUtils.writeFile(licensePath, licenseContent, false);

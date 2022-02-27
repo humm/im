@@ -3,7 +3,9 @@ package com.hoomoomoo.im.utils;
 import com.hoomoomoo.im.dto.BaseDto;
 import com.hoomoomoo.im.dto.LogDto;
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.TextFieldTableCell;
 
 import java.util.List;
 
@@ -17,17 +19,24 @@ import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
  */
 public class OutputUtils {
 
-    public static void info(TableView tableView, BaseDto baseDto) {
+    public static void info(TableView tableView, BaseDto baseDto, boolean scroll) {
         if (tableView == null) {
             return;
         }
         Platform.runLater(() -> {
             tableView.getItems().add(baseDto);
-            tableView.scrollTo(tableView.getItems().size());
+            if (scroll) {
+                tableView.scrollTo(tableView.getItems().size());
+            }
+            setEnabled(tableView);
         });
     }
 
-    public static void infoList(TableView tableView, List<? extends BaseDto> baseDtoList) {
+    public static void info(TableView tableView, BaseDto baseDto) {
+        info(tableView, baseDto, true);
+    }
+
+    public static void infoList(TableView tableView, List<? extends BaseDto> baseDtoList, boolean scroll) {
         if (tableView == null) {
             return;
         }
@@ -35,8 +44,15 @@ public class OutputUtils {
             for (BaseDto baseDto : baseDtoList) {
                 tableView.getItems().add(baseDto);
             }
-            tableView.scrollTo(tableView.getItems().size());
+            if (scroll) {
+                tableView.scrollTo(tableView.getItems().size());
+            }
+            setEnabled(tableView);
         });
+    }
+
+    public static void infoList(TableView tableView, List<? extends BaseDto> baseDtoList) {
+        infoList(tableView, baseDtoList, true);
     }
 
     public static void info(TableView tableView, String msg) {
@@ -49,7 +65,18 @@ public class OutputUtils {
         Platform.runLater(() -> {
             tableView.getItems().add(logDto);
             tableView.scrollTo(tableView.getItems().size());
+            setEnabled(tableView);
         });
+    }
+
+    private static void setEnabled(TableView tableView) {
+        tableView.setEditable(true);
+        ObservableList<TableColumn> columns = tableView.getColumns();
+        for (int i=0; i<columns.size(); i++) {
+            if (i != 0) {
+                columns.get(i).setCellFactory(TextFieldTableCell.forTableColumn());
+            }
+        }
     }
 
     public static void info(Object obj, String text) {

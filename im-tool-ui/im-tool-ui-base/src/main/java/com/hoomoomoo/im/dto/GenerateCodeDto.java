@@ -46,7 +46,7 @@ public class GenerateCodeDto {
     private String tableName;
     private String primaryKey;
     private String dbType;
-    private String column;
+    private List<ColumnInfoDto> column;
     private String pageType;
     private String functionCode;
     private String functionName;

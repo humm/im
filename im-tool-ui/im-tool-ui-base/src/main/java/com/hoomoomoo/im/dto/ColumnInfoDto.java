@@ -9,7 +9,7 @@ import lombok.Data;
  * @date 2021/11/18
  */
 @Data
-public class ColumnInfoDto implements Comparable<ColumnInfoDto>{
+public class ColumnInfoDto extends BaseDto implements Comparable<ColumnInfoDto>{
 
     private String column;
     private String columnUnderline;
@@ -17,9 +17,11 @@ public class ColumnInfoDto implements Comparable<ColumnInfoDto>{
     private String columnName;
     private String columnDict;
     private String columnMulti;
+    private String columnDate;
     private String columnRequired;
     private String columnPrecision;
     private String columnOrder;
+    private String columnDefault;
 
     @Override
     public int compareTo(ColumnInfoDto o) {
