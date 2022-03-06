@@ -28,7 +28,7 @@ public class ShakeMouse {
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-        System.out.println("screen size: " + screenSize.getWidth() + "*" + screenSize.getHeight());
+        System.out.println("screen size:" + screenSize.getWidth() + "*" + screenSize.getHeight());
 
         while (true) {
             System.out.println(pos.x + " " + pos.y);
