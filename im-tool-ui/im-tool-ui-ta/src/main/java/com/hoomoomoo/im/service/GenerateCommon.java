@@ -81,7 +81,7 @@ public class GenerateCommon {
 
     public static String generateJavaFile(GenerateCodeDto generateCodeDto, String packageName, String fileName,
                                           String content) throws IOException {
-        String pathName = generateCodeDto.getJavaPath() + PATH_JAVA_PREFIX + packageName.replace(SYMBOL_POINT, SYMBOL_SLASH) + SYMBOL_SLASH + fileName + FILE_TYPE_JAVA;
+        String pathName = generateCodeDto.getJavaPath() + SYMBOL_SLASH + packageName.replace(SYMBOL_POINT, SYMBOL_SLASH) + SYMBOL_SLASH + fileName + FILE_TYPE_JAVA;
         FileUtils.writeFile(pathName, content, ENCODING_UTF8, false);
         return pathName;
     }

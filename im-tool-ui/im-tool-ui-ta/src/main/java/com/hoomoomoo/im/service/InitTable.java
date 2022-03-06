@@ -45,6 +45,8 @@ public class InitTable {
                     tableColumn.get(columnCode).setColumnDict(item.getColumnDict());
                     tableColumn.get(columnCode).setColumnMulti(item.getColumnMulti());
                     tableColumn.get(columnCode).setColumnRequired(item.getColumnRequired());
+                    tableColumn.get(columnCode).setColumnDate(item.getColumnDate());
+                    tableColumn.get(columnCode).setColumnWidth(item.getColumnWidth());
                     if (StringUtils.isNotBlank(item.getColumnOrder())) {
                         tableColumn.get(columnCode).setColumnOrder(item.getColumnOrder());
                     }
@@ -119,8 +121,14 @@ public class InitTable {
             String columnTypeLast = columnType.split("\\(")[0].toLowerCase();
             if (KEY_COLUMN_TYPE_INTEGER.equals(columnTypeLast) && column.endsWith("Date")) {
                 columnTypeLast = KEY_COLUMN_TYPE_DATE;
+                columnInfo.setColumnDate(STR_1);
             }
             orderNo += 10;
+            int columnWidth = 150;
+            if (KEY_PRD_CODE.equals(column)) {
+                columnWidth = 200;
+            }
+            columnInfo.setColumnWidth(String.valueOf(columnWidth));
             columnInfo.setColumnType(columnTypeLast);
             columnInfo.setColumnPrecision(precision);
             columnInfo.setColumnName(SYMBOL_EMPTY);

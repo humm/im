@@ -82,6 +82,7 @@ public class BaseConst {
     public static final String KEY_IMGS = "imgs";
     public static final String KEY_UNICK = "unick";
     public static final String KEY_LIB = "/lib";
+    public static final String KEY_PRD_CODE_NAME = "基金名称";
 
     public static final String KEY_COLUMN_TYPE_DATE = "date";
     public static final String KEY_COLUMN_TYPE_INTEGER = "integer";

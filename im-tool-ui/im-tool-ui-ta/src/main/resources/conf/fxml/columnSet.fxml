@@ -22,7 +22,7 @@
                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                       <columns>
                           <TableColumn id="columnUnderline" editable="false" sortable="false"
-                                       prefWidth="230" text="代码">
+                                       prefWidth="200" text="代码">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnUnderline" />
                               </cellValueFactory>
@@ -33,44 +33,50 @@
                                   <PropertyValueFactory property="columnName" />
                               </cellValueFactory>
                           </TableColumn>
+                          <TableColumn id="columnWidth" editable="true" sortable="false" onEditCommit="#columnWidthEdit"
+                                       prefWidth="90" text="宽度">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnWidth" />
+                              </cellValueFactory>
+                          </TableColumn>
                           <TableColumn id="columnDict" editable="true" sortable="false" onEditCommit="#columnDictEdit"
-                                       prefWidth="120" text="字典">
+                                       prefWidth="100" text="字典">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnDict" />
                               </cellValueFactory>
                           </TableColumn>
                           <TableColumn id="columnMulti" editable="true" sortable="false" onEditCommit="#columnMultiEdit"
-                                       prefWidth="100" text="是否多选">
+                                       prefWidth="90" text="是否多选">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnMulti" />
                               </cellValueFactory>
                           </TableColumn>
                           <TableColumn id="columnDate" editable="true" sortable="false" onEditCommit="#columnDateEdit"
-                                       prefWidth="100" text="是否日期">
+                                       prefWidth="90" text="是否日期">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnDate" />
                               </cellValueFactory>
                           </TableColumn>
                           <TableColumn id="columnPrecision" editable="true" sortable="false" onEditCommit="#columnPrecisionEdit"
-                                       prefWidth="100" text="小数位数">
+                                       prefWidth="90" text="小数位数">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnPrecision" />
                               </cellValueFactory>
                           </TableColumn>
                           <TableColumn id="columnRequired" editable="true" sortable="false" onEditCommit="#columnRequiredEdit"
-                                       prefWidth="100" text="是否必填">
+                                       prefWidth="90" text="是否必填">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnRequired" />
                               </cellValueFactory>
                           </TableColumn>
                           <TableColumn id="columnDefault" editable="true" sortable="false" onEditCommit="#columnDefaultEdit"
-                                       prefWidth="100" text="默认值">
+                                       prefWidth="90" text="默认值">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnDefault" />
                               </cellValueFactory>
                           </TableColumn>
                           <TableColumn id="columnOrder" editable="true" sortable="false" onEditCommit="#columnOrderEdit"
-                                       prefWidth="100" text="排序">
+                                       prefWidth="90" text="排序">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnOrder" />
                               </cellValueFactory>

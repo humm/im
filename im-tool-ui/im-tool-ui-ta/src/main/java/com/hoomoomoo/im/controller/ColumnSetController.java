@@ -87,6 +87,11 @@ public class ColumnSetController implements Initializable {
         updateColumnInfo(columnInfo.getSelectionModel().getSelectedIndex(), STR_8, event.getNewValue().toString());
     }
 
+    @FXML
+    void columnWidthEdit(TableColumn.CellEditEvent event) {
+        updateColumnInfo(columnInfo.getSelectionModel().getSelectedIndex(), STR_9, event.getNewValue().toString());
+    }
+
     private void updateColumnInfo(int rowNum, String updateType, String value) {
         for (int i=0; i<columnInfoDtoList.size(); i++) {
             ColumnInfoDto columnInfoDto = columnInfoDtoList.get(i);
@@ -115,6 +120,9 @@ public class ColumnSetController implements Initializable {
                         break;
                     case STR_8:
                         columnInfoDto.setColumnOrder(value);
+                        break;
+                    case STR_9:
+                        columnInfoDto.setColumnWidth(value);
                         break;
                     default:
                         break;

@@ -105,7 +105,7 @@ public class GenerateVue {
         content.append("      </div>").append(SYMBOL_NEXT_LINE);
         content.append("      <h-spin size='large' fix v-if='spinEditShow'></h-spin>").append(SYMBOL_NEXT_LINE);
         content.append("    </h-msg-box>").append(SYMBOL_NEXT_LINE_2);
-//        content.append("    <!-- 批量修改弹框 -->").append(SYMBOL_NEXT_LINE);
+        //content.append("    <!-- 批量修改弹框 -->").append(SYMBOL_NEXT_LINE);
         content.append("    <!-- 导入弹窗 -->").append(SYMBOL_NEXT_LINE);
         content.append("    <upload-excel").append(SYMBOL_NEXT_LINE);
         content.append("      ref='uploadExcel'").append(SYMBOL_NEXT_LINE);
@@ -132,6 +132,7 @@ public class GenerateVue {
     private static String buildImport(GenerateCodeDto generateCodeDto) {
         StringBuilder content = new StringBuilder();
         content.append("  import {").append(SYMBOL_NEXT_LINE);
+        content.append("    fundPost,").append(SYMBOL_NEXT_LINE);
         content.append("    getValidator,").append(SYMBOL_NEXT_LINE);
         content.append("    addTitleSearchCondition,").append(SYMBOL_NEXT_LINE);
         content.append("    selectCurrentRow,").append(SYMBOL_NEXT_LINE);
@@ -164,7 +165,51 @@ public class GenerateVue {
         content.append("    },").append(SYMBOL_NEXT_LINE);
         content.append("    data() {").append(SYMBOL_NEXT_LINE);
         content.append("      return {").append(SYMBOL_NEXT_LINE);
-        // todo data补充
+        content.append("        authObj: {").append(SYMBOL_NEXT_LINE);
+        content.append("          query: true,").append(SYMBOL_NEXT_LINE);
+        content.append("          add: true,").append(SYMBOL_NEXT_LINE);
+        content.append("          edit: true,").append(SYMBOL_NEXT_LINE);
+        content.append("          delete: true,").append(SYMBOL_NEXT_LINE);
+        content.append("          import: true,").append(SYMBOL_NEXT_LINE);
+        content.append("          export: true").append(SYMBOL_NEXT_LINE);
+        content.append("        },").append(SYMBOL_NEXT_LINE);
+        content.append("        dataSource: JSON.parse(window.sessionStorage.getItem('multTaList')),").append(SYMBOL_NEXT_LINE);
+        content.append("        isMultTa: window.LOCAL_CONFIG.isMultTa,").append(SYMBOL_NEXT_LINE);
+        content.append("        showImport: false,").append(SYMBOL_NEXT_LINE);
+        content.append("        validateRules: {},").append(SYMBOL_NEXT_LINE);
+        content.append("        spinShow: false,").append(SYMBOL_NEXT_LINE);
+        content.append("        spinEditShow: false,").append(SYMBOL_NEXT_LINE);
+        content.append("        spinBatchEditShow: false,").append(SYMBOL_NEXT_LINE);
+        content.append("        tableRef: 'selfTable', ").append(SYMBOL_NEXT_LINE);
+        content.append("        ids: [], ").append(SYMBOL_NEXT_LINE);
+        content.append("        queryDisabled: false,").append(SYMBOL_NEXT_LINE);
+        content.append("        pageSizeOpts: [5, 10, 15, 20],").append(SYMBOL_NEXT_LINE);
+        content.append("        showModal: false,").append(SYMBOL_NEXT_LINE);
+        content.append("        showEditModal: false,").append(SYMBOL_NEXT_LINE);
+        content.append("        showBatchEditModal: false,").append(SYMBOL_NEXT_LINE);
+        content.append("        dataList: [],").append(SYMBOL_NEXT_LINE);
+        content.append("        downloadParams: {").append(SYMBOL_NEXT_LINE);
+        content.append("          resCode: '" + generateCodeDto.getFunctionCode() + "',").append(SYMBOL_NEXT_LINE);
+        content.append("          opCode: '" + generateCodeDto.getFunctionCode() + "Export',").append(SYMBOL_NEXT_LINE);
+        content.append("          title: '" + generateCodeDto.getFunctionName() + "',").append(SYMBOL_NEXT_LINE);
+        content.append("          serviceName: '" + generateCodeDto.getServicePackageName() + ".queryService'").append(SYMBOL_NEXT_LINE);
+        content.append("        },").append(SYMBOL_NEXT_LINE);
+        content.append("        searchForm: {").append(SYMBOL_NEXT_LINE);
+        content.append(buildColumn(generateCodeDto.getColumnMap(), STR_1));
+        content.append("        },").append(SYMBOL_NEXT_LINE);
+        content.append("        addForm: {").append(SYMBOL_NEXT_LINE);
+        content.append(buildColumn(generateCodeDto.getColumnMap(), STR_2));
+        content.append("        },").append(SYMBOL_NEXT_LINE);
+        content.append("        updateForm: {").append(SYMBOL_NEXT_LINE);
+        content.append(buildColumn(generateCodeDto.getColumnMap(), STR_3));
+        content.append("        },").append(SYMBOL_NEXT_LINE);
+        content.append("        batchUpdateForm: {").append(SYMBOL_NEXT_LINE);
+        content.append("        },").append(SYMBOL_NEXT_LINE);
+        content.append("        addAndUpdateRules: {").append(SYMBOL_NEXT_LINE);
+        content.append("        },").append(SYMBOL_NEXT_LINE);
+        content.append("        columns: [").append(SYMBOL_NEXT_LINE);
+        content.append(buildColumn(generateCodeDto.getColumnMap(), STR_4));
+        content.append("        ],").append(SYMBOL_NEXT_LINE);
         content.append("      }").append(SYMBOL_NEXT_LINE);
         content.append("    },").append(SYMBOL_NEXT_LINE);
         content.append("    computed: {},").append(SYMBOL_NEXT_LINE);
@@ -194,7 +239,6 @@ public class GenerateVue {
         content.append("      off(window, 'resize', this.handleResize)").append(SYMBOL_NEXT_LINE);
         content.append("    },").append(SYMBOL_NEXT_LINE);
         content.append("    methods: {").append(SYMBOL_NEXT_LINE);
-        // todo 新增 修改 删除 补充
         content.append("      // 导入").append(SYMBOL_NEXT_LINE);
         content.append("      handleExcelImport() {").append(SYMBOL_NEXT_LINE);
         content.append("        this.showImport = true").append(SYMBOL_NEXT_LINE);
@@ -222,6 +266,173 @@ public class GenerateVue {
         content.append("      // 重置").append(SYMBOL_NEXT_LINE);
         content.append("      formSearchReset() {").append(SYMBOL_NEXT_LINE);
         content.append("        this.$refs.searchForm.resetFields()").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 打开新增弹框").append(SYMBOL_NEXT_LINE);
+        content.append("      handleOpenAdd() {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.showModal = true").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.formRef.resetFields()").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 取消新增弹框").append(SYMBOL_NEXT_LINE);
+        content.append("      handleCancel() {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.showModal = false").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 新增提交").append(SYMBOL_NEXT_LINE);
+        content.append("      handleAddSubmit() {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.formRef.validate(valid => {").append(SYMBOL_NEXT_LINE);
+        content.append("          if (valid) {").append(SYMBOL_NEXT_LINE);
+        content.append("            this.spinShow = !this.spinShow").append(SYMBOL_NEXT_LINE);
+        content.append("            const postData = {").append(SYMBOL_NEXT_LINE);
+        content.append("              ...this.addForm,").append(SYMBOL_NEXT_LINE);
+        content.append("              feEditType: 'ADD'").append(SYMBOL_NEXT_LINE);
+        content.append("            }").append(SYMBOL_NEXT_LINE);
+        content.append(formatDateSubmit(generateCodeDto.getColumnMap())).append(SYMBOL_NEXT_LINE);
+        content.append("            fundPost(this, postData, '" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Add').then(").append(SYMBOL_NEXT_LINE);
+        content.append("              ({data}) => {").append(SYMBOL_NEXT_LINE);
+        content.append("                this.spinShow = !this.spinShow").append(SYMBOL_NEXT_LINE);
+        content.append("                if (data.returnCode === '0') {").append(SYMBOL_NEXT_LINE);
+        content.append("                  this.showModal = false").append(SYMBOL_NEXT_LINE);
+        content.append("                  this.searchForm.multTaCode = this.addForm.multTaCode").append(SYMBOL_NEXT_LINE);
+        content.append("                  this.formSearch()").append(SYMBOL_NEXT_LINE);
+        content.append("                }").append(SYMBOL_NEXT_LINE);
+        content.append("              }").append(SYMBOL_NEXT_LINE);
+        content.append("            ).catch(error => {").append(SYMBOL_NEXT_LINE);
+        content.append("              this.spinShow = false;").append(SYMBOL_NEXT_LINE);
+        content.append("              this.$hMessage.error({").append(SYMBOL_NEXT_LINE);
+        content.append("                content: error.message,").append(SYMBOL_NEXT_LINE);
+        content.append("                closable: true,").append(SYMBOL_NEXT_LINE);
+        content.append("                duration: window.LOCAL_CONFIG.errorTime,").append(SYMBOL_NEXT_LINE);
+        content.append("              });").append(SYMBOL_NEXT_LINE);
+        content.append("            });").append(SYMBOL_NEXT_LINE);
+        content.append("          }").append(SYMBOL_NEXT_LINE);
+        content.append("        })").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 打开修改弹框").append(SYMBOL_NEXT_LINE);
+        content.append("      handleOpenEdit(data) {").append(SYMBOL_NEXT_LINE);
+        content.append("        selectCurrentRow(this, data)").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.updateForm.resetFields()").append(SYMBOL_NEXT_LINE);
+        content.append("        this.showEditModal = true").append(SYMBOL_NEXT_LINE);
+        content.append("        const editObj = Object.assign(").append(SYMBOL_NEXT_LINE);
+        content.append("          {},").append(SYMBOL_NEXT_LINE);
+        content.append("          _pickFund(data, [").append(SYMBOL_NEXT_LINE);
+        content.append(getUpdateColumn(generateCodeDto.getColumnMap())).append(SYMBOL_NEXT_LINE);
+        content.append("          ])").append(SYMBOL_NEXT_LINE);
+        content.append("        )").append(SYMBOL_NEXT_LINE);
+        content.append("        this.updateForm = editObj").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 取消修改").append(SYMBOL_NEXT_LINE);
+        content.append("      handleUpdateCancel() {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.showEditModal = false").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 提交修改").append(SYMBOL_NEXT_LINE);
+        content.append("      handleUpdateSubmit() {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.updateForm.validate(valid => {").append(SYMBOL_NEXT_LINE);
+        content.append("          if (valid) {").append(SYMBOL_NEXT_LINE);
+        content.append("            this.spinEditShow = !this.spinEditShow").append(SYMBOL_NEXT_LINE);
+        content.append("            const postData = Object.assign({}, this.updateForm)").append(SYMBOL_NEXT_LINE);
+        content.append(formatDateSubmit(generateCodeDto.getColumnMap())).append(SYMBOL_NEXT_LINE);
+        content.append("            fundPost(this, {dtoList: '[' + JSON.stringify(postData) + ']', multTaCode: postData.multTaCode, feEditType: 'EDIT'},").append(SYMBOL_NEXT_LINE);
+        content.append("              '" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Edit').then(").append(SYMBOL_NEXT_LINE);
+        content.append("              ({data}) => {").append(SYMBOL_NEXT_LINE);
+        content.append("                this.spinEditShow = !this.spinEditShow").append(SYMBOL_NEXT_LINE);
+        content.append("                if (data.returnCode === '0') {").append(SYMBOL_NEXT_LINE);
+        content.append("                  this.showEditModal = false").append(SYMBOL_NEXT_LINE);
+        content.append("                  this.formSearch(this.$refs.datagrid.pageInfo.pageNo)").append(SYMBOL_NEXT_LINE);
+        content.append("                }").append(SYMBOL_NEXT_LINE);
+        content.append("              }").append(SYMBOL_NEXT_LINE);
+        content.append("            ).catch(error => {").append(SYMBOL_NEXT_LINE);
+        content.append("              this.spinEditShow = false;").append(SYMBOL_NEXT_LINE);
+        content.append("              this.$hMessage.error({").append(SYMBOL_NEXT_LINE);
+        content.append("                content: error.message,").append(SYMBOL_NEXT_LINE);
+        content.append("                closable: true,").append(SYMBOL_NEXT_LINE);
+        content.append("                duration: window.LOCAL_CONFIG.errorTime,").append(SYMBOL_NEXT_LINE);
+        content.append("              });").append(SYMBOL_NEXT_LINE);
+        content.append("            });").append(SYMBOL_NEXT_LINE);
+        content.append("          }").append(SYMBOL_NEXT_LINE);
+        content.append("        })").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 打开批量修改弹窗").append(SYMBOL_NEXT_LINE);
+        content.append("      handleOpenBatchEdit(row) {").append(SYMBOL_NEXT_LINE);
+        content.append("        // 未选择修改的数据").append(SYMBOL_NEXT_LINE);
+        content.append("        if (!row && this.ids.length === 0) {").append(SYMBOL_NEXT_LINE);
+        content.append("          this.$hMessage.info({").append(SYMBOL_NEXT_LINE);
+        content.append("            content: this.$t('m.i.common.chooseOneData'),").append(SYMBOL_NEXT_LINE);
+        content.append("            duration: 3,").append(SYMBOL_NEXT_LINE);
+        content.append("            closable: true").append(SYMBOL_NEXT_LINE);
+        content.append("          })").append(SYMBOL_NEXT_LINE);
+        content.append("          return false").append(SYMBOL_NEXT_LINE);
+        content.append("        }").append(SYMBOL_NEXT_LINE);
+        content.append("        if (this.ids.length === 1) {").append(SYMBOL_NEXT_LINE);
+        content.append("          this.handleOpenEdit(this.ids[0])").append(SYMBOL_NEXT_LINE);
+        content.append("        } else {").append(SYMBOL_NEXT_LINE);
+        content.append("          this.showBatchEditModal = true").append(SYMBOL_NEXT_LINE);
+        content.append("          this.batchUpdateForm.multTaCode = this.ids[0].multTaCode").append(SYMBOL_NEXT_LINE);
+        content.append("        }").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 取消批量修改").append(SYMBOL_NEXT_LINE);
+        content.append("      handleBatchUpdateCancel() {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.showBatchEditModal = false").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+        content.append("      // 提交批量修改").append(SYMBOL_NEXT_LINE);
+        content.append("      handleBatchUpdateSubmit() {").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$refs.batchUpdateForm.validate(valid => {").append(SYMBOL_NEXT_LINE);
+        content.append("          if (valid) {").append(SYMBOL_NEXT_LINE);
+        content.append("            this.spinBatchEditShow = !this.spinBatchEditShow").append(SYMBOL_NEXT_LINE);
+        content.append("            fundPost(this, {dtoList: JSON.stringify(row ? [row] : this.ids), multTaCode: this.ids[0].multTaCode, feEditType: 'EDIT'},").append(SYMBOL_NEXT_LINE);
+        content.append("              '" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Edit').then(").append(SYMBOL_NEXT_LINE);
+        content.append("              ({data}) => {").append(SYMBOL_NEXT_LINE);
+        content.append("                this.spinBatchEditShow = !this.spinBatchEditShow").append(SYMBOL_NEXT_LINE);
+        content.append("                if (data.returnCode === '0') {").append(SYMBOL_NEXT_LINE);
+        content.append("                  this.showBatchEditModal = false").append(SYMBOL_NEXT_LINE);
+        content.append("                  this.formSearch(this.$refs.datagrid.pageInfo.pageNo)").append(SYMBOL_NEXT_LINE);
+        content.append("                }").append(SYMBOL_NEXT_LINE);
+        content.append("              }").append(SYMBOL_NEXT_LINE);
+        content.append("            ).catch(error => {").append(SYMBOL_NEXT_LINE);
+        content.append("              this.spinBatchEditShow = false;").append(SYMBOL_NEXT_LINE);
+        content.append("              this.$hMessage.error({").append(SYMBOL_NEXT_LINE);
+        content.append("                content: error.message,").append(SYMBOL_NEXT_LINE);
+        content.append("                closable: true,").append(SYMBOL_NEXT_LINE);
+        content.append("                duration: window.LOCAL_CONFIG.errorTime,").append(SYMBOL_NEXT_LINE);
+        content.append("              });").append(SYMBOL_NEXT_LINE);
+        content.append("            });").append(SYMBOL_NEXT_LINE);
+        content.append("          }").append(SYMBOL_NEXT_LINE);
+        content.append("        })").append(SYMBOL_NEXT_LINE);
+        content.append("      },").append(SYMBOL_NEXT_LINE);
+
+        content.append("      // 打开删除弹框").append(SYMBOL_NEXT_LINE);
+        content.append("      handleDelete(row) {").append(SYMBOL_NEXT_LINE);
+        content.append("        // 未选择删除的数据").append(SYMBOL_NEXT_LINE);
+        content.append("        if (!row && this.ids.length === 0) {").append(SYMBOL_NEXT_LINE);
+        content.append("          this.$hMessage.info({").append(SYMBOL_NEXT_LINE);
+        content.append("            content: this.$t('m.i.common.chooseOneData'),").append(SYMBOL_NEXT_LINE);
+        content.append("            duration: 3,").append(SYMBOL_NEXT_LINE);
+        content.append("            closable: true").append(SYMBOL_NEXT_LINE);
+        content.append("          })").append(SYMBOL_NEXT_LINE);
+        content.append("          return false").append(SYMBOL_NEXT_LINE);
+        content.append("        }").append(SYMBOL_NEXT_LINE);
+        content.append("        this.$hMsgBox.confirm({").append(SYMBOL_NEXT_LINE);
+        content.append("          title: '确认删除该数据？',").append(SYMBOL_NEXT_LINE);
+        content.append("          onOk: () => {").append(SYMBOL_NEXT_LINE);
+        content.append("            fundPost(this, {").append(SYMBOL_NEXT_LINE);
+        content.append("              dtoList: JSON.stringify(row ? [row] : this.ids),").append(SYMBOL_NEXT_LINE);
+        content.append("              multTaCode: this.ids[0].multTaCode,").append(SYMBOL_NEXT_LINE);
+        content.append("              feEditType: 'DEL'").append(SYMBOL_NEXT_LINE);
+        content.append("            }, '" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Delete').then(").append(SYMBOL_NEXT_LINE);
+        content.append("              ({data}) => {").append(SYMBOL_NEXT_LINE);
+        content.append("                if (data.returnCode !== '0') {").append(SYMBOL_NEXT_LINE);
+        content.append("                  return false").append(SYMBOL_NEXT_LINE);
+        content.append("                }").append(SYMBOL_NEXT_LINE);
+        content.append("                this.formSearch()").append(SYMBOL_NEXT_LINE);
+        content.append("              }").append(SYMBOL_NEXT_LINE);
+        content.append("            ).catch(error => {").append(SYMBOL_NEXT_LINE);
+        content.append("              this.spinShow = false;").append(SYMBOL_NEXT_LINE);
+        content.append("              this.$hMessage.error({").append(SYMBOL_NEXT_LINE);
+        content.append("                content: error.message,").append(SYMBOL_NEXT_LINE);
+        content.append("                closable: true,").append(SYMBOL_NEXT_LINE);
+        content.append("                duration: window.LOCAL_CONFIG.errorTime,").append(SYMBOL_NEXT_LINE);
+        content.append("              });").append(SYMBOL_NEXT_LINE);
+        content.append("           });").append(SYMBOL_NEXT_LINE);
+        content.append("         }").append(SYMBOL_NEXT_LINE);
+        content.append("        })").append(SYMBOL_NEXT_LINE);
         content.append("      },").append(SYMBOL_NEXT_LINE);
         content.append("      // 选中行").append(SYMBOL_NEXT_LINE);
         content.append("      handleSelectClick(arr) {").append(SYMBOL_NEXT_LINE);
@@ -440,6 +651,180 @@ public class GenerateVue {
     }
 
     private static void getTextAddUpdateForm(StringBuilder addForm, String columnCode, ColumnInfoDto item) {
-        addForm.append("          <h-input v-model='" + columnCode + "'/>").append(SYMBOL_NEXT_LINE);
+        if (item.getColumnName().contains(SYMBOL_PERCENT)) {
+            addForm.append("          <h-typefield v-model='" + columnCode + "' type='money' integerNum='" + getColumnPrecision(item) + "' divided/>").append(SYMBOL_NEXT_LINE);
+        } else {
+            addForm.append("          <h-input v-model='" + columnCode + "'/>").append(SYMBOL_NEXT_LINE);
+        }
+    }
+
+    private static String buildColumn(Map<String, ColumnInfoDto> columnInfo, String type) {
+        StringBuilder column = new StringBuilder();
+        if (STR_4.equals(type)) {
+            column.append("         {").append(SYMBOL_NEXT_LINE);
+            column.append("           type: 'selection',").append(SYMBOL_NEXT_LINE);
+            column.append("           width: 48,").append(SYMBOL_NEXT_LINE);
+            column.append("           align: 'center'").append(SYMBOL_NEXT_LINE);
+            column.append("         },").append(SYMBOL_NEXT_LINE);
+            column.append("         {").append(SYMBOL_NEXT_LINE);
+            column.append("           title: 'TA代码',").append(SYMBOL_NEXT_LINE);
+            column.append("           key: 'multTaCode',").append(SYMBOL_NEXT_LINE);
+            column.append("           hiddenCol: window.LOCAL_CONFIG.isMultTa ? false : true,").append(SYMBOL_NEXT_LINE);
+            column.append("           minWidth: 140,").append(SYMBOL_NEXT_LINE);
+            column.append("           sortable: true,").append(SYMBOL_NEXT_LINE);
+            column.append("           render: (h, {row}) => h('span', window.LOCAL_CONFIG.isMultTa ? this.dataSource.find(item => item.val == row.multTaCode).prompt : '')").append(SYMBOL_NEXT_LINE);
+            column.append("         },").append(SYMBOL_NEXT_LINE);
+        } else {
+            column.append("          multTaCode: window.LOCAL_CONFIG.isMultTa ? JSON.parse(window.sessionStorage.getItem('multTaList'))[0].val : '',").append(SYMBOL_NEXT_LINE);
+        }
+        Iterator<String> iterator = columnInfo.keySet().iterator();
+        while (iterator.hasNext()) {
+            String columnCode = iterator.next();
+            if (KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP.equals(columnCode) || KEY_TA_CODE.equals(columnCode)) {
+                continue;
+            }
+            ColumnInfoDto item = columnInfo.get(columnCode);
+            switch (type) {
+                case STR_1:
+                    if (STR_1.equals(item.getColumnMulti())) {
+                        column.append("          " + item.getColumn() + ": [],").append(SYMBOL_NEXT_LINE);
+                    } else {
+                        column.append("          " + item.getColumn() + ": '',").append(SYMBOL_NEXT_LINE);
+                    }
+                    break;
+                case STR_2:
+                    String columnDefault = item.getColumnDefault();
+                    if (StringUtils.isBlank(columnDefault)) {
+                        columnDefault = "''";
+                    }
+                    column.append("          " + item.getColumn() + ": " + columnDefault + ",").append(SYMBOL_NEXT_LINE);
+                    break;
+                case STR_3:
+                    column.append("          " + item.getColumn() + ": '',").append(SYMBOL_NEXT_LINE);
+                    break;
+                case STR_4:
+                    int columnWidth = 150;
+                    if (KEY_PRD_CODE.equals(columnCode)) {
+                        columnWidth = 200;
+                    }
+                    if (StringUtils.isNotBlank(item.getColumnWidth())) {
+                        columnWidth = Integer.valueOf(item.getColumnWidth());
+                    }
+                    String columnName = item.getColumnName();
+                    if (KEY_PRD_CODE.equals(columnCode)) {
+                        columnName = KEY_PRD_CODE_NAME;
+                    }
+                    column.append("         {").append(SYMBOL_NEXT_LINE);
+                    column.append("           title: '" + columnName + "',").append(SYMBOL_NEXT_LINE);
+                    column.append("           key: '" + item.getColumn()+ "',").append(SYMBOL_NEXT_LINE);
+                    column.append("           hiddenCol: false,").append(SYMBOL_NEXT_LINE);
+                    column.append("           minWidth: " + columnWidth + ",").append(SYMBOL_NEXT_LINE);
+                    column.append("           sortable: true,").append(SYMBOL_NEXT_LINE);
+                    if (STR_1.equals(item.getColumnDate())) {
+                        column.append("           render: dateRender").append(SYMBOL_NEXT_LINE);
+                    } else if (STR_1.equals(item.getColumnDict())
+                            || KEY_PRD_CODE.equals(columnCode) || KEY_SELLER_CODE.equals(columnCode) || KEY_BRANCH_NO.equals(columnCode)) {
+                        column.append("           render: translateRender").append(SYMBOL_NEXT_LINE);
+                    } else if (StringUtils.isNotBlank(item.getColumnPrecision())) {
+                        int columnPrecision = getColumnPrecision(item);
+                        if (columnPrecision != 2) {
+                            column.append("           precision: " + columnPrecision + ",").append(SYMBOL_NEXT_LINE);
+                        }
+                        if(item.getColumnName().contains(SYMBOL_PERCENT)) {
+                            column.append("           render: percentRender").append(SYMBOL_NEXT_LINE);
+                        } else {
+                            column.append("           render: amountRender").append(SYMBOL_NEXT_LINE);
+                        }
+                    }
+                    column.append("         },").append(SYMBOL_NEXT_LINE);
+                    break;
+                default:
+                    break;
+            }
+
+        }
+        if (STR_4.equals(type)) {
+            column.append("         {").append(SYMBOL_NEXT_LINE);
+            column.append("           type: 'selection',").append(SYMBOL_NEXT_LINE);
+            column.append("           title: '操作',").append(SYMBOL_NEXT_LINE);
+            column.append("           key: 'quote',").append(SYMBOL_NEXT_LINE);
+            column.append("           hiddenCol: false,").append(SYMBOL_NEXT_LINE);
+            column.append("           align: 'center',").append(SYMBOL_NEXT_LINE);
+            column.append("           fixed: 'right',").append(SYMBOL_NEXT_LINE);
+            column.append("           width: 145,").append(SYMBOL_NEXT_LINE);
+            column.append("           render: (h, {row}) => {").append(SYMBOL_NEXT_LINE);
+            column.append("             return h('div', [").append(SYMBOL_NEXT_LINE);
+            column.append("               h(").append(SYMBOL_NEXT_LINE);
+            column.append("                 'span',").append(SYMBOL_NEXT_LINE);
+            column.append("                 {").append(SYMBOL_NEXT_LINE);
+            column.append("                   on: {").append(SYMBOL_NEXT_LINE);
+            column.append("                     click: () => {").append(SYMBOL_NEXT_LINE);
+            column.append("                       this.handleOpenEdit(row)").append(SYMBOL_NEXT_LINE);
+            column.append("                     }").append(SYMBOL_NEXT_LINE);
+            column.append("                   },").append(SYMBOL_NEXT_LINE);
+            column.append("                   class: {").append(SYMBOL_NEXT_LINE);
+            column.append("                     'h-omc-table-btn': true,").append(SYMBOL_NEXT_LINE);
+            column.append("                     'btn-hidden': !this.authObj.edit").append(SYMBOL_NEXT_LINE);
+            column.append("                   }").append(SYMBOL_NEXT_LINE);
+            column.append("                 },").append(SYMBOL_NEXT_LINE);
+            column.append("                 '修改'").append(SYMBOL_NEXT_LINE);
+            column.append("               ),").append(SYMBOL_NEXT_LINE);
+            column.append("               h(").append(SYMBOL_NEXT_LINE);
+            column.append("                 'span',").append(SYMBOL_NEXT_LINE);
+            column.append("                 {").append(SYMBOL_NEXT_LINE);
+            column.append("                   on: {").append(SYMBOL_NEXT_LINE);
+            column.append("                     click: () => {").append(SYMBOL_NEXT_LINE);
+            column.append("                       this.handleOpenDetail(row)").append(SYMBOL_NEXT_LINE);
+            column.append("                     }").append(SYMBOL_NEXT_LINE);
+            column.append("                   },").append(SYMBOL_NEXT_LINE);
+            column.append("                   class: {").append(SYMBOL_NEXT_LINE);
+            column.append("                    'h-omc-table-btn': true").append(SYMBOL_NEXT_LINE);
+            column.append("                   }").append(SYMBOL_NEXT_LINE);
+            column.append("                 },").append(SYMBOL_NEXT_LINE);
+            column.append("                 '详情'").append(SYMBOL_NEXT_LINE);
+            column.append("               )").append(SYMBOL_NEXT_LINE);
+            column.append("             ])").append(SYMBOL_NEXT_LINE);
+            column.append("           }").append(SYMBOL_NEXT_LINE);
+            column.append("         }").append(SYMBOL_NEXT_LINE);
+        }
+        return column.toString();
+    }
+
+    private static String formatDateSubmit(Map<String, ColumnInfoDto> columnInfo) {
+        StringBuilder content = new StringBuilder();
+        Iterator<String> iterator = columnInfo.keySet().iterator();
+        while (iterator.hasNext()) {
+            String columnCode = iterator.next();
+            ColumnInfoDto item = columnInfo.get(columnCode);
+            if (!STR_1.equals(item.getColumnDate())) {
+                continue;
+            }
+            content.append("            postData." + item.getColumn() + " = formatPostDate(postData." + item.getColumn() + ")").append(SYMBOL_NEXT_LINE);
+        }
+        return content.toString();
+    }
+
+    private static int getColumnPrecision(ColumnInfoDto item) {
+       int columnPrecision = 2;
+       if (StringUtils.isNotBlank(item.getColumnPrecision())) {
+            columnPrecision = Integer.valueOf(item.getColumnPrecision());
+            if(item.getColumnName().contains(SYMBOL_PERCENT)) {
+                columnPrecision = columnPrecision - 2;
+            }
+       }
+       return columnPrecision;
+    }
+
+    private static String getUpdateColumn(Map<String, ColumnInfoDto> columnInfo) {
+        StringBuilder content = new StringBuilder();
+        Iterator<String> iterator = columnInfo.keySet().iterator();
+        while (iterator.hasNext()) {
+            String columnCode = iterator.next();
+            if (KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP.equals(columnCode) || KEY_TA_CODE.equals(columnCode)) {
+                continue;
+            }
+            content.append("            '" + columnCode + "',").append(SYMBOL_NEXT_LINE);
+        }
+        return content.substring(0, content.toString().lastIndexOf(SYMBOL_COMMA));
     }
 }

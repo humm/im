@@ -22,6 +22,7 @@ public class ColumnInfoDto extends BaseDto implements Comparable<ColumnInfoDto>{
     private String columnPrecision;
     private String columnOrder;
     private String columnDefault;
+    private String columnWidth;
 
     @Override
     public int compareTo(ColumnInfoDto o) {

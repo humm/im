@@ -55,10 +55,19 @@ public class GenerateExportConfig {
             if (KEY_COLUMN_TYPE_DATE.equals(columnType)) {
                 content.append(", type = FundExcelExportField.DATE");
             } else if (KEY_COLUMN_TYPE_NUMBER.equals(columnType)) {
-                content.append(", type = FundExcelExportField.AMOUNT");
-                String precision = columnInfo.getColumnPrecision();
-                if (StringUtils.isNotEmpty(precision) && !STR_2.equals(precision)) {
-                    content.append(", suffixNum= " + precision);
+                if(columnInfo.getColumnName().contains(SYMBOL_PERCENT)) {
+                    content.append(", type = FundExcelExportField.AMOUNT");
+                } else {
+                    content.append(", type = FundExcelExportField.RATIO");
+                }
+                if (StringUtils.isNotBlank(columnInfo.getColumnPrecision())) {
+                    int precision = Integer.valueOf(columnInfo.getColumnPrecision());
+                    if(columnInfo.getColumnName().contains(SYMBOL_PERCENT)) {
+                        precision = precision - 2;
+                    }
+                    if (precision != 2) {
+                        content.append(", suffixNum= " + precision);
+                    }
                 }
             }
             content.append(")").append(SYMBOL_NEXT_LINE);
