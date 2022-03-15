@@ -32,29 +32,20 @@
                     </div>
                 </div>
 
-
-                <!-- 查询按钮 -->
-                <div class="layui-inline layui-inline-button">
-                    <button class="layui-btn layuiadmin-btn-dictionary-list" lay-submit
-                            lay-filter="LAY-app-dictionarylist-search">
-                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-                    </button>
-                </div>
-
-                <!-- 重置按钮 -->
-                <div class="layui-inline layui-inline-button">
-                    <button class="layui-btn layuiadmin-btn-dictionary-list" lay-submit
-                            lay-filter="LAY-app-dictionarylist-refresh">
-                        <i class="layui-icon layui-icon-refresh-1 layuiadmin-button-btn"></i>
-                    </button>
-                </div>
-
             </div>
         </div>
 
         <div class="layui-card-body">
             <!-- 头部操作按钮 -->
             <div style="padding-bottom: 10px;" id="LAY-app-dictionary-list-button">
+                <button class="layui-btn layuiadmin-btn-dictionary-list" lay-submit
+                        lay-filter="LAY-app-dictionarylist-search">
+                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                </button>
+                <button class="layui-btn layuiadmin-btn-dictionary-list" lay-submit
+                        lay-filter="LAY-app-dictionarylist-refresh">
+                    <i class="layui-icon layui-icon-refresh-1 layuiadmin-button-btn"></i>
+                </button>
                 <button class="layui-btn layuiadmin-btn-dictionary-list" data-type="update">修改</button>
                 <button class="layui-btn layuiadmin-btn-dictionary-list" data-type="refresh">刷新</button>
             </div>

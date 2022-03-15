@@ -27,7 +27,7 @@
         <commons-fileupload.version>1.3.2</commons-fileupload.version>
         <mybatis-spring-boot-starter.version>1.3.2</mybatis-spring-boot-starter.version>
         <commons-dbcp.version>1.4</commons-dbcp.version>
-        <ojdbc7.version>11.2.0.7</ojdbc7.version>
+        <ojdbc6.version>11.2.0.3</ojdbc6.version>
         <commons-beanutils.version>1.9.2</commons-beanutils.version>
         <cglib.version>2.2.2</cglib.version>
         <net-sf-cglib.version>2.1.3-201003011305</net-sf-cglib.version>

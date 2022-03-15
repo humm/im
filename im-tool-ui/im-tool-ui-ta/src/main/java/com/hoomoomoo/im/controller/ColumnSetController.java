@@ -166,6 +166,9 @@ public class ColumnSetController implements Initializable {
                 Iterator<String> iterator = tableColumn.keySet().iterator();
                 while (iterator.hasNext()) {
                     String columnCode = iterator.next();
+                    if (KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP.equals(columnCode)) {
+                        continue;
+                    }
                     ColumnInfoDto columnInfoDto = tableColumn.get(columnCode);
                     OutputUtils.info(columnInfo, columnInfoDto, false);
                     columnInfoDtoList.add(columnInfoDto);

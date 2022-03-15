@@ -161,11 +161,11 @@ public class InitConfigTest {
 
         keys.put("app.user", null);
 
-        keys.put("generate.code.java.path", null);
-        keys.put("generate.code.sql.path", null);
-        keys.put("generate.code.vue.path", null);
-        keys.put("generate.code.route.path", null);
-        keys.put("generate.code.author", null);
+        //keys.put("generate.code.java.path", null);
+        //keys.put("generate.code.sql.path", null);
+        //keys.put("generate.code.vue.path", null);
+        //keys.put("generate.code.route.path", null);
+        //keys.put("generate.code.author", null);
 
         keys.put("copy.code.default.source", null);
         keys.put("copy.code.default.target", null);

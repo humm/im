@@ -46,28 +46,20 @@
                     </div>
                 </div>
 
-                <!-- 查询按钮 -->
-                <div class="layui-inline layui-inline-button">
-                    <button class="layui-btn layuiadmin-btn-gift-list" lay-submit
-                            lay-filter="LAY-app-giftlist-search">
-                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-                    </button>
-                </div>
-
-                <!-- 重置按钮 -->
-                <div class="layui-inline layui-inline-button">
-                    <button class="layui-btn layuiadmin-btn-gift-list" lay-submit
-                            lay-filter="LAY-app-giftlist-refresh">
-                        <i class="layui-icon layui-icon-refresh-1 layuiadmin-button-btn"></i>
-                    </button>
-                </div>
-
             </div>
         </div>
 
         <div class="layui-card-body">
             <!-- 头部操作按钮 -->
             <div style="padding-bottom: 10px;" id="LAY-app-gift-list-button">
+                <button class="layui-btn layuiadmin-btn-gift-list" lay-submit
+                        lay-filter="LAY-app-giftlist-search">
+                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                </button>
+                <button class="layui-btn layuiadmin-btn-gift-list" lay-submit
+                        lay-filter="LAY-app-giftlist-refresh">
+                    <i class="layui-icon layui-icon-refresh-1 layuiadmin-button-btn"></i>
+                </button>
                 <button class="layui-btn layuiadmin-btn-gift-list" data-type="add">新增</button>
                 <button class="layui-btn layuiadmin-btn-gift-list" data-type="update">修改</button>
                 <button class="layui-btn layuiadmin-btn-gift-list" data-type="delete">删除</button>

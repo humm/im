@@ -28,12 +28,12 @@ import static im.consts.BaseCueConst.*;
 
 @Configuration
 @EnableScheduling
-@ConditionalOnExpression("${family.schedule.weChat:true}")
+@ConditionalOnExpression("${im.schedule.weChat:true}")
 public class SysWeChatSchedule implements SchedulingConfigurer {
 
     private static final Logger logger = LoggerFactory.getLogger(SysWeChatSchedule.class);
 
-    @Value("${family.schedule.weChatCron:*/5 * * * * ?}")
+    @Value("${im.schedule.weChatCron:*/5 * * * * ?}")
     private String cron;
 
     @Autowired

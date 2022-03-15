@@ -27,12 +27,12 @@ import static im.consts.BaseCueConst.*;
 
 @Configuration
 @EnableScheduling
-@ConditionalOnExpression("${family.schedule.mail:true}")
+@ConditionalOnExpression("${im.schedule.mail:true}")
 public class SysMailSchedule implements SchedulingConfigurer {
 
     private static final Logger logger = LoggerFactory.getLogger(SysMailSchedule.class);
 
-    @Value("${family.schedule.mailCron:*/30 * * * * ?}")
+    @Value("${im.schedule.mailCron:*/30 * * * * ?}")
     private String cron;
 
     @Autowired

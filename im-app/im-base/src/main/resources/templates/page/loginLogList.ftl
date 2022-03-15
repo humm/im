@@ -46,25 +46,21 @@
                     </div>
                 </div>
 
-                <!-- 查询按钮 -->
-                <div class="layui-inline layui-inline-button">
-                    <button class="layui-btn layuiadmin-btn-loginLog-list" lay-submit
-                            lay-filter="LAY-app-loginLoglist-search">
-                        <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
-                    </button>
-                </div>
-
-                <!-- 重置按钮 -->
-                <div class="layui-inline layui-inline-button">
-                    <button class="layui-btn layuiadmin-btn-loginLog-list" lay-submit
-                            lay-filter="LAY-app-loginLoglist-refresh">
-                        <i class="layui-icon layui-icon-refresh-1 layuiadmin-button-btn"></i>
-                    </button>
-                </div>
             </div>
         </div>
 
         <div class="layui-card-body">
+            <!-- 头部操作按钮 -->
+            <div style="padding-bottom: 10px;" id="LAY-app-gift-list-button">
+                <button class="layui-btn layuiadmin-btn-loginLog-list" lay-submit
+                        lay-filter="LAY-app-loginLoglist-search">
+                    <i class="layui-icon layui-icon-search layuiadmin-button-btn"></i>
+                </button>
+                <button class="layui-btn layuiadmin-btn-loginLog-list" lay-submit
+                        lay-filter="LAY-app-loginLoglist-refresh">
+                    <i class="layui-icon layui-icon-refresh-1 layuiadmin-button-btn"></i>
+                </button>
+            </div>
 
             <!-- 列表数据 -->
             <table id="LAY-app-loginLog-list" lay-filter="LAY-app-loginLog-list"></table>

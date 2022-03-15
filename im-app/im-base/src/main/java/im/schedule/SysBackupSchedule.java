@@ -27,12 +27,12 @@ import static im.consts.BaseCueConst.*;
 
 @Configuration
 @EnableScheduling
-@ConditionalOnExpression("${family.schedule.backup:true}")
+@ConditionalOnExpression("${im.schedule.backup:true}")
 public class SysBackupSchedule implements SchedulingConfigurer {
 
     private static final Logger logger = LoggerFactory.getLogger(SysBackupSchedule.class);
 
-    @Value("${family.schedule.backupCron:0 0 23 * * ?}")
+    @Value("${im.schedule.backupCron:0 0 23 * * ?}")
     private String cron;
 
     @Autowired

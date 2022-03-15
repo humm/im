@@ -143,6 +143,7 @@ public class InitTable {
         transCode.setColumnType(KEY_COLUMN_TYPE_VARCHAR2);
         transCode.setColumnPrecision(SYMBOL_EMPTY);
         transCode.setColumnOrder(String.valueOf(orderNo + 10));
+        transCode.setColumnWidth(String.valueOf(150));
         columnMap.put(KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP, transCode);
 
         return columnMap;

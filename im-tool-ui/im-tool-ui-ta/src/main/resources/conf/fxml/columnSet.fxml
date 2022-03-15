@@ -50,6 +50,7 @@
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnMulti" />
                               </cellValueFactory>
+
                           </TableColumn>
                           <TableColumn id="columnDate" editable="true" sortable="false" onEditCommit="#columnDateEdit"
                                        prefWidth="90" text="是否日期">
