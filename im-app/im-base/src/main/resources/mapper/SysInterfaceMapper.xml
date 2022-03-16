@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="im.dao.SysInterfaceDao">
+<mapper namespace="com.hoomoomoo.im.dao.SysInterfaceDao">
 
     <sql id="Base_Column_List">
         interface_id interfaceId, request_id requestId, request_data requestData,
         request_result requestResult, request_message requestMessage, feedback_status feedbackStatus
     </sql>
 
-    <select id="selectOne" parameterType="im.model.SysInterfaceQueryModel"
-            resultType="im.model.SysInterfaceModel">
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysInterfaceQueryModel"
+            resultType="com.hoomoomoo.im.model.SysInterfaceModel">
         select
             <include refid="Base_Column_List"/>
         from sys_interface
@@ -34,7 +34,7 @@
         </where>
     </select>
 
-    <insert id="save" parameterType="im.model.SysInterfaceModel">
+    <insert id="save" parameterType="com.hoomoomoo.im.model.SysInterfaceModel">
         insert into sys_interface (
             interface_id,
             request_id,
@@ -60,7 +60,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="im.model.SysInterfaceModel">
+    <update id="update" parameterType="com.hoomoomoo.im.model.SysInterfaceModel">
         update sys_interface
         <set>
             <if test="requestId != null">

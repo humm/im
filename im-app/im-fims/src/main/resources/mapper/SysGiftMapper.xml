@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="im.dao.SysGiftDao">
+<mapper namespace="com.hoomoomoo.im.dao.SysGiftDao">
 
     <sql id="Base_Column_List">
         a.gift_id giftId, a.gift_type giftType,
@@ -12,8 +12,8 @@
         substr(a.gift_type, instr(a.gift_type, '-') + 1) giftTypeCode
     </sql>
 
-    <select id="selectPage" parameterType="im.model.SysGiftQueryModel"
-            resultType="im.model.SysGiftModel">
+    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysGiftQueryModel"
+            resultType="com.hoomoomoo.im.model.SysGiftModel">
         select
             <include refid="Base_Column_List"/>
         from sys_gift a
@@ -74,8 +74,8 @@
         </where>
     </delete>
 
-    <select id="selectOne" parameterType="im.model.SysGiftQueryModel"
-            resultType="im.model.SysGiftModel">
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysGiftQueryModel"
+            resultType="com.hoomoomoo.im.model.SysGiftModel">
         select
             <include refid="Base_Column_List"/>
         from sys_gift a
@@ -101,8 +101,8 @@
         </where>
     </select>
 
-    <select id="selectLastType" parameterType="im.model.SysGiftQueryModel"
-            resultType="im.model.LastType">
+    <select id="selectLastType" parameterType="com.hoomoomoo.im.model.SysGiftQueryModel"
+            resultType="com.hoomoomoo.im.model.LastType">
         select s.gift_type as giftType
         from (
             select t.gift_type
@@ -114,7 +114,7 @@
         where rownum = 1
     </select>
 
-    <update id="save" parameterType="im.model.SysIncomeModel">
+    <update id="save" parameterType="com.hoomoomoo.im.model.SysIncomeModel">
         merge into sys_gift a
         using (select #{giftId} as gift_id from dual) b
         on (a.gift_id = b.gift_id)
@@ -175,8 +175,8 @@
         )
     </update>
 
-    <select id="selectFreeInfo" parameterType="im.model.SysGiftQueryModel"
-            resultType="im.model.SysGiftModel">
+    <select id="selectFreeInfo" parameterType="com.hoomoomoo.im.model.SysGiftQueryModel"
+            resultType="com.hoomoomoo.im.model.SysGiftModel">
         select
             <if test="giftSender != null">
                 c.dictionary_caption as giftReceiver,

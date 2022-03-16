@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="im.dao.SysConsoleDao">
+<mapper namespace="com.hoomoomoo.im.dao.SysConsoleDao">
 
-    <select id="selectIncomeLast" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectIncomeLast" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select income_amount consoleData
         from sys_income a, sys_user b
@@ -18,7 +18,7 @@
         )
     </select>
 
-    <select id="selectIncomeMonth" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectIncomeMonth" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select sum(income_amount) consoleData
         from sys_income a, sys_user b
@@ -38,7 +38,7 @@
         </where>
     </select>
 
-    <select id="selectIncomePreviousYearMonth" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectIncomePreviousYearMonth" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select sum(income_amount) consoleData
         from sys_income a, sys_user b
@@ -51,7 +51,7 @@
         </where>
     </select>
 
-    <select id="selectIncomePreviousMonth" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectIncomePreviousMonth" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select sum(income_amount) consoleData
         from sys_income a, sys_user b
@@ -64,7 +64,7 @@
         </where>
     </select>
 
-    <select id="selectIncomeYear" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectIncomeYear" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select
             <choose>
@@ -87,7 +87,7 @@
         </where>
     </select>
 
-    <select id="selectIncomeTotal" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectIncomeTotal" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select
             <choose>
@@ -107,7 +107,7 @@
         </where>
     </select>
 
-    <select id="selectGiftSendLast" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectGiftSendLast" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select gift_amount consoleData
         from sys_gift a, sys_user b
@@ -129,7 +129,7 @@
         )
     </select>
 
-    <select id="selectGiftSendYear" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectGiftSendYear" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select sum(gift_amount) consoleData
         from sys_gift a, sys_user b
@@ -142,7 +142,7 @@
         </if>
     </select>
 
-    <select id="selectGiftSendTotal" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectGiftSendTotal" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select sum(gift_amount) consoleData
         from sys_gift a, sys_user b
@@ -152,7 +152,7 @@
         </if>
     </select>
 
-    <select id="selectGiftReceiveLast" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectGiftReceiveLast" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select gift_amount consoleData
         from sys_gift a, sys_user b
@@ -174,7 +174,7 @@
         )
     </select>
 
-    <select id="selectGiftReceiveYear" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectGiftReceiveYear" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select sum(gift_amount) consoleData
         from sys_gift a, sys_user b
@@ -187,7 +187,7 @@
         </if>
     </select>
 
-    <select id="selectGiftReceiveTotal" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectGiftReceiveTotal" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select sum(gift_amount) consoleData
         from sys_gift a, sys_user b
@@ -197,7 +197,7 @@
         </if>
     </select>
 
-    <select id="selectLoginLast" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectLoginLast" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select to_char(login_date, 'yyyy-MM-dd hh24:mi:ss') consoleData
         from sys_login_log
@@ -213,7 +213,7 @@
             )
     </select>
 
-    <select id="selectLoginMonthTime" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectLoginMonthTime" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select count(1) consoleData
         from sys_login_log a, sys_user b
@@ -226,7 +226,7 @@
         </where>
     </select>
 
-    <select id="selectLoginYearTime" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectLoginYearTime" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select count(1) consoleData
         from sys_login_log a, sys_user b
@@ -239,7 +239,7 @@
         </where>
     </select>
 
-    <select id="selectLoginTotalTime" parameterType="im.model.SysConsoleQueryModel"
+    <select id="selectLoginTotalTime" parameterType="com.hoomoomoo.im.model.SysConsoleQueryModel"
             resultType="java.lang.String">
         select count(1) consoleData
         from sys_login_log a, sys_user b

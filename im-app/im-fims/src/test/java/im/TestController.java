@@ -1,13 +1,13 @@
 package im;
 
-import im.model.SysGiftModel;
-import im.model.SysGiftQueryModel;
-import im.model.SysMenuTreeModel;
-import im.model.base.SessionBean;
-import im.service.SysMenuService;
-import im.service.SysSqlService;
-import im.util.SysSessionUtils;
-import im.util.SysCommonUtils;
+import com.hoomoomoo.im.model.SysGiftModel;
+import com.hoomoomoo.im.model.SysGiftQueryModel;
+import com.hoomoomoo.im.model.SysMenuTreeModel;
+import com.hoomoomoo.im.model.base.SessionBean;
+import com.hoomoomoo.im.service.SysMenuService;
+import com.hoomoomoo.im.service.SysSqlService;
+import com.hoomoomoo.im.util.SysSessionUtils;
+import com.hoomoomoo.im.util.SysCommonUtils;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static im.config.RunDataConfig.CONFIG_SQL;
+import static com.hoomoomoo.im.config.RunDataConfig.CONFIG_SQL;
 
 /**
  * @author hoomoomoo

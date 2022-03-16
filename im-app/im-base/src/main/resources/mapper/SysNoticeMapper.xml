@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="im.dao.SysNoticeDao">
+<mapper namespace="com.hoomoomoo.im.dao.SysNoticeDao">
 
     <sql id="Base_Column_List">
         notice_id noticeId,
@@ -24,8 +24,8 @@
         substr(read_status, instr(read_status, '-') + 1) readStatusCode
     </sql>
 
-    <select id="selectPage" parameterType="im.model.SysNoticeQueryModel"
-            resultType="im.model.SysNoticeModel">
+    <select id="selectPage" parameterType="com.hoomoomoo.im.model.SysNoticeQueryModel"
+            resultType="com.hoomoomoo.im.model.SysNoticeModel">
         select
             <include refid="Base_Column_List"/>
         from sys_notice
@@ -73,8 +73,8 @@
         </if>
     </select>
 
-    <select id="selectOne" parameterType="im.model.SysNoticeQueryModel"
-            resultType="im.model.SysNoticeModel">
+    <select id="selectOne" parameterType="com.hoomoomoo.im.model.SysNoticeQueryModel"
+            resultType="com.hoomoomoo.im.model.SysNoticeModel">
         select
             <include refid="Base_Column_List"/>
         from sys_notice
@@ -85,7 +85,7 @@
         </where>
     </select>
 
-    <insert id="save" parameterType="im.model.SysNoticeModel">
+    <insert id="save" parameterType="com.hoomoomoo.im.model.SysNoticeModel">
         insert into sys_notice(
             notice_id,
             user_id,
@@ -119,7 +119,7 @@
         )
     </insert>
 
-    <update id="update" parameterType="im.model.SysNoticeModel">
+    <update id="update" parameterType="com.hoomoomoo.im.model.SysNoticeModel">
         update sys_notice
         <set>
             <if test="readStatus != null">
@@ -154,7 +154,7 @@
         )
     </update>
 
-    <update id="updateBatch" parameterType="im.model.SysNoticeModel">
+    <update id="updateBatch" parameterType="com.hoomoomoo.im.model.SysNoticeModel">
         update sys_notice
         <set>
             <if test="readStatus != null">

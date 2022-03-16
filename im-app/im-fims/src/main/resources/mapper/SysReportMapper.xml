@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="im.dao.SysReportDao">
+<mapper namespace="com.hoomoomoo.im.dao.SysReportDao">
 
-    <select id="selectIncomeYear" parameterType="im.model.SysReportQueryModel"
-            resultType="im.model.SysReportModel">
+    <select id="selectIncomeYear" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
         select
             '全年度' title,
             '单位：元' subTitle,
@@ -29,8 +29,8 @@
             to_number(substr(to_char(t.income_date, 'yyyyMMdd'), 1, 4))
     </select>
 
-    <select id="selectIncomeMonth" parameterType="im.model.SysReportQueryModel"
-            resultType="im.model.SysReportModel">
+    <select id="selectIncomeMonth" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
         select
             #{reportValue} || '年' title,
             '单位：元' subTitle,
@@ -57,8 +57,8 @@
             to_number(substr(to_char(t.income_date, 'yyyyMMdd'), 5, 2))
     </select>
 
-    <select id="selectIncomeSource" parameterType="im.model.SysReportQueryModel"
-            resultType="im.model.SysReportModel">
+    <select id="selectIncomeSource" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
         select
             <choose>
                 <when test="userId != null">
@@ -84,8 +84,8 @@
         order by s.dictionary_caption
     </select>
 
-    <select id="selectIncomeType" parameterType="im.model.SysReportQueryModel"
-            resultType="im.model.SysReportModel">
+    <select id="selectIncomeType" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
         select
             <choose>
                 <when test="userId != null">
@@ -111,8 +111,8 @@
         order by s.dictionary_caption
     </select>
 
-    <select id="selectIncomePeak" parameterType="im.model.SysReportQueryModel"
-            resultType="im.model.SysReportModel">
+    <select id="selectIncomePeak" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
         select
             title,
             '单位：元' subtitle,
@@ -176,8 +176,8 @@
         where rownum = 1
     </select>
 
-    <select id="selectGiftYear" parameterType="im.model.SysReportQueryModel"
-            resultType="im.model.SysReportModel">
+    <select id="selectGiftYear" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
         select
             '全年度' title,
             '单位：元' subTitle,
@@ -212,8 +212,8 @@
             to_number(substr(to_char(t.gift_date, 'yyyyMMdd'), 1, 4))
     </select>
 
-    <select id="selectGiftMonth" parameterType="im.model.SysReportQueryModel"
-            resultType="im.model.SysReportModel">
+    <select id="selectGiftMonth" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
         select
             #{reportValue} || '年' title,
             '单位：元' subTitle,
@@ -249,8 +249,8 @@
             to_number(substr(to_char(t.gift_date, 'yyyyMMdd'), 5, 2))
     </select>
 
-    <select id="selectGiftType" parameterType="im.model.SysReportQueryModel"
-            resultType="im.model.SysReportModel">
+    <select id="selectGiftType" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
         select
             <choose>
                 <when test="giftSender != null or giftReceiver != null">
@@ -284,8 +284,8 @@
         order by s.dictionary_caption
     </select>
 
-    <select id="selectGiftPeak" parameterType="im.model.SysReportQueryModel"
-            resultType="im.model.SysReportModel">
+    <select id="selectGiftPeak" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
         select
             title,
             '单位：元' subtitle,
@@ -369,8 +369,8 @@
         where rownum = 1
     </select>
 
-    <select id="selectGift" parameterType="im.model.SysReportQueryModel"
-            resultType="im.model.SysReportModel">
+    <select id="selectGift" parameterType="com.hoomoomoo.im.model.SysReportQueryModel"
+            resultType="com.hoomoomoo.im.model.SysReportModel">
         select
             <choose>
                 <when test="giftSender != null">

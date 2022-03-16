@@ -2,9 +2,10 @@ package im;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
-import im.service.SysDictionaryService;
-import im.service.SysParameterService;
-import im.service.SysSystemService;
+import com.hoomoomoo.im.FimsStarter;
+import com.hoomoomoo.im.service.SysDictionaryService;
+import com.hoomoomoo.im.service.SysParameterService;
+import com.hoomoomoo.im.service.SysSystemService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;

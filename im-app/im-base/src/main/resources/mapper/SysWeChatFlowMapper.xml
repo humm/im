@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="im.dao.SysWeChatFlowDao">
+<mapper namespace="com.hoomoomoo.im.dao.SysWeChatFlowDao">
 
     <sql id="Base_Column_List">
         flow_id flowId, flow_num flowNum, flow_code flowCode,
@@ -10,8 +10,8 @@
         create_user createUser, modify_user modifyUser
     </sql>
 
-    <select id="selectFlowList" parameterType="im.model.SysWeChatFlowQueryModel"
-            resultType="im.model.SysWeChatFlowModel">
+    <select id="selectFlowList" parameterType="com.hoomoomoo.im.model.SysWeChatFlowQueryModel"
+            resultType="com.hoomoomoo.im.model.SysWeChatFlowModel">
         select
             <include refid="Base_Column_List"/>
         from sys_wechat_flow

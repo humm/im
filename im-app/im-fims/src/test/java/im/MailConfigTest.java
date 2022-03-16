@@ -1,7 +1,8 @@
 package im;
 
-import im.service.SysInterfaceService;
-import im.service.SysMailService;
+import com.hoomoomoo.im.FimsStarter;
+import com.hoomoomoo.im.service.SysInterfaceService;
+import com.hoomoomoo.im.service.SysMailService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="im.dao.SysSystemDao">
+<mapper namespace="com.hoomoomoo.im.dao.SysSystemDao">
 
     <select id="loadBusinessId" resultType="java.lang.String">
         select 'user-' || max(to_number(user_id)) as businessId from sys_user
@@ -24,7 +24,7 @@
         select 'interface-' || max(to_number(interface_id)) as businessId from sys_interface
     </select>
 
-    <select id="selectButtonAuthority" parameterType="im.model.SysSystemQueryModel"
+    <select id="selectButtonAuthority" parameterType="com.hoomoomoo.im.model.SysSystemQueryModel"
             resultType="java.lang.Boolean">
         select case when count(1) > 0 then '1' else '0' end buttonAuthority
         from sys_user_role a, sys_role_menu b, sys_menu c
@@ -35,7 +35,7 @@
         and c.menu_type = '3'
     </select>
 
-    <select id="selectDataAuthority" parameterType="im.model.SysSystemQueryModel"
+    <select id="selectDataAuthority" parameterType="com.hoomoomoo.im.model.SysSystemQueryModel"
             resultType="java.lang.Boolean">
         select
             case when count(1) > 0 then '1' else '0' end dataAuthority
@@ -48,14 +48,14 @@
         and c.menu_type = '4'
     </select>
 
-    <select id="selectTableNum" parameterType="im.model.SysTableQueryModel" resultType="java.lang.Integer">
+    <select id="selectTableNum" parameterType="com.hoomoomoo.im.model.SysTableQueryModel" resultType="java.lang.Integer">
         select count(1)
         from user_tables
         where lower(table_name) in (${tableName})
     </select>
 
-    <select id="selectTableColumn" parameterType="im.model.SysTableQueryModel"
-            resultType="im.model.SysTableModel">
+    <select id="selectTableColumn" parameterType="com.hoomoomoo.im.model.SysTableQueryModel"
+            resultType="com.hoomoomoo.im.model.SysTableModel">
         select
             lower(a.column_name) columnCode,
             lower(a.data_type) columnType
@@ -66,8 +66,8 @@
         order by a.column_id
     </select>
 
-    <select id="selectTablePrimaryKey" parameterType="im.model.SysTableQueryModel"
-            resultType="im.model.SysTableModel">
+    <select id="selectTablePrimaryKey" parameterType="com.hoomoomoo.im.model.SysTableQueryModel"
+            resultType="com.hoomoomoo.im.model.SysTableModel">
         select
             lower(a.constraint_name) columnType,
             lower(a.column_name)  columnCode
@@ -78,21 +78,21 @@
             order by a.column_name
     </select>
 
-    <select id="selectTableData" parameterType="im.model.SysTableQueryModel"
+    <select id="selectTableData" parameterType="com.hoomoomoo.im.model.SysTableQueryModel"
             resultType="java.util.LinkedHashMap">
         select ${tableColumn}
         from ${tableName}
         order by ${tableOrder}
     </select>
 
-    <select id="selectTableCount" parameterType="im.model.SysTableQueryModel"
-            resultType="im.model.SysTableModel">
+    <select id="selectTableCount" parameterType="com.hoomoomoo.im.model.SysTableQueryModel"
+            resultType="com.hoomoomoo.im.model.SysTableModel">
         select count(1) dataCount
         from ${tableName}
     </select>
 
-    <select id="selectTableColumnComments" parameterType="im.model.SysTableQueryModel"
-            resultType="im.model.SysTableModel">
+    <select id="selectTableColumnComments" parameterType="com.hoomoomoo.im.model.SysTableQueryModel"
+            resultType="com.hoomoomoo.im.model.SysTableModel">
         select lower(column_name) columnCode, comments columnComments
         from user_col_comments
         where table_name = upper(#{tableName})

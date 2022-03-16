@@ -1,7 +1,8 @@
 package im;
 
-import im.config.bean.ConfigBean;
-import im.config.bean.ScheduleConfigBean;
+import com.hoomoomoo.im.FimsStarter;
+import com.hoomoomoo.im.config.bean.ConfigBean;
+import com.hoomoomoo.im.config.bean.ScheduleConfigBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
