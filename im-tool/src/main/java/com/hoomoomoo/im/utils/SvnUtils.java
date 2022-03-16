@@ -1,5 +1,7 @@
-package im.utils;
+package com.hoomoomoo.im.utils;
 
+import com.hoomoomoo.im.Starter;
+import com.hoomoomoo.im.consts.BaseConst;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
@@ -7,9 +9,6 @@ import org.tmatesoft.svn.core.internal.wc.DefaultSVNOptions;
 import org.tmatesoft.svn.core.wc.*;
 
 import java.io.File;
-
-import static im.Starter.ERROR_COLOR;
-import static im.consts.BaseConst.SYMBOL_EMPTY;
 
 /**
  * @author
@@ -44,11 +43,11 @@ public class SvnUtils {
             SVN_ERROR_TIMES = 0;
             return version;
         } catch (SVNException e) {
-            CommonUtils.println(singleColor, SYMBOL_EMPTY, SYMBOL_EMPTY, false);
+            CommonUtils.println(singleColor, BaseConst.SYMBOL_EMPTY, BaseConst.SYMBOL_EMPTY, false);
             if (e.toString().contains(SVN_ERROR_CODE_E170001)) {
-                CommonUtils.println(singleColor, "svn同步异常 请检查配置项[ svn.username ] [ svn.password ]", ERROR_COLOR);
+                CommonUtils.println(singleColor, "svn同步异常 请检查配置项[ svn.username ] [ svn.password ]", Starter.ERROR_COLOR);
             } else if (e.toString().contains(SVN_ERROR_CODE_E175002)) {
-                CommonUtils.println(singleColor, "svn同步异常 请检查网络连接是否正常;svn目录是否存在", ERROR_COLOR);
+                CommonUtils.println(singleColor, "svn同步异常 请检查网络连接是否正常;svn目录是否存在", Starter.ERROR_COLOR);
             } else if (e.toString().contains(SVN_ERROR_CODE_E155004)) {
                 if (SVN_ERROR_TIMES == 0) {
                     SVN_ERROR_TIMES++;
@@ -56,11 +55,11 @@ public class SvnUtils {
                         update(singleColor, svnClientManager, workspace, svnRevision, svnDepth);
                     } else {
                         CommonUtils.println(singleColor, String.format("svn同步异常 请至工作目录[ %s ]执行cleanUp并选择 Break write " +
-                                "locks", workspace.getAbsolutePath()), ERROR_COLOR);
+                                "locks", workspace.getAbsolutePath()), Starter.ERROR_COLOR);
                     }
                 } else {
                     CommonUtils.println(singleColor, String.format("svn同步异常 请至工作目录[ %s ]执行cleanUp并选择 Break write " +
-                            "locks", workspace.getAbsolutePath()), ERROR_COLOR);
+                            "locks", workspace.getAbsolutePath()), Starter.ERROR_COLOR);
                 }
             } else {
                 e.printStackTrace();

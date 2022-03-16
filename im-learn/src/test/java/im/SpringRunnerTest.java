@@ -1,9 +1,10 @@
 package im;
 
-import im.config.SpringContextHolder;
-import im.model.Box;
-import im.model.Msg;
-import im.utils.RedisUtil;
+import com.hoomoomoo.im.LearnStarter;
+import com.hoomoomoo.im.config.SpringContextHolder;
+import com.hoomoomoo.im.model.Box;
+import com.hoomoomoo.im.model.Msg;
+import com.hoomoomoo.im.utils.RedisUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

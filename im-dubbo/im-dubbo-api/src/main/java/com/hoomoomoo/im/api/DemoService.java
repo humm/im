@@ -1,6 +1,6 @@
-package im.api;
+package com.hoomoomoo.im.api;
 
-import im.model.DemoModel;
+import com.hoomoomoo.im.model.DemoModel;
 
 import java.util.List;
 

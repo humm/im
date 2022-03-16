@@ -1,4 +1,4 @@
-package im.consts;
+package com.hoomoomoo.im.consts;
 
 /**
  * @author hoomoomoo

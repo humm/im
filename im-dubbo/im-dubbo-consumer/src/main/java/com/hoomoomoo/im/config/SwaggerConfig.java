@@ -28,7 +28,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .enable(true)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("im"))
+                .apis(RequestHandlerSelectors.basePackage("com/hoomoomoo/im"))
                 .paths(PathSelectors.any())
                 .build();
     }

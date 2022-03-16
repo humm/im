@@ -1,6 +1,6 @@
-package im.controller;
+package com.hoomoomoo.im.controller;
 
-import im.service.ExecuteService;
+import com.hoomoomoo.im.service.ExecuteService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;

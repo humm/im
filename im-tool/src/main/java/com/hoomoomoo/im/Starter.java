@@ -1,8 +1,9 @@
-package im;
+package com.hoomoomoo.im;
 
-import im.utils.CommonUtils;
-import im.utils.SvnUtils;
-import im.utils.UnZipRarUtils;
+import com.hoomoomoo.im.consts.BaseConst;
+import com.hoomoomoo.im.utils.CommonUtils;
+import com.hoomoomoo.im.utils.UnZipRarUtils;
+import com.hoomoomoo.im.utils.SvnUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.AnsiConsole;
@@ -14,8 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static im.consts.BaseConst.*;
 
 /**
  * @Author hoomoomoo
@@ -303,7 +302,7 @@ public class Starter {
 
 
     public static void main(String[] args) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(YYYYMMDDHHMMSS);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(BaseConst.YYYYMMDDHHMMSS);
         CURRENT_DATE = simpleDateFormat.format(new Date());
         AnsiConsole.systemInstall();
         // 设置启动模式
@@ -382,7 +381,7 @@ public class Starter {
      * @return:
      */
     private static void exit() {
-        CommonUtils.println(SINGLE_COLOR, SYMBOL_NEXT_LINE, SYMBOL_EMPTY, false);
+        CommonUtils.println(SINGLE_COLOR, BaseConst.SYMBOL_NEXT_LINE, BaseConst.SYMBOL_EMPTY, false);
         if (!OPERATE_CONTINUE) {
             CommonUtils.sleep(5);
             System.exit(0);
@@ -447,10 +446,10 @@ public class Starter {
                 }
                 String fileName = file.getName();
                 try {
-                    if (fileName.endsWith(FILE_TYPE_ZIP)) {
-                        UnZipRarUtils.unZip(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
-                    } else if (fileName.endsWith(FILE_TYPE_RAR)) {
-                        UnZipRarUtils.unRar(file, fileDirectory.getAbsolutePath() + SYMBOL_BACKSLASH_1);
+                    if (fileName.endsWith(BaseConst.FILE_TYPE_ZIP)) {
+                        UnZipRarUtils.unZip(file, fileDirectory.getAbsolutePath() + BaseConst.SYMBOL_BACKSLASH_1);
+                    } else if (fileName.endsWith(BaseConst.FILE_TYPE_RAR)) {
+                        UnZipRarUtils.unRar(file, fileDirectory.getAbsolutePath() + BaseConst.SYMBOL_BACKSLASH_1);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -461,7 +460,7 @@ public class Starter {
             fileList = fileDirectory.listFiles();
             for (File file : fileList) {
                 String fileName = file.getName();
-                if (fileName.endsWith(FILE_TYPE_ZIP) || fileName.endsWith(FILE_TYPE_RAR)) {
+                if (fileName.endsWith(BaseConst.FILE_TYPE_ZIP) || fileName.endsWith(BaseConst.FILE_TYPE_RAR)) {
                     continue;
                 }
                 if ((SUCCESS + FILE_SUFFIX).equals(file.getName()) || (FAIL + FILE_SUFFIX).equals(file.getName())) {
@@ -490,7 +489,7 @@ public class Starter {
                     }
                     getUpdateScriptPath(file.getName(), updateFile.getAbsolutePath());
                     if (StringUtils.isBlank(FILE_NAME_PATH_UPDATE)) {
-                        int index = file.getName().lastIndexOf(SYMBOL_POINT_1);
+                        int index = file.getName().lastIndexOf(BaseConst.SYMBOL_POINT_1);
                         String suffix = fileName.substring(index);
                         fileName = fileName.replace(FILE_NAME_UPDATE + suffix, suffix);
                         getUpdateScriptPath(fileName, updateFile.getAbsolutePath());
@@ -499,7 +498,7 @@ public class Starter {
                         }
                     }
                     READ_NUM++;
-                    CommonUtils.println(SINGLE_COLOR, String.format("更新文件[ %s ]", FILE_NAME_PATH_UPDATE), SYMBOL_EMPTY);
+                    CommonUtils.println(SINGLE_COLOR, String.format("更新文件[ %s ]", FILE_NAME_PATH_UPDATE), BaseConst.SYMBOL_EMPTY);
                     updateScriptFile(file.getAbsolutePath(), FILE_NAME_PATH_UPDATE);
                 }
             }
@@ -551,7 +550,7 @@ public class Starter {
         String inputPath = CommonUtils.convertBackslash(file.getAbsolutePath());
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
-        CommonUtils.println(SINGLE_COLOR, String.format("更新文件[ %s ]", inputPath), SYMBOL_EMPTY);
+        CommonUtils.println(SINGLE_COLOR, String.format("更新文件[ %s ]", inputPath), BaseConst.SYMBOL_EMPTY);
     }
 
     /**
@@ -621,7 +620,7 @@ public class Starter {
      * @return:
      */
     private static void updateScriptFile(String sourcePath, String targetPath) {
-        String fileContent = SYMBOL_NEXT_LINE + getFileContent(sourcePath);
+        String fileContent = BaseConst.SYMBOL_NEXT_LINE + getFileContent(sourcePath);
         List<String> sourceLines = new ArrayList<>();
         COPY_NUM--;
         try {
@@ -735,7 +734,7 @@ public class Starter {
         READ_NUM++;
         String exportPath = inputPath.replace(fileDirectory, EXPORT_WORKSPACE);
         copySingleFile(inputPath, exportPath);
-        CommonUtils.println(SINGLE_COLOR, String.format("覆盖文件[ %s ]", inputPath), SYMBOL_EMPTY);
+        CommonUtils.println(SINGLE_COLOR, String.format("覆盖文件[ %s ]", inputPath), BaseConst.SYMBOL_EMPTY);
     }
 
     /**
@@ -748,7 +747,7 @@ public class Starter {
      */
     private static void copyFile() {
         BufferedReader bufferedReader = null;
-        String exportWorkspace = EXPORT_WORKSPACE + CURRENT_DATE + SYMBOL_BACKSLASH_1;
+        String exportWorkspace = EXPORT_WORKSPACE + CURRENT_DATE + BaseConst.SYMBOL_BACKSLASH_1;
         if (StringUtils.isNotBlank(EXCLUDE_TIMESTAMP.get(OPERATE_VERSION))) {
             exportWorkspace = EXPORT_WORKSPACE;
         }
@@ -757,14 +756,14 @@ public class Starter {
             bufferedReader = getBufferedReader(FILE_PATH, true);
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
-                    if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
+                    if (inputPath.trim().startsWith(BaseConst.SYMBOL_IGNORE)) {
                         continue;
                     }
-                    String[] subInputPath = CommonUtils.convertBackslash(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath = CommonUtils.convertBackslash(inputPath.trim()).split(BaseConst.SYMBOL_BLANK_SPACE);
                     String sourcePath = subInputPath[subInputPath.length - 1].trim();
                     if (!sourcePath.isEmpty()) {
                         READ_NUM++;
-                        CommonUtils.println(SINGLE_COLOR, String.format("复制文件[ %s ]", sourcePath), SYMBOL_EMPTY);
+                        CommonUtils.println(SINGLE_COLOR, String.format("复制文件[ %s ]", sourcePath), BaseConst.SYMBOL_EMPTY);
                         String exportPath = null;
                         exportPath = sourcePath.replace(WORKSPACE, exportWorkspace);
                         copySingleFile(sourcePath, exportPath);
@@ -807,18 +806,18 @@ public class Starter {
             if (sourcePath.startsWith(WORKSPACE)) {
                 // 自我复制
                 COPY_NUM++;
-                msg.append(SUCCESS).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                msg.append(SUCCESS).append(BaseConst.SYMBOL_SPACE).append(sourcePath).append(BaseConst.SYMBOL_NEXT_LINE);
                 MESSAGE.append(msg);
             } else {
                 // 源文件与版本不匹配
-                msg.append(FAIL).append(" 源文件与版本不匹配").append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE).toString();
+                msg.append(FAIL).append(" 源文件与版本不匹配").append(BaseConst.SYMBOL_SPACE).append(sourcePath).append(BaseConst.SYMBOL_NEXT_LINE).toString();
                 MESSAGE.append(msg);
                 FAIL_MESSAGE.append(msg);
                 EXCEPTION_STATUS = true;
             }
             return;
         }
-        int lastIndex = exportPath.lastIndexOf(SYMBOL_SLASH);
+        int lastIndex = exportPath.lastIndexOf(BaseConst.SYMBOL_SLASH);
         String path = exportPath.substring(0, lastIndex);
         File inFile = new File(sourcePath);
         File outFile = new File(exportPath);
@@ -838,17 +837,17 @@ public class Starter {
                     fileOutputStream.write(cache, 0, length);
                 }
                 COPY_NUM++;
-                msg.append(SUCCESS).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                msg.append(SUCCESS).append(BaseConst.SYMBOL_SPACE).append(sourcePath).append(BaseConst.SYMBOL_NEXT_LINE);
                 MESSAGE.append(msg);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
-                msg.append(FAIL).append(SYMBOL_SPACE).append(e.getMessage()).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                msg.append(FAIL).append(BaseConst.SYMBOL_SPACE).append(e.getMessage()).append(BaseConst.SYMBOL_SPACE).append(sourcePath).append(BaseConst.SYMBOL_NEXT_LINE);
                 MESSAGE.append(msg);
                 FAIL_MESSAGE.append(msg);
                 EXCEPTION_STATUS = true;
             } catch (IOException e) {
                 e.printStackTrace();
-                msg.append(FAIL).append(SYMBOL_SPACE).append(e.getMessage()).append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE);
+                msg.append(FAIL).append(BaseConst.SYMBOL_SPACE).append(e.getMessage()).append(BaseConst.SYMBOL_SPACE).append(sourcePath).append(BaseConst.SYMBOL_NEXT_LINE);
                 MESSAGE.append(msg);
                 FAIL_MESSAGE.append(msg);
                 EXCEPTION_STATUS = true;
@@ -861,7 +860,7 @@ public class Starter {
                 }
             }
         } else {
-            msg.append(FAIL).append(" 文件不存在").append(SYMBOL_SPACE).append(sourcePath).append(SYMBOL_NEXT_LINE).toString();
+            msg.append(FAIL).append(" 文件不存在").append(BaseConst.SYMBOL_SPACE).append(sourcePath).append(BaseConst.SYMBOL_NEXT_LINE).toString();
             MESSAGE.append(msg);
             FAIL_MESSAGE.append(msg);
             EXCEPTION_STATUS = true;
@@ -887,7 +886,7 @@ public class Starter {
             if (!statusFolder.exists()) {
                 statusFolder.mkdirs();
             }
-            String statusFilename = directory + SYMBOL_BACKSLASH_1 + fileName + FILE_SUFFIX;
+            String statusFilename = directory + BaseConst.SYMBOL_BACKSLASH_1 + fileName + FILE_SUFFIX;
             File file = new File(statusFilename);
             PrintStream printStream = null;
             try {
@@ -927,13 +926,13 @@ public class Starter {
             bufferedReader = getBufferedReader(FILE_PATH, true);
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
-                    if (inputPath.trim().startsWith(SYMBOL_IGNORE)) {
+                    if (inputPath.trim().startsWith(BaseConst.SYMBOL_IGNORE)) {
                         continue;
                     }
                     READ_NUM++;
-                    String[] subInputPath = CommonUtils.convertBackslash(inputPath.trim()).split(SYMBOL_BLANK_SPACE);
+                    String[] subInputPath = CommonUtils.convertBackslash(inputPath.trim()).split(BaseConst.SYMBOL_BLANK_SPACE);
                     String path = subInputPath[subInputPath.length - 1].trim();
-                    CommonUtils.println(SINGLE_COLOR, String.format("合并文件[ %s ]", path), SYMBOL_EMPTY);
+                    CommonUtils.println(SINGLE_COLOR, String.format("合并文件[ %s ]", path), BaseConst.SYMBOL_EMPTY);
                     CONTENT.append(getFileContent(path));
                     if (EXCEPTION_STATUS) {
                         break;
@@ -976,21 +975,21 @@ public class Starter {
                 reader = getBufferedReader(fileName, false);
                 String content;
                 while ((content = reader.readLine()) != null) {
-                    stringBuffer.append(content).append(SYMBOL_NEXT_LINE);
+                    stringBuffer.append(content).append(BaseConst.SYMBOL_NEXT_LINE);
                 }
-                msg.append(SUCCESS).append(SYMBOL_SPACE).append(fileName).append(SYMBOL_NEXT_LINE);
+                msg.append(SUCCESS).append(BaseConst.SYMBOL_SPACE).append(fileName).append(BaseConst.SYMBOL_NEXT_LINE);
                 MESSAGE.append(msg);
                 COPY_NUM++;
             } else {
-                msg.append(FAIL).append(" 文件不存在").append(SYMBOL_SPACE).append(fileName).append(SYMBOL_NEXT_LINE).toString();
+                msg.append(FAIL).append(" 文件不存在").append(BaseConst.SYMBOL_SPACE).append(fileName).append(BaseConst.SYMBOL_NEXT_LINE).toString();
                 MESSAGE.append(msg);
                 FAIL_MESSAGE.append(msg);
                 EXCEPTION_STATUS = true;
-                return SYMBOL_NEXT_LINE;
+                return BaseConst.SYMBOL_NEXT_LINE;
             }
         } catch (IOException e) {
             e.printStackTrace();
-            msg.append(FAIL).append(SYMBOL_SPACE).append(e.getMessage()).append(SYMBOL_SPACE).append(fileName).append(SYMBOL_NEXT_LINE);
+            msg.append(FAIL).append(BaseConst.SYMBOL_SPACE).append(e.getMessage()).append(BaseConst.SYMBOL_SPACE).append(fileName).append(BaseConst.SYMBOL_NEXT_LINE);
             MESSAGE.append(msg);
             FAIL_MESSAGE.append(msg);
             EXCEPTION_STATUS = true;
@@ -1003,7 +1002,7 @@ public class Starter {
                 e.printStackTrace();
             }
         }
-        stringBuffer.append(SYMBOL_NEXT_LINE);
+        stringBuffer.append(BaseConst.SYMBOL_NEXT_LINE);
         return stringBuffer.toString();
     }
 
@@ -1017,8 +1016,8 @@ public class Starter {
      */
     private static String createFile(String content) {
         String contentFolderPath = EXPORT_WORKSPACE + CURRENT_DATE;
-        String fileName = FILE_NAME_MERGE + SYMBOL_MINUS + READ_NUM;
-        String statusFilename = contentFolderPath + SYMBOL_BACKSLASH_1 + fileName + FILE_SUFFIX;
+        String fileName = FILE_NAME_MERGE + BaseConst.SYMBOL_MINUS + READ_NUM;
+        String statusFilename = contentFolderPath + BaseConst.SYMBOL_BACKSLASH_1 + fileName + FILE_SUFFIX;
         File contentFolder = new File(contentFolderPath);
         if (!contentFolder.exists()) {
             contentFolder.mkdirs();
@@ -1047,7 +1046,7 @@ public class Starter {
      * @return:
      */
     private static String checkFile(String fileName, boolean changeName) {
-        if (START_MODE_PROJECT.equals(START_MODE) && changeName) {
+        if (BaseConst.START_MODE_PROJECT.equals(START_MODE) && changeName) {
             fileName = Starter.class.getClassLoader().getResource(fileName).getFile();
         }
         File file = new File(fileName);
@@ -1067,10 +1066,10 @@ public class Starter {
      */
     private static void getStartMode() {
         URL url = Starter.class.getResource("Starter.class");
-        if (url.toString().startsWith(START_MODE_JAR)) {
-            START_MODE = START_MODE_JAR;
+        if (url.toString().startsWith(BaseConst.START_MODE_JAR)) {
+            START_MODE = BaseConst.START_MODE_JAR;
         } else {
-            START_MODE = START_MODE_PROJECT;
+            START_MODE = BaseConst.START_MODE_PROJECT;
         }
     }
 
@@ -1121,12 +1120,12 @@ public class Starter {
         // 颜色debug
         debugColor(config.get("im.color.debug"));
         if (init) {
-            StringBuffer star = new StringBuffer(SYMBOL_STAR_3);
+            StringBuffer star = new StringBuffer(BaseConst.SYMBOL_STAR_3);
             for (int i = 0; i < NAME_CONTENT.length() * 8.5; i++) {
-                star.append(SYMBOL_STAR);
+                star.append(BaseConst.SYMBOL_STAR);
             }
             CommonUtils.println(SINGLE_COLOR, star.toString(), nameColor);
-            CommonUtils.println(SINGLE_COLOR, SYMBOL_STAR_3 + NAME_CONTENT + NAME_VERSION, nameColor);
+            CommonUtils.println(SINGLE_COLOR, BaseConst.SYMBOL_STAR_3 + NAME_CONTENT + NAME_VERSION, nameColor);
             CommonUtils.println(SINGLE_COLOR, star.toString(), nameColor);
         }
 
@@ -1174,7 +1173,7 @@ public class Starter {
 
         // 版本号选择
         if (!OPERATE_MODE_SVN.equals(OPERATE_MODE)) {
-            CommonUtils.println(SINGLE_COLOR, "请选择版本:", SYMBOL_EMPTY);
+            CommonUtils.println(SINGLE_COLOR, "请选择版本:", BaseConst.SYMBOL_EMPTY);
             Iterator<Map.Entry<String, String[]>> iterator = VERSION_CONFIG.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, String[]> item = iterator.next();
@@ -1185,9 +1184,9 @@ public class Starter {
             }
             CommonUtils.println(SINGLE_COLOR, String.format("[ %s ] 重选模式", OPERATE_MODE_RESET), versionColor);
             while (true) {
-                String code = OPERATE_MODE + SYMBOL_POINT_1 + scanner.next();
+                String code = OPERATE_MODE + BaseConst.SYMBOL_POINT_1 + scanner.next();
                 if (VERSION_CONFIG.get(code) == null) {
-                    if ((OPERATE_MODE + SYMBOL_POINT_1 + OPERATE_MODE_RESET).equals(code)) {
+                    if ((OPERATE_MODE + BaseConst.SYMBOL_POINT_1 + OPERATE_MODE_RESET).equals(code)) {
                         getProperties(config, false);
                         return;
                     }
@@ -1230,7 +1229,7 @@ public class Starter {
         if (OPERATE_MODE_UPDATE.equals(OPERATE_MODE)) {
             String line = config.get("mode.update.line");
             if (StringUtils.isNotBlank(line)) {
-                String[] lines = line.split(SYMBOL_DOLLAR);
+                String[] lines = line.split(BaseConst.SYMBOL_DOLLAR);
                 if (lines.length != 2) {
                     throw new RuntimeException(String.format("更新模式文件定位[ mode.update.line ]配置[ %s ]格式错误", line));
                 }
@@ -1255,7 +1254,7 @@ public class Starter {
         if (OPERATE_MODE_COPY.equals(OPERATE_MODE)) {
             String timestamp = config.get("mode.copy.exclude.timestamp");
             if (StringUtils.isNotBlank(timestamp)) {
-                String[] items = timestamp.split(SYMBOL_DOLLAR);
+                String[] items = timestamp.split(BaseConst.SYMBOL_DOLLAR);
                 for (String item : items) {
                     EXCLUDE_TIMESTAMP.put(item, item);
                 }
@@ -1293,13 +1292,13 @@ public class Starter {
             bufferedReader = getBufferedReader(PROPERTIES_PATH, true);
             while ((inputPath = bufferedReader.readLine()) != null) {
                 if (!inputPath.isEmpty()) {
-                    if (StringUtils.isBlank(inputPath.trim()) || inputPath.trim().startsWith(SYMBOL_WEI)) {
+                    if (StringUtils.isBlank(inputPath.trim()) || inputPath.trim().startsWith(BaseConst.SYMBOL_WEI)) {
                         continue;
                     }
-                    if (!inputPath.trim().contains(SYMBOL_EQUALS)) {
+                    if (!inputPath.trim().contains(BaseConst.SYMBOL_EQUALS)) {
                         throw new RuntimeException(String.format("[ %s ]文件中[ %s ]格式错误", PROPERTIES_PATH, inputPath.trim()));
                     }
-                    String[] item = inputPath.trim().split(SYMBOL_EQUALS);
+                    String[] item = inputPath.trim().split(BaseConst.SYMBOL_EQUALS);
                     if (item.length != 2) {
                         continue;
                     }
@@ -1340,7 +1339,7 @@ public class Starter {
                 String fileName = item.getKey();
                 if (fileName.contains("mode.update.line.")) {
                     String line = item.getValue();
-                    String[] lines = line.split(SYMBOL_DOLLAR);
+                    String[] lines = line.split(BaseConst.SYMBOL_DOLLAR);
                     if (lines.length != 3) {
                         throw new RuntimeException(String.format("更新模式指定文件定位[ %s ]配置[ %s ]格式错误", fileName, line));
                     }
@@ -1360,19 +1359,19 @@ public class Starter {
      */
     private static void getModeConfig(Map config) {
         if (config != null) {
-            CommonUtils.println(SINGLE_COLOR, "请选择模式:", SYMBOL_EMPTY);
+            CommonUtils.println(SINGLE_COLOR, "请选择模式:", BaseConst.SYMBOL_EMPTY);
             Iterator<Map.Entry<String, String>> iterator = config.entrySet().iterator();
             while (iterator.hasNext()) {
                 Map.Entry<String, String> item = iterator.next();
                 String modeName = item.getKey();
                 if (modeName.contains("mode.config.")) {
                     String mode = item.getValue();
-                    String[] modes = mode.split(SYMBOL_DOLLAR);
+                    String[] modes = mode.split(BaseConst.SYMBOL_DOLLAR);
                     if (modes.length != 2) {
                         throw new RuntimeException(String.format("模式[ %s ]配置[ %s ]格式错误", modeName, mode));
                     }
                     String[] modeExtend = Arrays.copyOf(modes, modes.length + 1);
-                    modeExtend[modeExtend.length - 1] = modeName.replace(".config", SYMBOL_EMPTY);
+                    modeExtend[modeExtend.length - 1] = modeName.replace(".config", BaseConst.SYMBOL_EMPTY);
                     MODE_CONFIG.put(modes[0], modeExtend);
                     CommonUtils.println(SINGLE_COLOR, String.format("[ %s ] %s", modeExtend[0], modeExtend[1]),
                             MODE_COLOR);
@@ -1398,21 +1397,21 @@ public class Starter {
                 String versionName = item.getKey();
                 if (versionName.contains(".version.") && versionName.startsWith("mode.")) {
                     String version = item.getValue();
-                    String[] versions = version.split(SYMBOL_DOLLAR);
+                    String[] versions = version.split(BaseConst.SYMBOL_DOLLAR);
                     if (versions.length != 3) {
                         throw new RuntimeException(String.format("版本[ %s ]配置[ %s ]格式错误", versionName, version));
                     }
                     String[] versionExtend = Arrays.copyOf(versions, versions.length + 2);
                     // 获取版本号
-                    String[] versionCode = versionName.split(SYMBOL_POINT_2);
+                    String[] versionCode = versionName.split(BaseConst.SYMBOL_POINT_2);
                     versionExtend[versionExtend.length - 1] = versionCode[versionCode.length - 1];
-                    if (!versionExtend[1].endsWith(SYMBOL_SLASH) && !versionExtend[1].endsWith(SYMBOL_BACKSLASH_2)) {
-                        versionExtend[1] = CommonUtils.convertBackslash(versionExtend[1] + SYMBOL_BACKSLASH_2);
+                    if (!versionExtend[1].endsWith(BaseConst.SYMBOL_SLASH) && !versionExtend[1].endsWith(BaseConst.SYMBOL_BACKSLASH_2)) {
+                        versionExtend[1] = CommonUtils.convertBackslash(versionExtend[1] + BaseConst.SYMBOL_BACKSLASH_2);
                     }
-                    if (!versionExtend[2].endsWith(SYMBOL_SLASH) && !versionExtend[2].endsWith(SYMBOL_BACKSLASH_2)) {
-                        versionExtend[2] = CommonUtils.convertBackslash(versionExtend[2] + SYMBOL_BACKSLASH_2);
+                    if (!versionExtend[2].endsWith(BaseConst.SYMBOL_SLASH) && !versionExtend[2].endsWith(BaseConst.SYMBOL_BACKSLASH_2)) {
+                        versionExtend[2] = CommonUtils.convertBackslash(versionExtend[2] + BaseConst.SYMBOL_BACKSLASH_2);
                     }
-                    String versionItem = versionName.replace(".version", SYMBOL_EMPTY);
+                    String versionItem = versionName.replace(".version", BaseConst.SYMBOL_EMPTY);
                     String versionItemCode = versionItem.replace(versionExtend[versionExtend.length - 1], versionExtend[0]);
                     VERSION_CONFIG.put(versionItemCode, versionExtend);
                 }
@@ -1429,11 +1428,11 @@ public class Starter {
      * @return:
      */
     private static void clean() {
-        FILE_DIRECTORY_PATH_UPDATE = SYMBOL_EMPTY;
-        FILE_NAME_PATH_UPDATE = SYMBOL_EMPTY;
-        WORKSPACE = SYMBOL_EMPTY;
-        EXPORT_WORKSPACE = SYMBOL_EMPTY;
-        OPERATE_MODE = SYMBOL_EMPTY;
+        FILE_DIRECTORY_PATH_UPDATE = BaseConst.SYMBOL_EMPTY;
+        FILE_NAME_PATH_UPDATE = BaseConst.SYMBOL_EMPTY;
+        WORKSPACE = BaseConst.SYMBOL_EMPTY;
+        EXPORT_WORKSPACE = BaseConst.SYMBOL_EMPTY;
+        OPERATE_MODE = BaseConst.SYMBOL_EMPTY;
         MESSAGE = new StringBuffer();
         FAIL_MESSAGE = new StringBuffer();
         CONTENT = new StringBuffer();
@@ -1474,7 +1473,7 @@ public class Starter {
     private static boolean updateSvn(String workspace) {
         CommonUtils.println(SINGLE_COLOR, String.format("同步工作目录[ %s ]", workspace), PARAMETER_COLOR);
         if (SVN_UPDATE && CommonUtils.isSuffixDirectory(new File(workspace), SVN_FILE_NAME)) {
-            CommonUtils.print(SINGLE_COLOR, "svn同步执行中...", SYMBOL_EMPTY, true, false);
+            CommonUtils.print(SINGLE_COLOR, "svn同步执行中...", BaseConst.SYMBOL_EMPTY, true, false);
             SVN_VERSION = -1L;
             executing();
             Long svnVersion = SvnUtils.update(SINGLE_COLOR, SVN_USERNAME, SVN_PASSWORD, workspace);
@@ -1488,7 +1487,7 @@ public class Starter {
             }
             return SVN_VERSION > 0;
         }
-        CommonUtils.println(SINGLE_COLOR, "非svn目录 无需同步", SYMBOL_EMPTY);
+        CommonUtils.println(SINGLE_COLOR, "非svn目录 无需同步", BaseConst.SYMBOL_EMPTY);
         return true;
     }
 
@@ -1505,11 +1504,11 @@ public class Starter {
             while (true) {
                 CommonUtils.sleep(1);
                 if (SVN_VERSION == -1L) {
-                    CommonUtils.print(SINGLE_COLOR, SYMBOL_POINT_1, SYMBOL_EMPTY, false, false);
+                    CommonUtils.print(SINGLE_COLOR, BaseConst.SYMBOL_POINT_1, BaseConst.SYMBOL_EMPTY, false, false);
                 } else {
-                    CommonUtils.println(SINGLE_COLOR, SYMBOL_EMPTY, SYMBOL_EMPTY, false);
+                    CommonUtils.println(SINGLE_COLOR, BaseConst.SYMBOL_EMPTY, BaseConst.SYMBOL_EMPTY, false);
                     if (SVN_VERSION > 0) {
-                        CommonUtils.println(SINGLE_COLOR, String.format("svn已同步至版本[ %s ]", SVN_VERSION), SYMBOL_EMPTY);
+                        CommonUtils.println(SINGLE_COLOR, String.format("svn已同步至版本[ %s ]", SVN_VERSION), BaseConst.SYMBOL_EMPTY);
                     }
                     SVN_VERSION++;
                     break;

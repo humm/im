@@ -1,4 +1,4 @@
-package im.service;
+package com.hoomoomoo.im.service;
 
 import java.util.Map;
 

@@ -1,8 +1,8 @@
 package im.controller;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import im.api.DemoService;
-import im.model.DemoModel;
+import com.hoomoomoo.im.api.DemoService;
+import com.hoomoomoo.im.model.DemoModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;

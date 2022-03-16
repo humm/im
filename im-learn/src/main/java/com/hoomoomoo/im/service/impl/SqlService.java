@@ -1,6 +1,6 @@
-package im.service.impl;
+package com.hoomoomoo.im.service.impl;
 
-import im.service.ExecuteService;
+import com.hoomoomoo.im.service.ExecuteService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

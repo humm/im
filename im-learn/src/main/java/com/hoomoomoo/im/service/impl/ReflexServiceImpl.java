@@ -1,8 +1,8 @@
-package im.service.impl;
+package com.hoomoomoo.im.service.impl;
 
-import im.model.Box;
-import im.model.Msg;
-import im.service.ReflexService;
+import com.hoomoomoo.im.model.Box;
+import com.hoomoomoo.im.model.Msg;
+import com.hoomoomoo.im.service.ReflexService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;

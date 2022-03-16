@@ -1,4 +1,4 @@
-package im.config;
+package com.hoomoomoo.im.config;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

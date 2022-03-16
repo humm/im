@@ -1,4 +1,4 @@
-package im.model;
+package com.hoomoomoo.im.model;
 
 import lombok.Data;
 

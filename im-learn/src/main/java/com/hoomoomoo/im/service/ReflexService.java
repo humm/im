@@ -1,7 +1,7 @@
-package im.service;
+package com.hoomoomoo.im.service;
 
-import im.model.Box;
-import im.model.Msg;
+import com.hoomoomoo.im.model.Box;
+import com.hoomoomoo.im.model.Msg;
 
 import java.util.Map;
 

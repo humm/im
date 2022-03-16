@@ -1,4 +1,4 @@
-package im.utils;
+package com.hoomoomoo.im.utils;
 
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;

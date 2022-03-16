@@ -1,6 +1,6 @@
-package im.model;
+package com.hoomoomoo.im.model;
 
-import im.model.base.BaseModel;
+import com.hoomoomoo.im.model.base.BaseModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

@@ -12,7 +12,7 @@
     <description>dubbo信息</description>
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-dubbo</artifactId>
-    <version>3.5.00-SNAPSHOT</version>
+    <version>1.0.0.0</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -22,8 +22,8 @@
     </modules>
 
     <properties>
-        <im-dubbo.version>3.5.00-SNAPSHOT</im-dubbo.version>
-        <im.version>3.5.00-SNAPSHOT</im.version>
+        <im-dubbo.version>1.0.0.0</im-dubbo.version>
+        <im.version>1.0.0.0</im.version>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <dom4j.version>2.1.0</dom4j.version>
