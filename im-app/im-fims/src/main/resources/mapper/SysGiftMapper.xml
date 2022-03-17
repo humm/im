@@ -60,7 +60,7 @@
             a.${sort}
         </if>
         <if test="sort == null">
-            a.modify_date desc
+            a.gift_date desc
         </if>
     </select>
 

@@ -214,7 +214,7 @@ insert into sys_parameter (parameter_code, parameter_caption, parameter_value, p
 values ('messageTip', '未读消息提醒', '1', 'switch', null, '1', '1', 65);
 
 insert into sys_parameter (parameter_code, parameter_caption, parameter_value, parameter_type, parameter_ext, is_show, is_edit, parameter_order)
-values ('version', '系统版本号', '3.1.00', 'text', null, '1', '0', 999);
+values ('version', '系统版本号', '1.0.0.0', 'text', null, '1', '0', 999);
 
 -- 模块配置数据
 truncate table sys_config;
@@ -237,13 +237,7 @@ insert into sys_version (version_id, version_content, version_date, version_orde
 values ('20190000000001', '系统初始化', to_date('19-08-2017', 'dd-mm-yyyy'), 1, '1');
 
 insert into sys_version (version_id, version_content, version_date, version_order, version_type)
-values ('20190000000002', '发布版本：1.0.00', to_date('11-08-2018', 'dd-mm-yyyy'), 5, '4');
-
-insert into sys_version (version_id, version_content, version_date, version_order, version_type)
 values ('20190000000003', '系统初始化', to_date('21-10-2018', 'dd-mm-yyyy'), 10, '1');
-
-insert into sys_version (version_id, version_content, version_date, version_order, version_type)
-values ('20190000000004', '发布版本：2.0.00', to_date('01-07-2019', 'dd-mm-yyyy'), 15, '4');
 
 insert into sys_version (version_id, version_content, version_date, version_order, version_type)
 values ('20190000000005', '系统初始化', to_date('07-08-2019', 'dd-mm-yyyy'), 20, '1');
@@ -360,9 +354,6 @@ insert into sys_version (version_id, version_content, version_date, version_orde
 values ('20190000000042', '修订信息', to_date('23-11-2019', 'dd-mm-yyyy'), 205, '1');
 
 insert into sys_version (version_id, version_content, version_date, version_order, version_type)
-values ('20190000000043', '发布版本：3.0.00', to_date('24-11-2019', 'dd-mm-yyyy'), 210, '4');
-
-insert into sys_version (version_id, version_content, version_date, version_order, version_type)
 values ('20190000000044', '消息通知详情页面返回指定列表类型', to_date('25-11-2019', 'dd-mm-yyyy'), 215, '2');
 
 insert into sys_version (version_id, version_content, version_date, version_order, version_type)
@@ -393,9 +384,6 @@ insert into sys_version (version_id, version_content, version_date, version_orde
 values ('20190000000053', '数据权限修改后session刷新不及时导致查询脏数据', to_date('03-02-2020', 'dd-mm-yyyy'), 260, '3');
 
 insert into sys_version (version_id, version_content, version_date, version_order, version_type)
-values ('20190000000054', '发布版本：3.0.01', to_date('03-02-2020', 'dd-mm-yyyy'), 265, '4');
-
-insert into sys_version (version_id, version_content, version_date, version_order, version_type)
 values ('20190000000055', '删除角色时不删除sys_role_menu数据造成脏数据', to_date('05-02-2020', 'dd-mm-yyyy'), 270, '3');
 
 insert into sys_version (version_id, version_content, version_date, version_order, version_type)
@@ -412,9 +400,6 @@ values ('20190000000059', '添加系统logo', to_date('09-02-2020', 'dd-mm-yyyy'
 
 insert into sys_version (version_id, version_content, version_date, version_order, version_type)
 values ('20190000000060', '邮件申请数据处理：支持业务类型为收入、随礼', to_date('10-02-2020', 'dd-mm-yyyy'), 295, '1');
-
-insert into sys_version (version_id, version_content, version_date, version_order, version_type)
-values ('20190000000061', '发布版本：3.1.00', to_date('10-02-2020', 'dd-mm-yyyy'), 300, '4');
 
 insert into sys_version (version_id, version_content, version_date, version_order, version_type)
 values ('20190000000062', 'sql备份性能问题', to_date('15-02-2020', 'dd-mm-yyyy'), 305, '3');

@@ -10,9 +10,6 @@ delete from sys_parameter where parameter_code = 'uploadLocation';
 call add_version('20190000000064', '随礼信息：送礼人、收礼人修改为模糊查询', '2020-02-23', 315, '2');
 call add_version('20190000000065', '自动化系统升级', '2020-02-24', 320, '1');
 call add_version('20190000000066', 'Excel备份', '2020-02-25', 325, '1');
-call add_version('20190000000067', '发布版本：3.1.10', '2020-02-25', 326, '4');
-
-call update_system_version('3.1.10');
 
 call add_version('20190000000068', '邮件信息：业务日期格式错误重复提醒', '2020-02-26', 330, '3');
 
@@ -22,9 +19,6 @@ update sys_dictionary set dictionary_item = '2', item_order = '2' where dictiona
 
 call add_parameter('backupMode', '系统备份模式', 'sql', 'checkbox', 'sql,dmp,xlsx', '1', '1', 36);
 call add_version('20190000000069', '系统备份：新增备份模式参数', '2020-02-26', 335, '2');
-call add_version('20190000000070', '发布版本：3.1.21', '2020-02-26', 340, '4');
-
-call update_system_version('3.1.21');
 
 delete from sys_dictionary where dictionary_code = 'D013';
 insert into sys_dictionary (dictionary_code, dictionary_item, dictionary_caption, item_order, code_order, user_id, is_open, is_show)
@@ -176,8 +170,6 @@ insert into sys_wechat_flow (flow_id, flow_num, flow_code, flow_describe, flow_t
 values (20200000000017, '99', 'main', '返回主菜单', null, '2', 99, to_timestamp('2020-02-29 10:27:32', 'yyyy-MM-dd hh24:mi:ss'), to_timestamp('2020-02-29 10:27:32', 'yyyy-MM-dd hh24:mi:ss'), '20190000000001', '20190000000001', 'D013-1');
 
 call add_version('20190000000071', '微信公众号业务查询', '2020-03-05', 345, '1');
-call add_version('20190000000072', '发布版本：3.2.00', '2020-03-06', 350, '4');
-call update_system_version('3.2.00');
 
 call add_column('sys_parameter', 'parameter_group', 'varchar2(50)', ''' ''');
 comment on column sys_parameter.parameter_group is '参数分组';
@@ -210,9 +202,6 @@ insert into sys_config (MODULE_GROUP_CODE, MODULE_GROUP_NAME, MODULE_CODE, MODUL
 values ('console', '首页信息', 'register', '注册信息', '1', null);
 call add_version('20190000000074', '首页用户注册信息模块', '2020-03-11', 360, '1');
 call add_version('20190000000075', '微信交互提示', '2020-03-11', 365, '2');
-call add_version('20190000000076', '发布版本：3.2.10', '2020-03-15', 370, '4');
-
-call update_system_version('3.2.10');
 
 delete from sys_dictionary where dictionary_code = 'D006';
 update sys_dictionary set dictionary_caption = '随礼用户' where dictionary_code = 'D009' and dictionary_item = '#';
@@ -220,8 +209,6 @@ call add_version('20190000000077', '页面弹窗大小调整为百分比模式',
 call add_version('20190000000078', '首页页面跳转权限控制', '2020-03-21', 375, '1');
 call add_version('20190000000079', '收入信息、随礼信息菜单权限控制首页模式显示', '2020-03-22', 380, '1');
 call add_version('20190000000080', '页面弹窗大小自适应', '2020-03-22', 380, '2');
-call add_version('20190000000081', '发布版本：3.2.20', '2020-03-23', 385, '4');
-call update_system_version('3.2.20');
 
 call add_version('20190000000082', '页面通知消息权限控制', '2020-04-04', 390, '2');
 -- 菜单信息
@@ -298,8 +285,6 @@ call add_version('20190000000083', '页面目录结构重构', '2020-04-04', 395
 call add_version('20190000000084', '字典项信息倒序添加', '2020-04-04', 400, '2');
 call add_version('20190000000085', '列表行操作事件', '2020-04-04', 405, '1');
 call add_version('20190000000086', '系统定时备份、邮件保存备份文件', '2020-04-05', 410, '1');
-call add_version('20190000000087', '发布版本：3.2.30', '2020-04-05', 415, '4');
-call update_system_version('3.2.30');
 
 call add_column('sys_config', 'user_id', 'number(30)', '0');
 comment on column sys_config.user_id is '用户ID';
@@ -325,8 +310,6 @@ call add_parameter('mailReceiveHost', '读取邮件服务器', 'imap.qq.com', 't
 call add_parameter('mailReceiveProtocol', '读取邮件传输协议', 'imap', 'text', null, '1', '1', 170, '邮件参数');
 
 call add_version('20190000000089', '邮件配置信息移至数据库', '2020-04-18', 425, '2');
-call add_version('20190000000090', '发布版本：3.3.00', '2020-04-18', 430, '4');
-call update_system_version('3.3.00');
 
 call add_version('20190000000091', '字典项增删后排序错乱', '2020-07-04', 435, '3');
 
@@ -342,18 +325,14 @@ values (20200000000018, '6', 'income-add-same', '收入新增 - 同上一笔', '
 commit;
 
 call add_version('20190000000092', '微信：收入新增同上一笔模式', '2020-07-17', 440, '1');
-call add_version('20190000000093', '发布版本：3.4.00', '2020-07-17', 445, '4');
-call update_system_version('3.4.00');
 
 update sys_parameter set parameter_group = replace(parameter_group, '参数', '信息');
 commit;
-call add_version('20190000000094', '发布版本：3.4.01', '2020-08-09', 450, '4');
-call update_system_version('3.4.01');
 
 call add_version('20190000000095', '首页最近一次登入时间显示错误', '2021-01-31', 455, '3');
 call add_version('20190000000096', '消息通知-全部已读 更新历史已读信息状态', '2021-01-31', 460, '3');
-call add_version('20190000000097', '发布版本：3.5.00', '2021-01-31', 465, '4');
-call update_system_version('3.5.00');
+call add_version('20190000000097', '发布版本：1.0.0.0', '2021-01-31', 465, '4');
+call update_system_version('1.0.0.0');
 commit;
 
 
