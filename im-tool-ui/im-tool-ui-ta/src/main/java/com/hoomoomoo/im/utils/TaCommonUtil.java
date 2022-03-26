@@ -148,55 +148,53 @@ public class TaCommonUtil {
             flag = false;
         }
         if (StringUtils.isBlank(generateCodeDto.getPageType())) {
-            OutputUtils.info(log, "请选择[ 页面类型 ] ");
+            OutputUtils.info(log, String.format(MSG_SET, "页面类型"));
             flag = false;
         }
         if (StringUtils.isBlank(generateCodeDto.getAuthor())) {
-            OutputUtils.info(log, "请设置[ 作者 ] ");
+            OutputUtils.info(log, String.format(MSG_SET, "作者"));
             flag = false;
         }
         if (StringUtils.isBlank(generateCodeDto.getDbType())) {
-            OutputUtils.info(log, "请选择[ 数据源 ] ");
+            OutputUtils.info(log, String.format(MSG_SET, "数据源"));
             flag = false;
         }
         if (StringUtils.isBlank(generateCodeDto.getDtoCode())) {
-            OutputUtils.info(log, "请设置[ dto代码 ] ");
+            OutputUtils.info(log, String.format(MSG_SET, "DTO代码"));
             flag = false;
         }
         if (StringUtils.isBlank(generateCodeDto.getMenuCode())) {
-            OutputUtils.info(log, "请设置[ 菜单代码 ] ");
-            OutputUtils.info(log, "格式[ 一级菜单.二级菜单.三级菜单 ]");
+            OutputUtils.info(log, String.format(MSG_SET, "菜单代码"));
+            OutputUtils.info(log, MSG_MENU_STYLE);
             flag = false;
         } else {
             if (generateCodeDto.getMenuCode().split(SYMBOL_POINT_SLASH).length != 3) {
-                OutputUtils.info(log, "[ 菜单代码 ]格式错误");
-                OutputUtils.info(log, "格式[ 一级菜单.二级菜单.三级菜单 ]");
+                OutputUtils.info(log, String.format(MSG_MENU_STYLE_ERROR, "菜单代码"));
+                OutputUtils.info(log, MSG_MENU_STYLE);
                 flag = false;
             }
         }
         if (StringUtils.isBlank(generateCodeDto.getMenuName())) {
-            OutputUtils.info(log, "请设置[ 菜单名称 ] ");
-            OutputUtils.info(log, "格式[ 一级菜单.二级菜单.三级菜单 ]");
+            OutputUtils.info(log, String.format(MSG_SET, "菜单名称"));
+            OutputUtils.info(log, MSG_MENU_STYLE);
             flag = false;
         } else {
             if (generateCodeDto.getMenuName().split(SYMBOL_POINT_SLASH).length != 3) {
-                OutputUtils.info(log, "[ 菜单名称 ]格式错误");
-                OutputUtils.info(log, "格式[ 一级菜单.二级菜单.三级菜单 ]");
+                OutputUtils.info(log, String.format(MSG_MENU_STYLE_ERROR,"菜单名称"));
+                OutputUtils.info(log, MSG_MENU_STYLE);
                 flag = false;
             }
         }
         if (StringUtils.isBlank(generateCodeDto.getTable())) {
-            OutputUtils.info(log, "请设置[ 正式表结构 ] ");
-            OutputUtils.info(log, "格式[ oracle建表语句 ] ");
+            OutputUtils.info(log, String.format(MSG_SET, "正式表结构 (oracle)"));
             flag = false;
         }
         if (PAGE_TYPE_SET.equals(generateCodeDto.getPageType()) && StringUtils.isBlank(generateCodeDto.getAsyTable())) {
-            OutputUtils.info(log, "请设置[ 复核表结构 ] ");
-            OutputUtils.info(log, "格式[ oracle建表语句 ] ");
+            OutputUtils.info(log, String.format(MSG_SET, "复核表结构 (oracle)"));
             flag = false;
         }
         if (CollectionUtils.isEmpty(generateCodeDto.getColumn())) {
-            OutputUtils.info(log, "请设置[ 配置字段信息 ] ");
+            OutputUtils.info(log, String.format(MSG_SET, "配置字段信息"));
             flag = false;
         }
         return flag;

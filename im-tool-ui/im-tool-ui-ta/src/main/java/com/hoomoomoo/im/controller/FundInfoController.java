@@ -118,7 +118,7 @@ public class FundInfoController extends BaseController implements Initializable 
             generateScript();
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(fundLog, e.toString());
+            OutputUtils.info(fundLog, e.getMessage());
         }
     }
 
@@ -280,7 +280,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 schedule.setProgress(1);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                infoMsg(e.toString());
+                infoMsg(e.getMessage());
             } finally {
                 scriptSubmit.setDisable(false);
             }

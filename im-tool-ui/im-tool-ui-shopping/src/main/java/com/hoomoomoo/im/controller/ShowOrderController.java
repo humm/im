@@ -122,7 +122,7 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
             }
         } catch (IOException e) {
             LoggerUtils.info(e);
-            ShoppingCommonUtil.info(appConfigDto, log, e.toString());
+            ShoppingCommonUtil.info(appConfigDto, log, e.getMessage());
         }
         ShoppingDto shoppingDto = new ShoppingDto();
         shoppingDto.setGoodsDtoList(goodsDtoList);

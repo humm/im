@@ -33,6 +33,8 @@ public class AboutInfoController implements Initializable {
     @FXML
     private TextArea about;
 
+    private static final String SHOW_CONTENT = "当前版本,发版时间";
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         LoggerUtils.info(String.format(MSG_USE, ABOUT_INFO.getName()));
@@ -48,7 +50,7 @@ public class AboutInfoController implements Initializable {
             }
             if (CollectionUtils.isNotEmpty(version)) {
                 for (String item : version) {
-                    if (StringUtils.isBlank(item)) {
+                    if (StringUtils.isBlank(item) || !isShow(appConfigDto, item)) {
                         OutputUtils.info(about, SYMBOL_NEXT_LINE);
                         continue;
                     }
@@ -56,7 +58,7 @@ public class AboutInfoController implements Initializable {
                 }
             }
 
-            if (appConfigDto.getAppLicenseShow()) {
+            if (appConfigDto.getAppAboutDetail()) {
                 OutputUtils.info(about, SYMBOL_NEXT_LINE);
                 LicenseDto licenseDto = appConfigDto.getLicense();
                 String effectiveDate = CommonUtils.getCurrentDateTime5(licenseDto.getEffectiveDate());
@@ -71,5 +73,18 @@ public class AboutInfoController implements Initializable {
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
+    }
+
+    private boolean isShow(AppConfigDto appConfigDto, String item) {
+        if (appConfigDto.getAppAboutDetail()) {
+            return true;
+        }
+        String[] showMsg = SHOW_CONTENT.split(SYMBOL_COMMA);
+        for (String temp : showMsg) {
+            if (item.startsWith(temp)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

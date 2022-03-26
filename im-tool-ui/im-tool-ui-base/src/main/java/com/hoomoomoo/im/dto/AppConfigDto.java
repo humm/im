@@ -67,7 +67,7 @@ public class AppConfigDto extends BaseDto {
 
     private String scriptUpdateGeneratePath;
 
-    private Boolean appLicenseShow;
+    private Boolean appAboutDetail;
 
     private Integer svnStatInterval;
 
@@ -157,16 +157,20 @@ public class AppConfigDto extends BaseDto {
 
     private String generateSqlTableCode;
 
-    private Stage columnStage;
+    private String generateCodeMenuCode;
+
+    private String generateCodeMenuName;
 
     private GenerateCodeDto generateCodeDto;
+
+    private Stage columnStage;
 
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
         this.scriptUpdateSkip = false;
         this.scriptUpdateGenerateFile = false;
-        this.appLicenseShow = false;
+        this.appAboutDetail = false;
         this.jdInitQuery = false;
         this.svnUpdatePath = new ArrayList<>(16);
         this.scriptUpdateTable = new ArrayList<>(16);

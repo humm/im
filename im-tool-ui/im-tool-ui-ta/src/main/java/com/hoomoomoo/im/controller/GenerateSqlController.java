@@ -128,7 +128,7 @@ public class GenerateSqlController extends BaseController implements Initializab
             updateProgress();
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(sql, e.toString());
+            OutputUtils.info(sql, e.getMessage());
         }
     }
 
@@ -194,7 +194,7 @@ public class GenerateSqlController extends BaseController implements Initializab
             } catch (Exception e) {
                 setProgress(-1);
                 LoggerUtils.info(e);
-                OutputUtils.info(sql, e.toString());
+                OutputUtils.info(sql, e.getMessage());
             } finally {
                 execute.setDisable(false);
             }
@@ -247,7 +247,7 @@ public class GenerateSqlController extends BaseController implements Initializab
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(sql, e.toString());
+            OutputUtils.info(sql, e.getMessage());
         }
     }
 }

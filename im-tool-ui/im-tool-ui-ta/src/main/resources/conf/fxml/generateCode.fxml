@@ -48,7 +48,7 @@
                                         <RadioButton fx:id="dbQuery" layoutX="245.0" layoutY="221.0" mnemonicParsing="false" onAction="#selectDbQuery" text="查询库" userData="3" />
                                         <RadioButton fx:id="dbOrder" layoutX="330.0" layoutY="221.0" mnemonicParsing="false" onAction="#selectDbOrder" text="订单库" userData="4" />
 
-                                        <Label layoutX="450.0" layoutY="221.0" prefHeight="15.0" prefWidth="80.0" text="Dto代码" />
+                                        <Label layoutX="450.0" layoutY="221.0" prefHeight="15.0" prefWidth="80.0" text="DTO代码" />
                                         <TextField fx:id="dtoCode" layoutX="515.0" layoutY="218.0" prefHeight="23.0" prefWidth="200.0" />
 
                                         <Label layoutX="14.0" layoutY="261.0" prefHeight="15.0" prefWidth="120.0" text="菜单代码" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="261.0" />

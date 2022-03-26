@@ -174,6 +174,8 @@ public class BaseConst {
     public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请更新京东Cookie";
     public static final String MSG_AUTO_APPRAISE = "自动评价评价";
     public static final String MSG_SET = "请设置[ %s ]\n";
+    public static final String MSG_MENU_STYLE = "格式[ 一级菜单.二级菜单.三级菜单 ]";
+    public static final String MSG_MENU_STYLE_ERROR = "[ %s ]格式错误";
 
 
     public static final String MSG_OPEN = "打开[ %s ] 功能界面";

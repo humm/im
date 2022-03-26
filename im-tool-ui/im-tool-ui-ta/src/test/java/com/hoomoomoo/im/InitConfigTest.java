@@ -141,7 +141,7 @@ public class InitConfigTest {
     @Test
     public void config_03_updateConfig() throws Exception {
         Map<String, String> keys = new LinkedHashMap<>();
-        keys.put("app.license.show", "false");
+        keys.put("app.about.detail", "false");
 
         keys.put("app.tab.show", "10");
 

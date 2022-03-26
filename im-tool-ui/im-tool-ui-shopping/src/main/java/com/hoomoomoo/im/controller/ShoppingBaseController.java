@@ -90,7 +90,7 @@ public class ShoppingBaseController extends BaseController{
                 setProgress(1);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                ShoppingCommonUtil.info(log, e.toString());
+                ShoppingCommonUtil.info(log, e.getMessage());
             } finally {
                 ComponentUtils.setButtonEnabled(execute, query, pause);
             }
@@ -109,7 +109,7 @@ public class ShoppingBaseController extends BaseController{
                 this.doExecute(clazz, functionConfig);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                ShoppingCommonUtil.info(log, e.toString());
+                ShoppingCommonUtil.info(log, e.getMessage());
             }
         }).start();
     }
@@ -169,7 +169,7 @@ public class ShoppingBaseController extends BaseController{
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
-            ShoppingCommonUtil.info(log, e.toString());
+            ShoppingCommonUtil.info(log, e.getMessage());
         } finally {
             if (appConfigDto != null) {
                 appConfigDto.setExecuteType(SYMBOL_EMPTY);

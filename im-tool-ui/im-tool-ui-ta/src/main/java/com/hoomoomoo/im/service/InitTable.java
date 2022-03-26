@@ -22,7 +22,13 @@ public class InitTable {
 
     public static void init(GenerateCodeDto generateCodeDto) throws Exception {
         String table = generateCodeDto.getTable();
+        if (StringUtils.isEmpty(table)) {
+            throw new Exception(String.format(MSG_SET, "正式表结构 (oracle)"));
+        }
         int tableStart = table.indexOf(SYMBOL_BRACKETS_LEFT);
+        if (tableStart == -1) {
+            throw new Exception(String.format(MSG_SET, "正式表结构 (oracle)"));
+        }
         String[] tableName = table.substring(0, tableStart).split(SYMBOL_S_SLASH);
         generateCodeDto.setTableName(tableName[tableName.length - 1]);
 

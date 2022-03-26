@@ -174,173 +174,6 @@ public class GenerateCodeController extends BaseController implements Initializa
         } else {
             generateCodeDto.setDbType(String.valueOf(dbOrder.getUserData()));
         }
-
-        generateCodeDto.setDtoCode("fundPropFavourSetDemo");
-        generateCodeDto.setMenuCode("fundsysinfo.fundDiscountInfo.fundPropFavourSetDemo");
-        generateCodeDto.setMenuName("信息维护.优惠信息.赎回转换优惠设置Demo");
-        generateCodeDto.setTable("create table tbfundprdpropfavour(\n" +
-                "\tta_code                   VARCHAR2(18)         default ' ' not null,\n" +
-                "\tinvest_direction          VARCHAR2(1)          default ' ' not null,\n" +
-                "\tbusin_code                VARCHAR2(6)          default ' ' not null,\n" +
-                "\tid_type                   VARCHAR2(18)         default ' ' not null,\n" +
-                "\tprd_code                VARCHAR2(6)          default ' ' not null,\n" +
-                "\tbranch_no                VARCHAR2(6)          default ' ' not null,\n" +
-                "\tseller_code               VARCHAR2(9)          default ' ' not null,\n" +
-                "\tamt_way                   VARCHAR2(2)          default ' ' not null,\n" +
-                "\ttrans_way                 VARCHAR2(1)          default ' ' not null,\n" +
-                "\tori_source_flag           VARCHAR2(1)          default ' ' not null,\n" +
-                "\tsource_flag               VARCHAR2(1)          default ' ' not null,\n" +
-                "\ttarg_invest_direction     VARCHAR2(1)          default ' ' not null,\n" +
-                "\tmin_amt                   NUMBER(18,2)         default 0.0 not null,\n" +
-                "\tmax_amt                   NUMBER(18,2)         default 0.0 not null,\n" +
-                "\tmin_hold                  NUMBER(18,3)         default 0.0 not null,\n" +
-                "\tmax_hold                  NUMBER(18,3)         default 0.0 not null,\n" +
-                "\tbegin_date                INTEGER              default 0 not null,\n" +
-                "\tend_date                  INTEGER              default 0 not null,\n" +
-                "\tfare_type                 VARCHAR2(1)          default ' ' not null,\n" +
-                "\tfavor_ratio               NUMBER(18,4)         default 0.0 not null,\n" +
-                "\tfavor_type                VARCHAR2(1)          default ' ' not null,\n" +
-                "\top_times                  INTEGER              default 0 not null,\n" +
-                "\tconstraint pk_fundprdpropfavour primary key (invest_direction, busin_code, seller_code, amt_way, trans_way, ori_source_flag, source_flag, targ_invest_direction, begin_date, min_amt, min_hold, fare_type, favor_type)\n" +
-                ") ;");
-        generateCodeDto.setAsyTable("create table tbfundprdpropfavourasy(\n" +
-                "\tta_code                   VARCHAR2(18)         default ' ' not null,\n" +
-                "\tinvest_direction          VARCHAR2(1)          default ' ' not null,\n" +
-                "\tbusin_code                VARCHAR2(6)          default ' ' not null,\n" +
-                "\tid_type                   VARCHAR2(18)         default ' ' not null,\n" +
-                "\tprd_code                VARCHAR2(6)          default ' ' not null,\n" +
-                "\tbranch_no                VARCHAR2(6)          default ' ' not null,\n" +
-                "\tseller_code               VARCHAR2(9)          default ' ' not null,\n" +
-                "\tamt_way                   VARCHAR2(2)          default ' ' not null,\n" +
-                "\ttrans_way                 VARCHAR2(1)          default ' ' not null,\n" +
-                "\tori_source_flag           VARCHAR2(1)          default ' ' not null,\n" +
-                "\tsource_flag               VARCHAR2(1)          default ' ' not null,\n" +
-                "\ttarg_invest_direction     VARCHAR2(1)          default ' ' not null,\n" +
-                "\tmin_amt                   NUMBER(18,2)         default 0.0 not null,\n" +
-                "\tmax_amt                   NUMBER(18,2)         default 0.0 not null,\n" +
-                "\tmin_hold                  NUMBER(18,3)         default 0.0 not null,\n" +
-                "\tmax_hold                  NUMBER(18,3)         default 0.0 not null,\n" +
-                "\tbegin_date                INTEGER              default 0 not null,\n" +
-                "\tend_date                  INTEGER              default 0 not null,\n" +
-                "\tfare_type                 VARCHAR2(1)          default ' ' not null,\n" +
-                "\tfavor_ratio               NUMBER(18,4)         default 0.0 not null,\n" +
-                "\tfavor_type                VARCHAR2(1)          default ' ' not null,\n" +
-                "\top_times                  INTEGER              default 0 not null,\n" +
-                "\tentry_serial_no           VARCHAR2(32)         default ' ' not null,\n" +
-                "\tentry_order_no            INTEGER              default 0 not null,\n" +
-                "\toper_no                   VARCHAR2(32)         default ' ' not null,\n" +
-                "\tserial_status             VARCHAR2(1)          default ' ' not null,\n" +
-                "\top_dir                    VARCHAR2(1)          default ' ' not null,\n" +
-                "\tconstraint pk_tbfundprdpropfavourasy primary key (entry_serial_no, entry_order_no)\n" +
-                ");");
-        /*generateCodeDto.setColumn("{\n" +
-                "\tinvest_direction:{\n" +
-                "\t\tname:'投资方向',\n" +
-                "\t\tdict:'F_C20010',\n" +
-                "\t\tmulti:'1'\n" +
-                "\t},\n" +
-                "\tbusin_code:{\n" +
-                "\t\tname:'业务类型',\n" +
-                "\t\tdict:'F_C30001'\n" +
-                "\t},\n" +
-                "\tid_type:{\n" +
-                "\t\tname:'证件号码',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tprd_code:{\n" +
-                "\t\tname:'基金代码',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tbranch_no:{\n" +
-                "\t\tname:'网点代码',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tseller_code:{\n" +
-                "\t\tname:'销售商代码',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tamt_way:{\n" +
-                "\t\tname:'资金方式',\n" +
-                "\t\tdict:'F_C20057',\n" +
-                "\t\trequired:'1',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\ttrans_way:{\n" +
-                "\t\tname:'交易方式',\n" +
-                "\t\tdict:'F_C20043',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tori_source_flag:{\n" +
-                "\t\tname:'份额原始来源',\n" +
-                "\t\tdict:'F_C20004',\n" +
-                "\t\tmulti:'1'\n" +
-                "\t},\n" +
-                "\tsource_flag:{\n" +
-                "\t\tname:'份额来源',\n" +
-                "\t\tdict:'F_C20004',\n" +
-                "\t\tmulti:'1'\n" +
-                "\t},\n" +
-                "\ttarg_invest_direction:{\n" +
-                "\t\tname:'对方投资方向',\n" +
-                "\t\tdict:'F_C20010',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tmin_amt:{\n" +
-                "\t\tname:'金额最小',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tmax_amt:{\n" +
-                "\t\tname:'金额最大',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tmin_hold:{\n" +
-                "\t\tname:'存续天数最小',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tmax_hold:{\n" +
-                "\t\tname:'存续天数最大',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tbegin_date:{\n" +
-                "\t\tname:'优惠开始日期',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:'',\n" +
-                "\t\tdate:'1'\n" +
-                "\t},\n" +
-                "\tend_date:{\n" +
-                "\t\tname:'优惠截止日期',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:'',\n" +
-                "\t\tdate:'1'\n" +
-                "\t},\n" +
-                "\tfare_type:{\n" +
-                "\t\tname:'费用类型',\n" +
-                "\t\tdict:'F_C20015',\n" +
-                "\t\tmulti:'1'\n" +
-                "\t},\n" +
-                "\tfavor_ratio:{\n" +
-                "\t\tname:'优惠费率',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
-                "\t},\n" +
-                "\tfavor_type:{\n" +
-                "\t\tname:'优惠类型',\n" +
-                "\t\tdict:'F_C20170',\n" +
-                "\t},\n" +
-                "\top_times:{\n" +
-                "\t\tname:'1年最多优惠次数',\n" +
-                "\t\tdict:'',\n" +
-                "\t\tmulti:''\n" +
-                "\t}\n" +
-                "}");*/
     }
 
     @FXML
@@ -358,7 +191,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             updateProgress();
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(log, e.toString());
+            OutputUtils.info(log, e.getMessage());
         }
     }
 
@@ -389,7 +222,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(log, e.toString());
+            OutputUtils.info(log, e.getMessage());
         }
     }
 
@@ -475,7 +308,7 @@ public class GenerateCodeController extends BaseController implements Initializa
                 setProgress(1);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(log, e.toString());
+                OutputUtils.info(log, e.getMessage());
             } finally {
                 execute.setDisable(false);
             }
@@ -501,6 +334,12 @@ public class GenerateCodeController extends BaseController implements Initializa
             }
             if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeAuthor())) {
                 OutputUtils.info(author, appConfigDto.getGenerateCodeAuthor());
+            }
+            if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeMenuCode())) {
+                OutputUtils.info(menuCode, appConfigDto.getGenerateCodeMenuCode());
+            }
+            if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeMenuName())) {
+                OutputUtils.info(menuName, appConfigDto.getGenerateCodeMenuName());
             }
             String pageType = appConfigDto.getGenerateCodePageType();
             if (BaseConst.PAGE_TYPE_SET.equals(pageType)) {
@@ -529,7 +368,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             generateCodeDto.setDbType(appConfigDto.getGenerateCodeDbType());
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(log, e.toString());
+            OutputUtils.info(log, e.getMessage());
         }
     }
 }

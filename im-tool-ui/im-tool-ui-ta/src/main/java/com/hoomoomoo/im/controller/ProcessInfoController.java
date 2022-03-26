@@ -83,7 +83,7 @@ public class ProcessInfoController extends BaseController implements Initializab
             generateScript();
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(log, e.toString());
+            OutputUtils.info(log, e.getMessage());
         }
     }
 
@@ -101,7 +101,7 @@ public class ProcessInfoController extends BaseController implements Initializab
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(log, e.toString());
+            OutputUtils.info(log, e.getMessage());
         }
     }
 
@@ -217,7 +217,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 LoggerUtils.writeProcessInfo(date, path);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(log, e.toString());
+                OutputUtils.info(log, e.getMessage());
             } finally {
                 submit.setDisable(false);
             }

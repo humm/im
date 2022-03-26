@@ -83,7 +83,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                 this.doExecute();
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                ShoppingCommonUtil.info(log, e.toString());
+                ShoppingCommonUtil.info(log, e.getMessage());
             }
         }).start();
     }
@@ -103,7 +103,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                 setProgress(1);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                ShoppingCommonUtil.info(log, e.toString());
+                ShoppingCommonUtil.info(log, e.getMessage());
             } finally {
                 ComponentUtils.setButtonEnabled(execute, query, pause);
             }
@@ -177,7 +177,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
             setProgress(1);
         } catch (Exception e) {
             LoggerUtils.info(e);
-            ShoppingCommonUtil.info(log, e.toString());
+            ShoppingCommonUtil.info(log, e.getMessage());
         } finally {
             if (appConfigDto != null) {
                 appConfigDto.setExecuteType(SYMBOL_EMPTY);
@@ -257,7 +257,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
-            ShoppingCommonUtil.info(log, e.toString());
+            ShoppingCommonUtil.info(log, e.getMessage());
         }
     }
 }

@@ -147,7 +147,7 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
             }
         } catch (IOException e) {
             LoggerUtils.info(e);
-            ShoppingCommonUtil.info(appConfigDto, log, e.toString());
+            ShoppingCommonUtil.info(appConfigDto, log, e.getMessage());
         }
         com.hoomoomoo.im.dto.ShoppingDto shoppingDto = new ShoppingDto();
         shoppingDto.setGoodsDtoList(goodsDtoList);

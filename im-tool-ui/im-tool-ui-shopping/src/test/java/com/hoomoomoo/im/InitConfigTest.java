@@ -112,7 +112,7 @@ public class InitConfigTest {
 
         keys.put("app.user", null);
 
-        keys.put("app.license.show", "false");
+        keys.put("app.about.detail", "false");
 
         String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);

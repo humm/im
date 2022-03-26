@@ -274,7 +274,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 OutputUtils.clearLog(target);
-                OutputUtils.info(target, e.toString());
+                OutputUtils.info(target, e.getMessage());
             } finally {
                 submit.setDisable(false);
             }

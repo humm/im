@@ -69,7 +69,7 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
          try {
              serviceNum =  ((JSONArray)(JSONObject.parseObject(((JSONArray)JSONObject.parseObject(serviceInfo.get("list").toString()).get("listGroup")).get(0).toString()).get("listGroup"))).size();
          } catch (Exception e) {
-             LoggerUtils.info("获取服务评价类型错误 " + e.toString());
+             LoggerUtils.info("获取服务评价类型错误 " + e.getMessage());
          }
         return serviceNum == 0 ? SYMBOL_EMPTY : serviceNum == 3 ? STR_1 : serviceNum == 5 ? STR_2 : SYMBOL_EMPTY;
     }
@@ -144,7 +144,7 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
             }
         } catch (IOException e) {
             LoggerUtils.info(e);
-            ShoppingCommonUtil.info(appConfigDto, log, e.toString());
+            ShoppingCommonUtil.info(appConfigDto, log, e.getMessage());
         }
         ShoppingDto shoppingDto = new ShoppingDto();
         shoppingDto.setGoodsDtoList(goodsDtoList);

@@ -58,7 +58,7 @@ public class SvnUpdateController extends BaseController implements Initializable
             getSvnUpdate();
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + e.toString());
+            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + e.getMessage());
         }
     }
 
