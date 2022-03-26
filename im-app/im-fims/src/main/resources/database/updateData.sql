@@ -31,7 +31,7 @@ insert into sys_dictionary (dictionary_code, dictionary_item, dictionary_caption
 values ('D013', '0', '否', 2, null, 20190000000001, null, null);
 
 call add_parameter('weChatWelcome', '欢迎语', '智慧家庭,畅享生活', 'text', null, '1', '1', 70);
-call add_parameter('weChatKey', '密钥', 'familywechat', 'text', null, '1', '1', 75);
+call add_parameter('weChatKey', '密钥', 'fims', 'text', null, '1', '1', 75);
 call add_parameter('weChatOpen', '对外开放状态', '2', 'switch', null, '1', '1', 80);
 call add_parameter('weChatOperateTime', '操作时间间隔(秒)', '30', 'number', null, '1', '1', 85);
 call add_parameter('weChatOperateBack', '操作后返回主菜单', '1', 'switch', null, '1', '1', 90);
