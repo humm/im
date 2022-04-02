@@ -196,8 +196,8 @@ public class CopyCodeController extends BaseController implements Initializable 
             ObservableList sourceVersionItems = sourceVersion.getItems();
             ObservableList targetVersionItems = targetVersion.getItems();
             Map<String, String> copyCodeVersion = appConfigDto.getCopyCodeVersion();
-            int index = 0;
             if (MapUtils.isNotEmpty(copyCodeVersion)) {
+                int index = 0;
                 Iterator<String> version = copyCodeVersion.keySet().iterator();
                 while (version.hasNext()) {
                     String ver = version.next();

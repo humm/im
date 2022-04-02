@@ -63,6 +63,8 @@ public class AppConfigDto extends BaseDto {
 
     private String scriptUpdateGenerateMode;
 
+    private String scriptUpdateGenerateType;
+
     private String scriptUpdateIgnoreSkip;
 
     private String scriptUpdateGeneratePath;
@@ -161,9 +163,17 @@ public class AppConfigDto extends BaseDto {
 
     private String generateCodeMenuName;
 
+    private Boolean generateCodeDefaultLast;
+
     private GenerateCodeDto generateCodeDto;
 
     private Stage columnStage;
+
+    private Stage tableStage;
+
+    private Stage asyTableStage;
+
+    private String pageType;
 
     public AppConfigDto() {
         this.appLogEnable = false;
@@ -181,5 +191,6 @@ public class AppConfigDto extends BaseDto {
         this.svnUrl = new LinkedHashMap(16);
         this.cookieMap = new HashMap<>(16);
         this.executeType = SYMBOL_EMPTY;
+        this.generateCodeDefaultLast = true;
     }
 }

@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.util.Map;
 
+import static com.hoomoomoo.im.consts.BaseConst.STR_0;
+
 /**
  * @author humm23693
  * @description TODO
@@ -12,7 +14,7 @@ import java.util.Map;
  */
 
 @Data
-public class SvnStatDto {
+public class SvnStatDto extends BaseDto{
 
     private String userCode;
 
@@ -22,15 +24,21 @@ public class SvnStatDto {
 
     private String lastTime;
 
-    private Integer submitTimes;
+    private String submitTimes;
 
-    private Integer fileNum;
+    private String fileNum;
 
-    private Integer fileTimes;
+    private String fileTimes;
 
     private String notice;
 
     private Map<String, Integer> file;
 
     private Map<Long, Long> svnNum;
+
+    public SvnStatDto() {
+        this.submitTimes = STR_0;
+        this.fileNum = STR_0;
+        this.fileTimes = STR_0;
+    }
 }

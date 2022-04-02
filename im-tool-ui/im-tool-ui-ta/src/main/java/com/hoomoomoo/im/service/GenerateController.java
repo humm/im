@@ -30,8 +30,6 @@ public class GenerateController {
         content.append("import org.springframework.beans.factory.annotation.Autowired;").append(SYMBOL_NEXT_LINE);
         content.append("import org.springframework.web.bind.annotation.*;").append(SYMBOL_NEXT_LINE);
 
-        content.append("import javax.servlet.http.HttpServletResponse;").append(SYMBOL_NEXT_LINE_2);
-
         content.append(GenerateCommon.generateClassDescribe(generateCodeDto, fileName));
 
         content.append("@RestController").append(SYMBOL_NEXT_LINE);

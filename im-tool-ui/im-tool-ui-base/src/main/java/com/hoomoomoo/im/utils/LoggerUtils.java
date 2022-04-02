@@ -43,9 +43,9 @@ public class LoggerUtils {
         writeAppLog(msg, includeDate);
     }
 
-    public static void info(Exception exception) {
-        exception.printStackTrace();
-        writeAppLog(exception);
+    public static void info(Exception e) {
+        e.printStackTrace();
+        writeAppLog(e);
     }
 
     public static void writeAppLog(String mgs, boolean includeDate) {
@@ -58,7 +58,7 @@ public class LoggerUtils {
             log.append(mgs).append(SYMBOL_NEXT_LINE_2);
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            e.printStackTrace();
         }
     }
 
@@ -72,7 +72,7 @@ public class LoggerUtils {
             }
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            e.printStackTrace();
         }
     }
 

@@ -26,7 +26,7 @@ public class OutputUtils {
         Platform.runLater(() -> {
             tableView.getItems().add(baseDto);
             if (scroll) {
-                tableView.scrollTo(tableView.getItems().size());
+//                tableView.scrollTo(tableView.getItems().size());
             }
             setEnabled(tableView);
         });

@@ -2,6 +2,8 @@ package com.hoomoomoo.im.dto;
 
 import lombok.Data;
 
+import static com.hoomoomoo.im.consts.BaseConst.STR_0;
+
 /**
  * @author humm23693
  * @description TODO
@@ -9,13 +11,17 @@ import lombok.Data;
  * @date 2021/05/22
  */
 @Data
-public class FunctionDto {
+public class FunctionDto extends BaseDto{
 
     private String functionCode;
 
     private String functionName;
 
-    private Integer useTimes;
+    private String submitTimes;
+
+    private String firstTime;
+
+    private String lastTime;
 
     public FunctionDto() {
     }
@@ -23,5 +29,6 @@ public class FunctionDto {
     public FunctionDto(String functionCode, String functionName) {
         this.functionCode = functionCode;
         this.functionName = functionName;
+        this.lastTime = STR_0;
     }
 }

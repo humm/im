@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.SCRIPT_UPDATE;
 
 /**
@@ -49,6 +50,12 @@ public class ScriptUpdateController extends BaseController implements Initializa
     private RadioButton append;
 
     @FXML
+    private RadioButton onlyDelete;
+
+    @FXML
+    private RadioButton all;
+
+    @FXML
     private TextField param;
 
     @FXML
@@ -64,15 +71,15 @@ public class ScriptUpdateController extends BaseController implements Initializa
             if (!TaCommonUtil.checkConfig(target, SCRIPT_UPDATE.getCode())) {
                 return;
             }
-            boolean selectRewrite = rewrite.isSelected();
-            boolean selectAppend = append.isSelected();
-            if (selectRewrite == false && selectAppend == false) {
-                OutputUtils.selected(rewrite, true);
-                OutputUtils.selected(append, false);
+            if (rewrite.isSelected() == false && append.isSelected() == false) {
+                selectRewrite(null);
             }
-            boolean mode = rewrite.isSelected();
+            if (onlyDelete.isSelected() == false && all.isSelected() == false) {
+                selectAll(null);
+            }
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            appConfigDto.setScriptUpdateGenerateMode(mode ? BaseConst.STR_1 : BaseConst.STR_2);
+            appConfigDto.setScriptUpdateGenerateMode(rewrite.isSelected() ? STR_2 : STR_1);
+            appConfigDto.setScriptUpdateGenerateType(all.isSelected() ? STR_2 : STR_1);
             setProgress(0);
             updateProgress();
             generateScript(appConfigDto);
@@ -86,25 +93,24 @@ public class ScriptUpdateController extends BaseController implements Initializa
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String mode = appConfigDto.getScriptUpdateGenerateMode();
+            String type = appConfigDto.getScriptUpdateGenerateType();
             if (!appConfigDto.getScriptUpdateGenerateFile()) {
                 rewrite.setDisable(true);
                 append.setDisable(true);
-                return;
             }
             if (StringUtils.isBlank(mode)) {
-                OutputUtils.selected(rewrite, false);
-                OutputUtils.selected(append, false);
-                return;
+                selectRewrite(null);
+            } else if (STR_1.equals(mode)) {
+                selectAppend(null);
+            } else if (STR_2.equals(mode)) {
+                selectRewrite(null);
             }
-            if (BaseConst.STR_1.equals(mode)) {
-                OutputUtils.selected(rewrite, true);
-                OutputUtils.selected(append, false);
-                return;
-            }
-            if (BaseConst.STR_2.equals(mode)) {
-                OutputUtils.selected(rewrite, false);
-                OutputUtils.selected(append, true);
-                return;
+            if (StringUtils.isBlank(type)) {
+                selectAll(null);
+            } else if (STR_1.equals(type)) {
+                selectOnlyDelete(null);
+            } else if (STR_2.equals(type)) {
+                selectAll(null);
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -123,6 +129,18 @@ public class ScriptUpdateController extends BaseController implements Initializa
         OutputUtils.selected(append, false);
     }
 
+    @FXML
+    void selectOnlyDelete(ActionEvent event) {
+        OutputUtils.selected(onlyDelete, true);
+        OutputUtils.selected(all, false);
+    }
+
+    @FXML
+    void selectAll(ActionEvent event) {
+        OutputUtils.selected(onlyDelete, false);
+        OutputUtils.selected(all, true);
+    }
+
     public void generateScript(AppConfigDto appConfigDto) {
         new Thread(() -> {
             try {
@@ -132,7 +150,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 String sourceScript = source.getText();
                 if (StringUtils.isNotBlank(sourceScript)) {
                     Map<String, String> deleteSqlMap = new LinkedHashMap<>(16);
-                    String[] source = sourceScript.split(BaseConst.SYMBOL_NEXT_LINE);
+                    String[] source = sourceScript.split(SYMBOL_NEXT_LINE);
                     StringBuilder itemsTemp = new StringBuilder();
                     for (int k=0; k<source.length; k++) {
                         String item = source[k];
@@ -156,23 +174,23 @@ public class ScriptUpdateController extends BaseController implements Initializa
                                 continue;
                             }
                         }
-                        itemsTemp.append(item.trim() + BaseConst.SYMBOL_NEXT_LINE);
+                        itemsTemp.append(item.trim() + SYMBOL_NEXT_LINE);
                     }
-                    int indexLast = itemsTemp.toString().lastIndexOf(BaseConst.SYMBOL_NEXT_LINE);
+                    int indexLast = itemsTemp.toString().lastIndexOf(SYMBOL_NEXT_LINE);
                     if (indexLast == -1) {
                         setProgress(1);
                         return;
                     }
                     List<String> items = Arrays.asList(itemsTemp.toString().substring(0, indexLast).split(BaseConst.SYMBOL_SEMICOLON));
                     for (int j = 0; j < items.size(); j++) {
-                        String item = items.get(j).replace(BaseConst.SYMBOL_NEXT_LINE, BaseConst.SYMBOL_EMPTY).trim();
+                        String item = items.get(j).replace(SYMBOL_NEXT_LINE, BaseConst.SYMBOL_EMPTY).trim();
 
                         // 获取sql字段和值
                         String[] sql = item.split(BaseConst.KEY_VALUES);
                         if (sql.length != 2) {
                             sql = item.split(BaseConst.KEY_VALUES.toUpperCase());
                             if (sql.length != 2) {
-                                throw new Exception("sql语句未包含或者包含多个" + BaseConst.KEY_VALUES + BaseConst.SYMBOL_NEXT_LINE + item);
+                                throw new Exception("sql语句未包含或者包含多个" + BaseConst.KEY_VALUES + SYMBOL_NEXT_LINE + item);
                             }
                         }
                         Map<String, String> sqlInfo = new LinkedHashMap<>(16);
@@ -224,7 +242,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                                     if (StringUtils.isEmpty(deleteSqlMap.get(sqlKey))) {
                                         deleteSqlMap.put(sqlKey, deleteSql.toString());
                                     } else {
-                                        deleteSqlMap.put(sqlKey, deleteSqlMap.get(sqlKey) + BaseConst.SYMBOL_NEXT_LINE + deleteSql);
+                                        deleteSqlMap.put(sqlKey, deleteSqlMap.get(sqlKey) + SYMBOL_NEXT_LINE + deleteSql);
                                     }
                                 }
                             }
@@ -235,6 +253,14 @@ public class ScriptUpdateController extends BaseController implements Initializa
                     if (!MapUtils.isEmpty(deleteSqlMap)) {
                         String paramControl = param.getText().trim();
                         String paramSql = "\n from (select count(1) param_exists from tbparam where param_id = '" + paramControl + "') a where param_exists = 1";
+                        if (paramControl.startsWith("F_C")) {
+                            String[] param = paramControl.split(SYMBOL_COMMA);
+                            if (param.length == 2) {
+                                paramSql = "\n from (select count(1) param_exists from tbdict where hs_key = '" + param[0] + "' and val = '" + param[1] + "') a where param_exists = 1";
+                            } else {
+                                paramSql = "\n from (select count(1) param_exists from tbdict where hs_key = '" + paramControl + "') a where param_exists = 1";
+                            }
+                        }
                         // 组装sql语句
                         for (int i = 0; i < items.size(); i++) {
                             String sqlKey = items.get(i).trim();
@@ -252,13 +278,19 @@ public class ScriptUpdateController extends BaseController implements Initializa
                                 sql = sql.substring(0, index) + paramSql;
                             }
                             if (sql.toLowerCase().startsWith("insert")) {
-                                OutputUtils.info(target, deleteSqlMap.get(sqlKey) + BaseConst.SYMBOL_NEXT_LINE);
+                                OutputUtils.info(target, deleteSqlMap.get(sqlKey) + SYMBOL_NEXT_LINE);
                                 logList.add(deleteSqlMap.get(sqlKey));
                                 scriptList.add(deleteSqlMap.get(sqlKey));
                             }
-                            OutputUtils.info(target, sql + BaseConst.SYMBOL_SEMICOLON + BaseConst.SYMBOL_NEXT_LINE);
-                            logList.add(sql.replace(BaseConst.SYMBOL_NEXT_LINE, BaseConst.SYMBOL_SPACE) + BaseConst.SYMBOL_SEMICOLON);
-                            scriptList.add(sql + BaseConst.SYMBOL_SEMICOLON + BaseConst.SYMBOL_NEXT_LINE);
+                            if (STR_2.equals(appConfigDto.getScriptUpdateGenerateType())) {
+                                OutputUtils.info(target, sql + BaseConst.SYMBOL_SEMICOLON + SYMBOL_NEXT_LINE);
+                                logList.add(sql.replace(SYMBOL_NEXT_LINE, BaseConst.SYMBOL_SPACE) + BaseConst.SYMBOL_SEMICOLON);
+                                scriptList.add(sql + BaseConst.SYMBOL_SEMICOLON + SYMBOL_NEXT_LINE);
+                            }
+                        }
+                        if (STR_1.equals(appConfigDto.getScriptUpdateGenerateType())) {
+                            logList.add(SYMBOL_EMPTY);
+                            scriptList.add(SYMBOL_EMPTY);
                         }
                     } else {
                         OutputUtils.clearLog(target);
@@ -268,7 +300,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                     LoggerUtils.writeScriptUpdateInfo(date, logList);
                     if (appConfigDto.getScriptUpdateGenerateFile()) {
                         String path = new URL("file:" + appConfigDto.getScriptUpdateGeneratePath() + "/script.sql").getFile();
-                        FileUtils.writeFile(path, scriptList, BaseConst.STR_2.equals(appConfigDto.getScriptUpdateGenerateMode()));
+                        FileUtils.writeFile(path, scriptList, STR_1.equals(appConfigDto.getScriptUpdateGenerateMode()));
                     }
                 }
             } catch (Exception e) {

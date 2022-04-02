@@ -12,6 +12,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ComboBox?>
 
 <AnchorPane fx:id="generateCode" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.GenerateCodeController">
     <children>
@@ -23,24 +24,25 @@
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
                                     <children>
-                                        <Label layoutX="14.0" layoutY="15.0" prefHeight="15.0" prefWidth="120.0" text="java文件路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                                        <Label layoutX="15.0" layoutY="15.0" prefHeight="15.0" prefWidth="120.0" text="java文件路径" />
                                         <TextField fx:id="javaPath" layoutX="120.0" layoutY="11.0" prefHeight="23.0" prefWidth="620.0" />
 
-                                        <Label layoutX="14.0" layoutY="55.0" prefHeight="15.0" prefWidth="120.0" text="vue文件路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="55.0" />
+                                        <Label layoutX="15.0" layoutY="55.0" prefHeight="15.0" prefWidth="120.0" text="vue文件路径" />
                                         <TextField fx:id="vuePath" layoutX="120.0" layoutY="51.0" prefHeight="23.0" prefWidth="620.0" />
 
-                                        <Label layoutX="14.0" layoutY="95.0" prefHeight="15.0" prefWidth="120.0" text="sql文件路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="95.0" />
+                                        <Label layoutX="15.0" layoutY="95.0" prefHeight="15.0" prefWidth="120.0" text="sql文件路径" />
                                         <TextField fx:id="sqlPath" layoutX="120.0" layoutY="91.0" prefHeight="23.0" prefWidth="620.0" />
 
-                                        <Label layoutX="14.0" layoutY="135.0" prefHeight="15.0" prefWidth="120.0" text="route文件路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="135.0" />
+                                        <Label layoutX="15.0" layoutY="135.0" prefHeight="15.0" prefWidth="120.0" text="route文件路径" />
                                         <TextField fx:id="routePath" layoutX="120.0" layoutY="131.0" prefHeight="23.0" prefWidth="620.0" />
 
                                         <Label layoutX="15.0" layoutY="178.0" prefHeight="15.0" prefWidth="80.0" text="页面类型" />
                                         <RadioButton fx:id="set" layoutX="90.0" layoutY="178.0" mnemonicParsing="false" onAction="#selectSet" text="设置页面" userData="1" />
                                         <RadioButton fx:id="query" layoutX="190.0" layoutY="178.0" mnemonicParsing="false" onAction="#selectQuery" text="查询页面" userData="2" />
+                                        <RadioButton fx:id="queryConfig" layoutX="290.0" layoutY="178.0" mnemonicParsing="false" onAction="#selectQueryConfig" text="查询分析" userData="3" />
 
                                         <Label layoutX="450.0" layoutY="178.0" prefHeight="15.0" prefWidth="80.0" text="作者" />
-                                        <TextField fx:id="author" layoutX="515.0" layoutY="175.0" prefHeight="23.0" prefWidth="200.0" />
+                                        <TextField fx:id="author" layoutX="525.0" layoutY="175.0" prefHeight="23.0" prefWidth="215.0" />
 
                                         <Label layoutX="15.0" layoutY="221.0" prefHeight="15.0" prefWidth="80.0" text="数据源" />
                                         <RadioButton fx:id="dbPub" layoutX="90.0" layoutY="221.0" mnemonicParsing="false" onAction="#selectDbPub" text="主库" userData="1" />
@@ -49,21 +51,30 @@
                                         <RadioButton fx:id="dbOrder" layoutX="330.0" layoutY="221.0" mnemonicParsing="false" onAction="#selectDbOrder" text="订单库" userData="4" />
 
                                         <Label layoutX="450.0" layoutY="221.0" prefHeight="15.0" prefWidth="80.0" text="DTO代码" />
-                                        <TextField fx:id="dtoCode" layoutX="515.0" layoutY="218.0" prefHeight="23.0" prefWidth="200.0" />
+                                        <TextField fx:id="dtoCode" layoutX="525.0" layoutY="218.0" prefHeight="23.0" prefWidth="215.0" />
 
-                                        <Label layoutX="14.0" layoutY="261.0" prefHeight="15.0" prefWidth="120.0" text="菜单代码" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="261.0" />
+                                        <Label layoutX="15.0" layoutY="261.0" prefHeight="15.0" prefWidth="120.0" text="菜单代码" />
                                         <TextField fx:id="menuCode" layoutX="90.0" layoutY="257.0" prefHeight="23.0" prefWidth="650.0" />
 
-                                        <Label layoutX="14.0" layoutY="301.0" prefHeight="15.0" prefWidth="120.0" text="菜单名称" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="301.0" />
+                                        <Label layoutX="15.0" layoutY="301.0" prefHeight="15.0" prefWidth="120.0" text="菜单名称" />
                                         <TextField fx:id="menuName" layoutX="90.0" layoutY="297.0" prefHeight="23.0" prefWidth="650.0" />
 
-                                        <Label layoutX="85.0" layoutY="341.0" prefHeight="15.0" prefWidth="120.0" text="正式表结构" AnchorPane.leftAnchor="85.0" AnchorPane.topAnchor="341.0" />
-                                        <TextArea fx:id="table" layoutX="14.0" layoutY="365.0" prefHeight="160.0" prefWidth="230.0" />
+                                        <Label layoutX="15.0" layoutY="345.0" prefHeight="15.0" prefWidth="120.0"
+                                               text="菜单排序" />
+                                        <TextField fx:id="menuOrder" layoutX="90.0" layoutY="341.0" prefHeight="23.0" prefWidth="150.0" />
 
-                                        <Label layoutX="335.0" layoutY="341.0" prefHeight="15.0" prefWidth="120.0" text="复核表结构" AnchorPane.leftAnchor="335.0" AnchorPane.topAnchor="341.0" />
-                                        <TextArea fx:id="asyTable" layoutX="263.0" layoutY="365.0" prefHeight="160.0" prefWidth="230.0" />
+                                        <Button fx:id="table" layoutX="275.0" layoutY="340.0" mnemonicParsing="false"
+                                                onAction="#tableConfig" prefHeight="35.0" prefWidth="130.0"
+                                                text="配置正式表结构" />
 
-                                        <Button fx:id="columnInfo" layoutX="549.0" layoutY="425.0" mnemonicParsing="false" onAction="#columnConfig" prefHeight="35.0" prefWidth="150.0" text="配置字段信息" />
+                                        <Button fx:id="asyTable" layoutX="445.0" layoutY="340.0"
+                                                mnemonicParsing="false" onAction="#asyTableConfig" prefHeight="35.0" prefWidth="130.0" text="配置复核表结构" />
+
+                                        <Button fx:id="columnInfo" layoutX="610.0" layoutY="340.0"
+                                                mnemonicParsing="false" onAction="#columnConfig" prefHeight="35.0" prefWidth="130.0" text="配置字段信息" />
+
+                                        <Label layoutX="15.0" layoutY="395.0" prefHeight="15.0" prefWidth="120.0" text="历史记录" />
+                                        <ComboBox fx:id="record" layoutX="90.0" layoutY="390.0" onAction="#selectRecord" prefWidth="485.0" />
 
                                         <ProgressIndicator fx:id="schedule" layoutX="280.0" layoutY="540.0" progress="0.0" />
                                         <Label fx:id="scheduleText" layoutX="320.0" layoutY="545.0" text="0%" />
@@ -78,7 +89,7 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="550.0">
                                     <children>
-                                        <TableView fx:id="log" layoutY="14.0" prefHeight="188.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                        <TableView fx:id="log" layoutY="15.0" prefHeight="188.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
                                                 <TableColumn id="time" editable="false" prefWidth="170"
                                                              sortable="false" text="生成时间">

@@ -25,7 +25,7 @@ public class GenerateRoute {
         content.append("const " + secondMenu + " = {").append(SYMBOL_NEXT_LINE);
         content.append("  // " + functionName).append(SYMBOL_NEXT_LINE);
         String route = firstMenu + "/" + secondMenu + "/" + functionCode;
-        content.append("  " + functionCode + ": () => import(/* webpackChunkName: \"console-fund-ta-vue/" + route + "\" */`@ConsoleFundTaVue/views/" + route + "`)").append(SYMBOL_NEXT_LINE);
+        content.append("  " + functionCode + ": () => import(/* webpackChunkName: \"console-fund-ta-vue/" + route + "\" */`@ConsoleFundTaVue/views/" + route + "`),").append(SYMBOL_NEXT_LINE);
         content.append("}").append(SYMBOL_NEXT_LINE_2);
         return GenerateCommon.generateRouteFile(generateCodeDto, fileName, content.toString());
     }

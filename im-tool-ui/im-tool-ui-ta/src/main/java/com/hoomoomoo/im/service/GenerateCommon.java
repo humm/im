@@ -1,11 +1,14 @@
 package com.hoomoomoo.im.service;
 
+import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 
@@ -81,7 +84,7 @@ public class GenerateCommon {
 
     public static String generateJavaFile(GenerateCodeDto generateCodeDto, String packageName, String fileName,
                                           String content) throws IOException {
-        String pathName = generateCodeDto.getJavaPath() + SYMBOL_SLASH + packageName.replace(SYMBOL_POINT, SYMBOL_SLASH) + SYMBOL_SLASH + fileName + FILE_TYPE_JAVA;
+        String pathName = generateCodeDto.getJavaPath() + PATH_JAVA_PREFIX + packageName.replace(SYMBOL_POINT, SYMBOL_SLASH) + SYMBOL_SLASH + fileName + FILE_TYPE_JAVA;
         FileUtils.writeFile(pathName, content, ENCODING_UTF8, false);
         return pathName;
     }
@@ -134,8 +137,8 @@ public class GenerateCommon {
         StringBuilder serialVersionUid = new StringBuilder();
         for (int i = 0; i < 19; i++) {
             int num = (int) (Math.random() * 10);
-            if (num > 9) {
-                num = 9;
+            if (num >= 9) {
+                num = 8;
             } else if (num == 0) {
                 num = 1;
             }
@@ -144,7 +147,73 @@ public class GenerateCommon {
         return serialVersionUid.append("L").toString().replace("-9999999999999999999L", "-8999999999999999999L");
     }
 
-    public static boolean skipColumn(String column) {
-        return KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP.equals(column) || KEY_TA_CODE.equals(column);
+    public static boolean skipColumn(ColumnInfoDto columnInfoDto) {
+        return skipColumn(columnInfoDto, true);
+    }
+
+    public static boolean skipColumn(ColumnInfoDto columnInfoDto, boolean skip) {
+        if (columnInfoDto == null) {
+            return true;
+        }
+        String columnCode = columnInfoDto.getColumnCode();
+        String columnName = columnInfoDto.getColumnName();
+        if (KEY_TRANS_CODE_AND_SUB_TRANS_CODE.equals(columnCode) || KEY_TRANS_CODE_AND_SUB_TRANS_CODE_UNDERLINE.equals(columnCode)
+                || KEY_TA_CODE.equals(columnCode) || KEY_TA_CODE_UNDERLINE.equals(columnCode)) {
+            return true;
+        }
+        if (!skip) {
+            return false;
+        }
+        if (StringUtils.isEmpty(columnName)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static int getColumnPrecision(ColumnInfoDto columnInfo) {
+        int columnPrecision = 2;
+        if (StringUtils.isNotBlank(columnInfo.getColumnPrecision())) {
+            columnPrecision = Integer.valueOf(columnInfo.getColumnPrecision());
+            if(columnInfo.getColumnName().contains(SYMBOL_PERCENT)) {
+                columnPrecision = columnPrecision - 2;
+            }
+        }
+        return columnPrecision;
+    }
+
+    public static boolean hasComponent(GenerateCodeDto generateCodeDto, String type) {
+        boolean hasFlag = false;
+        Map<String, ColumnInfoDto> columnInfoDtoMap = generateCodeDto.getColumnMap();
+        Iterator<String> iterator = columnInfoDtoMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            String columnCode = iterator.next();
+            ColumnInfoDto columnInfo = columnInfoDtoMap.get(columnCode);
+            if (GenerateCommon.skipColumn(columnInfo)) {
+                continue;
+            }
+            switch (type) {
+                case STR_1:
+                    if (columnCode.toLowerCase().contains(KEY_PRD_CODE.toLowerCase())) {
+                        hasFlag = true;
+                        break;
+                    }
+                    break;
+                case STR_2:
+                    if(columnInfo.getColumnName().contains(SYMBOL_PERCENT)) {
+                        hasFlag = true;
+                        break;
+                    }
+                    break;
+                case STR_3:
+                    if(STR_1.equals(columnInfo.getColumnBatchUpdate())) {
+                        hasFlag = true;
+                        break;
+                    }
+                    break;
+                default:
+                    break;
+            }
+        }
+        return hasFlag;
     }
 }

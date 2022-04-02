@@ -3,6 +3,7 @@ package com.hoomoomoo.im.service;
 import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
+import com.hoomoomoo.im.utils.TaCommonUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Iterator;
@@ -43,10 +44,10 @@ public class GenerateExportConfig {
         Iterator<String> iterator = tableColumn.keySet().iterator();
         while (iterator.hasNext()) {
             String column = iterator.next();
-            if (GenerateCommon.skipColumn(column)) {
+            ColumnInfoDto columnInfo = tableColumn.get(column);
+            if (GenerateCommon.skipColumn(columnInfo)) {
                 continue;
             }
-            ColumnInfoDto columnInfo = tableColumn.get(column);
             String columnType = columnInfo.getColumnType();
             if (!KEY_COLUMN_TYPE_INTEGER.equals(columnType) && !KEY_COLUMN_TYPE_NUMBER.equals(columnType) && !KEY_COLUMN_TYPE_DATE.equals(columnType)) {
                 continue;
@@ -56,15 +57,12 @@ public class GenerateExportConfig {
                 content.append(", type = FundExcelExportField.DATE");
             } else if (KEY_COLUMN_TYPE_NUMBER.equals(columnType)) {
                 if(columnInfo.getColumnName().contains(SYMBOL_PERCENT)) {
-                    content.append(", type = FundExcelExportField.AMOUNT");
-                } else {
                     content.append(", type = FundExcelExportField.RATIO");
+                } else {
+                    content.append(", type = FundExcelExportField.AMOUNT");
                 }
                 if (StringUtils.isNotBlank(columnInfo.getColumnPrecision())) {
-                    int precision = Integer.valueOf(columnInfo.getColumnPrecision());
-                    if(columnInfo.getColumnName().contains(SYMBOL_PERCENT)) {
-                        precision = precision - 2;
-                    }
+                    int precision = GenerateCommon.getColumnPrecision(columnInfo);
                     if (precision != 2) {
                         content.append(", suffixNum= " + precision);
                     }

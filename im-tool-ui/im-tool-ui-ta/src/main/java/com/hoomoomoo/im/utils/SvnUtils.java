@@ -88,9 +88,9 @@ public class SvnUtils {
                 svnStatDto.setUserName(userName);
                 svnStatDto.setFirstTime(SYMBOL_EMPTY);
                 svnStatDto.setLastTime(SYMBOL_EMPTY);
-                svnStatDto.setSubmitTimes(0);
-                svnStatDto.setFileNum(0);
-                svnStatDto.setFileTimes(0);
+                svnStatDto.setSubmitTimes(STR_0);
+                svnStatDto.setFileNum(STR_0);
+                svnStatDto.setFileTimes(STR_0);
                 svnStatDto.setFile(new LinkedHashMap<>());
                 svnStatDto.setSvnNum(new LinkedHashMap<>());
                 svnStat.put(userCode, svnStatDto);
@@ -119,7 +119,7 @@ public class SvnUtils {
                             svnStatDto.setFirstTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
                         }
                         svnStatDto.setLastTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
-                        svnStatDto.setSubmitTimes(svnStatDto.getSubmitTimes() + 1);
+                        svnStatDto.setSubmitTimes(String.valueOf(Integer.valueOf(svnStatDto.getSubmitTimes()) + 1));
                         Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
                         Iterator<String> iterator = logMap.keySet().iterator();
                         while (iterator.hasNext()) {
@@ -128,10 +128,10 @@ public class SvnUtils {
                             String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), SYMBOL_EMPTY);
                             if (svnStatDto.getFile().get(path) == null) {
                                 svnStatDto.getFile().put(path, 1);
-                                svnStatDto.setFileNum(svnStatDto.getFileNum() + 1);
-                                svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
+                                svnStatDto.setFileNum(String.valueOf(Integer.valueOf(svnStatDto.getFileNum()) + 1));
+                                svnStatDto.setFileTimes(String.valueOf(Integer.valueOf(svnStatDto.getFileTimes()) + 1));
                             } else {
-                                svnStatDto.setFileTimes(svnStatDto.getFileTimes() + 1);
+                                svnStatDto.setFileTimes(String.valueOf(Integer.valueOf(svnStatDto.getFileTimes()) + 1));
                             }
                         }
                         String msg = getSvnMsg(svnLogEntry);

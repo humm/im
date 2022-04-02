@@ -45,10 +45,10 @@ public class GenerateExcelConfig {
         Map<String, String> primaryKeyMap = generateCodeDto.getPrimaryKeyMap();
         while (iterator.hasNext()) {
             String column = iterator.next();
-            if (GenerateCommon.skipColumn(column)) {
+            ColumnInfoDto columnInfo = tableColumn.get(column);
+            if (GenerateCommon.skipColumn(columnInfo)) {
                 continue;
             }
-            ColumnInfoDto columnInfo = tableColumn.get(column);
             boolean required = STR_1.equals(columnInfo.getColumnRequired());
             content.append("    @FundExcelUpLoadField(title = \"" + columnInfo.getColumnName() + "\", colum = 1, claz = " + fileName + ".class, isRequired = " + required);
             if (StringUtils.isNotEmpty(columnInfo.getColumnDict())) {
@@ -57,11 +57,11 @@ public class GenerateExcelConfig {
             if (primaryKeyMap.containsKey(columnInfo.getColumnUnderline())) {
                 content.append(", primaryKey = true");
             }
-            if (KEY_PRD_CODE.equals(column)) {
+            if (column.contains(KEY_PRD_CODE)) {
                 content.append(SYMBOL_NEXT_LINE).append("            , checkMethod = \"[{\\\"validator\\\":\\\"checkIsAllProductExist\\\",\\\"message\\\":\\\"基金代码不存在或者状态为【6:基金终止】或【9:发行失败】\\\"}]\"");
-            } else if (KEY_SELLER_CODE.equals(column)) {
+            } else if (column.contains(KEY_SELLER_CODE)) {
                 content.append(SYMBOL_NEXT_LINE).append("            , checkMethod = \"[{\\\"validator\\\":\\\"checkIsAllSeller\\\",\\\"message\\\":\\\"销售商代码不存在或者状态为【T:注销】\\\"}]\"");
-            } else if (KEY_BRANCH_NO.equals(column)) {
+            } else if (column.contains(KEY_BRANCH_NO)) {
                 content.append(SYMBOL_NEXT_LINE).append("            , checkMethod = \"[{\\\"validator\\\":\\\"checkBranchInfo\\\",\\\"message\\\":\\\"销售商网点代码不存在\\\"}]\"");
             }
             content.append(")").append(SYMBOL_NEXT_LINE);

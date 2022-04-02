@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class ColumnInfoDto extends BaseDto implements Comparable<ColumnInfoDto>{
 
-    private String column;
+    private String columnCode;
     private String columnUnderline;
     private String columnType;
     private String columnName;
@@ -23,9 +23,33 @@ public class ColumnInfoDto extends BaseDto implements Comparable<ColumnInfoDto>{
     private String columnOrder;
     private String columnDefault;
     private String columnWidth;
+    private String columnQuery;
+    private String columnUpdate;
+    private String columnQueryOrder;
+    private String columnQueryOrderType;
+    private String columnBatchUpdate;
+    private String columnQueryStat;
 
     @Override
     public int compareTo(ColumnInfoDto o) {
         return Integer.valueOf(this.getColumnOrder()) - Integer.valueOf(o.getColumnOrder());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ColumnInfoDto that = (ColumnInfoDto) o;
+        return columnCode.equals(that.columnCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return columnCode.hashCode();
     }
 }

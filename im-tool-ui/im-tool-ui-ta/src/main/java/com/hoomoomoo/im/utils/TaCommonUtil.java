@@ -2,19 +2,16 @@ package com.hoomoomoo.im.utils;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.FunctionConfig;
-import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.GenerateCodeDto;
+import com.hoomoomoo.im.dto.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_NEXT_LINE;
@@ -69,6 +66,40 @@ public class TaCommonUtil {
                 }
             }
         }
+
+        if (functionCode.equals(FunctionConfig.GENERATE_SQL.getCode())) {
+            if (StringUtils.isBlank(appConfigDto.getGenerateSqlDatabaseNum())) {
+                OutputUtils.info(log, String.format(MSG_SET, "generate.sql.database.num"));
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getGenerateSqlTableNum())) {
+                OutputUtils.info(log, String.format(MSG_SET, "generate.sql.table.num"));
+                flag = false;
+            }
+        }
+        return flag;
+    }
+
+    public static boolean checkConfig(TableView log, String functionCode) throws Exception {
+        boolean flag = true;
+        OutputUtils.clearLog(log);
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        if (functionCode.equals(FunctionConfig.FUND_INFO.getCode())) {
+            if (StringUtils.isBlank(appConfigDto.getFundGeneratePath())) {
+                OutputUtils.info(log, MSG_FUND_GENERATE_PATH);
+                flag = false;
+            }
+        }
+        if (functionCode.equals(FunctionConfig.PROCESS_INFO.getCode())) {
+            if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathSchedule())) {
+                OutputUtils.info(log, MSG_PROCESS_GENERATE_PATH_SCHEDULE);
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathTrans())) {
+                OutputUtils.info(log, MSG_PROCESS_GENERATE_PATH_TRANS);
+                flag = false;
+            }
+        }
         if (functionCode.equals(SVN_REALTIME_STAT.getCode()) || functionCode.equals(SVN_HISTORY_STAT.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(log, MSG_SVN_USERNAME + SYMBOL_NEXT_LINE);
@@ -88,40 +119,6 @@ public class TaCommonUtil {
             }
             if (appConfigDto.getSvnStatInterval() < 5) {
                 OutputUtils.info(log, MSG_SVN_STAT_INTERVAL + SYMBOL_NEXT_LINE);
-                flag = false;
-            }
-        }
-
-        if (functionCode.equals(FunctionConfig.GENERATE_SQL.getCode())) {
-            if (StringUtils.isBlank(appConfigDto.getGenerateSqlDatabaseNum())) {
-                OutputUtils.info(log, String.format(MSG_SET, "generate.sql.database.num"));
-                flag = false;
-            }
-            if (StringUtils.isBlank(appConfigDto.getGenerateSqlTableNum())) {
-                OutputUtils.info(log, String.format(MSG_SET, "generate.sql.table.num"));
-                flag = false;
-            }
-        }
-        return flag;
-    }
-
-    public static boolean checkConfig(TableView log, String functionType) throws Exception {
-        boolean flag = true;
-        OutputUtils.clearLog(log);
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        if (functionType.equals(FunctionConfig.FUND_INFO.getCode())) {
-            if (StringUtils.isBlank(appConfigDto.getFundGeneratePath())) {
-                OutputUtils.info(log, MSG_FUND_GENERATE_PATH);
-                flag = false;
-            }
-        }
-        if (functionType.equals(FunctionConfig.PROCESS_INFO.getCode())) {
-            if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathSchedule())) {
-                OutputUtils.info(log, MSG_PROCESS_GENERATE_PATH_SCHEDULE);
-                flag = false;
-            }
-            if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathTrans())) {
-                OutputUtils.info(log, MSG_PROCESS_GENERATE_PATH_TRANS);
                 flag = false;
             }
         }
@@ -185,6 +182,10 @@ public class TaCommonUtil {
                 flag = false;
             }
         }
+        if (StringUtils.isEmpty(generateCodeDto.getMenuOrder())) {
+            OutputUtils.info(log, String.format(MSG_SET, "菜单顺序"));
+            flag = false;
+        }
         if (StringUtils.isBlank(generateCodeDto.getTable())) {
             OutputUtils.info(log, String.format(MSG_SET, "正式表结构 (oracle)"));
             flag = false;
@@ -221,4 +222,26 @@ public class TaCommonUtil {
         }
         return statList;
     }
+
+    public static List<SvnStatDto> sortSvnStatDtoList (AppConfigDto appConfigDto, LinkedHashMap<String, SvnStatDto> stat) {
+        List<SvnStatDto> svnStatDtoList = new ArrayList<>();
+        Collections.sort(svnStatDtoList, (o1, o2) -> {
+            if (BaseConst.STR_1.equals(appConfigDto.getSvnStatHistoryOrderType())) {
+                return Integer.valueOf(o2.getSubmitTimes()) - Integer.valueOf(o1.getSubmitTimes());
+            } else {
+                return Integer.valueOf(o2.getFileNum()) - Integer.valueOf(o1.getFileNum());
+            }
+        });
+        Iterator<String> iterator = stat.keySet().iterator();
+        while (iterator.hasNext()) {
+            String userCode = iterator.next();
+            if (KEY_NOTICE.equals(userCode)) {
+                continue;
+            }
+            SvnStatDto svnStatDto = stat.get(userCode);
+            svnStatDtoList.add(svnStatDto);
+        }
+        return svnStatDtoList;
+    }
+
 }

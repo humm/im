@@ -3,6 +3,7 @@ package com.hoomoomoo.im.service;
 import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Iterator;
@@ -61,6 +62,7 @@ public class GenerateService {
         content.append("import org.apache.commons.lang3.StringUtils;").append(SYMBOL_NEXT_LINE);
         content.append("import org.springframework.beans.factory.annotation.Autowired;").append(SYMBOL_NEXT_LINE);
         content.append("import org.springframework.stereotype.Service;").append(SYMBOL_NEXT_LINE);
+        content.append("import java.math.BigDecimal;").append(SYMBOL_NEXT_LINE);
         content.append("import java.sql.SQLException;").append(SYMBOL_NEXT_LINE);
         content.append("import java.util.Arrays;").append(SYMBOL_NEXT_LINE);
         content.append("import java.util.HashMap;").append(SYMBOL_NEXT_LINE);
@@ -90,6 +92,7 @@ public class GenerateService {
         content.append("        for (int i = 0; i < dataset.getRowCount(); i++) {").append(SYMBOL_NEXT_LINE);
         content.append("            dataset.next();").append(SYMBOL_NEXT_LINE_2);
         content.append(initTranslate(generateCodeDto, STR_2));
+        content.append(initDictTranslate(generateCodeDto));
         content.append("        }").append(SYMBOL_NEXT_LINE);
         content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
@@ -99,10 +102,13 @@ public class GenerateService {
         content.append("        String[] selectField = {").append(SYMBOL_NEXT_LINE);
         content.append(initQueryColumn(generateCodeDto)).append(SYMBOL_NEXT_LINE);
         content.append("        };").append(SYMBOL_NEXT_LINE);
-        content.append("        String tableName = FundCustomIndexSetAuditService.TABLE_NAME + \" a \";").append(SYMBOL_NEXT_LINE);
+        content.append("        String tableName = " + generateCodeDto.getAuditServiceName() + ".TABLE_NAME + \" a \";").append(SYMBOL_NEXT_LINE);
         content.append("        HsSqlString hss = new HsSqlString(tableName, selectField);").append(SYMBOL_NEXT_LINE_2);
         content.append(initCondition(generateCodeDto)).append(SYMBOL_NEXT_LINE);
-        content.append("        // 默认排序字段").append(SYMBOL_NEXT_LINE);
+        if (StringUtils.isNotBlank(generateCodeDto.getColumnQueryOrder())) {
+            content.append("        // 默认排序字段").append(SYMBOL_NEXT_LINE);
+            content.append("        hss.setOrder(" + generateCodeDto.getColumnQueryOrder() + ");").append(SYMBOL_NEXT_LINE);
+        }
         content.append("        return hss;").append(SYMBOL_NEXT_LINE);
         content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
@@ -127,7 +133,7 @@ public class GenerateService {
         if (PAGE_TYPE_SET.equals(generateCodeDto.getPageType())) {
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, METHOD_TYPE_ADD, METHOD_RETURN_PARAM_IDATASET));
             content.append("    @Override").append(SYMBOL_NEXT_LINE);
-            content.append("    public IDataset addService (" + generateCodeDto.getDtoNameDto() + " dto) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
+            content.append("    public IDataset addService(" + generateCodeDto.getDtoNameDto() + " dto) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
             content.append("        List<" + generateCodeDto.getDtoNameDto() + "> dtoListTmp = JSONArray.parseArray(dto.getDtoList(), " + generateCodeDto.getDtoNameDto() + ".class);").append(SYMBOL_NEXT_LINE);
             content.append("        if (dtoListTmp == null || dtoListTmp.size() < 1) {").append(SYMBOL_NEXT_LINE);
             content.append("            throw new BizBussinessException(\"新增失败，数据错误\");").append(SYMBOL_NEXT_LINE);
@@ -162,7 +168,7 @@ public class GenerateService {
 
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, METHOD_TYPE_EDIT, METHOD_RETURN_PARAM_IDATASET));
             content.append("    @Override").append(SYMBOL_NEXT_LINE);
-            content.append("    public IDataset editService (" + generateCodeDto.getDtoNameDto() + " dto) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
+            content.append("    public IDataset editService(" + generateCodeDto.getDtoNameDto() + " dto) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
             content.append("        List<" + generateCodeDto.getDtoNameDto() + "> dtoListTmp = JSONArray.parseArray(dto.getDtoList(), " + generateCodeDto.getDtoNameDto() + ".class);").append(SYMBOL_NEXT_LINE);
             content.append("        if (dtoListTmp == null || dtoListTmp.size() < 1) {").append(SYMBOL_NEXT_LINE);
             content.append("            throw new BizBussinessException(\"修改失败，数据错误\");").append(SYMBOL_NEXT_LINE);
@@ -175,6 +181,7 @@ public class GenerateService {
             content.append("            session.beginTransaction();").append(SYMBOL_NEXT_LINE);
             content.append("            for (int i = 0; i < dtoListTmp.size(); i++) {").append(SYMBOL_NEXT_LINE);
             content.append("                " + generateCodeDto.getDtoNameDto() + " editDto = dtoListTmp.get(i);").append(SYMBOL_NEXT_LINE);
+            content.append(buildCheckHasAdd(generateCodeDto));
             content.append("                // 检查复核表数据").append(SYMBOL_NEXT_LINE);
             content.append("                checkHasAddAsy(editDto);").append(SYMBOL_NEXT_LINE);
             content.append("                // 工作流交易码").append(SYMBOL_NEXT_LINE);
@@ -197,7 +204,7 @@ public class GenerateService {
 
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, METHOD_TYPE_DELETE, METHOD_RETURN_PARAM_IDATASET));
             content.append("    @Override").append(SYMBOL_NEXT_LINE);
-            content.append("    public IDataset deleteService (" + generateCodeDto.getDtoNameDto() + " dto) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
+            content.append("    public IDataset deleteService(" + generateCodeDto.getDtoNameDto() + " dto) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
             content.append("        List<" + generateCodeDto.getDtoNameDto() + "> dtoListTmp = JSONArray.parseArray(dto.getDtoList(), " + generateCodeDto.getDtoNameDto() + ".class);").append(SYMBOL_NEXT_LINE);
             content.append("        if (dtoListTmp == null || dtoListTmp.size() < 1) {").append(SYMBOL_NEXT_LINE);
             content.append("            throw new BizBussinessException(\"删除失败，数据错误\");").append(SYMBOL_NEXT_LINE);
@@ -230,7 +237,7 @@ public class GenerateService {
 
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, METHOD_TYPE_IMPORT, METHOD_RETURN_PARAM_IDATASET));
             content.append("    @Override").append(SYMBOL_NEXT_LINE);
-            content.append("    public IDataset importService (" + generateCodeDto.getDtoNameDto() + " dto) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
+            content.append("    public IDataset importService(" + generateCodeDto.getDtoNameDto() + " dto) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
             content.append("        List<" + generateCodeDto.getDtoNameDto() + "> dtoListTmp = getData();").append(SYMBOL_NEXT_LINE);
             content.append("        // 生成待复核流水").append(SYMBOL_NEXT_LINE);
             content.append("        String entrySerialNo = PubSequenceFactory.getSequence().getAsyEntrySerialNo();").append(SYMBOL_NEXT_LINE);
@@ -240,6 +247,7 @@ public class GenerateService {
             content.append("            session.beginTransaction();").append(SYMBOL_NEXT_LINE);
             content.append("            for (int i = 0; i < dtoListTmp.size(); i++) {").append(SYMBOL_NEXT_LINE);
             content.append("                " + generateCodeDto.getDtoNameDto() + " impDto = dtoListTmp.get(i);").append(SYMBOL_NEXT_LINE);
+            content.append(convertImportColumn(generateCodeDto.getColumnMap()));
             content.append("                // 检查正表数据").append(SYMBOL_NEXT_LINE);
             content.append("                checkHasAdd(impDto);").append(SYMBOL_NEXT_LINE);
             content.append("                // 检查复核表数据").append(SYMBOL_NEXT_LINE);
@@ -264,17 +272,19 @@ public class GenerateService {
             content.append("    private String getUniqueCondition(" + generateCodeDto.getDtoNameDto() + " dto) {").append(SYMBOL_NEXT_LINE);
             content.append("        StringBuilder condition = new StringBuilder();").append(SYMBOL_NEXT_LINE);
             StringBuilder condition = new StringBuilder("");
-            if (StringUtils.isNotEmpty(generateCodeDto.getPrimaryKey())) {
-                String[] keys = generateCodeDto.getPrimaryKey().split(SYMBOL_COMMA);
-                for (int i = 0; i < keys.length; i++) {
-                    String key = keys[i];
+            if (MapUtils.isNotEmpty(generateCodeDto.getPrimaryKeyMap())) {
+                Iterator<String> iterator = generateCodeDto.getPrimaryKeyMap().keySet().iterator();
+                int index = 0;
+                while (iterator.hasNext()) {
+                    String key = iterator.next();
                     String keyHump = CommonUtils.lineToHump(key);
                     content.append("        String " + keyHump + " = dto.get" + CommonUtils.initialUpper(keyHump) + "();").append(SYMBOL_NEXT_LINE);
-                    if (i != 0) {
+                    if (index != 0) {
                         condition.append("        condition.append(\" and " + key + " = '\" + " + keyHump + " + \"'\");").append(SYMBOL_NEXT_LINE);
                     } else {
                         condition.append("        condition.append(\" " + key + " = '\" + " + keyHump + " + \"'\");").append(SYMBOL_NEXT_LINE);
                     }
+                    index++;
                 }
             }
             condition.append("        return condition.toString();");
@@ -287,7 +297,7 @@ public class GenerateService {
             content.append("        try {").append(SYMBOL_NEXT_LINE);
             content.append("            String sql = \"select count(1) cnt from \" + " + generateCodeDto.getAuditServiceName() + ".TABLE_NAME + \" a where \" + getUniqueCondition(dto);").append(SYMBOL_NEXT_LINE);
             content.append("            if (session.account(sql) > 0) {").append(SYMBOL_NEXT_LINE);
-            content.append("                throw new BizBussinessException(\"已存在该记录\");").append(SYMBOL_NEXT_LINE);
+            content.append("                throw new BizBussinessException(\"已存在该记录" + getRepeatTips(generateCodeDto) + ");").append(SYMBOL_NEXT_LINE);
             content.append("            }").append(SYMBOL_NEXT_LINE);
             content.append("        } catch (SQLException e) {").append(SYMBOL_NEXT_LINE);
             content.append("            LcptLog.getTransLogNoCache().error(\"已存在记录校验出错\", e);").append(SYMBOL_NEXT_LINE);
@@ -297,17 +307,11 @@ public class GenerateService {
 
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "检查复核表数据是否存在未复核流水", SYMBOL_EMPTY, null));
             content.append("    private void checkHasAddAsy(" + generateCodeDto.getDtoNameDto() + " dto) throws BizBussinessException {").append(SYMBOL_NEXT_LINE);
-            content.append(GenerateCommon.getDBSession(generateCodeDto)).append(SYMBOL_NEXT_LINE);
-            content.append("        try {").append(SYMBOL_NEXT_LINE);
-            content.append("            String sql = \"select count(1) cnt from \" + FundPropFavourSetAuditService.AUDIT_TABLE_NAME + \" a where \" + getUniqueCondition(dto) +").append(SYMBOL_NEXT_LINE);
-            content.append("                    \"and (serial_status = ? or serial_status = ? or serial_status = ?)\";").append(SYMBOL_NEXT_LINE);
-            content.append("            if (session.account(sql, BizAuditExtendEntity.STATUS_UNCHECK, BizAuditExtendEntity.STATUS_RETURN, BizAuditExtendEntity.STATUS_SAVE) > 0) {").append(SYMBOL_NEXT_LINE);
-            content.append("                throw new BizBussinessException(\"存在未复核流水\");").append(SYMBOL_NEXT_LINE);
-            content.append("            }").append(SYMBOL_NEXT_LINE);
-            content.append("        } catch (SQLException e) {").append(SYMBOL_NEXT_LINE);
-            content.append("            LcptLog.getTransLogNoCache().error(\"未复核流水校验出错\", e);").append(SYMBOL_NEXT_LINE);
-            content.append("            throw new BizBussinessException(IErrMsg.ERR_DEFAULT, \"未复核流水校验出错\");").append(SYMBOL_NEXT_LINE);
-            content.append("        }").append(SYMBOL_NEXT_LINE);
+            content.append("        FundCommonUtil.checkHasAddAsy(\"select count(1) cnt from \" + " + generateCodeDto.getAuditServiceName() + ".AUDIT_TABLE_NAME + \" a where \" +").append(SYMBOL_NEXT_LINE);
+            content.append("            " + getCheckHasAddAsyColumn(generateCodeDto, STR_1)).append(SYMBOL_NEXT_LINE);
+            content.append("            \"and (serial_status = ? or serial_status = ? or serial_status = ?)\",").append(SYMBOL_NEXT_LINE);
+            content.append("            dto, " + getCheckHasAddAsyColumn(generateCodeDto, STR_2)).append(SYMBOL_NEXT_LINE);
+            content.append("            BizAuditExtendEntity.STATUS_UNCHECK, BizAuditExtendEntity.STATUS_RETURN, BizAuditExtendEntity.STATUS_SAVE);").append(SYMBOL_NEXT_LINE);
             content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
             content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "通用操作数据库方法(包含新增 修改 删除)",
@@ -322,10 +326,10 @@ public class GenerateService {
             Iterator<String> iterator = columnMap.keySet().iterator();
             while (iterator.hasNext()) {
                 String column = iterator.next();
-                if (GenerateCommon.skipColumn(column)) {
+                ColumnInfoDto columnInfo = columnMap.get(column);
+                if (GenerateCommon.skipColumn(columnInfo)) {
                     continue;
                 }
-                ColumnInfoDto columnInfo = columnMap.get(column);
                 content.append("        hss.set(\"" + columnInfo.getColumnUnderline() + "\", " + getAsyRecordColumnValue(columnInfo) + ");").append(SYMBOL_NEXT_LINE);
             }
             content.append("        ApplyConsoleAdapter.setOperationInfo(hss, entrySerialNo, entryOrderNo, BizAuditExtendEntity.STATUS_UNCHECK, operatorMode);").append(SYMBOL_NEXT_LINE);
@@ -348,7 +352,7 @@ public class GenerateService {
     }
 
     private static String getAsyRecordColumnValue(ColumnInfoDto columnInfo) {
-        String column = columnInfo.getColumn();
+        String column = columnInfo.getColumnCode();
         String value = "dto.get" + CommonUtils.initialUpper(column) + "()";
         String columnType = columnInfo.getColumnType();
         if (KEY_COLUMN_TYPE_DATE.equals(columnType) || KEY_COLUMN_TYPE_INTEGER.equals(columnType) ) {
@@ -357,6 +361,19 @@ public class GenerateService {
             value = "StringUtils.isEmpty(" + value + ") ? 0 : Double.valueOf(" + value + ")";
         }
         return value;
+    }
+
+    private static String initDictTranslate(GenerateCodeDto generateCodeDto) {
+        StringBuilder content = new StringBuilder();
+        Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
+        Iterator<String> iterator = tableColumn.keySet().iterator();
+        while (iterator.hasNext()) {
+            ColumnInfoDto columnInfoDto = tableColumn.get(iterator.next());
+            if (StringUtils.isNotEmpty(columnInfoDto.getColumnDict())) {
+                content.append("            DatasetUtil.setValue(dataset, \"" + columnInfoDto.getColumnUnderline() + "_name\", ManageUtil.getDictPrompt(dictMap, IFundDict." + columnInfoDto.getColumnDict() + ", dataset.getString(\"" + columnInfoDto.getColumnUnderline() + "\")));").append(SYMBOL_NEXT_LINE);
+            }
+        }
+        return content.toString();
     }
 
     private static String initTranslate(GenerateCodeDto generateCodeDto, String type) {
@@ -395,7 +412,7 @@ public class GenerateService {
                 content.append("            DatasetUtil.setValue(dataset, \"branch_no_name\", ManageUtil.append(dataset.getString(\"branch_no\"), branchInfo.getBranchName()));").append(SYMBOL_NEXT_LINE);
             }
         }
-        if (STR_2.equals(type) && (tableColumn.containsKey("inClientNo") || tableColumn.containsKey("idType"))) {
+        if (STR_2.equals(type) && (tableColumn.containsKey("clientType") || tableColumn.containsKey("idType"))) {
             content.append("            if (IFundConst.CNST_STR_0.equals(dataset.getString(\"client_type\"))) {").append(SYMBOL_NEXT_LINE);
             content.append("                DatasetUtil.setValue(dataset, \"id_type_name\", ManageUtil.getDictPrompt(dictMap, IFundDict.F_C20023, dataset.getString(\"id_type\")));").append(SYMBOL_NEXT_LINE);
             content.append("            } else if (IFundConst.CNST_STR_1.equals(dataset.getString(\"client_type\"))) {").append(SYMBOL_NEXT_LINE);
@@ -420,7 +437,7 @@ public class GenerateService {
         while (iterator.hasNext()) {
             String column = iterator.next();
             ColumnInfoDto columnInfo = tableColumn.get(column);
-            if (GenerateCommon.skipColumn(column)) {
+            if (GenerateCommon.skipColumn(columnInfo)) {
                 continue;
             }
             content.append("\"a." + columnInfo.getColumnUnderline() + ",\"\n                + ");
@@ -437,11 +454,11 @@ public class GenerateService {
         while (iterator.hasNext()) {
             String column = iterator.next();
             ColumnInfoDto columnInfo = tableColumn.get(column);
-            if (GenerateCommon.skipColumn(column)) {
+            if (GenerateCommon.skipColumn(columnInfo)) {
                 continue;
             }
-            if (KEY_PRD_CODE.equals(column)) {
-                content.append("        String prdCode = dto.getPrdCode();").append(SYMBOL_NEXT_LINE);
+            if (column.contains(KEY_PRD_CODE)) {
+                content.append("        String prdCode = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
                 content.append("        if (!DataUtil.isNullStr(prdCode)) {").append(SYMBOL_NEXT_LINE);
                 content.append("            if (prdCode.contains(IFundConst.CNST_PUNCTUATION_COMMA)) {").append(SYMBOL_NEXT_LINE);
                 content.append("                hss.setWhere(\"a.prd_code in (\" + TaManageUtil.getWhereByList(Arrays.asList(prdCode.split(IFundConst.CNST_PUNCTUATION_COMMA))) + \") \");").append(SYMBOL_NEXT_LINE);
@@ -449,8 +466,8 @@ public class GenerateService {
                 content.append("                hss.setWhere(\"a.prd_code\", prdCode);").append(SYMBOL_NEXT_LINE);
                 content.append("            }").append(SYMBOL_NEXT_LINE);
                 content.append("        }").append(SYMBOL_NEXT_LINE);
-            } else if (KEY_SELLER_CODE.equals(column)) {
-                content.append("        String sellerCode = dto.getSellerCode();").append(SYMBOL_NEXT_LINE);
+            } else if (column.contains(KEY_SELLER_CODE)) {
+                content.append("        String sellerCode = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
                 content.append("        if (!DataUtil.isNullStr(sellerCode)) {").append(SYMBOL_NEXT_LINE);
                 content.append("            if (sellerCode.split(IFundConst.CNST_PUNCTUATION_COMMA).length > 1) {").append(SYMBOL_NEXT_LINE);
                 content.append("                hss.setWhere(\"a.seller_code in (\" + TaManageUtil.getWhereByList(Arrays.asList(sellerCode.split(IFundConst.CNST_PUNCTUATION_COMMA))) + \")\");").append(SYMBOL_NEXT_LINE);
@@ -458,8 +475,8 @@ public class GenerateService {
                 content.append("                hss.setWhere(\"a.seller_code\", sellerCode);").append(SYMBOL_NEXT_LINE);
                 content.append("            }").append(SYMBOL_NEXT_LINE);
                 content.append("        }").append(SYMBOL_NEXT_LINE);
-            } else if (KEY_BRANCH_NO.equals(column)) {
-                content.append("        String branchNo = dto.getBranchNo();").append(SYMBOL_NEXT_LINE);
+            } else if (column.contains(KEY_BRANCH_NO)) {
+                content.append("        String branchNo = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
                 content.append("        if (!DataUtil.isNullStr(branchNo)) {").append(SYMBOL_NEXT_LINE);
                 content.append("            if (branchNo.contains(IFundConst.CNST_PUNCTUATION_COMMA)) {").append(SYMBOL_NEXT_LINE);
                 content.append("                hss.setWhere(\"a.branch_no in (\" + TaManageUtil.getWhereByList(Arrays.asList(branchNo.split(IFundConst.CNST_PUNCTUATION_COMMA))) + \")\");").append(SYMBOL_NEXT_LINE);
@@ -511,4 +528,91 @@ public class GenerateService {
         return content.toString();
     }
 
+    private static String convertImportColumn(Map<String, ColumnInfoDto> columnInfo) {
+        StringBuilder content = new StringBuilder();
+        Iterator<String> iterator = columnInfo.keySet().iterator();
+        while (iterator.hasNext()) {
+            String columnCode = iterator.next();
+            ColumnInfoDto columnInfoDto = columnInfo.get(columnCode);
+            if (GenerateCommon.skipColumn(columnInfoDto)) {
+                continue;
+            }
+            if (columnInfoDto.getColumnName().contains(SYMBOL_PERCENT)) {
+                content.append("                impDto.set" + CommonUtils.initialUpper(columnCode) + "(new BigDecimal(impDto.get" + CommonUtils.initialUpper(columnCode) + "()).divide(new BigDecimal(\"100\")).toString());").append(SYMBOL_NEXT_LINE);
+            }
+        }
+        if (StringUtils.isNotEmpty(content.toString())){
+            return "                // 数据百分比处理\n" + content.toString();
+        }
+        return content.toString();
+    }
+
+    private static String getRepeatTips(GenerateCodeDto generateCodeDto) {
+        StringBuilder content = new StringBuilder(SYMBOL_SPACE);
+        Iterator<String> iterator = generateCodeDto.getPrimaryKeyMap().keySet().iterator();
+        Map<String, ColumnInfoDto> columnInfoDtoMap = generateCodeDto.getColumnMap();
+        while (iterator.hasNext()) {
+            String columnCode = iterator.next();
+            ColumnInfoDto columnInfoDto = columnInfoDtoMap.get(CommonUtils.lineToHump(columnCode));
+            if (GenerateCommon.skipColumn(columnInfoDto)) {
+                continue;
+            }
+            content.append("【" + columnInfoDto.getColumnName() + "】值【\" + dto.get" + CommonUtils.initialUpper(columnInfoDto.getColumnCode()) + "() + \"】，");
+        }
+        int index = content.lastIndexOf("，");
+        if (index != -1) {
+            return content.substring(0, index) + "\"";
+        }
+        return content.toString().trim();
+    }
+
+    private static String getCheckHasAddAsyColumn(GenerateCodeDto generateCodeDto, String type) {
+        StringBuilder content = new StringBuilder();
+        Map<String, ColumnInfoDto> columnInfoDtoMap = generateCodeDto.getColumnMap();
+        Iterator<String> iterator = columnInfoDtoMap.keySet().iterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            String columnCode = iterator.next();
+            ColumnInfoDto columnInfoDto = columnInfoDtoMap.get(columnCode);
+            if (GenerateCommon.skipColumn(columnInfoDto)) {
+                continue;
+            }
+            if (STR_1.equals(type)) {
+                if (index != 0) {
+                    content.append("and ");
+                }
+                content.append(columnInfoDto.getColumnUnderline() + " = ? ");
+            } else {
+                content.append("dto.get" + CommonUtils.initialUpper(columnCode) + "(), ");
+            }
+            index++;
+        }
+        if (STR_1.equals(type)) {
+            return "\"" + content.toString() + "\" + ";
+        }
+        return content.toString();
+    }
+
+    private static String buildCheckHasAdd(GenerateCodeDto generateCodeDto) {
+        StringBuilder content = new StringBuilder();
+        Map<String, String> columnInfoDtoMap = generateCodeDto.getAsyKeyMap();
+        Iterator<String> iterator = columnInfoDtoMap.keySet().iterator();
+        if (MapUtils.isNotEmpty(columnInfoDtoMap)) {
+            int index = 0;
+            content.append("                if (");
+            while (iterator.hasNext()) {
+                String oriColumnCode = iterator.next();
+                String columnCode = columnInfoDtoMap.get(oriColumnCode);
+                if (index !=0) {
+                    content.append("\n                        || ");
+                }
+                content.append("!StringUtils.equals(dto.get" + CommonUtils.initialUpper(oriColumnCode) + "(), dto.get" + CommonUtils.initialUpper(columnCode) + "())");
+                index++;
+            }
+            content.append("){").append(SYMBOL_NEXT_LINE);
+            content.append("                   checkHasAdd(dto);").append(SYMBOL_NEXT_LINE);
+            content.append("                }").append(SYMBOL_NEXT_LINE);
+        }
+        return content.toString();
+    }
 }

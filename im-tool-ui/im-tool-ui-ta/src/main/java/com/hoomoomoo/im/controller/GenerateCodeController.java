@@ -1,12 +1,16 @@
 package com.hoomoomoo.im.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
+import com.hoomoomoo.im.dto.GenerateCodeRecord;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.service.*;
 import com.hoomoomoo.im.utils.*;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,15 +21,16 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import lombok.SneakyThrows;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.GENERATE_CODE;
@@ -54,10 +59,16 @@ public class GenerateCodeController extends BaseController implements Initializa
     private TextField routePath;
 
     @FXML
+    private TextField menuOrder;
+
+    @FXML
     private RadioButton set;
 
     @FXML
     private RadioButton query;
+
+    @FXML
+    private RadioButton queryConfig;
 
     @FXML
     private RadioButton dbPub;
@@ -84,10 +95,10 @@ public class GenerateCodeController extends BaseController implements Initializa
     private TextField menuName;
 
     @FXML
-    private TextArea table;
+    private Button table;
 
     @FXML
-    private TextArea asyTable;
+    private Button asyTable;
 
     @FXML
     private Button columnInfo;
@@ -99,15 +110,29 @@ public class GenerateCodeController extends BaseController implements Initializa
     private Button execute;
 
     @FXML
+    private ComboBox record;
+
+    private Map<String, GenerateCodeRecord> configRecord = new LinkedHashMap<>(16);
+
+    @FXML
     void selectSet(ActionEvent event) {
         OutputUtils.selected(set, true);
         OutputUtils.selected(query, false);
+        OutputUtils.selected(queryConfig, false);
     }
 
     @FXML
     void selectQuery(ActionEvent event) {
         OutputUtils.selected(set, false);
         OutputUtils.selected(query, true);
+        OutputUtils.selected(queryConfig, false);
+    }
+
+    @FXML
+    void selectQueryConfig(ActionEvent event) {
+        OutputUtils.selected(set, false);
+        OutputUtils.selected(query, false);
+        OutputUtils.selected(queryConfig, true);
     }
 
     @FXML
@@ -142,6 +167,32 @@ public class GenerateCodeController extends BaseController implements Initializa
         OutputUtils.selected(dbOrder, true);
     }
 
+    @FXML
+    void selectRecord(ActionEvent event) {
+        String item =  (String)record.getSelectionModel().getSelectedItem();
+        try {
+            AppConfigDto appConfigDto = configRecord.get(item).getAppConfigDto();
+            AppConfigDto appConfigDtoCache = ConfigCache.getConfigCache().getAppConfigDto();
+            GenerateCodeDto generateCodeDto = configRecord.get(item).getAppConfigDto().getGenerateCodeDto();
+            appConfigDtoCache.setGenerateCodeDto(generateCodeDto);
+            OutputUtils.info(javaPath, generateCodeDto.getJavaPath());
+            OutputUtils.info(sqlPath, generateCodeDto.getSqlPath());
+            OutputUtils.info(vuePath, generateCodeDto.getVuePath());
+            OutputUtils.info(routePath, generateCodeDto.getRoutePath());
+            OutputUtils.info(author, generateCodeDto.getAuthor());
+            OutputUtils.info(menuCode, generateCodeDto.getMenuCode());
+            OutputUtils.info(menuName, generateCodeDto.getMenuName());
+            OutputUtils.info(dtoCode, generateCodeDto.getDtoCode());
+            OutputUtils.info(menuOrder, generateCodeDto.getMenuOrder());
+            appConfigDto.setGenerateCodePageType(generateCodeDto.getPageType());
+            appConfigDto.setGenerateCodeDbType(generateCodeDto.getDbType());
+            initComponent(appConfigDto);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(log, e.getMessage());
+        }
+    }
+
     void initGenerateCodeDto() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         GenerateCodeDto generateCodeDto = appConfigDto.getGenerateCodeDto();
@@ -157,12 +208,13 @@ public class GenerateCodeController extends BaseController implements Initializa
         generateCodeDto.setDtoCode(dtoCode.getText());
         generateCodeDto.setMenuCode(menuCode.getText());
         generateCodeDto.setMenuName(menuName.getText());
-        generateCodeDto.setTable(table.getText().trim());
-        generateCodeDto.setAsyTable(asyTable.getText().trim());
+        generateCodeDto.setMenuOrder(menuOrder.getText());
         if (set.isSelected()) {
             generateCodeDto.setPageType(String.valueOf(set.getUserData()));
-        } else {
+        } else if (query.isSelected()){
             generateCodeDto.setPageType(String.valueOf(query.getUserData()));
+        } else {
+            generateCodeDto.setPageType(String.valueOf(queryConfig.getUserData()));
         }
 
         if (dbPub.isSelected()) {
@@ -189,6 +241,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             setProgress(0);
             generateCode(appConfigDto.getGenerateCodeDto());
             updateProgress();
+            buildRecord();
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.getMessage());
@@ -199,26 +252,86 @@ public class GenerateCodeController extends BaseController implements Initializa
     void columnConfig(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            Stage columnStage = appConfigDto.getColumnStage();
-            if (columnStage == null) {
+            Stage stage = appConfigDto.getColumnStage();
+            if (stage == null) {
                 initGenerateCodeDto();
                 InitTable.init(appConfigDto.getGenerateCodeDto());
                 Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_COLUMN_SET_FXML)));
                 Scene scene = new Scene(root);
                 scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
-                columnStage = new Stage();
-                columnStage.getIcons().add(new Image(SET_ICON));
-                columnStage.setScene(scene);
-                columnStage.setTitle("配置字段信息");
-                columnStage.setResizable(false);
-                columnStage.show();
-                appConfigDto.setColumnStage(columnStage);
-                columnStage.setOnCloseRequest(columnEvent -> {
+                stage = new Stage();
+                stage.getIcons().add(new Image(PATH_ICON));
+                stage.setScene(scene);
+                stage.setTitle(CONFIG_COLUMN);
+                stage.setResizable(false);
+                stage.show();
+                appConfigDto.setColumnStage(stage);
+                stage.setOnCloseRequest(columnEvent -> {
                     appConfigDto.getColumnStage().close();
                     appConfigDto.setColumnStage(null);
                 });
             } else {
-                columnStage.toFront();
+                stage.toFront();
+            }
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(log, e.getMessage());
+        }
+    }
+
+    @FXML
+    void tableConfig(ActionEvent event) {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            appConfigDto.setPageType(STR_1);
+            Stage stage = appConfigDto.getTableStage();
+            if (stage == null) {
+                Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+                stage = new Stage();
+                stage.getIcons().add(new Image(PATH_ICON));
+                stage.setScene(scene);
+                stage.setTitle(CONFIG_TABLE);
+                stage.setResizable(false);
+                stage.show();
+                appConfigDto.setTableStage(stage);
+                stage.setOnCloseRequest(columnEvent -> {
+                    appConfigDto.getTableStage().close();
+                    appConfigDto.setTableStage(null);
+                });
+            } else {
+                stage.toFront();
+            }
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(log, e.getMessage());
+        }
+    }
+
+    @FXML
+    void asyTableConfig(ActionEvent event) {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            appConfigDto.setPageType(STR_2);
+            Stage stage = appConfigDto.getAsyTableStage();
+            if (stage == null) {
+                Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+                stage = new Stage();
+                stage.getIcons().add(new Image(PATH_ICON));
+                stage.setScene(scene);
+                stage.setTitle(CONFIG_TABLE);
+                stage.setResizable(false);
+                stage.show();
+                appConfigDto.setAsyTableStage(stage);
+                stage.setOnCloseRequest(columnEvent -> {
+                    appConfigDto.getAsyTableStage().close();
+                    appConfigDto.setAsyTableStage(null);
+                });
+            } else {
+                stage.toFront();
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -305,6 +418,9 @@ public class GenerateCodeController extends BaseController implements Initializa
                 }
 
                 LoggerUtils.writeGenerateCodeInfo(currentDate, fileLog);
+                String record = generateCodeDto.getFunctionName() + SYMBOL_SPACE + SYMBOL_HYPHEN + SYMBOL_SPACE + CommonUtils.getCurrentDateTime2();
+                record += CONFIG_PREFIX + JSONObject.toJSONString(ConfigCache.getConfigCache().getAppConfigDto()) + SYMBOL_NEXT_LINE;
+                FileUtils.writeFile(FileUtils.getFilePath(String.format(PATH_RECORD_LOG, GENERATE_CODE.getLogFolder())), record, true);
                 setProgress(1);
             } catch (Exception e) {
                 LoggerUtils.info(e);
@@ -341,22 +457,9 @@ public class GenerateCodeController extends BaseController implements Initializa
             if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeMenuName())) {
                 OutputUtils.info(menuName, appConfigDto.getGenerateCodeMenuName());
             }
-            String pageType = appConfigDto.getGenerateCodePageType();
-            if (BaseConst.PAGE_TYPE_SET.equals(pageType)) {
-                selectSet(null);
-            } else if (BaseConst.PAGE_TYPE_QUERY.equals(pageType)) {
-                selectQuery(null);
-            }
-            String dbType = appConfigDto.getGenerateCodeDbType();
-            if (BaseConst.DB_TYPE_PUB.equals(dbType)) {
-                selectDbPub(null);
-            } else if (BaseConst.DB_TYPE_TRANS.equals(dbType)) {
-                selectDbTrans(null);
-            } else if (BaseConst.DB_TYPE_TRANS_QUERY.equals(dbType)) {
-                selectDbQuery(null);
-            } else if (BaseConst.DB_TYPE_TRANS_ORDER.equals(dbType)) {
-                selectDbOrder(null);
-            }
+
+            initComponent(appConfigDto);
+
             GenerateCodeDto generateCodeDto = new GenerateCodeDto();
             appConfigDto.setGenerateCodeDto(generateCodeDto);
             generateCodeDto.setJavaPath(appConfigDto.getGenerateCodeJavaPath());
@@ -366,9 +469,68 @@ public class GenerateCodeController extends BaseController implements Initializa
             generateCodeDto.setPageType(appConfigDto.getGenerateCodePageType());
             generateCodeDto.setAuthor(appConfigDto.getGenerateCodeAuthor());
             generateCodeDto.setDbType(appConfigDto.getGenerateCodeDbType());
+
+            buildRecord();
+
+            if (appConfigDto.getGenerateCodeDefaultLast() && record.getItems().size() != 0) {
+                record.getSelectionModel().select(0);
+                selectRecord(null);
+            }
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.getMessage());
+        }
+    }
+
+    private void initComponent(AppConfigDto appConfigDto) {
+        String pageType = appConfigDto.getGenerateCodePageType();
+        if (BaseConst.PAGE_TYPE_SET.equals(pageType)) {
+            selectSet(null);
+        } else if (BaseConst.PAGE_TYPE_QUERY.equals(pageType)) {
+            selectQuery(null);
+        } else if (BaseConst.PAGE_TYPE_QUERY_CONFIG.equals(pageType)) {
+            selectQueryConfig(null);
+        }
+        String dbType = appConfigDto.getGenerateCodeDbType();
+        if (BaseConst.DB_TYPE_PUB.equals(dbType)) {
+            selectDbPub(null);
+        } else if (BaseConst.DB_TYPE_TRANS.equals(dbType)) {
+            selectDbTrans(null);
+        } else if (BaseConst.DB_TYPE_TRANS_QUERY.equals(dbType)) {
+            selectDbQuery(null);
+        } else if (BaseConst.DB_TYPE_TRANS_ORDER.equals(dbType)) {
+            selectDbOrder(null);
+        }
+    }
+
+    private void buildRecord() {
+        List<String> recordList = null;
+        try {
+            recordList = FileUtils.readNormalFile(FileUtils.getFilePath(String.format(PATH_RECORD_LOG, GENERATE_CODE.getLogFolder())), false);
+        } catch (FileNotFoundException e) {
+            LoggerUtils.info(String.format(PATH_RECORD_LOG, GENERATE_CODE.getLogFolder()) + " 不存在");
+        } catch (IOException e) {
+            LoggerUtils.info(e);
+        }
+
+        if (CollectionUtils.isNotEmpty(recordList)) {
+            for (int i=recordList.size() -1; i>=0; i--) {
+                String item = recordList.get(i);
+                String[] element = item.split(CONFIG_PREFIX);
+                if (element.length != 2) {
+                    continue;
+                }
+                if (configRecord.containsKey(element[0])) {
+                    continue;
+                }
+                GenerateCodeRecord generateCodeRecord = new GenerateCodeRecord();
+                generateCodeRecord.setMenuName(element[0]);
+                generateCodeRecord.setAppConfigDto(JSONObject.parseObject(element[1], AppConfigDto.class));
+                configRecord.put(element[0], generateCodeRecord);
+
+                ObservableList recordItems = record.getItems();
+                recordItems.add(element[0]);
+            }
         }
     }
 }

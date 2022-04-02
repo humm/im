@@ -21,7 +21,7 @@ public class GenerateDto {
     public static String init(GenerateCodeDto generateCodeDto) throws IOException {
         String fileName = CommonUtils.initialUpper(generateCodeDto.getDtoCode()) + "DTO";
         String packageName = PACKAGE_JAVA_PREFIX + "dto." + generateCodeDto.getMenuList().get(0)[0] + "." + generateCodeDto.getMenuList().get(1)[0];
-
+        packageName = packageName.toLowerCase();
         generateCodeDto.setDtoNameDto(fileName);
         generateCodeDto.setDtoPackageName(packageName + SYMBOL_POINT + fileName);
 
@@ -42,6 +42,13 @@ public class GenerateDto {
         Iterator<String> iterator = columnMap.keySet().iterator();
         while (iterator.hasNext()) {
             String column = iterator.next();
+            content.append("    private String " + column + ";").append(SYMBOL_NEXT_LINE);
+        }
+
+        Map<String, String> asyKeyMap = generateCodeDto.getAsyKeyMap();
+        Iterator<String> asyIterator = asyKeyMap.keySet().iterator();
+        while (asyIterator.hasNext()) {
+            String column = asyIterator.next();
             content.append("    private String " + column + ";").append(SYMBOL_NEXT_LINE);
         }
 

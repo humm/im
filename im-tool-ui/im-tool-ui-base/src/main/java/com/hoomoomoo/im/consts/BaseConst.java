@@ -30,6 +30,12 @@ public class BaseConst {
     public static final String STR_7 = "7";
     public static final String STR_8 = "8";
     public static final String STR_9 = "9";
+    public static final String STR_10 = "10";
+    public static final String STR_11 = "11";
+    public static final String STR_12 = "12";
+    public static final String STR_13 = "13";
+    public static final String STR_14 = "14";
+    public static final String STR_15 = "15";
     public static final String STR_69 = "69";
     public static final String STR_145 = "145";
     public static final String STR_549656 = "549656";
@@ -61,9 +67,10 @@ public class BaseConst {
     public static final String KEY_FILE = "file:";
     public static final String KEY_APP_LOG = "appLog";
     public static final String KEY_DELETE = "delete";
-    public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP = "transCodeAndSubTransCode";
+    public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE = "transCodeAndSubTransCode";
     public static final String KEY_TA_CODE = "taCode";
-    public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE = "trans_code_and_sub_trans_code";
+    public static final String KEY_TA_CODE_UNDERLINE = "ta_code";
+    public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE_UNDERLINE = "trans_code_and_sub_trans_code";
     public static final String KEY_PRD_CODE = "prdCode";
     public static final String KEY_SELLER_CODE = "sellerCode";
     public static final String KEY_BRANCH_NO = "branchNo";
@@ -74,6 +81,9 @@ public class BaseConst {
     public static final String KEY_HREF = "href";
     public static final String KEY_ORDER_ID = "orderId";
     public static final String KEY_PRODUCT_ID = "productId";
+    public static final String KEY_BEGIN_DATE = "begin_date";
+    public static final String KEY_ORI_BEG_DATE = "ori_beg_date";
+    public static final String KEY_ORI = "ori";
     public static final String KEY_SORT = "sort";
     public static final String KEY_SCORE = "score";
     public static final String KEY_SAVE_STATUS = "saveStatus";
@@ -83,11 +93,16 @@ public class BaseConst {
     public static final String KEY_UNICK = "unick";
     public static final String KEY_LIB = "/lib";
     public static final String KEY_PRD_CODE_NAME = "基金名称";
+    public static final String KEY_PRIMARY_KEY = "primary key";
+    public static final String KEY_DATE = "Date";
+    public static final String KEY_NOT_NULL = "not null,";
 
     public static final String KEY_COLUMN_TYPE_DATE = "date";
     public static final String KEY_COLUMN_TYPE_INTEGER = "integer";
     public static final String KEY_COLUMN_TYPE_NUMBER = "number";
     public static final String KEY_COLUMN_TYPE_VARCHAR2 = "varchar2";
+
+    public static final String KEY_ORDER_TYPE_DESC = "desc";
 
     public static final String METHOD_QUERY_DATA = "queryData";
     public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
@@ -154,6 +169,8 @@ public class BaseConst {
     public static final String SYMBOL_NEXT_LINE = "\n";
     public static final String SYMBOL_NEXT_LINE_2 = "\n\n";
     public static final String SYMBOL_PERCENT = "%";
+    public static final String SYMBOL_QUOTES = "\"";
+    public static final String SYMBOL_SINGLE_QUOTES = "\"";
 
     public final static String ANNOTATION_TYPE_NORMAL = "--";
     public final static String ANNOTATION_TYPE_CONFIG = "#";
@@ -197,6 +214,10 @@ public class BaseConst {
     public static final String MSG_SVN_REALTIME_STAT = "%s  %s  %s  %s";
     public static final String MSG_EXECUTE = "[%s]执行中,请稍后再试";
 
+    public static final String CONFIG_COLUMN = "配置字段信息";
+    public static final String CONFIG_TABLE = "配置正式表结构";
+
+
 
     public static final String CONFIG_PREFIX = "#################### ";
 
@@ -216,9 +237,11 @@ public class BaseConst {
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
     public static final String PATH_STARTER_CSS = "/conf/style/progressIndicator.css";
     public static final String PATH_COLUMN_SET_FXML = "/conf/fxml/columnSet.fxml";
+    public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
+    public static final String PATH_RECORD_LOG = "/records/%s.record";
 
     public static final String PACKAGE_JAVA_PREFIX = "com.hundsun.lcpt.fund.";
-    public static final String PATH_JAVA_PREFIX = "/ta-web-manager-fund-core/src/main/java/";
+    public static final String PATH_JAVA_PREFIX = "/src/main/java/";
     public static final String PACKAGE_VUE_PREFIX = "src.biz.console-fund-ta-vue.views.";
 
     public static final String METHOD_RETURN_PARAM_IDATASET = "com.hundsun.jres.interfaces.share.dataset.IDataset";
@@ -260,6 +283,7 @@ public class BaseConst {
 
     public static final String PAGE_TYPE_SET = "1";
     public static final String PAGE_TYPE_QUERY = "2";
+    public static final String PAGE_TYPE_QUERY_CONFIG = "3";
 
     public static final Integer JD_APPRAISE_LENGTH_MIN = 30;
     public static final Integer JD_APPRAISE_LENGTH_MAX = 450;

@@ -1,11 +1,9 @@
 package com.hoomoomoo.im.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -39,12 +37,25 @@ public class InitTable {
         if (StringUtils.isNotEmpty(asyTable)) {
             Map<String, ColumnInfoDto> asyTableColumn = getColumn(generateCodeDto, asyTable, false);
             generateCodeDto.setAsyColumnMap(asyTableColumn);
+
+            Iterator<String> iterator = asyTableColumn.keySet().iterator();
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                if (key.startsWith(KEY_ORI)) {
+                    String sourceKey = CommonUtils.initialLower(key.substring(3));
+                    if (tableColumn.get(sourceKey) != null) {
+                        generateCodeDto.getAsyKeyMap().put(key, sourceKey);
+                    } else if (key.equals(KEY_ORI_BEG_DATE)) {
+                        generateCodeDto.getAsyKeyMap().put(key, KEY_BEGIN_DATE);
+                    }
+                }
+            }
         }
 
         List<ColumnInfoDto> column = generateCodeDto.getColumn();
         if (CollectionUtils.isNotEmpty(column)) {
             for (ColumnInfoDto item : column) {
-                String columnCode = item.getColumn();
+                String columnCode = item.getColumnCode();
                 ColumnInfoDto tableColumnConfig = tableColumn.get(columnCode);
                 if (tableColumnConfig != null) {
                     tableColumn.get(columnCode).setColumnName(item.getColumnName());
@@ -53,6 +64,13 @@ public class InitTable {
                     tableColumn.get(columnCode).setColumnRequired(item.getColumnRequired());
                     tableColumn.get(columnCode).setColumnDate(item.getColumnDate());
                     tableColumn.get(columnCode).setColumnWidth(item.getColumnWidth());
+                    tableColumn.get(columnCode).setColumnQuery(item.getColumnQuery());
+                    tableColumn.get(columnCode).setColumnUpdate(item.getColumnUpdate());
+                    tableColumn.get(columnCode).setColumnQueryOrder(item.getColumnQueryOrder());
+                    tableColumn.get(columnCode).setColumnQueryOrderType(item.getColumnQueryOrderType());
+                    tableColumn.get(columnCode).setColumnBatchUpdate(item.getColumnBatchUpdate());
+                    tableColumn.get(columnCode).setColumnDefault(item.getColumnDefault());
+                    tableColumn.get(columnCode).setColumnQueryStat(item.getColumnQueryStat());
                     if (StringUtils.isNotBlank(item.getColumnOrder())) {
                         tableColumn.get(columnCode).setColumnOrder(item.getColumnOrder());
                     }
@@ -64,7 +82,8 @@ public class InitTable {
             }
         }
 
-        generateCodeDto.setColumnMap(order(tableColumn));
+        generateCodeDto.setColumnMap(orderColumn(tableColumn));
+        generateCodeDto.setColumnQueryOrder(orderColumnQuery(tableColumn));
 
         String[] menuCode = generateCodeDto.getMenuCode().split(SYMBOL_POINT_SLASH);
         String[] menuName = generateCodeDto.getMenuName().split(SYMBOL_POINT_SLASH);
@@ -84,14 +103,14 @@ public class InitTable {
         Map<String, ColumnInfoDto> columnMap = new LinkedHashMap<>(16);
         int tableStart = table.indexOf(SYMBOL_BRACKETS_LEFT);
         int tableEnd = table.lastIndexOf(SYMBOL_BRACKETS_RIGHT);
-        String[] columnList = table.substring(tableStart + 1, tableEnd).split("not null,");
+        String[] columnList = table.substring(tableStart + 1, tableEnd).split(KEY_NOT_NULL);
         if (columnList == null || table.length() == 0) {
             throw new Exception("未获取到数据表字段信息");
         }
         int orderNo = 0;
         for (int i = 0; i < columnList.length; i++) {
             String item = columnList[i].trim();
-            if (i == columnList.length - 1 && item.contains("primary key")) {
+            if (i == columnList.length - 1 && item.contains(KEY_PRIMARY_KEY)) {
                 if (primaryKey) {
                     int keyStart = item.indexOf(SYMBOL_BRACKETS_LEFT);
                     int keyEnd = item.lastIndexOf(SYMBOL_BRACKETS_RIGHT);
@@ -100,6 +119,9 @@ public class InitTable {
                     String[] keyArr = key.replaceAll(SYMBOL_S_SLASH, SYMBOL_EMPTY).split(SYMBOL_COMMA);
                     if (keyArr != null) {
                         for (String itemKey : keyArr) {
+                            if (GenerateCommon.skipColumn(columnMap.get(CommonUtils.lineToHump(itemKey)), false)) {
+                                continue;
+                            }
                             generateCodeDto.getPrimaryKeyMap().put(itemKey, itemKey);
                         }
                     }
@@ -117,21 +139,21 @@ public class InitTable {
             if (columnType.indexOf(SYMBOL_COMMA) != -1) {
                 precision = columnType.substring(columnType.indexOf(SYMBOL_COMMA) + 1, columnType.indexOf(SYMBOL_BRACKETS_RIGHT));
             }
-            String column = CommonUtils.lineToHump(columnUnderline);
+            String column = CommonUtils.lineToHump(columnUnderline.toLowerCase());
             if (KEY_TA_CODE.equals(column)) {
                 continue;
             }
             ColumnInfoDto columnInfo = new ColumnInfoDto();
-            columnInfo.setColumn(column);
+            columnInfo.setColumnCode(column);
             columnInfo.setColumnUnderline(columnUnderline);
             String columnTypeLast = columnType.split("\\(")[0].toLowerCase();
-            if (KEY_COLUMN_TYPE_INTEGER.equals(columnTypeLast) && column.endsWith("Date")) {
+            if (KEY_COLUMN_TYPE_INTEGER.equals(columnTypeLast) && column.endsWith(KEY_DATE)) {
                 columnTypeLast = KEY_COLUMN_TYPE_DATE;
                 columnInfo.setColumnDate(STR_1);
             }
             orderNo += 10;
             int columnWidth = 150;
-            if (KEY_PRD_CODE.equals(column)) {
+            if (column.contains(KEY_PRD_CODE)) {
                 columnWidth = 200;
             }
             columnInfo.setColumnWidth(String.valueOf(columnWidth));
@@ -144,24 +166,49 @@ public class InitTable {
         }
 
         ColumnInfoDto transCode = new ColumnInfoDto();
-        transCode.setColumn(KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP);
-        transCode.setColumnUnderline(KEY_TRANS_CODE_AND_SUB_TRANS_CODE);
+        transCode.setColumnCode(KEY_TRANS_CODE_AND_SUB_TRANS_CODE);
+        transCode.setColumnUnderline(KEY_TRANS_CODE_AND_SUB_TRANS_CODE_UNDERLINE);
         transCode.setColumnType(KEY_COLUMN_TYPE_VARCHAR2);
         transCode.setColumnPrecision(SYMBOL_EMPTY);
         transCode.setColumnOrder(String.valueOf(orderNo + 10));
         transCode.setColumnWidth(String.valueOf(150));
-        columnMap.put(KEY_TRANS_CODE_AND_SUB_TRANS_CODE_HUMP, transCode);
+        columnMap.put(KEY_TRANS_CODE_AND_SUB_TRANS_CODE, transCode);
 
         return columnMap;
     }
 
-    private static LinkedHashMap<String, ColumnInfoDto> order(Map<String, ColumnInfoDto> request) {
+    private static LinkedHashMap<String, ColumnInfoDto> orderColumn(Map<String, ColumnInfoDto> request) {
         LinkedHashMap<String, ColumnInfoDto> result = new LinkedHashMap<>(request.size());
         List<ColumnInfoDto> list = new ArrayList<>(request.values());
         Collections.sort(list);
         for (ColumnInfoDto item : list) {
-            result.put(item.getColumn(), item);
+            result.put(item.getColumnCode(), item);
         }
         return result;
+    }
+
+    private static String orderColumnQuery(Map<String, ColumnInfoDto> request) {
+        StringBuilder content = new StringBuilder();
+        List<ColumnInfoDto> list = new ArrayList<>(request.values());
+        Map<String, String> column = new TreeMap<>((o1, o2) -> Integer.valueOf(o1).compareTo(Integer.valueOf(o2)));
+        for (ColumnInfoDto item : list) {
+            String columnUnderline = item.getColumnUnderline();
+            String columnQueryOrder = item.getColumnQueryOrder();
+            if (StringUtils.isNotBlank(columnQueryOrder)) {
+                String order = columnUnderline;
+                if (STR_1.equals(item.getColumnQueryOrderType())) {
+                    order += SYMBOL_SPACE + KEY_ORDER_TYPE_DESC;
+                }
+                column.put(columnQueryOrder, order);
+            }
+        }
+        List<String> columnOrder = new ArrayList<>(column.values());
+        for (String item : columnOrder) {
+            content.append(item).append(SYMBOL_COMMA).append(SYMBOL_SPACE);
+        }
+        if (StringUtils.isEmpty(content)) {
+            return content.toString();
+        }
+        return SYMBOL_QUOTES + content.substring(0, content.lastIndexOf(SYMBOL_COMMA)) + SYMBOL_QUOTES;
     }
 }

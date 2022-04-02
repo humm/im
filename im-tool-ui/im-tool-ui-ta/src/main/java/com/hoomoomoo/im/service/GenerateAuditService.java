@@ -3,8 +3,10 @@ package com.hoomoomoo.im.service;
 import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Iterator;
 import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -64,14 +66,16 @@ public class GenerateAuditService {
 
         content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "获得唯一记录的查询条件(主键或唯一索引)", METHOD_RETURN_PARAM_STRING, METHOD_REQUEST_PARAM_STRING));
         content.append("    private String getUniqueCondition(IDataset dataset) {").append(SYMBOL_NEXT_LINE);
-        content.append("        StringBuilder deleteCondition = new StringBuilder();").append(SYMBOL_NEXT_LINE);
-        StringBuilder deleteCondition = new StringBuilder();
+        content.append("        StringBuilder condition = new StringBuilder();").append(SYMBOL_NEXT_LINE);
+        StringBuilder condition = new StringBuilder();
         Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
         Map<String, ColumnInfoDto> asyTableColumn = generateCodeDto.getAsyColumnMap();
-        if (StringUtils.isNotEmpty(generateCodeDto.getPrimaryKey())) {
-            String[] keys = generateCodeDto.getPrimaryKey().split(SYMBOL_COMMA);
-            for (int i = 0; i < keys.length; i++) {
-                String key = keys[i];
+        if (MapUtils.isNotEmpty(generateCodeDto.getPrimaryKeyMap())) {
+            Iterator<String> iterator = generateCodeDto.getPrimaryKeyMap().keySet().iterator();
+            int index = 0;
+            while (iterator.hasNext()) {
+                String key = iterator.next();
+                String sourceKey = key;
                 String keyHump = CommonUtils.lineToHump(key);
                 String oriKey = "ori_" + key;
                 String oriKeykeyHump = CommonUtils.lineToHump(oriKey);
@@ -80,15 +84,16 @@ public class GenerateAuditService {
                     keyHump = oriKeykeyHump;
                 }
                 content.append("        String " + keyHump + " = dataset.getString(\"" + key + "\");").append(SYMBOL_NEXT_LINE);
-                if (i != 0) {
-                    deleteCondition.append("        deleteCondition.append(\" and " + key + " = '\" + " + keyHump + " + \"'\");").append(SYMBOL_NEXT_LINE);
+                if (index != 0) {
+                    condition.append("        condition.append(\" and " + sourceKey + " = '\" + " + keyHump + " + \"'\");").append(SYMBOL_NEXT_LINE);
                 } else {
-                    deleteCondition.append("        deleteCondition.append(\" " + key + " = '\" + " + keyHump + " + \"'\");").append(SYMBOL_NEXT_LINE);
+                    condition.append("        condition.append(\" " + sourceKey + " = '\" + " + keyHump + " + \"'\");").append(SYMBOL_NEXT_LINE);
                 }
+                index++;
             }
         }
-        deleteCondition.append("        return deleteCondition.toString();");
-        content.append(deleteCondition.toString()).append(SYMBOL_NEXT_LINE);
+        condition.append("        return condition.toString();");
+        content.append(condition.toString()).append(SYMBOL_NEXT_LINE);
         content.append("    }").append(SYMBOL_NEXT_LINE_2);
 
         content.append(GenerateCommon.generateMethodDescribe(generateCodeDto, null, "复核通过后处理", SYMBOL_EMPTY,

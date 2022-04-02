@@ -27,7 +27,8 @@ public class GenerateCodeDto {
     private String asyTable;
     private Map<String, ColumnInfoDto> columnMap;
     private Map<String, ColumnInfoDto> asyColumnMap;
-    private Map<String, String> primaryKeyMap;
+    private LinkedHashMap<String, String> primaryKeyMap;
+    private LinkedHashMap<String, String> asyKeyMap;
     private List<String[]> menuList;
     private String dtoPackageName;
     private String dtoNameDto;
@@ -50,11 +51,14 @@ public class GenerateCodeDto {
     private String pageType;
     private String functionCode;
     private String functionName;
+    private String menuOrder;
+    private String columnQueryOrder;
 
     public GenerateCodeDto() {
         this.columnMap = new LinkedHashMap<>(16);
         this.asyColumnMap = new LinkedHashMap<>(16);
-        this.primaryKeyMap = new HashMap<>(16);
+        this.primaryKeyMap = new LinkedHashMap<>(16);
+        this.asyKeyMap = new LinkedHashMap<>(16);
         this.dtoPackageName = SYMBOL_EMPTY;
         this.dtoNameDto = SYMBOL_EMPTY;
         this.interfacePackageName = SYMBOL_EMPTY;
@@ -72,6 +76,7 @@ public class GenerateCodeDto {
         this.menuList = new ArrayList<>();
         this.functionCode = SYMBOL_EMPTY;
         this.functionName = SYMBOL_EMPTY;
+        this.menuOrder = SYMBOL_EMPTY;
     }
 
 }

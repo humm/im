@@ -315,4 +315,23 @@ public class CommonUtils {
         return functionConfigList;
     }
 
+    public static boolean isNumber(String val) {
+        if (StringUtils.isBlank(val)) {
+            return true;
+        }
+        try {
+            Integer.valueOf(val);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void sortFunctionDtoList(List<FunctionDto> functionDtoList) {
+        Collections.sort(functionDtoList, (o1, o2) -> {
+            String submitTimes1 = StringUtils.isBlank(o1.getSubmitTimes()) ? STR_0 : o1.getSubmitTimes().trim();
+            String submitTimes2 = StringUtils.isBlank(o2.getSubmitTimes()) ? STR_0 : o2.getSubmitTimes().trim();
+            return Integer.valueOf(submitTimes2) - Integer.valueOf(submitTimes1);
+        });
+    }
 }
