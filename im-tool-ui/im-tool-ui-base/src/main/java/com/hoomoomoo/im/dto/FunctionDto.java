@@ -29,6 +29,5 @@ public class FunctionDto extends BaseDto{
     public FunctionDto(String functionCode, String functionName) {
         this.functionCode = functionCode;
         this.functionName = functionName;
-        this.lastTime = STR_0;
     }
 }

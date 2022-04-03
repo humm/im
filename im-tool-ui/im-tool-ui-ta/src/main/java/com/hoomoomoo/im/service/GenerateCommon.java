@@ -66,7 +66,7 @@ public class GenerateCommon {
             requestParam = new String[]{"dto"};
         }
         if (StringUtils.isEmpty(describe)) {
-            describe = generateCodeDto.getFunctionName() + "-" + operateType;
+            describe = generateCodeDto.getFunctionName() + SYMBOL_HYPHEN + operateType;
         }
         StringBuilder content = new StringBuilder();
         content.append("    /**").append(SYMBOL_NEXT_LINE);
@@ -206,6 +206,18 @@ public class GenerateCommon {
                     break;
                 case STR_3:
                     if(STR_1.equals(columnInfo.getColumnBatchUpdate())) {
+                        hasFlag = true;
+                        break;
+                    }
+                    break;
+                case STR_4:
+                    if(STR_1.equals(columnInfo.getColumnMultiSingle())) {
+                        hasFlag = true;
+                        break;
+                    }
+                    break;
+                case STR_5:
+                    if(STR_1.equals(columnInfo.getColumnMulti())) {
                         hasFlag = true;
                         break;
                     }

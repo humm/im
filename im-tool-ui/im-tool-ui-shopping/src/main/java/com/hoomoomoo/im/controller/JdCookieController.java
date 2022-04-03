@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.CONFIG_SET;
 import static com.hoomoomoo.im.consts.FunctionConfig.JD_COOKIE;
 
 /**
@@ -48,7 +47,7 @@ public class JdCookieController implements Initializable {
         String confPath = FileUtils.getFilePath(PATH_JD_COOKIE);
         FileUtils.writeFile(confPath, content, false);
         ConfigCache.initCache();
-        OutputUtils.info(tips, NAME_APPLICATION_SAVE_SUCCESS + CommonUtils.getCurrentDateTime8(new Date()));
+        OutputUtils.info(tips, NAME_SAVE_SUCCESS + CommonUtils.getCurrentDateTime8(new Date()));
         LoggerUtils.writeConfigSetInfo(JD_COOKIE.getCode());
         submit.setDisable(false);
     }

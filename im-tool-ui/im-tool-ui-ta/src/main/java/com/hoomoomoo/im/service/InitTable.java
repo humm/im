@@ -71,6 +71,7 @@ public class InitTable {
                     tableColumn.get(columnCode).setColumnBatchUpdate(item.getColumnBatchUpdate());
                     tableColumn.get(columnCode).setColumnDefault(item.getColumnDefault());
                     tableColumn.get(columnCode).setColumnQueryStat(item.getColumnQueryStat());
+                    tableColumn.get(columnCode).setColumnMultiSingle(item.getColumnMultiSingle());
                     if (StringUtils.isNotBlank(item.getColumnOrder())) {
                         tableColumn.get(columnCode).setColumnOrder(item.getColumnOrder());
                     }

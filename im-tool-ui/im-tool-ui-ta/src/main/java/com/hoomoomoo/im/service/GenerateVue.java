@@ -153,7 +153,11 @@ public class GenerateVue {
         content.append("    dateRender,").append(SYMBOL_NEXT_LINE);
         content.append("    amountRender,").append(SYMBOL_NEXT_LINE);
         if (GenerateCommon.hasComponent(generateCodeDto, STR_2)) {
-            content.append("    percentRender").append(SYMBOL_NEXT_LINE);
+            content.append("    percentRender,").append(SYMBOL_NEXT_LINE);
+        }
+        if (GenerateCommon.hasComponent(generateCodeDto, STR_5) && !GenerateCommon.hasComponent(generateCodeDto, STR_4)) {
+            content.append("    getJsonCartesian,").append(SYMBOL_NEXT_LINE);
+            content.append("    multiCartesian,").append(SYMBOL_NEXT_LINE);
         }
         content.append("  } from '@ConsoleFundTaVue/api/bizSys/fundCommonUtil'").append(SYMBOL_NEXT_LINE);
         content.append("  import uploadExcel from '@ConsoleFundTaVue/components/uploadExcel'").append(SYMBOL_NEXT_LINE);
@@ -330,8 +334,13 @@ public class GenerateVue {
         content.append("          if (valid) {").append(SYMBOL_NEXT_LINE);
         content.append("            this.spinShow = !this.spinShow").append(SYMBOL_NEXT_LINE);
         content.append("            const postData = Object.assign({}, this.addForm)").append(SYMBOL_NEXT_LINE);
-        content.append(convertSubmitColumn(generateCodeDto.getColumnMap())).append(SYMBOL_NEXT_LINE);
-        content.append("            fundPost(this, {dtoList: '[' + JSON.stringify(postData) + ']', multTaCode: postData.multTaCode, feEditType: 'ADD'}, '" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Add').then(").append(SYMBOL_NEXT_LINE);
+        content.append(convertSubmitColumn(generateCodeDto.getColumnMap()));
+        if (GenerateCommon.hasComponent(generateCodeDto, STR_5) && !GenerateCommon.hasComponent(generateCodeDto, STR_4)) {
+            content.append("            const dtoListData = JSON.stringify(multiCartesian(getJsonCartesian(postData)))").append(SYMBOL_NEXT_LINE);
+        } else {
+            content.append("            const dtoListData = '[' + JSON.stringify(postData) + ']'").append(SYMBOL_NEXT_LINE);
+        }
+        content.append("            fundPost(this, {dtoList: dtoListData, multTaCode: postData.multTaCode, feEditType: 'ADD'}, '" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Add').then(").append(SYMBOL_NEXT_LINE);
         content.append("              ({data}) => {").append(SYMBOL_NEXT_LINE);
         content.append("                this.spinShow = !this.spinShow").append(SYMBOL_NEXT_LINE);
         content.append("                if (data.returnCode === '0') {").append(SYMBOL_NEXT_LINE);
@@ -362,7 +371,7 @@ public class GenerateVue {
         content.append(getUpdateColumn(generateCodeDto.getColumnMap())).append(SYMBOL_NEXT_LINE);
         content.append("          ])").append(SYMBOL_NEXT_LINE);
         content.append("        )").append(SYMBOL_NEXT_LINE);
-        content.append(convertShowColumn(generateCodeDto.getColumnMap())).append(SYMBOL_NEXT_LINE);
+        content.append(convertShowColumn(generateCodeDto.getColumnMap()));
         content.append("        this.updateForm = editObj").append(SYMBOL_NEXT_LINE);
         content.append("      },").append(SYMBOL_NEXT_LINE);
         content.append("      // 取消修改").append(SYMBOL_NEXT_LINE);
@@ -375,7 +384,7 @@ public class GenerateVue {
         content.append("          if (valid) {").append(SYMBOL_NEXT_LINE);
         content.append("            this.spinEditShow = !this.spinEditShow").append(SYMBOL_NEXT_LINE);
         content.append("            const postData = Object.assign({}, this.updateForm)").append(SYMBOL_NEXT_LINE);
-        content.append(convertSubmitColumn(generateCodeDto.getColumnMap())).append(SYMBOL_NEXT_LINE);
+        content.append(convertSubmitColumn(generateCodeDto.getColumnMap()));
         content.append("            fundPost(this, {dtoList: '[' + JSON.stringify(postData) + ']', multTaCode: postData.multTaCode, feEditType: 'EDIT'},").append(SYMBOL_NEXT_LINE);
         content.append("              '" + generateCodeDto.getFunctionCode() + "/" + generateCodeDto.getFunctionCode() + "Edit').then(").append(SYMBOL_NEXT_LINE);
         content.append("              ({data}) => {").append(SYMBOL_NEXT_LINE);
@@ -628,6 +637,10 @@ public class GenerateVue {
         if (columnCode.startsWith(KEY_BATCH_UPDATE_FORM) && !columnBatchUpdate(item)) {
            return;
         }
+        String dict = "/fundPrdCodeList/fundPrdCodeListQuery";
+        if (StringUtils.isNotBlank(item.getColumnDict())) {
+            dict = item.getColumnDict();
+        }
         String columnMulti = item.getColumnMulti();
         addForm.append("          <dialog-select").append(SYMBOL_NEXT_LINE);
         addForm.append("            v-model='" + columnCode + "'").append(SYMBOL_NEXT_LINE);
@@ -639,8 +652,8 @@ public class GenerateVue {
             addForm.append("            disabled").append(SYMBOL_NEXT_LINE);
         }
         addForm.append("            type='prd'").append(SYMBOL_NEXT_LINE);
-        addForm.append("            :params=\"{ prdStatus: '6,9'}\"").append(SYMBOL_NEXT_LINE);
-        addForm.append("            apiHome=\"console-fund-ta-vue\" interFace=\"/fundPrdCodeList/fundPrdCodeListQuery\"").append(SYMBOL_NEXT_LINE);
+        addForm.append("            :params=\"{prdStatus: '6,9'}\"").append(SYMBOL_NEXT_LINE);
+        addForm.append("            apiHome=\"console-fund-ta-vue\" interFace=\"" + dict + "\"").append(SYMBOL_NEXT_LINE);
         addForm.append("            :alias=\"{value: 'prdCode', label: 'prdCode:prdName'}\"/>").append(SYMBOL_NEXT_LINE);
     }
 
@@ -662,6 +675,10 @@ public class GenerateVue {
         if (columnCode.startsWith(KEY_BATCH_UPDATE_FORM) && !columnBatchUpdate(item)) {
             return;
         }
+        String dict = "/fundSellerCodeList/fundSellerCodeListQuery";
+        if (StringUtils.isNotBlank(item.getColumnDict())) {
+            dict = item.getColumnDict();
+        }
         String columnMulti = item.getColumnMulti();
         addForm.append("          <simple-auto-select").append(SYMBOL_NEXT_LINE);
         addForm.append("            v-model='" + columnCode + "'").append(SYMBOL_NEXT_LINE);
@@ -676,7 +693,7 @@ public class GenerateVue {
         if (columnDisabled(addForm, item)) {
             addForm.append("            disabled").append(SYMBOL_NEXT_LINE);
         }
-        addForm.append("            apiHome=\"console-fund-ta-vue\" interFace=\"/fundSellerCodeList/fundSellerCodeListQuery\"").append(SYMBOL_NEXT_LINE);
+        addForm.append("            apiHome=\"console-fund-ta-vue\" interFace=\"" + dict + "\"").append(SYMBOL_NEXT_LINE);
         addForm.append("            :alias=\"{value: 'sellerCode', label: 'sellerCode:sellerName'}\"/>").append(SYMBOL_NEXT_LINE);
     }
 
@@ -699,6 +716,10 @@ public class GenerateVue {
         if (columnCode.startsWith(KEY_BATCH_UPDATE_FORM) && !columnBatchUpdate(item)) {
             return;
         }
+        String dict = "/fundNetInfoList/fundNetInfoListQuery";
+        if (StringUtils.isNotBlank(item.getColumnDict())) {
+            dict = item.getColumnDict();
+        }
         String columnMulti = item.getColumnMulti();
         addForm.append("          <simple-auto-select").append(SYMBOL_NEXT_LINE);
         addForm.append("            v-model='" + columnCode + "'").append(SYMBOL_NEXT_LINE);
@@ -714,7 +735,7 @@ public class GenerateVue {
             addForm.append("            disabled").append(SYMBOL_NEXT_LINE);
         }
         addForm.append("            :params=\"{'sellerCode':" + columnCode.replace(KEY_BRANCH_NO, KEY_SELLER_CODE) + "}\"").append(SYMBOL_NEXT_LINE);
-        addForm.append("            apiHome=\"console-fund-ta-vue\" interFace=\"/fundNetInfoList/fundNetInfoListQuery\"").append(SYMBOL_NEXT_LINE);
+        addForm.append("            apiHome=\"console-fund-ta-vue\" interFace=\"" + dict + "\"").append(SYMBOL_NEXT_LINE);
         addForm.append("            :alias=\"{value: 'branchNo', label: 'branchNo:branchName'}\"/>").append(SYMBOL_NEXT_LINE);
     }
 
@@ -1002,7 +1023,7 @@ public class GenerateVue {
         while (iterator.hasNext()) {
             String columnCode = iterator.next();
             ColumnInfoDto columnInfoDto = columnInfo.get(columnCode);
-            if (columnBatchUpdate(columnInfoDto) || GenerateCommon.skipColumn(columnInfo.get(columnCode))) {
+            if (!columnBatchUpdate(columnInfoDto) || GenerateCommon.skipColumn(columnInfo.get(columnCode))) {
                 continue;
             }
             if (STR_1.equals(columnInfoDto.getColumnDate())) {

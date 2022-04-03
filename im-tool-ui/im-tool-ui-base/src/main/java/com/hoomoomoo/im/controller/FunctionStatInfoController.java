@@ -60,7 +60,6 @@ public class FunctionStatInfoController implements Initializable {
         }
         int num = functionDtoList.size();
 
-
         OutputUtils.info(title, "授权功能  " + num);
         for (int i = 0; i < functionDtoList.size(); i++) {
             FunctionDto functionDto = functionDtoList.get(i);
@@ -97,7 +96,7 @@ public class FunctionStatInfoController implements Initializable {
         }
         String content = logStat.get(type);
         if (content.contains(BaseConst.SYMBOL_COLON)) {
-            return content.split(BaseConst.SYMBOL_COLON)[1].trim();
+            return content.substring(content.indexOf(BaseConst.SYMBOL_COLON) + 1).trim();
         }
         return SYMBOL_EMPTY;
     }

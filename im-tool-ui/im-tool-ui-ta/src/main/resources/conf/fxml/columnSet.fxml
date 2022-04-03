@@ -17,7 +17,8 @@
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
                    <Label fx:id="tips" layoutX="50" layoutY="15.0"/>
-                   <Button fx:id="save" layoutX="500.0" layoutY="9.0" mnemonicParsing="false" onAction="#onSave" prefHeight="35.0" prefWidth="100.0" text="保存" />
+                   <Button fx:id="save" layoutX="750.0" layoutY="9.0" mnemonicParsing="false" onAction="#onSave"
+                           prefHeight="35.0" prefWidth="100.0" text="保存" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
@@ -44,7 +45,7 @@
                               </cellValueFactory>
                           </TableColumn>
                           <TableColumn id="columnDict" editable="true" sortable="false" onEditCommit="#columnDictEdit"
-                                       prefWidth="100" text="字典">
+                                       prefWidth="130" text="字典">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnDict" />
                               </cellValueFactory>
@@ -54,7 +55,13 @@
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnMulti" />
                               </cellValueFactory>
-
+                          </TableColumn>
+                          <TableColumn id="columnMultiSingle" editable="true" sortable="false"
+                                       onEditCommit="#columnMultiSingleEdit"
+                                       prefWidth="90" text="多选单条数据">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnMultiSingle" />
+                              </cellValueFactory>
                           </TableColumn>
                           <TableColumn id="columnDate" editable="true" sortable="false" onEditCommit="#columnDateEdit"
                                        prefWidth="90" text="是否日期">
@@ -106,7 +113,7 @@
                               </cellValueFactory>
                           </TableColumn>
                           <TableColumn id="columnQueryOrder" editable="true" sortable="false"
-                                       onEditCommit="#columnQueryOrderEdit" prefWidth="90" text="查询排序号">
+                                       onEditCommit="#columnQueryOrderEdit" prefWidth="90" text="查询排序">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnQueryOrder" />
                               </cellValueFactory>
@@ -118,7 +125,7 @@
                               </cellValueFactory>
                           </TableColumn>
                           <TableColumn id="columnQueryStat" editable="true" sortable="false"
-                                       onEditCommit="#columnQueryStat" prefWidth="90" text="统计汇总">
+                                       onEditCommit="#columnQueryStatEdit" prefWidth="90" text="统计汇总">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnQueryStat" />
                               </cellValueFactory>

@@ -334,4 +334,32 @@ public class CommonUtils {
             return Integer.valueOf(submitTimes2) - Integer.valueOf(submitTimes1);
         });
     }
+
+    /**
+     * 获取当前版本号
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/9/24
+     * @return: java.lang.String
+     */
+    public static String getVersion() {
+        String version = SYMBOL_EMPTY;
+        try {
+            List<String> versionContent = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION), false);
+            if (CollectionUtils.isNotEmpty(versionContent)) {
+                for (String item : versionContent) {
+                    if (item.startsWith(NAME_CURRENT_VERSION)) {
+                        String[] itemVersion = item.split(SYMBOL_COLON);
+                        if (itemVersion.length == 2) {
+                            version = itemVersion[1].trim();
+                        }
+                    }
+                }
+            }
+        } catch (IOException e) {
+            LoggerUtils.info(e);
+        }
+        return version;
+    }
 }

@@ -212,7 +212,7 @@ public class InitConfigTest {
             if (CollectionUtils.isNotEmpty(content)) {
                 for (int i = 0; i < content.size(); i++) {
                     String item = content.get(i);
-                    if (item.startsWith("当前版本:")) {
+                    if (item.startsWith(NAME_CURRENT_VERSION)) {
                         int index = item.indexOf(":") + 1;
                         String version = item.substring(index);
                         int versionIndex = version.lastIndexOf(SYMBOL_POINT);

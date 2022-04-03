@@ -29,6 +29,7 @@ public class ColumnInfoDto extends BaseDto implements Comparable<ColumnInfoDto>{
     private String columnQueryOrderType;
     private String columnBatchUpdate;
     private String columnQueryStat;
+    private String columnMultiSingle;
 
     @Override
     public int compareTo(ColumnInfoDto o) {

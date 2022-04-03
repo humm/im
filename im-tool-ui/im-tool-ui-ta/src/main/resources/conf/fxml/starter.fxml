@@ -23,12 +23,12 @@
                 </Menu>
                 <Menu fx:id="menuScript" mnemonicParsing="false" text="脚本">
                     <items>
-                        <MenuItem fx:id="menuItemFundInfo" mnemonicParsing="false" onAction="#openFundInfo"
-                                  text="基金信息"/>
-                        <MenuItem fx:id="menuItemProcessInfo" mnemonicParsing="false" onAction="#openProcessInfo"
-                                  text="流程信息"/>
                         <MenuItem fx:id="menuItemScriptUpdate" mnemonicParsing="false" onAction="#openScriptUpdate"
                                   text="升级脚本"/>
+                        <MenuItem fx:id="menuItemProcessInfo" mnemonicParsing="false" onAction="#openProcessInfo"
+                                  text="流程信息"/>
+                        <MenuItem fx:id="menuItemFundInfo" mnemonicParsing="false" onAction="#openFundInfo"
+                                  text="基金信息"/>
                         <MenuItem fx:id="menuItemGenerateSql" mnemonicParsing="false" onAction="#openGenerateSql"
                                   text="分库分表"/>
                     </items>

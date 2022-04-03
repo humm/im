@@ -398,12 +398,11 @@ public class FileUtils {
     /**
      * jar启动
      *
-     * @param path
      * @author: humm23693
      * @date: 2021/06/03
      * @return:
      */
-    public static boolean startByJar(String path) {
+    public static boolean startByJar() {
         return getPathFolder().contains(START_MODE_JAR);
     }
 
@@ -430,7 +429,7 @@ public class FileUtils {
      * @return:
      */
     public static void unJar(String path) throws Exception {
-       if (!startByJar(path)) {
+       if (!startByJar()) {
             return;
         }
         String url = getFilePath(path);
@@ -721,33 +720,5 @@ public class FileUtils {
             }
         }
         return exist;
-    }
-
-    /**
-     * 获取当前版本号
-     *
-     * @param
-     * @author: humm23693
-     * @date: 2021/9/24
-     * @return: java.lang.String
-     */
-    public static String getVersion() {
-        String version = SYMBOL_EMPTY;
-        try {
-            List<String> versionContent = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION), false);
-            if (CollectionUtils.isNotEmpty(versionContent)) {
-                for (String item : versionContent) {
-                    if (item.startsWith("当前版本:")) {
-                        String[] itemVersion = item.split(SYMBOL_COLON);
-                        if (itemVersion.length == 2) {
-                            version = itemVersion[1].trim();
-                        }
-                    }
-                }
-            }
-        } catch (IOException e) {
-            LoggerUtils.info(e);
-        }
-        return version;
     }
 }

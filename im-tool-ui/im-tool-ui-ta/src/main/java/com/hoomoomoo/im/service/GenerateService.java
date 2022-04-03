@@ -454,7 +454,7 @@ public class GenerateService {
         while (iterator.hasNext()) {
             String column = iterator.next();
             ColumnInfoDto columnInfo = tableColumn.get(column);
-            if (GenerateCommon.skipColumn(columnInfo)) {
+            if (GenerateCommon.skipColumn(columnInfo) || !STR_1.equals(columnInfo.getColumnQuery())) {
                 continue;
             }
             if (column.contains(KEY_PRD_CODE)) {

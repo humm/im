@@ -78,7 +78,7 @@ public class ConfigCache {
             appConfigDto.setLicense(licenseDto);
         }
 
-        LoggerUtils.info(String.format(MSG_LOAD, "授权证书信息"));
+        LoggerUtils.info(String.format(MSG_LOAD, "授权信息"));
 
         // 读取代码更新配置
         List<String> content = FileUtils.readNormalFile(confPath, false);

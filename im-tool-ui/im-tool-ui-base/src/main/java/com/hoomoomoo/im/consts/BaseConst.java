@@ -36,6 +36,11 @@ public class BaseConst {
     public static final String STR_13 = "13";
     public static final String STR_14 = "14";
     public static final String STR_15 = "15";
+    public static final String STR_16 = "16";
+    public static final String STR_17 = "17";
+    public static final String STR_18 = "18";
+    public static final String STR_19 = "19";
+    public static final String STR_20 = "20";
     public static final String STR_69 = "69";
     public static final String STR_145 = "145";
     public static final String STR_549656 = "549656";
@@ -136,12 +141,16 @@ public class BaseConst {
     public static final String NAME_JD_LOGIN = "欢迎登录";
     public static final String NAME_JD_SHOW_ORDER = "继续晒单";
     public static final String NAME_JD_APPEND_APPRAISEING = "追评";
-    public static final String NAME_APPLICATION_SAVE_SUCCESS = "配置文件修改成功，重新加载完成  ";
     public static final String NAME_GOODS_NOT_EXIST = "商品已下架";
     public static final String NAME_NET_CONNECT = "请连接网络";
     public static final String NAME_PAUSE_START = "暂停开始";
     public static final String NAME_PAUSE_COMPLETE = "暂停完成";
     public static final String NAME_TYPE_NOT_EXIST = "事件类型不存在";
+    public static final String NAME_CURRENT_VERSION = "当前版本:";
+    public static final String NAME_SAVE_SUCCESS = "修改成功 ";
+    public static final String NAME_APP_START = "应用启动";
+    public static final String NAME_CONFIG_INFO = "配置信息";
+    public static final String NAME_CONFIG_FILE = "配置文件";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -157,6 +166,7 @@ public class BaseConst {
     public static final String SYMBOL_SEMICOLON = ";";
     public static final String SYMBOL_COLON = ":";
     public static final String SYMBOL_HYPHEN = "-";
+    public static final String SYMBOL_HYPHEN_1 = " - ";
     public final static String SYMBOL_POINT = ".";
     public final static String SYMBOL_$_SLASH = "\\$";
     public final static String SYMBOL_S_SLASH = "\\s+";
@@ -170,7 +180,6 @@ public class BaseConst {
     public static final String SYMBOL_NEXT_LINE_2 = "\n\n";
     public static final String SYMBOL_PERCENT = "%";
     public static final String SYMBOL_QUOTES = "\"";
-    public static final String SYMBOL_SINGLE_QUOTES = "\"";
 
     public final static String ANNOTATION_TYPE_NORMAL = "--";
     public final static String ANNOTATION_TYPE_CONFIG = "#";
@@ -217,7 +226,8 @@ public class BaseConst {
     public static final String CONFIG_COLUMN = "配置字段信息";
     public static final String CONFIG_TABLE = "配置正式表结构";
 
-
+    public static final String APP_MODE_NAME_APP = "应用模式";
+    public static final String APP_MODE_NAME_JAR = "Jar模式";
 
     public static final String CONFIG_PREFIX = "#################### ";
 
@@ -287,5 +297,10 @@ public class BaseConst {
 
     public static final Integer JD_APPRAISE_LENGTH_MIN = 30;
     public static final Integer JD_APPRAISE_LENGTH_MAX = 450;
+
+    public static final String SERVER_URL = "/tool/im";
+    public static final Integer PORT = 13579;
+
+
 
 }

@@ -263,7 +263,7 @@ public class TaStarterController implements Initializable {
                 return;
             }
 
-            LoggerUtils.info(String.format(BaseConst.MSG_CHECK, "证书有效日期"));
+            LoggerUtils.info(String.format(BaseConst.MSG_CHECK, "授权有效日期"));
 
             // 控制菜单功能
             CommonUtils.showAuthFunction(menuScript);

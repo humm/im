@@ -113,8 +113,13 @@ public class ColumnSetController implements Initializable {
     }
 
     @FXML
-    void columnQueryStat(TableColumn.CellEditEvent event) {
+    void columnQueryStatEdit(TableColumn.CellEditEvent event) {
         updateColumnInfo(columnInfo.getSelectionModel().getSelectedIndex(), STR_15, event.getNewValue().toString());
+    }
+
+    @FXML
+    void columnMultiSingleEdit(TableColumn.CellEditEvent event) {
+        updateColumnInfo(columnInfo.getSelectionModel().getSelectedIndex(), STR_16, event.getNewValue().toString());
     }
 
     private void updateColumnInfo(int rowNum, String updateType, String value) {
@@ -169,6 +174,9 @@ public class ColumnSetController implements Initializable {
                     case STR_15:
                         columnInfoDto.setColumnQueryStat(value);
                         break;
+                    case STR_16:
+                        columnInfoDto.setColumnMultiSingle(value);
+                        break;
                     default:
                         break;
                 }
@@ -176,10 +184,10 @@ public class ColumnSetController implements Initializable {
             }
         }
         if (STR_8.equals(updateType)) {
-            OutputUtils.clearLog(columnInfo);
             Collections.sort(columnInfoDtoList);
-            OutputUtils.infoList(columnInfo, columnInfoDtoList, false);
         }
+        OutputUtils.clearLog(columnInfo);
+        OutputUtils.infoList(columnInfo, columnInfoDtoList, false);
     }
 
     @FXML
@@ -205,11 +213,11 @@ public class ColumnSetController implements Initializable {
                 }
                 String columnQueryOrder = columnInfoDto.getColumnQueryOrder();
                 if (!CommonUtils.isNumber(columnQueryOrder)) {
-                    errorInfo.add(columnUnderline + " 查询排序号只能为整数");
+                    errorInfo.add(columnUnderline + " 查询排序只能为整数");
                     break;
                 }
                 if (queryOrder.containsKey(columnQueryOrder)) {
-                    errorInfo.add("查询排序号【" + columnQueryOrder + "】不能重复");
+                    errorInfo.add("查询排序【" + columnQueryOrder + "】不能重复");
                     break;
                 }
                 if (StringUtils.isNotBlank(columnQueryOrder)) {
