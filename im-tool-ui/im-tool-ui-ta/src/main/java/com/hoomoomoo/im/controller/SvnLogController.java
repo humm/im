@@ -62,8 +62,8 @@ public class SvnLogController extends BaseController implements Initializable {
 
     @FXML
     void showVersion(MouseEvent event) {
-        Long ver = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getVersion();
-        OutputUtils.info(version, String.valueOf(ver));
+        String ver = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getVersion();
+        OutputUtils.info(version, ver);
         execute(false);
     }
 
@@ -126,7 +126,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 List<String> fileList = new ArrayList<>();
                 int length = logDtoList.size();
                 for (LogDto svnLogDto : logDtoList) {
-                    svnLogDto.setGetNum(length);
+                    svnLogDto.setGetNum(String.valueOf(length));
                     svnLogDto.setMatch(times == length ? "匹配" : "未匹配");
                     if (updateLog) {
                         OutputUtils.info(svnLog, svnLogDto);

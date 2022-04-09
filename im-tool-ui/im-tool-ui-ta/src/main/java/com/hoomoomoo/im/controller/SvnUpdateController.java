@@ -121,7 +121,7 @@ public class SvnUpdateController extends BaseController implements Initializable
         LogDto logDto = new LogDto();
         logDto.setTime(CommonUtils.getCurrentDateTime1());
         logDto.setName(name);
-        logDto.setVersion(version);
+        logDto.setVersion(version.toString());
         logDto.setMsg(msg);
         OutputUtils.info(svnLog, logDto);
     }

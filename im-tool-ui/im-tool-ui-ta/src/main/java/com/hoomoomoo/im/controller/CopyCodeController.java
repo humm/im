@@ -22,6 +22,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.COPY_CODE;
 
 /**
@@ -140,9 +141,11 @@ public class CopyCodeController extends BaseController implements Initializable 
                                     }
                                 }
                             }
-
-                            String fileLocation = (sourcePath.getText() + BaseConst.SYMBOL_SLASH + item);
-                            String targetFileLocation = (targetPath.getText() + BaseConst.SYMBOL_SLASH + item);
+                            String source = sourcePath.getText();
+                            String target = targetPath.getText();
+                            item = item.replaceAll("\\\\", "/").replace(source, SYMBOL_EMPTY);
+                            String fileLocation = source + SYMBOL_SLASH + item;
+                            String targetFileLocation = target + SYMBOL_SLASH + item;
 
                             if (fileLocation.equals(targetFileLocation)) {
                                 infoMsg(getFileName(targetFileLocation) + " 同路径同名文件不复制");
@@ -168,7 +171,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                                 successNum++;
                             }
                         }
-                        String msg = BaseConst.SYMBOL_EMPTY;
+                        String msg = SYMBOL_EMPTY;
                         if (fileList.length == successNum) {
                             msg += "复制成功 总文件数[ " + successNum + " ]";
                         } else {
@@ -236,7 +239,7 @@ public class CopyCodeController extends BaseController implements Initializable 
     }
 
     private String getFileName(String filePath) {
-        int index = filePath.lastIndexOf(BaseConst.SYMBOL_SLASH);
+        int index = filePath.lastIndexOf(SYMBOL_SLASH);
         return filePath.substring(index + 1);
     }
 }

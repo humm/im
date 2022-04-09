@@ -59,7 +59,6 @@ public class FileUtils {
         return convertMap((LinkedHashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, false), true);
     }
 
-
     /**
      * 读取正常文件
      *
@@ -476,7 +475,7 @@ public class FileUtils {
         deleteFile(new File(tempFolder));
 
         // 更新配置文件
-        List<String> updateContent = new ArrayList<>(16);
+        LinkedHashSet<String> updateContent = new LinkedHashSet<>(16);
         List<String> content = FileUtils.readNormalFile(url, false);
         for (int i = 0; i < content.size(); i++) {
             String item = content.get(i);
@@ -492,6 +491,7 @@ public class FileUtils {
             if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
                 List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SCRIPT_UPDATE_TABLE);
                 updateContent.addAll(updateConfig);
+                appendExtendConfig(updateContent);
                 if (CollectionUtils.isNotEmpty(updateConfig)) {
                     continue;
                 }
@@ -536,7 +536,7 @@ public class FileUtils {
             }
             updateContent.add(item);
         }
-        FileUtils.writeFile(url, updateContent, false);
+        FileUtils.writeFile(url, new ArrayList<>(updateContent), false);
 
         if (APP_CODE_SHOPPING.equals(ConfigCache.getAppCodeCache())) {
             FileUtils.writeFile(jdCookieUrl, jdCookieConfig.get(jdCookieUrl), false);
@@ -545,6 +545,19 @@ public class FileUtils {
 
         // 删除 备份历史配置文件
         deleteFile(new File(bakFileConf));
+    }
+
+    private static void appendExtendConfig(Set<String> updateContent) throws IOException {
+        String confPath = FileUtils.getFilePath(PATH_APP_EXTEND);
+        List<String> content = FileUtils.readNormalFile(confPath, true);
+        if (CollectionUtils.isNotEmpty(content)) {
+            for (String item : content) {
+                if (item.startsWith(ANNOTATION_TYPE_CONFIG)) {
+                    continue;
+                }
+                updateContent.add(item);
+            }
+        }
     }
 
     private static String getOldAppConfig(File file, String url, LinkedHashMap<String, String> oldAppConfig,

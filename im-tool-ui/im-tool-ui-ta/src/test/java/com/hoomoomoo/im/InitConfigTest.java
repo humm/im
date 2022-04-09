@@ -116,7 +116,7 @@ public class InitConfigTest {
                     iterator.remove();
                 } else {
                     copyCode = true;
-                    iterator.set("copy.code.version.demo10000=E:/workspace");
+                    iterator.set("copy.code.version.demo10000=D:/workspace/demo");
                 }
             } else if (item.startsWith(KEY_SVN_URL)) {
                 if (svnUrl) {

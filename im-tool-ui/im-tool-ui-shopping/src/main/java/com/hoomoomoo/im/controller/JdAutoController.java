@@ -127,8 +127,8 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
         ShoppingDto serviceAppraise =  ServiceAppraiseController.queryData(appConfigDto, true, null, null, null);
         shoppingDtoList.add(showOrder);
         shoppingDtoList.add(appendAppraise);
-        shoppingDtoList.add(waitAppraise);
         shoppingDtoList.add(serviceAppraise);
+        shoppingDtoList.add(waitAppraise);
         OutputUtils.infoList(waitHandler, shoppingDtoList);
         waitHandlerNum = waitAppraise.getOrderNumValue() + showOrder.getOrderNumValue() + appendAppraise.getOrderNumValue() + serviceAppraise.getOrderNumValue();
     }

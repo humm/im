@@ -46,10 +46,10 @@ public class SvnUtils {
             if (StringUtils.equals(svnLogEntry.getAuthor(), appConfigDto.getSvnUsername())) {
                 LogDto svnLogDto = new LogDto();
                 logList.add(svnLogDto);
-                svnLogDto.setVersion(svnLogEntry.getRevision());
+                svnLogDto.setVersion(Long.valueOf(svnLogEntry.getRevision()).toString());
                 svnLogDto.setTime(CommonUtils.getCurrentDateTime1(svnLogEntry.getDate()));
                 Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
-                svnLogDto.setNum(logMap.size());
+                svnLogDto.setNum(String.valueOf(logMap.size()));
                 List<String> pathList = new ArrayList<>();
                 svnLogDto.setFile(pathList);
                 svnLogDto.setMsg(getSvnMsg(svnLogEntry));

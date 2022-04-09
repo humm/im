@@ -55,7 +55,9 @@ public class StarterUtils {
                 } catch (IOException e) {
                 }
             });
-            WebUtils.initWebServer(SERVER_URL, PORT);
+            if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
+                ServerUtils.initServer(SERVER_URL, PORT);
+            }
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

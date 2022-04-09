@@ -11,6 +11,9 @@ import java.util.regex.Pattern;
 public class BaseConst {
 
     public static final String APP_USER_IM = "im";
+    public static final String APP_USER_IM_SVN = "im-svn";
+    public static final String APP_USER_IM_CODE = "im-code";
+    public static final String APP_USER_IM_SERVER = "im-server";
 
     public static final String APP_CODE_BASE = "im-tool-ui-base";
     public static final String APP_CODE_TA = "im-tool-ui-ta";
@@ -172,6 +175,7 @@ public class BaseConst {
     public final static String SYMBOL_S_SLASH = "\\s+";
     public final static String SYMBOL_POINT_SLASH = "\\.";
     public static final String SYMBOL_SLASH = "/";
+    public static final String SYMBOL_SLASH_1 = "\\";
     public static final String SYMBOL_BRACKETS_LEFT = "(";
     public static final String SYMBOL_BRACKETS_RIGHT = ")";
     public static final String SYMBOL_BRACKETS_1_LEFT = "[";
@@ -226,7 +230,7 @@ public class BaseConst {
     public static final String CONFIG_COLUMN = "配置字段信息";
     public static final String CONFIG_TABLE = "配置正式表结构";
 
-    public static final String APP_MODE_NAME_APP = "应用模式";
+    public static final String APP_MODE_NAME_APP = "工厂模式";
     public static final String APP_MODE_NAME_JAR = "Jar模式";
 
     public static final String CONFIG_PREFIX = "#################### ";
@@ -234,6 +238,7 @@ public class BaseConst {
     public static final String CMD_KILL_APP = "taskill /f /t /im %s";
 
     public static final String PATH_APP = "/conf/app.conf";
+    public static final String PATH_APP_EXTEND = "/conf/appExtend.conf";
     public static final String PATH_JD_COOKIE = "/conf/jdCookie.conf";
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
@@ -300,7 +305,5 @@ public class BaseConst {
 
     public static final String SERVER_URL = "/tool/im";
     public static final Integer PORT = 13579;
-
-
 
 }

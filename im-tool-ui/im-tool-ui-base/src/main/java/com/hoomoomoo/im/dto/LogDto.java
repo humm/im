@@ -19,18 +19,18 @@ public class LogDto extends BaseDto implements Comparable<LogDto> {
 
     private String name;
 
-    private Integer num;
+    private String num;
 
-    private Integer getNum;
+    private String getNum;
 
     private String match;
 
-    private Long version;
+    private String version;
 
     private List<String> file;
 
     @Override
     public int compareTo(LogDto logDto) {
-        return (int) (logDto.version - this.version);
+        return (int) (Long.parseLong(logDto.version) - Long.parseLong(this.version));
     }
 }

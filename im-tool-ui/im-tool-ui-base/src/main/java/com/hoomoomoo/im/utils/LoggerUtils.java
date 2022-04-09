@@ -66,6 +66,7 @@ public class LoggerUtils {
         try {
             String logFilePath = String.format(PATH_LOG, KEY_APP_LOG, CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
             StringBuilder log = new StringBuilder(CommonUtils.getCurrentDateTime1(new Date())).append(SYMBOL_NEXT_LINE);
+            log.append(getLineIndentation()).append(exception.toString()).append(SYMBOL_NEXT_LINE);
             StackTraceElement[] stackTraceElements = exception.getStackTrace();
             for (int i = 0; i < stackTraceElements.length; i++) {
                 log.append(getLineIndentation()).append(stackTraceElements[i].toString()).append(SYMBOL_NEXT_LINE);

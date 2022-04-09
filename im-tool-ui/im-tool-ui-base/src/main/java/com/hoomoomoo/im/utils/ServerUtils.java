@@ -12,9 +12,9 @@ import java.net.InetSocketAddress;
  * @package com.hoomoomoo.im.utils
  * @date 2022/4/3
  */
-public class WebUtils {
+public class ServerUtils {
 
-    public static void initWebServer(String serverUrl, int port) {
+    public static void initServer(String serverUrl, int port) {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
             server.createContext(serverUrl, new WebResponseHandler());
