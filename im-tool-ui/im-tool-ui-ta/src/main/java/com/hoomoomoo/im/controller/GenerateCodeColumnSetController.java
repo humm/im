@@ -8,11 +8,18 @@ import com.hoomoomoo.im.service.GenerateCommon;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
+import com.sun.javafx.sg.prism.NGNode;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.scene.control.cell.ComboBoxTableCell;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections.map.LazyMap;
@@ -29,7 +36,7 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @package com.hoomoomoo.im.controller
  * @date 2021/9/16
  */
-public class ColumnSetController implements Initializable {
+public class GenerateCodeColumnSetController implements Initializable {
 
     @FXML
     private Button save;
@@ -39,6 +46,12 @@ public class ColumnSetController implements Initializable {
 
     @FXML
     private Label tips;
+
+    @FXML
+    private TableColumn columnMulti;
+
+    @FXML
+    private TableColumn columnMultiSingle;
 
     private List<ColumnInfoDto> columnInfoDtoList  = new ArrayList<>();
 
@@ -242,6 +255,33 @@ public class ColumnSetController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
+            ObservableList<String> options = FXCollections.observableArrayList(
+                    "1",
+                    "2",
+                    "3"
+            );
+            final ComboBox comboBox = new ComboBox(options);
+            columnMulti.setCellFactory(t -> {
+                ComboBoxTableCell comboCell = new ComboBoxTableCell(comboBox);
+                return comboCell;
+            });
+
+
+            columnMulti.setCellFactory(ComboBoxTableCell.forTableColumn(new StringConverter<String>()
+            {
+                @Override
+                public String fromString(String string)
+                {
+                    return string;
+                }
+
+                @Override
+                public String toString(String str)
+                {
+                    return str;
+                }
+            },"选项1","选项2","选项3"));
+
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             GenerateCodeDto generateCodeDto = appConfigDto.getGenerateCodeDto();
             columnInfoDtoList = generateCodeDto.getColumn();
@@ -267,6 +307,53 @@ public class ColumnSetController implements Initializable {
                     columnIterator.remove();
                 }
             }
+
+            /*ObservableList options = FXCollections.observableArrayList(
+                    "+2",
+                    "-2",
+                    "小组加分"
+            );*/
+
+            /*columnMulti.setCellFactory(tc -> {//combobox定义与监听
+                ComboBox<String> combo = new ComboBox<String>();
+                combo.setItems(options);
+                combo.setEditable(true);
+                TableCell<ColumnInfoDto, String> cell = new TableCell<ColumnInfoDto, String>() {
+                    @Override
+                    protected void updateItem(String chuzhi, boolean empty) {
+                        super.updateItem(chuzhi, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            combo.setValue(chuzhi);
+                            setGraphic(combo);
+                        }
+                    }
+                };
+                combo.setOnAction(e -> {
+                    int rank = cell.getIndex();//获取正在编辑的单元格所在行序号
+                    String value = combo.getValue();//获取正在编辑的单元格值
+
+                    if(value.equals(options.get(0))  ||  value.equals(options.get(1) ))//1  2选项
+                    {
+
+                        //写自己的选择项功能
+
+                    }
+                    if(value.equals(options.get(2)))//3选项
+                    {
+
+                        //写自己的选择项功能
+                    }
+
+                });
+
+                return cell;
+            });//注意括号*/
+//            columnMulti.setCellFactory(ComboBoxTableCell.forTableColumn(columnMulti));
+
+
+
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

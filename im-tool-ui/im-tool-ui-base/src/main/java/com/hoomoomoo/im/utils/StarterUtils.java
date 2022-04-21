@@ -33,11 +33,11 @@ public class StarterUtils {
             Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_STARTER_FXML)));
             Scene scene = new Scene(root);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            String appName = appConfigDto.getAppName();
+            String appName = appConfigDto.getAppName() + SYMBOL_SPACE_2;
             if (!FileUtils.startByJar()) {
-                appName += SYMBOL_HYPHEN_1 + APP_MODE_NAME_APP;
+                appName += String.format(MSG_APP_TITLE, APP_MODE_NAME, APP_MODE_NAME_APP);
             }
-            appName += SYMBOL_HYPHEN_1 + CommonUtils.getVersion();
+            appName += String.format(MSG_APP_TITLE, NAME_VERSION, CommonUtils.getVersion());
             scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
             primaryStage.setTitle(appName);
             primaryStage.setScene(scene);
@@ -55,9 +55,11 @@ public class StarterUtils {
                 } catch (IOException e) {
                 }
             });
-            if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
-                ServerUtils.initServer(SERVER_URL, PORT);
-            }
+            /*if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
+                ServerUtils.initServer(SERVER_URL, SERVER_PORT);
+            } else {
+                LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + SYMBOL_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + SYMBOL_EQUAL + CommonUtils.getVersion()));
+            }*/
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

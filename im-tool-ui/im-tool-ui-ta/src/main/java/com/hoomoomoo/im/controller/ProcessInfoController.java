@@ -140,7 +140,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                     OutputUtils.info(log, "任务缓存加载结束");
                 }
                 // step 2.2 生成tbtrans数据
-                String transFileName = "02tbtrans-fund.sql";
+                String transFileName = "tbtrans-fund.sql";
                 String transPath = processPathTrans + "/" + transFileName;
                 File transFile = new File(transPath);
                 BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(transFile), BaseConst.ENCODING_UTF8));

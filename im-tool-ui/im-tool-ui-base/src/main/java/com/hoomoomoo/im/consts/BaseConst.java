@@ -49,6 +49,7 @@ public class BaseConst {
     public static final String STR_549656 = "549656";
     public static final String STR_999999999 = "999999999";
     public static final String STR_999999999999 = "999999999999";
+    public static final Integer MAX_TIMES = 999999999;
 
     public final static String ENCODING_UTF8 = "UTF-8";
     public final static String ENCODING_GBK = "GBK";
@@ -104,6 +105,7 @@ public class BaseConst {
     public static final String KEY_PRIMARY_KEY = "primary key";
     public static final String KEY_DATE = "Date";
     public static final String KEY_NOT_NULL = "not null,";
+    public static final String KEY_VERSION = "version";
 
     public static final String KEY_COLUMN_TYPE_DATE = "date";
     public static final String KEY_COLUMN_TYPE_INTEGER = "integer";
@@ -132,6 +134,7 @@ public class BaseConst {
     public static final String NAME_DELETE = " 删除";
     public static final String NAME_END = "结束";
     public static final String NAME_SVN_DESCRIBE = "[需求描述]";
+    public static final String NAME_SVN_MODIFY_NO = "[修改单编号]";
     public static final String NAME_APPRAISE = "评价";
     public static final String NAME_SERVICE_APPRAISE = "服务评价";
     public static final String NAME_ORDER_DETAIL = "订单详情";
@@ -154,6 +157,7 @@ public class BaseConst {
     public static final String NAME_APP_START = "应用启动";
     public static final String NAME_CONFIG_INFO = "配置信息";
     public static final String NAME_CONFIG_FILE = "配置文件";
+    public static final String NAME_VERSION = "版本号";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -206,6 +210,7 @@ public class BaseConst {
     public static final String MSG_SET = "请设置[ %s ]\n";
     public static final String MSG_MENU_STYLE = "格式[ 一级菜单.二级菜单.三级菜单 ]";
     public static final String MSG_MENU_STYLE_ERROR = "[ %s ]格式错误";
+    public static final String MSG_APP_TITLE = "【%s: %s】";
 
 
     public static final String MSG_OPEN = "打开[ %s ] 功能界面";
@@ -230,6 +235,7 @@ public class BaseConst {
     public static final String CONFIG_COLUMN = "配置字段信息";
     public static final String CONFIG_TABLE = "配置正式表结构";
 
+    public static final String APP_MODE_NAME = "模式";
     public static final String APP_MODE_NAME_APP = "工厂模式";
     public static final String APP_MODE_NAME_JAR = "Jar模式";
 
@@ -251,7 +257,7 @@ public class BaseConst {
     public static final String SET_ICON = "/conf/image/set.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
     public static final String PATH_STARTER_CSS = "/conf/style/progressIndicator.css";
-    public static final String PATH_COLUMN_SET_FXML = "/conf/fxml/columnSet.fxml";
+    public static final String PATH_COLUMN_SET_FXML = "/conf/fxml/generateCodeColumnSet.fxml";
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_RECORD_LOG = "/records/%s.record";
 
@@ -303,7 +309,8 @@ public class BaseConst {
     public static final Integer JD_APPRAISE_LENGTH_MIN = 30;
     public static final Integer JD_APPRAISE_LENGTH_MAX = 450;
 
+    public static final String SERVER_HTTP = "http://172.24.52.81";
     public static final String SERVER_URL = "/tool/im";
-    public static final Integer PORT = 13579;
+    public static final Integer SERVER_PORT = 13579;
 
 }

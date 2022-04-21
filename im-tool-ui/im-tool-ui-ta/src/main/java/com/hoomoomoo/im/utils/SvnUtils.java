@@ -29,7 +29,7 @@ import static org.apache.commons.beanutils.BeanUtils.copyProperties;
  */
 public class SvnUtils {
 
-    public static List<LogDto> getSvnLog(int times, int version) throws Exception {
+    public static List<LogDto> getSvnLog(int times, int version, String modifyNo) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         SVNRepository repository = getSVNRepository(appConfigDto);
         List<LogDto> logList = new ArrayList<>();
@@ -42,17 +42,25 @@ public class SvnUtils {
             startRevision = version;
             endRevision = version;
         }
+        if (StringUtils.isNotBlank(modifyNo)) {
+            times = MAX_TIMES;
+        }
         repository.log(new String[]{SYMBOL_EMPTY}, startRevision, endRevision, true, true, svnLogEntry -> {
             if (StringUtils.equals(svnLogEntry.getAuthor(), appConfigDto.getSvnUsername())) {
                 LogDto svnLogDto = new LogDto();
-                logList.add(svnLogDto);
                 svnLogDto.setVersion(Long.valueOf(svnLogEntry.getRevision()).toString());
                 svnLogDto.setTime(CommonUtils.getCurrentDateTime1(svnLogEntry.getDate()));
                 Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
                 svnLogDto.setNum(String.valueOf(logMap.size()));
                 List<String> pathList = new ArrayList<>();
                 svnLogDto.setFile(pathList);
-                svnLogDto.setMsg(getSvnMsg(svnLogEntry));
+                svnLogDto.setMsg(getSvnMsg(svnLogEntry, STR_0));
+                String modifyMsg = getSvnMsg(svnLogEntry, STR_1);
+                if (StringUtils.isNotBlank(modifyNo)) {
+                    if (!StringUtils.equals(modifyNo.trim(), modifyMsg.trim())) {
+                        return;
+                    }
+                }
                 Iterator<String> iterator = logMap.keySet().iterator();
                 while (iterator.hasNext()) {
                     String key = iterator.next();
@@ -63,6 +71,7 @@ public class SvnUtils {
                     }
                     pathList.add(path + SYMBOL_NEXT_LINE);
                 }
+                logList.add(svnLogDto);
             }
         });
         Collections.sort(logList);
@@ -134,7 +143,7 @@ public class SvnUtils {
                                 svnStatDto.setFileTimes(String.valueOf(Integer.valueOf(svnStatDto.getFileTimes()) + 1));
                             }
                         }
-                        String msg = getSvnMsg(svnLogEntry);
+                        String msg = getSvnMsg(svnLogEntry, STR_0);
                         if (notice) {
                             String noticeMsg = String.format(MSG_SVN_REALTIME_STAT, userName, svnStatDto.getLastTime(), msg, svnLogEntry.getRevision());
                             svnStat.get(KEY_NOTICE).setNotice(noticeMsg);
@@ -146,12 +155,16 @@ public class SvnUtils {
         return svnStat;
     }
 
-    private static String getSvnMsg(SVNLogEntry svnLogEntry) {
+    private static String getSvnMsg(SVNLogEntry svnLogEntry, String type) {
+        String indexMsg = NAME_SVN_DESCRIBE;
+        if (STR_1.equals(type)) {
+            indexMsg = NAME_SVN_MODIFY_NO;
+        }
         String msg = svnLogEntry.getMessage();
         if (StringUtils.isNotBlank(msg)) {
             String[] message = msg.split(SYMBOL_NEXT_LINE);
             for (String item : message) {
-                if (item.startsWith(NAME_SVN_DESCRIBE)) {
+                if (item.startsWith(indexMsg)) {
                     if (item.split(SYMBOL_BRACKETS_1_RIGHT).length <= 1) {
                         msg = item;
                     } else {

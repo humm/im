@@ -27,23 +27,35 @@
                                         <Label fx:id="svnName" layoutX="100.0" layoutY="15.0" prefHeight="15.0" prefWidth="133.0" AnchorPane.topAnchor="15.0" />
 
                                         <Label layoutX="15.0" layoutY="55.0" prefHeight="15.0" prefWidth="80.0" text="提交次数" />
-                                        <TextField fx:id="svnTimes" layoutX="100.0" layoutY="51.0" prefHeight="23.0" prefWidth="137.0" />
+                                        <TextField fx:id="svnTimes" layoutX="100.0" layoutY="51.0" prefHeight="23.0" prefWidth="160.0" />
 
                                         <Label layoutX="15.0" layoutY="95.0" prefHeight="15.0" prefWidth="80.0" text="指定版本号" />
-                                        <TextField fx:id="version" layoutX="100.0" layoutY="91.0" prefHeight="23.0" prefWidth="137.0" />
+                                        <TextField fx:id="version" layoutX="100.0" layoutY="91.0" prefHeight="23.0" prefWidth="160.0" />
 
-                                        <Label layoutX="15.0" layoutY="135.0" prefHeight="15.0" prefWidth="80.0"  text="仓库版本" />
-                                        <ComboBox fx:id="svnRep" layoutX="100.0" layoutY="131.0" prefHeight="23.0"
-                                                  prefWidth="137.0" onAction="#selectSvnRep"/>
+                                        <Label layoutX="15.0" layoutY="135.0" prefHeight="15.0" prefWidth="80.0" text="修改单编号" />
+                                        <TextField fx:id="modifyNo" layoutX="100.0" layoutY="131.0" prefHeight="23.0" prefWidth="160.0" />
 
-                                        <Button fx:id="svnSubmit" layoutX="65.0" layoutY="190.0"
-                                                mnemonicParsing="false" onAction="#executeSubmit" prefHeight="35.0" prefWidth="100.0" text="执行">
+                                        <Label layoutX="15.0" layoutY="175.0" prefHeight="15.0" prefWidth="80.0" text="仓库版本" />
+                                        <ComboBox fx:id="svnRep" layoutX="100.0" layoutY="171.0" prefHeight="23.0"
+                                                  prefWidth="160.0" onAction="#selectSvnRep"/>
+
+                                        <Button fx:id="svnResetSubmit" layoutX="20.0" layoutY="230.0"
+                                                mnemonicParsing="false" onAction="#svnResetSubmit" prefHeight="35.0"
+                                                prefWidth="100.0" text="重置执行">
                                             <padding>
                                                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                                             </padding>
                                         </Button>
 
-                                        <Button fx:id="copy" layoutX="215.0" layoutY="190.0"
+                                        <Button fx:id="svnSubmit" layoutX="138.0" layoutY="230.0"
+                                                mnemonicParsing="false" onAction="#executeSubmit" prefHeight="35.0"
+                                                prefWidth="100.0" text="执行">
+                                            <padding>
+                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                            </padding>
+                                        </Button>
+
+                                        <Button fx:id="copy" layoutX="255.0" layoutY="230.0"
                                                 mnemonicParsing="false" onAction="#executeCopy" prefHeight="35.0"
                                                 prefWidth="100.0" text="复制内容">
                                             <padding>

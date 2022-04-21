@@ -5,6 +5,7 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -46,7 +47,13 @@ public class SvnLogController extends BaseController implements Initializable {
     private TextField version;
 
     @FXML
+    private TextField modifyNo;
+
+    @FXML
     private Button svnSubmit;
+
+    @FXML
+    private Button svnResetSubmit;
 
     @FXML
     private Button copy;
@@ -73,6 +80,14 @@ public class SvnLogController extends BaseController implements Initializable {
     }
 
     @FXML
+    void svnResetSubmit(ActionEvent event) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        OutputUtils.clearLog(modifyNo);
+        OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
+        execute(true);
+    }
+
+    @FXML
     void executeCopy(ActionEvent event) {
         schedule.requestFocus();
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(fileLog.getText()), null);
@@ -93,10 +108,10 @@ public class SvnLogController extends BaseController implements Initializable {
                 setProgress(0);
                 OutputUtils.clearLog(fileLog);
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                appConfigDto.setSvnRecentTime(svnTimes.getText());
                 appConfigDto.setSvnRep((String)svnRep.getSelectionModel().getSelectedItem());
                 String times = svnTimes.getText().trim();
                 String ver = version.getText().trim();
+                String modify = modifyNo.getText().trim();
                 if (StringUtils.isBlank(times) && StringUtils.isBlank(ver)) {
                     return;
                 }
@@ -107,7 +122,7 @@ public class SvnLogController extends BaseController implements Initializable {
                     ver = BaseConst.STR_0;
                 }
                 updateProgress();
-                getSvnLog(Integer.valueOf(times), Integer.valueOf(ver), updateLog);
+                getSvnLog(Integer.valueOf(times), Integer.valueOf(ver), modify, updateLog);
             } catch (NumberFormatException e) {
                 LoggerUtils.info(e);
             } catch (Exception e) {
@@ -117,17 +132,18 @@ public class SvnLogController extends BaseController implements Initializable {
         }).start();
     }
 
-    private void getSvnLog(int times, int version, boolean updateLog) {
+    private void getSvnLog(int times, int version, String modifyNo, boolean updateLog) {
         new Thread(() -> {
             try {
                 svnSubmit.setDisable(true);
+                svnResetSubmit.setDisable(true);
                 Date date = new Date();
-                List<LogDto> logDtoList = SvnUtils.getSvnLog(times, version);
+                List<LogDto> logDtoList = SvnUtils.getSvnLog(times, version, modifyNo);
                 List<String> fileList = new ArrayList<>();
                 int length = logDtoList.size();
                 for (LogDto svnLogDto : logDtoList) {
                     svnLogDto.setGetNum(String.valueOf(length));
-                    svnLogDto.setMatch(times == length ? "匹配" : "未匹配");
+                    svnLogDto.setMatch((times == length || StringUtils.isNotBlank(modifyNo)) ? "匹配" : "未匹配");
                     if (updateLog) {
                         OutputUtils.info(svnLog, svnLogDto);
                     }
@@ -155,6 +171,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
             } finally {
                 svnSubmit.setDisable(false);
+                svnResetSubmit.setDisable(false);
             }
         }).start();
     }

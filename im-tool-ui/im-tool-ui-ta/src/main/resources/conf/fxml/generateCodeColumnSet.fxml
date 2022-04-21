@@ -9,7 +9,7 @@
 <?import javafx.scene.control.Label?>
 
 <AnchorPane prefHeight="630.0" prefWidth="1600.0" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hoomoomoo.im.controller.ColumnSetController">
+            fx:controller="com.hoomoomoo.im.controller.GenerateCodeColumnSetController">
    <children>
       <SplitPane dividerPositions="0.075" layoutX="59.0" layoutY="81.0" orientation="VERTICAL" prefHeight="400.0"
                  prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -26,105 +26,106 @@
                   <TableView fx:id="columnInfo" layoutY="14.0" prefHeight="188.0" prefWidth="201.0"
                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                       <columns>
-                          <TableColumn id="columnUnderline" editable="false" sortable="false"
+                          <TableColumn fx:id="columnUnderline" editable="false" sortable="false"
                                        prefWidth="150" text="代码">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnUnderline" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnName" editable="true" sortable="false" onEditCommit="#columnNameEdit"
+                          <TableColumn fx:id="columnName" editable="true" sortable="false" onEditCommit="#columnNameEdit"
                                        prefWidth="150" text="名称">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnName" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnWidth" editable="true" sortable="false" onEditCommit="#columnWidthEdit"
+                          <TableColumn fx:id="columnWidth" editable="true" sortable="false" onEditCommit="#columnWidthEdit"
                                        prefWidth="90" text="显示宽度">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnWidth" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnDict" editable="true" sortable="false" onEditCommit="#columnDictEdit"
-                                       prefWidth="130" text="字典">
+                          <TableColumn fx:id="columnOrder" editable="true" sortable="false" onEditCommit="#columnOrderEdit"
+                                       prefWidth="90" text="显示顺序">
+                              <cellValueFactory>
+                                  <PropertyValueFactory property="columnOrder" />
+                              </cellValueFactory>
+                          </TableColumn>
+                          <TableColumn fx:id="columnDict" editable="true" sortable="false" onEditCommit="#columnDictEdit"
+                                       prefWidth="120" text="字典">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnDict" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnMulti" editable="true" sortable="false" onEditCommit="#columnMultiEdit"
+                          <TableColumn fx:id="columnMulti" editable="true" sortable="false"
+                                       onEditCommit="#columnMultiEdit"
                                        prefWidth="90" text="是否多选">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnMulti" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnMultiSingle" editable="true" sortable="false"
+                          <TableColumn fx:id="columnMultiSingle" editable="true" sortable="false"
                                        onEditCommit="#columnMultiSingleEdit"
-                                       prefWidth="90" text="多选单条数据">
+                                       prefWidth="120" text="多选单条数据">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnMultiSingle" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnDate" editable="true" sortable="false" onEditCommit="#columnDateEdit"
+                          <TableColumn fx:id="columnDate" editable="true" sortable="false" onEditCommit="#columnDateEdit"
                                        prefWidth="90" text="是否日期">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnDate" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnPrecision" editable="true" sortable="false" onEditCommit="#columnPrecisionEdit"
+                          <TableColumn fx:id="columnPrecision" editable="true" sortable="false" onEditCommit="#columnPrecisionEdit"
                                        prefWidth="90" text="小数位数">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnPrecision" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnRequired" editable="true" sortable="false" onEditCommit="#columnRequiredEdit"
+                          <TableColumn fx:id="columnRequired" editable="true" sortable="false" onEditCommit="#columnRequiredEdit"
                                        prefWidth="90" text="是否必填">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnRequired" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnQuery" editable="true" sortable="false" onEditCommit="#columnQueryEdit"
+                          <TableColumn fx:id="columnQuery" editable="true" sortable="false" onEditCommit="#columnQueryEdit"
                                        prefWidth="90" text="查询条件">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnQuery" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnUpdate" editable="true" sortable="false" onEditCommit="#columnUpdateEdit"
+                          <TableColumn fx:id="columnUpdate" editable="true" sortable="false" onEditCommit="#columnUpdateEdit"
                                        prefWidth="90" text="不可修改">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnUpdate" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnBatchUpdate" editable="true" sortable="false"
+                          <TableColumn fx:id="columnBatchUpdate" editable="true" sortable="false"
                                        onEditCommit="#columnBatchUpdateEdit"
                                        prefWidth="90" text="批量修改">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnBatchUpdate" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnDefault" editable="true" sortable="false" onEditCommit="#columnDefaultEdit"
+                          <TableColumn fx:id="columnDefault" editable="true" sortable="false" onEditCommit="#columnDefaultEdit"
                                        prefWidth="90" text="默认值">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnDefault" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnOrder" editable="true" sortable="false" onEditCommit="#columnOrderEdit"
-                                       prefWidth="90" text="显示顺序">
-                              <cellValueFactory>
-                                  <PropertyValueFactory property="columnOrder" />
-                              </cellValueFactory>
-                          </TableColumn>
-                          <TableColumn id="columnQueryOrder" editable="true" sortable="false"
+                          <TableColumn fx:id="columnQueryOrder" editable="true" sortable="false"
                                        onEditCommit="#columnQueryOrderEdit" prefWidth="90" text="查询排序">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnQueryOrder" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnQueryOrderType" editable="true" sortable="false"
+                          <TableColumn fx:id="columnQueryOrderType" editable="true" sortable="false"
                                        onEditCommit="#columnQueryOrderTypeEdit" prefWidth="90" text="倒序排序">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnQueryOrderType" />
                               </cellValueFactory>
                           </TableColumn>
-                          <TableColumn id="columnQueryStat" editable="true" sortable="false"
+                          <TableColumn fx:id="columnQueryStat" editable="true" sortable="false"
                                        onEditCommit="#columnQueryStatEdit" prefWidth="90" text="统计汇总">
                               <cellValueFactory>
                                   <PropertyValueFactory property="columnQueryStat" />
