@@ -65,6 +65,8 @@ public class BaseConst {
     public static final String KEY_SCRIPT_UPDATE_TABLE = "script.update.table.";
     public static final String KEY_SVN_STAT_USER = "svn.stat.user.";
     public static final String KEY_COPY_CODE_VERSION = "copy.code.version.";
+    public static final String KEY_COPY_CODE_LOCATION_REPLACE_SOURCE = "copy.code.location.replace.source";
+    public static final String KEY_COPY_CODE_LOCATION_REPLACE_TARGET = "copy.code.location.replace.target";
     public static final String KEY_SVN_URL = "svn.url.";
 
     public static final String KEY_CLASSES = "classes";

@@ -17,10 +17,7 @@ import org.apache.commons.collections.CollectionUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.ABOUT_INFO;
@@ -63,9 +60,6 @@ public class FunctionStatInfoController implements Initializable {
         OutputUtils.info(title, "授权功能  " + num);
         for (int i = 0; i < functionDtoList.size(); i++) {
             FunctionDto functionDto = functionDtoList.get(i);
-            if (FUNCTION_STAT_INFO.getCode().equals(functionDto.getFunctionCode()) || ABOUT_INFO.getCode().equals(functionDto.getFunctionCode())) {
-                continue;
-            }
             String logPath = String.format(BaseConst.PATH_STAT, FunctionConfig.getLogFolder(functionDto.getFunctionCode())) + BaseConst.FILE_TYPE_STAT;
             try {
                 File statFile = new File(FileUtils.getFilePath(logPath));
@@ -88,6 +82,7 @@ public class FunctionStatInfoController implements Initializable {
             OutputUtils.info(stat, functionDto);
         }
         OutputUtils.info(notice, getOrderInfo(functionDtoList));
+        LoggerUtils.writeLogInfo(FUNCTION_STAT_INFO.getCode(), new Date(), new ArrayList<>());
     }
 
     private String getStatInfo(List<String> logStat, int type) {

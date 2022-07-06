@@ -146,7 +146,22 @@ public class CopyCodeController extends BaseController implements Initializable 
                             item = item.replaceAll("\\\\", "/").replace(source, SYMBOL_EMPTY);
                             String fileLocation = source + SYMBOL_SLASH + item;
                             String targetFileLocation = target + SYMBOL_SLASH + item;
-
+                            Iterator<String> iterator = appConfigDto.getReplaceTargetUrl().keySet().iterator();
+                            while (iterator.hasNext()) {
+                                String key = iterator.next();
+                                if (targetFileLocation.contains(key)) {
+                                    targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key));
+                                    break;
+                                }
+                            }
+                            Iterator<String> iteratorSource = appConfigDto.getReplaceSourceUrl().keySet().iterator();
+                            while (iteratorSource.hasNext()) {
+                                String key = iteratorSource.next();
+                                if (fileLocation.contains(key)) {
+                                    fileLocation = fileLocation.replace(key, appConfigDto.getReplaceSourceUrl().get(key));
+                                    break;
+                                }
+                            }
                             if (fileLocation.equals(targetFileLocation)) {
                                 infoMsg(getFileName(targetFileLocation) + " 同路径同名文件不复制");
                                 continue;

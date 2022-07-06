@@ -524,6 +524,24 @@ public class FileUtils {
                 }
             }
 
+            // 获取url替换配置
+            if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_SOURCE)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_COPY_CODE_LOCATION_REPLACE_SOURCE);
+                updateContent.addAll(updateConfig);
+                if (CollectionUtils.isNotEmpty(updateConfig)) {
+                    continue;
+                }
+            }
+
+            // 获取url替换配置
+            if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_TARGET)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_COPY_CODE_LOCATION_REPLACE_TARGET);
+                updateContent.addAll(updateConfig);
+                if (CollectionUtils.isNotEmpty(updateConfig)) {
+                    continue;
+                }
+            }
+
             // 更新历史配置项
             Iterator<String> iterator = oldAppConfig.keySet().iterator();
             while (iterator.hasNext()) {

@@ -16,11 +16,13 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.ABOUT_INFO;
+import static com.hoomoomoo.im.consts.FunctionConfig.JD_AUTO;
 
 /**
  * @author humm23693
@@ -70,6 +72,7 @@ public class AboutInfoController implements Initializable {
                 }
                 OutputUtils.info(about, SYMBOL_SPACE_4 + "授权状态: " + authStatus + SYMBOL_NEXT_LINE_2);
             }
+            LoggerUtils.writeLogInfo(ABOUT_INFO.getCode(), new Date(), new ArrayList<>());
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

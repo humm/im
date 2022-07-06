@@ -148,6 +148,31 @@ public class ConfigCache {
                     }
                 }
 
+                // url替换配置
+                if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_SOURCE)) {
+                    int index = item.indexOf(SYMBOL_EQUALS);
+                    String code = item.substring(KEY_SVN_URL.length(), index);
+                    String name = item.substring(index + 1);
+                    if (StringUtils.isNotBlank(name)) {
+                        String[] location = name.split(SYMBOL_COMMA);
+                        if (!DEMO.equalsIgnoreCase(code)) {
+                            appConfigDto.getReplaceSourceUrl().put(location[0], location[1]);
+                        }
+                    }
+                }
+
+                // url替换配置
+                if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_TARGET)) {
+                    int index = item.indexOf(SYMBOL_EQUALS);
+                    String code = item.substring(KEY_SVN_URL.length(), index);
+                    String name = item.substring(index + 1);
+                    if (StringUtils.isNotBlank(name)) {
+                        String[] location = name.split(SYMBOL_COMMA);
+                        if (!DEMO.equalsIgnoreCase(code)) {
+                            appConfigDto.getReplaceTargetUrl().put(location[0], location[1]);
+                        }
+                    }
+                }
             }
         }
 

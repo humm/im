@@ -105,6 +105,10 @@ public class AppConfigDto extends BaseDto {
 
     private Map<String, String> svnUrl;
 
+    private Map<String, String> replaceSourceUrl;
+
+    private Map<String, String> replaceTargetUrl;
+
     private String svnRep;
 
     private String svnStartPrefix;
@@ -189,6 +193,8 @@ public class AppConfigDto extends BaseDto {
         this.svnStatInterval = 0;
         this.copyCodeVersion = new LinkedHashMap(16);
         this.svnUrl = new LinkedHashMap(16);
+        this.replaceSourceUrl = new LinkedHashMap(16);
+        this.replaceTargetUrl = new LinkedHashMap(16);
         this.cookieMap = new HashMap<>(16);
         this.executeType = SYMBOL_EMPTY;
         this.generateCodeDefaultLast = true;

@@ -41,9 +41,9 @@
                                         <RadioButton fx:id="modeAll" layoutX="90.0" layoutY="55.0"
                                                      mnemonicParsing="false" onAction="#selectModeAll" text="全量"
                                                      userData="1"/>
-                                        <RadioButton fx:id="modeUpdate" layoutX="160.0" layoutY="55.0"
+                                        <!--<RadioButton fx:id="modeUpdate" layoutX="160.0" layoutY="55.0"
                                                      mnemonicParsing="false" onAction="#selectModeUpdate" text="升级"
-                                                     userData="2"/>
+                                                     userData="2"/>-->
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">
