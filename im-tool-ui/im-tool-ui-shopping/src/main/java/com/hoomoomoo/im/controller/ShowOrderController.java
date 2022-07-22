@@ -126,7 +126,7 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
         }
         ShoppingDto shoppingDto = new ShoppingDto();
         shoppingDto.setGoodsDtoList(goodsDtoList);
-        shoppingDto.setOrderNumValue(orderNumValue);
+        shoppingDto.setOrderNumValue(String.valueOf(orderNumValue));
         shoppingDto.setType(SHOW_ORDER.getCode());
         shoppingDto.setTypeName(SHOW_ORDER.getName());
         return shoppingDto;

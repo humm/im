@@ -125,7 +125,7 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
         }
         ShoppingDto shoppingDto = new ShoppingDto();
         shoppingDto.setGoodsDtoList(goodsDtoList);
-        shoppingDto.setOrderNumValue(orderNumValue);
+        shoppingDto.setOrderNumValue(String.valueOf(orderNumValue));
         shoppingDto.setType(APPEND_APPRAISE.getCode());
         shoppingDto.setTypeName(APPEND_APPRAISE.getName());
         return shoppingDto;

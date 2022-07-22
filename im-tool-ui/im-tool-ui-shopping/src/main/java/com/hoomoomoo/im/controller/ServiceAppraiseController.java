@@ -148,7 +148,7 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
         }
         ShoppingDto shoppingDto = new ShoppingDto();
         shoppingDto.setGoodsDtoList(goodsDtoList);
-        shoppingDto.setOrderNumValue(orderNumValue);
+        shoppingDto.setOrderNumValue(String.valueOf(orderNumValue));
         shoppingDto.setType(SERVICE_APPRAISE.getCode());
         shoppingDto.setTypeName(SERVICE_APPRAISE.getName());
         return shoppingDto;

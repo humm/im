@@ -151,7 +151,7 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
         }
         com.hoomoomoo.im.dto.ShoppingDto shoppingDto = new ShoppingDto();
         shoppingDto.setGoodsDtoList(goodsDtoList);
-        shoppingDto.setOrderNumValue(orderNumValue);
+        shoppingDto.setOrderNumValue(String.valueOf(orderNumValue));
         shoppingDto.setType(WAIT_APPRAISE.getCode());
         shoppingDto.setTypeName(WAIT_APPRAISE.getName());
         return shoppingDto;

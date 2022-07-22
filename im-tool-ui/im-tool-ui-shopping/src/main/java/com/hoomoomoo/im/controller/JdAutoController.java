@@ -39,9 +39,9 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
 
     private List<ShoppingDto> shoppingDtoList;
 
-    private int waitHandlerNum;
+    private String waitHandlerNum;
 
-    private int handlerNum;
+    private String handlerNum;
 
     private Map<String, String> handle = new HashMap<>(16);
 
@@ -71,7 +71,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
 
     @FXML
     void execute(ActionEvent event) {
-        handlerNum = 0;
+        handlerNum = STR_0;
         new Thread(() -> {
             try {
                 OutputUtils.clearLog(log);
@@ -130,7 +130,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
         shoppingDtoList.add(serviceAppraise);
         shoppingDtoList.add(waitAppraise);
         OutputUtils.infoList(waitHandler, shoppingDtoList);
-        waitHandlerNum = waitAppraise.getOrderNumValue() + showOrder.getOrderNumValue() + appendAppraise.getOrderNumValue() + serviceAppraise.getOrderNumValue();
+        waitHandlerNum = String.valueOf(waitAppraise.getOrderNumValue() + showOrder.getOrderNumValue() + appendAppraise.getOrderNumValue() + serviceAppraise.getOrderNumValue());
     }
 
     protected void doExecute() {
@@ -189,7 +189,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
     private void appraise(AppConfigDto appConfigDto, ShoppingDto shoppingDto,
                           FunctionConfig functionConfig, List<String> logs) throws Exception {
         List<GoodsDto> goodsList = shoppingDto.getGoodsDtoList();
-        int orderNumValue = shoppingDto.getOrderNumValue();
+        int orderNumValue = Integer.valueOf(shoppingDto.getOrderNumValue());
         if (CollectionUtils.isNotEmpty(goodsList)) {
             for (GoodsDto goodsDto : goodsList) {
                 goodsDto.setTypeName(functionConfig.getName());
@@ -220,11 +220,11 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                 }
                 ShoppingCommonUtil.appraiseComplete(appConfigDto, log, logs, (GoodsDto) BeanUtils.cloneBean(goodsDto));
                 recordHandler(goodsDto);
-                handlerNum++;
+                handlerNum = String.valueOf(Integer.valueOf(handlerNum) + 1);
                 double percent = new BigDecimal(handlerNum).divide(new BigDecimal(waitHandlerNum), 2, BigDecimal.ROUND_HALF_UP).doubleValue();
                 percent = percent > 1 ? 1 : percent;
                 setProgress(percent);
-                shoppingDto.setOrderNumValue(--orderNumValue);
+                shoppingDto.setOrderNumValue(String.valueOf(--orderNumValue));
                 new Thread(() -> {
                     OutputUtils.clearLog(waitHandler);
                     OutputUtils.infoList(waitHandler, shoppingDtoList);

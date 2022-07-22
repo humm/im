@@ -197,7 +197,7 @@ public class ShoppingBaseController extends BaseController{
     protected void query(AppConfigDto appConfigDto, Class clazz, Boolean initLog) throws Exception {
         Method queryData = clazz.getMethod(METHOD_QUERY_DATA, AppConfigDto.class, Boolean.class, TableView.class, TableView.class, Label.class);
         ShoppingDto shoppingDto = (ShoppingDto)queryData.invoke(instance, appConfigDto, initLog, orderGoodsList, log, orderNum);
-        orderNumValue = shoppingDto.getOrderNumValue();
+        orderNumValue = Integer.valueOf(shoppingDto.getOrderNumValue());
         goodsDtoList = shoppingDto.getGoodsDtoList();
     }
 

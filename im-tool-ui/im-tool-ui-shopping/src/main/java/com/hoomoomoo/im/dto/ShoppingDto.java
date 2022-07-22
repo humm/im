@@ -5,6 +5,8 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.hoomoomoo.im.consts.BaseConst.STR_0;
+
 /**
  * @author humm23693
  * @description TODO
@@ -16,7 +18,7 @@ public class ShoppingDto extends BaseDto{
 
     public List<GoodsDto> goodsDtoList;
 
-    public Integer orderNumValue;
+    public String orderNumValue;
 
     public String type;
 
@@ -24,6 +26,6 @@ public class ShoppingDto extends BaseDto{
 
     public ShoppingDto() {
         this.goodsDtoList = new ArrayList<>();
-        this.orderNumValue = 0;
+        this.orderNumValue = STR_0;
     }
 }
