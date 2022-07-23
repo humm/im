@@ -36,7 +36,7 @@ public class SystemConfigBean {
     /**
      * 应用名称
      */
-    @Value("${server.servlet.context-describe}")
+    @Value("家庭信息平台")
     private String appDescribe;
 
     /**
