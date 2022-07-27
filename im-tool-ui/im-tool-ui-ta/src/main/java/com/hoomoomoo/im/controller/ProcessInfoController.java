@@ -17,6 +17,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -333,13 +334,15 @@ public class ProcessInfoController extends BaseController implements Initializab
             bufferedWriter.write("delete from tbschedulejob where ta_code='" + taCode + "' and sche_group_code = '" + groupCode + "';\n");
         }
         for (int k = 2; k < rows; k++) {
-
+            if (StringUtils.isBlank(getCell(sheet, 2, k)) || "null".equals(getCell(sheet, 2, k))) {
+                continue;
+            }
             // 一级job 不为空，二级job为空
             if (sheet.getCell(3, k).getContents().equals("1")) {
                 String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name," +
                         "sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url," +
                         "sche_job_pause,sche_ishidebutton,url_open_mode, sche_job_ishide, sche_job_isskip," +
-                        "sche_job_iswait, order_no) \nvalues" +
+                        "sche_job_iswait, order_no, sche_depend_undonodes) \nvalues" +
                         " ('"
                         + groupCode + "',"
                         + getCell(sheet, 2, k) + ","
@@ -356,7 +359,8 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : getCell(sheet, 12, k)) + ", "
                         + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : getCell(sheet, 13, k)) + ", "
                         + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : getCell(sheet, 14, k)) + ", "
-                        + ((getCell(sheet, 16, k).equals("null")) ? "'0'" : getCell(sheet, 16, k))
+                        + ((getCell(sheet, 16, k).equals("null")) ? "'0'" : getCell(sheet, 16, k)) + ", "
+                        + ((getCell(sheet, 17, k).equals("null")) ? "' '" : getCell(sheet, 17, k))
                         + ");";
                 parentJobList.add(sql);
             }
@@ -379,12 +383,15 @@ public class ProcessInfoController extends BaseController implements Initializab
 
         bufferedWriter.write("-- 二级job配置脚本 begin  " + groupName + "\n");
         for (int k = 2; k < rows; k++) {
+            if (StringUtils.isBlank(getCell(sheet, 2, k)) || "null".equals(getCell(sheet, 2, k))) {
+                continue;
+            }
             // 二级JOB
             if (!sheet.getCell(3, k).getContents().equals("1")) {
                 String sql = "insert into tbschedulejob (sche_group_code,sche_job_code,sche_job_name," +
                         "sche_parent_job_code,sche_job_isuse,sche_up_job_code,bank_no,ta_code,sche_job_url," +
                         "sche_job_pause,sche_ishidebutton,url_open_mode, sche_job_ishide, sche_job_isskip," +
-                        "sche_job_iswait, order_no) " +
+                        "sche_job_iswait, order_no, sche_depend_undonodes) " +
                         "\nvalues ('"
                         + groupCode + "',"
                         + getCell(sheet, 2, k) + ","
@@ -401,7 +408,8 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : getCell(sheet, 12, k)) + ","
                         + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : getCell(sheet, 13, k)) + ","
                         + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : getCell(sheet, 14, k)) + ","
-                        + ((getCell(sheet, 16, k).equals("null")) ? "'0'" : getCell(sheet, 16, k))
+                        + ((getCell(sheet, 16, k).equals("null")) ? "'0'" : getCell(sheet, 16, k)) + ","
+                        + ((getCell(sheet, 17, k).equals("null")) ? "' '" : getCell(sheet, 17, k))
                         + ");";
                 secondJobList.add(sql);
             }
@@ -480,6 +488,9 @@ public class ProcessInfoController extends BaseController implements Initializab
             String[] taskList = value.split("\n");
             String parentTaskCode = "";
             for (String taskCode : taskList) {
+                if (StringUtils.isBlank(taskCode)) {
+                    continue;
+                }
                 Map map = TaskMemoryCache.getCacheMap(taskCode);
                 if (map == null) {
                     OutputUtils.info(log, key + "的TASK[" + taskCode + "]在【任务配置】sheet页中不存在");
@@ -519,7 +530,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 List<Map<String, Object>> subTaskList = TaskMemoryCache.getCacheMapByFunction(functionId, reserve);
                 String parentSubTaskCode = "";
                 for (Map<String, Object> subMap : subTaskList) {
-                    if (subMap == null) {
+                    if (subMap == null || subMap.get(TaskMemoryCache.SCHE_TASK_CODE) == null) {
                         // 无子task
                         continue;
                     } else {
