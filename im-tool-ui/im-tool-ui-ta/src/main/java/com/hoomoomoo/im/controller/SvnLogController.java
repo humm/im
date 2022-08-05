@@ -26,7 +26,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.List;
 
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.FunctionConfig.SVN_LOG;
 
 /**
@@ -56,6 +56,9 @@ public class SvnLogController extends BaseController implements Initializable {
     private Button svnResetSubmit;
 
     @FXML
+    private Button svnDescribe;
+
+    @FXML
     private Button copy;
 
     @FXML
@@ -71,12 +74,17 @@ public class SvnLogController extends BaseController implements Initializable {
     void showVersion(MouseEvent event) {
         String ver = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getVersion();
         OutputUtils.info(version, ver);
-        execute(false);
+        execute(false, STR_1);
     }
 
     @FXML
     void executeSubmit(ActionEvent event) {
-        execute(true);
+        execute(true, STR_1);
+    }
+
+    @FXML
+    void executeDescribe(ActionEvent event) {
+        execute(true, STR_2);
     }
 
     @FXML
@@ -84,7 +92,7 @@ public class SvnLogController extends BaseController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         OutputUtils.clearLog(modifyNo);
         OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
-        execute(true);
+        execute(true, STR_1);
     }
 
     @FXML
@@ -93,7 +101,7 @@ public class SvnLogController extends BaseController implements Initializable {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(fileLog.getText()), null);
     }
 
-    private void execute(boolean updateLog) {
+    private void execute(boolean updateLog, String type) {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, SVN_LOG.getName()));
         if (updateLog) {
             OutputUtils.clearLog(version);
@@ -122,7 +130,7 @@ public class SvnLogController extends BaseController implements Initializable {
                     ver = BaseConst.STR_0;
                 }
                 updateProgress();
-                getSvnLog(Integer.valueOf(times), Integer.valueOf(ver), modify, updateLog);
+                getSvnLog(Integer.valueOf(times), Integer.valueOf(ver), modify, updateLog, type);
             } catch (NumberFormatException e) {
                 LoggerUtils.info(e);
             } catch (Exception e) {
@@ -132,27 +140,39 @@ public class SvnLogController extends BaseController implements Initializable {
         }).start();
     }
 
-    private void getSvnLog(int times, int version, String modifyNo, boolean updateLog) {
+    private void getSvnLog(int times, int version, String modifyNo, boolean updateLog, String type) {
         new Thread(() -> {
             try {
                 svnSubmit.setDisable(true);
                 svnResetSubmit.setDisable(true);
+                svnDescribe.setDisable(true);
+                copy.setDisable(true);
                 Date date = new Date();
                 List<LogDto> logDtoList = SvnUtils.getSvnLog(times, version, modifyNo);
-                List<String> fileList = new ArrayList<>();
-                int length = logDtoList.size();
-                for (LogDto svnLogDto : logDtoList) {
-                    svnLogDto.setGetNum(String.valueOf(length));
-                    svnLogDto.setMatch((times == length || StringUtils.isNotBlank(modifyNo)) ? "匹配" : "未匹配");
-                    if (updateLog) {
-                        OutputUtils.info(svnLog, svnLogDto);
-                    }
-                    OutputUtils.info(fileLog, svnLogDto.getFile());
-                    fileList.addAll(svnLogDto.getFile());
-                }
                 if (CollectionUtils.isEmpty(logDtoList)) {
                     OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录\n");
                 } else {
+                    List<String> fileList = new ArrayList<>();
+                    int length = logDtoList.size();
+                    for (LogDto svnLogDto : logDtoList) {
+                        svnLogDto.setGetNum(String.valueOf(length));
+                        svnLogDto.setMatch((times == length || StringUtils.isNotBlank(modifyNo)) ? "匹配" : "未匹配");
+                        if (updateLog) {
+                            OutputUtils.info(svnLog, svnLogDto);
+                        }
+                        if (STR_1.equals(type)) {
+                            for (String item : svnLogDto.getFile()) {
+                                if (!fileList.contains(item)) {
+                                    fileList.add(item);
+                                }
+                            }
+                        } else {
+                            if (!fileList.contains(svnLogDto.getMsg() + SYMBOL_NEXT_LINE)) {
+                                fileList.add(svnLogDto.getMsg() + SYMBOL_NEXT_LINE);
+                            }
+                        }
+                    }
+                    OutputUtils.info(fileLog, fileList);
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     if (appConfigDto.getSvnDefaultAppendBiz() && StringUtils.isNotBlank(appConfigDto.getSvnDefaultAppendPath())) {
                         for (String file : fileList) {
@@ -172,6 +192,8 @@ public class SvnLogController extends BaseController implements Initializable {
             } finally {
                 svnSubmit.setDisable(false);
                 svnResetSubmit.setDisable(false);
+                svnDescribe.setDisable(false);
+                copy.setDisable(false);
             }
         }).start();
     }
