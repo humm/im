@@ -56,6 +56,7 @@ public class SvnUtils {
                 svnLogDto.setFile(pathList);
                 svnLogDto.setMsg(getSvnMsg(svnLogEntry, STR_0));
                 String modifyMsg = getSvnMsg(svnLogEntry, STR_1);
+                svnLogDto.setSerialNo(modifyMsg);
                 if (StringUtils.isNotBlank(modifyNo)) {
                     if (!StringUtils.equals(modifyNo.trim(), modifyMsg.trim())) {
                         return;

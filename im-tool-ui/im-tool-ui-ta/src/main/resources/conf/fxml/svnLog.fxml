@@ -81,7 +81,8 @@
                                     <children>
                                         <TableView fx:id="svnLog" layoutY="14.0" onMouseClicked="#showVersion" prefHeight="188.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="match" editable="false" prefWidth="80" sortable="false" text="匹配标志">
+                                                <TableColumn id="match" editable="false" prefWidth="60"
+                                                             sortable="false" text="标志">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="match" />
                                                     </cellValueFactory>
@@ -92,13 +93,19 @@
                                                         <PropertyValueFactory property="version" />
                                                     </cellValueFactory>
                                                 </TableColumn>
+                                                <TableColumn id="serialNo" editable="false" prefWidth="135"
+                                                             sortable="false" text="修改单编号">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="serialNo" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
                                                 <TableColumn id="num" editable="false" prefWidth="80" sortable="false"
                                                              text="文件个数">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="num" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="400"
+                                                <TableColumn id="msg" editable="false" prefWidth="290"
                                                              sortable="false" text="提交备注">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="msg" />

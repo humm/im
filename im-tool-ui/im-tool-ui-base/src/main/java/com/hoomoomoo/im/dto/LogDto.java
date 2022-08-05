@@ -27,6 +27,8 @@ public class LogDto extends BaseDto implements Comparable<LogDto> {
 
     private String version;
 
+    private String serialNo;
+
     private List<String> file;
 
     @Override
