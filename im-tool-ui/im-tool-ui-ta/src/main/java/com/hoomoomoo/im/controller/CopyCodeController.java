@@ -123,17 +123,17 @@ public class CopyCodeController extends BaseController implements Initializable 
                 if (StringUtils.isNotBlank(filePathConfig)) {
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     List<String> fileLog = new ArrayList<>(16);
-                    String[] fileList = filePathConfig.split(BaseConst.SYMBOL_NEXT_LINE);
+                    String[] fileList = filePathConfig.split(SYMBOL_NEXT_LINE);
                     if (fileList != null && fileList.length != 0) {
                         for (int i=0; i<fileList.length; i++) {
                             String item = fileList[i].trim();
-                            if (StringUtils.isBlank(item) || item.startsWith(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+                            if (StringUtils.isBlank(item) || item.startsWith(ANNOTATION_TYPE_NORMAL)) {
                                 continue;
                             }
 
                             String copyCodePrefix = appConfigDto.getCopyCodePrefix();
                             if (StringUtils.isNotBlank(copyCodePrefix)) {
-                                String[] items = copyCodePrefix.split(BaseConst.SYMBOL_COMMA);
+                                String[] items = copyCodePrefix.split(SYMBOL_COMMA);
                                 for (String prefix : items) {
                                     int index = item.indexOf(prefix);
                                     if (index != -1) {
@@ -149,6 +149,14 @@ public class CopyCodeController extends BaseController implements Initializable 
                             Iterator<String> iterator = appConfigDto.getReplaceTargetUrl().keySet().iterator();
                             while (iterator.hasNext()) {
                                 String key = iterator.next();
+                                if (targetFileLocation.contains("views/fundAccount")) {
+                                    if (appConfigDto.getCopyCodeLocationReplaceSkipAccountVersion().toLowerCase(Locale.ROOT).contains((String)targetVersion.getSelectionModel().getSelectedItem())) {
+                                        targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(SYMBOL_SEMICOLON)[1]);
+                                    } else {
+                                        targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(SYMBOL_SEMICOLON)[0]);
+                                    }
+                                    break;
+                                }
                                 if (targetFileLocation.contains(key)) {
                                     targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key));
                                     break;
@@ -168,7 +176,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                             }
                             List<String> sourceContent = FileUtils.readNormalFile(fileLocation, false);
                             File file = new File(fileLocation);
-                            String encode = BaseConst.ENCODING_UTF8;
+                            String encode = ENCODING_UTF8;
                             if (file.exists()) {
                                 encode = FileUtils.getFileEncode(fileLocation);
                             }
@@ -179,7 +187,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                             }
                             if (CollectionUtils.isNotEmpty(sourceContent)) {
                                 for (int j=0; j<sourceContent.size(); j++) {
-                                    FileUtils.writeFile(targetFileLocation, sourceContent.get(j) + BaseConst.SYMBOL_NEXT_LINE, encode, true);
+                                    FileUtils.writeFile(targetFileLocation, sourceContent.get(j) + SYMBOL_NEXT_LINE, encode, true);
                                 }
                                 fileLog.add(targetFileLocation);
                                 infoMsg(getFileName(targetFileLocation) + " 复制完成");
@@ -201,6 +209,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                 LoggerUtils.info(e);
                 OutputUtils.info(log, e.getMessage());
             } finally {
+                setProgress(1);
                 execute.setDisable(false);
             }
         }).start();

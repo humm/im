@@ -282,9 +282,9 @@ public class FundInfoController extends BaseController implements Initializable 
                 LoggerUtils.info(e);
                 infoMsg(e.getMessage());
             } finally {
+                setProgress(1);
                 scriptSubmit.setDisable(false);
             }
-            setProgress(1);
         }).start();
     }
 

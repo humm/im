@@ -220,9 +220,9 @@ public class ProcessInfoController extends BaseController implements Initializab
                 LoggerUtils.info(e);
                 OutputUtils.info(log, e.getMessage());
             } finally {
+                setProgress(1);
                 submit.setDisable(false);
             }
-            setProgress(1);
         }).start();
     }
 

@@ -152,7 +152,7 @@ public class InitConfigTest {
             String versionFilePath = FileUtils.getFilePath(PATH_VERSION);
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
             List<String> content = FileUtils.readNormalFile(versionFilePath, false);
-            String subVersion = "00";
+            String subVersion = "01";
             int times = 1;
             if (CollectionUtils.isNotEmpty(content)) {
                 for (int i = 0; i < content.size(); i++) {

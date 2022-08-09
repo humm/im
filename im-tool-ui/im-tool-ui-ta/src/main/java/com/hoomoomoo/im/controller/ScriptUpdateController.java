@@ -309,8 +309,8 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 OutputUtils.info(target, e.getMessage());
             } finally {
                 submit.setDisable(false);
+                setProgress(1);
             }
-            setProgress(1);
         }).start();
     }
 

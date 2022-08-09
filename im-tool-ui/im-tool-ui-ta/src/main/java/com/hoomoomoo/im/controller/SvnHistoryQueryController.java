@@ -78,8 +78,8 @@ public class SvnHistoryQueryController extends BaseController implements Initial
                     OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
                     LoggerUtils.info(e);
                 } finally {
+                    setProgress(1);
                 }
-                setProgress(1);
             } catch (Exception e) {
                 OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
                 LoggerUtils.info(e);

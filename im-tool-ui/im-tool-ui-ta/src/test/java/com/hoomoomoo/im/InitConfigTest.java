@@ -173,6 +173,8 @@ public class InitConfigTest {
         keys.put("generate.sql.database.code", null);
         keys.put("generate.sql.table.code", null);
 
+        keys.put("copy.code.location.replace.skipAccountVersion", null);
+
         String confPath = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {

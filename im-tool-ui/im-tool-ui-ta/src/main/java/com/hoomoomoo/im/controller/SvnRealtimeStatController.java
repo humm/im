@@ -91,8 +91,8 @@ public class SvnRealtimeStatController extends BaseController implements Initial
                         OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
                         LoggerUtils.info(e);
                     } finally {
+                        setProgress(1);
                     }
-                    setProgress(1);
                     Thread.sleep(appConfigDto.getSvnStatInterval() * 1000);
                 }
             } catch (Exception e) {

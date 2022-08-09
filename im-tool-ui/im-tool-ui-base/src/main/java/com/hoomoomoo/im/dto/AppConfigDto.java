@@ -109,6 +109,8 @@ public class AppConfigDto extends BaseDto {
 
     private Map<String, String> replaceTargetUrl;
 
+    private String copyCodeLocationReplaceSkipAccountVersion;
+
     private String svnRep;
 
     private String svnStartPrefix;
