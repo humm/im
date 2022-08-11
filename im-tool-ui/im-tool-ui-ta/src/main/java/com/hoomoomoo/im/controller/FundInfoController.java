@@ -46,8 +46,8 @@ public class FundInfoController extends BaseController implements Initializable 
     @FXML
     private RadioButton modeAll;
 
-    @FXML
-    private RadioButton modeUpdate;
+//    @FXML
+//    private RadioButton modeUpdate;
 
     @FXML
     private TableView fundLog;
@@ -81,13 +81,13 @@ public class FundInfoController extends BaseController implements Initializable 
     @FXML
     void selectModeAll(ActionEvent event) {
         OutputUtils.selected(modeAll, true);
-        OutputUtils.selected(modeUpdate, false);
+        // OutputUtils.selected(modeUpdate, false);
     }
 
     @FXML
     void selectModeUpdate(ActionEvent event) {
         OutputUtils.selected(modeAll, false);
-        OutputUtils.selected(modeUpdate, true);
+        // OutputUtils.selected(modeUpdate, true);
     }
 
     @FXML
@@ -103,16 +103,16 @@ public class FundInfoController extends BaseController implements Initializable 
                 return;
             }
             boolean selectModeAll = modeAll.isSelected();
-            boolean selectModeUpdate = modeUpdate.isSelected();
-            if (selectModeAll == false && selectModeUpdate == false) {
+            // boolean selectModeUpdate = modeUpdate.isSelected();
+            if (selectModeAll == false /*&& selectModeUpdate == false*/) {
                 OutputUtils.selected(modeAll, true);
-                OutputUtils.selected(modeUpdate, false);
+                // OutputUtils.selected(modeUpdate, false);
             }
             boolean mode = modeAll.isSelected();
             if (mode) {
                 SCRIPT_TYPE = String.valueOf(modeAll.getUserData());
             } else {
-                SCRIPT_TYPE = String.valueOf(modeUpdate.getUserData());
+                // SCRIPT_TYPE = String.valueOf(modeUpdate.getUserData());
             }
             updateProgress();
             generateScript();
@@ -133,17 +133,17 @@ public class FundInfoController extends BaseController implements Initializable 
             String mode = appConfigDto.getFundGenerateMode();
             if (StringUtils.isBlank(mode)) {
                 OutputUtils.selected(modeAll, false);
-                OutputUtils.selected(modeUpdate, false);
+                // OutputUtils.selected(modeUpdate, false);
                 return;
             }
             if (BaseConst.STR_1.equals(mode)) {
                 OutputUtils.selected(modeAll, true);
-                OutputUtils.selected(modeUpdate, false);
+                // OutputUtils.selected(modeUpdate, false);
                 return;
             }
             if (BaseConst.STR_2.equals(mode)) {
                 OutputUtils.selected(modeAll, false);
-                OutputUtils.selected(modeUpdate, true);
+                // utputUtils.selected(modeUpdate, true);
                 return;
             }
 

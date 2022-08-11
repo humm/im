@@ -277,6 +277,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                                 int index = sql.lastIndexOf(BaseConst.SYMBOL_BRACKETS_RIGHT);
                                 sql = sql.substring(0, index) + paramSql;
                             }
+                            String updateSql = generateUpdate(sqlKey);
                             if (sql.toLowerCase().startsWith("insert")) {
                                 OutputUtils.info(target, deleteSqlMap.get(sqlKey) + SYMBOL_NEXT_LINE);
                                 logList.add(deleteSqlMap.get(sqlKey));
@@ -286,6 +287,11 @@ public class ScriptUpdateController extends BaseController implements Initializa
                                 OutputUtils.info(target, sql + BaseConst.SYMBOL_SEMICOLON + SYMBOL_NEXT_LINE);
                                 logList.add(sql.replace(SYMBOL_NEXT_LINE, BaseConst.SYMBOL_SPACE) + BaseConst.SYMBOL_SEMICOLON);
                                 scriptList.add(sql + BaseConst.SYMBOL_SEMICOLON + SYMBOL_NEXT_LINE);
+                                if (StringUtils.isNotEmpty(updateSql)) {
+                                    OutputUtils.info(target, updateSql + SYMBOL_NEXT_LINE);
+                                    logList.add(updateSql);
+                                    scriptList.add(updateSql);
+                                }
                             }
                         }
                         if (STR_1.equals(appConfigDto.getScriptUpdateGenerateType())) {
@@ -314,6 +320,40 @@ public class ScriptUpdateController extends BaseController implements Initializa
         }).start();
     }
 
+    private static String generateUpdate(String item) throws Exception{
+        StringBuilder updateSql = new StringBuilder();
+        if (item.toLowerCase().contains("tbmenucondition")) {
+            updateSql.append("update tbmenuconditionuser set ");
+            item = item.replaceAll("\\s+", "");
+            String[] sql = item.split(BaseConst.KEY_VALUES);
+            if (sql.length != 2) {
+                sql = item.split(BaseConst.KEY_VALUES.toUpperCase());
+                if (sql.length != 2) {
+                    throw new Exception("sql语句未包含或者包含多个" + BaseConst.KEY_VALUES + SYMBOL_NEXT_LINE + item);
+                }
+            }
+            String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
+            String[] value = sql[1].substring(sql[1].indexOf("(") + 1, sql[1].indexOf(")")).split("',");
+            for (int i=0; i<column.length; i++) {
+                if (i == 0 || i == 2 || i == 3) {
+                    continue;
+                }
+                if (i != 1) {
+                    updateSql.append(", ");
+                }
+                updateSql.append(column[i] + " = " + (value[i].length() == 1 ? value[i] + SYMBOL_SPACE : value[i]));
+                if (i != column.length - 1) {
+                    updateSql.append("'");
+                }
+            }
+            updateSql.append(" where " + column[0] + " = " + value[0] + "'");
+            updateSql.append(" and " + column[2] + " = " + value[2] + "'");
+            updateSql.append(" and " + column[3] + " = " + value[3] + "'");
+            updateSql.append(";");
+        }
+        return updateSql.toString();
+    }
+
     private static String getTableName(String sql) {
         int tableNameStartIndex = sql.toLowerCase().indexOf(BaseConst.KEY_INSERT_INTO);
         int tableNameStartEnd = sql.toLowerCase().indexOf(BaseConst.SYMBOL_BRACKETS_LEFT);
@@ -325,6 +365,41 @@ public class ScriptUpdateController extends BaseController implements Initializa
             return sql.append(" ");
         } else {
             return sql.append(" and ");
+        }
+    }
+
+    public static void main(String[] args) throws Exception{
+        String item = "insert into tbmenucondition (menu_code,component_kind,condition_kind,element_code,element_name,data_dict,check_format,default_value,required_flag,readonly_flag,visable,data_width,order_no,exp_flag,sort_no)\n" +
+                "values('fundRequestConfirmQuery', 'A', '0', 'dataSource', '数据源', '{\"dict\":\"F_C30022\"," +
+                "\"clearable\":\"0\"}', ' ', '0', '0', '0', '1', '0', '0', '1', '1' );\n";
+        if (item.toLowerCase().contains("tbmenucondition")) {
+            item = item.replaceAll("\\s+", "");
+            String[] sql = item.split(BaseConst.KEY_VALUES);
+            if (sql.length != 2) {
+                sql = item.split(BaseConst.KEY_VALUES.toUpperCase());
+                if (sql.length != 2) {
+                    throw new Exception("sql语句未包含或者包含多个" + BaseConst.KEY_VALUES + SYMBOL_NEXT_LINE + item);
+                }
+            }
+            String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
+            String[] value = sql[1].substring(sql[1].indexOf("(") + 1, sql[1].indexOf(")")).split("',");
+            StringBuilder updateSql = new StringBuilder("update tbmenuconditionuser set ");
+            for (int i=0; i<column.length; i++) {
+                if (i == 0 || i == 2 || i == 3) {
+                    continue;
+                }
+                if (i != 1) {
+                    updateSql.append(", ");
+                }
+                updateSql.append(column[i] + " = " + (StringUtils.isEmpty(value[i]) ? SYMBOL_SPACE : value[i]));
+                if (i != column.length - 1) {
+                    updateSql.append("'");
+                }
+            }
+            updateSql.append(" where " + column[0] + " = " + value[0] + "'");
+            updateSql.append(" and " + column[2] + " = " + value[2] + "'");
+            updateSql.append(" and " + column[3] + " = " + value[3] + "'");
+            updateSql.append(";");
         }
     }
 }

@@ -88,6 +88,8 @@ public class InitConfigTest {
         boolean svnStatUser = false;
         boolean copyCode = false;
         boolean svnUrl = false;
+        boolean locationReplaceSource = false;
+        boolean locationReplaceTarget = false;
         while (iterator.hasNext()) {
             String item = iterator.next();
             if (item.startsWith(KEY_SVN_UPDATE)) {
@@ -124,6 +126,20 @@ public class InitConfigTest {
                 } else {
                     svnUrl = true;
                     iterator.set("svn.url.demo10000=https://192.168.57.56/bank/depone/BTA6.0/trunk");
+                }
+            } else if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_SOURCE)) {
+                if (locationReplaceSource) {
+                    iterator.remove();
+                } else {
+                    locationReplaceSource = true;
+                    iterator.set("copy.code.location.replace.source.0=");
+                }
+            } else if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_TARGET)) {
+                if (locationReplaceTarget) {
+                    iterator.remove();
+                } else {
+                    locationReplaceTarget = true;
+                    iterator.set("copy.code.location.replace.target.0=");
                 }
             }
         }
