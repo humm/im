@@ -762,9 +762,7 @@ public class FileUtils {
         Graphics2D graphics = bufferedImage.createGraphics();
         graphics.setColor(Color.BLUE);
         graphics.setFont(new Font("微软雅黑", Font.BOLD, 30));
-        graphics.drawString(APP_MODE_NAME_APP, 25, 155);
-        graphics.drawString(APP_MODE_NAME_APP, 25, 95);
-        graphics.drawString(APP_MODE_NAME_APP, 25, 35);
+        graphics.drawString(APP_MODE_NAME_APP, 10, 30);
         FileOutputStream fileOutputStream = new FileOutputStream(target);
         ImageIO.write(bufferedImage, "png", fileOutputStream);
     }
