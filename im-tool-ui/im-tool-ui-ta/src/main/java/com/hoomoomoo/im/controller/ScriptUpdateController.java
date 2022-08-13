@@ -182,9 +182,10 @@ public class ScriptUpdateController extends BaseController implements Initializa
                         return;
                     }
                     List<String> items = Arrays.asList(itemsTemp.toString().substring(0, indexLast).split(BaseConst.SYMBOL_SEMICOLON));
+                    boolean existRule = false;
                     for (int j = 0; j < items.size(); j++) {
+                        existRule = false;
                         String item = items.get(j).replace(SYMBOL_NEXT_LINE, BaseConst.SYMBOL_EMPTY).trim();
-
                         // 获取sql字段和值
                         String[] sql = item.split(BaseConst.KEY_VALUES);
                         if (sql.length != 2) {
@@ -244,8 +245,14 @@ public class ScriptUpdateController extends BaseController implements Initializa
                                     } else {
                                         deleteSqlMap.put(sqlKey, deleteSqlMap.get(sqlKey) + SYMBOL_NEXT_LINE + deleteSql);
                                     }
+                                    existRule = true;
+                                    break;
                                 }
                             }
+                        }
+                        if (!existRule) {
+                            OutputUtils.info(target, "【" + tableName + "】未配置生成规则");
+                            throw new Exception("【" + tableName + "】未配置生成规则");
                         }
                     }
                     List<String> logList = new ArrayList<>(16);
@@ -300,7 +307,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                         }
                     } else {
                         OutputUtils.clearLog(target);
-                        OutputUtils.info(target, "未匹配到升级脚本生成规则");
+                        OutputUtils.info(target, "未配置生成规则");
                     }
                     // 写日志文件
                     LoggerUtils.writeScriptUpdateInfo(date, logList);
