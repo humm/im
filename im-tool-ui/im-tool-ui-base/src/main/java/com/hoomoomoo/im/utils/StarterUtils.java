@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
@@ -29,13 +30,19 @@ public class StarterUtils {
             FileUtils.unJar(PATH_APP);
             LoggerUtils.info(String.format(MSG_UPDATE, NAME_CONFIG_FILE));
             LoggerUtils.info(String.format(MSG_LOAD, NAME_CONFIG_INFO));
-            primaryStage.getIcons().add(new Image(PATH_ICON));
             Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_STARTER_FXML)));
             Scene scene = new Scene(root);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String appName = appConfigDto.getAppName() + SYMBOL_SPACE_2;
             if (!FileUtils.startByJar()) {
                 appName += String.format(MSG_APP_TITLE, APP_MODE_NAME, APP_MODE_NAME_APP);
+                String pathFolder = FileUtils.getPathFolder().replace(APP_CODE_BASE, appCode);
+                String sourceIcon = pathFolder + PATH_ICON;
+                String factoryIcon = pathFolder + FACTORY_ICON;
+                FileUtils.addWatermark(new File(sourceIcon), new File(factoryIcon));
+                primaryStage.getIcons().add(new Image(FACTORY_ICON));
+            } else {
+                primaryStage.getIcons().add(new Image(PATH_ICON));
             }
             appName += String.format(MSG_APP_TITLE, NAME_VERSION, CommonUtils.getVersion());
             scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());

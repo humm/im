@@ -7,10 +7,14 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hswebframework.utils.file.EncodingDetect;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -751,5 +755,17 @@ public class FileUtils {
             }
         }
         return exist;
+    }
+
+    public static void addWatermark(File source, File target) throws IOException {
+        BufferedImage bufferedImage = ImageIO.read(source);
+        Graphics2D graphics = bufferedImage.createGraphics();
+        graphics.setColor(Color.BLUE);
+        graphics.setFont(new Font("微软雅黑", Font.BOLD, 30));
+        graphics.drawString(APP_MODE_NAME_APP, 25, 155);
+        graphics.drawString(APP_MODE_NAME_APP, 25, 95);
+        graphics.drawString(APP_MODE_NAME_APP, 25, 35);
+        FileOutputStream fileOutputStream = new FileOutputStream(target);
+        ImageIO.write(bufferedImage, "png", fileOutputStream);
     }
 }

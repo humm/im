@@ -256,7 +256,7 @@ public class BaseConst {
     public static final String PATH_LOG = "/logs/%s/%s";
     public static final String PATH_STAT = "/stats/%s";
     public static final String PATH_ICON = "/conf/image/icon.png";
-    public static final String SET_ICON = "/conf/image/set.png";
+    public static final String FACTORY_ICON = "/conf/image/factory.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
     public static final String PATH_STARTER_CSS = "/conf/style/progressIndicator.css";
     public static final String PATH_COLUMN_SET_FXML = "/conf/fxml/generateCodeColumnSet.fxml";
