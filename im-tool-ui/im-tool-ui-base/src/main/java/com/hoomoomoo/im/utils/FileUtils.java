@@ -765,6 +765,15 @@ public class FileUtils {
         graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 20);
         graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 45);
         graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 70);
+        graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 95);
+        graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 120);
+        graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 145);
+        graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 170);
+        graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 195);
+        graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 220);
+        graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 245);
+        graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 270);
+        graphics.drawString("★★★★★★★★★★★★★★★★★★★★", 0, 295);
         FileOutputStream fileOutputStream = new FileOutputStream(target);
         ImageIO.write(bufferedImage, "png", fileOutputStream);
     }

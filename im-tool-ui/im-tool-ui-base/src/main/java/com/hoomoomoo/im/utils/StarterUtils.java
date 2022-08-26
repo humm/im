@@ -62,11 +62,11 @@ public class StarterUtils {
                 } catch (IOException e) {
                 }
             });
-            /*if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
+            if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
                 ServerUtils.initServer(SERVER_URL, SERVER_PORT);
             } else {
-                LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + SYMBOL_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + SYMBOL_EQUAL + CommonUtils.getVersion()));
-            }*/
+                // LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + SYMBOL_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + SYMBOL_EQUAL + CommonUtils.getVersion()));
+            }
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

@@ -46,8 +46,8 @@
                                             </padding>
                                         </Button>
 
-                                        <TextArea fx:id="filePath" layoutX="14.0" layoutY="180.0" prefHeight="390.0"
-                                                  prefWidth="720.0" />
+                                        <TextArea fx:id="filePath" layoutX="14.0" layoutY="175.0" prefHeight="395.0"
+                                                  prefWidth="725.0" />
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="550.0">

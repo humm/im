@@ -10,9 +10,13 @@ import java.util.regex.Pattern;
  */
 public class BaseConst {
 
+    // 控制未授权功能控制台打印日志
     public static final String APP_USER_IM = "im";
+    // 控制svn统计功能
     public static final String APP_USER_IM_SVN = "im-svn";
+    // 控制生成代码功能
     public static final String APP_USER_IM_CODE = "im-code";
+    // 控制服务端控制
     public static final String APP_USER_IM_SERVER = "im-server";
 
     public static final String APP_CODE_BASE = "im-tool-ui-base";
