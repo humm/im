@@ -280,7 +280,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                             }
                             // 参数处理
                             if (StringUtils.isNotEmpty(paramControl)) {
-                                sql = sql.replace("values(", " select ").replace("values (", " select ");
+                                sql = sql.replace("values(", " select ").replace("values (", " select ").replace("VALUES(", " select ").replace("VALUES (", " select ");
                                 int index = sql.lastIndexOf(BaseConst.SYMBOL_BRACKETS_RIGHT);
                                 sql = sql.substring(0, index) + paramSql;
                             }
