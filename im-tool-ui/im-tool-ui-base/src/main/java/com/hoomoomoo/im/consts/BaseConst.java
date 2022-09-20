@@ -112,6 +112,11 @@ public class BaseConst {
     public static final String KEY_DATE = "Date";
     public static final String KEY_NOT_NULL = "not null,";
     public static final String KEY_VERSION = "version";
+    public static final String KEY_TRUNK = "trunk";
+    public static final String KEY_DESKTOP = "desktop";
+    public static final String KEY_SOURCES = "Sources";
+    public static final String KEY_FIX = "fix";
+    public static final String KEY_B = "B";
 
     public static final String KEY_COLUMN_TYPE_DATE = "date";
     public static final String KEY_COLUMN_TYPE_INTEGER = "integer";

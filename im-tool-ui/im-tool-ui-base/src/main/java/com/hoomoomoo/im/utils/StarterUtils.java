@@ -63,7 +63,7 @@ public class StarterUtils {
                 }
             });
             if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
-                ServerUtils.initServer(SERVER_URL, SERVER_PORT);
+                // ServerUtils.initServer(SERVER_URL, SERVER_PORT);
             } else {
                 // LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + SYMBOL_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + SYMBOL_EQUAL + CommonUtils.getVersion()));
             }

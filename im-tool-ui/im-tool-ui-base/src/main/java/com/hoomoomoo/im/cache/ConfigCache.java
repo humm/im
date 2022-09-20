@@ -131,7 +131,10 @@ public class ConfigCache {
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
                         if (!DEMO.equalsIgnoreCase(code)) {
-                            appConfigDto.getCopyCodeVersion().put(code.toLowerCase(), name);
+                            if (!(KEY_TRUNK.equalsIgnoreCase(KEY_TRUNK) || KEY_TRUNK.equalsIgnoreCase(KEY_DESKTOP))) {
+                                code = code.toUpperCase();
+                            }
+                            appConfigDto.getCopyCodeVersion().put(code, name);
                         }
                     }
                 }

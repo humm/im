@@ -19,7 +19,8 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.31153003680400354" layoutX="174.0" layoutY="76.0" prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane dividerPositions="0.33153003680400354" layoutX="174.0" layoutY="76.0"
+                                   prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
                                     <children>
@@ -35,9 +36,10 @@
                                         <Label layoutX="15.0" layoutY="135.0" prefHeight="15.0" prefWidth="80.0" text="修改单编号" />
                                         <TextField fx:id="modifyNo" layoutX="100.0" layoutY="131.0" prefHeight="23.0" prefWidth="160.0" />
 
-                                        <Label layoutX="15.0" layoutY="175.0" prefHeight="15.0" prefWidth="80.0" text="仓库版本" />
-                                        <ComboBox fx:id="svnRep" layoutX="100.0" layoutY="171.0" prefHeight="23.0"
-                                                  prefWidth="160.0" onAction="#selectSvnRep"/>
+                                        <Label layoutX="15.0" layoutY="175.0" prefHeight="15.0" prefWidth="80.0"
+                                               text="版本号" />
+                                        <ComboBox fx:id="svnVersion" layoutX="100.0" layoutY="171.0" prefHeight="23.0"
+                                                  prefWidth="290.0" onAction="#selectsvnVersion"/>
 
                                         <Button fx:id="svnResetSubmit" layoutX="20.0" layoutY="230.0"
                                                 mnemonicParsing="false" onAction="#svnResetSubmit" prefHeight="35.0"
@@ -87,7 +89,7 @@
                                                         <PropertyValueFactory property="match" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="version" editable="false" prefWidth="90"
+                                                <TableColumn id="version" editable="false" prefWidth="85"
                                                              sortable="false" text="版本号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="version" />
@@ -105,7 +107,7 @@
                                                         <PropertyValueFactory property="num" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="290"
+                                                <TableColumn id="msg" editable="false" prefWidth="265"
                                                              sortable="false" text="提交备注">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="msg" />

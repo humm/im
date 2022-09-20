@@ -68,7 +68,7 @@ public class SvnLogController extends BaseController implements Initializable {
     private TextArea fileLog;
 
     @FXML
-    private ComboBox svnRep;
+    private ComboBox svnVersion;
 
     @FXML
     void showVersion(MouseEvent event) {
@@ -94,6 +94,7 @@ public class SvnLogController extends BaseController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         OutputUtils.clearLog(modifyNo);
         OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
+        svnVersion.getSelectionModel().select(SYMBOL_EMPTY);
         execute(true, STR_1);
     }
 
@@ -117,8 +118,6 @@ public class SvnLogController extends BaseController implements Initializable {
                 Thread.sleep(1000);
                 setProgress(0);
                 OutputUtils.clearLog(fileLog);
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                appConfigDto.setSvnRep((String)svnRep.getSelectionModel().getSelectedItem());
                 String times = svnTimes.getText().trim();
                 String ver = version.getText().trim();
                 String modify = modifyNo.getText().trim();
@@ -150,38 +149,79 @@ public class SvnLogController extends BaseController implements Initializable {
                 svnDescribe.setDisable(true);
                 copy.setDisable(true);
                 Date date = new Date();
-                List<LogDto> logDtoList = SvnUtils.getSvnLog(times, version, modifyNo);
+                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                Iterator<String> iterator = appConfigDto.getSvnUrl().keySet().iterator();
+                List<LogDto> logDtoList = new ArrayList<>(16);
+                int maxTime = times;
+                if (StringUtils.isNotBlank(modifyNo)) {
+                    maxTime = MAX_TIMES;
+                }
+                while (iterator.hasNext()) {
+                    appConfigDto.setSvnRep(iterator.next());
+                    logDtoList.addAll(SvnUtils.getSvnLog(maxTime, version, modifyNo));
+                }
+                Collections.sort(logDtoList, new Comparator<LogDto>() {
+                    @Override
+                    public int compare(LogDto o1, LogDto o2) {
+                        return o1.compareTo(o2);
+                    }
+                });
                 if (CollectionUtils.isEmpty(logDtoList)) {
                     OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录\n");
                 } else {
-                    List<String> fileList = new ArrayList<>();
-                    int length = logDtoList.size();
-                    for (LogDto svnLogDto : logDtoList) {
-                        svnLogDto.setGetNum(String.valueOf(length));
-                        svnLogDto.setMatch((times == length || StringUtils.isNotBlank(modifyNo)) ? "匹配" : "未匹配");
-                        if (updateLog) {
-                            OutputUtils.info(svnLog, svnLogDto);
-                        }
-                        if (STR_1.equals(type)) {
-                            for (String item : svnLogDto.getFile()) {
-                                if (!fileList.contains(item)) {
-                                    fileList.add(item);
+                    String codeVersion = (String)svnVersion.getSelectionModel().getSelectedItem();
+                    if (StringUtils.isNotBlank(codeVersion)) {
+                        List<LogDto> temp = new ArrayList<>(16);
+                        for (LogDto item : logDtoList) {
+                            if (item.getCodeVersion().equals(codeVersion) || (KEY_B + item.getCodeVersion()).equals(codeVersion)) {
+                                temp.add(item);
+                            } else {
+                                if (StringUtils.isBlank(item.getCodeVersion()) && codeVersion.equalsIgnoreCase(KEY_TRUNK)) {
+                                    temp.add(item);
                                 }
                             }
-                        } else {
-                            if (!fileList.contains(svnLogDto.getMsg() + SYMBOL_NEXT_LINE)) {
-                                fileList.add(svnLogDto.getMsg() + SYMBOL_NEXT_LINE);
+                        }
+                        logDtoList = temp;
+                    }
+                    if (CollectionUtils.isEmpty(logDtoList)) {
+                        OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录\n");
+                    } else {
+                        if (logDtoList.size() > maxTime) {
+                            logDtoList = logDtoList.subList(0, maxTime);
+                        }
+                        List<String> fileList = new ArrayList<>();
+                        int length = logDtoList.size();
+                        for (LogDto svnLogDto : logDtoList) {
+                            svnLogDto.setGetNum(String.valueOf(length));
+                            svnLogDto.setMatch((times == length || StringUtils.isNotBlank(modifyNo)) ? "匹配" : "未匹配");
+                            if (updateLog) {
+                                OutputUtils.info(svnLog, svnLogDto);
+                            }
+                            if (STR_1.equals(type)) {
+                                for (String item : svnLogDto.getFile()) {
+                                    if (!fileList.contains(item)) {
+                                        fileList.add(item);
+                                    }
+                                }
+                            } else {
+                                String msg = svnLogDto.getMsg();
+                                if (StringUtils.isBlank(msg)) {
+                                    continue;
+                                }
+                                msg = msg.trim() + SYMBOL_NEXT_LINE;
+                                if (!fileList.contains(msg)) {
+                                    fileList.add(msg);
+                                }
                             }
                         }
-                    }
-                    OutputUtils.info(fileLog, fileList);
-                    AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                    if (appConfigDto.getSvnDefaultAppendBiz() && StringUtils.isNotBlank(appConfigDto.getSvnDefaultAppendPath())) {
-                        for (String file : fileList) {
-                            if (file.trim().endsWith(BaseConst.FILE_TYPE_VUE)) {
-                                String prefix = file.substring(0, file.indexOf(appConfigDto.getSvnStartPrefix()));
-                                OutputUtils.info(fileLog, prefix + appConfigDto.getSvnDefaultAppendPath());
-                                break;
+                        OutputUtils.info(fileLog, fileList);
+                        if (appConfigDto.getSvnDefaultAppendBiz() && StringUtils.isNotBlank(appConfigDto.getSvnDefaultAppendPath())) {
+                            for (String file : fileList) {
+                                if (file.trim().endsWith(FILE_TYPE_VUE)) {
+                                    String prefix = file.substring(0, file.indexOf(appConfigDto.getSvnStartPrefix()));
+                                    OutputUtils.info(fileLog, prefix + appConfigDto.getSvnDefaultAppendPath());
+                                    break;
+                                }
                             }
                         }
                     }
@@ -190,7 +230,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 LoggerUtils.writeSvnLogInfo(date, logDtoList);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
+                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
             } finally {
                 svnSubmit.setDisable(false);
                 svnResetSubmit.setDisable(false);
@@ -201,11 +241,10 @@ public class SvnLogController extends BaseController implements Initializable {
     }
 
     @FXML
-    void selectSvnRep(ActionEvent event) {
+    void selectsvnVersion(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            String version = (String)svnRep.getSelectionModel().getSelectedItem();
-            appConfigDto.setSvnRep(version);
+            String version = (String)svnVersion.getSelectionModel().getSelectedItem();
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(fileLog, e.getMessage());
@@ -224,18 +263,18 @@ public class SvnLogController extends BaseController implements Initializable {
             if (StringUtils.isNotBlank(appConfigDto.getSvnRecentTime())) {
                 OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
             }
-            ObservableList svnRepItems = svnRep.getItems();
-            Map<String, String> svnRepVersion = appConfigDto.getSvnUrl();
-            if (MapUtils.isNotEmpty(svnRepVersion)) {
-                Iterator<String> version = svnRepVersion.keySet().iterator();
+            ObservableList svnItems = svnVersion.getItems();
+            svnItems.add(SYMBOL_EMPTY);
+            Map<String, String> svnVersion = appConfigDto.getCopyCodeVersion();
+            if (MapUtils.isNotEmpty(svnVersion)) {
+                Iterator<String> version = svnVersion.keySet().iterator();
                 while (version.hasNext()) {
                     String ver = version.next();
-                    svnRepItems.add(ver);
+                    if (KEY_DESKTOP.equals(ver)) {
+                        continue;
+                    }
+                    svnItems.add(ver);
                 }
-            }
-            if (MapUtils.isNotEmpty(svnRepVersion)) {
-                svnRep.getSelectionModel().select(0);
-                appConfigDto.setSvnRep((String)svnRep.getSelectionModel().getSelectedItem());
             }
         } catch (Exception e) {
             LoggerUtils.info(e);

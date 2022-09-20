@@ -26,10 +26,12 @@
                                             prefWidth="482.0">
                                     <children>
                                         <Label layoutX="14.0" layoutY="15.0" prefHeight="15.0" prefWidth="120.0" text="源版本" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
-                                        <ComboBox fx:id="sourceVersion" layoutX="120.0" layoutY="11.0" onAction="#selectSource" prefWidth="240.0" />
+                                        <ComboBox fx:id="sourceVersion" layoutX="120.0" layoutY="11.0"
+                                                  onAction="#selectSource" prefWidth="290.0" />
 
                                         <Label layoutX="14.0" layoutY="55.0" prefHeight="15.0" prefWidth="120.0" text="目标版本" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="55.0" />
-                                        <ComboBox fx:id="targetVersion" layoutX="120.0" layoutY="51.0" onAction="#selectTarget" prefWidth="240.0" />
+                                        <ComboBox fx:id="targetVersion" layoutX="120.0" layoutY="51.0"
+                                                  onAction="#selectTarget" prefWidth="290.0" />
 
                                         <Label layoutX="14.0" layoutY="95.0" prefHeight="15.0" prefWidth="120.0" text="源版本路径" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="95.0" />
                                         <TextField fx:id="sourcePath" layoutX="120.0" layoutY="91.0" prefHeight="23.0" prefWidth="620.0" />

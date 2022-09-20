@@ -174,14 +174,17 @@ public class ScriptUpdateController extends BaseController implements Initializa
                                 continue;
                             }
                         }
-                        itemsTemp.append(item.trim() + SYMBOL_NEXT_LINE);
+                        if (item.trim().toLowerCase().startsWith("insert") || item.toLowerCase().trim().startsWith("values") || item.trim().toLowerCase().startsWith(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+                            item = item.trim();
+                        }
+                        itemsTemp.append(item + SYMBOL_NEXT_LINE);
                     }
                     int indexLast = itemsTemp.toString().lastIndexOf(SYMBOL_NEXT_LINE);
                     if (indexLast == -1) {
                         setProgress(1);
                         return;
                     }
-                    List<String> items = Arrays.asList(itemsTemp.toString().substring(0, indexLast).split(BaseConst.SYMBOL_SEMICOLON));
+                    List<String> items = Arrays.asList(itemsTemp.substring(0, indexLast).split(BaseConst.SYMBOL_SEMICOLON));
                     boolean existRule = false;
                     for (int j = 0; j < items.size(); j++) {
                         existRule = false;

@@ -137,6 +137,7 @@ public class ShoppingCommonUtil {
         if (document.text().contains(NAME_JD_LOGIN)) {
             GoodsDto fail = new GoodsDto();
             fail.setGoodsName(MSG_WAIT_APPRAISE_JD_COOKIE);
+            OutputUtils.clearLog(log);
             OutputUtils.info(log, fail);
             OutputUtils.info(userName, MSG_WAIT_APPRAISE_JD_COOKIE);
             if (orderNum != null) {

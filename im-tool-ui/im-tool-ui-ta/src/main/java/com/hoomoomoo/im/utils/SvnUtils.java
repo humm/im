@@ -42,9 +42,6 @@ public class SvnUtils {
             startRevision = version;
             endRevision = version;
         }
-        if (StringUtils.isNotBlank(modifyNo)) {
-            times = MAX_TIMES;
-        }
         repository.log(new String[]{SYMBOL_EMPTY}, startRevision, endRevision, true, true, svnLogEntry -> {
             if (StringUtils.equals(svnLogEntry.getAuthor(), appConfigDto.getSvnUsername())) {
                 LogDto svnLogDto = new LogDto();
@@ -70,16 +67,22 @@ public class SvnUtils {
                     if (OPERATE_TYPE_DELETE.equals(String.valueOf(value.getType()))) {
                         path += NAME_DELETE;
                     }
+                    svnLogDto.setCodeVersion(getVersion(path));
                     pathList.add(path + SYMBOL_NEXT_LINE);
                 }
                 logList.add(svnLogDto);
             }
         });
         Collections.sort(logList);
-        if (logList.size() >= times) {
-            return logList.subList(0, times);
-        }
         return logList;
+    }
+
+    private static String getVersion(String path) {
+        String version = SYMBOL_EMPTY;
+        if (path.contains(KEY_FIX) && path.contains(KEY_SOURCES)) {
+            version = path.substring(path.indexOf(KEY_FIX) + KEY_FIX.length() + 1, path.indexOf(KEY_SOURCES) - 1);
+        }
+        return version;
     }
 
     public static LinkedHashMap<String, SvnStatDto> getSvnLog(Date start, Date end, LinkedHashMap<String, SvnStatDto> svnStat, boolean notice) throws Exception {
