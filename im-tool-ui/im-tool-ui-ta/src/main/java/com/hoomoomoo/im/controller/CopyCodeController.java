@@ -67,7 +67,11 @@ public class CopyCodeController extends BaseController implements Initializable 
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String version = (String)sourceVersion.getSelectionModel().getSelectedItem();
-            OutputUtils.info(sourcePath, appConfigDto.getCopyCodeVersion().get(version));
+            String path = appConfigDto.getCopyCodeVersion().get(version);
+            if (version.equalsIgnoreCase(KEY_DESKTOP)) {
+                path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
+            }
+            OutputUtils.info(sourcePath, path);
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.getMessage());
@@ -79,7 +83,11 @@ public class CopyCodeController extends BaseController implements Initializable 
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String version =  (String)targetVersion.getSelectionModel().getSelectedItem();
-            OutputUtils.info(targetPath, appConfigDto.getCopyCodeVersion().get(version));
+            String path = appConfigDto.getCopyCodeVersion().get(version);
+            if (version.equalsIgnoreCase(KEY_DESKTOP)) {
+                path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
+            }
+            OutputUtils.info(targetPath, path);
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.getMessage());
@@ -235,22 +243,30 @@ public class CopyCodeController extends BaseController implements Initializable 
                 }
             }
 
-            String defaultSource = appConfigDto.getCopyCodeDefaultSource();
             if (MapUtils.isNotEmpty(versionIndex)) {
+                String defaultSource = appConfigDto.getCopyCodeDefaultSource();
                 if (StringUtils.isNotBlank(defaultSource)) {
-                    if (!(KEY_TRUNK.equalsIgnoreCase(KEY_TRUNK) || KEY_TRUNK.equalsIgnoreCase(KEY_DESKTOP))) {
+                    if (!(defaultSource.equalsIgnoreCase(KEY_TRUNK) || defaultSource.equalsIgnoreCase(KEY_DESKTOP))) {
                         defaultSource = defaultSource.toUpperCase();
                     }
                     sourceVersion.getSelectionModel().select(defaultSource);
-                    OutputUtils.info(sourcePath, appConfigDto.getCopyCodeVersion().get(defaultSource));
+                    String path = appConfigDto.getCopyCodeVersion().get(defaultSource);
+                    if (defaultSource.equalsIgnoreCase(KEY_DESKTOP)) {
+                        path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
+                    }
+                    OutputUtils.info(sourcePath, path);
                 }
                 String defaultTarget = appConfigDto.getCopyCodeDefaultTarget();
                 if (StringUtils.isNotBlank(defaultTarget)) {
-                    if (!(KEY_TRUNK.equalsIgnoreCase(KEY_TRUNK) || KEY_TRUNK.equalsIgnoreCase(KEY_DESKTOP))) {
+                    if (!(defaultTarget.equalsIgnoreCase(KEY_TRUNK) || defaultTarget.equalsIgnoreCase(KEY_DESKTOP))) {
                         defaultTarget = defaultTarget.toUpperCase();
                     }
                     targetVersion.getSelectionModel().select(defaultTarget);
-                    OutputUtils.info(targetPath, appConfigDto.getCopyCodeVersion().get(defaultTarget));
+                    String path = appConfigDto.getCopyCodeVersion().get(defaultTarget);
+                    if (defaultTarget.equalsIgnoreCase(KEY_DESKTOP)) {
+                        path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
+                    }
+                    OutputUtils.info(targetPath, path);
                 }
             }
         } catch (Exception e) {
