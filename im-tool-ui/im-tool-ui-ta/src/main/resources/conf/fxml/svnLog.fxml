@@ -33,7 +33,8 @@
                                         <Label layoutX="15.0" layoutY="95.0" prefHeight="15.0" prefWidth="80.0" text="指定版本号" />
                                         <TextField fx:id="version" layoutX="100.0" layoutY="91.0" prefHeight="23.0" prefWidth="160.0" />
 
-                                        <Label layoutX="15.0" layoutY="135.0" prefHeight="15.0" prefWidth="80.0" text="修改单编号" />
+                                        <Label layoutX="15.0" layoutY="135.0" prefHeight="15.0" prefWidth="80.0"
+                                               text="任务单编号" />
                                         <TextField fx:id="modifyNo" layoutX="100.0" layoutY="131.0" prefHeight="23.0" prefWidth="160.0" />
 
                                         <Label layoutX="15.0" layoutY="175.0" prefHeight="15.0" prefWidth="80.0"
@@ -96,7 +97,7 @@
                                                     </cellValueFactory>
                                                 </TableColumn>
                                                 <TableColumn id="serialNo" editable="false" prefWidth="135"
-                                                             sortable="false" text="修改单编号">
+                                                             sortable="false" text="任务单编号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="serialNo" />
                                                     </cellValueFactory>

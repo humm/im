@@ -29,7 +29,7 @@ import static org.apache.commons.beanutils.BeanUtils.copyProperties;
  */
 public class SvnUtils {
 
-    public static List<LogDto> getSvnLog(int times, int version, String modifyNo) throws Exception {
+    public static List<LogDto> getSvnLog(int version, String modifyNo) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         SVNRepository repository = getSVNRepository(appConfigDto);
         List<LogDto> logList = new ArrayList<>();

@@ -27,6 +27,8 @@ public class AppConfigDto extends BaseDto {
 
     private String svnMaxRevision;
 
+    private String svnTaskMaxRevision;
+
     private String svnRecentTime;
 
     private String svnDeletePrefix;

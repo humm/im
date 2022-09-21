@@ -70,6 +70,8 @@ public class SvnLogController extends BaseController implements Initializable {
     @FXML
     private ComboBox svnVersion;
 
+    private int maxVersionConfig = 0;
+
     @FXML
     void showVersion(MouseEvent event) {
         String ver = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getVersion();
@@ -154,11 +156,14 @@ public class SvnLogController extends BaseController implements Initializable {
                 List<LogDto> logDtoList = new ArrayList<>(16);
                 int maxTime = times;
                 if (StringUtils.isNotBlank(modifyNo)) {
-                    maxTime = MAX_TIMES;
+                    maxTime = Integer.valueOf(appConfigDto.getSvnTaskMaxRevision());
+                    appConfigDto.setSvnMaxRevision(String.valueOf(appConfigDto.getSvnTaskMaxRevision()));
+                } else {
+                    appConfigDto.setSvnMaxRevision(String.valueOf(maxVersionConfig));
                 }
                 while (iterator.hasNext()) {
                     appConfigDto.setSvnRep(iterator.next());
-                    logDtoList.addAll(SvnUtils.getSvnLog(maxTime, version, modifyNo));
+                    logDtoList.addAll(SvnUtils.getSvnLog(version, modifyNo));
                 }
                 Collections.sort(logDtoList, new Comparator<LogDto>() {
                     @Override
@@ -276,6 +281,7 @@ public class SvnLogController extends BaseController implements Initializable {
                     svnItems.add(ver);
                 }
             }
+            maxVersionConfig = Integer.valueOf(appConfigDto.getSvnMaxRevision());
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
