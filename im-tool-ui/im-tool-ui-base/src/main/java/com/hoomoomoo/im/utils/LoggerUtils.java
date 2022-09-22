@@ -189,6 +189,15 @@ public class LoggerUtils {
         }
     }
 
+    public static void writeSvnDayStatInfo() {
+        try {
+            // 写统计文件
+            String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, SVN_DAY_STAT.getLogFolder() + FILE_TYPE_STAT));
+            writeStatFile(statFilePath);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
 
     public static void writeSvnRealtimeStatInfo() {
         try {

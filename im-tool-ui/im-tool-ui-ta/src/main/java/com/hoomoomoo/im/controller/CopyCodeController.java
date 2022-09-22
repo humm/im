@@ -226,24 +226,20 @@ public class CopyCodeController extends BaseController implements Initializable 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            Map<String, Integer> versionIndex = new LinkedHashMap<>(16);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             ObservableList sourceVersionItems = sourceVersion.getItems();
             ObservableList targetVersionItems = targetVersion.getItems();
             Map<String, String> copyCodeVersion = appConfigDto.getCopyCodeVersion();
             if (MapUtils.isNotEmpty(copyCodeVersion)) {
-                int index = 0;
                 Iterator<String> version = copyCodeVersion.keySet().iterator();
                 while (version.hasNext()) {
                     String ver = version.next();
                     sourceVersionItems.add(ver);
                     targetVersionItems.add(ver);
-                    versionIndex.put(ver, index);
-                    index++;
                 }
             }
 
-            if (MapUtils.isNotEmpty(versionIndex)) {
+            if (MapUtils.isNotEmpty(copyCodeVersion)) {
                 String defaultSource = appConfigDto.getCopyCodeDefaultSource();
                 if (StringUtils.isNotBlank(defaultSource)) {
                     if (!(defaultSource.equalsIgnoreCase(KEY_TRUNK) || defaultSource.equalsIgnoreCase(KEY_DESKTOP))) {

@@ -18,6 +18,8 @@ public class BaseConst {
     public static final String APP_USER_IM_CODE = "im-code";
     // 控制服务端控制
     public static final String APP_USER_IM_SERVER = "im-server";
+    // 控制日报统计
+    public static final String APP_USER_IM_DAY = "im-day";
 
     public static final String APP_CODE_BASE = "im-tool-ui-base";
     public static final String APP_CODE_TA = "im-tool-ui-ta";

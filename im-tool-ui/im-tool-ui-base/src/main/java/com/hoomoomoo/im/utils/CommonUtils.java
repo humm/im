@@ -268,13 +268,17 @@ public class CommonUtils {
                 return checkUser(appUser, APP_USER_IM_SVN);
             } /*else if (GENERATE_CODE.getCode().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_CODE);
-            }*/
+            }*/ else if (SVN_DAY_STAT.getCode().equals(functionCode)) {
+                return checkUser(appUser, APP_USER_IM_DAY);
+            }
         } else if (STR_2.equals(checkType)) {
             if (SVN_REALTIME_STAT.getMenuId().equals(functionCode) || SVN_HISTORY_STAT.getMenuId().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_SVN);
             } /*else if (GENERATE_CODE.getMenuId().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_CODE);
-            }*/
+            }*/ else if (SVN_DAY_STAT.getCode().equals(functionCode)) {
+                return checkUser(appUser, APP_USER_IM_DAY);
+            }
         }
         return true;
     }
@@ -321,9 +325,9 @@ public class CommonUtils {
         List<FunctionConfig> functionConfigList = new ArrayList<>();
         for (FunctionConfig functionConfig : FunctionConfig.values()) {
             int functionCode = Integer.valueOf(functionConfig.getCode());
-            if (APP_CODE_TA.equals(appCode) && functionCode <= 400) {
+            if (APP_CODE_TA.equals(appCode) && functionCode < 500) {
                 functionConfigList.add(functionConfig);
-            } else if (APP_CODE_SHOPPING.equals(appCode) && functionCode > 400 && functionCode <= 900) {
+            } else if (APP_CODE_SHOPPING.equals(appCode) && functionCode >= 500 && functionCode <= 900) {
                 functionConfigList.add(functionConfig);
             }
             if (functionCode > 900) {

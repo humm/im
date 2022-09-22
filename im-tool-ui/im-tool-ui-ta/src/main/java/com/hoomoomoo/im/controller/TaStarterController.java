@@ -205,6 +205,21 @@ public class TaStarterController implements Initializable {
     }
 
     @FXML
+    void openSvnDayStat(ActionEvent event) {
+        try {
+            LoggerUtils.info(String.format(BaseConst.MSG_OPEN, SVN_DAY_STAT.getName()));
+            Tab tab = isOpen(SVN_DAY_STAT.getName());
+            if (tab == null) {
+                tab = getFunctionTab(SVN_DAY_STAT.getPath(), SVN_DAY_STAT.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    @FXML
     void openFunctionStatInfo(ActionEvent event) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_OPEN, FUNCTION_STAT_INFO.getName()));

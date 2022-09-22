@@ -30,7 +30,8 @@
                                         <Label layoutX="15.0" layoutY="55.0" prefHeight="15.0" prefWidth="80.0" text="提交次数" />
                                         <TextField fx:id="svnTimes" layoutX="100.0" layoutY="51.0" prefHeight="23.0" prefWidth="160.0" />
 
-                                        <Label layoutX="15.0" layoutY="95.0" prefHeight="15.0" prefWidth="80.0" text="指定版本号" />
+                                        <Label layoutX="15.0" layoutY="95.0" prefHeight="15.0" prefWidth="80.0"
+                                               text="SVN编号" />
                                         <TextField fx:id="version" layoutX="100.0" layoutY="91.0" prefHeight="23.0" prefWidth="160.0" />
 
                                         <Label layoutX="15.0" layoutY="135.0" prefHeight="15.0" prefWidth="80.0"
@@ -38,7 +39,7 @@
                                         <TextField fx:id="modifyNo" layoutX="100.0" layoutY="131.0" prefHeight="23.0" prefWidth="160.0" />
 
                                         <Label layoutX="15.0" layoutY="175.0" prefHeight="15.0" prefWidth="80.0"
-                                               text="版本号" />
+                                               text="版本代码" />
                                         <ComboBox fx:id="svnVersion" layoutX="100.0" layoutY="171.0" prefHeight="23.0"
                                                   prefWidth="290.0" onAction="#selectsvnVersion"/>
 
@@ -84,31 +85,25 @@
                                     <children>
                                         <TableView fx:id="svnLog" layoutY="14.0" onMouseClicked="#showVersion" prefHeight="188.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="match" editable="false" prefWidth="60"
+                                                <TableColumn id="match" editable="false" prefWidth="50"
                                                              sortable="false" text="标志">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="match" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="version" editable="false" prefWidth="85"
-                                                             sortable="false" text="版本号">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="version" />
-                                                    </cellValueFactory>
-                                                </TableColumn>
-                                                <TableColumn id="serialNo" editable="false" prefWidth="135"
+                                                <TableColumn id="serialNo" editable="false" prefWidth="150"
                                                              sortable="false" text="任务单编号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="serialNo" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="num" editable="false" prefWidth="80" sortable="false"
-                                                             text="文件个数">
+                                                <TableColumn id="codeVersion" editable="false" prefWidth="200"
+                                                             sortable="false" text="版本代码">
                                                     <cellValueFactory>
-                                                        <PropertyValueFactory property="num" />
+                                                        <PropertyValueFactory property="codeVersion" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="265"
+                                                <TableColumn id="msg" editable="false" prefWidth="225"
                                                              sortable="false" text="提交备注">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="msg" />
@@ -117,6 +112,18 @@
                                                 <TableColumn id="time" editable="false" prefWidth="165" sortable="false" text="提交时间">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="time" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="version" editable="false" prefWidth="85"
+                                                             sortable="false" text="SVN编号">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="version" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="num" editable="false" prefWidth="80" sortable="false"
+                                                             text="文件个数">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="num" />
                                                     </cellValueFactory>
                                                 </TableColumn>
                                             </columns>

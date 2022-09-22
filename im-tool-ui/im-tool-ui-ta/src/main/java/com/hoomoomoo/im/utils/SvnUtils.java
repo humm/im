@@ -78,7 +78,7 @@ public class SvnUtils {
     }
 
     private static String getVersion(String path) {
-        String version = SYMBOL_EMPTY;
+        String version = KEY_TRUNK;
         if (path.contains(KEY_FIX) && path.contains(KEY_SOURCES)) {
             version = path.substring(path.indexOf(KEY_FIX) + KEY_FIX.length() + 1, path.indexOf(KEY_SOURCES) - 1);
         }

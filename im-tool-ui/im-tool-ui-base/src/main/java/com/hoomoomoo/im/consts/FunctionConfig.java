@@ -8,7 +8,7 @@ package com.hoomoomoo.im.consts;
  */
 public enum FunctionConfig {
 
-    // TA工具组件 0-400
+    // TA工具组件 0-500
     SVN_LOG("10", "提交记录", "/conf/fxml/svnLog.fxml", "menuItemSvnLog", "svnLog"),
 
     SVN_UPDATE("20", "代码更新", "/conf/fxml/svnUpdate.fxml", "menuItemSvnUpdate", "svnUpdate"),
@@ -29,7 +29,9 @@ public enum FunctionConfig {
 
     SVN_HISTORY_STAT("400", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),
 
-    // 购物组件 401-900
+    SVN_DAY_STAT("410", "日报统计", "/conf/fxml/svnDayStat.fxml", "menuItemSvnDayStat", "svnDayStat"),
+
+    // 购物组件 500-900
     WAIT_APPRAISE("500", "待评价", "/conf/fxml/waitAppraise.fxml", "menuItemWaitAppraise", "waitAppraise"),
 
     SHOW_ORDER("510", "待晒单", "/conf/fxml/showOrder.fxml", "menuItemShowOrder", "showOrder"),
