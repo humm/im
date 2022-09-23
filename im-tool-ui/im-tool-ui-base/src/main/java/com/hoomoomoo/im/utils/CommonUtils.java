@@ -276,7 +276,7 @@ public class CommonUtils {
                 return checkUser(appUser, APP_USER_IM_SVN);
             } /*else if (GENERATE_CODE.getMenuId().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_CODE);
-            }*/ else if (SVN_DAY_STAT.getCode().equals(functionCode)) {
+            }*/ else if (SVN_DAY_STAT.getMenuId().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_DAY);
             }
         }

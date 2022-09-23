@@ -25,7 +25,7 @@ import static com.hoomoomoo.im.consts.FunctionConfig.SVN_REALTIME_STAT;
 
 /**
  * @author humm23693
- * @description TODO
+ * @description 功能废弃 无实际使用场景
  * @package com.hoomoomoo.im.controller
  * @date 2021/05/30
  */
