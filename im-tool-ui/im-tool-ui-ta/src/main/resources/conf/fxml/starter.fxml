@@ -19,9 +19,6 @@
                         <MenuItem fx:id="menuItemSvnHistoryStat" mnemonicParsing="false"
                                   onAction="#openSvnHistoryStat"
                                   text="历史统计"/>
-                        <MenuItem fx:id="menuItemSvnDayStat" mnemonicParsing="false"
-                                  onAction="#openSvnDayStat"
-                                  text="日报统计"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuScript" mnemonicParsing="false" text="脚本">

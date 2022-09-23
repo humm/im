@@ -268,17 +268,13 @@ public class CommonUtils {
                 return checkUser(appUser, APP_USER_IM_SVN);
             } /*else if (GENERATE_CODE.getCode().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_CODE);
-            }*/ else if (SVN_DAY_STAT.getCode().equals(functionCode)) {
-                return checkUser(appUser, APP_USER_IM_DAY);
-            }
+            }*/
         } else if (STR_2.equals(checkType)) {
             if (SVN_REALTIME_STAT.getMenuId().equals(functionCode) || SVN_HISTORY_STAT.getMenuId().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_SVN);
             } /*else if (GENERATE_CODE.getMenuId().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_CODE);
-            }*/ else if (SVN_DAY_STAT.getMenuId().equals(functionCode)) {
-                return checkUser(appUser, APP_USER_IM_DAY);
-            }
+            }*/
         }
         return true;
     }
