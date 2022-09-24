@@ -43,34 +43,34 @@
 
                                         <Label layoutX="15.0" layoutY="178.0" prefHeight="15.0" prefWidth="120.0"
                                                text="拼接字段" />
-                                        <TextField fx:id="column" layoutX="100.0" layoutY="178.0" prefHeight="23.0"
+                                        <TextArea fx:id="column" layoutX="100.0" layoutY="178.0" prefHeight="120.0"
                                                    prefWidth="300.0" />
 
-                                        <Label layoutX="15.0" layoutY="221.0" prefHeight="15.0" prefWidth="100.0"
+                                        <Label layoutX="15.0" layoutY="316.0" prefHeight="15.0" prefWidth="100.0"
                                                text="拼接条件" />
-                                        <TextField fx:id="query" layoutX="100.0" layoutY="221.0" prefHeight="23.0"
+                                        <TextArea fx:id="query" layoutX="100.0" layoutY="316.0" prefHeight="120.0"
                                                    prefWidth="300.0" />
 
-                                        <Label layoutX="15.0" layoutY="261.0" prefHeight="15.0" prefWidth="120.0"
+                                        <Label layoutX="15.0" layoutY="451.0" prefHeight="15.0" prefWidth="120.0"
                                                text="语句类型"/>
-                                        <RadioButton fx:id="select" layoutX="100.0" layoutY="261.0"
+                                        <RadioButton fx:id="select" layoutX="100.0" layoutY="451.0"
                                                      mnemonicParsing="false" onAction="#selectSelect" text="select"
                                                      userData="1"/>
-                                        <RadioButton fx:id="update" layoutX="180.0" layoutY="261.0"
+                                        <RadioButton fx:id="update" layoutX="180.0" layoutY="451.0"
                                                      mnemonicParsing="false" onAction="#selectUpdate" text="update"
                                                      userData="2"/>
-                                        <RadioButton fx:id="delete" layoutX="265.0" layoutY="261.0"
+                                        <RadioButton fx:id="delete" layoutX="265.0" layoutY="451.0"
                                                      mnemonicParsing="false" onAction="#selectDelete" text="delete"
                                                      userData="3"/>
-                                        <RadioButton fx:id="truncate" layoutX="350.0" layoutY="261.0"
+                                        <RadioButton fx:id="truncate" layoutX="350.0" layoutY="451.0"
                                                      mnemonicParsing="false" onAction="#selectTruncate" text="truncate"
                                                      userData="4"/>
 
-                                        <ProgressIndicator fx:id="schedule" layoutX="80.0" layoutY="340.0"
+                                        <ProgressIndicator fx:id="schedule" layoutX="80.0" layoutY="510.0"
                                                            progress="0.0" />
-                                        <Label fx:id="scheduleText" layoutX="120.0" layoutY="345.0" text="0%" />
+                                        <Label fx:id="scheduleText" layoutX="120.0" layoutY="515.0" text="0%" />
 
-                                        <Button fx:id="execute" layoutX="180.0" layoutY="335.0"
+                                        <Button fx:id="execute" layoutX="180.0" layoutY="505.0"
                                                 mnemonicParsing="false" onAction="#execute" prefHeight="35.0"
                                                 prefWidth="70.0" text="执行">
                                             <padding>
@@ -78,7 +78,7 @@
                                             </padding>
                                         </Button>
 
-                                        <Button fx:id="copy" layoutX="300.0" layoutY="335.0"
+                                        <Button fx:id="copy" layoutX="300.0" layoutY="505.0"
                                                 mnemonicParsing="false" onAction="#copy" prefHeight="35.0"
                                                 prefWidth="90.0" text="复制内容">
                                             <padding>

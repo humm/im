@@ -8,49 +8,47 @@ package com.hoomoomoo.im.consts;
  */
 public enum FunctionConfig {
 
-    // TA工具组件 0-500
-    SVN_LOG("10", "提交记录", "/conf/fxml/svnLog.fxml", "menuItemSvnLog", "svnLog"),
+    // TA工具组件 0-999
+    SVN_LOG("10", "提交记录", "/conf/fxml/svnLog.fxml", "svnLog", "svnLog"),
 
-    SVN_UPDATE("20", "代码更新", "/conf/fxml/svnUpdate.fxml", "menuItemSvnUpdate", "svnUpdate"),
+    SVN_UPDATE("50", "代码更新", "/conf/fxml/svnUpdate.fxml", "svnUpdate", "svnUpdate"),
 
-    FUND_INFO("30", "基金信息", "/conf/fxml/fundInfo.fxml", "menuItemFundInfo", "fundInfo"),
+    SVN_REALTIME_STAT("100", "实时统计", "/conf/fxml/svnRealtimeStat.fxml", "svnRealtimeStat", "svnRealtimeStat"),
 
-    PROCESS_INFO("40", "流程信息", "/conf/fxml/processInfo.fxml", "menuItemProcessInfo", "processInfo"),
+    SVN_HISTORY_STAT("150", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "svnHistoryStat", "svnHistoryStat"),
 
-    SCRIPT_UPDATE("50", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "menuItemScriptUpdate", "scriptUpdate"),
+    SCRIPT_UPDATE("200", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "scriptUpdate", "scriptUpdate"),
 
-    GENERATE_CODE("60", "生成代码", "/conf/fxml/generateCode.fxml", "menuItemGenerateCode", "generateCode"),
+    PROCESS_INFO("250", "流程信息", "/conf/fxml/processInfo.fxml", "processInfo", "processInfo"),
 
-    COPY_CODE("70", "复制代码", "/conf/fxml/copyCode.fxml", "menuItemCopyCode", "copyCode"),
+    FUND_INFO("300", "基金信息", "/conf/fxml/fundInfo.fxml", "fundInfo", "fundInfo"),
 
-    GENERATE_SQL("80", "分库分表", "/conf/fxml/generateSql.fxml", "menuItemGenerateSql", "generateSql"),
+    GENERATE_SQL("350", "分库分表", "/conf/fxml/generateSql.fxml", "generateSql", "generateSql"),
 
-    SVN_REALTIME_STAT("390", "实时统计", "/conf/fxml/svnRealtimeStat.fxml", "menuItemSvnRealtimeStat", "svnRealtimeStat"),
+    COPY_CODE("400", "复制代码", "/conf/fxml/copyCode.fxml", "copyCode", "copyCode"),
 
-    SVN_HISTORY_STAT("400", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "menuItemSvnHistoryStat", "svnHistoryStat"),
+    GENERATE_CODE("450", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode"),
 
-    SVN_DAY_STAT("410", "日报统计", "/conf/fxml/svnDayStat.fxml", "menuItemSvnDayStat", "svnDayStat"),
+    // 购物组件 1000-1999
+    JD_AUTO("1000", "自动评价", "/conf/fxml/jdAuto.fxml", "jdAuto", "jdAuto"),
 
-    // 购物组件 500-900
-    WAIT_APPRAISE("500", "待评价", "/conf/fxml/waitAppraise.fxml", "menuItemWaitAppraise", "waitAppraise"),
+    WAIT_APPRAISE("1100", "待评价", "/conf/fxml/waitAppraise.fxml", "waitAppraise", "waitAppraise"),
 
-    SHOW_ORDER("510", "待晒单", "/conf/fxml/showOrder.fxml", "menuItemShowOrder", "showOrder"),
+    SHOW_ORDER("1200", "待晒单", "/conf/fxml/showOrder.fxml", "showOrder", "showOrder"),
 
-    APPEND_APPRAISE("520", "待追评", "/conf/fxml/appendAppraise.fxml", "menuItemAppendAppraise", "appendAppraise"),
+    APPEND_APPRAISE("1300", "待追评", "/conf/fxml/appendAppraise.fxml", "appendAppraise", "appendAppraise"),
 
-    SERVICE_APPRAISE("530", "服务评价", "/conf/fxml/serviceAppraise.fxml", "menuItemServiceAppraise", "serviceAppraise"),
+    SERVICE_APPRAISE("1400", "服务评价", "/conf/fxml/serviceAppraise.fxml", "serviceAppraise", "serviceAppraise"),
 
-    JD_AUTO("540", "自动评价", "/conf/fxml/jdAuto.fxml", "menuItemJdAuto", "jdAuto"),
-
-    JD_COOKIE("900", "京东Cookie设置", "/conf/fxml/jdCookie.fxml", "menuItemJdCookie", "jdCookie"),
+    JD_COOKIE("1500", "京东Cookie设置", "/conf/fxml/jdCookie.fxml", "jdCookie", "jdCookie"),
 
 
-    // 公共组件 901-
-    CONFIG_SET("980", "参数设置", "/conf/fxml/configSet.fxml", "menuItemConfigSet", "configSet"),
+    // 公共组件 2000-2999
+    CONFIG_SET("2000", "参数设置", "/conf/fxml/configSet.fxml", "configSet", "configSet"),
 
-    FUNCTION_STAT_INFO("990", "使用统计", "/conf/fxml/functionStatInfo.fxml", "menuItemFunctionStat", "functionStatInfo"),
+    FUNCTION_STAT_INFO("2100", "使用统计", "/conf/fxml/functionStatInfo.fxml", "functionStatInfo", "functionStatInfo"),
 
-    ABOUT_INFO("999", "关于", "/conf/fxml/aboutInfo.fxml", "menuItemAbout", "aboutInfo");
+    ABOUT_INFO("2200", "关于", "/conf/fxml/aboutInfo.fxml", "aboutInfo", "aboutInfo");
 
     private String code;
 

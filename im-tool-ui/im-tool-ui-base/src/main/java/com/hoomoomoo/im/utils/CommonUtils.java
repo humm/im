@@ -1,17 +1,25 @@
 package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -231,6 +239,7 @@ public class CommonUtils {
         outer:
         while (iterator.hasNext()) {
             MenuItem item = iterator.next();
+            initMenuName(item);
             for (FunctionDto functionDto : functionDtoList) {
                 if (!checkUser(appConfigDto, STR_2, item.getId())) {
                     if (checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
@@ -247,6 +256,15 @@ public class CommonUtils {
                 }
             }
             iterator.remove();
+        }
+    }
+
+    public static void initMenuName(MenuItem item) {
+        for (FunctionConfig tab : FunctionConfig.values()) {
+            if (tab.getMenuId().equals(item.getId())) {
+                item.setText(getMenuName(tab.getCode(), tab.getName()));
+                break;
+            }
         }
     }
 
@@ -317,20 +335,67 @@ public class CommonUtils {
         return sb.toString();
     }
 
+    /**
+     * 加载配置功能
+     *
+     * @param appCode
+     * @author: humm23693
+     * @date: 2022-09-24
+     * @return: java.util.List<com.hoomoomoo.im.consts.FunctionConfig>
+     */
     public static List<FunctionConfig> getAppFunctionConfig(String appCode) {
         List<FunctionConfig> functionConfigList = new ArrayList<>();
         for (FunctionConfig functionConfig : FunctionConfig.values()) {
             int functionCode = Integer.valueOf(functionConfig.getCode());
-            if (APP_CODE_TA.equals(appCode) && functionCode < 500) {
+            if (APP_CODE_TA.equals(appCode) && functionCode < 1000) {
                 functionConfigList.add(functionConfig);
-            } else if (APP_CODE_SHOPPING.equals(appCode) && functionCode >= 500 && functionCode <= 900) {
+            } else if (APP_CODE_SHOPPING.equals(appCode) && functionCode >= 1000 && functionCode < 2000) {
                 functionConfigList.add(functionConfig);
             }
-            if (functionCode > 900) {
+            if (functionCode >= 2000) {
                 functionConfigList.add(functionConfig);
             }
         }
         return functionConfigList;
+    }
+
+    /**
+     * 获取无需授权功能号
+     *
+     * @param appCode
+     * @author: humm23693
+     * @date: 2022-09-24
+     * @return: java.util.List<com.hoomoomoo.im.consts.FunctionConfig>
+     */
+    public static List<FunctionConfig> getNoAuthFunctionConfig(String appCode) {
+        List<FunctionConfig> functionConfigList = new ArrayList<>();
+        for (FunctionConfig functionConfig : FunctionConfig.values()) {
+            int functionCode = Integer.valueOf(functionConfig.getCode());
+            if (JD_COOKIE.getCode().equals(functionCode)) {
+                functionConfigList.add(functionConfig);
+            }
+            if (functionCode > 2000) {
+                functionConfigList.add(functionConfig);
+            }
+        }
+        return functionConfigList;
+    }
+
+    /**
+     * 获取无需授权功能号
+     *
+     * @param appCode
+     * @author: humm23693
+     * @date: 2022-09-24
+     * @return:
+     */
+    public static Map<String, FunctionConfig> getNoAuthFunctionConfigMap(String appCode) {
+        Map<String, FunctionConfig> functionConfig = new LinkedHashMap<>();
+        List<FunctionConfig> functionConfigList = getNoAuthFunctionConfig(appCode);
+        for (FunctionConfig item : functionConfigList) {
+            functionConfig.put(item.getCode(), item);
+        }
+        return functionConfig;
     }
 
     public static boolean isNumber(String val) {
@@ -379,5 +444,144 @@ public class CommonUtils {
             LoggerUtils.info(e);
         }
         return version;
+    }
+
+    /**
+     * 获取功能TAB
+     *
+     * @param tabPath
+     * @param tabName
+     * @author: humm23693
+     * @date: 2021/04/18
+     * @return:
+     */
+    public static Tab getFunctionTab(String tabPath, String tabName, String menuCode, String menuName) throws IOException {
+        Parent tab = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(tabPath)));
+        Tab menu=  new Tab(tabName, tab);
+        menu.setText(getMenuName(menuCode, menuName));
+        return menu;
+    }
+
+    /**
+     * TAB是否已打开
+     *
+     * @author: humm23693
+     * @date: 2021/04/18
+     * @return:
+     */
+    public static Tab isOpen(TabPane functionTab, FunctionConfig functionConfig) {
+        ObservableList<Tab> tabList = functionTab.getTabs();
+        if (tabList != null) {
+            for (Tab item : tabList) {
+                if (item.getText().equals(getMenuName(functionConfig.getCode(), functionConfig.getName()))) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 打开菜单
+     *
+     * @param event
+     * @param functionTab
+     * @author: humm23693
+     * @date: 2022-09-24
+     * @return: void
+     */
+    public static void openMenu(ActionEvent event, TabPane functionTab) {
+        try {
+            String menuId = ((MenuItem)event.getSource()).getId();
+            FunctionConfig functionConfig = null;
+            for (FunctionConfig item : FunctionConfig.values()) {
+                if (item.getMenuId().equals(menuId)) {
+                    functionConfig = item;
+                    break;
+                }
+            }
+            if (functionConfig == null) {
+                LoggerUtils.info(String.format(BaseConst.MSG_FUNCTION_NOT_EXIST, functionConfig.getCode()));
+            }
+
+            LoggerUtils.info(String.format(BaseConst.MSG_OPEN, functionConfig.getName()));
+            Tab tab = CommonUtils.isOpen(functionTab, functionConfig);
+            if (tab == null) {
+                tab = CommonUtils.getFunctionTab(functionConfig.getPath(), functionConfig.getName(),
+                        functionConfig.getCode(), functionConfig.getName());
+                functionTab.getTabs().add(tab);
+            }
+            functionTab.getSelectionModel().select(tab);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    /**
+     * 功能初始化
+     *
+     * @param location
+     * @param resources
+     * @author: humm23693
+     * @date: 2022-09-24
+     * @return: void
+     */
+    public static void initialize(URL location, ResourceBundle resources, TabPane functionTab, Menu... menus) {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+
+            // 校验证书是否过期
+            if (!CommonUtils.checkLicense(null)) {
+                if (menus != null) {
+                    for (Menu menu : menus) {
+                        menu.getItems().clear();
+                    }
+                }
+                return;
+            }
+
+            LoggerUtils.info(String.format(BaseConst.MSG_CHECK, "授权有效日期"));
+
+            // 控制菜单功能
+            if (menus != null) {
+                for (Menu menu : menus) {
+                    CommonUtils.showAuthFunction(menu);
+                }
+            }
+
+            String showTab = appConfigDto.getAppTabShow();
+            if (StringUtils.isNotBlank(showTab)) {
+                String[] tabs = showTab.split(BaseConst.SYMBOL_COMMA);
+                for (String tab : tabs) {
+                    if (StringUtils.isBlank(getName(tab))) {
+                        LoggerUtils.info(String.format(BaseConst.MSG_FUNCTION_NOT_EXIST, tab));
+                        continue;
+                    }
+                    // 校验功能是否有权限
+                    if (!CommonUtils.checkLicense(tab)) {
+                        continue;
+                    }
+                    FunctionConfig functionConfig = getFunctionConfig(tab);
+                    functionTab.getTabs().add(CommonUtils.getFunctionTab(getPath(tab), getName(tab),
+                            functionConfig.getCode(), functionConfig.getName()));
+                }
+            } else {
+                // 默认打开有权限的第一个功能
+                List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
+                if (CollectionUtils.isNotEmpty(functionDtoList)) {
+                    FunctionDto functionDto = functionDtoList.get(0);
+                    Tab tab = CommonUtils.getFunctionTab(getPath(functionDto.getFunctionCode()),
+                            getName(functionDto.getFunctionCode()), functionDto.getFunctionCode(), functionDto.getFunctionName());
+                    functionTab.getTabs().add(tab);
+                }
+            }
+            LoggerUtils.info(String.format(BaseConst.MSG_INIT, "功能界面"));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    public static String getMenuName(String menuCode, String menuName) {
+        return menuCode + "：" + menuName;
     }
 }

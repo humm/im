@@ -334,7 +334,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
         StringBuilder updateSql = new StringBuilder();
         if (item.toLowerCase().contains("tbmenucondition")) {
             updateSql.append("update tbmenuconditionuser set ");
-            item = item.replaceAll("\\s+", "");
+            item = item.replaceAll("\\s+", SYMBOL_EMPTY);
             String[] sql = item.split(BaseConst.KEY_VALUES);
             if (sql.length != 2) {
                 sql = item.split(BaseConst.KEY_VALUES.toUpperCase());

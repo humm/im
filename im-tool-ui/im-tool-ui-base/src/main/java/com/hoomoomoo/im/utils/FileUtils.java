@@ -562,11 +562,26 @@ public class FileUtils {
 
         if (APP_CODE_SHOPPING.equals(ConfigCache.getAppCodeCache())) {
             FileUtils.writeFile(jdCookieUrl, jdCookieConfig.get(jdCookieUrl), false);
-            deleteFile(new File(bakFileJdCookie));
+            deleteBackupConfigFile(new File(bakFileJdCookie));
         }
 
         // 删除 备份历史配置文件
-        deleteFile(new File(bakFileConf));
+        deleteBackupConfigFile(new File(bakFileConf));
+    }
+
+    private static void deleteBackupConfigFile(File file) {
+        if (file.exists()) {
+            File[] files =  file.getParentFile().listFiles();
+            if (files.length > 10) {
+                Arrays.sort(files, new Comparator<File>() {
+                    @Override
+                    public int compare(File o1, File o2) {
+                        return new Long(o1.lastModified()).compareTo(o2.lastModified());
+                    }
+                });
+                deleteFile(files[0]);
+            }
+        }
     }
 
     private static void appendExtendConfig(Set<String> updateContent) throws IOException {
@@ -585,9 +600,13 @@ public class FileUtils {
     private static String getOldAppConfig(File file, String url, LinkedHashMap<String, String> oldAppConfig,
                                           String configType) throws Exception {
         // 临时备份历史配置文件名称及路径
-        String bakFileName = file.getName() + FILE_TYPE_BAK;
+        String bakFileName =file.getName().replace(FILE_TYPE_CONF, SYMBOL_HYPHEN + CommonUtils.getCurrentDateTime2() + FILE_TYPE_CONF);
         String bakFilePath = file.getParentFile().getParentFile().getPath();
-        String bakFile = bakFilePath + SYMBOL_SLASH + bakFileName;
+        String bakFile = bakFilePath + SYMBOL_SLASH + KEY_BACKUP + SYMBOL_SLASH + bakFileName;
+        File backFile = new File(bakFile);
+        if (!backFile.getParentFile().exists()) {
+            backFile.getParentFile().mkdirs();
+        }
 
         if (file.exists()) {
             // 读取历史配置文件

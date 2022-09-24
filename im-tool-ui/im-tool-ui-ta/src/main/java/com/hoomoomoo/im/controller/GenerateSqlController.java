@@ -54,10 +54,10 @@ public class GenerateSqlController extends BaseController implements Initializab
     private TextField tableCode;
 
     @FXML
-    private TextField column;
+    private TextArea column;
 
     @FXML
-    private TextField query;
+    private TextArea query;
 
     @FXML
     private RadioButton select;
@@ -143,8 +143,8 @@ public class GenerateSqlController extends BaseController implements Initializab
                 int table = Integer.valueOf(tableNum.getText().trim());
                 String databaseCodeCurrent = databaseCode.getText().trim();
                 String tableCodeCurrent = tableCode.getText().trim();
-                String columnCurrent = column.getText().trim();
-                String queryCurrent = query.getText().trim();
+                String columnCurrent = column.getText().trim().replaceAll("\\s+", SYMBOL_EMPTY);
+                String queryCurrent = query.getText().trim().replaceAll("\\s+", SYMBOL_EMPTY);
                 if (StringUtils.isBlank(databaseCodeCurrent)) {
                     OutputUtils.info(sql, String.format(MSG_SET, "分库代码"));
                     setProgress(-1);

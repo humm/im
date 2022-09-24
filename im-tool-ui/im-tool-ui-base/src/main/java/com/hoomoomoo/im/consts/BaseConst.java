@@ -116,6 +116,7 @@ public class BaseConst {
     public static final String KEY_SOURCES = "Sources";
     public static final String KEY_FIX = "fix";
     public static final String KEY_B = "B";
+    public static final String KEY_BACKUP = "backup";
 
     public static final String KEY_COLUMN_TYPE_DATE = "date";
     public static final String KEY_COLUMN_TYPE_INTEGER = "integer";
@@ -140,6 +141,7 @@ public class BaseConst {
     public static final String FILE_TYPE_JAVA = ".java";
     public static final String FILE_TYPE_SQL = ".sql";
     public static final String FILE_TYPE_ROUTE = ".js";
+    public static final String FILE_TYPE_CONF = ".conf";
 
     public static final String NAME_DELETE = " 删除";
     public static final String NAME_END = "结束";
@@ -233,7 +235,7 @@ public class BaseConst {
     public static final String MSG_START = "开始[ %s ]";
     public static final String MSG_COMPLETE = "完成[ %s ]";
     public static final String MSG_FILE_GENERATE = "%s文件生成成功";
-    public static final String MSG_FUNCTION_NOT_EXIST = "不存在[ %s ]功能";
+    public static final String MSG_FUNCTION_NOT_EXIST = "功能[ %s ]不存在";
     public static final String MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件[ license.init ]";
     public static final String MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止[ %s ]";
     public static final String MSG_LICENSE_NOT_AUTH = "未授权[ %s ]功能";
