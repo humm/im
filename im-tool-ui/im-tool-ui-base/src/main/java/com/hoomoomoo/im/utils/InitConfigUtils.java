@@ -6,6 +6,7 @@ import com.hoomoomoo.im.consts.FunctionConfig;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -69,10 +70,10 @@ public class InitConfigUtils {
         List<String> content = FileUtils.readNormalFile(pathApp, false);
         switch (appCode) {
             case APP_CODE_TA:
-                buildConfigByTa(content);
+                buildConfigByTa(appCode, content);
                 break;
             case APP_CODE_SHOPPING:
-                buildConfigByShopping(content);
+                buildConfigByShopping(appCode, content);
                 break;
         }
 
@@ -232,6 +233,58 @@ public class InitConfigUtils {
         return false;
     }
 
+    public static String buildFunctionName(String appCode, String item, ListIterator<String> itemIterator) {
+        if (item.contains(NAME_APP_TAB_SHOW)) {
+            try {
+                List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
+                Map<String, FunctionConfig> noAuthFunctionConfig = CommonUtils.getNoAuthFunctionConfigMap(appCode);
+                Map<String, FunctionDto> functionMap = new LinkedHashMap<>(16);
+                if (CollectionUtils.isNotEmpty(functionDtoList)) {
+                    for (FunctionDto functionDto : functionDtoList) {
+                        if (!functionMap.containsKey(functionDto.getFunctionCode())) {
+                            functionMap.put(functionDto.getFunctionCode(), functionDto);
+                        }
+                    }
+                }
+                if (MapUtils.isNotEmpty(noAuthFunctionConfig)) {
+                    Iterator<String> iterator = noAuthFunctionConfig.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        String functionCode = iterator.next();
+                        if (!functionMap.containsKey(functionCode)) {
+                            FunctionDto functionDto = new FunctionDto();
+                            functionDto.setFunctionCode(functionCode);
+                            functionDto.setFunctionName(noAuthFunctionConfig.get(functionCode).getName());
+                            functionMap.put(functionCode, functionDto);
+                        }
+                    }
+                }
+                Iterator<String> iterator = functionMap.keySet().iterator();
+                String content = SYMBOL_NEXT_LINE + ANNOTATION_TYPE_CONFIG + SYMBOL_SPACE;
+                String noAuthContent = SYMBOL_NEXT_LINE + ANNOTATION_TYPE_CONFIG + SYMBOL_SPACE;
+                int index = 0;
+                while (iterator.hasNext()) {
+                    String functionCode = iterator.next();
+                    if (Integer.valueOf(functionCode) < FUNCTION_CODE_2000) {
+                        index++;
+                        if (index % 15 == 0) {
+                            content += SYMBOL_NEXT_LINE + ANNOTATION_TYPE_CONFIG + SYMBOL_SPACE;
+                        }
+                        content += functionCode + SYMBOL_COLON + functionMap.get(functionCode).getFunctionName() + SYMBOL_SPACE;
+                    } else {
+                        noAuthContent += functionCode + SYMBOL_COLON + functionMap.get(functionCode).getFunctionName() + SYMBOL_SPACE;
+                    }
+                }
+                item += content + noAuthContent;
+                if (itemIterator != null) {
+                    itemIterator.set(item);
+                }
+            } catch (Exception e) {
+                LoggerUtils.info(e);
+            }
+        }
+        return item;
+    }
+
     /**
      * 生成TA配置信息
      *
@@ -240,7 +293,7 @@ public class InitConfigUtils {
      * @date: 2022-09-24
      * @return: void
      */
-    public static void buildConfigByTa(List<String> content) {
+    public static void buildConfigByTa(String appCode, List<String> content) {
         boolean svnUpdate = false;
         boolean scriptUpdateTable = false;
         boolean svnStatUser = false;
@@ -251,6 +304,7 @@ public class InitConfigUtils {
         ListIterator<String> iterator = content.listIterator();
         while (iterator.hasNext()) {
             String item = iterator.next();
+            buildFunctionName(appCode, item,  iterator);
             if (item.startsWith(KEY_SVN_UPDATE)) {
                 if (svnUpdate) {
                     iterator.remove();
@@ -312,11 +366,12 @@ public class InitConfigUtils {
      * @date: 2022-09-24
      * @return: void
      */
-    public static void buildConfigByShopping(List<String> content) {
+    public static void buildConfigByShopping(String appCode, List<String> content) {
         boolean svnUpdate = false;
         ListIterator<String> iterator = content.listIterator();
         while (iterator.hasNext()) {
             String item = iterator.next();
+            buildFunctionName(appCode, item, iterator);
             if (item.startsWith(KEY_SVN_UPDATE)) {
                 if (svnUpdate) {
                     iterator.remove();
@@ -381,7 +436,6 @@ public class InitConfigUtils {
 
     /**
      * 功能类型转换
-     * 剔除无需授权功能号
      *
      * @param functionConfigList
      * @author: humm23693
@@ -391,11 +445,8 @@ public class InitConfigUtils {
     public static List<FunctionDto> functionConfigToFunctionDto(String appCode, List<FunctionConfig> functionConfigList) {
         List<FunctionDto> functionDtoList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(functionConfigList)) {
-            // Map<String, FunctionConfig> noAuthFunction = CommonUtils.getNoAuthFunctionConfigMap(appCode);
             for (FunctionConfig item : functionConfigList) {
-               // if (!noAuthFunction.containsKey(item.getCode())) {
-                    functionDtoList.add(new FunctionDto(item.getCode(), item.getName()));
-                //}
+                functionDtoList.add(new FunctionDto(item.getCode(), item.getName()));
             }
         }
         return functionDtoList;

@@ -201,6 +201,7 @@ public class AppConfigDto extends BaseDto {
         this.replaceTargetUrl = new LinkedHashMap(16);
         this.cookieMap = new HashMap<>(16);
         this.executeType = SYMBOL_EMPTY;
+        this.appUser = SYMBOL_EMPTY;
         this.generateCodeDefaultLast = true;
     }
 }

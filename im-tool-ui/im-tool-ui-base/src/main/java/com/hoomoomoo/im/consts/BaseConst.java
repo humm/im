@@ -14,8 +14,6 @@ public class BaseConst {
     public static final String APP_USER_IM = "im";
     // 控制svn统计功能
     public static final String APP_USER_IM_SVN = "im-svn";
-    // 控制生成代码功能
-    public static final String APP_USER_IM_CODE = "im-code";
     // 控制服务端控制
     public static final String APP_USER_IM_SERVER = "im-server";
 
@@ -168,8 +166,15 @@ public class BaseConst {
     public static final String NAME_SAVE_SUCCESS = "修改成功 ";
     public static final String NAME_APP_START = "应用启动";
     public static final String NAME_CONFIG_INFO = "配置信息";
+    public static final String NAME_CONFIG_USER = "用户信息";
+    public static final String NAME_CONFIG_LICENSE = "授权信息";
+    public static final String NAME_CONFIG_LICENSE_DATE = "授权有效日期";
     public static final String NAME_CONFIG_FILE = "配置文件";
     public static final String NAME_VERSION = "版本号";
+    public static final String NAME_APP_TAB_SHOW = "# 默认展示tab页";
+    public static final String NAME_SVN_STAT = "#################### svn统计";
+    public static final String NAME_SVN_STAT_REALTIME = "#################### 实时统计";
+    public static final String NAME_SVN_STAT_HISTORY = "#################### 历史统计";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -203,6 +208,9 @@ public class BaseConst {
 
     public final static String ANNOTATION_TYPE_NORMAL = "--";
     public final static String ANNOTATION_TYPE_CONFIG = "#";
+
+    public final static Integer FUNCTION_CODE_1000 = 1000;
+    public final static Integer FUNCTION_CODE_2000 = 2000;
 
     public static final Pattern STR_PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
 

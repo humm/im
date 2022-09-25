@@ -29,7 +29,6 @@ public class StarterUtils {
             LoggerUtils.info(String.format(MSG_START, NAME_APP_START));
             FileUtils.unJar(PATH_APP);
             LoggerUtils.info(String.format(MSG_UPDATE, NAME_CONFIG_FILE));
-            LoggerUtils.info(String.format(MSG_LOAD, NAME_CONFIG_INFO));
             Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_STARTER_FXML)));
             Scene scene = new Scene(root);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();

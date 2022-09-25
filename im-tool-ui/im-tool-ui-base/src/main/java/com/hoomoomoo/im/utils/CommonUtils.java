@@ -284,15 +284,11 @@ public class CommonUtils {
         if (STR_1.equals(checkType)) {
             if (SVN_REALTIME_STAT.getCode().equals(functionCode) || SVN_HISTORY_STAT.getCode().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_SVN);
-            } /*else if (GENERATE_CODE.getCode().equals(functionCode)) {
-                return checkUser(appUser, APP_USER_IM_CODE);
-            }*/
+            }
         } else if (STR_2.equals(checkType)) {
             if (SVN_REALTIME_STAT.getMenuId().equals(functionCode) || SVN_HISTORY_STAT.getMenuId().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_SVN);
-            } /*else if (GENERATE_CODE.getMenuId().equals(functionCode)) {
-                return checkUser(appUser, APP_USER_IM_CODE);
-            }*/
+            }
         }
         return true;
     }
@@ -347,12 +343,12 @@ public class CommonUtils {
         List<FunctionConfig> functionConfigList = new ArrayList<>();
         for (FunctionConfig functionConfig : FunctionConfig.values()) {
             int functionCode = Integer.valueOf(functionConfig.getCode());
-            if (APP_CODE_TA.equals(appCode) && functionCode < 1000) {
+            if (APP_CODE_TA.equals(appCode) && functionCode < FUNCTION_CODE_1000) {
                 functionConfigList.add(functionConfig);
-            } else if (APP_CODE_SHOPPING.equals(appCode) && functionCode >= 1000 && functionCode < 2000) {
+            } else if (APP_CODE_SHOPPING.equals(appCode) && functionCode >= FUNCTION_CODE_1000 && functionCode < FUNCTION_CODE_2000) {
                 functionConfigList.add(functionConfig);
             }
-            if (functionCode >= 2000) {
+            if (functionCode >= FUNCTION_CODE_2000) {
                 functionConfigList.add(functionConfig);
             }
         }
@@ -540,7 +536,7 @@ public class CommonUtils {
                 return;
             }
 
-            LoggerUtils.info(String.format(BaseConst.MSG_CHECK, "授权有效日期"));
+            LoggerUtils.info(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
 
             // 控制菜单功能
             if (menus != null) {

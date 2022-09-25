@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.SVN_HISTORY_STAT;
+import static com.hoomoomoo.im.consts.FunctionConfig.SVN_REALTIME_STAT;
 
 /**
  * @author humm23693

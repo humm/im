@@ -10,12 +10,11 @@ import lombok.Data;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.FunctionConfig.SVN_HISTORY_STAT;
+import static com.hoomoomoo.im.consts.FunctionConfig.SVN_REALTIME_STAT;
 
 /**
  * @author humm23693
@@ -60,28 +59,38 @@ public class ConfigCache {
         // 读取配置文件
         appConfigDto = (AppConfigDto) FileUtils.readConfigFileToObject(confPath, AppConfigDto.class);
 
-        // 加载证书信息
-        String licensePath = FileUtils.getFilePath(PATH_LICENSE);
-        List<String> licenseContent = FileUtils.readNormalFile(licensePath, false);
-        StringBuilder license = new StringBuilder();
-        if (CollectionUtils.isEmpty(licenseContent)) {
-            LoggerUtils.info(MSG_LICENSE_NOT_EXIST);
-            LicenseDto licenseDto = new LicenseDto();
-            licenseDto.setEffectiveDate(STR_0);
-            licenseDto.setFunction(new ArrayList<>());
-            appConfigDto.setLicense(licenseDto);
-        } else {
-            for (String item : licenseContent) {
-                license.append(item);
-            }
-            LicenseDto licenseDto = JSON.parseObject(SecurityUtils.getDecryptString(license.toString()), LicenseDto.class);
-            appConfigDto.setLicense(licenseDto);
-        }
-
-        LoggerUtils.info(String.format(MSG_LOAD, "授权信息"));
-
-        // 读取代码更新配置
+        // 更新配置信息
         List<String> content = FileUtils.readNormalFile(confPath, false);
+
+        int configIndex = 0;
+        ListIterator<String> iterator = content.listIterator();
+        String svnRealtimeStatKey = SVN_REALTIME_STAT.getCode() + SYMBOL_COLON + SVN_REALTIME_STAT.getName();
+        String svnHistoryStatKey = SVN_HISTORY_STAT.getCode() + SYMBOL_COLON + SVN_HISTORY_STAT.getName();
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            boolean flag = item.contains(svnRealtimeStatKey) || item.contains(svnHistoryStatKey);
+            if (!appConfigDto.getAppUser().contains(APP_USER_IM_SVN)) {
+                if (flag) {
+                    item = item.replace(svnRealtimeStatKey, SYMBOL_EMPTY);
+                    item = item.replace(svnHistoryStatKey, SYMBOL_EMPTY);
+                    iterator.set(item.replaceAll("\\s+", SYMBOL_EMPTY));
+                    continue;
+                }
+
+                if (item.contains(NAME_SVN_STAT) || item.contains(NAME_SVN_STAT_REALTIME) || item.contains(NAME_SVN_STAT_HISTORY)) {
+                    configIndex++;
+                    iterator.remove();
+                } else if (configIndex == 1) {
+                    iterator.remove();
+                }
+                if (configIndex == 2) {
+                    configIndex = 0;
+                }
+            }
+        }
+        FileUtils.writeFile(confPath, content, false);
+
+        // 加载配置信息
         if (CollectionUtils.isNotEmpty(content)) {
             for (String item : content) {
                 // 代码更新配置
@@ -123,7 +132,6 @@ public class ConfigCache {
                         }
                     }
                 }
-
                 // 复制代码配置
                 if (item.startsWith(KEY_COPY_CODE_VERSION)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
@@ -138,7 +146,6 @@ public class ConfigCache {
                         }
                     }
                 }
-
                 // svnUrl配置
                 if (item.startsWith(KEY_SVN_URL)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
@@ -150,7 +157,6 @@ public class ConfigCache {
                         }
                     }
                 }
-
                 // url替换配置
                 if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_SOURCE)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
@@ -163,7 +169,6 @@ public class ConfigCache {
                         }
                     }
                 }
-
                 // url替换配置
                 if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_TARGET)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
@@ -178,6 +183,28 @@ public class ConfigCache {
                 }
             }
         }
+
+        LoggerUtils.info(String.format(MSG_LOAD, NAME_CONFIG_INFO));
+
+        // 加载证书信息
+        String licensePath = FileUtils.getFilePath(PATH_LICENSE);
+        List<String> licenseContent = FileUtils.readNormalFile(licensePath, false);
+        StringBuilder license = new StringBuilder();
+        if (CollectionUtils.isEmpty(licenseContent)) {
+            LoggerUtils.info(MSG_LICENSE_NOT_EXIST);
+            LicenseDto licenseDto = new LicenseDto();
+            licenseDto.setEffectiveDate(STR_0);
+            licenseDto.setFunction(new ArrayList<>());
+            appConfigDto.setLicense(licenseDto);
+        } else {
+            for (String item : licenseContent) {
+                license.append(item);
+            }
+            LicenseDto licenseDto = JSON.parseObject(SecurityUtils.getDecryptString(license.toString()), LicenseDto.class);
+            appConfigDto.setLicense(licenseDto);
+        }
+
+        LoggerUtils.info(String.format(MSG_LOAD, NAME_CONFIG_LICENSE));
 
         // 解密
         if (appConfigDto != null && appConfigDto.getSvnPassword() != null && appConfigDto.getSvnPassword().endsWith(SECURITY_FLAG)) {
@@ -224,7 +251,6 @@ public class ConfigCache {
                 }
             }
         }
-
-        LoggerUtils.info(String.format(MSG_ENCRYPT, "用户信息"));
+        LoggerUtils.info(String.format(MSG_ENCRYPT, NAME_CONFIG_USER));
     }
 }
