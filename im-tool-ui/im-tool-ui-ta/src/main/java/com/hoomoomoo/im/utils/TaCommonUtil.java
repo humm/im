@@ -15,8 +15,7 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_NEXT_LINE;
-import static com.hoomoomoo.im.consts.FunctionConfig.SVN_HISTORY_STAT;
-import static com.hoomoomoo.im.consts.FunctionConfig.SVN_REALTIME_STAT;
+import static com.hoomoomoo.im.consts.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -66,7 +65,6 @@ public class TaCommonUtil {
                 }
             }
         }
-
         if (functionCode.equals(FunctionConfig.GENERATE_SQL.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getGenerateSqlDatabaseNum())) {
                 OutputUtils.info(log, String.format(MSG_SET, "generate.sql.database.num"));
@@ -74,6 +72,20 @@ public class TaCommonUtil {
             }
             if (StringUtils.isBlank(appConfigDto.getGenerateSqlTableNum())) {
                 OutputUtils.info(log, String.format(MSG_SET, "generate.sql.table.num"));
+                flag = false;
+            }
+        }
+        if (functionCode.equals(DATABASE_SCRIPT.getCode())) {
+            if (StringUtils.isBlank(appConfigDto.getDatabaseScriptUrl())) {
+                OutputUtils.info(log, String.format(MSG_SET, "database.script.url"));
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getDatabaseScriptUsername())) {
+                OutputUtils.info(log, String.format(MSG_SET, "database.script.username"));
+                flag = false;
+            }
+            if (StringUtils.isBlank(appConfigDto.getDatabaseScriptPassword())) {
+                OutputUtils.info(log, String.format(MSG_SET, "database.script.password"));
                 flag = false;
             }
         }

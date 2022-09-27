@@ -54,6 +54,9 @@ public class TaStarterController implements Initializable {
     private Menu menuCode;
 
     @FXML
+    private Menu menuTool;
+
+    @FXML
     private TabPane functionTab;
 
     @FXML
@@ -63,7 +66,7 @@ public class TaStarterController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        CommonUtils.initialize(location, resources, functionTab, menuSvn, menuScript, menuCode, menuSet, menuHelp);
+        CommonUtils.initialize(location, resources, functionTab, menuSvn, menuScript, menuCode, menuTool, menuSet, menuHelp);
     }
 
 }

@@ -183,6 +183,14 @@ public class AppConfigDto extends BaseDto {
 
     private String pageType;
 
+    private String databaseScriptUrl;
+
+    private String databaseScriptUsername;
+
+    private String databaseScriptPassword;
+
+    private String databaseScriptLocation;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;

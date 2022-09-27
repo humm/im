@@ -189,6 +189,33 @@ public class LoggerUtils {
         }
     }
 
+    public static void writeDatabaScriptLogInfo(String functionCode, List<String> logs, String filePath) {
+        try {
+            FunctionConfig functionConfig = FunctionConfig.getFunctionConfig(functionCode);
+            // 写统计文件
+            String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, functionConfig.getLogFolder() + FILE_TYPE_STAT));
+            writeStatFile(statFilePath);
+
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (!appConfigDto.getAppLogEnable()) {
+                return;
+            }
+            FileUtils.writeFile(filePath, logs, false);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    public static void writeStatInfo(FunctionConfig functionConfig) {
+        try {
+            // 写统计文件
+            String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, functionConfig.getLogFolder() + FILE_TYPE_STAT));
+            writeStatFile(statFilePath);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
     public static void writeSvnRealtimeStatInfo() {
         try {
             // 写统计文件

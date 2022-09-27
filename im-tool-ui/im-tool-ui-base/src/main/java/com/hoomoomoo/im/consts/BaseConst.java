@@ -114,7 +114,7 @@ public class BaseConst {
     public static final String KEY_SOURCES = "Sources";
     public static final String KEY_FIX = "fix";
     public static final String KEY_B = "B";
-    public static final String KEY_BACKUP = "backup";
+    public static final String KEY_BACKUP = "bak";
 
     public static final String KEY_COLUMN_TYPE_DATE = "date";
     public static final String KEY_COLUMN_TYPE_INTEGER = "integer";

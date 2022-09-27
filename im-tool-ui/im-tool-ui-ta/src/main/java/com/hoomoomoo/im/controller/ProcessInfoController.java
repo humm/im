@@ -54,13 +54,8 @@ public class ProcessInfoController extends BaseController implements Initializab
 
     @FXML
     void executeSelect(ActionEvent event) {
-        final FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("全部Excel文件", "*.xls")
-        );
-        /*fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("全部Excel文件", "*.xlsx")
-        );*/
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("全部Excel文件", "*.xls"));
         File file = fileChooser.showOpenDialog(processInfo.getScene().getWindow());
         if (file != null) {
             OutputUtils.clearLog(filePath);

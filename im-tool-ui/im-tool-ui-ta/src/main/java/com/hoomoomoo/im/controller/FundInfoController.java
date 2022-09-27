@@ -46,9 +46,6 @@ public class FundInfoController extends BaseController implements Initializable 
     @FXML
     private RadioButton modeAll;
 
-//    @FXML
-//    private RadioButton modeUpdate;
-
     @FXML
     private TableView fundLog;
 
@@ -64,13 +61,8 @@ public class FundInfoController extends BaseController implements Initializable 
 
     @FXML
     void executeSelect(ActionEvent event) {
-        final FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("全部Excel文件", "*.xls")
-        );
-        /*fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("全部Excel文件", "*.xlsx")
-        );*/
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("全部Excel文件", "*.xls"));
         File file = fileChooser.showOpenDialog(fundInfo.getScene().getWindow());
         if (file != null) {
             OutputUtils.clearLog(filePath);

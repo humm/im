@@ -10,60 +10,53 @@
                 <Menu fx:id="menuSvn" mnemonicParsing="false" text="SVN">
                     <items>
                         <MenuItem fx:id="svnLog" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="提交记录"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="svnUpdate" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="代码更新"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="svnRealtimeStat" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="实时统计"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="svnHistoryStat" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="历史统计"/>
+                                  onAction="#openMenu"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuScript" mnemonicParsing="false" text="脚本">
                     <items>
                         <MenuItem fx:id="scriptUpdate" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="升级脚本"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="processInfo" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="流程信息"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="fundInfo" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="基金信息"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="generateSql" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="分库分表"/>
+                                  onAction="#openMenu"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuCode" mnemonicParsing="false" text="代码">
                     <items>
                         <MenuItem fx:id="copyCode" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="复制代码"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="generateCode" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="生成代码"/>
+                                  onAction="#openMenu"/>
+                    </items>
+                </Menu>
+                <Menu fx:id="menuTool" mnemonicParsing="false" text="其他">
+                    <items>
+                        <MenuItem fx:id="databaseScript" mnemonicParsing="false"
+                                  onAction="#openMenu"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuSet" mnemonicParsing="false" text="设置">
                     <items>
                         <MenuItem fx:id="configSet" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="参数设置"/>
+                                  onAction="#openMenu"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">
                     <items>
                         <MenuItem fx:id="functionStatInfo" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="使用统计"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="aboutInfo" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="关于"/>
+                                  onAction="#openMenu"/>
                     </items>
                 </Menu>
             </menus>

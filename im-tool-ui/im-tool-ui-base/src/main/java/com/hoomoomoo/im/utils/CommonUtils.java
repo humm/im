@@ -578,6 +578,6 @@ public class CommonUtils {
     }
 
     public static String getMenuName(String menuCode, String menuName) {
-        return menuCode + "：" + menuName;
+        return menuName;
     }
 }

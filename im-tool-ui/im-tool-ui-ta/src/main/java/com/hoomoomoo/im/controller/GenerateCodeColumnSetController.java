@@ -307,53 +307,6 @@ public class GenerateCodeColumnSetController implements Initializable {
                     columnIterator.remove();
                 }
             }
-
-            /*ObservableList options = FXCollections.observableArrayList(
-                    "+2",
-                    "-2",
-                    "小组加分"
-            );*/
-
-            /*columnMulti.setCellFactory(tc -> {//combobox定义与监听
-                ComboBox<String> combo = new ComboBox<String>();
-                combo.setItems(options);
-                combo.setEditable(true);
-                TableCell<ColumnInfoDto, String> cell = new TableCell<ColumnInfoDto, String>() {
-                    @Override
-                    protected void updateItem(String chuzhi, boolean empty) {
-                        super.updateItem(chuzhi, empty);
-                        if (empty) {
-                            setGraphic(null);
-                        } else {
-                            combo.setValue(chuzhi);
-                            setGraphic(combo);
-                        }
-                    }
-                };
-                combo.setOnAction(e -> {
-                    int rank = cell.getIndex();//获取正在编辑的单元格所在行序号
-                    String value = combo.getValue();//获取正在编辑的单元格值
-
-                    if(value.equals(options.get(0))  ||  value.equals(options.get(1) ))//1  2选项
-                    {
-
-                        //写自己的选择项功能
-
-                    }
-                    if(value.equals(options.get(2)))//3选项
-                    {
-
-                        //写自己的选择项功能
-                    }
-
-                });
-
-                return cell;
-            });//注意括号*/
-//            columnMulti.setCellFactory(ComboBoxTableCell.forTableColumn(columnMulti));
-
-
-
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

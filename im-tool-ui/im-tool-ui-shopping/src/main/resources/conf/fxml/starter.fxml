@@ -10,42 +10,33 @@
                 <Menu fx:id="menuJd" mnemonicParsing="false" text="京东">
                     <items>
                         <MenuItem fx:id="jdAuto" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="自动评价"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="waitAppraise" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="待评价"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="showOrder" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="待晒单"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="appendAppraise" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="待追评"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="serviceAppraise" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="服务评价"/>
+                                  onAction="#openMenu"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuSet" mnemonicParsing="false" text="设置">
                     <items>
                         <MenuItem fx:id="configSet" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="参数设置"/>
+                                  onAction="#openMenu"/>
                     </items>
                     <items>
                         <MenuItem fx:id="jdCookie" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="京东Cookie设置"/>
+                                  onAction="#openMenu"/>
                     </items>
                 </Menu>
                 <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">
                     <items>
                         <MenuItem fx:id="functionStatInfo" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="使用统计"/>
+                                  onAction="#openMenu"/>
                         <MenuItem fx:id="aboutInfo" mnemonicParsing="false"
-                                  onAction="#openMenu"
-                                  text="关于"/>
+                                  onAction="#openMenu"/>
                     </items>
                 </Menu>
             </menus>

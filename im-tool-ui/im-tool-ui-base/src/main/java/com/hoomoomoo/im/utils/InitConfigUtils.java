@@ -416,10 +416,16 @@ public class InitConfigUtils {
         keys.put("copy.code.default.source", null);
         keys.put("copy.code.default.target", null);
 
+        keys.put("copy.code.location.replace.skipAccountVersion", null);
+
         keys.put("generate.sql.database.code", null);
         keys.put("generate.sql.table.code", null);
 
-        keys.put("copy.code.location.replace.skipAccountVersion", null);
+        keys.put("database.script.location", null);
+        keys.put("database.script.url", null);
+        keys.put("database.script.username", null);
+        keys.put("database.script.password", null);
+
     }
 
     /**

@@ -29,6 +29,8 @@ public enum FunctionConfig {
 
     GENERATE_CODE("450", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode"),
 
+    DATABASE_SCRIPT("500", "数据库脚本", "/conf/fxml/databaseScript.fxml", "databaseScript", "databaseScript"),
+
     // 购物组件 1000-1999
     JD_AUTO("1000", "自动评价", "/conf/fxml/jdAuto.fxml", "jdAuto", "jdAuto"),
 
