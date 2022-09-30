@@ -13,8 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.SVN_HISTORY_STAT;
-import static com.hoomoomoo.im.consts.FunctionConfig.SVN_REALTIME_STAT;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_HISTORY_STAT;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT;
 
 /**
  * @author humm23693

@@ -2,13 +2,11 @@ package com.hoomoomoo.im.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
 import com.hoomoomoo.im.dto.ShoppingDto;
 import com.hoomoomoo.im.util.ShoppingCommonUtil;
-import com.hoomoomoo.im.utils.ComponentUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.event.ActionEvent;
@@ -28,7 +26,7 @@ import java.net.URLEncoder;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.WAIT_APPRAISE;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.WAIT_APPRAISE;
 import static com.hoomoomoo.im.util.ShoppingCommonUtil.getPageInfo;
 
 /**

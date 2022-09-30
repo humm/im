@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.JD_COOKIE;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.JD_COOKIE;
 
 /**
  * @author humm23693

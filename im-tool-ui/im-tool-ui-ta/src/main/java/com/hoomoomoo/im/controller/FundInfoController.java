@@ -21,7 +21,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.hoomoomoo.im.consts.FunctionConfig.FUND_INFO;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.FUND_INFO;
 
 /**
  * @author humm23693

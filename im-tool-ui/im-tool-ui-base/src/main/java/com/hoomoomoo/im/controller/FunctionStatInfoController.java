@@ -1,7 +1,7 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.consts.BaseConst;
-import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
@@ -11,7 +11,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.io.File;
@@ -20,8 +19,8 @@ import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.ABOUT_INFO;
-import static com.hoomoomoo.im.consts.FunctionConfig.FUNCTION_STAT_INFO;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.ABOUT_INFO;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.FUNCTION_STAT_INFO;
 
 /**
  * @author humm23693
@@ -60,7 +59,7 @@ public class FunctionStatInfoController implements Initializable {
         OutputUtils.info(title, "授权功能  " + num);
         for (int i = 0; i < functionDtoList.size(); i++) {
             FunctionDto functionDto = functionDtoList.get(i);
-            String logPath = String.format(BaseConst.PATH_STAT, FunctionConfig.getLogFolder(functionDto.getFunctionCode())) + BaseConst.FILE_TYPE_STAT;
+            String logPath = String.format(BaseConst.PATH_STAT, MenuFunctionConfig.FunctionConfig.getLogFolder(functionDto.getFunctionCode())) + BaseConst.FILE_TYPE_STAT;
             try {
                 File statFile = new File(FileUtils.getFilePath(logPath));
                 List<String> logStat = new ArrayList<>();

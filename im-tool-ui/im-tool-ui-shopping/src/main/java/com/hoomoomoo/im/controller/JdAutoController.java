@@ -2,7 +2,7 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
-import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
 import com.hoomoomoo.im.dto.ShoppingDto;
@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -170,7 +170,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                 while (true) {
                     ShoppingDto shoppingDto = shoppingDtoList.get(i);
                     OutputUtils.info(type, shoppingDto.getTypeName());
-                    FunctionConfig functionConfig = FunctionConfig.getFunctionConfig(shoppingDto.getType());
+                    MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(shoppingDto.getType());
                     List<GoodsDto> goodsDtoList = shoppingDto.getGoodsDtoList();
                     if (pauseStatus || CollectionUtils.isEmpty(goodsDtoList)) {
                         break;
@@ -202,7 +202,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
     }
 
     private void appraise(AppConfigDto appConfigDto, ShoppingDto shoppingDto,
-                          FunctionConfig functionConfig, List<String> logs) throws Exception {
+                          MenuFunctionConfig.FunctionConfig functionConfig, List<String> logs) throws Exception {
         List<GoodsDto> goodsList = shoppingDto.getGoodsDtoList();
         int orderNumValue = Integer.valueOf(shoppingDto.getOrderNumValue());
         if (CollectionUtils.isNotEmpty(goodsList)) {

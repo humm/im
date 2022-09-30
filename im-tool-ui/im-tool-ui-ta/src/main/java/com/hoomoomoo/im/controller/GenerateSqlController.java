@@ -3,9 +3,6 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.GenerateCodeDto;
-import com.hoomoomoo.im.service.*;
-import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import com.hoomoomoo.im.utils.TaCommonUtil;
@@ -28,7 +25,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.GENERATE_SQL;
 
 /**
  * @author humm23693

@@ -24,7 +24,7 @@ import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SHOW_ORDER;
 import static com.hoomoomoo.im.util.ShoppingCommonUtil.getPageInfo;
 
 /**

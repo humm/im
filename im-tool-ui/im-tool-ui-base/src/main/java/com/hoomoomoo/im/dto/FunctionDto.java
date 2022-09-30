@@ -30,4 +30,23 @@ public class FunctionDto extends BaseDto{
         this.functionCode = functionCode;
         this.functionName = functionName;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        FunctionDto that = (FunctionDto) o;
+
+        return functionCode.equals(that.functionCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return functionCode.hashCode();
+    }
 }

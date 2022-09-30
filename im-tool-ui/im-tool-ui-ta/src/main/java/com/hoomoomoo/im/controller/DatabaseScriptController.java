@@ -19,7 +19,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.DATABASE_SCRIPT;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.DATABASE_SCRIPT;
 
 /**
  * @author humm23693
@@ -111,7 +111,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                         for (File item : fileList) {
                             nextFlag = true;
                             String encode = FileUtils.getFileEncode(item.getAbsolutePath());
-                            OutputUtils.info(fileNum, String.valueOf(filelNum++));
+                            OutputUtils.info(fileNum, String.valueOf(++filelNum));
                             OutputUtils.info(log, String.format("执行[ %s ]开始\n", item));
                             executeSql.clear();
                             content = FileUtils.readNormalFile(item.getAbsolutePath(), false);
@@ -151,7 +151,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                             if (CollectionUtils.isNotEmpty(executeSql)) {
                                 for (String sql : executeSql) {
                                     try {
-                                        OutputUtils.info(sqlNum, String.valueOf(executeSqlNum++));
+                                        OutputUtils.info(sqlNum, String.valueOf(++executeSqlNum));
                                         DatabaseUtils.executeSql(sql, encode);
                                     } catch (Exception e) {
                                         if (nextFlag) {
@@ -165,7 +165,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                                         OutputUtils.info(log, errorSql + SYMBOL_NEXT_LINE);
                                         failSql.add(errorMsg);
                                         failSql.add(errorSql);
-                                        OutputUtils.info(sqlFailNum, String.valueOf(executeFailSqlNum++));
+                                        OutputUtils.info(sqlFailNum, String.valueOf(++executeFailSqlNum));
                                     }
                                 }
                             }

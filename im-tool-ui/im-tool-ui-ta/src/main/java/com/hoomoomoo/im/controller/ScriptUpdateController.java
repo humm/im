@@ -21,7 +21,7 @@ import java.util.*;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.SCRIPT_UPDATE;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SCRIPT_UPDATE;
 
 /**
  * @author humm23693

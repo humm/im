@@ -9,13 +9,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 
 import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.KEY_NOTICE;
-import static com.hoomoomoo.im.consts.FunctionConfig.SVN_REALTIME_STAT;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT;
 
 /**
  * @author humm23693

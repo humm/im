@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,8 +30,6 @@ public class StarterUtils {
             LoggerUtils.info(String.format(MSG_START, NAME_APP_START));
             FileUtils.unJar(PATH_APP);
             LoggerUtils.info(String.format(MSG_UPDATE, NAME_CONFIG_FILE));
-            Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_STARTER_FXML)));
-            Scene scene = new Scene(root);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String appName = appConfigDto.getAppName() + SYMBOL_SPACE_2;
             if (!FileUtils.startByJar()) {
@@ -44,6 +43,14 @@ public class StarterUtils {
                 primaryStage.getIcons().add(new Image(PATH_ICON));
             }
             appName += String.format(MSG_APP_TITLE, NAME_VERSION, CommonUtils.getVersion());
+            // 校验证书是否过期
+            if (!CommonUtils.checkLicense(null)) {
+                appName += SYMBOL_SPACE_2 + String.format(MSG_LICENSE_EXPIRE, appConfigDto.getLicense().getEffectiveDate());
+            }
+            LoggerUtils.info(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
+
+            Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_STARTER_FXML)));
+            Scene scene = new Scene(root);
             scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
             primaryStage.setTitle(appName);
             primaryStage.setScene(scene);

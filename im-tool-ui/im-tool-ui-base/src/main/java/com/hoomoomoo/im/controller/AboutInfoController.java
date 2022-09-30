@@ -21,8 +21,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.ABOUT_INFO;
-import static com.hoomoomoo.im.consts.FunctionConfig.JD_AUTO;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.ABOUT_INFO;
 
 /**
  * @author humm23693

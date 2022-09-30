@@ -5,7 +5,6 @@ import com.hoomoomoo.im.cache.TaskMemoryCache;
 import com.hoomoomoo.im.cache.TransMemoryCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import com.hoomoomoo.im.utils.TaCommonUtil;
@@ -17,14 +16,14 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.net.URL;
 import java.util.*;
 
-import static com.hoomoomoo.im.consts.FunctionConfig.PROCESS_INFO;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.PROCESS_INFO;
+
 
 /**
  * @author humm23693

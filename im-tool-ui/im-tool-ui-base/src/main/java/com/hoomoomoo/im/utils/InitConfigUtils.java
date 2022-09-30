@@ -2,7 +2,7 @@ package com.hoomoomoo.im.utils;
 
 import com.alibaba.fastjson.JSON;
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
 import org.apache.commons.collections.CollectionUtils;
@@ -41,12 +41,17 @@ public class InitConfigUtils {
         license.setEffectiveDate(StringUtils.isBlank(effectiveDate) ? "20991231" : effectiveDate);
         license.setFunction(function);
         if (StringUtils.isNotBlank(appFunction)) {
-            function.clear();
             String[] functionConfig = appFunction.split(SYMBOL_COMMA);
-            for (String code : functionConfig) {
-                String name = FunctionConfig.getName(code);
-                if (StringUtils.isNotBlank(name)) {
-                    function.add(new FunctionDto(code, name));
+            Iterator<FunctionDto> iterator = function.iterator();
+            out: while (iterator.hasNext()) {
+                FunctionDto functionDto = iterator.next();
+                for (String code : functionConfig) {
+                    if (functionDto.getFunctionCode().equals(code)) {
+                        continue out;
+                    }
+                }
+                if (Integer.valueOf(functionDto.getFunctionCode()) < FUNCTION_CODE_2000) {
+                    iterator.remove();
                 }
             }
         }
@@ -237,7 +242,7 @@ public class InitConfigUtils {
         if (item.contains(NAME_APP_TAB_SHOW)) {
             try {
                 List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
-                Map<String, FunctionConfig> noAuthFunctionConfig = CommonUtils.getNoAuthFunctionConfigMap(appCode);
+                Map<String, MenuFunctionConfig.FunctionConfig> noAuthFunctionConfig = CommonUtils.getNoAuthFunctionConfigMap(appCode);
                 Map<String, FunctionDto> functionMap = new LinkedHashMap<>(16);
                 if (CollectionUtils.isNotEmpty(functionDtoList)) {
                     for (FunctionDto functionDto : functionDtoList) {
@@ -448,10 +453,10 @@ public class InitConfigUtils {
      * @date: 2022-09-24
      * @return: java.util.List<com.hoomoomoo.im.dto.FunctionDto>
      */
-    public static List<FunctionDto> functionConfigToFunctionDto(String appCode, List<FunctionConfig> functionConfigList) {
+    public static List<FunctionDto> functionConfigToFunctionDto(String appCode, List<MenuFunctionConfig.FunctionConfig> functionConfigList) {
         List<FunctionDto> functionDtoList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(functionConfigList)) {
-            for (FunctionConfig item : functionConfigList) {
+            for (MenuFunctionConfig.FunctionConfig item : functionConfigList) {
                 functionDtoList.add(new FunctionDto(item.getCode(), item.getName()));
             }
         }

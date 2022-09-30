@@ -16,7 +16,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
-import static com.hoomoomoo.im.consts.FunctionConfig.SVN_UPDATE;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_UPDATE;
 
 /**
  * @author humm23693

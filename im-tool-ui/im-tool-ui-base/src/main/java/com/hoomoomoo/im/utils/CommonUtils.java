@@ -2,18 +2,16 @@ package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
-import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -184,16 +182,17 @@ public class CommonUtils {
     public static boolean checkLicense(String functionCode) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         LicenseDto licenseDto = appConfigDto.getLicense();
-        if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
-            LoggerUtils.info(String.format(MSG_LICENSE_EXPIRE, licenseDto.getEffectiveDate()));
-            return false;
-        }
         if (StringUtils.isBlank(functionCode)) {
-            return true;
+            if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
+                LoggerUtils.info(String.format(MSG_LICENSE_EXPIRE, licenseDto.getEffectiveDate()));
+                return false;
+            } else {
+                return true;
+            }
         }
         if (!checkUser(appConfigDto, STR_1, functionCode)) {
             if (checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
-                LoggerUtils.info(String.format(MSG_LICENSE_NOT_USE, FunctionConfig.getName(functionCode)));
+                LoggerUtils.info(String.format(MSG_LICENSE_NOT_USE, MenuFunctionConfig.FunctionConfig.getName(functionCode)));
             }
             return false;
         }
@@ -203,7 +202,7 @@ public class CommonUtils {
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
         if (CollectionUtils.isEmpty(functionDtoList)) {
             if (checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
-                LoggerUtils.info(String.format(MSG_LICENSE_NOT_AUTH, FunctionConfig.getName(functionCode)));
+                LoggerUtils.info(String.format(MSG_LICENSE_NOT_AUTH, MenuFunctionConfig.FunctionConfig.getName(functionCode)));
             }
             return false;
         }
@@ -213,7 +212,7 @@ public class CommonUtils {
             }
         }
         if (checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
-            LoggerUtils.info(String.format(MSG_LICENSE_NOT_AUTH, FunctionConfig.getName(functionCode)));
+            LoggerUtils.info(String.format(MSG_LICENSE_NOT_AUTH, MenuFunctionConfig.FunctionConfig.getName(functionCode)));
         }
         return false;
     }
@@ -227,40 +226,74 @@ public class CommonUtils {
         return licenseDto.getFunction();
     }
 
-    public static void showAuthFunction(Menu menu) throws Exception {
+    public static void showAuthFunction(MenuBar menuBar, TabPane functionTab) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
         if (CollectionUtils.isEmpty(functionDtoList)) {
-            menu.getItems().clear();
             return;
         }
-        ObservableList<MenuItem> list = menu.getItems();
-        ListIterator<MenuItem> iterator = list.listIterator();
-        outer:
-        while (iterator.hasNext()) {
-            MenuItem item = iterator.next();
-            initMenuName(item);
+        initMenuBar(menuBar, functionDtoList);
+        ObservableList<Menu> menusList = menuBar.getMenus();
+        for (Menu menu : menusList) {
+            ObservableList<MenuItem> list = menu.getItems();
             for (FunctionDto functionDto : functionDtoList) {
-                if (!checkUser(appConfigDto, STR_2, item.getId())) {
-                    if (checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
-                        LoggerUtils.info(String.format(MSG_LICENSE_NOT_USE, FunctionConfig.getNameBymenuId(item.getId())));
+                MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
+                if (menu.getId().equals(functionConfig.getParentMenuId())) {
+                    if (!checkUser(appConfigDto, STR_2, functionConfig.getMenuId())) {
+                        if (checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
+                            LoggerUtils.info(String.format(MSG_LICENSE_NOT_USE, functionDto.getFunctionName()));
+                        }
+                        continue;
                     }
-                    iterator.remove();
-                    continue outer;
-                }
-                if (checkAuth(STR_2, item.getId())) {
-                    continue outer;
-                }
-                if (FunctionConfig.getMenuId(functionDto.getFunctionCode()).equals(item.getId())) {
-                    continue outer;
+                    MenuItem item = new MenuItem();
+                    item.setId(functionConfig.getMenuId());
+                    item.setText(functionConfig.getName());
+                    initMenuName(item);
+                    item.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            CommonUtils.openMenu(event, functionTab);
+                        }
+                    });
+                    list.add(item);
                 }
             }
-            iterator.remove();
+        }
+    }
+
+    public static void initMenuBar(MenuBar menuBar, List<FunctionDto> functionDtoList) {
+        if (CollectionUtils.isNotEmpty(functionDtoList)) {
+            Map<String, MenuFunctionConfig.MenuConfig> menuConfigList = new LinkedHashMap<>(16);
+            for (FunctionDto functionDto : functionDtoList) {
+                MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
+                if (functionConfig != null) {
+                    if (!menuConfigList.containsKey(functionConfig.getParentMenuId())) {
+                        MenuFunctionConfig.MenuConfig menuConfig = MenuFunctionConfig.MenuConfig.getMenuConfig(functionConfig.getParentMenuId());
+                        menuConfigList.put(functionConfig.getParentMenuId(), menuConfig);
+                    }
+                }
+            }
+            List<MenuFunctionConfig.MenuConfig> menuList = new ArrayList<>(menuConfigList.values());
+            Collections.sort(menuList, new Comparator<MenuFunctionConfig.MenuConfig>() {
+                @Override
+                public int compare(MenuFunctionConfig.MenuConfig o1, MenuFunctionConfig.MenuConfig o2) {
+                    return o1.getMenuOrder() - o2.getMenuOrder();
+                }
+            });
+
+            ObservableList<Menu> menus = menuBar.getMenus();
+            for (MenuFunctionConfig.MenuConfig menuConfig : menuList) {
+                Menu menu = new Menu();
+                menu.setId(menuConfig.getMenuId());
+                menu.setText(menuConfig.getMenuName());
+                menus.add(menu);
+            }
+
         }
     }
 
     public static void initMenuName(MenuItem item) {
-        for (FunctionConfig tab : FunctionConfig.values()) {
+        for (MenuFunctionConfig.FunctionConfig tab : MenuFunctionConfig.FunctionConfig.values()) {
             if (tab.getMenuId().equals(item.getId())) {
                 item.setText(getMenuName(tab.getCode(), tab.getName()));
                 break;
@@ -339,9 +372,9 @@ public class CommonUtils {
      * @date: 2022-09-24
      * @return: java.util.List<com.hoomoomoo.im.consts.FunctionConfig>
      */
-    public static List<FunctionConfig> getAppFunctionConfig(String appCode) {
-        List<FunctionConfig> functionConfigList = new ArrayList<>();
-        for (FunctionConfig functionConfig : FunctionConfig.values()) {
+    public static List<MenuFunctionConfig.FunctionConfig> getAppFunctionConfig(String appCode) {
+        List<MenuFunctionConfig.FunctionConfig> functionConfigList = new ArrayList<>();
+        for (MenuFunctionConfig.FunctionConfig functionConfig : MenuFunctionConfig.FunctionConfig.values()) {
             int functionCode = Integer.valueOf(functionConfig.getCode());
             if (APP_CODE_TA.equals(appCode) && functionCode < FUNCTION_CODE_1000) {
                 functionConfigList.add(functionConfig);
@@ -363,9 +396,9 @@ public class CommonUtils {
      * @date: 2022-09-24
      * @return: java.util.List<com.hoomoomoo.im.consts.FunctionConfig>
      */
-    public static List<FunctionConfig> getNoAuthFunctionConfig(String appCode) {
-        List<FunctionConfig> functionConfigList = new ArrayList<>();
-        for (FunctionConfig functionConfig : FunctionConfig.values()) {
+    public static List<MenuFunctionConfig.FunctionConfig> getNoAuthFunctionConfig(String appCode) {
+        List<MenuFunctionConfig.FunctionConfig> functionConfigList = new ArrayList<>();
+        for (MenuFunctionConfig.FunctionConfig functionConfig : MenuFunctionConfig.FunctionConfig.values()) {
             int functionCode = Integer.valueOf(functionConfig.getCode());
             if (JD_COOKIE.getCode().equals(functionCode)) {
                 functionConfigList.add(functionConfig);
@@ -385,10 +418,10 @@ public class CommonUtils {
      * @date: 2022-09-24
      * @return:
      */
-    public static Map<String, FunctionConfig> getNoAuthFunctionConfigMap(String appCode) {
-        Map<String, FunctionConfig> functionConfig = new LinkedHashMap<>();
-        List<FunctionConfig> functionConfigList = getNoAuthFunctionConfig(appCode);
-        for (FunctionConfig item : functionConfigList) {
+    public static Map<String, MenuFunctionConfig.FunctionConfig> getNoAuthFunctionConfigMap(String appCode) {
+        Map<String, MenuFunctionConfig.FunctionConfig> functionConfig = new LinkedHashMap<>();
+        List<MenuFunctionConfig.FunctionConfig> functionConfigList = getNoAuthFunctionConfig(appCode);
+        for (MenuFunctionConfig.FunctionConfig item : functionConfigList) {
             functionConfig.put(item.getCode(), item);
         }
         return functionConfig;
@@ -465,7 +498,7 @@ public class CommonUtils {
      * @date: 2021/04/18
      * @return:
      */
-    public static Tab isOpen(TabPane functionTab, FunctionConfig functionConfig) {
+    public static Tab isOpen(TabPane functionTab, MenuFunctionConfig.FunctionConfig functionConfig) {
         ObservableList<Tab> tabList = functionTab.getTabs();
         if (tabList != null) {
             for (Tab item : tabList) {
@@ -489,8 +522,8 @@ public class CommonUtils {
     public static void openMenu(ActionEvent event, TabPane functionTab) {
         try {
             String menuId = ((MenuItem)event.getSource()).getId();
-            FunctionConfig functionConfig = null;
-            for (FunctionConfig item : FunctionConfig.values()) {
+            MenuFunctionConfig.FunctionConfig functionConfig = null;
+            for (MenuFunctionConfig.FunctionConfig item : MenuFunctionConfig.FunctionConfig.values()) {
                 if (item.getMenuId().equals(menuId)) {
                     functionConfig = item;
                     break;
@@ -522,28 +555,12 @@ public class CommonUtils {
      * @date: 2022-09-24
      * @return: void
      */
-    public static void initialize(URL location, ResourceBundle resources, TabPane functionTab, Menu... menus) {
+    public static void initialize(URL location, ResourceBundle resources, TabPane functionTab, MenuBar menuBar) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
 
-            // 校验证书是否过期
-            if (!CommonUtils.checkLicense(null)) {
-                if (menus != null) {
-                    for (Menu menu : menus) {
-                        menu.getItems().clear();
-                    }
-                }
-                return;
-            }
-
-            LoggerUtils.info(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
-
-            // 控制菜单功能
-            if (menus != null) {
-                for (Menu menu : menus) {
-                    CommonUtils.showAuthFunction(menu);
-                }
-            }
+            // 加载已授权功能
+            CommonUtils.showAuthFunction(menuBar, functionTab);
 
             String showTab = appConfigDto.getAppTabShow();
             if (StringUtils.isNotBlank(showTab)) {
@@ -557,7 +574,7 @@ public class CommonUtils {
                     if (!CommonUtils.checkLicense(tab)) {
                         continue;
                     }
-                    FunctionConfig functionConfig = getFunctionConfig(tab);
+                    MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(tab);
                     functionTab.getTabs().add(CommonUtils.getFunctionTab(getPath(tab), getName(tab),
                             functionConfig.getCode(), functionConfig.getName()));
                 }

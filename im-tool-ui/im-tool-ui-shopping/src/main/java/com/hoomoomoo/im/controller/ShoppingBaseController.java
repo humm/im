@@ -2,7 +2,7 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
-import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
 import com.hoomoomoo.im.dto.ShoppingDto;
@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.WAIT_APPRAISE;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.WAIT_APPRAISE;
 
 /**
  * @author humm23693
@@ -70,14 +70,14 @@ public class ShoppingBaseController extends BaseController{
 
     public Boolean pauseStatus;
 
-    protected void executePause(Class clazz, FunctionConfig functionConfig) {
+    protected void executePause(Class clazz, MenuFunctionConfig.FunctionConfig functionConfig) {
         pauseStatus = true;
         ShoppingCommonUtil.info(log, NAME_PAUSE_START);
         schedule.requestFocus();
         ComponentUtils.setButtonDisabled(pause);
     }
 
-    protected void executeQuery(Class clazz, FunctionConfig functionConfig) {
+    protected void executeQuery(Class clazz, MenuFunctionConfig.FunctionConfig functionConfig) {
         new Thread(() -> {
             try {
                 setProgress(0);
@@ -97,7 +97,7 @@ public class ShoppingBaseController extends BaseController{
         }).start();
     }
 
-    protected void execute(Class clazz, FunctionConfig functionConfig) {
+    protected void execute(Class clazz, MenuFunctionConfig.FunctionConfig functionConfig) {
         new Thread(() -> {
             try {
                 OutputUtils.clearLog(log);
@@ -114,7 +114,7 @@ public class ShoppingBaseController extends BaseController{
         }).start();
     }
 
-    protected void doExecute(Class clazz, FunctionConfig functionConfig) {
+    protected void doExecute(Class clazz, MenuFunctionConfig.FunctionConfig functionConfig) {
         AppConfigDto appConfigDto = null;
         try {
             pauseStatus = false;
@@ -178,7 +178,7 @@ public class ShoppingBaseController extends BaseController{
         }
     }
 
-    protected void init(Class clazz, FunctionConfig functionConfig) {
+    protected void init(Class clazz, MenuFunctionConfig.FunctionConfig functionConfig) {
         try {
             instance = clazz.newInstance();
             instanceService = ServiceAppraiseController.class.newInstance();

@@ -1,7 +1,7 @@
 package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,7 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -159,7 +159,7 @@ public class LoggerUtils {
 
     public static void writeLogInfo(String functionCode, Date startDate, List<String> logs) {
         try {
-            FunctionConfig functionConfig = FunctionConfig.getFunctionConfig(functionCode);
+            MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionCode);
             // 写统计文件
             String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, functionConfig.getLogFolder() + FILE_TYPE_STAT));
             writeStatFile(statFilePath);
@@ -191,7 +191,7 @@ public class LoggerUtils {
 
     public static void writeDatabaScriptLogInfo(String functionCode, List<String> logs, String filePath) {
         try {
-            FunctionConfig functionConfig = FunctionConfig.getFunctionConfig(functionCode);
+            MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionCode);
             // 写统计文件
             String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, functionConfig.getLogFolder() + FILE_TYPE_STAT));
             writeStatFile(statFilePath);
@@ -206,7 +206,7 @@ public class LoggerUtils {
         }
     }
 
-    public static void writeStatInfo(FunctionConfig functionConfig) {
+    public static void writeStatInfo(MenuFunctionConfig.FunctionConfig functionConfig) {
         try {
             // 写统计文件
             String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, functionConfig.getLogFolder() + FILE_TYPE_STAT));
@@ -238,7 +238,7 @@ public class LoggerUtils {
 
     public static void writeConfigSetInfo(String functionCode) {
         try {
-            FunctionConfig functionConfig = FunctionConfig.getFunctionConfig(functionCode);
+            MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionCode);
             // 写统计文件
             String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, functionConfig.getLogFolder() + FILE_TYPE_STAT));
             writeStatFile(statFilePath);

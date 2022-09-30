@@ -1,33 +1,13 @@
 package com.hoomoomoo.im.controller;
 
-import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.BaseConst;
-import com.hoomoomoo.im.consts.FunctionConfig;
-import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.FileUtils;
-import com.hoomoomoo.im.utils.LoggerUtils;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import javafx.scene.control.*;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.net.URL;
-import java.util.List;
 import java.util.ResourceBundle;
-
-import static com.hoomoomoo.im.consts.FunctionConfig.*;
 
 
 /**
@@ -39,22 +19,7 @@ import static com.hoomoomoo.im.consts.FunctionConfig.*;
 public class TaStarterController implements Initializable {
 
     @FXML
-    private Menu menuScript;
-
-    @FXML
-    private Menu menuSvn;
-
-    @FXML
-    private Menu menuSet;
-
-    @FXML
-    private Menu menuHelp;
-
-    @FXML
-    private Menu menuCode;
-
-    @FXML
-    private Menu menuTool;
+    private MenuBar ta;
 
     @FXML
     private TabPane functionTab;
@@ -66,7 +31,7 @@ public class TaStarterController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        CommonUtils.initialize(location, resources, functionTab, menuSvn, menuScript, menuCode, menuTool, menuSet, menuHelp);
+        CommonUtils.initialize(location, resources, functionTab, ta);
     }
 
 }

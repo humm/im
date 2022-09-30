@@ -23,7 +23,7 @@ import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.COPY_CODE;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.COPY_CODE;
 
 /**
  * @author humm23693

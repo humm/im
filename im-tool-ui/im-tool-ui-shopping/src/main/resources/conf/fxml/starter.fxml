@@ -5,41 +5,7 @@
 <VBox prefHeight="650.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.hoomoomoo.im.controller.ShoppingStarterController">
     <children>
-        <MenuBar VBox.vgrow="NEVER">
-            <menus>
-                <Menu fx:id="menuJd" mnemonicParsing="false" text="京东">
-                    <items>
-                        <MenuItem fx:id="jdAuto" mnemonicParsing="false"
-                                  onAction="#openMenu"/>
-                        <MenuItem fx:id="waitAppraise" mnemonicParsing="false"
-                                  onAction="#openMenu"/>
-                        <MenuItem fx:id="showOrder" mnemonicParsing="false"
-                                  onAction="#openMenu"/>
-                        <MenuItem fx:id="appendAppraise" mnemonicParsing="false"
-                                  onAction="#openMenu"/>
-                        <MenuItem fx:id="serviceAppraise" mnemonicParsing="false"
-                                  onAction="#openMenu"/>
-                    </items>
-                </Menu>
-                <Menu fx:id="menuSet" mnemonicParsing="false" text="设置">
-                    <items>
-                        <MenuItem fx:id="configSet" mnemonicParsing="false"
-                                  onAction="#openMenu"/>
-                    </items>
-                    <items>
-                        <MenuItem fx:id="jdCookie" mnemonicParsing="false"
-                                  onAction="#openMenu"/>
-                    </items>
-                </Menu>
-                <Menu fx:id="menuHelp" mnemonicParsing="false" text="帮助">
-                    <items>
-                        <MenuItem fx:id="functionStatInfo" mnemonicParsing="false"
-                                  onAction="#openMenu"/>
-                        <MenuItem fx:id="aboutInfo" mnemonicParsing="false"
-                                  onAction="#openMenu"/>
-                    </items>
-                </Menu>
-            </menus>
+        <MenuBar VBox.vgrow="NEVER" fx:id="shopping">
         </MenuBar>
         <AnchorPane maxHeight="-1.0" maxWidth="-1.0" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
             <children>

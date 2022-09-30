@@ -1,9 +1,8 @@
 package com.hoomoomoo.im.utils;
 
-import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
-import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -15,7 +14,7 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_NEXT_LINE;
-import static com.hoomoomoo.im.consts.FunctionConfig.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -29,7 +28,7 @@ public class TaCommonUtil {
         boolean flag = true;
         OutputUtils.clearLog(log);
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        if (functionCode.equals(FunctionConfig.SVN_LOG.getCode())) {
+        if (functionCode.equals(MenuFunctionConfig.FunctionConfig.SVN_LOG.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(log, MSG_SVN_USERNAME + SYMBOL_NEXT_LINE);
                 flag = false;
@@ -43,7 +42,7 @@ public class TaCommonUtil {
                 flag = false;
             }
         }
-        if (functionCode.equals(FunctionConfig.SVN_UPDATE.getCode())) {
+        if (functionCode.equals(MenuFunctionConfig.FunctionConfig.SVN_UPDATE.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(log, MSG_SVN_USERNAME + SYMBOL_NEXT_LINE);
                 flag = false;
@@ -57,7 +56,7 @@ public class TaCommonUtil {
                 flag = false;
             }
         }
-        if (functionCode.equals(FunctionConfig.SCRIPT_UPDATE.getCode())) {
+        if (functionCode.equals(MenuFunctionConfig.FunctionConfig.SCRIPT_UPDATE.getCode())) {
             if (appConfigDto.getScriptUpdateGenerateFile()) {
                 if (StringUtils.isBlank(appConfigDto.getScriptUpdateGeneratePath())) {
                     OutputUtils.info(log, MSG_SCRIPT_UPDATE_GENERATE_PATH + SYMBOL_NEXT_LINE);
@@ -65,7 +64,7 @@ public class TaCommonUtil {
                 }
             }
         }
-        if (functionCode.equals(FunctionConfig.GENERATE_SQL.getCode())) {
+        if (functionCode.equals(MenuFunctionConfig.FunctionConfig.GENERATE_SQL.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getGenerateSqlDatabaseNum())) {
                 OutputUtils.info(log, String.format(MSG_SET, "generate.sql.database.num"));
                 flag = false;
@@ -96,13 +95,13 @@ public class TaCommonUtil {
         boolean flag = true;
         OutputUtils.clearLog(log);
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        if (functionCode.equals(FunctionConfig.FUND_INFO.getCode())) {
+        if (functionCode.equals(MenuFunctionConfig.FunctionConfig.FUND_INFO.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getFundGeneratePath())) {
                 OutputUtils.info(log, MSG_FUND_GENERATE_PATH);
                 flag = false;
             }
         }
-        if (functionCode.equals(FunctionConfig.PROCESS_INFO.getCode())) {
+        if (functionCode.equals(MenuFunctionConfig.FunctionConfig.PROCESS_INFO.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getProcessGeneratePathSchedule())) {
                 OutputUtils.info(log, MSG_PROCESS_GENERATE_PATH_SCHEDULE);
                 flag = false;

@@ -17,7 +17,14 @@ import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+/**
+ * 源码覆盖
+ *
+ * @param null
+ * @author: humm23693
+ * @date: 2022-09-29
+ * @return:
+ */
 public class ScriptRunner {
     private static final String LINE_SEPARATOR = System.getProperty("line.separator", "\n");
     private static final String DEFAULT_DELIMITER = ";";

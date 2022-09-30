@@ -2,7 +2,7 @@ package com.hoomoomoo.im.util;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
-import com.hoomoomoo.im.consts.FunctionConfig;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
 import com.hoomoomoo.im.utils.LoggerUtils;
@@ -18,15 +18,13 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.net.UnknownHostException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.FunctionConfig.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -41,7 +39,7 @@ public class ShoppingCommonUtil {
         OutputUtils.clearLog(log);
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionType.equals(WAIT_APPRAISE.getCode()) || functionType.equals(SHOW_ORDER.getCode())
-                || functionType.equals(APPEND_APPRAISE.getCode()) || functionType.equals(FunctionConfig.SERVICE_APPRAISE.getCode())) {
+                || functionType.equals(APPEND_APPRAISE.getCode()) || functionType.equals(MenuFunctionConfig.FunctionConfig.SERVICE_APPRAISE.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getJdCookie())) {
                 ShoppingCommonUtil.info(appConfigDto, log, MSG_WAIT_APPRAISE_JD_COOKIE);
                 flag = false;
