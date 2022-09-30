@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.dto;
 
+import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
 import lombok.Data;
 
@@ -102,6 +103,8 @@ public class AppConfigDto extends BaseDto {
     private String copyCodeDefaultTarget;
 
     private String copyCodePrefix;
+
+    private String copyCodeOnlyClass;
 
     private Map<String, String> copyCodeVersion;
 

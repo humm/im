@@ -137,6 +137,7 @@ public class BaseConst {
     public static final String FILE_TYPE_VUE = ".vue";
     public static final String FILE_TYPE_STAT = ".stat";
     public static final String FILE_TYPE_JAVA = ".java";
+    public static final String FILE_TYPE_CLASS = ".class";
     public static final String FILE_TYPE_SQL = ".sql";
     public static final String FILE_TYPE_ROUTE = ".js";
     public static final String FILE_TYPE_CONF = ".conf";

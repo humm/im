@@ -19,6 +19,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.util.*;
 
@@ -60,7 +61,25 @@ public class CopyCodeController extends BaseController implements Initializable 
     @FXML
     private TextArea filePath;
 
+    @FXML
+    private RadioButton yes;
+
+    @FXML
+    private RadioButton no;
+
     private int successNum;
+
+    @FXML
+    void selectNo(ActionEvent event) {
+        OutputUtils.selected(no, true);
+        OutputUtils.selected(yes, false);
+    }
+
+    @FXML
+    void selectYes(ActionEvent event) {
+        OutputUtils.selected(yes, true);
+        OutputUtils.selected(no, false);
+    }
 
     @FXML
     void selectSource(ActionEvent event) {
@@ -123,11 +142,13 @@ public class CopyCodeController extends BaseController implements Initializable 
 
     private void copyCode() throws Exception {
         new Thread(() -> {
+            String fileLocation = SYMBOL_EMPTY;
             try {
                 execute.setDisable(true);
                 successNum = 0;
                 Date currentDate = new Date();
                 String filePathConfig = filePath.getText().trim();
+                int skipNum = 0;
                 if (StringUtils.isNotBlank(filePathConfig)) {
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     List<String> fileLog = new ArrayList<>(16);
@@ -136,9 +157,13 @@ public class CopyCodeController extends BaseController implements Initializable 
                         for (int i=0; i<fileList.length; i++) {
                             String item = fileList[i].trim();
                             if (StringUtils.isBlank(item) || item.startsWith(ANNOTATION_TYPE_NORMAL)) {
+                                skipNum++;
                                 continue;
                             }
-
+                            if (yes.isSelected() && !item.trim().toLowerCase().endsWith(FILE_TYPE_JAVA)) {
+                                skipNum++;
+                                continue;
+                            }
                             String copyCodePrefix = appConfigDto.getCopyCodePrefix();
                             if (StringUtils.isNotBlank(copyCodePrefix)) {
                                 String[] items = copyCodePrefix.split(SYMBOL_COMMA);
@@ -152,7 +177,10 @@ public class CopyCodeController extends BaseController implements Initializable 
                             String source = sourcePath.getText();
                             String target = targetPath.getText();
                             item = item.replaceAll("\\\\", "/").replace(source, SYMBOL_EMPTY);
-                            String fileLocation = source + SYMBOL_SLASH + item;
+                            if (yes.isSelected()) {
+                                item = item.replace("src/main/java", "target/classes").replace(FILE_TYPE_JAVA, FILE_TYPE_CLASS);
+                            }
+                            fileLocation = source + SYMBOL_SLASH + item;
                             String targetFileLocation = target + SYMBOL_SLASH + item;
                             Iterator<String> iterator = appConfigDto.getReplaceTargetUrl().keySet().iterator();
                             while (iterator.hasNext()) {
@@ -180,6 +208,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                             }
                             if (fileLocation.equals(targetFileLocation)) {
                                 infoMsg(getFileName(targetFileLocation) + " 同路径同名文件不复制");
+                                skipNum++;
                                 continue;
                             }
                             List<String> sourceContent = FileUtils.readNormalFile(fileLocation, false);
@@ -203,7 +232,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                             }
                         }
                         String msg = SYMBOL_EMPTY;
-                        if (fileList.length == successNum) {
+                        if (fileList.length - skipNum == successNum) {
                             msg += "复制成功 总文件数[ " + successNum + " ]";
                         } else {
                             msg += "复制失败 总文件数[ " + successNum + " ] 失败文件数[ " + (fileList.length - successNum) + " ]";
@@ -214,8 +243,12 @@ public class CopyCodeController extends BaseController implements Initializable 
                 }
                 setProgress(1);
             } catch (Exception e) {
+                if (e instanceof FileNotFoundException) {
+                    OutputUtils.info(log, fileLocation.substring(fileLocation.lastIndexOf("/") + 1)+ " 不存在", true);
+                } else {
+                    OutputUtils.info(log, e.getMessage());
+                }
                 LoggerUtils.info(e);
-                OutputUtils.info(log, e.getMessage());
             } finally {
                 setProgress(1);
                 execute.setDisable(false);
@@ -263,6 +296,12 @@ public class CopyCodeController extends BaseController implements Initializable 
                         path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
                     }
                     OutputUtils.info(targetPath, path);
+                }
+                String onlyClass = appConfigDto.getCopyCodeOnlyClass();
+                if (StringUtils.equals(STR_1, onlyClass)) {
+                    selectYes(null);
+                } else {
+                    selectNo(null);
                 }
             }
         } catch (Exception e) {

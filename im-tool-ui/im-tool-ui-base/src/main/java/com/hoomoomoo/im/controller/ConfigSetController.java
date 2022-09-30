@@ -1,21 +1,25 @@
 package com.hoomoomoo.im.controller;
 
+import com.hoomoomoo.im.cache.AppCache;
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
+import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -29,6 +33,9 @@ import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CONFIG_S
  * @date 2021/9/16
  */
 public class ConfigSetController implements Initializable {
+
+    @FXML
+    private AnchorPane configSet;
 
     @FXML
     private TextArea config;
@@ -49,6 +56,27 @@ public class ConfigSetController implements Initializable {
         ConfigCache.initCache();
         OutputUtils.info(tips, NAME_SAVE_SUCCESS + CommonUtils.getCurrentDateTime8(new Date()));
         LoggerUtils.writeConfigSetInfo(CONFIG_SET.getCode());
+        if (AppCache.FUNCTION_TAB_CACHE != null) {
+            ObservableList<Tab> tabs = AppCache.FUNCTION_TAB_CACHE.getTabs();
+            Iterator<Tab> iterator = tabs.listIterator();
+            while (iterator.hasNext()) {
+                Tab tab = iterator.next();
+                if (tab.getText().equals(CONFIG_SET.getName())) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Thread.sleep(500);
+                            } catch (InterruptedException e) {
+                                LoggerUtils.info(e);
+                            }
+                            iterator.remove();
+                        }
+                    }).start();
+                    break;
+                }
+            }
+        }
         submit.setDisable(false);
     }
 

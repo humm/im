@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.utils;
 
+import com.hoomoomoo.im.cache.AppCache;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
@@ -557,11 +558,11 @@ public class CommonUtils {
      */
     public static void initialize(URL location, ResourceBundle resources, TabPane functionTab, MenuBar menuBar) {
         try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-
+            AppCache.FUNCTION_TAB_CACHE = functionTab;
             // 加载已授权功能
             CommonUtils.showAuthFunction(menuBar, functionTab);
 
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String showTab = appConfigDto.getAppTabShow();
             if (StringUtils.isNotBlank(showTab)) {
                 String[] tabs = showTab.split(BaseConst.SYMBOL_COMMA);

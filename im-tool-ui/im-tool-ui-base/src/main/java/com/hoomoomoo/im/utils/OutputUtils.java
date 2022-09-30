@@ -7,6 +7,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
 
+import java.util.Date;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
@@ -56,11 +57,18 @@ public class OutputUtils {
     }
 
     public static void info(TableView tableView, String msg) {
+        info(tableView, msg, false);
+    }
+
+    public static void info(TableView tableView, String msg, boolean onlyTime) {
         if (tableView == null) {
             return;
         }
         LogDto logDto = new LogDto();
         logDto.setTime(CommonUtils.getCurrentDateTime1());
+        if (onlyTime) {
+            logDto.setTime(CommonUtils.getCurrentDateTime8(new Date()));
+        }
         logDto.setMsg(msg);
         Platform.runLater(() -> {
             tableView.getItems().add(logDto);

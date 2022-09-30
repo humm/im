@@ -24,11 +24,6 @@ public class TaStarterController implements Initializable {
     @FXML
     private TabPane functionTab;
 
-    @FXML
-    void openMenu(ActionEvent event) {
-        CommonUtils.openMenu(event, functionTab);
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         CommonUtils.initialize(location, resources, functionTab, ta);
