@@ -139,8 +139,8 @@ public class InitConfigUtils {
             String versionFilePath = FileUtils.getFilePath(PATH_VERSION);
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
             List<String> content = FileUtils.readNormalFile(versionFilePath, false);
-            String subVersion = "01";
-            int times = 60;
+            String subVersion = "000001";
+            int times = 0;
             if (CollectionUtils.isNotEmpty(content)) {
                 for (int i = 0; i < content.size(); i++) {
                     String item = content.get(i);
@@ -150,9 +150,9 @@ public class InitConfigUtils {
                         int versionIndex = version.lastIndexOf(SYMBOL_POINT);
                         String versionDate = version.substring(0, versionIndex).trim();
                         String versionNo = version.substring(versionIndex + 1);
-                        if (CommonUtils.getCurrentDateTime3().equals(versionDate.replace(SYMBOL_POINT, SYMBOL_EMPTY))) {
+                        if (CommonUtils.getCurrentDateTime10().equals(versionDate.replace(SYMBOL_POINT, SYMBOL_EMPTY))) {
                             subVersion = String.valueOf(Integer.valueOf(versionNo) + 1);
-                            if (subVersion.length() == 1) {
+                            for (int j=subVersion.length(); j<6; j++) {
                                 subVersion = STR_0 + subVersion;
                             }
                         }
@@ -165,7 +165,7 @@ public class InitConfigUtils {
             }
             StringBuilder statLog = new StringBuilder();
             statLog.append("首发时间: ").append("2021-05-06 23:17:56").append(SYMBOL_NEXT_LINE_2);
-            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime4().replace(SYMBOL_HYPHEN, SYMBOL_POINT)).append(SYMBOL_POINT).append(subVersion).append(SYMBOL_NEXT_LINE);
+            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime11().replace(SYMBOL_HYPHEN, SYMBOL_POINT)).append(SYMBOL_POINT).append(subVersion).append(SYMBOL_NEXT_LINE);
             statLog.append("发版时间: ").append(CommonUtils.getCurrentDateTime1()).append(SYMBOL_NEXT_LINE_2);
             statLog.append("发版次数: ").append(times).append(SYMBOL_NEXT_LINE);
             FileUtils.writeFile(versionFilePath, statLog.toString(), false);

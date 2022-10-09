@@ -170,6 +170,7 @@ public class BaseConst {
     public static final String NAME_CONFIG_USER = "用户信息";
     public static final String NAME_CONFIG_LICENSE = "授权信息";
     public static final String NAME_CONFIG_LICENSE_DATE = "授权有效日期";
+    public static final String NAME_CONFIG_FILE_SAME = "文件一致性";
     public static final String NAME_CONFIG_FILE = "配置文件";
     public static final String NAME_VERSION = "版本号";
     public static final String NAME_APP_TAB_SHOW = "# 默认展示tab页";
@@ -247,6 +248,7 @@ public class BaseConst {
     public static final String MSG_FUNCTION_NOT_EXIST = "功能[ %s ]不存在";
     public static final String MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件[ license.init ]";
     public static final String MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止[ %s ]";
+    public static final String MSG_LICENSE_EXPIRE_TIPS = "距离授权截止日期还有[ %s ]天";
     public static final String MSG_LICENSE_NOT_AUTH = "功能[ %s ]未授权";
     public static final String MSG_LICENSE_NOT_USE = "未启用[ %s ]功能";
     public static final String MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ";

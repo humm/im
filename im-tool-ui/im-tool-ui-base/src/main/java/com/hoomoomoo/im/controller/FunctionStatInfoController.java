@@ -19,8 +19,7 @@ import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.ABOUT_INFO;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.FUNCTION_STAT_INFO;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -50,6 +49,16 @@ public class FunctionStatInfoController implements Initializable {
             functionDtoList = CommonUtils.getAuthFunction();
         } catch (Exception e) {
             LoggerUtils.info(e);
+        }
+        if (CollectionUtils.isNotEmpty(functionDtoList)) {
+            Iterator<FunctionDto> iterator = functionDtoList.iterator();
+            while (iterator.hasNext()) {
+                FunctionDto item = iterator.next();
+                if (item.getFunctionCode().equals(CONFIG_SET.getCode()) || item.getFunctionCode().equals(FUNCTION_STAT_INFO.getCode())
+                        || item.getFunctionCode().equals(ABOUT_INFO.getCode())) {
+                    iterator.remove();
+                }
+            }
         }
         if (CollectionUtils.isEmpty(functionDtoList)) {
             return;

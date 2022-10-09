@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -46,6 +47,12 @@ public class StarterUtils {
             // 校验证书是否过期
             if (!CommonUtils.checkLicense(null)) {
                 appName += SYMBOL_SPACE_2 + String.format(MSG_LICENSE_EXPIRE, appConfigDto.getLicense().getEffectiveDate());
+            } else {
+                // 过期前提醒
+                String tips = CommonUtils.checkLicenseDate(appConfigDto);
+                if (StringUtils.isNotBlank(tips)) {
+                    appName += SYMBOL_SPACE_2 + tips;
+                }
             }
             LoggerUtils.info(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
 
@@ -69,9 +76,9 @@ public class StarterUtils {
                 }
             });
             if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
-                // ServerUtils.initServer(SERVER_URL, SERVER_PORT);
+                /*ServerUtils.initServer(SERVER_URL, SERVER_PORT);*/
             } else {
-                // LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + SYMBOL_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + SYMBOL_EQUAL + CommonUtils.getVersion()));
+                /*LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + SYMBOL_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + SYMBOL_EQUAL + CommonUtils.getVersion()));*/
             }
         } catch (Exception e) {
             LoggerUtils.info(e);

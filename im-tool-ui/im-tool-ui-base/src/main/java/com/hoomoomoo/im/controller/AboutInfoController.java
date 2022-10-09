@@ -34,7 +34,7 @@ public class AboutInfoController implements Initializable {
     @FXML
     private TextArea about;
 
-    private static final String SHOW_CONTENT = "当前版本,发版时间";
+    private static final String SHOW_CONTENT = "当前版本";
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {

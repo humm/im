@@ -42,6 +42,8 @@ public class CommonUtils {
     private final static String PATTERN4 = "yyyy-MM-dd";
     private final static String PATTERN5 = "HH:mm:ss";
     private final static String PATTERN6 = "yyyy/MM/dd";
+    private final static String PATTERN7 = "yyyyMM";
+    private final static String PATTERN8 = "yyyy-MM";
 
     private static Pattern LINE_PATTERN = Pattern.compile("_(\\w)");
 
@@ -178,6 +180,55 @@ public class CommonUtils {
      */
     public static String getCurrentDateTime9(Date date) {
         return new SimpleDateFormat(PATTERN3).format(date);
+    }
+
+    /**
+     * 获取当前日期
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static String getCurrentDateTime10() {
+        return new SimpleDateFormat(PATTERN7).format(new Date());
+    }
+
+    /**
+     * 获取当前日期
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static String getCurrentDateTime11() {
+        return new SimpleDateFormat(PATTERN8).format(new Date());
+    }
+
+    public static String checkLicenseDate(AppConfigDto appConfigDto) {
+        String tips = SYMBOL_EMPTY;
+        LicenseDto licenseDto = appConfigDto.getLicense();
+        String effectiveDate = licenseDto.getEffectiveDate();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(PATTERN3);
+        try {
+            Date effective = simpleDateFormat.parse(effectiveDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(effective);
+            Long endDate = calendar.getTimeInMillis() / (24 * 60 * 60 * 1000);
+            calendar.setTime(new Date());
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            Long curretDate = calendar.getTimeInMillis() / (24 * 60 * 60 * 1000);
+            if (endDate - curretDate <= 5) {
+                tips = String.format(MSG_LICENSE_EXPIRE_TIPS, endDate - curretDate);
+            }
+        } catch (ParseException e) {
+            LoggerUtils.info(e);
+        }
+        return tips;
     }
 
     public static boolean checkLicense(String functionCode) throws Exception {

@@ -2,6 +2,7 @@ package com.hoomoomoo.im.utils;
 
 import com.github.junrar.Archive;
 import com.github.junrar.rarfile.FileHeader;
+import com.hoomoomoo.im.consts.BaseConst;
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
 
@@ -9,7 +10,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Enumeration;
+
+import static com.hoomoomoo.im.consts.BaseConst.NAME_CONFIG_FILE_SAME;
+import static com.hoomoomoo.im.consts.BaseConst.NAME_CONFIG_LICENSE_DATE;
 
 
 /**
@@ -22,6 +28,7 @@ public class UnZipRarUtils {
 
     private final static String ENCODING_GBK = "GBK";
     private final static Integer NUM_1024 = 1024;
+    private final static String PATTERN = "yyyyMMddHHmmss";
 
     /**
      * 解压Zip
@@ -34,12 +41,29 @@ public class UnZipRarUtils {
      */
     public static void unZip(File file, String outDir) throws Exception {
         if (!file.exists()) {
-            throw new Exception("解压文件不存在!");
+            throw new Exception("解压文件不存在");
         }
+        Long fileCreateDate = 0L;
+        Long min = 0L;
+        Long max = 0L;
         ZipFile zipFile = new ZipFile(file, ENCODING_GBK);
         Enumeration e = zipFile.getEntries();
         while (e.hasMoreElements()) {
             ZipEntry zipEntry = (ZipEntry) e.nextElement();
+            String fileName = zipEntry.getName();
+            if (fileName.startsWith("com/hoomoomoo") || fileName.startsWith("conf")) {
+                Long fileDate = zipEntry.getLastModifiedDate().getTime();
+                if (fileCreateDate == 0) {
+                    fileCreateDate = fileDate;
+                    min = fileCreateDate - 3 * 60 * 1000;
+                    max = fileCreateDate + 3 * 60 * 1000;
+                } else {
+                    if (fileDate < min || fileDate > max) {
+                        LoggerUtils.info(String.format("文件[ %s ]已被修改", fileName));
+                        throw new Exception("压缩包一致性校验不通过,请勿修改压缩包文件");
+                    }
+                }
+            }
             if (zipEntry.isDirectory()) {
                 String name = zipEntry.getName();
                 name = name.substring(0, name.length() - 1);
@@ -63,6 +87,7 @@ public class UnZipRarUtils {
         if (zipFile != null) {
             zipFile.close();
         }
+        LoggerUtils.info(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_FILE_SAME));
     }
 
     /**
