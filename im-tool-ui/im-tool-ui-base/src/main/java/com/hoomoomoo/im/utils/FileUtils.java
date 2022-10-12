@@ -179,6 +179,7 @@ public class FileUtils {
                 buildFileContentMap(fileContentMap, content);
             }
         }
+        bufferedReader.close();
         return FILE_TYPE_NORMAL.equals(fileType) ? fileContent : fileContentMap;
     }
 

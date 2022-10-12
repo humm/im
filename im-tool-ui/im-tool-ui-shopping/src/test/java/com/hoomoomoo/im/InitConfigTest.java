@@ -82,4 +82,16 @@ public class InitConfigTest {
         InitConfigUtils.copyBaseConfig(APP_CODE_SHOPPING);
     }
 
+    /**
+     * 删除无用配置文件
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2022-10-11
+     * @return: void
+     */
+    @Test
+    public void build_06() {
+        InitConfigUtils.cleanFile(APP_CODE_SHOPPING);
+    }
 }

@@ -59,7 +59,7 @@ public class AboutInfoController implements Initializable {
                 }
             }
 
-            if (appConfigDto.getAppAboutDetail()) {
+            if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
                 OutputUtils.info(about, SYMBOL_NEXT_LINE);
                 LicenseDto licenseDto = appConfigDto.getLicense();
                 String effectiveDate = CommonUtils.getCurrentDateTime5(licenseDto.getEffectiveDate());
@@ -78,7 +78,7 @@ public class AboutInfoController implements Initializable {
     }
 
     private boolean isShow(AppConfigDto appConfigDto, String item) {
-        if (appConfigDto.getAppAboutDetail()) {
+        if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
             return true;
         }
         String[] showMsg = SHOW_CONTENT.split(SYMBOL_COMMA);

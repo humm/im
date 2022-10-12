@@ -3,6 +3,7 @@ package com.hoomoomoo.im.cache;
 import jxl.Sheet;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,7 +18,7 @@ public class TaskMemoryCache {
     /**
      * 全量task
      */
-    private static Map<String, Map<String, Object>> map = new ConcurrentHashMap<>();
+    private static Map<String, Map<String, Object>> TASK_MAP = new ConcurrentHashMap<>();
     /**
      * 用于存放 已经生成过的taskcode
      */
@@ -60,16 +61,16 @@ public class TaskMemoryCache {
     }
 
     public static Map<String, Map<String, Object>> getCacheMap() {
-        return map;
+        return TASK_MAP;
     }
 
     public static Map<String, Object> getCacheMap(String taskCode) {
-        return map.get(taskCode);
+        return TASK_MAP.get(taskCode);
     }
 
     public static List<Map<String, Object>> getCacheMapByFunction(String functionId, String reserve) {
         List<Map<String, Object>> list = new ArrayList<>();
-        for (Map.Entry entry : map.entrySet()) {
+        for (Map.Entry entry : TASK_MAP.entrySet()) {
             if (((Map<String, Object>) entry.getValue()).get(PARENT_FUNCTION_ID).equals(functionId) &&
                     ((Map<String, Object>) entry.getValue()).get(SCHE_TASK_RESERVE).equals(reserve)) {
                 list.add((Map<String, Object>) entry.getValue());
@@ -84,7 +85,7 @@ public class TaskMemoryCache {
      */
     public static void initCache(Sheet sheet) {
         // 数据结构 主key 是 task code，二级key 是 字段名称
-        map.clear();
+        TASK_MAP.clear();
         int rows = sheet.getRows();
         for (int k = 2; k < rows; k++) {
             Map<String, Object> subMap = new ConcurrentHashMap<>();
@@ -93,8 +94,7 @@ public class TaskMemoryCache {
             for (int i = 0; i < columns; i++) {
                 subMap.put(sheet.getCell(i, 1).getContents(), sheet.getCell(i, k).getContents());
             }
-            map.put(sheet.getCell(0, k).getContents(), subMap);
-
+            TASK_MAP.put(sheet.getCell(0, k).getContents(), subMap);
         }
     }
 

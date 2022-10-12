@@ -153,9 +153,12 @@ public class DatabaseScriptController extends BaseController implements Initiali
                                     try {
                                         OutputUtils.info(sqlNum, String.valueOf(++executeSqlNum));
                                         DatabaseUtils.executeSql(sql, encode);
+                                        OutputUtils.info(sqlFailNum, String.valueOf(executeFailSqlNum));
                                     } catch (Exception e) {
                                         if (nextFlag) {
-                                            failSql.add(item.getAbsolutePath());
+                                            failSql.add(addAnnotation());
+                                            failSql.add("-- " + item.getAbsolutePath());
+                                            failSql.add(addAnnotation());
                                             nextFlag = false;
                                         }
                                         String errorMsg = e.getMessage().replaceAll("[\\t\\r\\n]", SYMBOL_EMPTY);
@@ -173,6 +176,10 @@ public class DatabaseScriptController extends BaseController implements Initiali
                         }
                     } else {
                         OutputUtils.info(log, "选文择件夹目录不存在sql文件");
+                    }
+                    if (executeFailSqlNum == 0) {
+                        FileUtils.writeFile(logFilePath, SYMBOL_EMPTY, false);
+                        return;
                     }
                     LoggerUtils.writeDatabaScriptLogInfo(DATABASE_SCRIPT.getCode(), failSql, logFilePath);
                 } else {
@@ -195,6 +202,14 @@ public class DatabaseScriptController extends BaseController implements Initiali
         }).start();
     }
 
+    private String addAnnotation() {
+        StringBuilder content = new StringBuilder();
+        for (int i=0; i<100; i++) {
+            content.append(ANNOTATION_TYPE_NORMAL);
+        }
+        return content.toString();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
@@ -203,7 +218,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
             if (StringUtils.isNotBlank(appConfigDto.getDatabaseScriptLocation())) {
                 OutputUtils.info(databasePath, appConfigDto.getDatabaseScriptLocation());
             }
-            logFilePath = FileUtils.getFilePath(String.format(PATH_LOG, DATABASE_SCRIPT.getLogFolder(), "error" + FILE_TYPE_LOG));
+            logFilePath = FileUtils.getFilePath(String.format(PATH_LOG, DATABASE_SCRIPT.getLogFolder(), "error" + FILE_TYPE_SQL));
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.getMessage());

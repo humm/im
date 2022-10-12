@@ -72,8 +72,6 @@ public class AppConfigDto extends BaseDto {
 
     private String scriptUpdateGeneratePath;
 
-    private Boolean appAboutDetail;
-
     private Integer svnStatInterval;
 
     private Boolean svnStatReset;
@@ -199,7 +197,6 @@ public class AppConfigDto extends BaseDto {
         this.svnDefaultAppendBiz = false;
         this.scriptUpdateSkip = false;
         this.scriptUpdateGenerateFile = false;
-        this.appAboutDetail = false;
         this.jdInitQuery = false;
         this.svnUpdatePath = new ArrayList<>(16);
         this.scriptUpdateTable = new ArrayList<>(16);

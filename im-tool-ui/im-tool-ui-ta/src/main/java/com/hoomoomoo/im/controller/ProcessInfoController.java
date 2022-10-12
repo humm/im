@@ -22,6 +22,7 @@ import java.io.*;
 import java.net.URL;
 import java.util.*;
 
+import static com.hoomoomoo.im.cache.TaskMemoryCache.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.PROCESS_INFO;
 
 
@@ -50,6 +51,14 @@ public class ProcessInfoController extends BaseController implements Initializab
 
     @FXML
     private TableView log;
+
+    @FXML
+    private TextArea errMsg;
+
+    private Map<String, String> jobToGroup = new HashMap<>(16);
+
+    private Map<String, String> taskToJob = new HashMap<>(16);
+
 
     @FXML
     void executeSelect(ActionEvent event) {
@@ -103,9 +112,12 @@ public class ProcessInfoController extends BaseController implements Initializab
     public void generateScript() {
         new Thread(() -> {
             try {
+                jobToGroup.clear();
+                taskToJob.clear();
                 submit.setDisable(true);
                 Date date = new Date();
                 OutputUtils.clearLog(log);
+                OutputUtils.clearLog(errMsg);
                 // 创建生成脚本目录
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 String processSchedule = appConfigDto.getProcessGeneratePathSchedule();
@@ -134,6 +146,24 @@ public class ProcessInfoController extends BaseController implements Initializab
                     TaskMemoryCache.cleaExistMap();
                     OutputUtils.info(log, "任务缓存加载结束");
                 }
+                // 校验task配置合理性
+                Map<String, String> check = new HashMap<>(16);
+                Map<String, Map<String, Object>> taskMap = TaskMemoryCache.getCacheMap();
+                Iterator<String> iterator = taskMap.keySet().iterator();
+                while (iterator.hasNext()) {
+                    String taskCode = iterator.next();
+                    Map<String, Object> task = taskMap.get(taskCode);
+                    String checkKey = task.get(FUNCTION_ID) + "-" + task.get(PARENT_FUNCTION_ID) + "-" +  task.get(SCHE_TASK_RESERVE);
+                    if (check.containsKey(checkKey)) {
+                        String msg = String.format("任务配置中【%s】和【%s】的【功能号】【父功能号】【扩展参数】相同，请调整", check.get(checkKey),taskCode);
+                        OutputUtils.info(errMsg, msg);
+                        LoggerUtils.info(msg);
+                        throw new Exception(msg);
+                    } else {
+                        check.put(checkKey, taskCode);
+                    }
+                }
+
                 // step 2.2 生成tbtrans数据
                 String transFileName = "tbtrans-fund.sql";
                 String transPath = processPathTrans + "/" + transFileName;
@@ -312,7 +342,7 @@ public class ProcessInfoController extends BaseController implements Initializab
      * @param sheet
      * @param bufferedWriter
      */
-    private Map<String, String> writeJobFile(String groupCode, String groupName, String taCode, Sheet sheet, BufferedWriter bufferedWriter) throws IOException {
+    private Map<String, String> writeJobFile(String groupCode, String groupName, String taCode, Sheet sheet, BufferedWriter bufferedWriter) throws Exception {
         List<String> parentJobList = new ArrayList<>();
         List<String> secondJobList = new ArrayList<>();
 
@@ -357,6 +387,16 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + ((getCell(sheet, 17, k).equals("null")) ? "' '" : getCell(sheet, 17, k))
                         + ");";
                 parentJobList.add(sql);
+                // 校验job配置合理性
+                String jobCode = sheet.getCell(2, k).getContents();
+                if (jobToGroup.containsKey(jobCode)) {
+                    String msg = String.format("一级JOB【%s】不能同时出现在流程【%s】和【%s】，请调整", jobCode, groupCode, jobToGroup.get(jobCode));
+                    OutputUtils.info(errMsg, msg);
+                    LoggerUtils.info(msg);
+                    throw new Exception(msg);
+                } else {
+                    jobToGroup.put(jobCode, groupCode);
+                }
             }
 
             // 存在子task服务 生成task 脚本
@@ -406,6 +446,16 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + ((getCell(sheet, 17, k).equals("null")) ? "' '" : getCell(sheet, 17, k))
                         + ");";
                 secondJobList.add(sql);
+                // 校验job配置合理性
+                String jobCode = sheet.getCell(2, k).getContents();
+                if (jobToGroup.containsKey(jobCode)) {
+                    String msg = String.format("一级JOB【%s】不能同时出现在流程【%s】和【%s】，请调整", jobCode, groupCode, jobToGroup.get(jobCode));
+                    OutputUtils.info(errMsg, msg);
+                    LoggerUtils.info(msg);
+                    throw new Exception(msg);
+                } else {
+                    jobToGroup.put(jobCode, groupCode);
+                }
             }
         }
         for (String sql : secondJobList) {
@@ -416,7 +466,7 @@ public class ProcessInfoController extends BaseController implements Initializab
     }
 
     /**
-     * 生成task脚本
+     * 生成trigger脚本
      *
      * @param taCode
      * @param sheet
@@ -473,7 +523,7 @@ public class ProcessInfoController extends BaseController implements Initializab
      * @param jobWithTaskMap 携带task 的job列表
      * @throws IOException
      */
-    private void writeTaskInfo(String taCode, BufferedWriter bufferedWriter, Map<String, String> jobWithTaskMap) throws IOException {
+    private void writeTaskInfo(String taCode, BufferedWriter bufferedWriter, Map<String, String> jobWithTaskMap) throws Exception {
         bufferedWriter.write("-- SCHEDULETASK 配置 begin\n");
         for (Map.Entry entry : jobWithTaskMap.entrySet()) {
             String key = (String) entry.getKey();
@@ -490,6 +540,15 @@ public class ProcessInfoController extends BaseController implements Initializab
                     OutputUtils.info(log, key + "的TASK[" + taskCode + "]在【任务配置】sheet页中不存在");
                     LoggerUtils.info(key + "的TASK[" + taskCode + "]在【任务配置】sheet页中不存在");
                     return;
+                }
+                // 校验task配置合理性
+                if (taskToJob.containsKey(taskCode)) {
+                    String msg = String.format("任务代码【%s】不能同时出现在一级JOB【%s】和【%s】，请调整", taskCode, key, taskToJob.get(taskCode));
+                    OutputUtils.info(errMsg, msg);
+                    LoggerUtils.info(msg);
+                    throw new Exception(msg);
+                } else {
+                    taskToJob.put(taskCode, key);
                 }
                 // 写主task
                 String taskSql = "insert into tbscheduletask (sche_job_code, sche_task_code, sche_task_name, " +
@@ -509,17 +568,17 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + map.get(TaskMemoryCache.SCHE_TASK_ISHIDE) + "' , '"
                         + map.get(TaskMemoryCache.SCHE_TASK_MEMO) + "' , '"
                         + map.get(TaskMemoryCache.SCHE_TASK_DEPENDENCIES) + "' , '"
-                        + map.get(TaskMemoryCache.FUNCTION_ID) + "' , '"
+                        + map.get(FUNCTION_ID) + "' , '"
                         + map.get(TaskMemoryCache.BANK_NO) + "' , '"
                         + taCode + "' , '"
                         + map.get(TaskMemoryCache.SCHE_TASK_ISSKIP) + "' , '"
                         + map.get(TaskMemoryCache.SCHE_TASK_SKIPREASON) + "' , "
                         + (map.get(TaskMemoryCache.SCHE_TASK_DELAYTIME).equals(" ") ? " " : "null") + " , '"
                         + map.get(TaskMemoryCache.SCHE_TASK_PAUSE) + "', null , '"
-                        + (map.get(TaskMemoryCache.SCHE_TASK_RESERVE).equals("") ? " " : map.get(TaskMemoryCache.SCHE_TASK_RESERVE)) + "' );";
+                        + (map.get(SCHE_TASK_RESERVE).equals("") ? " " : map.get(SCHE_TASK_RESERVE)) + "' );";
 
-                String functionId = (String) map.get(TaskMemoryCache.FUNCTION_ID);
-                String reserve = (String) map.get(TaskMemoryCache.SCHE_TASK_RESERVE);
+                String functionId = (String) map.get(FUNCTION_ID);
+                String reserve = (String) map.get(SCHE_TASK_RESERVE);
                 bufferedWriter.write(taskSql + "\n");
                 List<Map<String, Object>> subTaskList = TaskMemoryCache.getCacheMapByFunction(functionId, reserve);
                 String parentSubTaskCode = "";
@@ -545,14 +604,14 @@ public class ProcessInfoController extends BaseController implements Initializab
                                 + subMap.get(TaskMemoryCache.SCHE_TASK_ISHIDE) + "' , '"
                                 + subMap.get(TaskMemoryCache.SCHE_TASK_MEMO) + "' , '"
                                 + subMap.get(TaskMemoryCache.SCHE_TASK_DEPENDENCIES) + "' , '"
-                                + subMap.get(TaskMemoryCache.FUNCTION_ID) + "' , '"
+                                + subMap.get(FUNCTION_ID) + "' , '"
                                 + subMap.get(TaskMemoryCache.BANK_NO) + "' , '"
                                 + taCode + "' , '"
                                 + subMap.get(TaskMemoryCache.SCHE_TASK_ISSKIP) + "' , '"
                                 + subMap.get(TaskMemoryCache.SCHE_TASK_SKIPREASON) + "' ,  "
                                 + (map.get(TaskMemoryCache.SCHE_TASK_DELAYTIME).equals(" ") ? " " : "null") + " , '"
                                 + subMap.get(TaskMemoryCache.SCHE_TASK_PAUSE) + "' , '" + functionId + "', '"
-                                + (map.get(TaskMemoryCache.SCHE_TASK_RESERVE).equals("") ? " " : map.get(TaskMemoryCache.SCHE_TASK_RESERVE)) + "' );";
+                                + (map.get(SCHE_TASK_RESERVE).equals("") ? " " : map.get(SCHE_TASK_RESERVE)) + "' );";
                         // 写 子task SCHE_JOB_CODE 字段填写空
                         bufferedWriter.write(subTaskSql + "\n");
                     }

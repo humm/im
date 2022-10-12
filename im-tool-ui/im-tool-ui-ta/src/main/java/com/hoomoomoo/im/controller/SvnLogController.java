@@ -73,11 +73,11 @@ public class SvnLogController extends BaseController implements Initializable {
 
     @FXML
     void showVersion(MouseEvent event) {
-        String ver = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getVersion();
+        //String ver = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getVersion();
         String serialNo = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getSerialNo();
         String codeVersion = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getCodeVersion();
         svnVersion.getSelectionModel().select(codeVersion);
-        OutputUtils.info(version, ver);
+        //OutputUtils.info(version, ver);
         OutputUtils.info(modifyNo, serialNo);
         execute(false, STR_1);
     }

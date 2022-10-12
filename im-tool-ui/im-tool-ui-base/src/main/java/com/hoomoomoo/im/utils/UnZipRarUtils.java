@@ -60,7 +60,7 @@ public class UnZipRarUtils {
                 } else {
                     if (fileDate < min || fileDate > max) {
                         LoggerUtils.info(String.format("文件[ %s ]已被修改", fileName));
-                        throw new Exception("压缩包一致性校验不通过,请勿修改压缩包文件");
+                        throw new Exception("文件一致性校验不通过,请勿修改");
                     }
                 }
             }

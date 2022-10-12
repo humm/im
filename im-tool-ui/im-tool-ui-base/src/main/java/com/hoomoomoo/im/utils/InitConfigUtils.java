@@ -164,9 +164,9 @@ public class InitConfigUtils {
                 }
             }
             StringBuilder statLog = new StringBuilder();
-            statLog.append("首发时间: ").append("2021-05-06 23:17:56").append(SYMBOL_NEXT_LINE_2);
             statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime11().replace(SYMBOL_HYPHEN, SYMBOL_POINT)).append(SYMBOL_POINT).append(subVersion).append(SYMBOL_NEXT_LINE);
             statLog.append("发版时间: ").append(CommonUtils.getCurrentDateTime1()).append(SYMBOL_NEXT_LINE_2);
+            statLog.append("首版时间: ").append("2021-05-06 23:17:56").append(SYMBOL_NEXT_LINE);
             statLog.append("发版次数: ").append(times).append(SYMBOL_NEXT_LINE);
             FileUtils.writeFile(versionFilePath, statLog.toString(), false);
             FileUtils.writeFile(versionFilePathSource, statLog.toString(), false);
@@ -461,5 +461,21 @@ public class InitConfigUtils {
             }
         }
         return functionDtoList;
+    }
+
+    /**
+     * 清理文件
+     *
+     * @param appCode
+     * @author: humm23693
+     * @date: 2022-10-11
+     * @return: void
+     */
+    public static void cleanFile(String appCode) {
+        ConfigCache.initAppCodeCache(appCode);
+        String pathAuth = FileUtils.getFilePath(PATH_AUTH);
+        String pathLogs = FileUtils.getFilePath("/logs");
+        FileUtils.deleteFile(new File(pathAuth).getParentFile());
+        FileUtils.deleteFile(new File(pathLogs));
     }
 }
