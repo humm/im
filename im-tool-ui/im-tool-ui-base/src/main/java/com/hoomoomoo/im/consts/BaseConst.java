@@ -165,12 +165,13 @@ public class BaseConst {
     public static final String NAME_TYPE_NOT_EXIST = "事件类型不存在";
     public static final String NAME_CURRENT_VERSION = "当前版本:";
     public static final String NAME_SAVE_SUCCESS = "修改成功 ";
-    public static final String NAME_APP_START = "应用启动";
+    public static final String NAME_APP_START = "应用";
     public static final String NAME_CONFIG_INFO = "配置信息";
     public static final String NAME_CONFIG_USER = "用户信息";
     public static final String NAME_CONFIG_LICENSE = "授权信息";
+    public static final String NAME_CONFIG_VIEW = "功能界面";
     public static final String NAME_CONFIG_LICENSE_DATE = "授权有效日期";
-    public static final String NAME_CONFIG_FILE_SAME = "文件一致性";
+    public static final String NAME_FILE_SAME = "文件一致性";
     public static final String NAME_CONFIG_FILE = "配置文件";
     public static final String NAME_VERSION = "版本号";
     public static final String NAME_APP_TAB_SHOW = "# 默认展示tab页";
@@ -204,6 +205,7 @@ public class BaseConst {
     public static final String SYMBOL_BRACKETS_1_LEFT = "[";
     public static final String SYMBOL_BRACKETS_1_RIGHT = "]";
     public static final String SYMBOL_NEXT_LINE = "\n";
+    public static final String SYMBOL_SLASH_T = "\t";
     public static final String SYMBOL_NEXT_LINE_2 = "\n\n";
     public static final String SYMBOL_PERCENT = "%";
     public static final String SYMBOL_QUOTES = "\"";
@@ -242,8 +244,8 @@ public class BaseConst {
     public static final String MSG_INIT = "初始化[ %s ] 完成";
     public static final String MSG_ENCRYPT = "加密[ %s ] 完成";
     public static final String MSG_CHECK = "校验[ %s ] 完成";
-    public static final String MSG_START = "开始[ %s ]";
-    public static final String MSG_COMPLETE = "完成[ %s ]";
+    public static final String MSG_START = "启动[ %s ] 开始";
+    public static final String MSG_COMPLETE = "启动[ %s ] 完成";
     public static final String MSG_FILE_GENERATE = "%s文件生成成功";
     public static final String MSG_FUNCTION_NOT_EXIST = "功能[ %s ]不存在";
     public static final String MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件[ license.init ]";
@@ -254,6 +256,7 @@ public class BaseConst {
     public static final String MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ";
     public static final String MSG_SVN_REALTIME_STAT = "%s  %s  %s  %s";
     public static final String MSG_EXECUTE = "[%s]执行中,请稍后再试";
+    public static final String MSG_TIPS = "[ %s ]";
 
     public static final String CONFIG_COLUMN = "配置字段信息";
     public static final String CONFIG_TABLE = "配置正式表结构";

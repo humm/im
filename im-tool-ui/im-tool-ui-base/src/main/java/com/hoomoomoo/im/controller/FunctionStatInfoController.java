@@ -65,7 +65,7 @@ public class FunctionStatInfoController implements Initializable {
         }
         int num = functionDtoList.size();
 
-        OutputUtils.info(title, "授权功能  " + num);
+        OutputUtils.info(title, "功能数量  " + num);
         for (int i = 0; i < functionDtoList.size(); i++) {
             FunctionDto functionDto = functionDtoList.get(i);
             String logPath = String.format(BaseConst.PATH_STAT, MenuFunctionConfig.FunctionConfig.getLogFolder(functionDto.getFunctionCode())) + BaseConst.FILE_TYPE_STAT;

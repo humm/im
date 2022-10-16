@@ -30,7 +30,7 @@ public class StarterUtils {
             LoggerUtils.info(MSG_DIVIDE_LINE, false);
             LoggerUtils.info(String.format(MSG_START, NAME_APP_START));
             FileUtils.unJar(PATH_APP);
-            LoggerUtils.info(String.format(MSG_UPDATE, NAME_CONFIG_FILE));
+            LoggerUtils.appStartInfo(String.format(MSG_UPDATE, NAME_CONFIG_FILE));
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String appName = appConfigDto.getAppName() + SYMBOL_SPACE_2;
             if (!FileUtils.startByJar()) {
@@ -54,7 +54,7 @@ public class StarterUtils {
                     appName += SYMBOL_SPACE_2 + tips;
                 }
             }
-            LoggerUtils.info(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
+            LoggerUtils.appStartInfo(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
 
             Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_STARTER_FXML)));
             Scene scene = new Scene(root);

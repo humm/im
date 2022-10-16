@@ -10,12 +10,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Enumeration;
 
-import static com.hoomoomoo.im.consts.BaseConst.NAME_CONFIG_FILE_SAME;
-import static com.hoomoomoo.im.consts.BaseConst.NAME_CONFIG_LICENSE_DATE;
+import static com.hoomoomoo.im.consts.BaseConst.MSG_TIPS;
+import static com.hoomoomoo.im.consts.BaseConst.NAME_FILE_SAME;
 
 
 /**
@@ -60,7 +58,7 @@ public class UnZipRarUtils {
                 } else {
                     if (fileDate < min || fileDate > max) {
                         LoggerUtils.info(String.format("文件[ %s ]已被修改", fileName));
-                        throw new Exception("文件一致性校验不通过,请勿修改");
+                        throw new Exception(String.format(MSG_TIPS, NAME_FILE_SAME) + "校验不通过,请勿修改");
                     }
                 }
             }
@@ -87,7 +85,7 @@ public class UnZipRarUtils {
         if (zipFile != null) {
             zipFile.close();
         }
-        LoggerUtils.info(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_FILE_SAME));
+        LoggerUtils.info(String.format(BaseConst.MSG_CHECK, NAME_FILE_SAME));
     }
 
     /**

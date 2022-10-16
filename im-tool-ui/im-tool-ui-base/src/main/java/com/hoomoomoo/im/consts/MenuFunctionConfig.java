@@ -14,7 +14,6 @@ public class MenuFunctionConfig {
         MENU_SVN("menuSvn", "SVN", 10),
         MENU_SCRIPT("menuScript", "脚本", 20),
         MENU_CODE("menuCode", "代码", 30),
-        MENU_TOOL("menuTool", "其他", 40),
 
         // Shopping菜单
         MENU_JD("menuJd", "京东", 10),
@@ -73,13 +72,13 @@ public class MenuFunctionConfig {
 
         FUND_INFO("300", "基金信息", "/conf/fxml/fundInfo.fxml", "fundInfo", "fundInfo", "menuScript"),
 
+        DATABASE_SCRIPT("310", "执行脚本", "/conf/fxml/databaseScript.fxml", "databaseScript", "databaseScript", "menuScript"),
+
         GENERATE_SQL("350", "分库分表", "/conf/fxml/generateSql.fxml", "generateSql", "generateSql", "menuScript"),
 
         COPY_CODE("400", "复制代码", "/conf/fxml/copyCode.fxml", "copyCode", "copyCode", "menuCode"),
 
         GENERATE_CODE("450", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuCode"),
-
-        DATABASE_SCRIPT("500", "数据库脚本", "/conf/fxml/databaseScript.fxml", "databaseScript", "databaseScript", "menuTool"),
 
         // Shopping 1000-1999
         JD_AUTO("1000", "自动评价", "/conf/fxml/jdAuto.fxml", "jdAuto", "jdAuto", "menuJd"),

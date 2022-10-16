@@ -201,7 +201,7 @@ public class SvnLogController extends BaseController implements Initializable {
                             }
                             if (STR_1.equals(type)) {
                                 for (String item : svnLogDto.getFile()) {
-                                    if (!fileList.contains(item)) {
+                                    if (!fileList.contains(item) && isFileLocation(item)) {
                                         fileList.add(item);
                                     }
                                 }
@@ -282,5 +282,17 @@ public class SvnLogController extends BaseController implements Initializable {
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
+    }
+
+    private boolean isFileLocation(String path) {
+        if (StringUtils.isBlank(path)) {
+            return false;
+        }
+        int index = path.lastIndexOf(SYMBOL_SLASH);
+        String fileName = path.substring(index + 1);
+        if (fileName.contains(SYMBOL_POINT)) {
+            return true;
+        }
+        return false;
     }
 }

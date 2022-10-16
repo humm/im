@@ -27,7 +27,7 @@ public class ConfigCache {
 
     private static ConfigCache configCache = null;
 
-    private AppConfigDto appConfigDto;
+    private static AppConfigDto appConfigDto;
 
     private static String appCodeCache;
 
@@ -50,15 +50,31 @@ public class ConfigCache {
         configCache = new ConfigCache();
     }
 
-    private ConfigCache() throws Exception {
-        init();
+    public AppConfigDto getAppConfigDto() {
+        return appConfigDto;
     }
 
-    private void init() throws Exception {
+    public static AppConfigDto getInitAppConfigDto() throws Exception{
+        if (appConfigDto == null) {
+            init(false);
+        }
+        return appConfigDto;
+    }
+
+    private ConfigCache() throws Exception {
+        init(true);
+    }
+
+    private static void init(boolean extend) throws Exception {
         String confPath = FileUtils.getFilePath(PATH_APP);
         // 读取配置文件
         appConfigDto = (AppConfigDto) FileUtils.readConfigFileToObject(confPath, AppConfigDto.class);
+        if (extend) {
+            initExtend(confPath, appConfigDto);
+        }
+    }
 
+    private static void initExtend(String confPath, AppConfigDto appConfigDto) throws Exception{
         // 更新配置信息
         List<String> content = FileUtils.readNormalFile(confPath, false);
 
@@ -184,7 +200,7 @@ public class ConfigCache {
             }
         }
 
-        LoggerUtils.info(String.format(MSG_LOAD, NAME_CONFIG_INFO));
+        LoggerUtils.appStartInfo(String.format(MSG_LOAD, NAME_CONFIG_INFO));
 
         // 加载证书信息
         String licensePath = FileUtils.getFilePath(PATH_LICENSE);
@@ -204,7 +220,7 @@ public class ConfigCache {
             appConfigDto.setLicense(licenseDto);
         }
 
-        LoggerUtils.info(String.format(MSG_LOAD, NAME_CONFIG_LICENSE));
+        LoggerUtils.appStartInfo(String.format(MSG_LOAD, NAME_CONFIG_LICENSE));
 
         // 解密
         if (appConfigDto != null && appConfigDto.getSvnPassword() != null && appConfigDto.getSvnPassword().endsWith(SECURITY_FLAG)) {
@@ -251,6 +267,6 @@ public class ConfigCache {
                 }
             }
         }
-        LoggerUtils.info(String.format(MSG_ENCRYPT, NAME_CONFIG_USER));
+        LoggerUtils.appStartInfo(String.format(MSG_ENCRYPT, NAME_CONFIG_USER));
     }
 }

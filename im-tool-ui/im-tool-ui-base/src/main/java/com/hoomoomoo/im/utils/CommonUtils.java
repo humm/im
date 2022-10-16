@@ -640,7 +640,7 @@ public class CommonUtils {
                     functionTab.getTabs().add(tab);
                 }
             }
-            LoggerUtils.info(String.format(BaseConst.MSG_INIT, "功能界面"));
+            LoggerUtils.appStartInfo(String.format(BaseConst.MSG_INIT, NAME_CONFIG_VIEW));
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

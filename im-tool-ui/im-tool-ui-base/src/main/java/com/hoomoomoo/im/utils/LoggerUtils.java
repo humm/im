@@ -29,6 +29,16 @@ public class LoggerUtils {
     private final static String SVN_NUM = "svn版本个数:";
     private final static String FILE_NUM = "文件个数:";
 
+    public static void appStartInfo(String msg) {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getInitAppConfigDto();
+            if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
+                info(msg, true);
+            }
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
     public static void info(String msg) {
         info(msg, true);
     }

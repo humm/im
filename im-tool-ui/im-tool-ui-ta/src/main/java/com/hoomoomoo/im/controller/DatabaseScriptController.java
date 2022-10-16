@@ -116,33 +116,43 @@ public class DatabaseScriptController extends BaseController implements Initiali
                             executeSql.clear();
                             content = FileUtils.readNormalFile(item.getAbsolutePath(), false);
                             boolean procedure = false;
-                            boolean MultSql = false;
+                            boolean multSql = false;
+                            boolean function = false;
                             if (CollectionUtils.isNotEmpty(content)) {
                                 StringBuilder sqlPart = new StringBuilder();
                                 for (String sql : content) {
                                     String checkSql = sql.toLowerCase().trim();
-                                    if (StringUtils.isBlank(checkSql)) {
+                                    if (StringUtils.isBlank(checkSql) || checkSql.startsWith(ANNOTATION_TYPE_NORMAL)) {
                                         continue;
                                     }
-                                    if (!procedure && !MultSql && sql.startsWith("declare")) {
+                                    if ((sql.endsWith(SYMBOL_SLASH_T) || sql.endsWith(SYMBOL_SPACE)) && sql.contains(SYMBOL_SEMICOLON)) {
+                                        int index = sql.lastIndexOf(SYMBOL_SEMICOLON);
+                                        int indexT = sql.lastIndexOf(SYMBOL_SLASH_T);
+                                        int indexSpace = sql.lastIndexOf(SYMBOL_SPACE);
+                                        sql = sql.substring(0, getMinValue(index, indexT, indexSpace) + 1);
+                                    }
+                                    if (!procedure && !multSql && !function && checkSql.startsWith("declare")) {
                                         procedure = true;
                                         sqlPart.append(sql).append(SYMBOL_NEXT_LINE);
-                                    } else if (!procedure && !MultSql && !sql.endsWith(SYMBOL_SEMICOLON)) {
-                                        MultSql = true;
+                                    } else if (!procedure && !multSql && !function && checkSql.toLowerCase().contains("function") && checkSql.toLowerCase().contains("create")) {
+                                        function = true;
                                         sqlPart.append(sql).append(SYMBOL_NEXT_LINE);
-                                    } else if (procedure && checkSql.equals("/")) {
+                                    } else if (!procedure && !multSql && !function && !checkSql.endsWith(SYMBOL_SEMICOLON)) {
+                                        multSql = true;
+                                        sqlPart.append(sql).append(SYMBOL_NEXT_LINE);
+                                    } else if ((procedure || function) && checkSql.equals("/")) {
                                         procedure = false;
                                         String singleSql = sqlPart.toString().trim();
                                         executeSql.add(singleSql);
                                         sqlPart.setLength(0);
-                                    }  else if (MultSql && checkSql.endsWith(SYMBOL_SEMICOLON)) {
-                                        MultSql = false;
+                                    }  else if (multSql && checkSql.endsWith(SYMBOL_SEMICOLON)) {
+                                        multSql = false;
                                         String singleSql = sqlPart.append(sql).append(SYMBOL_NEXT_LINE).toString().trim();
                                         executeSql.add(singleSql.substring(0, singleSql.length() - 1));
                                         sqlPart.setLength(0);
-                                    } else if (procedure || MultSql) {
+                                    } else if (procedure || multSql || function) {
                                         sqlPart.append(sql).append(SYMBOL_NEXT_LINE);
-                                    } else if (sql.endsWith(SYMBOL_SEMICOLON)) {
+                                    } else if (checkSql.endsWith(SYMBOL_SEMICOLON)) {
                                         procedure = false;
                                         executeSql.add(sql.substring(0, sql.length() - 1));
                                     }
@@ -153,6 +163,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                                     try {
                                         OutputUtils.info(sqlNum, String.valueOf(++executeSqlNum));
                                         DatabaseUtils.executeSql(sql, encode);
+                                        //OutputUtils.info(log, sql + SYMBOL_NEXT_LINE_2);
                                         OutputUtils.info(sqlFailNum, String.valueOf(executeFailSqlNum));
                                     } catch (Exception e) {
                                         if (nextFlag) {
@@ -200,6 +211,16 @@ public class DatabaseScriptController extends BaseController implements Initiali
                 databaseExecuteDetail.setDisable(false);
             }
         }).start();
+    }
+
+    public int getMinValue(int... value) {
+        int min = value[0];
+        for (int item : value) {
+            if (item < min) {
+                min = item;
+            }
+        }
+        return min < value[0] ? value[0] : min;
     }
 
     private String addAnnotation() {
