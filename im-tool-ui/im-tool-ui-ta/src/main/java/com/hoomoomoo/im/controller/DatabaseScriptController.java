@@ -110,7 +110,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                         boolean nextFlag = false;
                         for (File item : fileList) {
                             nextFlag = true;
-                            String encode = FileUtils.getFileEncode(item.getAbsolutePath());
+                            // String encode = FileUtils.getFileEncode(item.getAbsolutePath());
                             OutputUtils.info(fileNum, String.valueOf(++filelNum));
                             OutputUtils.info(log, String.format("执行[ %s ]开始\n", item));
                             executeSql.clear();
@@ -121,15 +121,13 @@ public class DatabaseScriptController extends BaseController implements Initiali
                             if (CollectionUtils.isNotEmpty(content)) {
                                 StringBuilder sqlPart = new StringBuilder();
                                 for (String sql : content) {
+                                    if (sql.contains(SYMBOL_SEMICOLON)) {
+                                        int index = sql.lastIndexOf(SYMBOL_SEMICOLON);
+                                        sql = sql.substring(0, index + 1);
+                                    }
                                     String checkSql = sql.toLowerCase().trim();
                                     if (StringUtils.isBlank(checkSql) || checkSql.startsWith(ANNOTATION_TYPE_NORMAL)) {
                                         continue;
-                                    }
-                                    if ((sql.endsWith(SYMBOL_SLASH_T) || sql.endsWith(SYMBOL_SPACE)) && sql.contains(SYMBOL_SEMICOLON)) {
-                                        int index = sql.lastIndexOf(SYMBOL_SEMICOLON);
-                                        int indexT = sql.lastIndexOf(SYMBOL_SLASH_T);
-                                        int indexSpace = sql.lastIndexOf(SYMBOL_SPACE);
-                                        sql = sql.substring(0, getMinValue(index, indexT, indexSpace) + 1);
                                     }
                                     if (!procedure && !multSql && !function && checkSql.startsWith("declare")) {
                                         procedure = true;
@@ -161,9 +159,12 @@ public class DatabaseScriptController extends BaseController implements Initiali
                             if (CollectionUtils.isNotEmpty(executeSql)) {
                                 for (String sql : executeSql) {
                                     try {
+                                        if (sql.endsWith(SYMBOL_SEMICOLON)) {
+                                            sql = sql.substring(0, sql.length() - 1);
+                                        }
                                         OutputUtils.info(sqlNum, String.valueOf(++executeSqlNum));
-                                        DatabaseUtils.executeSql(sql, encode);
-                                        //OutputUtils.info(log, sql + SYMBOL_NEXT_LINE_2);
+                                        DatabaseUtils.executeSql(sql, null);
+                                        // OutputUtils.info(log, sql + SYMBOL_NEXT_LINE_2);
                                         OutputUtils.info(sqlFailNum, String.valueOf(executeFailSqlNum));
                                     } catch (Exception e) {
                                         if (nextFlag) {

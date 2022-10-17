@@ -52,7 +52,7 @@ public class DatabaseUtils {
     }
 
     public static void executeSql(String sql, String encode) throws Exception {
-        InputStreamReader inputStreamReader = new InputStreamReader(new ByteArrayInputStream(sql.getBytes()), encode);
+        InputStreamReader inputStreamReader = new InputStreamReader(new ByteArrayInputStream(sql.getBytes()));
         getScriptRunner().runScript(inputStreamReader);
     }
 }
