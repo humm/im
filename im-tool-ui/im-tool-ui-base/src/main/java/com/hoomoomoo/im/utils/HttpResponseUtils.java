@@ -1,10 +1,7 @@
-package com.hoomoomoo.im.dto;
+package com.hoomoomoo.im.utils;
 
-import com.hoomoomoo.im.utils.LoggerUtils;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import lombok.Data;
-import sun.misc.IOUtils;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -20,16 +17,18 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @package com.hoomoomoo.im.dto
  * @date 2022/4/3
  */
-public class WebResponseHandler implements HttpHandler {
+public class HttpResponseUtils implements HttpHandler {
 
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         Map<String, String> requestParam = paramGet(exchange);
         requestParam.putAll(paramPost(exchange));
-        LoggerUtils.info("收到消息: " + requestParam.get(KEY_VERSION));
+        LoggerUtils.info("请求版本号: " + requestParam.get(KEY_VERSION));
         exchange.sendResponseHeaders(200, 0);
         OutputStream outputStream = exchange.getResponseBody();
-        outputStream.write("返回消息: im".getBytes(ENCODING_GBK));
+        String responseMsg = ("返回版本号: " + CommonUtils.getVersion());
+        outputStream.write(responseMsg.getBytes(ENCODING_GBK));
+        LoggerUtils.info(responseMsg);
         outputStream.close();
     }
 

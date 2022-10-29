@@ -75,11 +75,19 @@ public class StarterUtils {
                 } catch (IOException e) {
                 }
             });
-            if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
-                /*ServerUtils.initServer(SERVER_URL, SERVER_PORT);*/
-            } else {
-                /*LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + SYMBOL_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + SYMBOL_EQUAL + CommonUtils.getVersion()));*/
+            if (true) {
+                return;
             }
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
+                        HttpServerUtils.initServer(SERVER_URL, SERVER_PORT);
+                    } else {
+                        LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + SYMBOL_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + SYMBOL_EQUAL + CommonUtils.getVersion()));
+                    }
+                }
+            }).start();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

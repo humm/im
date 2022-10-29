@@ -159,7 +159,9 @@ public class DatabaseScriptController extends BaseController implements Initiali
                             if (CollectionUtils.isNotEmpty(executeSql)) {
                                 for (String sql : executeSql) {
                                     try {
-                                        if (sql.endsWith(SYMBOL_SEMICOLON)) {
+                                        procedure = sql.toLowerCase().startsWith("declare");
+                                        function = sql.toLowerCase().contains("function") && sql.toLowerCase().contains("create");
+                                        if (!procedure && !function && sql.endsWith(SYMBOL_SEMICOLON)) {
                                             sql = sql.substring(0, sql.length() - 1);
                                         }
                                         OutputUtils.info(sqlNum, String.valueOf(++executeSqlNum));

@@ -23,6 +23,7 @@ public class HttpRequestUtils {
     private static final String ACCEPT = "*/*";
     private static final String CONNECTION = "Keep-Alive";
     private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)";
+    private static final Integer TIME_OUT = 3000;
 
     public static String sendGet(String url, String param) {
         return send(url, param, false);
@@ -42,6 +43,8 @@ public class HttpRequestUtils {
             }
             URL realUrl = new URL(url);
             URLConnection connection = realUrl.openConnection();
+            connection.setConnectTimeout(TIME_OUT);
+            connection.setReadTimeout(TIME_OUT);
             connection.setRequestProperty("accept", ACCEPT);
             connection.setRequestProperty("connection", CONNECTION);
             connection.setRequestProperty("user-agent", USER_AGENT);

@@ -57,25 +57,25 @@ public class ConfigSetController implements Initializable {
         OutputUtils.info(tips, NAME_SAVE_SUCCESS + CommonUtils.getCurrentDateTime8(new Date()));
         LoggerUtils.writeConfigSetInfo(CONFIG_SET.getCode());
         if (AppCache.FUNCTION_TAB_CACHE != null) {
-            ObservableList<Tab> tabs = AppCache.FUNCTION_TAB_CACHE.getTabs();
-            Iterator<Tab> iterator = tabs.listIterator();
-            while (iterator.hasNext()) {
-                Tab tab = iterator.next();
-                if (tab.getText().equals(CONFIG_SET.getName())) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    ObservableList<Tab> tabs = AppCache.FUNCTION_TAB_CACHE.getTabs();
+                    Iterator<Tab> iterator = tabs.listIterator();
+                    while (iterator.hasNext()) {
+                        Tab tab = iterator.next();
+                        if (tab.getText().equals(CommonUtils.getMenuName(CONFIG_SET.getCode(), CONFIG_SET.getName()))) {
                             try {
                                 Thread.sleep(500);
                             } catch (InterruptedException e) {
                                 LoggerUtils.info(e);
                             }
                             iterator.remove();
+                            break;
                         }
-                    }).start();
-                    break;
+                    }
                 }
-            }
+            }).start();
         }
         submit.setDisable(false);
     }

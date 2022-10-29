@@ -18,9 +18,9 @@ import java.sql.Statement;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
- * 源码覆盖
+ * 抛异常处理
  *
- * @param null
+ * @param
  * @author: humm23693
  * @date: 2022-09-29
  * @return:

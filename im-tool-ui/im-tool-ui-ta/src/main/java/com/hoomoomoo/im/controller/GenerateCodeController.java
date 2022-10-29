@@ -504,7 +504,7 @@ public class GenerateCodeController extends BaseController implements Initializa
         try {
             recordList = FileUtils.readNormalFile(FileUtils.getFilePath(String.format(PATH_RECORD_LOG, GENERATE_CODE.getLogFolder())), false);
         } catch (FileNotFoundException e) {
-            LoggerUtils.info(String.format(PATH_RECORD_LOG, GENERATE_CODE.getLogFolder()) + " 不存在");
+            LoggerUtils.info(FileUtils.getFilePath(GENERATE_CODE.getLogFolder()) + FILE_TYPE_RECORD + " 不存在");
         } catch (IOException e) {
             LoggerUtils.info(e);
         }

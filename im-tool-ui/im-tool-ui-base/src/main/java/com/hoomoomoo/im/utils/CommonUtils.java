@@ -647,6 +647,6 @@ public class CommonUtils {
     }
 
     public static String getMenuName(String menuCode, String menuName) {
-        return menuName;
+        return menuCode + SYMBOL_COLON + menuName;
     }
 }

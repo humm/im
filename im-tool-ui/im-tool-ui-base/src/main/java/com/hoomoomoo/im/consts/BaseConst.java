@@ -141,6 +141,7 @@ public class BaseConst {
     public static final String FILE_TYPE_SQL = ".sql";
     public static final String FILE_TYPE_ROUTE = ".js";
     public static final String FILE_TYPE_CONF = ".conf";
+    public static final String FILE_TYPE_RECORD = ".record";
 
     public static final String NAME_DELETE = " 删除";
     public static final String NAME_END = "结束";
@@ -220,7 +221,7 @@ public class BaseConst {
 
     public static final String MSG_SVN_USERNAME = "请设置[ svn.username ]";
     public static final String MSG_SVN_PASSWORD = "请设置[ svn.password ]";
-    public static final String MSG_SVN_URL = "请设置[ svn.url ]";
+    public static final String MSG_SVN_URL = "请设置[ svn.url ]且名称不能为[ svn.url.demo ]";
     public static final String MSG_SVN_UPDATE_TA6 = "请设置[ svn.update.ta6 ]";
     public static final String MSG_FUND_GENERATE_PATH = "请设置[ fund.generate.path ]";
     public static final String MSG_PROCESS_GENERATE_PATH_SCHEDULE = "请设置[ process.generate.path.schedule ]";
@@ -335,7 +336,7 @@ public class BaseConst {
     public static final Integer JD_APPRAISE_LENGTH_MIN = 30;
     public static final Integer JD_APPRAISE_LENGTH_MAX = 450;
 
-    public static final String SERVER_HTTP = "http://172.24.52.81";
+    public static final String SERVER_HTTP = "http://127.0.0.1";
     public static final String SERVER_URL = "/tool/im";
     public static final Integer SERVER_PORT = 13579;
 
