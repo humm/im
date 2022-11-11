@@ -95,7 +95,7 @@ public class OutputUtils {
             if (obj instanceof TextArea) {
                 ((TextArea) obj).appendText(text);
             } else if (obj instanceof TextField) {
-                ((TextField) obj).appendText(text);
+                ((TextField) obj).setText(text);
             } else if (obj instanceof Label) {
                 ((Label) obj).setText(text);
             }

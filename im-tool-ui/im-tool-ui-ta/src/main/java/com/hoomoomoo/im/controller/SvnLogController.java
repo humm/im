@@ -77,7 +77,9 @@ public class SvnLogController extends BaseController implements Initializable {
         String serialNo = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getSerialNo();
         String codeVersion = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getCodeVersion();
         svnVersion.getSelectionModel().select(codeVersion);
+        OutputUtils.clearLog(version);
         OutputUtils.info(version, ver);
+        OutputUtils.clearLog(modifyNo);
         OutputUtils.info(modifyNo, serialNo);
         execute(false, STR_1);
     }
@@ -96,6 +98,7 @@ public class SvnLogController extends BaseController implements Initializable {
     void svnResetSubmit(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         OutputUtils.clearLog(modifyNo);
+        OutputUtils.clearLog(svnTimes);
         OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
         svnVersion.getSelectionModel().select(SYMBOL_EMPTY);
         execute(true, STR_1);

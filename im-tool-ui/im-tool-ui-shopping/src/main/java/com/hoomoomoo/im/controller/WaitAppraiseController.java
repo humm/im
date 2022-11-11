@@ -58,7 +58,13 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
         Connection connection = Jsoup.connect(appConfigDto.getJdAppraiseInfo() + "?productId=" + goodsId + "&score=0&sortType=5&page=0&pageSize=10&isShadowSku=0&rid=0&fold=1");
         ShoppingCommonUtil.initCookie(appConfigDto,connection);
         Document appraise = connection.get();
-        JSONObject appraiseInfo = JSONObject.parseObject(appraise.select("body").text());
+        System.out.println(appraise.select("body").text());
+        JSONObject appraiseInfo = null;
+        try {
+            appraiseInfo = JSONObject.parseObject(appraise.select("body").text());
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
         if (appraiseInfo != null && !appraiseInfo.isEmpty()) {
             JSONArray appraiseList = (JSONArray)appraiseInfo.get("comments");
             if (appraiseList != null && !appraiseList.isEmpty()) {
