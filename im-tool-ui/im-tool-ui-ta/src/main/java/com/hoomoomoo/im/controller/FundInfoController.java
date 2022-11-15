@@ -59,6 +59,8 @@ public class FundInfoController extends BaseController implements Initializable 
 
     private static String SCRIPT_TYPE;
 
+    private static boolean STD = false;
+
     @FXML
     void executeSelect(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -159,8 +161,15 @@ public class FundInfoController extends BaseController implements Initializable 
                 // 打开workbook
                 Workbook workbook = Workbook.getWorkbook(new File(filePath.getText()));
 
+                Sheet tbSceneInfo = workbook.getSheet("场景信息tbsceneinfo");
+                if (tbSceneInfo != null) {
+                    STD = true;
+                }
                 // 生成基金配置数据
                 String fileName = "15fund-product-field.oracle.sql";
+                if (STD) {
+                    fileName = "15fund-product-field-std.oracle.sql";
+                }
                 String productPath = appConfigDto.getFundGeneratePath() + "/" + fileName;
                 File productFile = new File(productPath);
                 BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(productFile), BaseConst.ENCODING_UTF8));
@@ -177,13 +186,13 @@ public class FundInfoController extends BaseController implements Initializable 
                 // 字段信息
                 Sheet dataElement = workbook.getSheet("基金tbdataelement");
 
-                // 模板信息
-                Sheet prdTemplate = workbook.getSheet("基金模板tbprdtemplate");
-
                 // 2.1获取ComponentKind
                 if (dataElement != null) {
                     initComponentKind(dataElement);
                 }
+
+                // 模板信息
+                Sheet prdTemplate = workbook.getSheet("基金模板tbprdtemplate");
 
                 // 2.2获取模板信息
                 if (prdTemplate != null) {
@@ -193,6 +202,14 @@ public class FundInfoController extends BaseController implements Initializable 
                 // 2.2.1写 tbdataelement 数据
                 if (dataElement != null) {
                     writeDataelement(bufferedWriter, dataElement);
+                }
+
+                if (tbSceneInfo != null) {
+                    writeSceneInfo(bufferedWriter, tbSceneInfo);
+                }
+                Sheet tbScenTemplate = workbook.getSheet("场景模板tbscentemplate");
+                if (tbScenTemplate != null) {
+                    writeScenTemplate(bufferedWriter, tbScenTemplate);
                 }
 
                 Iterator<String> iterator = PRD_TEMPLATE.keySet().iterator();
@@ -247,12 +264,18 @@ public class FundInfoController extends BaseController implements Initializable 
 
                 infoMsg("mysql版本生成 开始");
                 String fileNameMysql = "15fund-product-field.mysql.sql";
+                if (STD) {
+                    fileNameMysql = "15fund-product-field-std.mysql.sql";
+                }
                 String productPathMysql = appConfigDto.getFundGeneratePath() + "/" + fileNameMysql;
                 FileUtils.writeFile(productPathMysql, content, false);
                 infoMsg("mysql版本生成 结束");
 
                 infoMsg("pg版本生成 开始");
                 String fileNamePg = "15fund-product-field.pg.sql";
+                if (STD) {
+                    fileNamePg = "15fund-product-field-std.pg.sql";
+                }
                 String productPathPg = appConfigDto.getFundGeneratePath() + "/" + fileNamePg;
                 if (CollectionUtils.isNotEmpty(content)) {
                     for (int j=0; j<content.size(); j++) {
@@ -422,6 +445,61 @@ public class FundInfoController extends BaseController implements Initializable 
      *
      * @param bufferedWriter
      */
+    private void writeSceneInfo(BufferedWriter bufferedWriter, Sheet sheet) throws IOException {
+        infoMsg(sheet.getName() + " 生成 开始");
+        int rows = sheet.getRows();
+        bufferedWriter.write("-- " + sheet.getName() + " 开始 \n");
+        for (int i = 1; i < rows; i++) {
+            bufferedWriter.write("delete from tbsceneinfo where scene_code = " + getCell(sheet, 1, i) + ";\n");
+            String sql = "insert into tbsceneinfo (scene_code, scene_name, scene_type) \nvalues (";
+            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+                sql = "-- insert into tbsceneinfo (scene_code, scene_name, scene_type) \n-- values (";
+            }
+            sql += getCell(sheet, 1, i) + ","
+                    + getCell(sheet, 2, i) + ","
+                    + getCell(sheet, 3, i);
+            sql += ");";
+            bufferedWriter.write(sql);
+            bufferedWriter.write("\n");
+        }
+        bufferedWriter.write("-- " + sheet.getName() + " 结束 \n");
+        bufferedWriter.write("\n");
+        infoMsg(sheet.getName() + "生成 结束");
+    }
+
+    /**
+     * 写 tbprdtemplate 表
+     *
+     * @param bufferedWriter
+     */
+    private void writeScenTemplate(BufferedWriter bufferedWriter, Sheet sheet) throws IOException {
+        infoMsg(sheet.getName() + " 生成 开始");
+        int rows = sheet.getRows();
+        bufferedWriter.write("-- " + sheet.getName() + " 开始 \n");
+        for (int i = 1; i < rows; i++) {
+            bufferedWriter.write("delete from tbscentemplate where template_code = " + getCell(sheet, 1, i) + ";\n");
+            String sql = "insert into tbscentemplate (template_code, template_name, scene_code, rel_template_code) \nvalues (";
+            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+                sql = "-- insert into tbscentemplate (template_code, template_name, scene_code, rel_template_code) \n-- values (";
+            }
+            sql += getCell(sheet, 1, i) + ","
+                    + getCell(sheet, 2, i) + ","
+                    + getCell(sheet, 3, i)+ ","
+                    + getCell(sheet, 4, i);
+            sql += ");";
+            bufferedWriter.write(sql);
+            bufferedWriter.write("\n");
+        }
+        bufferedWriter.write("-- " + sheet.getName() + " 结束 \n");
+        bufferedWriter.write("\n");
+        infoMsg(sheet.getName() + "生成 结束");
+    }
+
+    /**
+     * 写 tbprdtemplate 表
+     *
+     * @param bufferedWriter
+     */
     private void writePrdTemplate(BufferedWriter bufferedWriter, Sheet sheet) throws IOException {
         infoMsg(sheet.getName() + " " + CURRENT_TEMPLATE_NAME + "生成 开始");
         int rows = sheet.getRows();
@@ -443,6 +521,9 @@ public class FundInfoController extends BaseController implements Initializable 
             if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
                 sql = "-- insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) \n-- values (";
             }
+            if (STD) {
+                sql = sql.replace(")", ", template_type, template_type_detail)");
+            }
             sql += getCell(sheet, 1, i) + ","
                     + getCell(sheet, 2, i) + ","
                     + getCell(sheet, 3, i) + ","
@@ -452,8 +533,11 @@ public class FundInfoController extends BaseController implements Initializable 
                     + getCell(sheet, 7, i) + ","
                     + getCell(sheet, 8, i) + ","
                     + getCell(sheet, 9, i) + ","
-                    + getCell(sheet, 10, i)
-                    + ");";
+                    + getCell(sheet, 10, i);
+            if (STD) {
+                sql += "," + getCell(sheet, 11, i) + "," + getCell(sheet, 12, i);
+            }
+            sql += ");";
             bufferedWriter.write(sql);
             bufferedWriter.write("\n");
         }
@@ -520,6 +604,7 @@ public class FundInfoController extends BaseController implements Initializable 
     private void writeTemplateRelGroup(BufferedWriter bufferedWriter, Sheet sheet) throws IOException {
         infoMsg(sheet.getName() + " " + CURRENT_TEMPLATE_NAME + "生成 开始");
         int rows = sheet.getRows();
+        int columns = sheet.getColumns();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
             if (BaseConst.SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
@@ -538,13 +623,19 @@ public class FundInfoController extends BaseController implements Initializable 
             if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
                 sql = "-- insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) \n-- values (";
             }
+            if (STD) {
+                sql = sql.replace(")", ", flag)");
+            }
             sql += getCell(sheet, 1, i) + ","
                     + getCell(sheet, 2, i) + ","
                     + getCell(sheet, 3, i) + ","
                     + getCell(sheet, 4, i) + ","
                     + getCell(sheet, 5, i) + ","
-                    + getCell(sheet, 6, i)
-                    + ");";
+                    + getCell(sheet, 6, i);
+            if (STD) {
+                sql += "," + getCell(sheet, 7, i);
+            }
+            sql += ");";
             bufferedWriter.write(sql);
             bufferedWriter.write("\n");
         }
@@ -561,6 +652,7 @@ public class FundInfoController extends BaseController implements Initializable 
     private void writePageElement(BufferedWriter bufferedWriter, Sheet sheet) throws IOException {
         infoMsg(sheet.getName() + " " + CURRENT_TEMPLATE_NAME + "生成 开始");
         int rows = sheet.getRows();
+        int columns = sheet.getColumns();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
             if (BaseConst.SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
@@ -578,6 +670,9 @@ public class FundInfoController extends BaseController implements Initializable 
             String sql = "insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) \nvalues (";
             if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
                 sql = "-- insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) \n-- values (";
+            }
+            if (STD) {
+                sql = sql.replace(")", ", top_flag)");
             }
             // 获取component_kind
             String componentKind = getComponentKind(sheet.getName(), getCellReal(sheet, 5, i));
@@ -612,8 +707,11 @@ public class FundInfoController extends BaseController implements Initializable 
                     + getCell(sheet, 28, i) + ","
                     + getCell(sheet, 29, i) + ","
                     + getCell(sheet, 30, i) + ","
-                    + getCell(sheet, 31, i) + ""
-                    + ");";
+                    + getCell(sheet, 31, i);
+            if (STD) {
+                sql += "," + getCell(sheet, 32, i);
+            }
+            sql += ");";
             bufferedWriter.write(sql);
             bufferedWriter.write("\n");
         }

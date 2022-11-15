@@ -350,7 +350,9 @@ public class ProcessInfoController extends BaseController implements Initializab
         int rows = sheet.getRows();
 
         bufferedWriter.write("-- 一级job配置脚本 begin " + groupName + "\n");
+        boolean freeProcess = false;
         if (groupCode.equals("fund_free_process")) {
+            freeProcess = true;
             groupCode = " ";
             // 自由节点特殊处理，通过job删除
             bufferedWriter.write("delete from tbschedulejob where ta_code='" + taCode + "' and sche_group_code =' '  and sche_job_code like 'fund_free_job%';\n");
@@ -386,6 +388,9 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + ((getCell(sheet, 16, k).equals("null")) ? "'0'" : getCell(sheet, 16, k)) + ", "
                         + ((getCell(sheet, 17, k).equals("null")) ? "' '" : getCell(sheet, 17, k))
                         + ");";
+                if (freeProcess) {
+                    sql = "delete from tbschedulejob where ta_code='" + taCode + "' and sche_job_code = " + getCell(sheet, 2, k) + ";\n" + sql;
+                }
                 parentJobList.add(sql);
                 // 校验job配置合理性
                 String jobCode = sheet.getCell(2, k).getContents();
@@ -445,6 +450,9 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + ((getCell(sheet, 16, k).equals("null")) ? "'0'" : getCell(sheet, 16, k)) + ","
                         + ((getCell(sheet, 17, k).equals("null")) ? "' '" : getCell(sheet, 17, k))
                         + ");";
+                if (freeProcess) {
+                    sql = "delete from tbschedulejob where ta_code='" + taCode + "' and sche_job_code = " + getCell(sheet, 2, k) + ";\n" + sql;
+                }
                 secondJobList.add(sql);
                 // 校验job配置合理性
                 String jobCode = sheet.getCell(2, k).getContents();
