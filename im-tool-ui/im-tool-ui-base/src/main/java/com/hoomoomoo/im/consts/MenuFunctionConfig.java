@@ -60,7 +60,7 @@ public class MenuFunctionConfig {
         // TA工具组件 0-999
         SVN_LOG("10", "提交记录", "/conf/fxml/svnLog.fxml", "svnLog", "svnLog", "menuSvn"),
 
-        SVN_UPDATE("50", "代码更新", "/conf/fxml/svnUpdate.fxml", "svnUpdate", "svnUpdate", "menuSvn"),
+        SVN_UPDATE("50", "文件更新", "/conf/fxml/svnUpdate.fxml", "svnUpdate", "svnUpdate", "menuSvn"),
 
         SVN_REALTIME_STAT("100", "实时统计", "/conf/fxml/svnRealtimeStat.fxml", "svnRealtimeStat", "svnRealtimeStat", "menuSvn"),
 
@@ -68,9 +68,9 @@ public class MenuFunctionConfig {
 
         SCRIPT_UPDATE("200", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "scriptUpdate", "scriptUpdate", "menuScript"),
 
-        PROCESS_INFO("250", "流程信息", "/conf/fxml/processInfo.fxml", "processInfo", "processInfo", "menuScript"),
+        PROCESS_INFO("250", "流程配置", "/conf/fxml/processInfo.fxml", "processInfo", "processInfo", "menuScript"),
 
-        FUND_INFO("300", "基金信息", "/conf/fxml/fundInfo.fxml", "fundInfo", "fundInfo", "menuScript"),
+        FUND_INFO("300", "基金配置", "/conf/fxml/fundInfo.fxml", "fundInfo", "fundInfo", "menuScript"),
 
         DATABASE_SCRIPT("310", "执行脚本", "/conf/fxml/databaseScript.fxml", "databaseScript", "databaseScript", "menuScript"),
 

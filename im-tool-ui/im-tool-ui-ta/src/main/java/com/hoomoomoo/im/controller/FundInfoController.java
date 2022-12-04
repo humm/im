@@ -282,6 +282,7 @@ public class FundInfoController extends BaseController implements Initializable 
                         String item = content.get(j);
                         item = item.replace("delete from tbpageelement where id like", "delete from tbpageelement where cast(id as varchar) like");
                         item = item.replace("delete from tbelementgroup where id like", "delete from tbelementgroup where cast(id as varchar) like");
+                        item = item.replace("delete from tbdataelement where id like", "delete from tbdataelement where cast(id as varchar) like");
                         content.set(j, item);
                     }
                 }
@@ -385,7 +386,7 @@ public class FundInfoController extends BaseController implements Initializable 
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " 开始 \n");
         if (BaseConst.STR_1.equals(SCRIPT_TYPE)) {
-            bufferedWriter.write("delete from tbdataelement where table_name = 'tbfundproduct';\n");
+            bufferedWriter.write("delete from tbdataelement where id like '" + getCell(sheet, 1, 1).substring(1, 5) + "%';\n");
         }
         for (int i = 1; i < rows; i++) {
             if (BaseConst.SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
@@ -624,7 +625,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 sql = "-- insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) \n-- values (";
             }
             if (STD) {
-                sql = sql.replace(")", ", flag)");
+                sql = sql.replace(")", ", flag, reserve)");
             }
             sql += getCell(sheet, 1, i) + ","
                     + getCell(sheet, 2, i) + ","
@@ -633,7 +634,7 @@ public class FundInfoController extends BaseController implements Initializable 
                     + getCell(sheet, 5, i) + ","
                     + getCell(sheet, 6, i);
             if (STD) {
-                sql += "," + getCell(sheet, 7, i);
+                sql += "," + getCell(sheet, 7, i) + "," + getCell(sheet, 8, i);
             }
             sql += ");";
             bufferedWriter.write(sql);

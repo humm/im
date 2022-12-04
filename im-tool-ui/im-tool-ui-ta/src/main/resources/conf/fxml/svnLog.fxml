@@ -85,13 +85,13 @@
                                     <children>
                                         <TableView fx:id="svnLog" layoutY="14.0" onMouseClicked="#showVersion" prefHeight="188.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="match" editable="false" prefWidth="50"
+                                                <TableColumn id="match" editable="false" prefWidth="60"
                                                              sortable="false" text="标志">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="match" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="serialNo" editable="false" prefWidth="150"
+                                                <TableColumn id="serialNo" editable="false" prefWidth="135"
                                                              sortable="false" text="任务单编号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="serialNo" />
