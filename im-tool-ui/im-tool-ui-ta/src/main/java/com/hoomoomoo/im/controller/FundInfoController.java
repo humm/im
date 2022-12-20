@@ -625,7 +625,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 sql = "-- insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) \n-- values (";
             }
             if (STD) {
-                sql = sql.replace(")", ", flag, reserve)");
+                sql = sql.replace(")", ", flag, reserve, app_group)");
             }
             sql += getCell(sheet, 1, i) + ","
                     + getCell(sheet, 2, i) + ","
@@ -634,7 +634,7 @@ public class FundInfoController extends BaseController implements Initializable 
                     + getCell(sheet, 5, i) + ","
                     + getCell(sheet, 6, i);
             if (STD) {
-                sql += "," + getCell(sheet, 7, i) + "," + getCell(sheet, 8, i);
+                sql += "," + getCell(sheet, 7, i) + "," + getCell(sheet, 8, i) + "," + getCell(sheet, 9, i);
             }
             sql += ");";
             bufferedWriter.write(sql);
