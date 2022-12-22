@@ -39,7 +39,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
 
     private List<ShoppingDto> shoppingDtoList;
 
-    private String waitHandlerNum;
+    private int waitHandlerNum;
 
     private String handlerNum;
 
@@ -131,7 +131,8 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
         shoppingDtoList.add(waitAppraise);
         OutputUtils.infoList(waitHandler, shoppingDtoList);
         info(appConfigDto, shoppingDtoList);
-        waitHandlerNum = waitAppraise.getOrderNumValue() + showOrder.getOrderNumValue() + appendAppraise.getOrderNumValue() + serviceAppraise.getOrderNumValue();
+        waitHandlerNum = Integer.valueOf(waitAppraise.getOrderNumValue()) + Integer.valueOf(showOrder.getOrderNumValue())
+                + Integer.valueOf(appendAppraise.getOrderNumValue()) + Integer.valueOf(serviceAppraise.getOrderNumValue());
     }
 
     private void info(AppConfigDto appConfigDto, List<ShoppingDto> shoppingDtoList) {
