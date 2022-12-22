@@ -545,8 +545,10 @@ public class ProcessInfoController extends BaseController implements Initializab
                 }
                 Map map = TaskMemoryCache.getCacheMap(taskCode);
                 if (map == null) {
-                    OutputUtils.info(log, key + "的TASK[" + taskCode + "]在【任务配置】sheet页中不存在");
-                    LoggerUtils.info(key + "的TASK[" + taskCode + "]在【任务配置】sheet页中不存在");
+                    String msg = key + "的TASK[" + taskCode + "]在【任务配置】sheet页中不存在";
+                    OutputUtils.info(errMsg, msg);
+                    OutputUtils.info(log, msg);
+                    LoggerUtils.info(msg);
                     return;
                 }
                 // 校验task配置合理性
