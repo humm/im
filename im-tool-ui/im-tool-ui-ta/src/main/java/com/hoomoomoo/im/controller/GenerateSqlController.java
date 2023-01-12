@@ -140,8 +140,8 @@ public class GenerateSqlController extends BaseController implements Initializab
                 int table = Integer.valueOf(tableNum.getText().trim());
                 String databaseCodeCurrent = databaseCode.getText().trim();
                 String tableCodeCurrent = tableCode.getText().trim();
-                String columnCurrent = column.getText().trim().replaceAll("\\s+", SYMBOL_EMPTY);
-                String queryCurrent = query.getText().trim().replaceAll("\\s+", SYMBOL_EMPTY);
+                String columnCurrent = column.getText().trim().replaceAll("\\s+", SYMBOL_SPACE);
+                String queryCurrent = query.getText().trim().replaceAll("\\s+", SYMBOL_SPACE);
                 if (StringUtils.isBlank(databaseCodeCurrent)) {
                     OutputUtils.info(sql, String.format(MSG_SET, "分库代码"));
                     setProgress(-1);

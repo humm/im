@@ -200,13 +200,13 @@ public class CopyCodeController extends BaseController implements Initializable 
                                         break;
                                     }
                                 }
-                                Iterator<String> iteratorSource = appConfigDto.getReplaceSourceUrl().keySet().iterator();
-                                while (iteratorSource.hasNext()) {
-                                    String key = iteratorSource.next();
-                                    if (fileLocation.contains(key)) {
-                                        fileLocation = fileLocation.replace(key, appConfigDto.getReplaceSourceUrl().get(key));
-                                        break;
-                                    }
+                            }
+                            Iterator<String> iteratorSource = appConfigDto.getReplaceSourceUrl().keySet().iterator();
+                            while (iteratorSource.hasNext()) {
+                                String key = iteratorSource.next();
+                                if (fileLocation.contains(key)) {
+                                    fileLocation = fileLocation.replace(key, appConfigDto.getReplaceSourceUrl().get(key));
+                                    break;
                                 }
                             }
                             if (fileLocation.equals(targetFileLocation)) {

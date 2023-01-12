@@ -66,7 +66,7 @@ public class ConfigSetController implements Initializable {
                         Tab tab = iterator.next();
                         if (tab.getText().equals(CommonUtils.getMenuName(CONFIG_SET.getCode(), CONFIG_SET.getName()))) {
                             try {
-                                Thread.sleep(500);
+                                Thread.sleep(1000);
                             } catch (InterruptedException e) {
                                 LoggerUtils.info(e);
                             }

@@ -112,7 +112,7 @@ public class BaseConst {
     public static final String KEY_TRUNK = "trunk";
     public static final String KEY_DESKTOP = "desktop";
     public static final String KEY_SOURCES = "Sources";
-    public static final String KEY_FIX = "fix";
+    public static final String KEY_FIX = "fix/FUND";
     public static final String KEY_B = "B";
     public static final String KEY_BACKUP = "bak";
 
@@ -176,6 +176,7 @@ public class BaseConst {
     public static final String NAME_CONFIG_FILE = "配置文件";
     public static final String NAME_VERSION = "版本号";
     public static final String NAME_APP_TAB_SHOW = "# 默认展示tab页";
+    public static final String NAME_APP_TAB_SHOW_CODE = "app.tab.show";
     public static final String NAME_SVN_STAT = "#################### svn统计";
     public static final String NAME_SVN_STAT_REALTIME = "#################### 实时统计";
     public static final String NAME_SVN_STAT_HISTORY = "#################### 历史统计";

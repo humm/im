@@ -73,6 +73,20 @@ public class InitConfigUtils {
         ConfigCache.initAppCodeCache(appCode);
         String pathApp = FileUtils.getFilePath(PATH_APP);
         List<String> content = FileUtils.readNormalFile(pathApp, false);
+        Iterator<String> iterator = content.iterator();
+        boolean flag = false;
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            if (item.contains(NAME_APP_TAB_SHOW_CODE)) {
+                break;
+            }
+            if (flag) {
+                iterator.remove();
+            }
+            if (NAME_APP_TAB_SHOW.equals(item)) {
+                flag = true;
+            }
+        }
         switch (appCode) {
             case APP_CODE_TA:
                 buildConfigByTa(appCode, content);
