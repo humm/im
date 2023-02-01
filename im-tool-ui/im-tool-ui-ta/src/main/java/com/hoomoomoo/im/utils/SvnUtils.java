@@ -80,6 +80,7 @@ public class SvnUtils {
     private static String getVersion(String path) {
         String version = KEY_TRUNK;
         if (path.contains(KEY_FIX) && path.contains(KEY_SOURCES)) {
+            path = path.replace(KEY_FUND, SYMBOL_EMPTY);
             version = path.substring(path.indexOf(KEY_FIX) + KEY_FIX.length() + 1, path.indexOf(KEY_SOURCES) - 1);
         }
         return version;

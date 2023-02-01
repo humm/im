@@ -112,9 +112,10 @@ public class BaseConst {
     public static final String KEY_TRUNK = "trunk";
     public static final String KEY_DESKTOP = "desktop";
     public static final String KEY_SOURCES = "Sources";
-    public static final String KEY_FIX = "fix/FUND";
+    public static final String KEY_FIX = "fix";
     public static final String KEY_B = "B";
     public static final String KEY_BACKUP = "bak";
+    public static final String KEY_FUND = "FUND/";
 
     public static final String KEY_COLUMN_TYPE_DATE = "date";
     public static final String KEY_COLUMN_TYPE_INTEGER = "integer";
@@ -142,6 +143,7 @@ public class BaseConst {
     public static final String FILE_TYPE_ROUTE = ".js";
     public static final String FILE_TYPE_CONF = ".conf";
     public static final String FILE_TYPE_RECORD = ".record";
+    public static final String FILE_TYPE_RPX = ".rpx";
 
     public static final String NAME_DELETE = " 删除";
     public static final String NAME_END = "结束";
