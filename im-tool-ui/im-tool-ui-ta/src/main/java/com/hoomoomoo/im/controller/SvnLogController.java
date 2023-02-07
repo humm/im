@@ -100,7 +100,7 @@ public class SvnLogController extends BaseController implements Initializable {
         OutputUtils.clearLog(modifyNo);
         OutputUtils.clearLog(svnTimes);
         OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
-        svnVersion.getSelectionModel().select(SYMBOL_EMPTY);
+        svnVersion.getSelectionModel().select(KEY_TRUNK);
         execute(true, STR_1);
     }
 
@@ -156,7 +156,6 @@ public class SvnLogController extends BaseController implements Initializable {
                 copy.setDisable(true);
                 Date date = new Date();
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                Iterator<String> iterator = appConfigDto.getSvnUrl().keySet().iterator();
                 List<LogDto> logDtoList = new ArrayList<>(16);
                 int maxTime = times;
                 if (StringUtils.isNotBlank(modifyNo)) {
@@ -165,10 +164,22 @@ public class SvnLogController extends BaseController implements Initializable {
                 } else {
                     appConfigDto.setSvnMaxRevision(String.valueOf(maxVersionConfig));
                 }
+                String versionValue = String.valueOf(svnVersion.getValue());
+                if (KEY_TRUNK.equals(versionValue)) {
+                    appConfigDto.setSvnRep(appConfigDto.getSvnUrl().get(KEY_TRUNK));
+                } else {
+                    String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
+                    if (versionValue.contains("202203")) {
+                        svnUrl += "FUND/";
+                    }
+                    appConfigDto.setSvnRep(svnUrl + versionValue);
+                }
+                logDtoList.addAll(SvnUtils.getSvnLog(version, modifyNo));
+                /*Iterator<String> iterator = appConfigDto.getSvnUrl().keySet().iterator();
                 while (iterator.hasNext()) {
                     appConfigDto.setSvnRep(iterator.next());
                     logDtoList.addAll(SvnUtils.getSvnLog(version, modifyNo));
-                }
+                }*/
                 Collections.sort(logDtoList, new Comparator<LogDto>() {
                     @Override
                     public int compare(LogDto o1, LogDto o2) {
@@ -269,10 +280,10 @@ public class SvnLogController extends BaseController implements Initializable {
                 OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
             }
             ObservableList svnItems = svnVersion.getItems();
-            svnItems.add(SYMBOL_EMPTY);
-            Map<String, String> svnVersion = appConfigDto.getCopyCodeVersion();
-            if (MapUtils.isNotEmpty(svnVersion)) {
-                Iterator<String> version = svnVersion.keySet().iterator();
+            // svnItems.add(SYMBOL_EMPTY);
+            Map<String, String> svnVersionMap = appConfigDto.getCopyCodeVersion();
+            if (MapUtils.isNotEmpty(svnVersionMap)) {
+                Iterator<String> version = svnVersionMap.keySet().iterator();
                 while (version.hasNext()) {
                     String ver = version.next();
                     if (KEY_DESKTOP.equals(ver)) {
@@ -281,6 +292,7 @@ public class SvnLogController extends BaseController implements Initializable {
                     svnItems.add(ver);
                 }
             }
+            svnVersion.getSelectionModel().select(KEY_TRUNK);
             maxVersionConfig = Integer.valueOf(appConfigDto.getSvnMaxRevision());
         } catch (Exception e) {
             LoggerUtils.info(e);

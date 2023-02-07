@@ -61,7 +61,7 @@ public class BaseController {
                 }
                 schedule.setProgress(progress);
                 OutputUtils.info(scheduleText, String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
-                schedule.requestFocus();
+                //schedule.requestFocus();
             });
         } catch (Exception e) {
             LoggerUtils.info(e);

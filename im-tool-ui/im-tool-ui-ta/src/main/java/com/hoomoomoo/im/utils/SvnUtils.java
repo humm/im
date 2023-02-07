@@ -184,6 +184,9 @@ public class SvnUtils {
 
     private static SVNRepository getSVNRepository(AppConfigDto appConfigDto) throws Exception {
         String svnUrl = appConfigDto.getSvnUrl().get(appConfigDto.getSvnRep());
+        if (StringUtils.isBlank(svnUrl)) {
+            svnUrl = appConfigDto.getSvnRep();
+        }
         String svnName = appConfigDto.getSvnUsername();
         String svnPassword = appConfigDto.getSvnPassword();
         DAVRepositoryFactory.setup();

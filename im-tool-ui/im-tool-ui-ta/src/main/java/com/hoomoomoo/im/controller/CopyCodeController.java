@@ -176,8 +176,8 @@ public class CopyCodeController extends BaseController implements Initializable 
                             }
                             String source = sourcePath.getText();
                             String target = targetPath.getText();
-                            if (source.endsWith(FILE_TYPE_RPX)) {
-                                infoMsg(source + " RPX报表文件不能复制");
+                            if (item.endsWith(FILE_TYPE_RPX)) {
+                                infoMsg("RPX报表文件不能复制");
                                 continue;
                             }
                             item = item.replaceAll("\\\\", "/").replace(source, SYMBOL_EMPTY);
