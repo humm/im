@@ -4,6 +4,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.dto.SvnStatDto;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
@@ -119,43 +120,71 @@ public class SvnUtils {
         Iterator<String> svnIterator = svnRep.keySet().iterator();
         while (svnIterator.hasNext()) {
             String rep = svnIterator.next();
-            item.setSvnRep(rep);
-            SVNRepository repository = getSVNRepository(item);
-            long startRevision = repository.getDatedRevision(start);
-            long endRevision = repository.getDatedRevision(end);
-            repository.log(new String[]{""}, startRevision, endRevision, true, true, svnLogEntry -> {
-                String userName = appConfigDto.getSvnStatUser().get(svnLogEntry.getAuthor());
-                if (StringUtils.isNotBlank(userName)) {
-                    SvnStatDto svnStatDto = svnStat.get(svnLogEntry.getAuthor());
-                    if (svnStatDto != null && svnStatDto.getSvnNum().get(svnLogEntry.getRevision()) == null) {
-                        svnStatDto.getSvnNum().put(svnLogEntry.getRevision(), svnLogEntry.getRevision());
-                        if (StringUtils.isBlank(svnStatDto.getFirstTime())) {
-                            svnStatDto.setFirstTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
+            List<String> repList = new ArrayList<>();
+            if (KEY_TRUNK.equals(rep)) {
+                repList.add(rep);
+            } else {
+                Map<String, String> svnVersionMap = appConfigDto.getCopyCodeVersion();
+                if (MapUtils.isNotEmpty(svnVersionMap)) {
+                    Iterator<String> version = svnVersionMap.keySet().iterator();
+                    while (version.hasNext()) {
+                        String ver = version.next();
+                        if (KEY_DESKTOP.equals(ver) || KEY_TRUNK.equals(ver)) {
+                            continue;
                         }
-                        svnStatDto.setLastTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
-                        svnStatDto.setSubmitTimes(String.valueOf(Integer.valueOf(svnStatDto.getSubmitTimes()) + 1));
-                        Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
-                        Iterator<String> iterator = logMap.keySet().iterator();
-                        while (iterator.hasNext()) {
-                            String key = iterator.next();
-                            SVNLogEntryPath value = logMap.get(key);
-                            String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), SYMBOL_EMPTY);
-                            if (svnStatDto.getFile().get(path) == null) {
-                                svnStatDto.getFile().put(path, 1);
-                                svnStatDto.setFileNum(String.valueOf(Integer.valueOf(svnStatDto.getFileNum()) + 1));
-                                svnStatDto.setFileTimes(String.valueOf(Integer.valueOf(svnStatDto.getFileTimes()) + 1));
-                            } else {
-                                svnStatDto.setFileTimes(String.valueOf(Integer.valueOf(svnStatDto.getFileTimes()) + 1));
-                            }
+                        String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
+                        if (ver.contains("202203")) {
+                            svnUrl += "FUND/";
                         }
-                        String msg = getSvnMsg(svnLogEntry, STR_0);
-                        if (notice) {
-                            String noticeMsg = String.format(MSG_SVN_REALTIME_STAT, userName, svnStatDto.getLastTime(), msg, svnLogEntry.getRevision());
-                            svnStat.get(KEY_NOTICE).setNotice(noticeMsg);
-                        }
+                        repList.add(svnUrl + ver);
                     }
                 }
-            });
+            }
+            for (String svn : repList) {
+                item.setSvnRep(svn);
+                SVNRepository repository = getSVNRepository(item);
+                long startRevision, endRevision;
+                try {
+                    startRevision = repository.getDatedRevision(start);
+                    endRevision = repository.getDatedRevision(end);
+                } catch (Exception e) {
+                    LoggerUtils.info(e);
+                    continue;
+                }
+                repository.log(new String[]{""}, startRevision, endRevision, true, true, svnLogEntry -> {
+                    String userName = appConfigDto.getSvnStatUser().get(svnLogEntry.getAuthor());
+                    if (StringUtils.isNotBlank(userName)) {
+                        SvnStatDto svnStatDto = svnStat.get(svnLogEntry.getAuthor());
+                        if (svnStatDto != null && svnStatDto.getSvnNum().get(svnLogEntry.getRevision()) == null) {
+                            svnStatDto.getSvnNum().put(svnLogEntry.getRevision(), svnLogEntry.getRevision());
+                            if (StringUtils.isBlank(svnStatDto.getFirstTime())) {
+                                svnStatDto.setFirstTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
+                            }
+                            svnStatDto.setLastTime(CommonUtils.getCurrentDateTime8(svnLogEntry.getDate()));
+                            svnStatDto.setSubmitTimes(String.valueOf(Integer.valueOf(svnStatDto.getSubmitTimes()) + 1));
+                            Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
+                            Iterator<String> iterator = logMap.keySet().iterator();
+                            while (iterator.hasNext()) {
+                                String key = iterator.next();
+                                SVNLogEntryPath value = logMap.get(key);
+                                String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), SYMBOL_EMPTY);
+                                if (svnStatDto.getFile().get(path) == null) {
+                                    svnStatDto.getFile().put(path, 1);
+                                    svnStatDto.setFileNum(String.valueOf(Integer.valueOf(svnStatDto.getFileNum()) + 1));
+                                    svnStatDto.setFileTimes(String.valueOf(Integer.valueOf(svnStatDto.getFileTimes()) + 1));
+                                } else {
+                                    svnStatDto.setFileTimes(String.valueOf(Integer.valueOf(svnStatDto.getFileTimes()) + 1));
+                                }
+                            }
+                            String msg = getSvnMsg(svnLogEntry, STR_0);
+                            if (notice) {
+                                String noticeMsg = String.format(MSG_SVN_REALTIME_STAT, userName, svnStatDto.getLastTime(), msg, svnLogEntry.getRevision());
+                                svnStat.get(KEY_NOTICE).setNotice(noticeMsg);
+                            }
+                        }
+                    }
+                });
+            }
         }
         return svnStat;
     }
