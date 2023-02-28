@@ -169,7 +169,7 @@ public class SvnLogController extends BaseController implements Initializable {
                     appConfigDto.setSvnRep(appConfigDto.getSvnUrl().get(KEY_TRUNK));
                 } else {
                     String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
-                    if (versionValue.contains("202203")) {
+                    if (versionValue.contains("FUND")) {
                         svnUrl += "FUND/";
                     }
                     appConfigDto.setSvnRep(svnUrl + versionValue);
