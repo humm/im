@@ -187,6 +187,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                             fileLocation = source + SYMBOL_SLASH + item;
                             String targetFileLocation = target + SYMBOL_SLASH + item;
                             String targetVersionSelected = (String)targetVersion.getSelectionModel().getSelectedItem();
+                            String sourceVersionSelected = (String)sourceVersion.getSelectionModel().getSelectedItem();
                             if (!appConfigDto.getCopyCodeLocationReplaceSkipVersion().contains(targetVersionSelected)) {
                                 Iterator<String> iterator = appConfigDto.getReplaceTargetUrl().keySet().iterator();
                                 while (iterator.hasNext()) {
@@ -205,12 +206,14 @@ public class CopyCodeController extends BaseController implements Initializable 
                                     }
                                 }
                             }
-                            Iterator<String> iteratorSource = appConfigDto.getReplaceSourceUrl().keySet().iterator();
-                            while (iteratorSource.hasNext()) {
-                                String key = iteratorSource.next();
-                                if (fileLocation.contains(key)) {
-                                    fileLocation = fileLocation.replace(key, appConfigDto.getReplaceSourceUrl().get(key));
-                                    break;
+                            if (KEY_TRUNK.equals(sourceVersionSelected)) {
+                                Iterator<String> iteratorSource = appConfigDto.getReplaceSourceUrl().keySet().iterator();
+                                while (iteratorSource.hasNext()) {
+                                    String key = iteratorSource.next();
+                                    if (fileLocation.contains(key)) {
+                                        fileLocation = fileLocation.replace(key, appConfigDto.getReplaceSourceUrl().get(key));
+                                        break;
+                                    }
                                 }
                             }
                             if (fileLocation.equals(targetFileLocation)) {
