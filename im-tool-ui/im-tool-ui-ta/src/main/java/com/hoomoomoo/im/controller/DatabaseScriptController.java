@@ -129,10 +129,12 @@ public class DatabaseScriptController extends BaseController implements Initiali
                                     if (StringUtils.isBlank(checkSql) || checkSql.startsWith(ANNOTATION_TYPE_NORMAL)) {
                                         continue;
                                     }
-                                    if (!procedure && !multSql && !function && checkSql.startsWith("declare")) {
+                                    boolean isProcedure = checkSql.startsWith("declare") || (checkSql.toLowerCase().contains("procedure") && checkSql.toLowerCase().contains("create"));
+                                    boolean isFunction = checkSql.toLowerCase().contains("function") && checkSql.toLowerCase().contains("create");
+                                    if (!procedure && !multSql && !function && isProcedure) {
                                         procedure = true;
                                         sqlPart.append(sql).append(SYMBOL_NEXT_LINE);
-                                    } else if (!procedure && !multSql && !function && checkSql.toLowerCase().contains("function") && checkSql.toLowerCase().contains("create")) {
+                                    } else if (!procedure && !multSql && !function && isFunction) {
                                         function = true;
                                         sqlPart.append(sql).append(SYMBOL_NEXT_LINE);
                                     } else if (!procedure && !multSql && !function && !checkSql.endsWith(SYMBOL_SEMICOLON)) {
@@ -159,7 +161,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                             if (CollectionUtils.isNotEmpty(executeSql)) {
                                 for (String sql : executeSql) {
                                     try {
-                                        procedure = sql.toLowerCase().startsWith("declare");
+                                        procedure = sql.startsWith("declare") || (sql.toLowerCase().contains("procedure") && sql.toLowerCase().contains("create"));;
                                         function = sql.toLowerCase().contains("function") && sql.toLowerCase().contains("create");
                                         if (!procedure && !function && sql.endsWith(SYMBOL_SEMICOLON)) {
                                             sql = sql.substring(0, sql.length() - 1);
