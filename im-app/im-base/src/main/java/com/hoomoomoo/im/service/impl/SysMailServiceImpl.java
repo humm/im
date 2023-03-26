@@ -68,7 +68,7 @@ public class SysMailServiceImpl implements SysMailService {
             mimeMessageHelper.setText(mailModel.getContent(), true);
             javaMailSender.send(mimeMessage);
             SysLogUtils.success(logger, LOG_BUSINESS_TYPE_MAIL_SEND);
-        } catch (MessagingException e) {
+        } catch (Exception e) {
             isSend = false;
             SysLogUtils.exception(logger, LOG_BUSINESS_TYPE_MAIL_SEND, e);
         }
