@@ -294,7 +294,7 @@ public class BaseConst {
 
     public static final String PACKAGE_JAVA_PREFIX = "com.hundsun.lcpt.fund.";
     public static final String PATH_JAVA_PREFIX = "/src/main/java/";
-    public static final String PACKAGE_VUE_PREFIX = "src.biz.console-fund-ta-vue.views.";
+    public static final String PACKAGE_VUE_PREFIX = "views.";
 
     public static final String METHOD_RETURN_PARAM_IDATASET = "com.hundsun.jres.interfaces.share.dataset.IDataset";
     public static final String METHOD_RETURN_PARAM_QUERY_STAT_INFO = "com.hundsun.lcpt.ta.base.webmanager.QueryStatInfo";

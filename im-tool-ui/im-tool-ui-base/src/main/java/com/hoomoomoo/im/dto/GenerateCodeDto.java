@@ -31,11 +31,11 @@ public class GenerateCodeDto {
     private String author;
     private String table;
     private String asyTable;
-    private Map<String, ColumnInfoDto> columnMap;
-    private Map<String, ColumnInfoDto> asyColumnMap;
-    private LinkedHashMap<String, String> primaryKeyMap;
-    private LinkedHashMap<String, String> asyKeyMap;
-    private List<String[]> menuList;
+    private Map<String, ColumnInfoDto> columnMap = new LinkedHashMap<>(16);
+    private Map<String, ColumnInfoDto> asyColumnMap = new LinkedHashMap<>(16);
+    private LinkedHashMap<String, String> primaryKeyMap = new LinkedHashMap<>(16);
+    private LinkedHashMap<String, String> asyKeyMap = new LinkedHashMap<>(16);
+    private List<String[]> menuList = new ArrayList<>();
     private String dtoPackageName;
     private String dtoNameDto;
     private String interfacePackageName;
@@ -60,14 +60,9 @@ public class GenerateCodeDto {
     private String menuOrder;
     private String columnQueryOrder;
     private String menuType;
-    private Map<String, String> fieldTranslateMap;
+    private Map<String, String> fieldTranslateMap = new LinkedHashMap<>(16);
 
     public GenerateCodeDto() {
-        this.columnMap = new LinkedHashMap<>(16);
-        this.asyColumnMap = new LinkedHashMap<>(16);
-        this.primaryKeyMap = new LinkedHashMap<>(16);
-        this.asyKeyMap = new LinkedHashMap<>(16);
-        this.fieldTranslateMap = new LinkedHashMap<>(16);
         this.dtoPackageName = SYMBOL_EMPTY;
         this.dtoNameDto = SYMBOL_EMPTY;
         this.interfacePackageName = SYMBOL_EMPTY;
@@ -82,7 +77,6 @@ public class GenerateCodeDto {
         this.importName = SYMBOL_EMPTY;
         this.tableName = SYMBOL_EMPTY;
         this.primaryKey = SYMBOL_EMPTY;
-        this.menuList = new ArrayList<>();
         this.functionCode = SYMBOL_EMPTY;
         this.functionName = SYMBOL_EMPTY;
         this.menuOrder = SYMBOL_EMPTY;

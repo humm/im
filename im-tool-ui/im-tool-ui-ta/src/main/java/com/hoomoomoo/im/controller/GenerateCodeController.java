@@ -203,14 +203,26 @@ public class GenerateCodeController extends BaseController implements Initializa
     void selectRecord(ActionEvent event) {
         String item =  (String)record.getSelectionModel().getSelectedItem();
         try {
-            AppConfigDto appConfigDto = configRecord.get(item).getAppConfigDto();
+            AppConfigDto appConfigSelected;
+            GenerateCodeDto generateCodeDto;
+            if (StringUtils.isBlank(item)) {
+                appConfigSelected = ConfigCache.getConfigCache().getAppConfigDto();
+                generateCodeDto = new GenerateCodeDto();
+                generateCodeDto.setAuthor(appConfigSelected.getGenerateCodeAuthor());
+            } else {
+                appConfigSelected = configRecord.get(item).getAppConfigDto();
+                generateCodeDto = appConfigSelected.getGenerateCodeDto();
+            }
+
             AppConfigDto appConfigDtoCache = ConfigCache.getConfigCache().getAppConfigDto();
-            GenerateCodeDto generateCodeDto = configRecord.get(item).getAppConfigDto().getGenerateCodeDto();
             appConfigDtoCache.setGenerateCodeDto(generateCodeDto);
-            /*OutputUtils.info(javaPath, generateCodeDto.getJavaPath());
-            OutputUtils.info(sqlPath, generateCodeDto.getSqlPath());
-            OutputUtils.info(vuePath, generateCodeDto.getVuePath());
-            OutputUtils.info(routePath, generateCodeDto.getRoutePath());*/
+
+            generateCodeDto.setJavaPath(appConfigDtoCache.getGenerateCodeJavaPath());
+            generateCodeDto.setSqlPath(appConfigDtoCache.getGenerateCodeSqlPath());
+            generateCodeDto.setVuePath(appConfigDtoCache.getGenerateCodeVuePath());
+            generateCodeDto.setRoutePath(appConfigDtoCache.getGenerateCodeRoutePath());
+            generateCodeDto.setFieldTranslateMap(appConfigDtoCache.getFieldTranslateMap());
+
             OutputUtils.info(author, generateCodeDto.getAuthor());
             OutputUtils.info(menuCode1, generateCodeDto.getMenuCode1());
             OutputUtils.info(menuCode2, generateCodeDto.getMenuCode2());
@@ -220,11 +232,11 @@ public class GenerateCodeController extends BaseController implements Initializa
             OutputUtils.info(menuName3, generateCodeDto.getMenuName3());
             OutputUtils.info(dtoCode, generateCodeDto.getDtoCode());
             OutputUtils.info(menuOrder, generateCodeDto.getMenuOrder());
-            OutputUtils.info(menuOrder, generateCodeDto.getMenuOrder());
-            appConfigDto.setGenerateCodeMenuType(generateCodeDto.getMenuType());
-            appConfigDto.setGenerateCodePageType(generateCodeDto.getPageType());
-            appConfigDto.setGenerateCodeDbType(generateCodeDto.getDbType());
-            initComponent(appConfigDto);
+            appConfigSelected.setGenerateCodeMenuType(generateCodeDto.getMenuType());
+            appConfigSelected.setGenerateCodePageType(generateCodeDto.getPageType());
+            appConfigSelected.setGenerateCodeDbType(generateCodeDto.getDbType());
+
+            initComponent(appConfigSelected);
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.getMessage());
@@ -238,10 +250,12 @@ public class GenerateCodeController extends BaseController implements Initializa
         generateCodeDto.getAsyColumnMap().clear();
         generateCodeDto.getPrimaryKeyMap().clear();
         generateCodeDto.getMenuList().clear();
-        /*generateCodeDto.setJavaPath(javaPath.getText());
-        generateCodeDto.setVuePath(vuePath.getText());
-        generateCodeDto.setSqlPath(sqlPath.getText());
-        generateCodeDto.setRoutePath(routePath.getText());*/
+
+        generateCodeDto.setJavaPath(appConfigDto.getGenerateCodeJavaPath());
+        generateCodeDto.setSqlPath(appConfigDto.getGenerateCodeSqlPath());
+        generateCodeDto.setVuePath(appConfigDto.getGenerateCodeVuePath());
+        generateCodeDto.setRoutePath(appConfigDto.getGenerateCodeRoutePath());
+
         generateCodeDto.setAuthor(author.getText());
         generateCodeDto.setDtoCode(dtoCode.getText());
         generateCodeDto.setMenuCode1(menuCode1.getText());
@@ -251,6 +265,7 @@ public class GenerateCodeController extends BaseController implements Initializa
         generateCodeDto.setMenuName2(menuName2.getText());
         generateCodeDto.setMenuName3(menuName3.getText());
         generateCodeDto.setMenuOrder(menuOrder.getText());
+        generateCodeDto.setFieldTranslateMap(appConfigDto.getFieldTranslateMap());
         if (set.isSelected()) {
             generateCodeDto.setPageType(String.valueOf(set.getUserData()));
         } else if (query.isSelected()){
@@ -290,7 +305,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             setProgress(0);
             generateCode(appConfigDto.getGenerateCodeDto());
             updateProgress();
-            buildRecord();
+            initHistoryRecord();
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.getMessage());
@@ -531,10 +546,10 @@ public class GenerateCodeController extends BaseController implements Initializa
             generateCodeDto.setMenuType(appConfigDto.getGenerateCodeMenuType());
             generateCodeDto.setFieldTranslateMap(appConfigDto.getFieldTranslateMap());
 
-            buildRecord();
+            initHistoryRecord();
 
-            if (appConfigDto.getGenerateCodeDefaultLast() && record.getItems().size() != 0) {
-                record.getSelectionModel().select(0);
+            if (appConfigDto.getGenerateCodeDefaultLast() && record.getItems().size() > 1) {
+                record.getSelectionModel().select(1);
                 selectRecord(null);
             }
         } catch (Exception e) {
@@ -571,7 +586,8 @@ public class GenerateCodeController extends BaseController implements Initializa
 
     }
 
-    private void buildRecord() {
+    private void initHistoryRecord() {
+        record.getItems().add(SYMBOL_EMPTY);
         List<String> recordList = null;
         try {
             recordList = FileUtils.readNormalFile(FileUtils.getFilePath(String.format(PATH_RECORD_LOG, GENERATE_CODE.getLogFolder())), false);
@@ -601,8 +617,7 @@ public class GenerateCodeController extends BaseController implements Initializa
                 }
                 configRecord.put(element[0], generateCodeRecord);
 
-                ObservableList recordItems = record.getItems();
-                recordItems.add(element[0]);
+                record.getItems().add(element[0]);
             }
         }
     }

@@ -53,16 +53,12 @@ public class InitTable {
         }
 
         List<ColumnInfoDto> column = generateCodeDto.getColumn();
-        Map<String, String> fieldTranslateMap = generateCodeDto.getFieldTranslateMap();
         if (CollectionUtils.isNotEmpty(column)) {
             for (ColumnInfoDto item : column) {
                 String columnCode = item.getColumnCode();
                 ColumnInfoDto tableColumnConfig = tableColumn.get(columnCode);
                 if (tableColumnConfig != null) {
                     String columnName = item.getColumnName();
-                    if (StringUtils.isBlank(columnName) && fieldTranslateMap.containsKey(columnCode)) {
-                        columnName = fieldTranslateMap.get(columnCode);
-                    }
                     tableColumn.get(columnCode).setColumnName(columnName);
                     tableColumn.get(columnCode).setColumnDict(item.getColumnDict());
                     tableColumn.get(columnCode).setColumnMulti(item.getColumnMulti());
@@ -122,6 +118,7 @@ public class InitTable {
         if (columnList == null || table.length() == 0) {
             throw new Exception("未获取到数据表字段信息");
         }
+        Map<String, String> fieldTranslateMap = generateCodeDto.getFieldTranslateMap();
         int orderNo = 0;
         for (int i = 0; i < columnList.length; i++) {
             String item = columnList[i].trim();
@@ -175,7 +172,11 @@ public class InitTable {
             columnInfo.setColumnWidth(String.valueOf(columnWidth));
             columnInfo.setColumnType(columnTypeLast);
             columnInfo.setColumnPrecision(precision);
-            columnInfo.setColumnName(SYMBOL_EMPTY);
+            if (fieldTranslateMap.containsKey(columnUnderline)) {
+                columnInfo.setColumnName(fieldTranslateMap.get(columnUnderline));
+            } else {
+                columnInfo.setColumnName(SYMBOL_EMPTY);
+            }
             columnInfo.setColumnDict(SYMBOL_EMPTY);
             columnInfo.setColumnOrder(String.valueOf(orderNo));
             columnMap.put(column, columnInfo);
