@@ -176,7 +176,7 @@ public class ConfigCache {
                 // url替换配置
                 if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_SOURCE)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
-                    String code = item.substring(KEY_SVN_URL.length(), index);
+                    String code = item.substring(KEY_COPY_CODE_LOCATION_REPLACE_SOURCE.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
                         String[] location = name.split(SYMBOL_COMMA);
@@ -188,12 +188,24 @@ public class ConfigCache {
                 // url替换配置
                 if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_TARGET)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
-                    String code = item.substring(KEY_SVN_URL.length(), index);
+                    String code = item.substring(KEY_COPY_CODE_LOCATION_REPLACE_TARGET.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
                         String[] location = name.split(SYMBOL_COMMA);
                         if (!DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getReplaceTargetUrl().put(location[0], location[1]);
+                        }
+                    }
+                }
+
+                // 字段翻译配置
+                if (item.startsWith(KEY_FIELD_TRANSLATE)) {
+                    int index = item.indexOf(SYMBOL_EQUALS);
+                    String code = item.substring(KEY_FIELD_TRANSLATE.length(), index);
+                    String name = item.substring(index + 1);
+                    if (StringUtils.isNotBlank(name)) {
+                        if (!DEMO.equalsIgnoreCase(code)) {
+                            appConfigDto.getFieldTranslateMap().put(code.toLowerCase(), name);
                         }
                     }
                 }

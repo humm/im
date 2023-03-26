@@ -66,9 +66,10 @@ public class BaseConst {
     public static final String KEY_SCRIPT_UPDATE_TABLE = "script.update.table.";
     public static final String KEY_SVN_STAT_USER = "svn.stat.user.";
     public static final String KEY_COPY_CODE_VERSION = "copy.code.version.";
-    public static final String KEY_COPY_CODE_LOCATION_REPLACE_SOURCE = "copy.code.location.replace.source";
-    public static final String KEY_COPY_CODE_LOCATION_REPLACE_TARGET = "copy.code.location.replace.target";
+    public static final String KEY_COPY_CODE_LOCATION_REPLACE_SOURCE = "copy.code.location.replace.source.";
+    public static final String KEY_COPY_CODE_LOCATION_REPLACE_TARGET = "copy.code.location.replace.target.";
     public static final String KEY_SVN_URL = "svn.url.";
+    public static final String KEY_FIELD_TRANSLATE = "generate.code.field.translate.";
 
     public static final String KEY_CLASSES = "classes";
     public static final String KEY_NOTICE = "notice";
@@ -237,8 +238,7 @@ public class BaseConst {
     public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请更新京东Cookie";
     public static final String MSG_AUTO_APPRAISE = "自动评价评价";
     public static final String MSG_SET = "请设置[ %s ]\n";
-    public static final String MSG_MENU_STYLE = "格式[ 一级菜单.二级菜单.三级菜单 ]";
-    public static final String MSG_MENU_STYLE_ERROR = "[ %s ]格式错误";
+    public static final String MSG_MENU_STYLE = "格式[ 一级菜单 二级菜单 三级菜单 ]";
     public static final String MSG_APP_TITLE = "【%s: %s】";
 
 
@@ -336,6 +336,9 @@ public class BaseConst {
     public static final String PAGE_TYPE_SET = "1";
     public static final String PAGE_TYPE_QUERY = "2";
     public static final String PAGE_TYPE_QUERY_CONFIG = "3";
+
+    public static final String MENU_TYPE_FUND = "1";
+    public static final String MENU_TYPE_ACCOUNT = "2";
 
     public static final Integer JD_APPRAISE_LENGTH_MIN = 30;
     public static final Integer JD_APPRAISE_LENGTH_MAX = 450;

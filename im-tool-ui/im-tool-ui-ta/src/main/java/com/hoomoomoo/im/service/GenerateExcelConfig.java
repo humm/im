@@ -38,19 +38,23 @@ public class GenerateExcelConfig {
         content.append("public class " + fileName + " {").append(SYMBOL_NEXT_LINE_2);
         content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(SYMBOL_NEXT_LINE_2);
 
-        content.append("    // 请检查各项配置数据是否正确, 特别是配置项isRequired").append(SYMBOL_NEXT_LINE_2);
-
         Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
         Map<String, String> primaryKeyMap = generateCodeDto.getPrimaryKeyMap();
+        int colum = 0;
         while (iterator.hasNext()) {
             String column = iterator.next();
             ColumnInfoDto columnInfo = tableColumn.get(column);
             if (GenerateCommon.skipColumn(columnInfo)) {
                 continue;
             }
+            colum += 5;
             boolean required = STR_1.equals(columnInfo.getColumnRequired());
-            content.append("    @FundExcelUpLoadField(title = \"" + columnInfo.getColumnName() + "\", colum = 1, claz = " + fileName + ".class, isRequired = " + required);
+            if (required) {
+                content.append("    @FundExcelUpLoadField(title = \"" + columnInfo.getColumnName() + "\", colum = " + colum + ", claz = " + fileName + ".class, isRequired = " + required);
+            } else {
+                content.append("    @FundExcelUpLoadField(title = \"" + columnInfo.getColumnName() + "\", colum = " + colum + ", claz = " + fileName + ".class");
+            }
             if (StringUtils.isNotEmpty(columnInfo.getColumnDict())) {
                 content.append(", type = DICT, dict = \"" + columnInfo.getColumnDict() + "\"");
             }
@@ -58,11 +62,14 @@ public class GenerateExcelConfig {
                 content.append(", primaryKey = true");
             }
             if (column.contains(KEY_PRD_CODE)) {
-                content.append(SYMBOL_NEXT_LINE).append("            , checkMethod = \"[{\\\"validator\\\":\\\"checkIsAllProductExist\\\",\\\"message\\\":\\\"基金代码不存在或者状态为【6:基金终止】或【9:发行失败】\\\"}]\"");
+                content.append(",");
+                content.append(SYMBOL_NEXT_LINE).append("            checkMethod = \"[{\\\"validator\\\":\\\"checkIsAllProductExist\\\",\\\"message\\\":\\\"基金代码不存在或者状态为【6:基金终止】或【9:发行失败】\\\"}]\"");
             } else if (column.contains(KEY_SELLER_CODE)) {
-                content.append(SYMBOL_NEXT_LINE).append("            , checkMethod = \"[{\\\"validator\\\":\\\"checkIsAllSeller\\\",\\\"message\\\":\\\"销售商代码不存在或者状态为【T:注销】\\\"}]\"");
+                content.append(",");
+                content.append(SYMBOL_NEXT_LINE).append("            checkMethod = \"[{\\\"validator\\\":\\\"checkIsAllSeller\\\",\\\"message\\\":\\\"销售商代码不存在或者状态为【T:注销】\\\"}]\"");
             } else if (column.contains(KEY_BRANCH_NO)) {
-                content.append(SYMBOL_NEXT_LINE).append("            , checkMethod = \"[{\\\"validator\\\":\\\"checkBranchInfo\\\",\\\"message\\\":\\\"销售商网点代码不存在\\\"}]\"");
+                content.append(",");
+                content.append(SYMBOL_NEXT_LINE).append("            checkMethod = \"[{\\\"validator\\\":\\\"checkBranchInfo\\\",\\\"message\\\":\\\"销售商网点代码不存在\\\"}]\"");
             }
             content.append(")").append(SYMBOL_NEXT_LINE);
             content.append("    private String " + column + ";").append(SYMBOL_NEXT_LINE_2);

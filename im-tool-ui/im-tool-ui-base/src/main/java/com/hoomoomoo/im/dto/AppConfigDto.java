@@ -194,6 +194,10 @@ public class AppConfigDto extends BaseDto {
 
     private String databaseScriptLocation;
 
+    private String generateCodeMenuType;
+
+    private Map<String, String> fieldTranslateMap;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
@@ -210,6 +214,7 @@ public class AppConfigDto extends BaseDto {
         this.replaceSourceUrl = new LinkedHashMap(16);
         this.replaceTargetUrl = new LinkedHashMap(16);
         this.cookieMap = new HashMap<>(16);
+        this.fieldTranslateMap = new HashMap<>(16);
         this.executeType = SYMBOL_EMPTY;
         this.appUser = SYMBOL_EMPTY;
         this.generateCodeDefaultLast = true;

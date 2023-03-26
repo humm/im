@@ -19,8 +19,14 @@ public class GenerateCodeDto {
     private String sqlPath;
     private String vuePath;
     private String routePath;
-    private String menuCode;
-    private String menuName;
+    //private String menuCode;
+    private String menuCode1;
+    private String menuCode2;
+    private String menuCode3;
+    //private String menuName;
+    private String menuName1;
+    private String menuName2;
+    private String menuName3;
     private String dtoCode;
     private String author;
     private String table;
@@ -53,12 +59,15 @@ public class GenerateCodeDto {
     private String functionName;
     private String menuOrder;
     private String columnQueryOrder;
+    private String menuType;
+    private Map<String, String> fieldTranslateMap;
 
     public GenerateCodeDto() {
         this.columnMap = new LinkedHashMap<>(16);
         this.asyColumnMap = new LinkedHashMap<>(16);
         this.primaryKeyMap = new LinkedHashMap<>(16);
         this.asyKeyMap = new LinkedHashMap<>(16);
+        this.fieldTranslateMap = new LinkedHashMap<>(16);
         this.dtoPackageName = SYMBOL_EMPTY;
         this.dtoNameDto = SYMBOL_EMPTY;
         this.interfacePackageName = SYMBOL_EMPTY;
@@ -77,6 +86,7 @@ public class GenerateCodeDto {
         this.functionCode = SYMBOL_EMPTY;
         this.functionName = SYMBOL_EMPTY;
         this.menuOrder = SYMBOL_EMPTY;
+        this.menuType = SYMBOL_EMPTY;
     }
 
 }

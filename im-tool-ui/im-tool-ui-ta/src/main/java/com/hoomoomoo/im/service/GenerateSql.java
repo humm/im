@@ -23,6 +23,11 @@ public class GenerateSql {
         String functionCode = generateCodeDto.getFunctionCode();
         String functionName = generateCodeDto.getFunctionName();
 
+        content.append("-- 自建业务 -- 一级目录 - " + firstMenuName).append(SYMBOL_NEXT_LINE);
+        content.append("delete from tsys_menu where menu_code = '" + secondMenu + "';").append(SYMBOL_NEXT_LINE);
+        content.append("insert into tsys_menu (menu_code, kind_code, trans_code, sub_trans_code, menu_name, menu_arg, menu_icon, window_type, tip, hot_key, parent_code, order_no, open_flag, tree_idx, remark, window_model)").append(SYMBOL_NEXT_LINE);
+        content.append("values ('" + firstMenu + "', 'console-fund-ta-vue', 'menu', 'menu', '" + firstMenuName + "', ' ', 'u-a-systemmenu', ' ', ' ', ' ', 'console-fund-ta-vue', " + generateCodeDto.getMenuOrder() + ", ' ', '/console-fund-ta-vue/" + firstMenu + "/', ' ', ' ');").append(SYMBOL_NEXT_LINE_2);
+
         content.append("-- 自建业务 -- 二级目录 - " + firstMenuName + " - " + secondMenuName + "").append(SYMBOL_NEXT_LINE);
         content.append("delete from tsys_menu where menu_code = '" + secondMenu + "';").append(SYMBOL_NEXT_LINE);
         content.append("insert into tsys_menu (menu_code, kind_code, trans_code, sub_trans_code, menu_name, menu_arg, menu_icon, window_type, tip, hot_key, parent_code, order_no, open_flag, tree_idx, remark, window_model)").append(SYMBOL_NEXT_LINE);
@@ -31,7 +36,7 @@ public class GenerateSql {
         content.append("-- 自建业务 -- 三级目录 - " + firstMenuName + " - " + secondMenuName + " - " + functionName).append(SYMBOL_NEXT_LINE);
         content.append("delete from tsys_menu where menu_code = '" + functionCode + "';").append(SYMBOL_NEXT_LINE);
         content.append("insert into tsys_menu (menu_code, kind_code, trans_code, sub_trans_code, menu_name, menu_arg, menu_icon, window_type, tip, hot_key, parent_code, order_no, open_flag, tree_idx, remark, window_model)").append(SYMBOL_NEXT_LINE);
-        content.append("values ('" + functionCode + "', 'console-fund-ta-vue', '" + functionCode + "', '" + functionCode + "Query', '" + functionName + "', ' ', 'u-a-systemmenu', ' ', ' ', ' ', '" + secondMenu + "', 1, ' ', '/console-fund-ta-vue/" + firstMenu + "/" + secondMenu + "/" + functionCode + "', ' ', ' ');").append(SYMBOL_NEXT_LINE_2);
+        content.append("values ('" + functionCode + "', 'console-fund-ta-vue', '" + functionCode + "', '" + functionCode + "Query', '" + functionName + "', ' ', 'u-a-systemmenu', ' ', ' ', ' ', '" + secondMenu + "', " + generateCodeDto.getMenuOrder() + ", ' ', '/console-fund-ta-vue/" + firstMenu + "/" + secondMenu + "/" + functionCode + "', ' ', ' ');").append(SYMBOL_NEXT_LINE_2);
 
         content.append("-- 自建业务 -- 三级目录 - " + firstMenuName + " - " + secondMenuName + " - " + functionName).append(SYMBOL_NEXT_LINE);
         content.append("delete from tsys_trans where trans_code = '" + functionCode + "';").append(SYMBOL_NEXT_LINE);

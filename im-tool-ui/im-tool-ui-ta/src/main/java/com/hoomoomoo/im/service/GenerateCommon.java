@@ -78,6 +78,7 @@ public class GenerateCommon {
         content.append("     * @author: " + generateCodeDto.getAuthor() + "").append(SYMBOL_NEXT_LINE);
         content.append("     * @date: " + CommonUtils.getCurrentDateTime6() + "").append(SYMBOL_NEXT_LINE);
         content.append("     * @return: " + returnParam).append(SYMBOL_NEXT_LINE);
+        content.append("     * @throws BizBussinessException").append(SYMBOL_NEXT_LINE);
         content.append("     */").append(SYMBOL_NEXT_LINE);
         return content.toString();
     }

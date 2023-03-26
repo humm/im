@@ -68,7 +68,7 @@ public class GenerateService {
         content.append("import java.util.HashMap;").append(SYMBOL_NEXT_LINE);
         content.append("import java.util.Map;").append(SYMBOL_NEXT_LINE);
         content.append("import java.util.List;").append(SYMBOL_NEXT_LINE);
-        content.append("import com.hundsun.lcpt.ta.base.webmanager.QueryStatInfo;").append(SYMBOL_NEXT_LINE);
+        content.append("import com.hundsun.lcpt.ta.web.pub.stat.QueryStatInfo;").append(SYMBOL_NEXT_LINE);
         content.append(initTranslate(generateCodeDto, STR_0)).append(SYMBOL_NEXT_LINE_2);
         content.append(GenerateCommon.generateClassDescribe(generateCodeDto, fileName));
 
@@ -276,7 +276,7 @@ public class GenerateService {
                 Iterator<String> iterator = generateCodeDto.getPrimaryKeyMap().keySet().iterator();
                 int index = 0;
                 while (iterator.hasNext()) {
-                    String key = iterator.next();
+                    String key = iterator.next().toLowerCase();
                     String keyHump = CommonUtils.lineToHump(key);
                     content.append("        String " + keyHump + " = dto.get" + CommonUtils.initialUpper(keyHump) + "();").append(SYMBOL_NEXT_LINE);
                     if (index != 0) {
@@ -444,6 +444,9 @@ public class GenerateService {
         }
         String queryColumn = content.toString();
         int indexEnd = queryColumn.lastIndexOf(",");
+        if (indexEnd == -1) {
+            return queryColumn;
+        }
         return queryColumn.substring(0, indexEnd) + "\"";
     }
 
@@ -461,7 +464,7 @@ public class GenerateService {
                 content.append("        String prdCode = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
                 content.append("        if (!DataUtil.isNullStr(prdCode)) {").append(SYMBOL_NEXT_LINE);
                 content.append("            if (prdCode.contains(IFundConst.CNST_PUNCTUATION_COMMA)) {").append(SYMBOL_NEXT_LINE);
-                content.append("                hss.setWhere(\"a.prd_code in (\" + TaManageUtil.getWhereByList(Arrays.asList(prdCode.split(IFundConst.CNST_PUNCTUATION_COMMA))) + \") \");").append(SYMBOL_NEXT_LINE);
+                content.append("                FundCommonUtil.setHsSqlWhereInByList(hss, \"a.prd_code\", Arrays.asList(prdCode.split(IFundConst.CNST_PUNCTUATION_COMMA)));").append(SYMBOL_NEXT_LINE);
                 content.append("            } else {").append(SYMBOL_NEXT_LINE);
                 content.append("                hss.setWhere(\"a.prd_code\", prdCode);").append(SYMBOL_NEXT_LINE);
                 content.append("            }").append(SYMBOL_NEXT_LINE);
@@ -470,7 +473,7 @@ public class GenerateService {
                 content.append("        String sellerCode = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
                 content.append("        if (!DataUtil.isNullStr(sellerCode)) {").append(SYMBOL_NEXT_LINE);
                 content.append("            if (sellerCode.split(IFundConst.CNST_PUNCTUATION_COMMA).length > 1) {").append(SYMBOL_NEXT_LINE);
-                content.append("                hss.setWhere(\"a.seller_code in (\" + TaManageUtil.getWhereByList(Arrays.asList(sellerCode.split(IFundConst.CNST_PUNCTUATION_COMMA))) + \")\");").append(SYMBOL_NEXT_LINE);
+                content.append("                FundCommonUtil.setHsSqlWhereInByList(hss, \"a.seller_code\", Arrays.asList(sellerCode.split(IFundConst.CNST_PUNCTUATION_COMMA)));").append(SYMBOL_NEXT_LINE);
                 content.append("            } else {").append(SYMBOL_NEXT_LINE);
                 content.append("                hss.setWhere(\"a.seller_code\", sellerCode);").append(SYMBOL_NEXT_LINE);
                 content.append("            }").append(SYMBOL_NEXT_LINE);
@@ -479,7 +482,7 @@ public class GenerateService {
                 content.append("        String branchNo = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
                 content.append("        if (!DataUtil.isNullStr(branchNo)) {").append(SYMBOL_NEXT_LINE);
                 content.append("            if (branchNo.contains(IFundConst.CNST_PUNCTUATION_COMMA)) {").append(SYMBOL_NEXT_LINE);
-                content.append("                hss.setWhere(\"a.branch_no in (\" + TaManageUtil.getWhereByList(Arrays.asList(branchNo.split(IFundConst.CNST_PUNCTUATION_COMMA))) + \")\");").append(SYMBOL_NEXT_LINE);
+                content.append("                FundCommonUtil.setHsSqlWhereInByList(hss, \"a.branch_no\", Arrays.asList(branchNo.split(IFundConst.CNST_PUNCTUATION_COMMA)));").append(SYMBOL_NEXT_LINE);
                 content.append("            } else {").append(SYMBOL_NEXT_LINE);
                 content.append("                hss.setWhere(\"a.branch_no\", branchNo);").append(SYMBOL_NEXT_LINE);
                 content.append("            }").append(SYMBOL_NEXT_LINE);
@@ -491,7 +494,7 @@ public class GenerateService {
                     content.append("        String " + column + " = dto.get" + CommonUtils.initialUpper(column) + "();").append(SYMBOL_NEXT_LINE);
                     content.append("        if (!DataUtil.isNullStr(" + column + ")) {").append(SYMBOL_NEXT_LINE);
                     content.append("            if (" + column + ".contains(IFundConst.CNST_PUNCTUATION_COMMA)) {").append(SYMBOL_NEXT_LINE);
-                    content.append("                hss.setWhere(\"a." + columnUnderline + " in (\" + TaManageUtil.getWhereByList(Arrays.asList(" + column + ".split(IFundConst.CNST_PUNCTUATION_COMMA))) + \")\");").append(SYMBOL_NEXT_LINE);
+                    content.append("                FundCommonUtil.setHsSqlWhereInByList(hss, \"a." + columnUnderline + "\", Arrays.asList(" + column + ".split(IFundConst.CNST_PUNCTUATION_COMMA)));").append(SYMBOL_NEXT_LINE);
                     content.append("            } else {").append(SYMBOL_NEXT_LINE);
                     content.append("                hss.setWhere(\"a." + columnUnderline + "\", " + column + ");").append(SYMBOL_NEXT_LINE);
                     content.append("            }").append(SYMBOL_NEXT_LINE);

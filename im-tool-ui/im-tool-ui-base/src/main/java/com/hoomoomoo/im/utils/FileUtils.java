@@ -547,6 +547,15 @@ public class FileUtils {
                 }
             }
 
+            // 字段翻译配置
+            if (item.startsWith(KEY_FIELD_TRANSLATE)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_FIELD_TRANSLATE);
+                updateContent.addAll(updateConfig);
+                if (CollectionUtils.isNotEmpty(updateConfig)) {
+                    continue;
+                }
+            }
+
             // 更新历史配置项
             Iterator<String> iterator = oldAppConfig.keySet().iterator();
             while (iterator.hasNext()) {

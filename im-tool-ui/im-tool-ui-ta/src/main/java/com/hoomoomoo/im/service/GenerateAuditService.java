@@ -74,8 +74,8 @@ public class GenerateAuditService {
             Iterator<String> iterator = generateCodeDto.getPrimaryKeyMap().keySet().iterator();
             int index = 0;
             while (iterator.hasNext()) {
-                String key = iterator.next();
-                String sourceKey = key;
+                String key = iterator.next().toLowerCase();
+                String sourceKey = key.toLowerCase();
                 String keyHump = CommonUtils.lineToHump(key);
                 String oriKey = "ori_" + key;
                 String oriKeykeyHump = CommonUtils.lineToHump(oriKey);

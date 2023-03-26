@@ -38,8 +38,6 @@ public class GenerateExportConfig {
         content.append("public class " + fileName + " {").append(SYMBOL_NEXT_LINE_2);
         content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(SYMBOL_NEXT_LINE_2);
 
-        content.append("    // 请检查各项配置数据是否正确, 特别是配置项type").append(SYMBOL_NEXT_LINE_2);
-
         Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
         while (iterator.hasNext()) {

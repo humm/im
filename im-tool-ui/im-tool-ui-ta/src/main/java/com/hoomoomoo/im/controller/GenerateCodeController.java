@@ -42,7 +42,7 @@ public class GenerateCodeController extends BaseController implements Initializa
     @FXML
     private AnchorPane generateCode;
 
-    @FXML
+    /*@FXML
     private TextField javaPath;
 
     @FXML
@@ -52,7 +52,7 @@ public class GenerateCodeController extends BaseController implements Initializa
     private TextField sqlPath;
 
     @FXML
-    private TextField routePath;
+    private TextField routePath;*/
 
     @FXML
     private TextField menuOrder;
@@ -79,16 +79,40 @@ public class GenerateCodeController extends BaseController implements Initializa
     private RadioButton dbOrder;
 
     @FXML
+    private RadioButton fund;
+
+    @FXML
+    private RadioButton account;
+
+    @FXML
     private TextField author;
 
     @FXML
     private TextField dtoCode;
 
-    @FXML
-    private TextField menuCode;
+    /*@FXML
+    private TextField menuCode;*/
 
     @FXML
-    private TextField menuName;
+    private TextField menuCode1;
+
+    @FXML
+    private TextField menuCode2;
+
+    @FXML
+    private TextField menuCode3;
+
+   /* @FXML
+    private TextField menuName;*/
+
+    @FXML
+    private TextField menuName1;
+
+    @FXML
+    private TextField menuName2;
+
+    @FXML
+    private TextField menuName3;
 
     @FXML
     private Button table;
@@ -122,6 +146,18 @@ public class GenerateCodeController extends BaseController implements Initializa
         OutputUtils.selected(set, false);
         OutputUtils.selected(query, true);
         OutputUtils.selected(queryConfig, false);
+    }
+
+    @FXML
+    void selectFund(ActionEvent event) {
+        OutputUtils.selected(fund, true);
+        OutputUtils.selected(account, false);
+    }
+
+    @FXML
+    void selectAccount(ActionEvent event) {
+        OutputUtils.selected(account, true);
+        OutputUtils.selected(fund, false);
     }
 
     @FXML
@@ -171,15 +207,21 @@ public class GenerateCodeController extends BaseController implements Initializa
             AppConfigDto appConfigDtoCache = ConfigCache.getConfigCache().getAppConfigDto();
             GenerateCodeDto generateCodeDto = configRecord.get(item).getAppConfigDto().getGenerateCodeDto();
             appConfigDtoCache.setGenerateCodeDto(generateCodeDto);
-            OutputUtils.info(javaPath, generateCodeDto.getJavaPath());
+            /*OutputUtils.info(javaPath, generateCodeDto.getJavaPath());
             OutputUtils.info(sqlPath, generateCodeDto.getSqlPath());
             OutputUtils.info(vuePath, generateCodeDto.getVuePath());
-            OutputUtils.info(routePath, generateCodeDto.getRoutePath());
+            OutputUtils.info(routePath, generateCodeDto.getRoutePath());*/
             OutputUtils.info(author, generateCodeDto.getAuthor());
-            OutputUtils.info(menuCode, generateCodeDto.getMenuCode());
-            OutputUtils.info(menuName, generateCodeDto.getMenuName());
+            OutputUtils.info(menuCode1, generateCodeDto.getMenuCode1());
+            OutputUtils.info(menuCode2, generateCodeDto.getMenuCode2());
+            OutputUtils.info(menuCode3, generateCodeDto.getMenuCode3());
+            OutputUtils.info(menuName1, generateCodeDto.getMenuName1());
+            OutputUtils.info(menuName2, generateCodeDto.getMenuName2());
+            OutputUtils.info(menuName3, generateCodeDto.getMenuName3());
             OutputUtils.info(dtoCode, generateCodeDto.getDtoCode());
             OutputUtils.info(menuOrder, generateCodeDto.getMenuOrder());
+            OutputUtils.info(menuOrder, generateCodeDto.getMenuOrder());
+            appConfigDto.setGenerateCodeMenuType(generateCodeDto.getMenuType());
             appConfigDto.setGenerateCodePageType(generateCodeDto.getPageType());
             appConfigDto.setGenerateCodeDbType(generateCodeDto.getDbType());
             initComponent(appConfigDto);
@@ -196,14 +238,18 @@ public class GenerateCodeController extends BaseController implements Initializa
         generateCodeDto.getAsyColumnMap().clear();
         generateCodeDto.getPrimaryKeyMap().clear();
         generateCodeDto.getMenuList().clear();
-        generateCodeDto.setJavaPath(javaPath.getText());
+        /*generateCodeDto.setJavaPath(javaPath.getText());
         generateCodeDto.setVuePath(vuePath.getText());
         generateCodeDto.setSqlPath(sqlPath.getText());
-        generateCodeDto.setRoutePath(routePath.getText());
+        generateCodeDto.setRoutePath(routePath.getText());*/
         generateCodeDto.setAuthor(author.getText());
         generateCodeDto.setDtoCode(dtoCode.getText());
-        generateCodeDto.setMenuCode(menuCode.getText());
-        generateCodeDto.setMenuName(menuName.getText());
+        generateCodeDto.setMenuCode1(menuCode1.getText());
+        generateCodeDto.setMenuCode2(menuCode2.getText());
+        generateCodeDto.setMenuCode3(menuCode3.getText());
+        generateCodeDto.setMenuName1(menuName1.getText());
+        generateCodeDto.setMenuName2(menuName2.getText());
+        generateCodeDto.setMenuName3(menuName3.getText());
         generateCodeDto.setMenuOrder(menuOrder.getText());
         if (set.isSelected()) {
             generateCodeDto.setPageType(String.valueOf(set.getUserData()));
@@ -222,6 +268,13 @@ public class GenerateCodeController extends BaseController implements Initializa
         } else {
             generateCodeDto.setDbType(String.valueOf(dbOrder.getUserData()));
         }
+
+        if (fund.isSelected()) {
+            generateCodeDto.setMenuType(String.valueOf(fund.getUserData()));
+        } else if (account.isSelected()) {
+            generateCodeDto.setMenuType(String.valueOf(account.getUserData()));
+        }
+
     }
 
     @FXML
@@ -432,7 +485,7 @@ public class GenerateCodeController extends BaseController implements Initializa
         AppConfigDto appConfigDto = null;
         try {
             appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeJavaPath())) {
+            /*if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeJavaPath())) {
                 OutputUtils.info(javaPath, appConfigDto.getGenerateCodeJavaPath());
             }
             if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeSqlPath())) {
@@ -443,15 +496,25 @@ public class GenerateCodeController extends BaseController implements Initializa
             }
             if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeRoutePath())) {
                 OutputUtils.info(routePath, appConfigDto.getGenerateCodeRoutePath());
-            }
+            }*/
             if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeAuthor())) {
                 OutputUtils.info(author, appConfigDto.getGenerateCodeAuthor());
             }
             if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeMenuCode())) {
-                OutputUtils.info(menuCode, appConfigDto.getGenerateCodeMenuCode());
+                String[] menuCode = appConfigDto.getGenerateCodeMenuCode().split(SYMBOL_POINT_SLASH);
+                if (menuCode.length == 3) {
+                    OutputUtils.info(menuCode1, menuCode[0]);
+                    OutputUtils.info(menuCode2, menuCode[1]);
+                    OutputUtils.info(menuCode3, menuCode[2]);
+                }
             }
             if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeMenuName())) {
-                OutputUtils.info(menuName, appConfigDto.getGenerateCodeMenuName());
+                String[] menuName = appConfigDto.getGenerateCodeMenuName().split(SYMBOL_POINT_SLASH);
+                if (menuName.length == 3) {
+                    OutputUtils.info(menuName1, menuName[0]);
+                    OutputUtils.info(menuName2, menuName[1]);
+                    OutputUtils.info(menuName3, menuName[2]);
+                }
             }
 
             initComponent(appConfigDto);
@@ -465,6 +528,8 @@ public class GenerateCodeController extends BaseController implements Initializa
             generateCodeDto.setPageType(appConfigDto.getGenerateCodePageType());
             generateCodeDto.setAuthor(appConfigDto.getGenerateCodeAuthor());
             generateCodeDto.setDbType(appConfigDto.getGenerateCodeDbType());
+            generateCodeDto.setMenuType(appConfigDto.getGenerateCodeMenuType());
+            generateCodeDto.setFieldTranslateMap(appConfigDto.getFieldTranslateMap());
 
             buildRecord();
 
@@ -497,6 +562,13 @@ public class GenerateCodeController extends BaseController implements Initializa
         } else if (BaseConst.DB_TYPE_TRANS_ORDER.equals(dbType)) {
             selectDbOrder(null);
         }
+        String menuType = appConfigDto.getGenerateCodeMenuType();
+        if (MENU_TYPE_FUND.equals(menuType)) {
+            selectFund(null);
+        } else if (MENU_TYPE_ACCOUNT.equals(menuType)) {
+            selectAccount(null);
+        }
+
     }
 
     private void buildRecord() {
@@ -521,7 +593,12 @@ public class GenerateCodeController extends BaseController implements Initializa
                 }
                 GenerateCodeRecord generateCodeRecord = new GenerateCodeRecord();
                 generateCodeRecord.setMenuName(element[0]);
-                generateCodeRecord.setAppConfigDto(JSONObject.parseObject(element[1], AppConfigDto.class));
+                try {
+                    generateCodeRecord.setAppConfigDto(JSONObject.parseObject(element[1], AppConfigDto.class));
+                } catch (Exception e) {
+                    LoggerUtils.info(String.format("历史数据转换错误，不兼容【%s】", element[0]));
+                    continue;
+                }
                 configRecord.put(element[0], generateCodeRecord);
 
                 ObservableList recordItems = record.getItems();

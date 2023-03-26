@@ -320,6 +320,7 @@ public class InitConfigUtils {
         boolean svnUrl = false;
         boolean locationReplaceSource = false;
         boolean locationReplaceTarget = false;
+        boolean fieldTranslate = false;
         ListIterator<String> iterator = content.listIterator();
         while (iterator.hasNext()) {
             String item = iterator.next();
@@ -372,6 +373,13 @@ public class InitConfigUtils {
                 } else {
                     locationReplaceTarget = true;
                     iterator.set("copy.code.location.replace.target.0=");
+                }
+            } else if (item.startsWith(KEY_FIELD_TRANSLATE)) {
+                if (fieldTranslate) {
+                    iterator.remove();
+                } else {
+                    fieldTranslate = true;
+                    iterator.set("generate.code.field.translate.demo=");
                 }
             }
         }

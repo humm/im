@@ -171,27 +171,15 @@ public class TaCommonUtil {
             OutputUtils.info(log, String.format(MSG_SET, "DTO代码"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getMenuCode())) {
+        if (StringUtils.isBlank(generateCodeDto.getMenuCode1()) || StringUtils.isBlank(generateCodeDto.getMenuCode2()) || StringUtils.isBlank(generateCodeDto.getMenuCode3())) {
             OutputUtils.info(log, String.format(MSG_SET, "菜单代码"));
             OutputUtils.info(log, MSG_MENU_STYLE);
             flag = false;
-        } else {
-            if (generateCodeDto.getMenuCode().split(SYMBOL_POINT_SLASH).length != 3) {
-                OutputUtils.info(log, String.format(MSG_MENU_STYLE_ERROR, "菜单代码"));
-                OutputUtils.info(log, MSG_MENU_STYLE);
-                flag = false;
-            }
         }
-        if (StringUtils.isBlank(generateCodeDto.getMenuName())) {
+        if (StringUtils.isBlank(generateCodeDto.getMenuName1()) || StringUtils.isBlank(generateCodeDto.getMenuName2()) || StringUtils.isBlank(generateCodeDto.getMenuName3())) {
             OutputUtils.info(log, String.format(MSG_SET, "菜单名称"));
             OutputUtils.info(log, MSG_MENU_STYLE);
             flag = false;
-        } else {
-            if (generateCodeDto.getMenuName().split(SYMBOL_POINT_SLASH).length != 3) {
-                OutputUtils.info(log, String.format(MSG_MENU_STYLE_ERROR,"菜单名称"));
-                OutputUtils.info(log, MSG_MENU_STYLE);
-                flag = false;
-            }
         }
         if (StringUtils.isEmpty(generateCodeDto.getMenuOrder())) {
             OutputUtils.info(log, String.format(MSG_SET, "菜单顺序"));

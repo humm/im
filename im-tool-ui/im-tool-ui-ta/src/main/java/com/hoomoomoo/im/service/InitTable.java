@@ -53,12 +53,17 @@ public class InitTable {
         }
 
         List<ColumnInfoDto> column = generateCodeDto.getColumn();
+        Map<String, String> fieldTranslateMap = generateCodeDto.getFieldTranslateMap();
         if (CollectionUtils.isNotEmpty(column)) {
             for (ColumnInfoDto item : column) {
                 String columnCode = item.getColumnCode();
                 ColumnInfoDto tableColumnConfig = tableColumn.get(columnCode);
                 if (tableColumnConfig != null) {
-                    tableColumn.get(columnCode).setColumnName(item.getColumnName());
+                    String columnName = item.getColumnName();
+                    if (StringUtils.isBlank(columnName) && fieldTranslateMap.containsKey(columnCode)) {
+                        columnName = fieldTranslateMap.get(columnCode);
+                    }
+                    tableColumn.get(columnCode).setColumnName(columnName);
                     tableColumn.get(columnCode).setColumnDict(item.getColumnDict());
                     tableColumn.get(columnCode).setColumnMulti(item.getColumnMulti());
                     tableColumn.get(columnCode).setColumnRequired(item.getColumnRequired());
@@ -86,17 +91,26 @@ public class InitTable {
         generateCodeDto.setColumnMap(orderColumn(tableColumn));
         generateCodeDto.setColumnQueryOrder(orderColumnQuery(tableColumn));
 
-        String[] menuCode = generateCodeDto.getMenuCode().split(SYMBOL_POINT_SLASH);
-        String[] menuName = generateCodeDto.getMenuName().split(SYMBOL_POINT_SLASH);
-        for (int i = 0; i < menuCode.length; i++) {
-            String[] item = new String[2];
-            item[0] = menuCode[i];
-            item[1] = menuName[i];
-            generateCodeDto.getMenuList().add(item);
-        }
-
-        generateCodeDto.setFunctionCode(menuCode[2]);
-        generateCodeDto.setFunctionName(menuName[2]);
+        String menuCode1 = generateCodeDto.getMenuCode1();
+        String menuCode2 = generateCodeDto.getMenuCode2();
+        String menuCode3 = generateCodeDto.getMenuCode3();
+        String menuName1 = generateCodeDto.getMenuName1();
+        String menuName2 = generateCodeDto.getMenuName2();
+        String menuName3 = generateCodeDto.getMenuName3();
+        String[] item1 = new String[2];
+        item1[0] = menuCode1;
+        item1[1] = menuName1;
+        generateCodeDto.getMenuList().add(item1);
+        String[] item2 = new String[2];
+        item2[0] = menuCode2;
+        item2[1] = menuName2;
+        generateCodeDto.getMenuList().add(item2);
+        String[] item3 = new String[2];
+        item3[0] = menuCode3;
+        item3[1] = menuName3;
+        generateCodeDto.getMenuList().add(item3);
+        generateCodeDto.setFunctionCode(menuCode3);
+        generateCodeDto.setFunctionName(menuName3);
     }
 
     private static Map<String, ColumnInfoDto> getColumn(GenerateCodeDto generateCodeDto, String table,
@@ -120,6 +134,7 @@ public class InitTable {
                     String[] keyArr = key.replaceAll(SYMBOL_S_SLASH, SYMBOL_EMPTY).split(SYMBOL_COMMA);
                     if (keyArr != null) {
                         for (String itemKey : keyArr) {
+                            itemKey = itemKey.toLowerCase();
                             if (GenerateCommon.skipColumn(columnMap.get(CommonUtils.lineToHump(itemKey)), false)) {
                                 continue;
                             }
