@@ -171,6 +171,7 @@ public class SvnLogController extends BaseController implements Initializable {
                     String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
                     if (versionValue.contains("FUND")) {
                         svnUrl += "FUND/";
+                        versionValue += "/Sources/ta/fund";
                     }
                     appConfigDto.setSvnRep(svnUrl + versionValue);
                 }
@@ -257,7 +258,7 @@ public class SvnLogController extends BaseController implements Initializable {
     }
 
     @FXML
-    void selectsvnVersion(ActionEvent event) {
+    void selectSvnVersion(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String version = (String)svnVersion.getSelectionModel().getSelectedItem();
@@ -280,7 +281,6 @@ public class SvnLogController extends BaseController implements Initializable {
                 OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
             }
             ObservableList svnItems = svnVersion.getItems();
-            // svnItems.add(SYMBOL_EMPTY);
             Map<String, String> svnVersionMap = appConfigDto.getCopyCodeVersion();
             if (MapUtils.isNotEmpty(svnVersionMap)) {
                 Iterator<String> version = svnVersionMap.keySet().iterator();

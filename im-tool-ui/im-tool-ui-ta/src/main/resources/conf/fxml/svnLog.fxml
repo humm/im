@@ -41,7 +41,7 @@
                                         <Label layoutX="15.0" layoutY="175.0" prefHeight="15.0" prefWidth="80.0"
                                                text="版本代码" />
                                         <ComboBox fx:id="svnVersion" layoutX="100.0" layoutY="171.0" prefHeight="23.0"
-                                                  prefWidth="290.0" onAction="#selectsvnVersion"/>
+                                                  prefWidth="290.0" onAction="#selectSvnVersion"/>
 
                                         <Button fx:id="svnResetSubmit" layoutX="20.0" layoutY="230.0"
                                                 mnemonicParsing="false" onAction="#svnResetSubmit" prefHeight="35.0"

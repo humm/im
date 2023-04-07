@@ -240,6 +240,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 path.add(transPath);
                 path.add(schedulePath);
                 LoggerUtils.writeProcessInfo(date, path);
+                OutputUtils.info(log, "执行完成");
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 OutputUtils.info(log, e.getMessage());

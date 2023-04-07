@@ -293,6 +293,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 logList.add(productPathPg);
                 logList.add(productPathMysql);
                 LoggerUtils.writeFundInfo(date, logList);
+                infoMsg("执行完成");
                 schedule.setProgress(1);
             } catch (Exception e) {
                 LoggerUtils.info(e);
