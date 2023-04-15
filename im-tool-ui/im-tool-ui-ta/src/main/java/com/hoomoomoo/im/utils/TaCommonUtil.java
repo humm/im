@@ -3,6 +3,7 @@ package com.hoomoomoo.im.utils;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
+import com.hoomoomoo.im.controller.ScriptUpdateController;
 import com.hoomoomoo.im.dto.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -241,4 +242,57 @@ public class TaCommonUtil {
         return svnStatDtoList;
     }
 
+    public static List<String> buildSql(AppConfigDto appConfigDto, List<String> oldSql, List<String> newSql) throws Exception {
+        List<String> sql = new ArrayList<>();
+        if (CollectionUtils.isEmpty(oldSql)) {
+            return sql;
+        }
+        Map<String, String> oldSqlMap = new LinkedHashMap<>();
+        Map<String, String> newSqlMap = new LinkedHashMap<>();
+        List<String> deleteSql = new ArrayList<>();
+        List<String> addSql = new ArrayList<>();
+        for (String item : oldSql) {
+            oldSqlMap.put(item, item);
+        }
+        for (String item : newSql) {
+            newSqlMap.put(item, item);
+        }
+        for (int i=0; i<oldSql.size(); i++) {
+            String item = oldSql.get(i);
+            if (!newSqlMap.containsKey(item) && i != 0) {
+                String partSql = oldSql.get(i-1) + SYMBOL_NEXT_LINE + oldSql.get(i);
+                deleteSql.add(partSql);
+            }
+        }
+        for (int i=0; i<newSql.size(); i++) {
+            String item = newSql.get(i);
+            if (!oldSqlMap.containsKey(item) && i != 0) {
+                String partSql = newSql.get(i-1) + SYMBOL_NEXT_LINE + newSql.get(i);
+                addSql.add(partSql);
+            }
+        }
+        ScriptUpdateController scriptUpdateController = new ScriptUpdateController();
+        appConfigDto.setScriptUpdateGenerateType(STR_1);
+        List<String> delete = scriptUpdateController.generatesql(appConfigDto, String.join(SYMBOL_EMPTY, deleteSql));
+        appConfigDto.setScriptUpdateGenerateType(STR_2);
+        List<String> add = scriptUpdateController.generatesql(appConfigDto, String.join(SYMBOL_EMPTY, addSql));
+        if (CollectionUtils.isEmpty(add)) {
+            sql.addAll(delete);
+        } else {
+            for (String ele : delete) {
+                boolean hasKey = false;
+                inner: for (String item : add) {
+                    if (item.replaceAll(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).contains(ele.replaceAll(SYMBOL_NEXT_LINE, SYMBOL_EMPTY))) {
+                        hasKey = true;
+                        break inner;
+                    }
+                }
+                if (!hasKey) {
+                    sql.add(ele);
+                }
+            }
+            sql.addAll(add);
+        }
+        return sql;
+    }
 }

@@ -263,7 +263,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 LoggerUtils.writeFundInfo(date, logList);
                 infoMsg("生成升级脚本 开始");
                 List<String> sqlInfo = FileUtils.readNormalFile(configSqlPath, false);
-                List<String> sql = buildSql(appConfigDto, cache, sqlInfo);
+                List<String> sql = TaCommonUtil.buildSql(appConfigDto, cache, sqlInfo);
                 if (CollectionUtils.isEmpty(sql)) {
                     sql.add("-- 脚本无差异");
                 }
@@ -279,60 +279,6 @@ public class FundInfoController extends BaseController implements Initializable 
                 scriptSubmit.setDisable(false);
             }
         }).start();
-    }
-
-    private List<String> buildSql(AppConfigDto appConfigDto, List<String> oldSql, List<String> newSql) throws Exception {
-        List<String> sql = new ArrayList<>();
-        if (CollectionUtils.isEmpty(oldSql)) {
-            return sql;
-        }
-        Map<String, String> oldSqlMap = new LinkedHashMap<>();
-        Map<String, String> newSqlMap = new LinkedHashMap<>();
-        List<String> deleteSql = new ArrayList<>();
-        List<String> addSql = new ArrayList<>();
-        for (String item : oldSql) {
-            oldSqlMap.put(item, item);
-        }
-        for (String item : newSql) {
-            newSqlMap.put(item, item);
-        }
-        for (int i=0; i<oldSql.size(); i++) {
-            String item = oldSql.get(i);
-            if (!newSqlMap.containsKey(item) && i != 0) {
-                String partSql = oldSql.get(i-1) + SYMBOL_NEXT_LINE + oldSql.get(i);
-                deleteSql.add(partSql);
-            }
-        }
-        for (int i=0; i<newSql.size(); i++) {
-            String item = newSql.get(i);
-            if (!oldSqlMap.containsKey(item) && i != 0) {
-                String partSql = newSql.get(i-1) + SYMBOL_NEXT_LINE + newSql.get(i);
-                addSql.add(partSql);
-            }
-        }
-        ScriptUpdateController scriptUpdateController = new ScriptUpdateController();
-        appConfigDto.setScriptUpdateGenerateType(STR_1);
-        List<String> delete = scriptUpdateController.generatesql(appConfigDto, String.join(SYMBOL_EMPTY, deleteSql));
-        appConfigDto.setScriptUpdateGenerateType(STR_2);
-        List<String> add = scriptUpdateController.generatesql(appConfigDto, String.join(SYMBOL_EMPTY, addSql));
-        if (CollectionUtils.isEmpty(add)) {
-            sql.addAll(delete);
-        } else {
-            for (String ele : delete) {
-                boolean hasKey = false;
-                inner: for (String item : add) {
-                    if (item.replaceAll(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).contains(ele.replaceAll(SYMBOL_NEXT_LINE, SYMBOL_EMPTY))) {
-                        hasKey = true;
-                        break inner;
-                    }
-                }
-                if (!hasKey) {
-                    sql.add(ele);
-                }
-            }
-            sql.addAll(add);
-        }
-        return sql;
     }
 
     /**
