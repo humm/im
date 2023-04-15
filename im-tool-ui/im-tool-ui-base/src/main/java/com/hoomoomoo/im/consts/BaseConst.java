@@ -178,7 +178,7 @@ public class BaseConst {
     public static final String NAME_CONFIG_LICENSE_DATE = "授权有效日期";
     public static final String NAME_FILE_SAME = "文件一致性";
     public static final String NAME_CONFIG_FILE = "配置文件";
-    public static final String NAME_VERSION = "版本号";
+    public static final String NAME_VERSION = "版本";
     public static final String NAME_APP_TAB_SHOW = "# 默认展示tab页";
     public static final String NAME_APP_TAB_SHOW_CODE = "app.tab.show";
     public static final String NAME_SVN_STAT = "#################### svn统计";

@@ -37,7 +37,7 @@ public class SvnUtils {
         // 最后一次提交记录
         long endRevision = -1;
         SVNDirEntry lastSVNDirEntry = repository.info(SYMBOL_POINT, endRevision);
-        // 开始版本号
+        // 开始版本
         long startRevision = lastSVNDirEntry.getRevision() - Integer.valueOf(appConfigDto.getSvnMaxRevision());
         if (version != 0) {
             startRevision = version;
@@ -135,6 +135,7 @@ public class SvnUtils {
                         String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
                         if (ver.contains("202203")) {
                             svnUrl += "FUND/";
+                            ver += "/Sources/ta/fund";
                         }
                         repList.add(svnUrl + ver);
                     }

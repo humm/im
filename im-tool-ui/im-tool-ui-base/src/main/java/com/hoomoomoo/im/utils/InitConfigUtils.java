@@ -161,11 +161,9 @@ public class InitConfigUtils {
                     if (item.startsWith(NAME_CURRENT_VERSION)) {
                         int index = item.indexOf(":") + 1;
                         String version = item.substring(index);
-                        int versionIndex = version.lastIndexOf(SYMBOL_POINT);
-                        String versionDate = version.substring(0, versionIndex).trim();
-                        String versionNo = version.substring(versionIndex + 1);
-                        if (CommonUtils.getCurrentDateTime10().equals(versionDate.replace(SYMBOL_POINT, SYMBOL_EMPTY))) {
-                            subVersion = String.valueOf(Integer.valueOf(versionNo) + 1);
+                        String versionNo = version.substring(version.indexOf(SYMBOL_POINT) + 1);
+                        if (CommonUtils.getCurrentDateTime12().equals(version.substring(0, 4))) {
+                            subVersion = String.valueOf(Long.valueOf(versionNo) + 1);
                             for (int j=subVersion.length(); j<6; j++) {
                                 subVersion = STR_0 + subVersion;
                             }
@@ -178,7 +176,7 @@ public class InitConfigUtils {
                 }
             }
             StringBuilder statLog = new StringBuilder();
-            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime11().replace(SYMBOL_HYPHEN, SYMBOL_POINT)).append(SYMBOL_POINT).append(subVersion).append(SYMBOL_NEXT_LINE);
+            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime12()).append(SYMBOL_POINT).append(subVersion).append(SYMBOL_NEXT_LINE);
             statLog.append("发版时间: ").append(CommonUtils.getCurrentDateTime1()).append(SYMBOL_NEXT_LINE_2);
             statLog.append("首版时间: ").append("2021-05-06 23:17:56").append(SYMBOL_NEXT_LINE);
             statLog.append("发版次数: ").append(times).append(SYMBOL_NEXT_LINE);

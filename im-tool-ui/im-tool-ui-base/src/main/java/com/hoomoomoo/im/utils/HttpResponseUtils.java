@@ -23,10 +23,10 @@ public class HttpResponseUtils implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         Map<String, String> requestParam = paramGet(exchange);
         requestParam.putAll(paramPost(exchange));
-        LoggerUtils.info("请求版本号: " + requestParam.get(KEY_VERSION));
+        LoggerUtils.info("请求版本: " + requestParam.get(KEY_VERSION));
         exchange.sendResponseHeaders(200, 0);
         OutputStream outputStream = exchange.getResponseBody();
-        String responseMsg = ("返回版本号: " + CommonUtils.getVersion());
+        String responseMsg = ("返回版本: " + CommonUtils.getVersion());
         outputStream.write(responseMsg.getBytes(ENCODING_GBK));
         LoggerUtils.info(responseMsg);
         outputStream.close();
