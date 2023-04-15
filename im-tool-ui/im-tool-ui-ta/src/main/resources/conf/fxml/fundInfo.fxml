@@ -21,8 +21,19 @@
                                     <children>
                                         <Label layoutX="14.0" layoutY="14.0" prefHeight="15.0" prefWidth="80.0"
                                                text="基金Excel" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0"/>
-                                        <Label layoutX="15.0" layoutY="55.0" prefHeight="15.0" prefWidth="80.0"
-                                               text="脚本类型"/>
+                                        <TextField fx:id="filePath" layoutX="90.0" layoutY="11.0" prefHeight="23.0" prefWidth="200.0"/>
+                                        <Button fx:id="selectFile" layoutX="300.0" layoutY="12.0"
+                                                mnemonicParsing="false" onAction="#executeSelect" prefHeight="23.0"
+                                                prefWidth="25.0" text="···"/>
+
+                                        <Label layoutX="15.0" layoutY="60.0" prefHeight="15.0" prefWidth="80.0"
+                                               text="缓存信息"/>
+                                        <Button layoutX="90.0" layoutY="55.0"
+                                                     mnemonicParsing="false" onAction="#executeClear" text="清除缓存"/>
+
+                                        <ProgressIndicator fx:id="schedule" layoutX="390.0" layoutY="30.0" progress="0.0"/>
+                                        <Label fx:id="scheduleText" layoutX="430.0" layoutY="33.0" text="0%"/>
+
                                         <Button fx:id="scriptSubmit" layoutX="230.0" layoutY="100.0"
                                                 mnemonicParsing="false" onAction="#executeSubmit" prefHeight="35.0"
                                                 prefWidth="100.0" text="执行">
@@ -30,20 +41,9 @@
                                                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
                                             </padding>
                                         </Button>
-                                        <ProgressIndicator fx:id="schedule" layoutX="390.0" layoutY="30.0"
-                                                           progress="0.0"/>
-                                        <Label fx:id="scheduleText" layoutX="430.0" layoutY="33.0" text="0%"/>
-                                        <TextField fx:id="filePath" layoutX="90.0" layoutY="11.0" prefHeight="23.0"
-                                                   prefWidth="200.0"/>
-                                        <Button fx:id="selectFile" layoutX="300.0" layoutY="12.0"
-                                                mnemonicParsing="false" onAction="#executeSelect" prefHeight="23.0"
-                                                prefWidth="25.0" text="···"/>
-                                        <RadioButton fx:id="modeAll" layoutX="90.0" layoutY="55.0"
-                                                     mnemonicParsing="false" onAction="#selectModeAll" text="全量"
-                                                     userData="1"/>
-                                        <!--<RadioButton fx:id="modeUpdate" layoutX="160.0" layoutY="55.0"
-                                                     mnemonicParsing="false" onAction="#selectModeUpdate" text="升级"
-                                                     userData="2"/>-->
+
+                                        <Label layoutX="15.0" layoutY="260.0" prefHeight="15.0"
+                                               text="缓存信息用于自动生成升级脚本，完成一次之后需手动清除一次"/>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">

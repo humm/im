@@ -14,6 +14,7 @@ import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -21,6 +22,7 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.FUND_INFO;
 
 /**
@@ -41,12 +43,6 @@ public class FundInfoController extends BaseController implements Initializable 
     private TextField filePath;
 
     @FXML
-    private Button selectFile;
-
-    @FXML
-    private RadioButton modeAll;
-
-    @FXML
     private TableView fundLog;
 
     Map<String, String> COMPONENT_KIND = new ConcurrentHashMap(16);
@@ -57,9 +53,10 @@ public class FundInfoController extends BaseController implements Initializable 
 
     private static String CURRENT_TEMPLATE_NAME;
 
-    private static String SCRIPT_TYPE;
-
     private static boolean STD = false;
+
+    List<String> cache = new ArrayList<>(16);
+
 
     @FXML
     void executeSelect(ActionEvent event) {
@@ -73,15 +70,9 @@ public class FundInfoController extends BaseController implements Initializable 
     }
 
     @FXML
-    void selectModeAll(ActionEvent event) {
-        OutputUtils.selected(modeAll, true);
-        // OutputUtils.selected(modeUpdate, false);
-    }
-
-    @FXML
-    void selectModeUpdate(ActionEvent event) {
-        OutputUtils.selected(modeAll, false);
-        // OutputUtils.selected(modeUpdate, true);
+    void executeClear(ActionEvent event) {
+        cache.clear();
+        infoMsg("缓存清除完成");
     }
 
     @FXML
@@ -95,18 +86,6 @@ public class FundInfoController extends BaseController implements Initializable 
             if (StringUtils.isBlank(filePath.getText())) {
                 infoMsg("请选择基金信息Excel文件");
                 return;
-            }
-            boolean selectModeAll = modeAll.isSelected();
-            // boolean selectModeUpdate = modeUpdate.isSelected();
-            if (selectModeAll == false /*&& selectModeUpdate == false*/) {
-                OutputUtils.selected(modeAll, true);
-                // OutputUtils.selected(modeUpdate, false);
-            }
-            boolean mode = modeAll.isSelected();
-            if (mode) {
-                SCRIPT_TYPE = String.valueOf(modeAll.getUserData());
-            } else {
-                // SCRIPT_TYPE = String.valueOf(modeUpdate.getUserData());
             }
             updateProgress();
             generateScript();
@@ -125,22 +104,6 @@ public class FundInfoController extends BaseController implements Initializable 
                 OutputUtils.info(filePath, appConfigDto.getFundExcelPath());
             }
             String mode = appConfigDto.getFundGenerateMode();
-            if (StringUtils.isBlank(mode)) {
-                OutputUtils.selected(modeAll, false);
-                // OutputUtils.selected(modeUpdate, false);
-                return;
-            }
-            if (BaseConst.STR_1.equals(mode)) {
-                OutputUtils.selected(modeAll, true);
-                // OutputUtils.selected(modeUpdate, false);
-                return;
-            }
-            if (BaseConst.STR_2.equals(mode)) {
-                OutputUtils.selected(modeAll, false);
-                // utputUtils.selected(modeUpdate, true);
-                return;
-            }
-
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -152,6 +115,11 @@ public class FundInfoController extends BaseController implements Initializable 
                 scriptSubmit.setDisable(true);
                 Date date = new Date();
                 OutputUtils.clearLog(fundLog);
+                String configSqlPath = filePath.getText().replace(".xls", ".oracle.sql");
+                if (CollectionUtils.isEmpty(cache)) {
+                    cache = FileUtils.readNormalFile(configSqlPath, false);
+                }
+
                 // 创建生成脚本目录
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 File pathFolder = new File(appConfigDto.getFundGeneratePath());
@@ -293,6 +261,14 @@ public class FundInfoController extends BaseController implements Initializable 
                 logList.add(productPathPg);
                 logList.add(productPathMysql);
                 LoggerUtils.writeFundInfo(date, logList);
+                infoMsg("生成升级脚本 开始");
+                List<String> sqlInfo = FileUtils.readNormalFile(configSqlPath, false);
+                List<String> sql = buildSql(appConfigDto, cache, sqlInfo);
+                if (CollectionUtils.isEmpty(sql)) {
+                    sql.add("-- 脚本无差异");
+                }
+                FileUtils.writeFile(configSqlPath.replace("oracle", "temp"), sql, false);
+                infoMsg("生成升级脚本 结束");
                 infoMsg("执行完成");
                 schedule.setProgress(1);
             } catch (Exception e) {
@@ -303,6 +279,60 @@ public class FundInfoController extends BaseController implements Initializable 
                 scriptSubmit.setDisable(false);
             }
         }).start();
+    }
+
+    private List<String> buildSql(AppConfigDto appConfigDto, List<String> oldSql, List<String> newSql) throws Exception {
+        List<String> sql = new ArrayList<>();
+        if (CollectionUtils.isEmpty(oldSql)) {
+            return sql;
+        }
+        Map<String, String> oldSqlMap = new LinkedHashMap<>();
+        Map<String, String> newSqlMap = new LinkedHashMap<>();
+        List<String> deleteSql = new ArrayList<>();
+        List<String> addSql = new ArrayList<>();
+        for (String item : oldSql) {
+            oldSqlMap.put(item, item);
+        }
+        for (String item : newSql) {
+            newSqlMap.put(item, item);
+        }
+        for (int i=0; i<oldSql.size(); i++) {
+            String item = oldSql.get(i);
+            if (!newSqlMap.containsKey(item) && i != 0) {
+                String partSql = oldSql.get(i-1) + SYMBOL_NEXT_LINE + oldSql.get(i);
+                deleteSql.add(partSql);
+            }
+        }
+        for (int i=0; i<newSql.size(); i++) {
+            String item = newSql.get(i);
+            if (!oldSqlMap.containsKey(item) && i != 0) {
+                String partSql = newSql.get(i-1) + SYMBOL_NEXT_LINE + newSql.get(i);
+                addSql.add(partSql);
+            }
+        }
+        ScriptUpdateController scriptUpdateController = new ScriptUpdateController();
+        appConfigDto.setScriptUpdateGenerateType(STR_1);
+        List<String> delete = scriptUpdateController.generatesql(appConfigDto, String.join(SYMBOL_EMPTY, deleteSql));
+        appConfigDto.setScriptUpdateGenerateType(STR_2);
+        List<String> add = scriptUpdateController.generatesql(appConfigDto, String.join(SYMBOL_EMPTY, addSql));
+        if (CollectionUtils.isEmpty(add)) {
+            sql.addAll(delete);
+        } else {
+            for (String ele : delete) {
+                boolean hasKey = false;
+                inner: for (String item : add) {
+                    if (item.replaceAll(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).contains(ele.replaceAll(SYMBOL_NEXT_LINE, SYMBOL_EMPTY))) {
+                        hasKey = true;
+                        break inner;
+                    }
+                }
+                if (!hasKey) {
+                    sql.add(ele);
+                }
+            }
+            sql.addAll(add);
+        }
+        return sql;
     }
 
     /**
@@ -317,7 +347,7 @@ public class FundInfoController extends BaseController implements Initializable 
         for (int i = 1; i < rows; i++) {
             String column = getCellReal(sheet, 4, i);
             String kind = getCellReal(sheet, 11, i);
-            if (BaseConst.SYMBOL_EMPTY.equals(kind.trim())) {
+            if (SYMBOL_EMPTY.equals(kind.trim())) {
                 COMPONENT_KIND.put(column, "'1'");
             } else {
                 COMPONENT_KIND.put(column, "'" + kind + "'");
@@ -386,18 +416,10 @@ public class FundInfoController extends BaseController implements Initializable 
         infoMsg(sheet.getName() + "生成 开始");
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " 开始 \n");
-        if (BaseConst.STR_1.equals(SCRIPT_TYPE)) {
-            bufferedWriter.write("delete from tbdataelement where id like '" + getCell(sheet, 1, 1).substring(1, 5) + "%';\n");
-        }
+        bufferedWriter.write("delete from tbdataelement where id like '" + getCell(sheet, 1, 1).substring(1, 5) + "%';\n");
         for (int i = 1; i < rows; i++) {
-            if (BaseConst.SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
-            }
-            if (!BaseConst.STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
-                    continue;
-                }
-                bufferedWriter.write("delete from tbdataelement where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, " +
                     "dict_key, rel_table, rel_field, rel_condition, reserve) \nvalues (";
@@ -429,9 +451,6 @@ public class FundInfoController extends BaseController implements Initializable 
      * @param bufferedWriter
      */
     private void writeHeadInfo(BufferedWriter bufferedWriter) throws IOException {
-        if (!BaseConst.STR_1.equals(SCRIPT_TYPE)) {
-            return;
-        }
         infoMsg(CURRENT_TEMPLATE_NAME + " 头部信息生成 开始");
         bufferedWriter.write("-- " + CURRENT_TEMPLATE_NAME + " 头部信息 开始 \n");
         bufferedWriter.write("delete from tbprdtemplate where prd_type = '5' and template_code = '" + CURRENT_TEMPLATE_CODE + "';\n");
@@ -507,17 +526,11 @@ public class FundInfoController extends BaseController implements Initializable 
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (BaseConst.SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 2, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
                 continue;
-            }
-            if (!BaseConst.STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
-                    continue;
-                }
-                bufferedWriter.write("delete from tbprdtemplate where template_code = " + getCell(sheet, 2, i) + ";\n");
             }
             String sql = "insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) \nvalues (";
             if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
@@ -558,17 +571,11 @@ public class FundInfoController extends BaseController implements Initializable 
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (BaseConst.SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 1, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
                 continue;
-            }
-            if (!BaseConst.STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
-                    continue;
-                }
-                bufferedWriter.write("delete from tbelementgroup where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) \nvalues (";
             if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
@@ -609,17 +616,11 @@ public class FundInfoController extends BaseController implements Initializable 
         int columns = sheet.getColumns();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (BaseConst.SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 1, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
                 continue;
-            }
-            if (!BaseConst.STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
-                    continue;
-                }
-                bufferedWriter.write("delete from tbtemplaterelgroup where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) \nvalues (";
             if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
@@ -657,17 +658,11 @@ public class FundInfoController extends BaseController implements Initializable 
         int columns = sheet.getColumns();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (BaseConst.SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 1, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
                 continue;
-            }
-            if (!BaseConst.STR_1.equals(SCRIPT_TYPE)) {
-                if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
-                    continue;
-                }
-                bufferedWriter.write("delete from tbpageelement where id = " + getCell(sheet, 1, i) + ";\n");
             }
             String sql = "insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) \nvalues (";
             if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
