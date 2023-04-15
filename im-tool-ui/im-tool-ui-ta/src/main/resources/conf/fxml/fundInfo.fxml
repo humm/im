@@ -42,8 +42,10 @@
                                             </padding>
                                         </Button>
 
-                                        <Label layoutX="15.0" layoutY="260.0" prefHeight="15.0"
+                                        <Label layoutX="15.0" layoutY="200.0" prefHeight="15.0"
                                                text="缓存信息用于自动生成升级脚本，完成一次之后需手动清除一次"/>
+                                        <Label layoutX="15.0" layoutY="225.0" prefHeight="15.0"
+                                               text="生成升级脚本仅供参考，请核对确认"/>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">

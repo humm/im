@@ -42,8 +42,10 @@
 
                                         <Label layoutX="15.0" layoutY="220.0" prefHeight="15.0"
                                                text="缓存信息用于自动生成升级脚本，完成一次之后需手动清除一次"/>
+                                        <Label layoutX="15.0" layoutY="245.0" prefHeight="15.0"
+                                               text="生成升级脚本仅供参考，请核对确认"/>
 
-                                        <TextArea fx:id="errMsg" layoutX="14.0" layoutY="290.0" prefHeight="280.0"
+                                        <TextArea fx:id="errMsg" layoutX="14.0" layoutY="295.0" prefHeight="280.0"
                                                   prefWidth="480.0" />
                                     </children>
                                 </AnchorPane>
