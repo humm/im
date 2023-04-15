@@ -223,7 +223,7 @@ public class TaCommonUtil {
     }
 
     public static List<SvnStatDto> sortSvnStatDtoList (AppConfigDto appConfigDto, LinkedHashMap<String, SvnStatDto> stat) {
-        List<SvnStatDto> svnStatDtoList = new ArrayList<>();
+        List<SvnStatDto> svnStatDtoList = new ArrayList<>(stat.values());
         Collections.sort(svnStatDtoList, (o1, o2) -> {
             if (BaseConst.STR_1.equals(appConfigDto.getSvnStatHistoryOrderType())) {
                 return Integer.valueOf(o2.getSubmitTimes()) - Integer.valueOf(o1.getSubmitTimes());
@@ -231,14 +231,12 @@ public class TaCommonUtil {
                 return Integer.valueOf(o2.getFileNum()) - Integer.valueOf(o1.getFileNum());
             }
         });
-        Iterator<String> iterator = stat.keySet().iterator();
+        ListIterator<SvnStatDto> iterator = svnStatDtoList.listIterator();
         while (iterator.hasNext()) {
-            String userCode = iterator.next();
-            if (KEY_NOTICE.equals(userCode)) {
-                continue;
+            SvnStatDto item = iterator.next();
+            if (KEY_NOTICE.equals(item.getUserCode())) {
+                iterator.remove();
             }
-            SvnStatDto svnStatDto = stat.get(userCode);
-            svnStatDtoList.add(svnStatDto);
         }
         return svnStatDtoList;
     }
