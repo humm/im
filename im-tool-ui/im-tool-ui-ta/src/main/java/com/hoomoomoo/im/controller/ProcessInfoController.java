@@ -5,6 +5,7 @@ import com.hoomoomoo.im.cache.TaskMemoryCache;
 import com.hoomoomoo.im.cache.TransMemoryCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import com.hoomoomoo.im.utils.TaCommonUtil;
@@ -16,6 +17,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -44,10 +46,7 @@ public class ProcessInfoController extends BaseController implements Initializab
     private TextField filePath;
 
     @FXML
-    private Button selectFile;
-
-    @FXML
-    private TextField taCode;
+    private String taCode = "000000";
 
     @FXML
     private TableView log;
@@ -58,6 +57,9 @@ public class ProcessInfoController extends BaseController implements Initializab
     private Map<String, String> jobToGroup = new HashMap<>(16);
 
     private Map<String, String> taskToJob = new HashMap<>(16);
+
+    List<String> cache = new ArrayList<>(16);
+
 
 
     @FXML
@@ -72,17 +74,36 @@ public class ProcessInfoController extends BaseController implements Initializab
     }
 
     @FXML
+    void executeClear(ActionEvent event) {
+        cache.clear();
+        OutputUtils.info(log, "缓存清除完成");
+    }
+
+    @FXML
     void executeSubmit(ActionEvent event) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, PROCESS_INFO.getName()));
-            if (!TaCommonUtil.checkConfig(log, PROCESS_INFO.getCode())) {
-                return;
-            }
-            setProgress(0);
             if (StringUtils.isBlank(filePath.getText())) {
                 OutputUtils.info(log, "请选择流程信息Excel文件");
                 return;
             }
+            int index = filePath.getText().lastIndexOf("/");
+            if (index == -1) {
+                index = filePath.getText().lastIndexOf("\\");
+            }
+            String path = filePath.getText().substring(0, index);
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (StringUtils.isEmpty(appConfigDto.getProcessGeneratePathSchedule())) {
+                appConfigDto.setProcessGeneratePathSchedule(path);
+            }
+            if (StringUtils.isEmpty(appConfigDto.getProcessGeneratePathTrans())) {
+                appConfigDto.setProcessGeneratePathTrans(path);
+            }
+
+            if (!TaCommonUtil.checkConfig(log, PROCESS_INFO.getCode())) {
+                return;
+            }
+            setProgress(0);
             updateProgress();
             generateScript();
         } catch (Exception e) {
@@ -129,6 +150,12 @@ public class ProcessInfoController extends BaseController implements Initializab
                 File pathFolderTrans = new File(processPathTrans);
                 if (!pathFolderTrans.exists()) {
                     pathFolderTrans.mkdirs();
+                }
+
+                String configSqlPath = filePath.getText().replace("schedule-config.xls", "tbtrans-fund.sql");
+                if (CollectionUtils.isEmpty(cache)) {
+                    cache = FileUtils.readNormalFile(configSqlPath, false);
+                    cache.addAll(FileUtils.readNormalFile(configSqlPath.replace("tbtrans-fund.sql", "tbschedule-fund_000000.sql"), false));
                 }
 
                 // 打开workbook
@@ -186,10 +213,10 @@ public class ProcessInfoController extends BaseController implements Initializab
                     OutputUtils.info(log, "[基本流程信息]sheet页面不存在");
                     return;
                 }
-                writeFlowInfo(taCode.getText(), flowSheet, bufferedWriter);
+                writeFlowInfo(taCode, flowSheet, bufferedWriter);
 
                 Map<String, String> jobWithTaskMap;
-                bufferedWriter.write("delete from tbscheduletask WHERE substr(sche_task_code, 1, 5) = 'fund_' AND ta_code='" + taCode.getText() + "';\n");
+                bufferedWriter.write("delete from tbscheduletask WHERE substr(sche_task_code, 1, 5) = 'fund_' AND ta_code='" + taCode + "';\n");
                 for (Sheet sheet : sheetList) {
                     if (sheet.getName().compareTo("首页") == 0 || sheet.getName().compareTo("基本流程信息") == 0 || sheet.getName().compareTo("任务配置") == 0
                             || sheet.getName().compareTo("交易配置") == 0 || sheet.getName().compareTo("定时任务配置") == 0) {
@@ -211,10 +238,10 @@ public class ProcessInfoController extends BaseController implements Initializab
                     groupName = sheetNames[0];
                     OutputUtils.info(log, "开始生成[" + groupName + "]");
                     // step 3.2 开始写流程文件
-                    jobWithTaskMap = writeJobFile(groupCode, groupName, taCode.getText(), sheet, bufferedWriter);
+                    jobWithTaskMap = writeJobFile(groupCode, groupName, taCode, sheet, bufferedWriter);
                     OutputUtils.info(log, "tbscheduletask生成开始");
                     // 通过 jobTaskMap 和  Cache  生成 sql
-                    writeTaskInfo(taCode.getText(), bufferedWriter, jobWithTaskMap);
+                    writeTaskInfo(taCode, bufferedWriter, jobWithTaskMap);
                     OutputUtils.info(log, "tbscheduletask生成结束");
                 }
 
@@ -225,7 +252,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                     OutputUtils.info(log, "[定时任务配置]sheet页面不存在");
                     return;
                 }
-                writeTriggerInfo(taCode.getText(), triggerSheet, bufferedWriter);
+                writeTriggerInfo(taCode, triggerSheet, bufferedWriter);
                 OutputUtils.info(log, "tbscheduletrigger生成结束");
 
                 // step 3.3 开始写流程文件 tbscheduletaskregistry
@@ -240,6 +267,15 @@ public class ProcessInfoController extends BaseController implements Initializab
                 path.add(transPath);
                 path.add(schedulePath);
                 LoggerUtils.writeProcessInfo(date, path);
+                OutputUtils.info(log, "生成升级脚本 开始");
+                List<String> sqlInfo = FileUtils.readNormalFile(configSqlPath, false);
+                sqlInfo.addAll(FileUtils.readNormalFile(configSqlPath.replace("tbtrans-fund.sql", "tbschedule-fund_000000.sql"), false));
+                List<String> sql = TaCommonUtil.buildSql(appConfigDto, cache, sqlInfo);
+                if (CollectionUtils.isEmpty(sql)) {
+                    sql.add("-- 脚本无差异");
+                }
+                FileUtils.writeFile(configSqlPath.replace("tbtrans-fund", "tbschedule-fund_temp"), sql, false);
+                OutputUtils.info(log, "生成升级脚本 结束");
                 OutputUtils.info(log, "执行完成");
             } catch (Exception e) {
                 LoggerUtils.info(e);

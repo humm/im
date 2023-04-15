@@ -162,7 +162,7 @@ public class InitConfigUtils {
                         int index = item.indexOf(":") + 1;
                         String version = item.substring(index);
                         String versionNo = version.substring(version.indexOf(SYMBOL_POINT) + 1);
-                        if (CommonUtils.getCurrentDateTime12().equals(version.substring(0, 4))) {
+                        if (CommonUtils.getCurrentDateTime12().equals(version.substring(0, 5).trim())) {
                             subVersion = String.valueOf(Long.valueOf(versionNo) + 1);
                             for (int j=subVersion.length(); j<6; j++) {
                                 subVersion = STR_0 + subVersion;

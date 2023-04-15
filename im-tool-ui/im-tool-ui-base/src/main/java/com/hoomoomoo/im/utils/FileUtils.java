@@ -138,6 +138,7 @@ public class FileUtils {
      */
     public static void writeFile(String filePath, String content, String encode, boolean isAppend) throws IOException {
         // 判断文件夹是否存在
+        filePath = filePath.replaceAll("\\\\", SYMBOL_SLASH);
         String folderPath = filePath.substring(0, filePath.lastIndexOf(SYMBOL_SLASH));
         File file = new File(folderPath);
         if (!file.exists()) {

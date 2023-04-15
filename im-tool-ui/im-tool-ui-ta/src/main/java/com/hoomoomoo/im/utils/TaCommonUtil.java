@@ -260,15 +260,23 @@ public class TaCommonUtil {
         for (int i=0; i<oldSql.size(); i++) {
             String item = oldSql.get(i);
             if (!newSqlMap.containsKey(item) && i != 0) {
-                String partSql = oldSql.get(i-1) + SYMBOL_NEXT_LINE + oldSql.get(i);
-                deleteSql.add(partSql);
+                String part = oldSql.get(i);
+                if (part.toLowerCase().startsWith("delete") || part.toLowerCase().startsWith("-- delete")) {
+                    continue;
+                }
+                part = oldSql.get(i-1) + SYMBOL_NEXT_LINE + part;
+                deleteSql.add(part);
             }
         }
         for (int i=0; i<newSql.size(); i++) {
             String item = newSql.get(i);
             if (!oldSqlMap.containsKey(item) && i != 0) {
-                String partSql = newSql.get(i-1) + SYMBOL_NEXT_LINE + newSql.get(i);
-                addSql.add(partSql);
+                String part =  newSql.get(i);
+                if (part.toLowerCase().startsWith("delete") || part.toLowerCase().startsWith("-- delete")) {
+                    continue;
+                }
+                part = newSql.get(i-1) + SYMBOL_NEXT_LINE + part;
+                addSql.add(part);
             }
         }
         ScriptUpdateController scriptUpdateController = new ScriptUpdateController();
@@ -291,7 +299,9 @@ public class TaCommonUtil {
                     sql.add(ele);
                 }
             }
-            sql.addAll(add);
+            for (int i=0; i<add.size(); i = i+2) {
+                sql.add(add.get(i) + add.get(i+1));
+            }
         }
         return sql;
     }

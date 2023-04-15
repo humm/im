@@ -79,14 +79,22 @@ public class FundInfoController extends BaseController implements Initializable 
     void executeSubmit(ActionEvent event) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, FUND_INFO.getName()));
-            if (!TaCommonUtil.checkConfig(fundLog, FUND_INFO.getCode())) {
-                return;
-            }
-            setProgress(0);
             if (StringUtils.isBlank(filePath.getText())) {
                 infoMsg("请选择基金信息Excel文件");
                 return;
             }
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            if (StringUtils.isEmpty(appConfigDto.getFundGeneratePath())) {
+                int index = filePath.getText().lastIndexOf("/");
+                if (index == -1) {
+                    index = filePath.getText().lastIndexOf("\\");
+                }
+                appConfigDto.setFundGeneratePath(filePath.getText().substring(0, index));
+            }
+            if (!TaCommonUtil.checkConfig(fundLog, FUND_INFO.getCode())) {
+                return;
+            }
+            setProgress(0);
             updateProgress();
             generateScript();
         } catch (Exception e) {

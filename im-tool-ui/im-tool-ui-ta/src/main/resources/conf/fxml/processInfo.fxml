@@ -23,18 +23,27 @@
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
                                     <children>
                                         <Label layoutX="14.0" layoutY="14.0" prefHeight="15.0" prefWidth="80.0" text="流程Excel" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                                        <TextField fx:id="filePath" layoutX="90.0" layoutY="11.0" prefHeight="23.0" prefWidth="200.0" />
+                                        <Button fx:id="selectFile" layoutX="300.0" layoutY="12.0" mnemonicParsing="false" onAction="#executeSelect" prefHeight="23.0" prefWidth="25.0" text="···" />
+
+                                        <Label layoutX="15.0" layoutY="60.0" prefHeight="15.0" prefWidth="80.0"
+                                               text="缓存信息"/>
+                                        <Button layoutX="90.0" layoutY="55.0"
+                                                mnemonicParsing="false" onAction="#executeClear" text="清除缓存"/>
+
+                                        <ProgressIndicator fx:id="schedule" layoutX="390.0" layoutY="30.0" progress="0.0" />
+                                        <Label fx:id="scheduleText" layoutX="430.0" layoutY="33.0" text="0%" />
+
                                         <Button fx:id="submit" layoutX="230.0" layoutY="120.0" mnemonicParsing="false" onAction="#executeSubmit" prefHeight="35.0" prefWidth="120.0" text="执行">
                                             <padding>
                                                 <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                                             </padding>
                                         </Button>
-                                        <ProgressIndicator fx:id="schedule" layoutX="390.0" layoutY="30.0" progress="0.0" />
-                                        <Label fx:id="scheduleText" layoutX="430.0" layoutY="33.0" text="0%" />
-                                        <TextField fx:id="filePath" layoutX="90.0" layoutY="11.0" prefHeight="23.0" prefWidth="200.0" />
-                                        <Button fx:id="selectFile" layoutX="300.0" layoutY="12.0" mnemonicParsing="false" onAction="#executeSelect" prefHeight="23.0" prefWidth="25.0" text="···" />
-                                        <Label layoutX="14.0" layoutY="55.0" text="TA代码" />
-                                        <TextField fx:id="taCode" layoutX="90.0" layoutY="55.0" prefHeight="23.0" prefWidth="200.0" />
-                                        <TextArea fx:id="errMsg" layoutX="14.0" layoutY="173.0" prefHeight="400.0"
+
+                                        <Label layoutX="15.0" layoutY="220.0" prefHeight="15.0"
+                                               text="缓存信息用于自动生成升级脚本，完成一次之后需手动清除一次"/>
+
+                                        <TextArea fx:id="errMsg" layoutX="14.0" layoutY="290.0" prefHeight="280.0"
                                                   prefWidth="480.0" />
                                     </children>
                                 </AnchorPane>
