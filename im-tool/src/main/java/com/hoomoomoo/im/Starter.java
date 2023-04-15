@@ -146,7 +146,7 @@ public class Starter {
     private static String SVN_USERNAME = "";
 
     /**
-     * svn 版本号
+     * svn 版本
      */
     private static Long SVN_VERSION = -1L;
 
@@ -1171,7 +1171,7 @@ public class Starter {
             }
         }
 
-        // 版本号选择
+        // 版本选择
         if (!OPERATE_MODE_SVN.equals(OPERATE_MODE)) {
             CommonUtils.println(SINGLE_COLOR, "请选择版本:", BaseConst.SYMBOL_EMPTY);
             Iterator<Map.Entry<String, String[]>> iterator = VERSION_CONFIG.entrySet().iterator();
@@ -1402,7 +1402,7 @@ public class Starter {
                         throw new RuntimeException(String.format("版本[ %s ]配置[ %s ]格式错误", versionName, version));
                     }
                     String[] versionExtend = Arrays.copyOf(versions, versions.length + 2);
-                    // 获取版本号
+                    // 获取版本
                     String[] versionCode = versionName.split(BaseConst.SYMBOL_POINT_2);
                     versionExtend[versionExtend.length - 1] = versionCode[versionCode.length - 1];
                     if (!versionExtend[1].endsWith(BaseConst.SYMBOL_SLASH) && !versionExtend[1].endsWith(BaseConst.SYMBOL_BACKSLASH_2)) {

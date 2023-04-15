@@ -59,7 +59,7 @@ public class ParameterConst {
     public static final String COOKIE_TIMEOUT                                   = "cookieTimeout";
 
     /**
-     * 系统版本号
+     * 系统版本
      */
     public static final String VERSION                                          = "version";
 

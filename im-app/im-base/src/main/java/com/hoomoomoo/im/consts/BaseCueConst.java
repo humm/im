@@ -451,9 +451,9 @@ public class BaseCueConst {
     public static final String CONSOLE_VERSION_TIPS                             = "提示信息";
 
     /**
-     * 版本号
+     * 版本
      */
-    public static final String CONSOLE_VERSION_CODE                             = "版本号";
+    public static final String CONSOLE_VERSION_CODE                             = "版本";
 
     /**
      * 注册信息

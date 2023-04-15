@@ -10,7 +10,7 @@ package com.hoomoomoo.im.consts;
 public class BaseConst {
 
     /**
-     * 系统版本号
+     * 系统版本
      */
     public static final String SYSTEM_VERSION = "1.0.0.0";
 
