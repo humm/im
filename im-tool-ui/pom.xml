@@ -33,7 +33,7 @@
         <jsoup.version>1.13.1</jsoup.version>
         <junrar.version>7.3.0</junrar.version>
         <mybatis.version>3.4.6</mybatis.version>
-        <spring-core.version>5.0.7.RELEASE</spring-core.version>
+        <spring-core.version>5.2.24.RELEASE</spring-core.version>
         <ojdbc6.version>11.2.0.3</ojdbc6.version>
     </properties>
 
