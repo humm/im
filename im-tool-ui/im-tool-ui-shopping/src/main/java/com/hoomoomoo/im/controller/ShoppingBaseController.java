@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -27,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.WAIT_APPRAISE;
@@ -205,5 +207,33 @@ public class ShoppingBaseController extends BaseController{
         Connection connection = Jsoup.connect(requestUrl + "&page=" + page);
         ShoppingCommonUtil.initCookie(appConfigDto, connection);
         return connection.get();
+    }
+
+    public static Document get(Connection connection) throws IOException {
+        return connection.ignoreContentType(true).get();
+    }
+
+    public static Document post(Connection connection) throws IOException {
+        return connection.ignoreContentType(true).post();
+    }
+
+    public static Document post(Connection connection, Map<String, String> requestData, String url) throws IOException {
+        try {
+            return post(connection);
+        } catch (IOException e) {
+            if (MapUtils.isNotEmpty(requestData)) {
+                AppConfigDto appConfigDto = null;
+                try {
+                    appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                } catch (Exception exception) {
+                    LoggerUtils.info(e);
+                }
+                connection = Jsoup.connect(url);
+                ShoppingCommonUtil.initCookie(appConfigDto, connection);
+                requestData.remove(KEY_SCORE);
+                connection.data(requestData);
+            }
+            return post(connection);
+        }
     }
 }

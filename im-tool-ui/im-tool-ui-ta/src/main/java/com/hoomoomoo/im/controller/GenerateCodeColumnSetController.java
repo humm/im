@@ -212,6 +212,10 @@ public class GenerateCodeColumnSetController implements Initializable {
             Map<String, String> queryOrder = new HashMap<>(16);
             for (ColumnInfoDto columnInfoDto : columnInfoDtoList) {
                 String columnUnderline = columnInfoDto.getColumnUnderline();
+                if (StringUtils.isBlank(columnInfoDto.getColumnName())) {
+                    errorInfo.add(columnUnderline + " 名称不能为空");
+                    break;
+                }
                 if (!CommonUtils.isNumber(columnInfoDto.getColumnWidth())) {
                     errorInfo.add(columnUnderline + " 显示宽度只能为整数");
                     break;

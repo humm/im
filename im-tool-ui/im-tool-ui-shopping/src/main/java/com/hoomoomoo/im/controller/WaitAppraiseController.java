@@ -57,8 +57,7 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
         String appraiseMsg = appConfigDto.getJdAppraiseDefault();
         Connection connection = Jsoup.connect(appConfigDto.getJdAppraiseInfo() + "?productId=" + goodsId + "&score=0&sortType=5&page=0&pageSize=10&isShadowSku=0&rid=0&fold=1");
         ShoppingCommonUtil.initCookie(appConfigDto,connection);
-        Document appraise = connection.get();
-        System.out.println(appraise.select("body").text());
+        Document appraise = get(connection);
         JSONObject appraiseInfo = null;
         try {
             appraiseInfo = JSONObject.parseObject(appraise.select("body").text());
@@ -98,7 +97,7 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
         requestData.put(KEY_ANONYMOUS_FLAG, BaseConst.STR_1);
         requestData.put(KEY_CONTENT, URLEncoder.encode(goodsDto.getAppraiseInfo(), ENCODING_UTF8));
         connection.data(requestData);
-        return connection.post();
+        return post(connection, requestData, appConfigDto.getJdAppraiseWaitGoods());
     }
 
     public static ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {

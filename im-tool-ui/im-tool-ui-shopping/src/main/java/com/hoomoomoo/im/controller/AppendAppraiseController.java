@@ -60,7 +60,7 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
         requestData.put(KEY_ANONYMOUS_FLAG, STR_1);
         requestData.put(KEY_SCORE, STR_5);
         connection.data(requestData);
-        return connection.post();
+        return post(connection, requestData, appConfigDto.getJdAppendAppraiseExecute());
     }
 
     public static ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {

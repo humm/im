@@ -63,7 +63,7 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
     public static String serviceType(AppConfigDto appConfigDto, GoodsDto goodsDto) throws IOException {
         Connection connection = Jsoup.connect(appConfigDto.getJdServiceType() + "?sid=145&ot=0&payid=4&shipmentid=70&isCarShopOrder=&isDaojiaOrder=false&oid=" + goodsDto.getOrderId());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);
-        Document service = connection.get();
+        Document service = get(connection);
         JSONObject serviceInfo = JSONObject.parseObject(service.select("body").text());
         int serviceNum = 0;
          try {
@@ -94,7 +94,7 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
             requestData.put("ro900", "900A1");
         }
         connection.data(requestData);
-        return connection.post();
+        return post(connection);
     }
 
     public static ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {

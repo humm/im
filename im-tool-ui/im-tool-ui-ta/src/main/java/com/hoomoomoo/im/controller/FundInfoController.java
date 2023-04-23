@@ -370,7 +370,7 @@ public class FundInfoController extends BaseController implements Initializable 
         infoMsg(sheet.getName() + "生成 开始");
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " 开始 \n");
-        bufferedWriter.write("delete from tbdataelement where id like '" + getCell(sheet, 1, 1).substring(1, 5) + "%';\n");
+        bufferedWriter.write("delete from tbdataelement where table_name = 'tbfundproduct';\n");
         for (int i = 1; i < rows; i++) {
             if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;

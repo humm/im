@@ -3,6 +3,7 @@ package com.hoomoomoo.im.util;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
+import com.hoomoomoo.im.controller.ShoppingBaseController;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.GoodsDto;
 import com.hoomoomoo.im.utils.LoggerUtils;
@@ -150,7 +151,7 @@ public class ShoppingCommonUtil {
         Connection connection = Jsoup.connect(appConfigDto.getJdUser());
         ShoppingCommonUtil.initCookie(appConfigDto, connection);
         try {
-            Document user = connection.get();
+            Document user = ShoppingBaseController.get(connection);
             if (!effectiveJdCookie(user, log, userName, orderNum)) {
                 return false;
             }

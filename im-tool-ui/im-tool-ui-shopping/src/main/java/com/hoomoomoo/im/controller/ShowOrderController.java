@@ -54,7 +54,7 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
         String imgUrl = SYMBOL_EMPTY;
         Connection connection = Jsoup.connect(appConfigDto.getJdShowOrderInfo() + "?productId=" + goodsId);
         ShoppingCommonUtil.initCookie(appConfigDto,connection);
-        Document showOrder = connection.get();
+        Document showOrder = get(connection);
         JSONObject showOrderInfo = JSONObject.parseObject(showOrder.select("body").text());
         if (showOrderInfo != null && !showOrderInfo.isEmpty()) {
             JSONArray images = (JSONArray)((JSONObject)showOrderInfo.get("imgComments")).get("imgList");
@@ -74,7 +74,7 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
         requestData.put(KEY_IMGS, goodsDto.getAppraiseImgUrl());
         requestData.put(KEY_SAVE_STATUS, STR_3);
         connection.data(requestData);
-        return connection.post();
+        return post(connection);
     }
 
     public static ShoppingDto queryData(AppConfigDto appConfigDto, Boolean initLog, TableView orderGoodsList, TableView log, Label orderNum) {
