@@ -133,7 +133,7 @@ public class SvnUtils {
                             continue;
                         }
                         String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
-                        if (ver.contains("202203")) {
+                        if (ver.contains("FUND")) {
                             svnUrl += "FUND/";
                             ver += "/Sources/ta/fund";
                         }
