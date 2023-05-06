@@ -443,6 +443,7 @@ public class InitConfigUtils {
 
         keys.put("copy.code.location.replace.skipAccountVersion", null);
         keys.put("copy.code.location.replace.skipVersion", null);
+        keys.put("copy.code.location.replace.version", null);
 
         keys.put("generate.sql.database.code", null);
         keys.put("generate.sql.table.code", null);

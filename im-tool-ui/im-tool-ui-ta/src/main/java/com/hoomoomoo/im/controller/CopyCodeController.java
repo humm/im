@@ -69,6 +69,8 @@ public class CopyCodeController extends BaseController implements Initializable 
 
     private int successNum;
 
+    private Map<String, Set<String>> locationReplace = new HashMap<>();
+
     @FXML
     void selectNo(ActionEvent event) {
         OutputUtils.selected(no, true);
@@ -86,7 +88,7 @@ public class CopyCodeController extends BaseController implements Initializable 
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String version = (String)sourceVersion.getSelectionModel().getSelectedItem();
-            String path = appConfigDto.getCopyCodeVersion().get(version);
+            String path = getLocation(version, appConfigDto.getCopyCodeVersion().get(version));
             if (version.equalsIgnoreCase(KEY_DESKTOP)) {
                 path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
             }
@@ -102,7 +104,7 @@ public class CopyCodeController extends BaseController implements Initializable 
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String version =  (String)targetVersion.getSelectionModel().getSelectedItem();
-            String path = appConfigDto.getCopyCodeVersion().get(version);
+            String path = getLocation(version, appConfigDto.getCopyCodeVersion().get(version));
             if (version.equalsIgnoreCase(KEY_DESKTOP)) {
                 path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
             }
@@ -270,6 +272,27 @@ public class CopyCodeController extends BaseController implements Initializable 
     public void initialize(URL location, ResourceBundle resources) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            String copyCodeLocationReplaceVersion = appConfigDto.getCopyCodeLocationReplaceVersion();
+            if (StringUtils.isNotBlank(copyCodeLocationReplaceVersion)) {
+                String[] itemList = copyCodeLocationReplaceVersion.split(SYMBOL_SEMICOLON);
+                for (String item : itemList) {
+                    String[] element = item.split(SYMBOL_COLON);
+                    String locationKey = element[0];
+                    String[] locationVersion = element[1].split(SYMBOL_COMMA);
+                    for (String version : locationVersion) {
+                        if (locationReplace.containsKey(version)) {
+                            Set<String> ele = new HashSet<>();
+                            ele.add(locationKey);
+                            locationReplace.put(version, ele);
+                        } else {
+                            Set<String> ele = new HashSet<>();
+                            ele.add(locationKey);
+                            locationReplace.put(version, ele);
+                        }
+                    }
+                }
+            }
+
             ObservableList sourceVersionItems = sourceVersion.getItems();
             ObservableList targetVersionItems = targetVersion.getItems();
             Map<String, String> copyCodeVersion = appConfigDto.getCopyCodeVersion();
@@ -289,7 +312,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                         defaultSource = defaultSource.toUpperCase();
                     }
                     sourceVersion.getSelectionModel().select(defaultSource);
-                    String path = appConfigDto.getCopyCodeVersion().get(defaultSource);
+                    String path = getLocation(defaultSource, appConfigDto.getCopyCodeVersion().get(defaultSource));
                     if (defaultSource.equalsIgnoreCase(KEY_DESKTOP)) {
                         path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
                     }
@@ -301,7 +324,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                         defaultTarget = defaultTarget.toUpperCase();
                     }
                     targetVersion.getSelectionModel().select(defaultTarget);
-                    String path = appConfigDto.getCopyCodeVersion().get(defaultTarget);
+                    String path = getLocation(defaultTarget, appConfigDto.getCopyCodeVersion().get(defaultTarget));
                     if (defaultTarget.equalsIgnoreCase(KEY_DESKTOP)) {
                         path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
                     }
@@ -330,5 +353,17 @@ public class CopyCodeController extends BaseController implements Initializable 
     private String getFileName(String filePath) {
         int index = filePath.lastIndexOf(SYMBOL_SLASH);
         return filePath.substring(index + 1);
+    }
+
+    private String getLocation(String version, String path) {
+        if (!locationReplace.containsKey(version)) {
+            return path;
+        }
+        Iterator<String> iterator = locationReplace.get(version).iterator();
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            path = path.replace(item, SYMBOL_EMPTY);
+        }
+        return path;
     }
 }

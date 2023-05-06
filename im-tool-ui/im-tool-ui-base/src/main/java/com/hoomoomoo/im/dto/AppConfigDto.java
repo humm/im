@@ -116,6 +116,8 @@ public class AppConfigDto extends BaseDto {
 
     private String copyCodeLocationReplaceSkipVersion;
 
+    private String copyCodeLocationReplaceVersion;
+
     private String svnRep;
 
     private String svnStartPrefix;

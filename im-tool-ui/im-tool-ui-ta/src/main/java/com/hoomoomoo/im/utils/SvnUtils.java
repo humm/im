@@ -81,7 +81,7 @@ public class SvnUtils {
     private static String getVersion(String path) {
         String version = KEY_TRUNK;
         if (path.contains(KEY_FIX) && path.contains(KEY_SOURCES)) {
-            path = path.replace(KEY_FUND, SYMBOL_EMPTY);
+            path = path.replace(KEY_FUND_SLASH, SYMBOL_EMPTY);
             version = path.substring(path.indexOf(KEY_FIX) + KEY_FIX.length() + 1, path.indexOf(KEY_SOURCES) - 1);
         }
         return version;
@@ -133,9 +133,9 @@ public class SvnUtils {
                             continue;
                         }
                         String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
-                        if (ver.contains("FUND")) {
-                            svnUrl += "FUND/";
-                            ver += "/Sources/ta/fund";
+                        if (ver.contains(KEY_FUND)) {
+                            svnUrl += KEY_FUND_SLASH;
+                            ver += KEY_SOURCES_TA_FUND;
                         }
                         repList.add(svnUrl + ver);
                     }
