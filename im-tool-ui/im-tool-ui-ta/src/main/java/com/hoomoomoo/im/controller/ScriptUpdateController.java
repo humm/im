@@ -168,7 +168,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             StringBuilder itemsTemp = new StringBuilder();
             for (int k=0; k<source.length; k++) {
                 String item = source[k];
-                if (StringUtils.isEmpty(item)  || item.toLowerCase().startsWith(BaseConst.KEY_DELETE)) {
+                if (StringUtils.isBlank(item)  || item.toLowerCase().startsWith(BaseConst.KEY_DELETE)) {
                     continue;
                 }
                 if (item.startsWith(BaseConst.ANNOTATION_TYPE_NORMAL)) {
