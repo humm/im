@@ -134,11 +134,7 @@ public class SvnUtils {
                         }
                         String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
                         if (ver.contains(KEY_FUND)) {
-                            if (ver.compareTo("TA6.0-FUND.V202304.01.000") >= 0) {
-                                svnUrl += "temp/" + KEY_FUND_SLASH;
-                            } else {
-                                svnUrl += KEY_FUND_SLASH;
-                            }
+                            svnUrl = TaCommonUtil.getSvnUrl(ver, svnUrl);
                             ver += KEY_SOURCES_TA_FUND;
                         }
                         repList.add(svnUrl + ver);
