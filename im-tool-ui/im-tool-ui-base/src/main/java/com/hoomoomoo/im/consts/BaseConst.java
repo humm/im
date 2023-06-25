@@ -120,6 +120,7 @@ public class BaseConst {
     public static final String KEY_FUND_SLASH = "FUND/";
     public static final String KEY_FUND = "FUND";
     public static final String KEY_SOURCES_TA_FUND = "/Sources/ta/fund";
+    public static final String KEY_TEMP = "temp/";
 
     public static final String KEY_COLUMN_TYPE_DATE = "date";
     public static final String KEY_COLUMN_TYPE_INTEGER = "integer";
