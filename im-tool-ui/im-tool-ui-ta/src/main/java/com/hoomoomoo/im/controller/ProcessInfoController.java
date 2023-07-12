@@ -694,61 +694,20 @@ public class ProcessInfoController extends BaseController implements Initializab
                 "\n" +
                 "-- 交易库交易广播配置 多个分库的情况下，修改针对不同的app_name多次执行 \n" +
                 "insert into tbscheduletaskregistry (sche_task_code, app_name, app_group, app_version, \n" +
-                "       app_url, sche_app_isuse)\n" +
-                "select a.sche_task_code, concat('ta-fund-trans-batch', b.area_num) app_name, 'group' app_group, '1.0' app_version, \n" +
-                "       '/ta/fund/trans/batch' app_url, '1' sche_app_isuse\n" +
-                "  from tbscheduletask a, (\n" +
-                "\tselect 1 as area_num from tbareainfo where busin_type = '5' and 1 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 2 as area_num from tbareainfo where busin_type = '5' and 2 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 3 as area_num from tbareainfo where busin_type = '5' and 3 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 4 as area_num from tbareainfo where busin_type = '5' and 4 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 5 as area_num from tbareainfo where busin_type = '5' and 5 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 6 as area_num from tbareainfo where busin_type = '5' and 6 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 7 as area_num from tbareainfo where busin_type = '5' and 7 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 8 as area_num from tbareainfo where busin_type = '5' and 8 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 9 as area_num from tbareainfo where busin_type = '5' and 9 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 10 as area_num from tbareainfo where busin_type = '5' and 10 <= tot_area_num\n" +
-                " ) b  \n" +
+                "       app_url, sche_app_isuse,shard_total_count)\n" +
+                "select a.sche_task_code, concat('ta-fund-trans-batch', b.db_no) app_name, 'group' app_group, '1.0' app_version, \n" +
+                "       '/ta/fund/trans/batch' app_url, '1' sche_app_isuse,case when '{statelessDeploy}'='true' then {TRANSDBNUM} else 1 end shard_total_count\n" +
+                "  from tbscheduletask a, {TRANSDBNOSQL} b\n" +
                 " where substr(a.sche_task_code, 1, 4) = 'fund' \n" +
                 "   and substr(a.function_id, 1, 4) = 'FUND'\n" +
                 "   and a.ta_code = '000000';\n" +
                 "\n" +
                 "-- 账户库交易广播配置 多个分库的情况下，修改针对不同的app_name多次执行 \n" +
                 "insert into tbscheduletaskregistry (sche_task_code, app_name, app_group, app_version, \n" +
-                "       app_url, sche_app_isuse)\n" +
-                "select a.sche_task_code, concat('ta-fund-account-batch', b.area_num) app_name, 'group' app_group, '1" +
-                ".0' app_version, \n" +
-                "       '/ta/acc/fund/batch' app_url, '1' sche_app_isuse\n" +
-                "  from tbscheduletask a, (\n" +
-                "\tselect 1 as area_num from tbareainfo where busin_type = '9' and 1 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 2 as area_num from tbareainfo where busin_type = '9' and 2 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 3 as area_num from tbareainfo where busin_type = '9' and 3 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 4 as area_num from tbareainfo where busin_type = '9' and 4 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 5 as area_num from tbareainfo where busin_type = '9' and 5 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 6 as area_num from tbareainfo where busin_type = '9' and 6 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 7 as area_num from tbareainfo where busin_type = '9' and 7 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 8 as area_num from tbareainfo where busin_type = '9' and 8 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 9 as area_num from tbareainfo where busin_type = '9' and 9 <= tot_area_num\n" +
-                "\tunion all\n" +
-                "\tselect 10 as area_num from tbareainfo where busin_type = '9' and 10 <= tot_area_num\n" +
-                " ) b \n" +
+                "       app_url, sche_app_isuse,shard_total_count)\n" +
+                "select a.sche_task_code, concat('ta-fund-account-batch', b.db_no) app_name, 'group' app_group, '1.0' app_version, \n" +
+                "       '/ta/acc/fund/batch' app_url, '1' sche_app_isuse,case when '{statelessDeploy}'='true' then {ACCDBNUM} else 1 end shard_total_count\n" +
+                "  from tbscheduletask a, {ACCDBNOSQL} b\n" +
                 " where substr(a.sche_task_code, 1, 4) = 'fund' \n" +
                 "   and substr(a.function_id, 1, 4) = 'ACC9'\n" +
                 "   and a.ta_code = '000000';\n";
