@@ -24,7 +24,7 @@ public class GenerateSql {
         String functionName = generateCodeDto.getFunctionName();
 
         content.append("-- 自建业务 -- 一级目录 - " + firstMenuName).append(SYMBOL_NEXT_LINE);
-        content.append("delete from tsys_menu where menu_code = '" + secondMenu + "';").append(SYMBOL_NEXT_LINE);
+        content.append("delete from tsys_menu where menu_code = '" + firstMenu + "';").append(SYMBOL_NEXT_LINE);
         content.append("insert into tsys_menu (menu_code, kind_code, trans_code, sub_trans_code, menu_name, menu_arg, menu_icon, window_type, tip, hot_key, parent_code, order_no, open_flag, tree_idx, remark, window_model)").append(SYMBOL_NEXT_LINE);
         content.append("values ('" + firstMenu + "', 'console-fund-ta-vue', 'menu', 'menu', '" + firstMenuName + "', ' ', 'u-a-systemmenu', ' ', ' ', ' ', 'console-fund-ta-vue', " + generateCodeDto.getMenuOrder() + ", ' ', '/console-fund-ta-vue/" + firstMenu + "/', ' ', ' ');").append(SYMBOL_NEXT_LINE_2);
 
@@ -96,6 +96,7 @@ public class GenerateSql {
         if (PAGE_TYPE_SET.equals(generateCodeDto.getPageType())) {
             content = new StringBuilder();
             content.append("-- 自建业务 -- 三级目录 - " + firstMenuName + " - " + secondMenuName + " - " + functionName).append(SYMBOL_NEXT_LINE);
+            content.append("delete from tbworkflowsubtrans where trans_code = '" + functionCode + "';").append(SYMBOL_NEXT_LINE);
             content.append("insert into tbworkflowsubtrans (trans_code, sub_trans_code, visable, action_class, reserve1, reserve2, reserve3, prd_type)").append(SYMBOL_NEXT_LINE);
             content.append("values ('" + functionCode + "', '" + functionCode + "Add', '1', '" + generateCodeDto.getAuditServicePackageName() + "', ' ', ' ', ' ', '5');").append(SYMBOL_NEXT_LINE);
 

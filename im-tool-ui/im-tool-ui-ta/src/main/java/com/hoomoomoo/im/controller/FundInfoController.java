@@ -269,14 +269,14 @@ public class FundInfoController extends BaseController implements Initializable 
                 logList.add(productPathPg);
                 logList.add(productPathMysql);
                 LoggerUtils.writeFundInfo(date, logList);
-                infoMsg("生成升级脚本 开始");
+                /*infoMsg("生成升级脚本 开始");
                 List<String> sqlInfo = FileUtils.readNormalFile(configSqlPath, false);
                 List<String> sql = TaCommonUtil.buildSql(appConfigDto, cache, sqlInfo);
                 if (CollectionUtils.isEmpty(sql)) {
                     sql.add("-- 脚本无差异");
                 }
                 FileUtils.writeFile(configSqlPath.replace("oracle", "temp"), sql, false);
-                infoMsg("生成升级脚本 结束");
+                infoMsg("生成升级脚本 结束");*/
                 infoMsg("执行完成");
                 schedule.setProgress(1);
             } catch (Exception e) {

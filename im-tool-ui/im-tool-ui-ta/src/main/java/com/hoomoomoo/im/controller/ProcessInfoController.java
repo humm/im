@@ -267,7 +267,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 path.add(transPath);
                 path.add(schedulePath);
                 LoggerUtils.writeProcessInfo(date, path);
-                OutputUtils.info(log, "生成升级脚本 开始");
+                /*OutputUtils.info(log, "生成升级脚本 开始");
                 List<String> sqlInfo = FileUtils.readNormalFile(configSqlPath, false);
                 sqlInfo.addAll(FileUtils.readNormalFile(configSqlPath.replace("tbtrans-fund.sql", "tbschedule-fund_000000.sql"), false));
                 List<String> sql = TaCommonUtil.buildSql(appConfigDto, cache, sqlInfo);
@@ -275,7 +275,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                     sql.add("-- 脚本无差异");
                 }
                 FileUtils.writeFile(configSqlPath.replace("tbtrans-fund", "tbschedule-fund_temp"), sql, false);
-                OutputUtils.info(log, "生成升级脚本 结束");
+                OutputUtils.info(log, "生成升级脚本 结束");*/
                 OutputUtils.info(log, "执行完成");
             } catch (Exception e) {
                 LoggerUtils.info(e);

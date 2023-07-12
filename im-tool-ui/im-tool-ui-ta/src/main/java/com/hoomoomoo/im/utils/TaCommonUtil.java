@@ -307,7 +307,7 @@ public class TaCommonUtil {
     }
 
     public static String getSvnUrl(String ver, String svnUrl) {
-        if (ver.compareTo("TA6.0-FUND.V202304.01.000") >= 0) {
+        if (ver.compareTo("TA6.0-FUND.V202304.01.000") >= 0 && ver.endsWith("000")) {
             svnUrl += "temp/" + KEY_FUND_SLASH;
         } else {
             svnUrl += KEY_FUND_SLASH;
