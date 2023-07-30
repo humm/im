@@ -10,12 +10,14 @@ import java.util.regex.Pattern;
  */
 public class BaseConst {
 
-    // 控制未授权功能控制台打印日志
+    /** 控制未授权功能控制台打印日志 */
     public static final String APP_USER_IM = "im";
-    // 控制svn统计功能
+    /** 控制svn统计功能 */
     public static final String APP_USER_IM_SVN = "im-svn";
-    // 控制服务端控制
+    /** 控制服务端 */
     public static final String APP_USER_IM_SERVER = "im-server";
+    /** 控制效能功能 */
+    public static final String APP_USER_IM_HEP = "im-hep";
 
     public static final String APP_CODE_BASE = "im-tool-ui-base";
     public static final String APP_CODE_TA = "im-tool-ui-ta";
@@ -129,6 +131,31 @@ public class BaseConst {
 
     public static final String KEY_ORDER_TYPE_DESC = "desc";
 
+    public final static String KEY_APP_ID = "app_id";
+    public final static String KEY_APP_KEY = "app_key";
+    public final static String KEY_MESSAGE = "message";
+    public final static String KEY_CODE = "code";
+    public final static String KEY_DATA = "data";
+    public final static String KEY_METHOD = "method";
+    public final static String KEY_OPERATE_TYPE = "operate_type";
+    public final static String KEY_ID = "id";
+    public final static String KEY_ESTIMATE_FINISH_TIME = "estimate_finish_time";
+    public final static String KEY_NAME = "name";
+    public final static String KEY_TASK_NUMBER = "task_number";
+    public final static String KEY_CURRENT_USER_ID = "current_user_id";
+    public final static String KEY_CHARSET = "charset";
+    public final static String KEY_FORMAT = "format";
+    public final static String KEY_TIMESTAMP = "timestamp";
+    public final static String KEY_STATUS_LIST = "status_list";
+    public final static String KEY_SIGN = "sign";
+    public final static String KEY_REAL_FINISH_TIME = "real_finish_time";
+    public final static String KEY_SUGGESTION = "suggestion";
+    public final static String KEY_REAL_WORKLOAD = "real_workload";
+    public final static String KEY_FINISH_PERCENTAGE = "finish_percentage";
+    public final static String KEY_INTEGRATE_ATTENTION = "integrate_attention";
+    public final static String KEY_MODIFIED_FILE = "modified_file";
+    public final static String KEY_EDIT_DESCRIPTION = "edit_description";
+
     public static final String METHOD_QUERY_DATA = "queryData";
     public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
     public static final String METHOD_SERVICE_APPRAISE = "serviceAppraise";
@@ -187,6 +214,7 @@ public class BaseConst {
     public static final String NAME_SVN_STAT = "#################### svn统计";
     public static final String NAME_SVN_STAT_REALTIME = "#################### 实时统计";
     public static final String NAME_SVN_STAT_HISTORY = "#################### 历史统计";
+    public static final String NAME_MENU_HEP_TASK_TODO = "#################### 效能";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -212,6 +240,7 @@ public class BaseConst {
     public static final String SYMBOL_BRACKETS_LEFT = "(";
     public static final String SYMBOL_BRACKETS_RIGHT = ")";
     public static final String SYMBOL_BRACKETS_1_LEFT = "[";
+    public final static String SYMBOL_BRACKETS_2_RIGHT = "」";
     public static final String SYMBOL_BRACKETS_1_RIGHT = "]";
     public static final String SYMBOL_NEXT_LINE = "\n";
     public static final String SYMBOL_SLASH_T = "\t";
@@ -292,6 +321,7 @@ public class BaseConst {
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
     public static final String PATH_STARTER_CSS = "/conf/style/progressIndicator.css";
     public static final String PATH_COLUMN_SET_FXML = "/conf/fxml/generateCodeColumnSet.fxml";
+    public static final String PATH_COMPLETE_TASK_FXML = "/conf/fxml/completeTask.fxml";
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_RECORD_LOG = "/records/%s.record";
 
@@ -349,5 +379,7 @@ public class BaseConst {
     public static final String SERVER_HTTP = "http://127.0.0.1";
     public static final String SERVER_URL = "/tool/im";
     public static final Integer SERVER_PORT = 13579;
+
+    public static final Integer DOUBLE_CLICKED = 2;
 
 }

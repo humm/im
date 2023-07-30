@@ -14,6 +14,7 @@ public class MenuFunctionConfig {
         MENU_SVN("menuSvn", "SVN", 10),
         MENU_SCRIPT("menuScript", "脚本", 20),
         MENU_CODE("menuCode", "代码", 30),
+        MENU_HEP("menuHep", "效能", 40),
 
         // Shopping菜单
         MENU_JD("menuJd", "京东", 10),
@@ -58,27 +59,29 @@ public class MenuFunctionConfig {
 
     public enum FunctionConfig {
         // TA工具组件 0-999
-        SVN_LOG("10", "提交记录", "/conf/fxml/svnLog.fxml", "svnLog", "svnLog", "menuSvn"),
+        SVN_LOG("100", "提交记录", "/conf/fxml/svnLog.fxml", "svnLog", "svnLog", "menuSvn"),
 
-        SVN_UPDATE("50", "文件更新", "/conf/fxml/svnUpdate.fxml", "svnUpdate", "svnUpdate", "menuSvn"),
+        SVN_UPDATE("110", "文件更新", "/conf/fxml/svnUpdate.fxml", "svnUpdate", "svnUpdate", "menuSvn"),
 
-        SVN_REALTIME_STAT("100", "实时统计", "/conf/fxml/svnRealtimeStat.fxml", "svnRealtimeStat", "svnRealtimeStat", "menuSvn"),
+        SVN_REALTIME_STAT("120", "实时统计", "/conf/fxml/svnRealtimeStat.fxml", "svnRealtimeStat", "svnRealtimeStat", "menuSvn"),
 
-        SVN_HISTORY_STAT("150", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "svnHistoryStat", "svnHistoryStat", "menuSvn"),
+        SVN_HISTORY_STAT("130", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "svnHistoryStat", "svnHistoryStat", "menuSvn"),
 
         SCRIPT_UPDATE("200", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "scriptUpdate", "scriptUpdate", "menuScript"),
 
-        PROCESS_INFO("250", "流程信息", "/conf/fxml/processInfo.fxml", "processInfo", "processInfo", "menuScript"),
+        PROCESS_INFO("210", "流程信息", "/conf/fxml/processInfo.fxml", "processInfo", "processInfo", "menuScript"),
 
-        FUND_INFO("300", "基金信息", "/conf/fxml/fundInfo.fxml", "fundInfo", "fundInfo", "menuScript"),
+        FUND_INFO("220", "基金信息", "/conf/fxml/fundInfo.fxml", "fundInfo", "fundInfo", "menuScript"),
 
-        DATABASE_SCRIPT("310", "执行脚本", "/conf/fxml/databaseScript.fxml", "databaseScript", "databaseScript", "menuScript"),
+        DATABASE_SCRIPT("230", "执行脚本", "/conf/fxml/databaseScript.fxml", "databaseScript", "databaseScript", "menuScript"),
 
-        GENERATE_SQL("350", "分库分表", "/conf/fxml/generateSql.fxml", "generateSql", "generateSql", "menuScript"),
+        GENERATE_SQL("240", "分库分表", "/conf/fxml/generateSql.fxml", "generateSql", "generateSql", "menuScript"),
 
-        COPY_CODE("400", "复制代码", "/conf/fxml/copyCode.fxml", "copyCode", "copyCode", "menuCode"),
+        COPY_CODE("300", "复制代码", "/conf/fxml/copyCode.fxml", "copyCode", "copyCode", "menuCode"),
 
-        GENERATE_CODE("450", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuCode"),
+        GENERATE_CODE("310", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuCode"),
+
+        TASK_TODO("400", "待开发任务", "/conf/fxml/hepTaskTodo.fxml", "hepTaskTodo", "hepTaskTodo", "menuHep"),
 
         // Shopping 1000-1999
         JD_AUTO("1000", "自动评价", "/conf/fxml/jdAuto.fxml", "jdAuto", "jdAuto", "menuJd"),
@@ -91,15 +94,15 @@ public class MenuFunctionConfig {
 
         SERVICE_APPRAISE("1400", "服务评价", "/conf/fxml/serviceAppraise.fxml", "serviceAppraise", "serviceAppraise", "menuJd"),
 
-        JD_COOKIE("1500", "京东Cookie设置", "/conf/fxml/jdCookie.fxml", "jdCookie", "jdCookie", "menuSet"),
+        JD_COOKIE("1900", "京东Cookie设置", "/conf/fxml/jdCookie.fxml", "jdCookie", "jdCookie", "menuSet"),
 
 
         // 公共组件 2000-2999
         CONFIG_SET("2000", "参数设置", "/conf/fxml/configSet.fxml", "configSet", "configSet", "menuSet"),
 
-        FUNCTION_STAT_INFO("2100", "使用统计", "/conf/fxml/functionStatInfo.fxml", "functionStatInfo", "functionStatInfo", "menuHelp"),
+        FUNCTION_STAT_INFO("3000", "使用统计", "/conf/fxml/functionStatInfo.fxml", "functionStatInfo", "functionStatInfo", "menuHelp"),
 
-        ABOUT_INFO("2200", "关于", "/conf/fxml/aboutInfo.fxml", "aboutInfo", "aboutInfo", "menuHelp");
+        ABOUT_INFO("3100", "关于", "/conf/fxml/aboutInfo.fxml", "aboutInfo", "aboutInfo", "menuHelp");
 
         private String code;
 

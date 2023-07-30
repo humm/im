@@ -182,6 +182,8 @@ public class AppConfigDto extends BaseDto {
 
     private Stage columnStage;
 
+    private Stage taskStage;
+
     private Stage tableStage;
 
     private Stage asyTableStage;
@@ -198,7 +200,13 @@ public class AppConfigDto extends BaseDto {
 
     private String generateCodeMenuType;
 
+    private HepTaskDto hepTaskDto;
+
     private Map<String, String> fieldTranslateMap;
+
+    private String hepTaskTodoCostTime;
+
+    private Timer timer;
 
     public AppConfigDto() {
         this.appLogEnable = false;

@@ -42,6 +42,8 @@ public class SvnLogController extends BaseController implements Initializable {
     @FXML
     private TextField svnTimes;
 
+
+
     @FXML
     private TextField version;
 

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.HepWaitHandleTaskController">
+    <children>
+        <SplitPane dividerPositions="0.08042713567839195, 0.9241164658634538" layoutX="98.0" layoutY="100.0"
+                   orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="164.0" prefWidth="599.0">
+                    <children>
+                        <Label layoutX="415.0" layoutY="18.0" text="待处理任务" />
+                        <Label fx:id="waitHandleTaskNum" layoutX="500.0" layoutY="18.0"/>
+                        <ProgressIndicator fx:id="schedule" layoutX="630.0" layoutY="15.0" progress="0.0" />
+                        <Label fx:id="scheduleText" layoutX="670" layoutY="18.0" text="0%" />
+                        <Button fx:id="query" layoutX="800.0" layoutY="8.0"
+                                mnemonicParsing="false" onAction="#executeQuery" prefHeight="35.0"
+                                prefWidth="100.0" text="查询">
+                            <padding>
+                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
+                            </padding>
+                        </Button>
+                    </children>
+                </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                    <children>
+                        <SplitPane dividerPositions="0.79" layoutX="174.0" layoutY="76.0" prefHeight="187.0"
+                                   prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <items>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="312.0">
+                                    <children>
+                                        <TableView fx:id="taskList" layoutY="14.0" onMouseClicked="#showTaskInfo"
+                                                   prefHeight="318.0" prefWidth="446.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-251.0" AnchorPane.topAnchor="0.0">
+                                            <columns>
+                                                <TableColumn id="taskNumber" editable="false" prefWidth="145"
+                                                             sortable="false" text="编号" style="-fx-alignment: center;">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="taskNumber" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="name" editable="false" prefWidth="630"
+                                                             sortable="false" text="名称">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="name" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="statusName" editable="false" prefWidth="70"
+                                                             sortable="false" text="状态" style="-fx-alignment: center;">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="statusName" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="sprintVersion" editable="false" prefWidth="251"
+                                                             sortable="false" text="版本">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="sprintVersion" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="estimateFinishTime" editable="false" prefWidth="165" sortable="false" text="预计完成时间">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="estimateFinishTime" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="productName" editable="false" prefWidth="240"
+                                                             sortable="false" text="产品名称">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="productName" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                            </columns>
+                                        </TableView>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="342.0">
+                           <children>
+                              <SplitPane dividerPositions="0.40623737373737376" layoutX="68.0" layoutY="59.0"
+                                         orientation="VERTICAL" prefHeight="318.4" prefWidth="191.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <items>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" >
+                                      <Label layoutX="15.0" layoutY="10.0"  text="待处理信息"
+                                             style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+                                      <Label layoutX="15.0" layoutY="50.0"  text="待开发"/>
+                                      <Label fx:id="todoNum" layoutX="70.0" layoutY="50.0"/>
+                                      <Label layoutX="15.0" layoutY="80.0"  text="待审核"/>
+                                      <Label fx:id="checkNum" layoutX="70.0" layoutY="80.0"/>
+                                      <Label layoutX="15.0" layoutY="110.0"  text="缺   陷"/>
+                                      <Label fx:id="bugNum" layoutX="70.0" layoutY="110.0"/>
+                                  </AnchorPane>
+                                  <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="168.0" prefWidth="287.0">
+                                    <Label layoutX="15.0" layoutY="10.0"  text="任务单信息" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+                                    <Label layoutX="15.0" layoutY="50.0"  text="编号"/>
+                                    <Label fx:id="taskNumber" layoutX="60.0" layoutY="50.0"/>
+                                    <Label layoutX="15.0" layoutY="80.0"  text="名称"/>
+                                    <Label fx:id="name" layoutX="60.0" layoutY="80.0"/>
+                                    <Label layoutX="15.0" layoutY="110.0"  text="版本"/>
+                                    <Label fx:id="sprintVersion" layoutX="60.0" layoutY="110.0"/>
+                                    <Label layoutX="15.0" layoutY="140.0"  text="状态"/>
+                                    <Label fx:id="statusName" layoutX="60.0" layoutY="140.0"/>
+                                    <Label layoutX="15.0" layoutY="170.0"  text="单号"/>
+                                    <Label fx:id="id" layoutX="60.0" layoutY="170.0"/>
+                                  </AnchorPane>
+                                </items>
+                              </SplitPane>
+                           </children>
+                                </AnchorPane>
+                            </items>
+                        </SplitPane>
+                    </children>
+                </AnchorPane>
+            <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="599.0">
+                <children>
+                    <Label fx:id="notice" layoutX="15.0" layoutY="10.0"/>
+                </children>
+            </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>

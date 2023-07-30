@@ -52,6 +52,9 @@ public class BaseController {
 
     synchronized public void setProgress(double value) {
         try {
+            if (schedule == null) {
+                return;
+            }
             progress = value;
             Platform.runLater(() -> {
                 if (value == -1) {

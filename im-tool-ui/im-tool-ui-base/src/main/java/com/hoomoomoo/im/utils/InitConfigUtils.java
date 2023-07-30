@@ -417,7 +417,7 @@ public class InitConfigUtils {
      * @return: void
      */
     public static void  updateConfigByTa(Map<String, String> keys) {
-        keys.put("app.tab.show", "10");
+        keys.put("app.tab.show", "100");
 
         keys.put("svn.username", null);
         keys.put("svn.password", null);
@@ -464,7 +464,7 @@ public class InitConfigUtils {
      * @return: void
      */
     public static void  updateConfigByShopping(Map<String, String> keys) {
-        keys.put("app.tab.show", "540");
+        keys.put("app.tab.show", "1000");
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.dto.SvnStatDto;
@@ -150,6 +151,9 @@ public class SvnUtils {
                     endRevision = repository.getDatedRevision(end);
                 } catch (Exception e) {
                     LoggerUtils.info(e);
+                    if (notice) {
+                        svnStat.get(KEY_NOTICE).setNotice(CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
+                    }
                     continue;
                 }
                 repository.log(new String[]{""}, startRevision, endRevision, true, true, svnLogEntry -> {

@@ -6,6 +6,7 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -87,6 +88,10 @@ public class OutputUtils {
         }
     }
 
+    public static void repeatInfo(Object obj, String text) {
+        clearLog(obj);
+        info(obj, text);
+    }
     public static void info(Object obj, String text) {
         if (obj == null) {
             return;

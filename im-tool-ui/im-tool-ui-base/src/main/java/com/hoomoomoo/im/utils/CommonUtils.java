@@ -5,16 +5,20 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.dto.BaseDto;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.cglib.beans.BeanMap;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -326,15 +330,24 @@ public class CommonUtils {
         }
     }
 
-    public static void initMenuBar(MenuBar menuBar, List<FunctionDto> functionDtoList) {
+    public static void initMenuBar(MenuBar menuBar, List<FunctionDto> functionDtoList) throws Exception {
         if (CollectionUtils.isNotEmpty(functionDtoList)) {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             Map<String, MenuFunctionConfig.MenuConfig> menuConfigList = new LinkedHashMap<>(16);
+            Map<String, Integer> authMenu = new LinkedHashMap<>(16);
             for (FunctionDto functionDto : functionDtoList) {
                 MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
                 if (functionConfig != null) {
-                    if (!menuConfigList.containsKey(functionConfig.getParentMenuId())) {
-                        MenuFunctionConfig.MenuConfig menuConfig = MenuFunctionConfig.MenuConfig.getMenuConfig(functionConfig.getParentMenuId());
-                        menuConfigList.put(functionConfig.getParentMenuId(), menuConfig);
+                    int hasAuth = checkUser(appConfigDto, STR_1, functionDto.getFunctionCode()) ? 1 : 0;
+                    String parentMenuId = functionConfig.getParentMenuId();
+                    if (authMenu.containsKey(parentMenuId)) {
+                        authMenu.put(parentMenuId, authMenu.get(parentMenuId) + hasAuth);
+                    } else {
+                        authMenu.put(parentMenuId, hasAuth);
+                    }
+                    if (!menuConfigList.containsKey(parentMenuId)) {
+                        MenuFunctionConfig.MenuConfig menuConfig = MenuFunctionConfig.MenuConfig.getMenuConfig(parentMenuId);
+                        menuConfigList.put(parentMenuId, menuConfig);
                     }
                 }
             }
@@ -348,6 +361,9 @@ public class CommonUtils {
 
             ObservableList<Menu> menus = menuBar.getMenus();
             for (MenuFunctionConfig.MenuConfig menuConfig : menuList) {
+                if (authMenu.get(menuConfig.getMenuId()) == 0) {
+                    continue;
+                }
                 Menu menu = new Menu();
                 menu.setId(menuConfig.getMenuId());
                 menu.setText(menuConfig.getMenuName());
@@ -382,10 +398,14 @@ public class CommonUtils {
         if (STR_1.equals(checkType)) {
             if (SVN_REALTIME_STAT.getCode().equals(functionCode) || SVN_HISTORY_STAT.getCode().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_SVN);
+            } else if (TASK_TODO.getCode().equals(functionCode)) {
+                return checkUser(appUser, APP_USER_IM_HEP);
             }
         } else if (STR_2.equals(checkType)) {
             if (SVN_REALTIME_STAT.getMenuId().equals(functionCode) || SVN_HISTORY_STAT.getMenuId().equals(functionCode)) {
                 return checkUser(appUser, APP_USER_IM_SVN);
+            } else if (TASK_TODO.getMenuId().equals(functionCode)) {
+                return checkUser(appUser, APP_USER_IM_HEP);
             }
         }
         return true;
@@ -603,6 +623,7 @@ public class CommonUtils {
             if (tab == null) {
                 tab = CommonUtils.getFunctionTab(functionConfig.getPath(), functionConfig.getName(),
                         functionConfig.getCode(), functionConfig.getName());
+                bindTabEvent(tab);
                 functionTab.getTabs().add(tab);
             }
             functionTab.getSelectionModel().select(tab);
@@ -611,6 +632,22 @@ public class CommonUtils {
         }
     }
 
+    private static void bindTabEvent (Tab tab) {
+        if (tab == null) {
+            return;
+        }
+        tab.setOnClosed(new EventHandler<Event>() {
+            @SneakyThrows
+            @Override
+            public void handle(Event t) {
+                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                Timer timer = appConfigDto.getTimer();
+                if (timer != null) {
+                    timer.cancel();
+                }
+            }
+        });
+    }
     /**
      * 功能初始化
      *
@@ -640,8 +677,10 @@ public class CommonUtils {
                         continue;
                     }
                     MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(tab);
-                    functionTab.getTabs().add(CommonUtils.getFunctionTab(getPath(tab), getName(tab),
-                            functionConfig.getCode(), functionConfig.getName()));
+                    Tab openTab = CommonUtils.getFunctionTab(getPath(tab),
+                            getName(tab), functionConfig.getCode(), functionConfig.getName());
+                    bindTabEvent(openTab);
+                    functionTab.getTabs().add(openTab);
                 }
             } else {
                 // 默认打开有权限的第一个功能
@@ -650,6 +689,7 @@ public class CommonUtils {
                     FunctionDto functionDto = functionDtoList.get(0);
                     Tab tab = CommonUtils.getFunctionTab(getPath(functionDto.getFunctionCode()),
                             getName(functionDto.getFunctionCode()), functionDto.getFunctionCode(), functionDto.getFunctionName());
+                    bindTabEvent(tab);
                     functionTab.getTabs().add(tab);
                 }
             }

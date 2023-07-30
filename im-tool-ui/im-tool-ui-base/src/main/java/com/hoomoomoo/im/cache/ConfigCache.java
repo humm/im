@@ -13,8 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_HISTORY_STAT;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -82,26 +81,38 @@ public class ConfigCache {
         ListIterator<String> iterator = content.listIterator();
         String svnRealtimeStatKey = SVN_REALTIME_STAT.getCode() + SYMBOL_COLON + SVN_REALTIME_STAT.getName();
         String svnHistoryStatKey = SVN_HISTORY_STAT.getCode() + SYMBOL_COLON + SVN_HISTORY_STAT.getName();
+        String hepTaskTodoKey = TASK_TODO.getCode() + SYMBOL_COLON + TASK_TODO.getName();
         while (iterator.hasNext()) {
             String item = iterator.next();
-            boolean flag = item.contains(svnRealtimeStatKey) || item.contains(svnHistoryStatKey);
+            boolean svn = item.contains(svnRealtimeStatKey) || item.contains(svnHistoryStatKey);
             if (!appConfigDto.getAppUser().contains(APP_USER_IM_SVN)) {
-                if (flag) {
+                if (svn) {
                     item = item.replace(svnRealtimeStatKey, SYMBOL_EMPTY);
                     item = item.replace(svnHistoryStatKey, SYMBOL_EMPTY);
-                    iterator.set(item.replaceAll("\\s+", SYMBOL_EMPTY));
-                    continue;
+                    iterator.set(item.replaceAll("\\s+", SYMBOL_SPACE));
                 }
+            }
 
-                if (item.contains(NAME_SVN_STAT) || item.contains(NAME_SVN_STAT_REALTIME) || item.contains(NAME_SVN_STAT_HISTORY)) {
-                    configIndex++;
-                    iterator.remove();
-                } else if (configIndex == 1) {
-                    iterator.remove();
+            boolean hep = item.contains(hepTaskTodoKey);
+            if (!appConfigDto.getAppUser().contains(APP_USER_IM_HEP)) {
+                if (hep) {
+                    item = item.replace(hepTaskTodoKey, SYMBOL_EMPTY);
+                    iterator.set(item.replaceAll("\\s+", SYMBOL_SPACE));
                 }
-                if (configIndex == 2) {
-                    configIndex = 0;
-                }
+            }
+
+            if (true) {
+                continue;
+            }
+            // 删除未授权功能配置信息
+            if (item.contains(NAME_SVN_STAT) || item.contains(NAME_SVN_STAT_REALTIME) || item.contains(NAME_SVN_STAT_HISTORY)) {
+                configIndex++;
+                iterator.remove();
+            } else if (configIndex == 1) {
+                iterator.remove();
+            }
+            if (configIndex == 2) {
+                configIndex = 0;
             }
         }
         FileUtils.writeFile(confPath, content, false);
