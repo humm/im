@@ -91,10 +91,10 @@
                                              style="-fx-font-weight: bold; -fx-font-size: 15;"/>
                                       <Label layoutX="15.0" layoutY="50.0"  text="待开发"/>
                                       <Label fx:id="todoNum" layoutX="70.0" layoutY="50.0"/>
-                                      <Label layoutX="15.0" layoutY="80.0"  text="待审核"/>
+                                      <!--<Label layoutX="15.0" layoutY="80.0"  text="待审核"/>
                                       <Label fx:id="checkNum" layoutX="70.0" layoutY="80.0"/>
                                       <Label layoutX="15.0" layoutY="110.0"  text="缺   陷"/>
-                                      <Label fx:id="bugNum" layoutX="70.0" layoutY="110.0"/>
+                                      <Label fx:id="bugNum" layoutX="70.0" layoutY="110.0"/>-->
                                   </AnchorPane>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="168.0" prefWidth="287.0">
                                     <Label layoutX="15.0" layoutY="10.0"  text="任务单信息" style="-fx-font-weight: bold; -fx-font-size: 15;"/>

@@ -79,6 +79,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         String versionValue = getVersion(appConfigDto, hepTaskDto.getSprintVersion());
         if (KEY_TRUNK.equals(versionValue)) {
             appConfigDto.setSvnRep(appConfigDto.getSvnUrl().get(KEY_TRUNK));
+            LoggerUtils.info("svn仓库地址为: " + appConfigDto.getSvnUrl().get(KEY_TRUNK));
         } else {
             String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
             if (versionValue.contains(KEY_FUND)) {
@@ -92,6 +93,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         try {
             logDtoList.addAll(SvnUtils.getSvnLog(0, taskNumber));
         } catch (Exception e) {
+            OutputUtils.info(notice, "修改记录信息同步异常,请检查");
             LoggerUtils.info(e);
             sync.setDisable(false);
             execute.setDisable(false);
@@ -134,16 +136,23 @@ public class HepCompleteTaskController extends BaseController implements Initial
     private String getVersion(AppConfigDto appConfigDto, String ver) {
         String resVer;
         boolean isTrunk = true;
-        Map<String, String> svnVersionMap = appConfigDto.getCopyCodeVersion();
-        if (MapUtils.isNotEmpty(svnVersionMap)) {
-            Iterator<String> version = svnVersionMap.keySet().iterator();
-            while (version.hasNext()) {
-                String verTmp = version.next();
-                if (ver.compareTo(verTmp) < 0) {
-                    isTrunk = false;
-                    break;
+        if (ver.contains(KEY_FUND)) {
+            Map<String, String> svnVersionMap = appConfigDto.getCopyCodeVersion();
+            if (MapUtils.isNotEmpty(svnVersionMap)) {
+                Iterator<String> version = svnVersionMap.keySet().iterator();
+                while (version.hasNext()) {
+                    String verTmp = version.next();
+                    if (KEY_DESKTOP.equals(verTmp) || KEY_TRUNK.equals(verTmp) || !verTmp.contains(KEY_FUND)) {
+                        continue;
+                    }
+                    if (ver.compareTo(verTmp) < 0) {
+                        isTrunk = false;
+                        break;
+                    }
                 }
             }
+        } else {
+            isTrunk = false;
         }
         if (isTrunk) {
             resVer = KEY_TRUNK;
@@ -155,6 +164,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
             } else {
                 resVer = ver.substring(0, ver.lastIndexOf(".") + 1) + "001";
             }
+        }
+        if ("TA6.0V202202.02.001".equals(resVer)) {
+            resVer = KEY_B + resVer;
         }
         LoggerUtils.info("转换前版本号为: " + ver);
         LoggerUtils.info("转换后版本号为: " + resVer);

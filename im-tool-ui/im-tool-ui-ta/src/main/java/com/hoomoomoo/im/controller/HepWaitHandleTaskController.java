@@ -138,8 +138,10 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         OutputUtils.repeatInfo(sprintVersion, item.getSprintVersion());
         OutputUtils.repeatInfo(statusName, item.getStatusName());
         OutputUtils.repeatInfo(id, String.valueOf(item.getId()));
-        buildClipboardInfo(item);
-        if (event.getClickCount() == DOUBLE_CLICKED) {
+        String clickType = event.getButton().toString();
+        if (RIGHT_CLICKED.equals(clickType)) {
+            buildClipboardInfo(item);
+        } else if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
             operateTask(item);
         }
     }
@@ -156,6 +158,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         }
         info.append("[需求描述]").append(SYMBOL_SPACE).append(name);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info.toString()), null);
+        OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "任务单【" + item.getTaskNumber() + "】复制成功");
     }
     void operateTask(HepTaskDto item) {
         String status = item.getStatus();
@@ -258,6 +261,8 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                     }
                     if (OPERATE_QUERY.equals(operateType)) {
                         dealTaskList(items);
+                    } else if (OPERATE_START.equals(operateType)) {
+                        executeQuery();
                     }
                 }
             }
@@ -483,8 +488,9 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             if (TEST_FLAG) {
                 buildTestData();
+                return;
             } else {
-               // executeQuery();
+                executeQuery();
             }
 
             Timer operateTimer = new Timer();
@@ -527,10 +533,6 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                 hepTaskDto.setFreshFlag(true);
             }
         }
-    }
-
-    public void initWaitCheck() {
-
     }
 
     private void buildTestData() {
