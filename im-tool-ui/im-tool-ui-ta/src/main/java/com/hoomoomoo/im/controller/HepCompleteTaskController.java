@@ -85,7 +85,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
                 svnUrl = TaCommonUtil.getSvnUrl(versionValue, svnUrl);
                 versionValue += KEY_SOURCES_TA_FUND;
             }
-            appConfigDto.setSvnRep(svnUrl + versionValue);
+            String svnRep = svnUrl + versionValue;
+            LoggerUtils.info("svn仓库地址为: " + svnRep);
+            appConfigDto.setSvnRep(svnRep);
         }
         try {
             logDtoList.addAll(SvnUtils.getSvnLog(0, taskNumber));
@@ -137,23 +139,25 @@ public class HepCompleteTaskController extends BaseController implements Initial
             Iterator<String> version = svnVersionMap.keySet().iterator();
             while (version.hasNext()) {
                 String verTmp = version.next();
-                if (verTmp.contains(KEY_FUND) && ver.compareTo(verTmp) < 0) {
+                if (ver.compareTo(verTmp) < 0) {
                     isTrunk = false;
                     break;
                 }
             }
         }
         if (isTrunk) {
-            return KEY_TRUNK;
-        }
-        if (ver.contains("M")) {
-            resVer = ver.substring(0, ver.lastIndexOf("M") + 1) + "1";
-        } else if (ver.endsWith("000")) {
-            resVer = ver;
+            resVer = KEY_TRUNK;
         } else {
-            resVer = ver.substring(0, ver.lastIndexOf(".") + 1) + "001";
+            if (ver.contains("M")) {
+                resVer = ver.substring(0, ver.lastIndexOf("M") + 1) + "1";
+            } else if (ver.endsWith("000")) {
+                resVer = ver;
+            } else {
+                resVer = ver.substring(0, ver.lastIndexOf(".") + 1) + "001";
+            }
         }
-        LoggerUtils.info(resVer);
+        LoggerUtils.info("转换前版本号为: " + ver);
+        LoggerUtils.info("转换后版本号为: " + resVer);
         return resVer;
     }
 
