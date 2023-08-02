@@ -178,11 +178,6 @@ public class SvnLogController extends BaseController implements Initializable {
                     appConfigDto.setSvnRep(svnUrl + versionValue);
                 }
                 logDtoList.addAll(SvnUtils.getSvnLog(version, modifyNo));
-                /*Iterator<String> iterator = appConfigDto.getSvnUrl().keySet().iterator();
-                while (iterator.hasNext()) {
-                    appConfigDto.setSvnRep(iterator.next());
-                    logDtoList.addAll(SvnUtils.getSvnLog(version, modifyNo));
-                }*/
                 Collections.sort(logDtoList, new Comparator<LogDto>() {
                     @Override
                     public int compare(LogDto o1, LogDto o2) {
@@ -284,10 +279,14 @@ public class SvnLogController extends BaseController implements Initializable {
             }
             ObservableList svnItems = svnVersion.getItems();
             Map<String, String> svnVersionMap = appConfigDto.getCopyCodeVersion();
+            String maxVer = "";
             if (MapUtils.isNotEmpty(svnVersionMap)) {
                 Iterator<String> version = svnVersionMap.keySet().iterator();
                 while (version.hasNext()) {
                     String ver = version.next();
+                    if (maxVer.compareTo(ver) == -1) {
+
+                    }
                     if (KEY_DESKTOP.equals(ver)) {
                         continue;
                     }

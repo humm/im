@@ -247,6 +247,7 @@ public class BaseConst {
     public static final String SYMBOL_NEXT_LINE_2 = "\n\n";
     public static final String SYMBOL_PERCENT = "%";
     public static final String SYMBOL_QUOTES = "\"";
+    public static final String SYMBOL_BR = "</br>";
 
     public final static String ANNOTATION_TYPE_NORMAL = "--";
     public final static String ANNOTATION_TYPE_CONFIG = "#";

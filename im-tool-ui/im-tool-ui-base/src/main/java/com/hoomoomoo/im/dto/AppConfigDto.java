@@ -206,7 +206,11 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskTodoCostTime;
 
-    private Timer timer;
+    private String hepTaskTodoOperateFreshTime;
+
+    private String hepTaskTodoTaskTime;
+
+    private List<Timer> timerList;
 
     public AppConfigDto() {
         this.appLogEnable = false;
@@ -228,5 +232,6 @@ public class AppConfigDto extends BaseDto {
         this.executeType = SYMBOL_EMPTY;
         this.appUser = SYMBOL_EMPTY;
         this.generateCodeDefaultLast = true;
+        this.timerList = new ArrayList<>();
     }
 }

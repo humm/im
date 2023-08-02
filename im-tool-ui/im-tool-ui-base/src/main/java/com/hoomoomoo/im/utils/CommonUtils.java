@@ -641,9 +641,11 @@ public class CommonUtils {
             @Override
             public void handle(Event t) {
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                Timer timer = appConfigDto.getTimer();
-                if (timer != null) {
-                    timer.cancel();
+                List<Timer> timerList = appConfigDto.getTimerList();
+                if (CollectionUtils.isNotEmpty(timerList)) {
+                    for (Timer timer : timerList) {
+                        timer.cancel();
+                    }
                 }
             }
         });

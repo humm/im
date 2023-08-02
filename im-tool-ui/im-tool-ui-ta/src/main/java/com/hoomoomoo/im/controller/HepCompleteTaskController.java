@@ -3,6 +3,7 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
+import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -14,6 +15,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -53,11 +55,106 @@ public class HepCompleteTaskController extends BaseController implements Initial
     private TextArea suggestion;
 
     @FXML
+    private Button sync;
+
+    @FXML
+    private Button execute;
+
+    @FXML
     private Label notice;
 
     @FXML
     void changeRealFinishTime(ActionEvent event) {
 
+    }
+
+    @FXML
+    void syncSvn(ActionEvent event) throws Exception {
+        execute.setDisable(true);
+        sync.setDisable(true);
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
+        String taskNumber = hepTaskDto.getTaskNumber();
+        List<LogDto> logDtoList = new ArrayList<>(16);
+        String versionValue = getVersion(appConfigDto, hepTaskDto.getSprintVersion());
+        if (KEY_TRUNK.equals(versionValue)) {
+            appConfigDto.setSvnRep(appConfigDto.getSvnUrl().get(KEY_TRUNK));
+        } else {
+            String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
+            if (versionValue.contains(KEY_FUND)) {
+                svnUrl = TaCommonUtil.getSvnUrl(versionValue, svnUrl);
+                versionValue += KEY_SOURCES_TA_FUND;
+            }
+            appConfigDto.setSvnRep(svnUrl + versionValue);
+        }
+        try {
+            logDtoList.addAll(SvnUtils.getSvnLog(0, taskNumber));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            sync.setDisable(false);
+            execute.setDisable(false);
+            return;
+        }
+        Collections.sort(logDtoList, new Comparator<LogDto>() {
+            @Override
+            public int compare(LogDto o1, LogDto o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        StringBuilder modifiedFileValue = new StringBuilder();
+        StringBuilder editDescriptionValue = new StringBuilder();
+        for (int i=0; i<logDtoList.size(); i++) {
+            LogDto item = logDtoList.get(i);
+            List<String> fileList = item.getFile();
+            for (int j=0; j<fileList.size(); j++) {
+                if (StringUtils.isNotBlank(modifiedFileValue)) {
+                    modifiedFileValue.append(SYMBOL_NEXT_LINE);
+                }
+                modifiedFileValue.append(formatText(fileList.get(j), false));
+            }
+            editDescriptionValue.append(formatText(item.getMsg(), false));
+            if (i != logDtoList.size() - 1) {
+                editDescriptionValue.append(SYMBOL_NEXT_LINE);
+            }
+        }
+        OutputUtils.repeatInfo(modifiedFile, modifiedFileValue.toString());
+        OutputUtils.repeatInfo(editDescription, editDescriptionValue.toString());
+        OutputUtils.repeatInfo(suggestion, editDescriptionValue.toString());
+        if (StringUtils.isBlank(modifiedFileValue)) {
+            OutputUtils.info(notice, "未查询到修改记录信息,请检查");
+        } else {
+            OutputUtils.info(notice, "修改记录信息同步完成");
+        }
+        sync.setDisable(false);
+        execute.setDisable(false);
+    }
+
+    private String getVersion(AppConfigDto appConfigDto, String ver) {
+        String resVer;
+        boolean isTrunk = true;
+        Map<String, String> svnVersionMap = appConfigDto.getCopyCodeVersion();
+        if (MapUtils.isNotEmpty(svnVersionMap)) {
+            Iterator<String> version = svnVersionMap.keySet().iterator();
+            while (version.hasNext()) {
+                String verTmp = version.next();
+                if (verTmp.contains(KEY_FUND) && ver.compareTo(verTmp) < 0) {
+                    isTrunk = false;
+                    break;
+                }
+            }
+        }
+        if (isTrunk) {
+            return KEY_TRUNK;
+        }
+        if (ver.contains("M")) {
+            resVer = ver.substring(0, ver.lastIndexOf("M") + 1) + "1";
+        } else if (ver.endsWith("000")) {
+            resVer = ver;
+        } else {
+            resVer = ver.substring(0, ver.lastIndexOf(".") + 1) + "001";
+        }
+        LoggerUtils.info(resVer);
+        return resVer;
     }
 
     @FXML
@@ -95,11 +192,11 @@ public class HepCompleteTaskController extends BaseController implements Initial
         }
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
-        hepTaskDto.setRealWorkload(realRorkloadValue);
+        hepTaskDto.setRealWorkload(realRorkloadValue.trim());
         hepTaskDto.setRealFinishTime(realFinishTimeValue + SYMBOL_SPACE +CommonUtils.getCurrentDateTime8(new Date()));
-        hepTaskDto.setModifiedFile(formatText(modifiedFileValue));
-        hepTaskDto.setEditDescription(formatText(editDescriptionValue));
-        hepTaskDto.setSuggestion(formatText(suggestionValue));
+        hepTaskDto.setModifiedFile(formatText(modifiedFileValue, true));
+        hepTaskDto.setEditDescription(formatText(editDescriptionValue, true));
+        hepTaskDto.setSuggestion(formatText(suggestionValue, true));
         HepWaitHandleTaskController hep = new HepWaitHandleTaskController();
         hep.setFreshFlag(hepTaskDto);
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
@@ -108,8 +205,12 @@ public class HepCompleteTaskController extends BaseController implements Initial
         appConfigDto.setTaskStage(null);
     }
 
-    private String formatText(String text){
-        return text.replaceAll("\\n", "\r</br>");
+    private String formatText(String text, boolean toBr){
+        if (toBr) {
+            return text.replaceAll("\\n", "\r</br>").trim();
+        } else {
+            return text.replaceAll("\r", SYMBOL_EMPTY).replaceAll("</br>", SYMBOL_EMPTY).trim();
+        }
     }
 
     @Override
@@ -117,6 +218,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
+            OutputUtils.clearLog(modifiedFile);
+            OutputUtils.clearLog(editDescription);
+            OutputUtils.clearLog(suggestion);
             OutputUtils.repeatInfo(id, String.valueOf(hepTaskDto.getId()));
             OutputUtils.repeatInfo(taskNumber, hepTaskDto.getTaskNumber());
             OutputUtils.repeatInfo(realRorkload, appConfigDto.getHepTaskTodoCostTime());

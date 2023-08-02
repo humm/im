@@ -119,7 +119,7 @@
                                                         <PropertyValueFactory property="time" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="275"
+                                                <TableColumn id="msg" editable="false" prefWidth="385"
                                                              sortable="false" text="生成日志">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="msg" />

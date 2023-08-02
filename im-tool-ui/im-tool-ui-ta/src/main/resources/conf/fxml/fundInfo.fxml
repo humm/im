@@ -54,13 +54,13 @@
                                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="time" editable="false" prefWidth="200" sortable="false"
+                                                <TableColumn id="time" editable="false" prefWidth="215" sortable="false"
                                                              text="生成时间">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="time"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="490" sortable="false"
+                                                <TableColumn id="msg" editable="false" prefWidth="650" sortable="false"
                                                              text="生成日志">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="msg"/>

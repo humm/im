@@ -18,7 +18,8 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.41778523489932884" layoutX="174.0" layoutY="76.0" prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane dividerPositions="0.45778523489932884" layoutX="174.0" layoutY="76.0"
+                                   prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
                                     <children>
@@ -48,19 +49,21 @@
                                                text="生成升级脚本仅供参考，请核对确认  功能未启用"/>-->
 
                                         <TextArea fx:id="errMsg" layoutX="14.0" layoutY="295.0" prefHeight="280.0"
-                                                  prefWidth="480.0" />
+                                                  prefWidth="635.0" />
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">
                                     <children>
                                         <TableView fx:id="log" layoutY="14.0" prefHeight="188.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="time" editable="false" prefWidth="200" sortable="false" text="生成时间">
+                                                <TableColumn id="time" editable="false" prefWidth="215"
+                                                             sortable="false" text="生成时间">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="time" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="490" sortable="false" text="生成日志">
+                                                <TableColumn id="msg" editable="false" prefWidth="590"
+                                                             sortable="false" text="生成日志">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="msg" />
                                                     </cellValueFactory>

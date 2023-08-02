@@ -10,6 +10,8 @@
 <?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.Button?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.TextField?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.HepWaitHandleTaskController">
     <children>
         <SplitPane dividerPositions="0.08042713567839195, 0.9241164658634538" layoutX="98.0" layoutY="100.0"
@@ -58,7 +60,7 @@
                                                         <PropertyValueFactory property="statusName" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="sprintVersion" editable="false" prefWidth="251"
+                                                <TableColumn id="sprintVersion" editable="false" prefWidth="248"
                                                              sortable="false" text="版本">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="sprintVersion" />
@@ -96,16 +98,16 @@
                                   </AnchorPane>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="168.0" prefWidth="287.0">
                                     <Label layoutX="15.0" layoutY="10.0"  text="任务单信息" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
-                                    <Label layoutX="15.0" layoutY="50.0"  text="编号"/>
-                                    <Label fx:id="taskNumber" layoutX="60.0" layoutY="50.0"/>
-                                    <Label layoutX="15.0" layoutY="80.0"  text="名称"/>
-                                    <Label fx:id="name" layoutX="60.0" layoutY="80.0"/>
-                                    <Label layoutX="15.0" layoutY="110.0"  text="版本"/>
-                                    <Label fx:id="sprintVersion" layoutX="60.0" layoutY="110.0"/>
-                                    <Label layoutX="15.0" layoutY="140.0"  text="状态"/>
-                                    <Label fx:id="statusName" layoutX="60.0" layoutY="140.0"/>
-                                    <Label layoutX="15.0" layoutY="170.0"  text="单号"/>
-                                    <Label fx:id="id" layoutX="60.0" layoutY="170.0"/>
+                                    <Label layoutX="15.0" layoutY="55.0"  text="编号"/>
+                                    <TextField fx:id="taskNumber" layoutX="60.0" layoutY="47.0" prefWidth="240"/>
+                                    <Label layoutX="15.0" layoutY="95.0"  text="名称"/>
+                                    <TextField fx:id="name" layoutX="60.0" layoutY="90.0" prefWidth="240"/>
+                                    <Label layoutX="15.0" layoutY="135.0"  text="版本"/>
+                                    <TextField fx:id="sprintVersion" layoutX="60.0" layoutY="130.0" prefWidth="240"/>
+                                    <Label layoutX="15.0" layoutY="175.0"  text="状态"/>
+                                    <TextField fx:id="statusName" layoutX="60.0" layoutY="170.0" prefWidth="240"/>
+                                    <Label layoutX="15.0" layoutY="215.0"  text="单号"/>
+                                    <TextField fx:id="id" layoutX="60.0" layoutY="210.0" prefWidth="240"/>
                                   </AnchorPane>
                                 </items>
                               </SplitPane>
