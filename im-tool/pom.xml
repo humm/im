@@ -9,6 +9,7 @@
         <version>2.0.3.RELEASE</version>
     </parent>
 
+
     <description>工具信息</description>
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-tool</artifactId>

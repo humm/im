@@ -9,6 +9,7 @@
         <version>2.0.3.RELEASE</version>
     </parent>
 
+
     <description>信息管理</description>
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im</artifactId>
