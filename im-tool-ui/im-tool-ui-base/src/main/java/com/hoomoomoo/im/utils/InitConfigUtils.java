@@ -453,6 +453,8 @@ public class InitConfigUtils {
         keys.put("database.script.username", null);
         keys.put("database.script.password", null);
 
+        keys.put("hep.task.user", null);
+
     }
 
     /**

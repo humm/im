@@ -26,5 +26,4 @@ public class HepTaskDto extends BaseDto{
     private String modifiedFile;
     private String editDescription;
     private String suggestion;
-    private Boolean freshFlag;
 }

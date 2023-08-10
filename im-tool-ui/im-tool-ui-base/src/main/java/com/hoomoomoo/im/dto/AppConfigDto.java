@@ -202,15 +202,17 @@ public class AppConfigDto extends BaseDto {
 
     private HepTaskDto hepTaskDto;
 
+    private HepTaskComponent hepTaskComponent;
+
     private Map<String, String> fieldTranslateMap;
 
     private String hepTaskTodoCostTime;
 
-    private String hepTaskTodoOperateFreshTime;
-
     private String hepTaskTodoTaskTime;
 
     private List<Timer> timerList;
+
+    private String hepTaskUser;
 
     public AppConfigDto() {
         this.appLogEnable = false;

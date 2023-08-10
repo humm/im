@@ -1,7 +1,9 @@
 package com.hoomoomoo.im.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.dto.HepTaskComponent;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
@@ -24,6 +26,7 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.controller.HepWaitHandleTaskController.OPERATE_COMPLETE;
+import static com.hoomoomoo.im.controller.HepWaitHandleTaskController.OPERATE_COMPLETE_QUERY;
 
 /**
  * @author humm23693
@@ -214,8 +217,10 @@ public class HepCompleteTaskController extends BaseController implements Initial
         hepTaskDto.setEditDescription(formatText(editDescriptionValue, true));
         hepTaskDto.setSuggestion(formatText(suggestionValue, true));
         HepWaitHandleTaskController hep = new HepWaitHandleTaskController();
-        hep.setFreshFlag(hepTaskDto);
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
+        HepTaskComponent hepTaskComponent = appConfigDto.getHepTaskComponent();
+        JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);
+        hep.dealTaskList(res, hepTaskComponent.getLogs(), hepTaskComponent.getWaitHandleTaskNum(), hepTaskComponent.getTodoNum(), hepTaskComponent.getTaskList());
         Stage taskStage = appConfigDto.getTaskStage();
         taskStage.close();
         appConfigDto.setTaskStage(null);
