@@ -112,12 +112,20 @@ public class HepCompleteTaskController extends BaseController implements Initial
             LogDto item = logDtoList.get(i);
             List<String> fileList = item.getFile();
             for (int j=0; j<fileList.size(); j++) {
+                String file = TaCommonUtils.formatText(fileList.get(j), false);
+                if (modifiedFileValue.indexOf(file) != -1) {
+                    continue;
+                }
                 if (StringUtils.isNotBlank(modifiedFileValue)) {
                     modifiedFileValue.append(SYMBOL_NEXT_LINE);
                 }
-                modifiedFileValue.append(TaCommonUtils.formatText(fileList.get(j), false));
+                modifiedFileValue.append(file);
             }
-            editDescriptionValue.append(TaCommonUtils.formatText(item.getMsg(), false));
+            String msg = TaCommonUtils.formatText(item.getMsg(), false);
+            if (editDescriptionValue.indexOf(msg) != -1) {
+                continue;
+            }
+            editDescriptionValue.append(msg);
             if (i != logDtoList.size() - 1) {
                 editDescriptionValue.append(SYMBOL_NEXT_LINE);
             }
