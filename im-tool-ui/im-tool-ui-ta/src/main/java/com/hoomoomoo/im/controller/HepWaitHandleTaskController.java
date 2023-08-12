@@ -63,6 +63,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     /** 0:待启动,4:开发中,5,8:待集成,14,16,17:待审核,18,6 */
     private final static String STATUS_LIST = "0,4,5,8,14,16,17,18,6";
     private final static String OPERATE_TYPE_START = "1";
+    private final static String OPERATE_TYPE_UPDATE = "2";
     private final static String OPERATE_TYPE_COMPLETE = "3";
     private final static String STATUS_WAIT_START = "0";
     private final static String STATUS_DEV = "4";
@@ -74,7 +75,6 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     public final static String OPERATE_COMPLETE = "3";
 
     public final static String OPERATE_TYPE_CUSTOM_UPDATE = "update";
-    public final static String OPERATE_TYPE_CUSTOM_COMPLETE = "complete";
 
     private List<String> logs = new ArrayList<>();
 
@@ -138,11 +138,12 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
         HepTaskDto item = (HepTaskDto)taskList.getSelectionModel().getSelectedItem();
+        item.setOperateType(SYMBOL_EMPTY);
         OutputUtils.repeatInfo(taskNumber, item.getTaskNumber());
         OutputUtils.repeatInfo(name, item.getName());
         OutputUtils.repeatInfo(sprintVersion, item.getSprintVersion());
         OutputUtils.repeatInfo(statusName, item.getStatusName());
-        OutputUtils.repeatInfo(id, String.valueOf(item.getId()));
+        OutputUtils.repeatInfo(id, item.getId());
         String clickType = event.getButton().toString();
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         appConfigDto.setHepTaskDto(item);
@@ -272,6 +273,9 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         Map<String, Object> request = new HashMap<>(16);
         request.put(KEY_METHOD, METHOD_GET_FIELD_INFO);
         request.put(KEY_OPERATE_TYPE, OPERATE_TYPE_COMPLETE);
+        if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
+            request.put(KEY_OPERATE_TYPE, OPERATE_TYPE_UPDATE);
+        }
         HttpResponse response = sendPost(request);
         if (requestStatus(response)) {
             request.remove(KEY_OPERATE_TYPE);
@@ -284,6 +288,24 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 Stage stage = appConfigDto.getTaskStage();
                 setTaskComponent(appConfigDto);
+                if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
+                    Map responseInfo = (Map)JSONObject.parse(response.body());
+                    String code = String.valueOf(responseInfo.get(KEY_CODE));
+                    if (STR_STATUS_200.equals(code)) {
+                        Map data = (Map)responseInfo.get(KEY_DATA);
+                        hepTaskDto.setRealWorkload(String.valueOf(data.get(KEY_REAL_WORKLOAD)));
+                        hepTaskDto.setModifiedFile(TaCommonUtils.formatTextBrToNextLine(String.valueOf(data.get(KEY_MODIFIED_FILE))));
+                        hepTaskDto.setEditDescription(TaCommonUtils.formatTextBrToNextLine(String.valueOf(data.get(KEY_EDIT_DESCRIPTION))));
+                        hepTaskDto.setSuggestion(TaCommonUtils.formatTextBrToNextLine(String.valueOf(data.get(KEY_SUGGESTION))));
+                    }
+                }
+                // 每次页面都重新打开
+                if (stage != null) {
+                    stage.close();
+                    appConfigDto.setTaskStage(null);
+                    stage = null;
+                }
+
                 if (stage == null) {
                     Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_COMPLETE_TASK_FXML)));
                     Scene scene = new Scene(root);
@@ -326,13 +348,19 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         request.put(KEY_METHOD, METHOD_UPDATE_TASK_STATUS);
         request.put(KEY_CURRENT_USER_ID, CURRENT_USER_ID);
         request.put(KEY_OPERATE_TYPE, OPERATE_TYPE_COMPLETE);
+        if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
+            request.put(KEY_OPERATE_TYPE, OPERATE_TYPE_UPDATE);
+            // 完成百分比
+            request.put(KEY_FINISH_PERCENTAGE, STR_0);
+        } else {
+            // 实际完成时间
+            request.put(KEY_REAL_FINISH_TIME, hepTaskDto.getRealFinishTime());
+            // 集成注意
+            request.put(KEY_INTEGRATE_ATTENTION, SYMBOL_EMPTY);
+            // 完成百分比
+            request.put(KEY_FINISH_PERCENTAGE, STR_1);
+        }
         request.put(KEY_ID, hepTaskDto.getId());
-        // 实际完成时间
-        request.put(KEY_REAL_FINISH_TIME, hepTaskDto.getRealFinishTime());
-        // 完成百分比
-        request.put(KEY_FINISH_PERCENTAGE, OPERATE_TYPE_START);
-        // 集成注意
-        request.put(KEY_INTEGRATE_ATTENTION, SYMBOL_EMPTY);
         // 今日总工时
         request.put(KEY_REAL_WORKLOAD, hepTaskDto.getRealWorkload());
         // 修改文件
@@ -346,7 +374,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
 
     private Map<String, Object> startTask(HepTaskDto hepTaskDto) throws Exception {
         // 获取列表数据
-        int taskId = hepTaskDto.getId();
+        String taskId = hepTaskDto.getId();
         Map<String, Object> request = new HashMap<>(8);
         request.put(KEY_METHOD, METHOD_GET_FIELD_INFO);
         request.put(KEY_OPERATE_TYPE, OPERATE_TYPE_START);
@@ -553,6 +581,6 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     }
 
     private boolean testScene() {
-        return true;
+        return false;
     }
 }

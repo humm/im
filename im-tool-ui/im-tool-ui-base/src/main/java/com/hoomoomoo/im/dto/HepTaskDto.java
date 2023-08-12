@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class HepTaskDto extends BaseDto{
 
-    private Integer id;
+    private String id;
     private String taskNumber;
     private String name;
     private String productName;

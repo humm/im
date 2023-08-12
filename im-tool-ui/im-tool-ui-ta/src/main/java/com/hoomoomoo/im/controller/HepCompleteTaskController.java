@@ -115,9 +115,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
                 if (StringUtils.isNotBlank(modifiedFileValue)) {
                     modifiedFileValue.append(SYMBOL_NEXT_LINE);
                 }
-                modifiedFileValue.append(formatText(fileList.get(j), false));
+                modifiedFileValue.append(TaCommonUtils.formatText(fileList.get(j), false));
             }
-            editDescriptionValue.append(formatText(item.getMsg(), false));
+            editDescriptionValue.append(TaCommonUtils.formatText(item.getMsg(), false));
             if (i != logDtoList.size() - 1) {
                 editDescriptionValue.append(SYMBOL_NEXT_LINE);
             }
@@ -211,9 +211,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
         HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
         hepTaskDto.setRealWorkload(realRorkloadValue.trim());
         hepTaskDto.setRealFinishTime(realFinishTimeValue + SYMBOL_SPACE +CommonUtils.getCurrentDateTime8(new Date()));
-        hepTaskDto.setModifiedFile(formatText(modifiedFileValue, true));
-        hepTaskDto.setEditDescription(formatText(editDescriptionValue, true));
-        hepTaskDto.setSuggestion(formatText(suggestionValue, true));
+        hepTaskDto.setModifiedFile(TaCommonUtils.formatText(modifiedFileValue, true));
+        hepTaskDto.setEditDescription(TaCommonUtils.formatText(editDescriptionValue, true));
+        hepTaskDto.setSuggestion(TaCommonUtils.formatText(suggestionValue, true));
         HepWaitHandleTaskController hep = new HepWaitHandleTaskController();
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
         HepTaskComponent hepTaskComponent = appConfigDto.getHepTaskComponent();
@@ -224,14 +224,6 @@ public class HepCompleteTaskController extends BaseController implements Initial
         appConfigDto.setTaskStage(null);
     }
 
-    private String formatText(String text, boolean toBr){
-        if (toBr) {
-            return text.replaceAll("\\n", "\r</br>").trim();
-        } else {
-            return text.replaceAll("\r", SYMBOL_EMPTY).replaceAll("</br>", SYMBOL_EMPTY).trim();
-        }
-    }
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
@@ -240,13 +232,18 @@ public class HepCompleteTaskController extends BaseController implements Initial
             OutputUtils.clearLog(modifiedFile);
             OutputUtils.clearLog(editDescription);
             OutputUtils.clearLog(suggestion);
-            OutputUtils.repeatInfo(id, String.valueOf(hepTaskDto.getId()));
+            OutputUtils.repeatInfo(id, hepTaskDto.getId());
             OutputUtils.repeatInfo(taskNumber, hepTaskDto.getTaskNumber());
             OutputUtils.repeatInfo(realRorkload, appConfigDto.getHepTaskTodoCostTime());
             realFinishTime.setValue(LocalDate.now());
             if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
                 realFinishTime.setDisable(true);
                 sync.setDisable(true);
+                OutputUtils.repeatInfo(modifiedFile, hepTaskDto.getModifiedFile());
+                OutputUtils.repeatInfo(editDescription, hepTaskDto.getEditDescription());
+                OutputUtils.repeatInfo(suggestion, hepTaskDto.getSuggestion());
+                OutputUtils.repeatInfo(realRorkload, hepTaskDto.getRealWorkload());
+
             }
             Platform.runLater(new Runnable() {
                 @Override

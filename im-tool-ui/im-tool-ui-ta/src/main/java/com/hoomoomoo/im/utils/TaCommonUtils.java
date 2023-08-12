@@ -314,4 +314,16 @@ public class TaCommonUtils {
         }
         return svnUrl;
     }
+
+    public static String formatText(String text, boolean toBr){
+        if (toBr) {
+            return text.replaceAll("\\n", "\r<br>").trim();
+        } else {
+            return text.replaceAll("\r", SYMBOL_EMPTY).replaceAll("<br>", SYMBOL_EMPTY).trim();
+        }
+    }
+
+    public static String formatTextBrToNextLine(String text){
+        return text.replaceAll("\r", SYMBOL_EMPTY).replaceAll("<br>", SYMBOL_NEXT_LINE).trim();
+    }
 }
