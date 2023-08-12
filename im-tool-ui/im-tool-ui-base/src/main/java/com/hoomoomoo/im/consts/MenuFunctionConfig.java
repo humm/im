@@ -11,23 +11,25 @@ public class MenuFunctionConfig {
     public enum MenuConfig {
 
         // TA菜单
-        MENU_SVN("menuSvn", "SVN", 10),
-        MENU_SCRIPT("menuScript", "脚本", 20),
-        MENU_CODE("menuCode", "代码", 30),
-        MENU_HEP("menuHep", "效能", 40),
+        MENU_SVN("menuSvn", "SVN", 10, "svn"),
+        MENU_SCRIPT("menuScript", "脚本", 20, "sql"),
+        MENU_CODE("menuCode", "代码", 30, "code"),
+        MENU_HEP("menuHep", "效能", 40, "hep"),
 
         // Shopping菜单
-        MENU_JD("menuJd", "京东", 10),
+        MENU_JD("menuJd", "京东", 10, "jd"),
 
         // 公共菜单
-        MENU_SET("menuSet", "设置", 1000),
-        MENU_HELP("menuHelp", "帮助", 1100);
+        MENU_SET("menuSet", "设置", 1000, "set"),
+        MENU_HELP("menuHelp", "帮助", 1100, "help");
 
         private String menuId;
 
         private String menuName;
 
         private Integer menuOrder;
+
+        private String icon;
 
         public String getMenuId() {
             return menuId;
@@ -41,10 +43,15 @@ public class MenuFunctionConfig {
             return menuOrder;
         }
 
-        MenuConfig(String menuId, String menuName, Integer menuOrder) {
+        public String getMenuIcon() {
+            return icon;
+        }
+
+        MenuConfig(String menuId, String menuName, Integer menuOrder, String icon) {
             this.menuId = menuId;
             this.menuName = menuName;
             this.menuOrder = menuOrder;
+            this.icon = icon;
         }
 
         public static MenuConfig getMenuConfig(String code) {

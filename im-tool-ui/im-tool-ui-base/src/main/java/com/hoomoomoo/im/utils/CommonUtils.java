@@ -370,7 +370,7 @@ public class CommonUtils {
                 Menu menu = new Menu();
                 menu.setId(menuConfig.getMenuId());
                 menu.setText(menuConfig.getMenuName());
-                setMenuStyle(menu);
+                setMenuStyle(menu, menuConfig.getMenuIcon());
                 menus.add(menu);
             }
 
@@ -641,7 +641,8 @@ public class CommonUtils {
         tab.getStyleClass().add("tabClass");
     }
 
-    private static void setMenuStyle(Menu menu) {
+    private static void setMenuStyle(Menu menu, String icon) {
+        CommonUtils.setIcon(menu, "/conf/image/" + icon + ".png", MENUITEM_ICON_SIZE);
     }
 
     public static void setIcon(Object element, String iconPath, int size) {

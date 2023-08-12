@@ -293,7 +293,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                     String code = String.valueOf(responseInfo.get(KEY_CODE));
                     if (STR_STATUS_200.equals(code)) {
                         Map data = (Map)responseInfo.get(KEY_DATA);
-                        hepTaskDto.setRealWorkload(String.valueOf(data.get(KEY_REAL_WORKLOAD)));
+                        hepTaskDto.setRealWorkload(STR_1);
                         hepTaskDto.setModifiedFile(TaCommonUtils.formatTextBrToNextLine(String.valueOf(data.get(KEY_MODIFIED_FILE))));
                         hepTaskDto.setEditDescription(TaCommonUtils.formatTextBrToNextLine(String.valueOf(data.get(KEY_EDIT_DESCRIPTION))));
                         hepTaskDto.setSuggestion(TaCommonUtils.formatTextBrToNextLine(String.valueOf(data.get(KEY_SUGGESTION))));

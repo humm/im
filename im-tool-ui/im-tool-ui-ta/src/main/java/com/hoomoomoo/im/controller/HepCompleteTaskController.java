@@ -185,20 +185,24 @@ public class HepCompleteTaskController extends BaseController implements Initial
         String modifiedFileValue = modifiedFile.getText();
         String editDescriptionValue = editDescription.getText();
         String suggestionValue = suggestion.getText();
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
         if (StringUtils.isBlank(realRorkloadValue)) {
             tips.append("【耗费工时】").append(SYMBOL_NEXT_LINE);
         }
         if (StringUtils.isBlank(realFinishTimeValue)) {
             tips.append("【完成时间】").append(SYMBOL_NEXT_LINE);
         }
-        if (StringUtils.isBlank(modifiedFileValue)) {
-            tips.append("【修改文件】").append(SYMBOL_NEXT_LINE);
-        }
-        if (StringUtils.isBlank(editDescriptionValue)) {
-            tips.append("【修改说明】").append(SYMBOL_NEXT_LINE);
-        }
-        if (StringUtils.isBlank(suggestionValue)) {
-            tips.append("【测试建议】").append(SYMBOL_NEXT_LINE);
+        if (!OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
+            if (StringUtils.isBlank(modifiedFileValue)) {
+                tips.append("【修改文件】").append(SYMBOL_NEXT_LINE);
+            }
+            if (StringUtils.isBlank(editDescriptionValue)) {
+                tips.append("【修改说明】").append(SYMBOL_NEXT_LINE);
+            }
+            if (StringUtils.isBlank(suggestionValue)) {
+                tips.append("【测试建议】").append(SYMBOL_NEXT_LINE);
+            }
         }
         if (StringUtils.isNotBlank(tips)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -207,8 +211,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
             Optional<ButtonType> res = alert.showAndWait();
             return;
         }
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
+
         hepTaskDto.setRealWorkload(realRorkloadValue.trim());
         hepTaskDto.setRealFinishTime(realFinishTimeValue + SYMBOL_SPACE +CommonUtils.getCurrentDateTime8(new Date()));
         hepTaskDto.setModifiedFile(TaCommonUtils.formatText(modifiedFileValue, true));
