@@ -76,7 +76,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
         try {
             OutputUtils.clearLog(log);
             LoggerUtils.info(String.format(BaseConst.MSG_USE, DATABASE_SCRIPT.getName()));
-            if (!TaCommonUtil.checkConfig(log, DATABASE_SCRIPT.getCode())) {
+            if (!TaCommonUtils.checkConfig(log, DATABASE_SCRIPT.getCode())) {
                 return;
             }
             setProgress(0);

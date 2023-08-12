@@ -8,7 +8,6 @@ import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.dto.GenerateCodeRecord;
 import com.hoomoomoo.im.service.*;
 import com.hoomoomoo.im.utils.*;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -299,7 +298,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             LoggerUtils.info(String.format(BaseConst.MSG_USE, GENERATE_CODE.getName()));
             initGenerateCodeDto();
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (!TaCommonUtil.checkConfigGenerateCode(log, appConfigDto.getGenerateCodeDto())) {
+            if (!TaCommonUtils.checkConfigGenerateCode(log, appConfigDto.getGenerateCodeDto())) {
                 return;
             }
             setProgress(0);

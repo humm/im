@@ -216,6 +216,9 @@ public class BaseConst {
     public static final String NAME_SVN_STAT_HISTORY = "#################### 历史统计";
     public static final String NAME_MENU_HEP_TASK_TODO = "#################### 效能";
 
+    public static final String NAME_MENU_UPDATE = "更新";
+    public static final String NAME_MENU_COPY = "复制";
+
     public final static String SECURITY_FLAG = "+++";
 
     public final static String SYMBOL_EMPTY = "";
@@ -319,6 +322,8 @@ public class BaseConst {
     public static final String PATH_STAT = "/stats/%s";
     public static final String PATH_ICON = "/conf/image/icon.png";
     public static final String FACTORY_ICON = "/conf/image/factory.png";
+    public static final String COPY_ICON = "/conf/image/copy.png";
+    public static final String UPDATE_ICON = "/conf/image/update.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
     public static final String PATH_STARTER_CSS = "/conf/style/progressIndicator.css";
     public static final String PATH_COLUMN_SET_FXML = "/conf/fxml/generateCodeColumnSet.fxml";
@@ -384,5 +389,7 @@ public class BaseConst {
     public static final Integer SECOND_CLICKED = 2;
     public static final String RIGHT_CLICKED = "SECONDARY";
     public static final String LEFT_CLICKED = "PRIMARY";
+
+    public static final Integer MENUITEM_ICON_SIZE = 20;
 
 }

@@ -68,7 +68,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
     void executeSubmit(ActionEvent event) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, SCRIPT_UPDATE.getName()));
-            if (!TaCommonUtil.checkConfig(target, SCRIPT_UPDATE.getCode())) {
+            if (!TaCommonUtils.checkConfig(target, SCRIPT_UPDATE.getCode())) {
                 return;
             }
             if (rewrite.isSelected() == false && append.isSelected() == false) {

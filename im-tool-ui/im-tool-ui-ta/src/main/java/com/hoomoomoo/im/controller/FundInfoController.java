@@ -14,7 +14,6 @@ import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -91,7 +90,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 }
                 appConfigDto.setFundGeneratePath(filePath.getText().substring(0, index));
             }
-            if (!TaCommonUtil.checkConfig(fundLog, FUND_INFO.getCode())) {
+            if (!TaCommonUtils.checkConfig(fundLog, FUND_INFO.getCode())) {
                 return;
             }
             setProgress(0);

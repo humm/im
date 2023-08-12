@@ -135,7 +135,7 @@ public class SvnUtils {
                         }
                         String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
                         if (ver.contains(KEY_FUND)) {
-                            svnUrl = TaCommonUtil.getSvnUrl(ver, svnUrl);
+                            svnUrl = TaCommonUtils.getSvnUrl(ver, svnUrl);
                             ver += KEY_SOURCES_TA_FUND;
                         }
                         repList.add(svnUrl + ver);

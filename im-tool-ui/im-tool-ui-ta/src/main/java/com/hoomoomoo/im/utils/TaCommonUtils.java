@@ -23,7 +23,7 @@ import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
  * @package com.hoomoomoo.im.utils
  * @date 2022/1/9
  */
-public class TaCommonUtil {
+public class TaCommonUtils {
 
     public static boolean checkConfig(TextArea log, String functionCode) throws Exception {
         boolean flag = true;

@@ -43,7 +43,7 @@ public class SvnHistoryQueryController extends BaseController implements Initial
     void execute(ActionEvent event) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, SVN_HISTORY_STAT.getName()));
-            if (!TaCommonUtil.checkConfig(stat, MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT.getCode())) {
+            if (!TaCommonUtils.checkConfig(stat, MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT.getCode())) {
                 return;
             }
             setProgress(0);
@@ -67,7 +67,7 @@ public class SvnHistoryQueryController extends BaseController implements Initial
                     Date end = CommonUtils.getCurrentDateTime7(endSelected + " 23:59:59");
                     OutputUtils.clearLog(stat);
                     LinkedHashMap<String, SvnStatDto> svnStat = SvnUtils.getSvnLog(start, end, new LinkedHashMap<>(), false);
-                    List<SvnStatDto> svnStatDtoList = TaCommonUtil.sortSvnStatDtoList(appConfigDto, svnStat);
+                    List<SvnStatDto> svnStatDtoList = TaCommonUtils.sortSvnStatDtoList(appConfigDto, svnStat);
                     for (SvnStatDto item : svnStatDtoList) {
                         OutputUtils.info(stat, item);
                     }

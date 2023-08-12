@@ -120,7 +120,7 @@ public class SvnLogController extends BaseController implements Initializable {
         }
         new Thread(() -> {
             try {
-                if (!TaCommonUtil.checkConfig(fileLog, SVN_LOG.getCode())) {
+                if (!TaCommonUtils.checkConfig(fileLog, SVN_LOG.getCode())) {
                     return;
                 }
                 Thread.sleep(1000);
@@ -172,7 +172,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 } else {
                     String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
                     if (versionValue.contains(KEY_FUND)) {
-                        svnUrl = TaCommonUtil.getSvnUrl(versionValue, svnUrl);
+                        svnUrl = TaCommonUtils.getSvnUrl(versionValue, svnUrl);
                         versionValue += KEY_SOURCES_TA_FUND;
                     }
                     appConfigDto.setSvnRep(svnUrl + versionValue);

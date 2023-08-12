@@ -45,7 +45,7 @@ public class SvnUpdateController extends BaseController implements Initializable
     void executeSubmit(ActionEvent event) {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, SVN_UPDATE.getName()));
         try {
-            if (!TaCommonUtil.checkConfig(fileLog, SVN_UPDATE.getCode())) {
+            if (!TaCommonUtils.checkConfig(fileLog, SVN_UPDATE.getCode())) {
                 return;
             }
             setProgress(0);

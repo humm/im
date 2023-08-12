@@ -3,7 +3,6 @@ package com.hoomoomoo.im.service;
 import com.hoomoomoo.im.dto.ColumnInfoDto;
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.TaCommonUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Iterator;

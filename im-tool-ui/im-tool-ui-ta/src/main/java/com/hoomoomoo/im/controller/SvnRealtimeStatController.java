@@ -45,7 +45,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
     public void initialize(URL location, ResourceBundle resources) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, SVN_REALTIME_STAT.getName()));
-            if (!TaCommonUtil.checkConfig(stat, SVN_REALTIME_STAT.getCode())) {
+            if (!TaCommonUtils.checkConfig(stat, SVN_REALTIME_STAT.getCode())) {
                 return;
             }
             setProgress(0);
@@ -79,7 +79,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
                         OutputUtils.info(notice, BaseConst.SYMBOL_SPACE);
                         OutputUtils.info(costTime, BaseConst.SYMBOL_SPACE);
                         OutputUtils.clearLog(stat);
-                        List<SvnStatDto> svnStatDtoList = TaCommonUtil.sortSvnStatDtoList(appConfigDto, svnStat);
+                        List<SvnStatDto> svnStatDtoList = TaCommonUtils.sortSvnStatDtoList(appConfigDto, svnStat);
                         for (SvnStatDto item : svnStatDtoList) {
                             OutputUtils.info(stat, item);
                         }

@@ -11,11 +11,14 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskComponent;
 import com.hoomoomoo.im.dto.HepTaskDto;
+import com.hoomoomoo.im.service.HepWaitHandleTaskMenu;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -27,8 +30,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -38,7 +39,6 @@ import java.util.*;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.FUND_INFO;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_TODO;
 
 /**
@@ -49,8 +49,6 @@ import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_TOD
  */
 public class HepWaitHandleTaskController extends BaseController implements Initializable {
     private static Set<String> field = new LinkedHashSet<>();
-
-    private final static boolean TEST_FLAG = false;
 
     private final static Integer STATUS_200 = 200;
     private final static String STR_STATUS_200 = "200";
@@ -74,6 +72,9 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     public final static String OPERATE_COMPLETE_QUERY = "4";
     private final static String OPERATE_START = "2";
     public final static String OPERATE_COMPLETE = "3";
+
+    public final static String OPERATE_TYPE_CUSTOM_UPDATE = "update";
+    public final static String OPERATE_TYPE_CUSTOM_COMPLETE = "complete";
 
     private List<String> logs = new ArrayList<>();
 
@@ -135,7 +136,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     private Button query;
 
     @FXML
-    void showTaskInfo(MouseEvent event) {
+    void showTaskInfo(MouseEvent event) throws Exception {
         HepTaskDto item = (HepTaskDto)taskList.getSelectionModel().getSelectedItem();
         OutputUtils.repeatInfo(taskNumber, item.getTaskNumber());
         OutputUtils.repeatInfo(name, item.getName());
@@ -143,27 +144,13 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         OutputUtils.repeatInfo(statusName, item.getStatusName());
         OutputUtils.repeatInfo(id, String.valueOf(item.getId()));
         String clickType = event.getButton().toString();
-        if (RIGHT_CLICKED.equals(clickType)) {
-            buildClipboardInfo(item);
-        } else if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        appConfigDto.setHepTaskDto(item);
+        if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
             operateTask(item);
         }
     }
 
-    void buildClipboardInfo (HepTaskDto item) {
-        StringBuilder info = new StringBuilder();
-        info.append("[需求编号]").append(SYMBOL_SPACE).append(SYMBOL_NEXT_LINE);
-        info.append("[修改单编号]").append(SYMBOL_SPACE).append(item.getTaskNumber()).append(SYMBOL_NEXT_LINE);
-        info.append("[修改单版本]").append(SYMBOL_SPACE).append(item.getSprintVersion()).append(SYMBOL_NEXT_LINE);
-        info.append("[需求引入行]").append(SYMBOL_SPACE).append(SYMBOL_NEXT_LINE);
-        String name = item.getName();
-        if (name.contains(SYMBOL_BRACKETS_2_RIGHT)) {
-            name = name.split(SYMBOL_BRACKETS_2_RIGHT)[1];
-        }
-        info.append("[需求描述]").append(SYMBOL_SPACE).append(name);
-        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info.toString()), null);
-        OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "任务单【" + item.getTaskNumber() + "】复制成功");
-    }
     void operateTask(HepTaskDto item) {
         String status = item.getStatus();
         if (STATUS_WAIT_START.equals(status)) {
@@ -257,7 +244,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
             LoggerUtils.info("response: " + response.body());
             Map<String, Object> responseInfo;
             String message = response.body();
-            if (STATUS_200 == response.getStatus()) {
+            if (requestStatus(response)) {
                 responseInfo = (Map)JSONObject.parse(response.body());
                 message = String.valueOf(responseInfo.get(KEY_MESSAGE));
                 String code = String.valueOf(responseInfo.get(KEY_CODE));
@@ -280,29 +267,23 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         return items;
     }
 
-    private void completeTask(HepTaskDto hepTaskDto) {
+    public void completeTask(HepTaskDto hepTaskDto) {
         // 获取列表数据
         Map<String, Object> request = new HashMap<>(16);
         request.put(KEY_METHOD, METHOD_GET_FIELD_INFO);
         request.put(KEY_OPERATE_TYPE, OPERATE_TYPE_COMPLETE);
         HttpResponse response = sendPost(request);
-        if (STATUS_200 == response.getStatus()) {
+        if (requestStatus(response)) {
             request.remove(KEY_OPERATE_TYPE);
             request.put(KEY_METHOD, METHOD_FETCH_TASK_BY_ID);
             request.put(KEY_ID, hepTaskDto.getId());
         }
         response = sendPost(request);
-        if (STATUS_200 == response.getStatus()) {
+        if (requestStatus(response)) {
             try {
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 Stage stage = appConfigDto.getTaskStage();
-                appConfigDto.setHepTaskDto(hepTaskDto);
-                HepTaskComponent hepTaskComponent = new HepTaskComponent();
-                hepTaskComponent.setLogs(logs);
-                hepTaskComponent.setWaitHandleTaskNum(waitHandleTaskNum);
-                hepTaskComponent.setTodoNum(todoNum);
-                hepTaskComponent.setTaskList(taskList);
-                appConfigDto.setHepTaskComponent(hepTaskComponent);
+                setTaskComponent(appConfigDto);
                 if (stage == null) {
                     Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_COMPLETE_TASK_FXML)));
                     Scene scene = new Scene(root);
@@ -311,6 +292,9 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                     stage.getIcons().add(new Image(PATH_ICON));
                     stage.setScene(scene);
                     stage.setTitle("完成任务");
+                    if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
+                        stage.setTitle("更新任务");
+                    }
                     stage.setResizable(false);
                     stage.show();
                     appConfigDto.setTaskStage(stage);
@@ -326,6 +310,15 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                 OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + e.getMessage());
             }
         }
+    }
+
+    private void setTaskComponent(AppConfigDto appConfigDto) {
+        HepTaskComponent hepTaskComponent = new HepTaskComponent();
+        hepTaskComponent.setLogs(logs);
+        hepTaskComponent.setWaitHandleTaskNum(waitHandleTaskNum);
+        hepTaskComponent.setTodoNum(todoNum);
+        hepTaskComponent.setTaskList(taskList);
+        appConfigDto.setHepTaskComponent(hepTaskComponent);
     }
 
     private Map<String, Object> executeCompletTask(HepTaskDto hepTaskDto) throws Exception {
@@ -358,13 +351,13 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         request.put(KEY_METHOD, METHOD_GET_FIELD_INFO);
         request.put(KEY_OPERATE_TYPE, OPERATE_TYPE_START);
         HttpResponse response = sendPost(request);
-        if (STATUS_200 == response.getStatus()) {
+        if (requestStatus(response)) {
             request.remove(KEY_OPERATE_TYPE);
             request.put(KEY_METHOD, METHOD_FETCH_TASK_BY_ID);
             request.put(KEY_ID, taskId);
         }
         response = sendPost(request);
-        if (STATUS_200 == response.getStatus()) {
+        if (requestStatus(response)) {
             request.put(KEY_METHOD, METHOD_UPDATE_TASK_STATUS);
             request.put(KEY_CURRENT_USER_ID, CURRENT_USER_ID);
             request.put(KEY_OPERATE_TYPE, OPERATE_TYPE_START);
@@ -416,12 +409,10 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         LoggerUtils.info("url: " + REQUEST_URL);
         LoggerUtils.info("method: " + jsonObject.get(KEY_METHOD));
         LoggerUtils.info("request: " + jsonObject);
-        HttpResponse response;
-        if (TEST_FLAG) {
-            response = HttpRequest.get("https://www.hutool.cn/").execute();
-        } else {
-            response = HttpRequest.post(REQUEST_URL).timeout(10 * 1000).form(jsonObject).execute();
+        if (testScene()) {
+            return null;
         }
+        HttpResponse response = HttpRequest.post(REQUEST_URL).timeout(10 * 1000).form(jsonObject).execute();;
         return response;
     }
 
@@ -501,32 +492,44 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            if (TEST_FLAG) {
-                buildTestData();
-                return;
-            } else {
-                executeQuery(null);
-            }
             CURRENT_USER_ID = appConfigDto.getHepTaskUser();
-            if (true) {
-                return;
-            }
-            Timer todoTimer = new Timer();
-            TimerTask todoTimerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    executeQuery(null);
-                }
-            };
-            todoTimer.scheduleAtFixedRate(todoTimerTask, 1, new BigDecimal(appConfigDto.getHepTaskTodoTaskTime()).multiply(new BigDecimal(1000)).longValue());
-            appConfigDto.getTimerList().add(todoTimer);
-
+            addTaskMenu(appConfigDto);
+            executeQuery(null);
+            buildTestData();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
     }
 
+    private void addTaskMenu(AppConfigDto appConfigDto) {
+        taskList.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                String clickType = event.getButton().toString();
+                if (RIGHT_CLICKED.equals(clickType)) {
+                    Node node = event.getPickResult().getIntersectedNode();
+                    HepWaitHandleTaskMenu hepWaitHandleTaskMenu = HepWaitHandleTaskMenu.getInstance();
+                    HepTaskDto hepTaskDto = (HepTaskDto)taskList.getSelectionModel().getSelectedItem();
+                    hepWaitHandleTaskMenu.getItems().forEach((item) -> {
+                        if (NAME_MENU_UPDATE.equals(item.getText())) {
+                            if (STATUS_DEV.equals(hepTaskDto.getStatus())) {
+                                item.setVisible(true);
+                            } else {
+                                item.setVisible(false);
+                            }
+                        }
+                    });
+                    hepWaitHandleTaskMenu.show(node, event.getScreenX(), event.getScreenY());
+                    appConfigDto.setHepTaskDto(hepTaskDto);
+                }
+            }
+        });
+    }
+
     private void buildTestData() {
+        if (!testScene()) {
+            return;
+        }
         List<Map> req = new ArrayList<>();
         for (int i=0; i<10; i++) {
             Map<String, Object> item = new HashMap<>(16);
@@ -543,5 +546,13 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(req), HepTaskDto.class);
         OutputUtils.clearLog(taskList);
         OutputUtils.infoList(taskList, res, true);
+    }
+
+    private boolean requestStatus(HttpResponse response) {
+        return testScene() || STATUS_200 == response.getStatus();
+    }
+
+    private boolean testScene() {
+        return true;
     }
 }

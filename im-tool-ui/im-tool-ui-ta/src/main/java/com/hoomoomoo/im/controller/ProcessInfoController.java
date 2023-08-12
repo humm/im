@@ -8,7 +8,7 @@ import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
-import com.hoomoomoo.im.utils.TaCommonUtil;
+import com.hoomoomoo.im.utils.TaCommonUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -100,7 +100,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 appConfigDto.setProcessGeneratePathTrans(path);
             }
 
-            if (!TaCommonUtil.checkConfig(log, PROCESS_INFO.getCode())) {
+            if (!TaCommonUtils.checkConfig(log, PROCESS_INFO.getCode())) {
                 return;
             }
             setProgress(0);

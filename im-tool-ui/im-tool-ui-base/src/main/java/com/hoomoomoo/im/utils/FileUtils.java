@@ -2,6 +2,7 @@ package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.BaseDto;
+import javafx.scene.image.Image;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -807,4 +808,5 @@ public class FileUtils {
         FileOutputStream fileOutputStream = new FileOutputStream(target);
         ImageIO.write(bufferedImage, "png", fileOutputStream);
     }
+
 }

@@ -13,8 +13,11 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -367,6 +370,7 @@ public class CommonUtils {
                 Menu menu = new Menu();
                 menu.setId(menuConfig.getMenuId());
                 menu.setText(menuConfig.getMenuName());
+                setMenuStyle(menu);
                 menus.add(menu);
             }
 
@@ -623,12 +627,33 @@ public class CommonUtils {
             if (tab == null) {
                 tab = CommonUtils.getFunctionTab(functionConfig.getPath(), functionConfig.getName(),
                         functionConfig.getCode(), functionConfig.getName());
+                setTabStyle(tab);
                 bindTabEvent(tab);
                 functionTab.getTabs().add(tab);
             }
             functionTab.getSelectionModel().select(tab);
         } catch (Exception e) {
             LoggerUtils.info(e);
+        }
+    }
+
+    private static void setTabStyle(Tab tab) {
+        tab.getStyleClass().add("tabClass");
+    }
+
+    private static void setMenuStyle(Menu menu) {
+    }
+
+    public static void setIcon(Object element, String iconPath, int size) {
+        ImageView image = new ImageView(new Image(iconPath));
+        image.setPreserveRatio(true);
+        image.setFitHeight(size);
+        if (element instanceof MenuItem) {
+            ((MenuItem)element).setGraphic(image);
+        } else if (element instanceof Menu) {
+            ((Menu)element).setGraphic(image);
+        } else if (element instanceof Tab) {
+            ((Tab)element).setGraphic(image);
         }
     }
 
@@ -681,6 +706,7 @@ public class CommonUtils {
                     MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(tab);
                     Tab openTab = CommonUtils.getFunctionTab(getPath(tab),
                             getName(tab), functionConfig.getCode(), functionConfig.getName());
+                    setTabStyle(openTab);
                     bindTabEvent(openTab);
                     functionTab.getTabs().add(openTab);
                 }
@@ -691,6 +717,7 @@ public class CommonUtils {
                     FunctionDto functionDto = functionDtoList.get(0);
                     Tab tab = CommonUtils.getFunctionTab(getPath(functionDto.getFunctionCode()),
                             getName(functionDto.getFunctionCode()), functionDto.getFunctionCode(), functionDto.getFunctionName());
+                    setTabStyle(tab);
                     bindTabEvent(tab);
                     functionTab.getTabs().add(tab);
                 }
@@ -704,4 +731,5 @@ public class CommonUtils {
     public static String getMenuName(String menuCode, String menuName) {
         return menuCode + SYMBOL_COLON + menuName;
     }
+
 }

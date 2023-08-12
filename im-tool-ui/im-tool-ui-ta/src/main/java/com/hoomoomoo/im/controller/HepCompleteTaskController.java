@@ -16,7 +16,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import lombok.SneakyThrows;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -25,8 +24,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.controller.HepWaitHandleTaskController.OPERATE_COMPLETE;
-import static com.hoomoomoo.im.controller.HepWaitHandleTaskController.OPERATE_COMPLETE_QUERY;
+import static com.hoomoomoo.im.controller.HepWaitHandleTaskController.*;
 
 /**
  * @author humm23693
@@ -86,7 +84,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         } else {
             String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
             if (versionValue.contains(KEY_FUND)) {
-                svnUrl = TaCommonUtil.getSvnUrl(versionValue, svnUrl);
+                svnUrl = TaCommonUtils.getSvnUrl(versionValue, svnUrl);
                 versionValue += KEY_SOURCES_TA_FUND;
             }
             String svnRep = svnUrl + versionValue;
@@ -246,6 +244,10 @@ public class HepCompleteTaskController extends BaseController implements Initial
             OutputUtils.repeatInfo(taskNumber, hepTaskDto.getTaskNumber());
             OutputUtils.repeatInfo(realRorkload, appConfigDto.getHepTaskTodoCostTime());
             realFinishTime.setValue(LocalDate.now());
+            if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
+                realFinishTime.setDisable(true);
+                sync.setDisable(true);
+            }
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {

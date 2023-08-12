@@ -200,15 +200,13 @@ public class AppConfigDto extends BaseDto {
 
     private String generateCodeMenuType;
 
+    private Map<String, String> fieldTranslateMap;
+
     private HepTaskDto hepTaskDto;
 
     private HepTaskComponent hepTaskComponent;
 
-    private Map<String, String> fieldTranslateMap;
-
     private String hepTaskTodoCostTime;
-
-    private String hepTaskTodoTaskTime;
 
     private List<Timer> timerList;
 

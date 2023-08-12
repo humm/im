@@ -5,7 +5,7 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
-import com.hoomoomoo.im.utils.TaCommonUtil;
+import com.hoomoomoo.im.utils.TaCommonUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -117,7 +117,7 @@ public class GenerateSqlController extends BaseController implements Initializab
         try {
             OutputUtils.clearLog(sql);
             LoggerUtils.info(String.format(BaseConst.MSG_USE, GENERATE_SQL.getName()));
-            if (!TaCommonUtil.checkConfig(sql, GENERATE_SQL.getCode())) {
+            if (!TaCommonUtils.checkConfig(sql, GENERATE_SQL.getCode())) {
                 return;
             }
             setProgress(0);

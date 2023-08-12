@@ -1,3 +1,7 @@
 .progress-indicator .percentage {
     -fx-fill: null;
 }
+
+.tabClass {
+    -fx-font-weight: bold;
+}
