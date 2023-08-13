@@ -119,6 +119,8 @@ public class ConfigCache {
 
         // 加载配置信息
         if (CollectionUtils.isNotEmpty(content)) {
+            StringBuilder replaceSkipVersion = new StringBuilder();
+            StringBuilder replaceVersion = new StringBuilder("/ta/fund:");
             for (String item : content) {
                 // 代码更新配置
                 if (item.startsWith(KEY_SVN_UPDATE)) {
@@ -166,10 +168,11 @@ public class ConfigCache {
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
                         if (!DEMO.equalsIgnoreCase(code)) {
-                            if (!(KEY_TRUNK.equalsIgnoreCase(KEY_TRUNK) || KEY_TRUNK.equalsIgnoreCase(KEY_DESKTOP))) {
-                                code = code.toUpperCase();
-                            }
                             appConfigDto.getCopyCodeVersion().put(code, name);
+                            if (code.contains(KEY_FUND)) {
+                                replaceSkipVersion.append(code).append(SYMBOL_COMMA);
+                                replaceVersion.append(code).append(SYMBOL_COMMA);
+                            }
                         }
                     }
                 }
@@ -184,7 +187,7 @@ public class ConfigCache {
                         }
                     }
                 }
-                // url替换配置
+                // 替换源路径
                 if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_SOURCE)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
                     String code = item.substring(KEY_COPY_CODE_LOCATION_REPLACE_SOURCE.length(), index);
@@ -196,7 +199,7 @@ public class ConfigCache {
                         }
                     }
                 }
-                // url替换配置
+                // 替换目标路径
                 if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_TARGET)) {
                     int index = item.indexOf(SYMBOL_EQUALS);
                     String code = item.substring(KEY_COPY_CODE_LOCATION_REPLACE_TARGET.length(), index);
@@ -221,6 +224,13 @@ public class ConfigCache {
                     }
                 }
             }
+
+            // 路径替换跳过版本号
+            appConfigDto.setCopyCodeLocationReplaceSkipVersion(replaceSkipVersion.toString());
+
+            // 路径替换版本号
+            appConfigDto.setCopyCodeLocationReplaceVersion(replaceVersion.toString());
+
         }
 
         LoggerUtils.appStartInfo(String.format(MSG_LOAD, NAME_CONFIG_INFO));
