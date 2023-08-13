@@ -2,6 +2,7 @@ package com.hoomoomoo.im.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskComponent;
 import com.hoomoomoo.im.dto.HepTaskDto;
@@ -94,7 +95,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         try {
             logDtoList.addAll(SvnUtils.getSvnLog(0, taskNumber));
         } catch (Exception e) {
-            OutputUtils.info(notice, "修改记录信息同步异常,请检查");
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("修改记录信息同步异常,请检查"));
             LoggerUtils.info(e);
             sync.setDisable(false);
             execute.setDisable(false);
@@ -134,9 +135,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
         OutputUtils.repeatInfo(editDescription, editDescriptionValue.toString());
         OutputUtils.repeatInfo(suggestion, editDescriptionValue.toString());
         if (StringUtils.isBlank(modifiedFileValue)) {
-            OutputUtils.info(notice, "未查询到修改记录信息,请检查");
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("未查询到修改记录信息,请检查"));
         } else {
-            OutputUtils.info(notice, "修改记录信息同步完成");
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("修改记录信息同步完成"));
         }
         sync.setDisable(false);
         execute.setDisable(false);

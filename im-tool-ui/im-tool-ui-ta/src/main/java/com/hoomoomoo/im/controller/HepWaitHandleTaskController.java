@@ -172,7 +172,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                     execute(OPERATE_START, item);
                 } catch (Exception e) {
                     LoggerUtils.info(e);
-                    OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + e.getMessage());
+                    OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
                 }
             }
         } else if (STATUS_DEV.equals(status)) {
@@ -180,11 +180,11 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                 completeTask(item);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + e.getMessage());
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
             }
         } else {
             LoggerUtils.info("不支持的操作类型");
-            OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "不支持的操作类型");
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("不支持的操作类型"));
         }
     }
 
@@ -192,7 +192,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     void executeQuery(ActionEvent event) {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
         if (StringUtils.isBlank(CURRENT_USER_ID)) {
-            OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "请配置[ hep.task.user ]");
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("请配置[ hep.task.user ]"));
             return;
         }
         new Thread(() -> {
@@ -207,7 +207,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                 executeQuery();
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + e.getMessage());
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
             }
         }).start();
     }
@@ -221,7 +221,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                 LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), logs);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(ExceptionMsgUtils.getMsg(e)));
             } finally {
                 query.setDisable(false);
             }
@@ -237,7 +237,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         } else if (OPERATE_COMPLETE.equals(operateType)) {
             response = sendPost(executeCompletTask(hepTaskDto));
         } else {
-            OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "不支持的操作类型");
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("不支持的操作类型"));
             throw new Exception("不支持的操作类型");
         }
         JSONArray items = new JSONArray();
@@ -263,7 +263,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                     }
                 }
             }
-            OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + message);
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(message));
         }
         return items;
     }
@@ -329,7 +329,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                 }
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + e.getMessage());
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
             }
         }
     }

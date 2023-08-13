@@ -326,4 +326,8 @@ public class TaCommonUtils {
     public static String formatTextBrToNextLine(String text){
         return text.replaceAll("\r", SYMBOL_EMPTY).replaceAll("<br>", SYMBOL_NEXT_LINE).trim();
     }
+
+    public static String getMsgContainDate (String msg) {
+        return CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + msg;
+    }
 }
