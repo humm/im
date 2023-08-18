@@ -7,6 +7,7 @@ import com.hoomoomoo.im.controller.ScriptUpdateController;
 import com.hoomoomoo.im.dto.*;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -330,4 +331,5 @@ public class TaCommonUtils {
     public static String getMsgContainDate (String msg) {
         return CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + msg;
     }
+
 }

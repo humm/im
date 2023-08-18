@@ -115,10 +115,19 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     private TextField taskNumber;
 
     @FXML
+    private TextField taskNumberQuery;
+
+    @FXML
     private TextField name;
 
     @FXML
+    private TextField nameQuery;
+
+    @FXML
     private TextField sprintVersion;
+
+    @FXML
+    private TextField sprintVersionQuery;
 
     @FXML
     private TextField statusName;
@@ -134,6 +143,12 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
 
     @FXML
     private Button query;
+
+    @FXML
+    private Button queryCondition;
+
+    @FXML
+    private Button reset;
 
     @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
@@ -199,11 +214,9 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
             try {
                 setProgress(0);
                 updateProgress();
-                OutputUtils.clearLog(taskList);
+                /*OutputUtils.clearLog(taskList);
                 OutputUtils.clearLog(waitHandleTaskNum);
-                OutputUtils.clearLog(todoNum);
-                OutputUtils.clearLog(checkNum);
-                OutputUtils.clearLog(bugNum);
+                OutputUtils.clearLog(todoNum);*/
                 executeQuery();
             } catch (Exception e) {
                 LoggerUtils.info(e);
@@ -212,10 +225,20 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         }).start();
     }
 
+    @FXML
+    void executeReset(ActionEvent event) {
+        OutputUtils.clearLog(taskNumberQuery);
+        OutputUtils.clearLog(nameQuery);
+        OutputUtils.clearLog(sprintVersionQuery);
+        executeQuery(null);
+    }
+
     private void executeQuery() {
         new Thread(() -> {
             try {
                 query.setDisable(true);
+                queryCondition.setDisable(true);
+                reset.setDisable(true);
                 execute(OPERATE_QUERY, null);
                 setProgress(1);
                 LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), logs);
@@ -224,6 +247,8 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(ExceptionMsgUtils.getMsg(e)));
             } finally {
                 query.setDisable(false);
+                queryCondition.setDisable(false);
+                reset.setDisable(false);
             }
         }).start();
     }
@@ -403,13 +428,14 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         return request;
     }
 
-    public void dealTaskList(JSONArray items, List<String> logsIn, Label waitHandleTaskNumIn, Label todoNumIn, TableView taskListIn) {
-        items = sortItems(items);
-        for (int i=0; i<items.size(); i++) {
-            Map<String, Object> item = (Map)items.get(i);
+    public void dealTaskList(JSONArray task, List<String> logsIn, Label waitHandleTaskNumIn, Label todoNumIn, TableView taskListIn) {
+        filterTask(task);
+        sortItems(task);
+        for (int i=0; i<task.size(); i++) {
+            Map<String, Object> item = (Map)task.get(i);
             logsIn.add(item.toString());
         }
-        List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(items), HepTaskDto.class);
+        List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
         Iterator<HepTaskDto> iterator = res.listIterator();
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
@@ -417,10 +443,37 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                 iterator.remove();
             }
         }
+        OutputUtils.clearLog(waitHandleTaskNumIn);
+        OutputUtils.clearLog(todoNumIn);
+        OutputUtils.clearLog(taskListIn);
         OutputUtils.info(waitHandleTaskNumIn, String.valueOf(res.size()));
         OutputUtils.info(todoNumIn, String.valueOf(res.size()));
-        OutputUtils.clearLog(taskListIn);
         OutputUtils.infoList(taskListIn, res, false);
+    }
+
+    public void filterTask(JSONArray task) {
+        Iterator iterator = task.iterator();
+        String taskNumberQ = CommonUtils.getComponentValue(taskNumberQuery);
+        String nameQ = CommonUtils.getComponentValue(nameQuery);
+        String sprintVersionQ = CommonUtils.getComponentValue(sprintVersionQuery);
+        while (iterator.hasNext()) {
+            Map<String, Object> item = (Map)iterator.next();
+            String taskNumer = String.valueOf(item.get(KEY_TASK_NUMBER));
+            String taskName = String.valueOf(item.get(KEY_NAME));
+            String sprintVersion = String.valueOf(item.get(KEY_SPRINT_VERSION));
+            if (StringUtils.isNotBlank(taskNumberQ) && !taskNumer.contains(taskNumberQ)) {
+                iterator.remove();
+                continue;
+            }
+            if (StringUtils.isNotBlank(nameQ) && !taskName.contains(nameQ)) {
+                iterator.remove();
+                continue;
+            }
+            if (StringUtils.isNotBlank(sprintVersionQ) && !sprintVersion.contains(sprintVersionQ)) {
+                iterator.remove();
+                continue;
+            }
+        }
     }
 
     private HttpResponse sendPost(Map<String, Object> param) {
@@ -454,10 +507,10 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         }
     }
 
-    private JSONArray sortItems(JSONArray items) {
+    private JSONArray sortItems(JSONArray task) {
         JSONArray res = new JSONArray();
         Set<String> existkey = new HashSet<>();
-        items.sort(new Comparator<Object>() {
+        task.sort(new Comparator<Object>() {
             @Override
             public int compare(Object o1, Object o2) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -482,8 +535,8 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
                 return 1;
             }
         });
-        for (int i=0; i<items.size(); i++) {
-            Map item = (Map)items.get(i);
+        for (int i=0; i<task.size(); i++) {
+            Map item = (Map)task.get(i);
             String taskNumber = getValue(item, KEY_TASK_NUMBER);
             String taskName = getValue(item, KEY_NAME);
             if (existkey.contains(taskNumber)) {
@@ -491,8 +544,8 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
             }
             existkey.add(taskNumber);
             res.add(item);
-            for (int j=0; j<items.size(); j++) {
-                Map itemTmp = (Map)items.get(j);
+            for (int j=0; j<task.size(); j++) {
+                Map itemTmp = (Map)task.get(j);
                 String taskNumberTmp = getValue(itemTmp, KEY_TASK_NUMBER);
                 String taskNameTmp = getValue(itemTmp, KEY_NAME);
                 if (existkey.contains(taskNumberTmp)) {
@@ -559,7 +612,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
             return;
         }
         List<Map> req = new ArrayList<>();
-        for (int i=0; i<10; i++) {
+        for (int i=0; i<50; i++) {
             Map<String, Object> item = new HashMap<>(16);
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
@@ -572,6 +625,8 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
             req.add(item);
         }
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(req), HepTaskDto.class);
+        OutputUtils.info(waitHandleTaskNum, String.valueOf(res.size()));
+        OutputUtils.info(todoNum, String.valueOf(res.size()));
         OutputUtils.clearLog(taskList);
         OutputUtils.infoList(taskList, res, true);
     }

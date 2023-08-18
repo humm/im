@@ -19,8 +19,8 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="164.0" prefWidth="599.0">
                     <children>
-                        <Label layoutX="415.0" layoutY="18.0" text="待处理任务" />
-                        <Label fx:id="waitHandleTaskNum" layoutX="500.0" layoutY="18.0"/>
+                        <Label layoutX="415.0" layoutY="18.0" text="待处理任务" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+                        <Label fx:id="waitHandleTaskNum" layoutX="500.0" layoutY="18.0" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
                         <ProgressIndicator fx:id="schedule" layoutX="630.0" layoutY="15.0" progress="0.0" />
                         <Label fx:id="scheduleText" layoutX="670" layoutY="18.0" text="0%" />
                         <Button fx:id="query" layoutX="800.0" layoutY="8.0"
@@ -83,18 +83,32 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="342.0">
                            <children>
-                              <SplitPane dividerPositions="0.40623737373737376" layoutX="68.0" layoutY="59.0"
+                              <SplitPane dividerPositions="0.50623737373737376" layoutX="68.0" layoutY="59.0"
                                          orientation="VERTICAL" prefHeight="318.4" prefWidth="191.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <items>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" >
-                                      <Label layoutX="15.0" layoutY="10.0"  text="待处理信息"
+                                      <Label layoutX="15.0" layoutY="10.0"  text="查询条件"
                                              style="-fx-font-weight: bold; -fx-font-size: 15;"/>
-                                      <Label layoutX="15.0" layoutY="50.0"  text="待开发"/>
-                                      <Label fx:id="todoNum" layoutX="70.0" layoutY="50.0"/>
-                                      <!--<Label layoutX="15.0" layoutY="80.0"  text="待审核"/>
-                                      <Label fx:id="checkNum" layoutX="70.0" layoutY="80.0"/>
-                                      <Label layoutX="15.0" layoutY="110.0"  text="缺   陷"/>
-                                      <Label fx:id="bugNum" layoutX="70.0" layoutY="110.0"/>-->
+                                      <Label layoutX="15.0" layoutY="55.0"  text="编号"/>
+                                      <TextField fx:id="taskNumberQuery" layoutX="60.0" layoutY="47.0" prefWidth="240"/>
+                                      <Label layoutX="15.0" layoutY="95.0"  text="名称"/>
+                                      <TextField fx:id="nameQuery" layoutX="60.0" layoutY="90.0" prefWidth="240"/>
+                                      <Label layoutX="15.0" layoutY="135.0"  text="版本"/>
+                                      <TextField fx:id="sprintVersionQuery" layoutX="60.0" layoutY="130.0" prefWidth="240"/>
+                                      <Button fx:id="queryCondition" layoutX="70.0" layoutY="235.0"
+                                              mnemonicParsing="false" onAction="#executeQuery" prefHeight="35.0"
+                                              prefWidth="80.0" text="查询">
+                                          <padding>
+                                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                          </padding>
+                                      </Button>
+                                      <Button fx:id="reset" layoutX="170.0" layoutY="235.0"
+                                              mnemonicParsing="false" onAction="#executeReset" prefHeight="35.0"
+                                              prefWidth="80.0" text="重置">
+                                          <padding>
+                                              <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                          </padding>
+                                      </Button>
                                   </AnchorPane>
                                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="168.0" prefWidth="287.0">
                                     <Label layoutX="15.0" layoutY="10.0"  text="任务单信息" style="-fx-font-weight: bold; -fx-font-size: 15;"/>

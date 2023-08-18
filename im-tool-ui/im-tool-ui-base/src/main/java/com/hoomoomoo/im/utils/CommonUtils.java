@@ -618,6 +618,7 @@ public class CommonUtils {
                     break;
                 }
             }
+
             if (functionConfig == null) {
                 LoggerUtils.info(String.format(BaseConst.MSG_FUNCTION_NOT_EXIST, functionConfig.getCode()));
             }
@@ -627,7 +628,8 @@ public class CommonUtils {
             if (tab == null) {
                 tab = CommonUtils.getFunctionTab(functionConfig.getPath(), functionConfig.getName(),
                         functionConfig.getCode(), functionConfig.getName());
-                setTabStyle(tab);
+
+                setTabStyle(tab, functionConfig);
                 bindTabEvent(tab);
                 functionTab.getTabs().add(tab);
             }
@@ -637,8 +639,22 @@ public class CommonUtils {
         }
     }
 
-    private static void setTabStyle(Tab tab) {
+    private static void setTabStyle(Tab tab, MenuFunctionConfig.FunctionConfig functionConfig) {
         tab.getStyleClass().add("tabClass");
+        if (functionConfig == null) {
+            return;
+        }
+        MenuFunctionConfig.MenuConfig menuConfig = null;
+        for (MenuFunctionConfig.MenuConfig item : MenuFunctionConfig.MenuConfig.values()) {
+            if (item.getMenuId().equals(functionConfig.getParentMenuId())) {
+                menuConfig = item;
+                break;
+            }
+        }
+        if (menuConfig == null) {
+            return;
+        }
+        CommonUtils.setIcon(tab, "/conf/image/" + menuConfig.getMenuIcon() + ".png", MENUITEM_ICON_SIZE);
     }
 
     private static void setMenuStyle(Menu menu, String icon) {
@@ -707,7 +723,7 @@ public class CommonUtils {
                     MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(tab);
                     Tab openTab = CommonUtils.getFunctionTab(getPath(tab),
                             getName(tab), functionConfig.getCode(), functionConfig.getName());
-                    setTabStyle(openTab);
+                    setTabStyle(openTab, functionConfig);
                     bindTabEvent(openTab);
                     functionTab.getTabs().add(openTab);
                 }
@@ -716,9 +732,9 @@ public class CommonUtils {
                 List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
                 if (CollectionUtils.isNotEmpty(functionDtoList)) {
                     FunctionDto functionDto = functionDtoList.get(0);
-                    Tab tab = CommonUtils.getFunctionTab(getPath(functionDto.getFunctionCode()),
-                            getName(functionDto.getFunctionCode()), functionDto.getFunctionCode(), functionDto.getFunctionName());
-                    setTabStyle(tab);
+                    Tab tab = CommonUtils.getFunctionTab(getPath(functionDto.getFunctionCode()), getName(functionDto.getFunctionCode()), functionDto.getFunctionCode(), functionDto.getFunctionName());
+                    MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
+                    setTabStyle(tab, functionConfig);
                     bindTabEvent(tab);
                     functionTab.getTabs().add(tab);
                 }
@@ -733,4 +749,12 @@ public class CommonUtils {
         return menuCode + SYMBOL_COLON + menuName;
     }
 
+    public static String getComponentValue(Object obj) {
+        if (obj instanceof TextArea) {
+            ((TextArea) obj).getText().trim();
+        } else if (obj instanceof TextField) {
+            return ((TextField)obj).getText().trim();
+        }
+        return SYMBOL_EMPTY;
+    }
 }

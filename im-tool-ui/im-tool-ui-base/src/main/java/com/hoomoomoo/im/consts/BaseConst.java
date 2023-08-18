@@ -141,6 +141,7 @@ public class BaseConst {
     public final static String KEY_ID = "id";
     public final static String KEY_ESTIMATE_FINISH_TIME = "estimate_finish_time";
     public final static String KEY_NAME = "name";
+    public final static String KEY_SPRINT_VERSION = "sprint_version";
     public final static String KEY_TASK_NUMBER = "task_number";
     public final static String KEY_CURRENT_USER_ID = "current_user_id";
     public final static String KEY_CHARSET = "charset";
