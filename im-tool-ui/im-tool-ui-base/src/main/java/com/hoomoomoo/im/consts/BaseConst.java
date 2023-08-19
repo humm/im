@@ -217,6 +217,12 @@ public class BaseConst {
     public static final String NAME_SVN_STAT_HISTORY = "#################### 历史统计";
     public static final String NAME_MENU_HEP_TASK_TODO = "#################### 效能";
 
+    public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
+
+    public static final String SHAKE_MOUSE_UNSTART = "0";
+    public static final String SHAKE_MOUSE_RUNNING = "1";
+    public static final String SHAKE_MOUSE_PAUSE = "2";
+
     public static final String NAME_MENU_UPDATE = "更新";
     public static final String NAME_MENU_COPY = "复制";
 

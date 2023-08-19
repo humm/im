@@ -52,6 +52,7 @@ public class CommonUtils {
     private final static String PATTERN7 = "yyyyMM";
     private final static String PATTERN8 = "yyyy-MM";
     private final static String PATTERN9 = "yyyy";
+    private final static String PATTERN10 = "HHmmss";
 
     private static Pattern LINE_PATTERN = Pattern.compile("_(\\w)");
 
@@ -224,6 +225,18 @@ public class CommonUtils {
      */
     public static String getCurrentDateTime12() {
         return new SimpleDateFormat(PATTERN9).format(new Date());
+    }
+
+    /**
+     * 获取当前时间
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static String getCurrentDateTime13() {
+        return new SimpleDateFormat(PATTERN10).format(new Date());
     }
 
     public static String checkLicenseDate(AppConfigDto appConfigDto) {
@@ -575,7 +588,7 @@ public class CommonUtils {
      */
     public static Tab getFunctionTab(String tabPath, String tabName, String menuCode, String menuName) throws IOException {
         Parent tab = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(tabPath)));
-        Tab menu=  new Tab(tabName, tab);
+        Tab menu = new Tab(tabName, tab);
         menu.setText(getMenuName(menuCode, menuName));
         return menu;
     }

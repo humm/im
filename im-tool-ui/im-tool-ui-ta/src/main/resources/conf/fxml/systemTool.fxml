@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.*?>
+<AnchorPane fx:id="fundInfo" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.SystemToolController">
+    <children>
+        <SplitPane layoutX="98.0" layoutY="100.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="0.0">
+            <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                    <children>
+                        <SplitPane dividerPositions="0.41778523489932884" layoutX="174.0" layoutY="76.0"
+                                   prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
+                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <items>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
+                                    <children>
+                                        <Label layoutX="50.0" layoutY="50.0" prefHeight="15.0" prefWidth="120.0" text="模拟鼠标移动" style="-fx-font-size: 16;"/>
+
+                                        <Button fx:id="shakeMouseBtn" layoutX="180.0" layoutY="45"
+                                                mnemonicParsing="false" onAction="#shakeMouse" prefWidth="100.0" text="开始">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </Button>
+                                        <Button fx:id="cancelShakeMouseBtn" layoutX="330.0" layoutY="45"
+                                                mnemonicParsing="false" onAction="#cancelShakeMouse" prefWidth="100.0" text="停止">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </Button>
+                                    </children>
+                                </AnchorPane>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">
+                                    <children>
+                                        <TextArea fx:id="logs" editable="false" layoutX="48.0" layoutY="-3.0"
+                                                  prefHeight="193.0" prefWidth="596.0"
+                                                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                                    </children>
+                                </AnchorPane>
+                            </items>
+                        </SplitPane>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>

@@ -15,6 +15,7 @@ public class MenuFunctionConfig {
         MENU_SCRIPT("menuScript", "脚本", 20, "sql"),
         MENU_CODE("menuCode", "代码", 30, "code"),
         MENU_HEP("menuHep", "效能", 40, "hep"),
+        MENU_SYSTEM("menuSystem", "系统", 50, "system"),
 
         // Shopping菜单
         MENU_JD("menuJd", "京东", 10, "jd"),
@@ -89,6 +90,8 @@ public class MenuFunctionConfig {
         GENERATE_CODE("310", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuCode"),
 
         TASK_TODO("400", "待开发任务", "/conf/fxml/hepTaskTodo.fxml", "hepTaskTodo", "hepTaskTodo", "menuHep"),
+
+        SYSTEM_TOOL("500", "便捷工具", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuSystem"),
 
         // Shopping 1000-1999
         JD_AUTO("1000", "自动评价", "/conf/fxml/jdAuto.fxml", "jdAuto", "jdAuto", "menuJd"),
