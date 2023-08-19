@@ -19,12 +19,11 @@ import org.apache.commons.lang3.StringUtils;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.util.ResourceBundle;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
+import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_UPDATE;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
  * @author humm23693
@@ -114,9 +113,15 @@ public class SystemToolController implements Initializable {
         OutputUtils.info(logs, getShakeMouseMsg("鼠标移动位置: " + pos.x + " * " + pos.y));
         OutputUtils.info(logs, SYMBOL_NEXT_LINE);
 
+        List<String> record = new ArrayList<>();
+        record.add(getShakeMouseMsg("鼠标当前位置: " + pos.x + " * " + pos.y));
+
         if (appConfigDto.getSystemToolShakeMouseStopTime().compareTo(CommonUtils.getCurrentDateTime13()) <= 0) {
-            OutputUtils.info(logs, getShakeMouseMsg("截止时间【" + appConfigDto.getSystemToolShakeMouseStopTime() + "】自动停止......"));
+            String stopMsg = getShakeMouseMsg("截止时间【" + appConfigDto.getSystemToolShakeMouseStopTime() + "】自动停止......");
+            OutputUtils.info(logs, stopMsg);
+            record.add(stopMsg);
             cancelShakeMouse(null);
         }
+        LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
     }
 }
