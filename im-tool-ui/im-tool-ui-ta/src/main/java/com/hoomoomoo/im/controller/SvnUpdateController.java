@@ -76,12 +76,20 @@ public class SvnUpdateController extends BaseController implements Initializable
                 List<String> updatePath = new ArrayList<>();
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 List<LinkedHashMap<String, String>> pathList = appConfigDto.getSvnUpdatePath();
+                Set<String> updateFlag = new HashSet<>();
                 if (CollectionUtils.isNotEmpty(pathList)) {
                     for (LinkedHashMap<String, String> item : pathList) {
                         Iterator<String> iterator = item.keySet().iterator();
                         while (iterator.hasNext()) {
                             String name = iterator.next();
                             String path = item.get(name);
+                            if (updateFlag.contains(name)) {
+                                Thread.sleep(500L);
+                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "重复路径[ " + name + " ]跳过更新...\n");
+                                OutputUtils.info(workspaceNum, String.valueOf(Integer.valueOf(workspaceNum.getText()) - 1));
+                                continue;
+                            }
+                            updateFlag.add(name);
                             updatePath.add(path);
                             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "更新[ " + name + " ]开始\n");
                             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE_4 + path + "\n");
