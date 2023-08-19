@@ -34,10 +34,6 @@ import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_UPDA
  */
 public class SystemToolController implements Initializable {
 
-    public static final Long SHAKE_MOUSE_TIMER = 3 * 1000L;
-
-    public static final String SHAKE_MOUSE_STOP_TIME = "220000";
-
     @FXML
     private TextArea logs;
 
@@ -48,15 +44,16 @@ public class SystemToolController implements Initializable {
     private Button cancelShakeMouseBtn;
 
     private Timer shakeMouseTimer;
+
     private Robot robot;
-    private int lastX;
-    private int lastY;
+
     private int moveStep = 1;
 
 
     @FXML
-    void shakeMouse(ActionEvent event) {
+    void shakeMouse(ActionEvent event) throws Exception {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, NAME_SHAKE_MOUSE));
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         shakeMouseBtn.setDisable(true);
         cancelShakeMouseBtn.setDisable(false);
         if (shakeMouseTimer == null) {
@@ -65,9 +62,9 @@ public class SystemToolController implements Initializable {
         shakeMouseTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                doShakeMouse();
+                doShakeMouse(appConfigDto);
             }
-        }, 1, SHAKE_MOUSE_TIMER);
+        }, 1, Long.valueOf(appConfigDto.getSystemToolShakeMouseTimer()) * 1000);
     }
 
     @FXML
@@ -80,15 +77,21 @@ public class SystemToolController implements Initializable {
         }
     }
 
+    @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        moveStep = Integer.valueOf(appConfigDto.getSystemToolShakeMouseStep());
+        if (Boolean.valueOf(appConfigDto.getSystemToolShakeMouseAuto())) {
+            shakeMouse(null);
+        }
     }
 
     private String getShakeMouseMsg (String msg) {
         return TaCommonUtils.getMsgContainDate("【"+ NAME_SHAKE_MOUSE + "】") + SYMBOL_SPACE + msg + SYMBOL_NEXT_LINE;
     }
 
-    private void doShakeMouse() {
+    private void doShakeMouse(AppConfigDto appConfigDto) {
         try {
             if (robot == null) {
                 robot = new Robot();
@@ -111,8 +114,8 @@ public class SystemToolController implements Initializable {
         OutputUtils.info(logs, getShakeMouseMsg("鼠标移动位置: " + pos.x + " * " + pos.y));
         OutputUtils.info(logs, SYMBOL_NEXT_LINE);
 
-        if (SHAKE_MOUSE_STOP_TIME.compareTo(CommonUtils.getCurrentDateTime13()) <= 0) {
-            OutputUtils.info(logs, getShakeMouseMsg("截止时间【" + SHAKE_MOUSE_STOP_TIME + "】自动停止......"));
+        if (appConfigDto.getSystemToolShakeMouseStopTime().compareTo(CommonUtils.getCurrentDateTime13()) <= 0) {
+            OutputUtils.info(logs, getShakeMouseMsg("截止时间【" + appConfigDto.getSystemToolShakeMouseStopTime() + "】自动停止......"));
             cancelShakeMouse(null);
         }
     }

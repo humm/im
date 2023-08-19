@@ -204,8 +204,10 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     }
 
     @FXML
-    void executeQuery(ActionEvent event) {
+    void executeQuery(ActionEvent event) throws Exception {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        CURRENT_USER_ID = appConfigDto.getHepTaskUser();
         if (StringUtils.isBlank(CURRENT_USER_ID)) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("请配置[ hep.task.user ]"));
             return;
@@ -226,7 +228,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     }
 
     @FXML
-    void executeReset(ActionEvent event) {
+    void executeReset(ActionEvent event) throws Exception {
         OutputUtils.clearLog(taskNumberQuery);
         OutputUtils.clearLog(nameQuery);
         OutputUtils.clearLog(sprintVersionQuery);

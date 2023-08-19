@@ -212,6 +212,14 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskUser;
 
+    private String systemToolShakeMouseAuto;
+
+    private String systemToolShakeMouseTimer;
+
+    private String systemToolShakeMouseStep;
+
+    private String systemToolShakeMouseStopTime;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
