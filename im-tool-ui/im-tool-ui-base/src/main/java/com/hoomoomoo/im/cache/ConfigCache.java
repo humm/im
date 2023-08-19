@@ -169,6 +169,11 @@ public class ConfigCache {
                     if (StringUtils.isNotBlank(name)) {
                         if (!DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getCopyCodeVersion().put(code, name);
+                            if (!KEY_DESKTOP.equalsIgnoreCase(code) && !KEY_TRUNK.equalsIgnoreCase(code)) {
+                                LinkedHashMap<String, String> version = new LinkedHashMap<>(1);
+                                version.put(code, name);
+                                appConfigDto.getSvnUpdatePath().add(version);
+                            }
                             if (code.contains(KEY_FUND)) {
                                 replaceSkipVersion.append(code).append(SYMBOL_COMMA);
                                 replaceVersion.append(code).append(SYMBOL_COMMA);

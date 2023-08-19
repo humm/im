@@ -16,6 +16,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
+import static com.hoomoomoo.im.consts.BaseConst.STR_0;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_UPDATE;
 
 /**
@@ -28,6 +29,9 @@ public class SvnUpdateController extends BaseController implements Initializable
 
     @FXML
     private Label workspaceNum;
+
+    @FXML
+    private Label failNum;
 
     @FXML
     private Button svnSubmit;
@@ -52,8 +56,10 @@ public class SvnUpdateController extends BaseController implements Initializable
             OutputUtils.clearLog(svnLog);
             OutputUtils.clearLog(fileLog);
             OutputUtils.clearLog(workspaceNum);
+            OutputUtils.clearLog(failNum);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             OutputUtils.info(workspaceNum, String.valueOf(appConfigDto.getSvnUpdatePath().size()));
+            OutputUtils.info(failNum, STR_0);
             updateProgress(0.01);
             getSvnUpdate();
         } catch (Exception e) {
@@ -80,13 +86,20 @@ public class SvnUpdateController extends BaseController implements Initializable
                             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "更新[ " + name + " ]开始\n");
                             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE_4 + path + "\n");
                             if (FileUtils.isSuffixDirectory(new File(path), BaseConst.FILE_TYPE_SVN)) {
-                                Long version = SvnUtils.updateSvn(path);
-                                infoMsg(name, version, "更新完成");
+                                Long version = SvnUtils.updateSvn(path, fileLog);
+                                if (version == null) {
+                                    infoMsg(name, version, "更新异常");
+                                    OutputUtils.info(failNum, String.valueOf(Integer.valueOf(failNum.getText()) + 1));
+                                    OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "更新[ " + name + " ]异常\n");
+                                } else {
+                                    infoMsg(name, version, "更新完成");
+                                    OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "更新[ " + name + " ]完成\n");
+                                }
                             } else {
-                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "[ " + name + " ]非svn目录,无需更新\n");
+                                Thread.sleep(500L);
                                 infoMsg(name, -1L, "无需更新");
+                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "[ " + name + " ]非svn目录,无需更新\n");
                             }
-                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + "更新[ " + name + " ]结束\n");
                         }
                         OutputUtils.info(workspaceNum, String.valueOf(Integer.valueOf(workspaceNum.getText()) - 1));
                     }
@@ -107,17 +120,22 @@ public class SvnUpdateController extends BaseController implements Initializable
         try {
             OutputUtils.clearLog(svnName);
             OutputUtils.clearLog(workspaceNum);
+            OutputUtils.clearLog(failNum);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             if (StringUtils.isNotBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(svnName, appConfigDto.getSvnUsername());
             }
             OutputUtils.info(workspaceNum, String.valueOf(appConfigDto.getSvnUpdatePath().size()));
+            OutputUtils.info(failNum, STR_0);
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
     }
 
     private void infoMsg(String name, Long version, String msg) {
+        if (version == null) {
+            version = 0L;
+        }
         LogDto logDto = new LogDto();
         logDto.setTime(CommonUtils.getCurrentDateTime1());
         logDto.setName(name);

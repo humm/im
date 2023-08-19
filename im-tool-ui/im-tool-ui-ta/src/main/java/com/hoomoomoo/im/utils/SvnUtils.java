@@ -5,6 +5,7 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.dto.SvnStatDto;
+import javafx.scene.control.TextArea;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.tmatesoft.svn.core.*;
@@ -230,7 +231,7 @@ public class SvnUtils {
         return repository;
     }
 
-    public static Long updateSvn(String workspace) throws Exception {
+    public static Long updateSvn(String workspace, TextArea fileLog) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         String svnName = appConfigDto.getSvnUsername();
         String svnPassword = appConfigDto.getSvnPassword();
@@ -239,7 +240,13 @@ public class SvnUtils {
         SVNClientManager svnClientManager = SVNClientManager.newInstance((DefaultSVNOptions) isvnOptions, svnName, svnPassword);
         SVNUpdateClient svnUpdateClient = svnClientManager.getUpdateClient();
         svnUpdateClient.setIgnoreExternals(false);
-        Long version = svnUpdateClient.doUpdate(new File(workspace), SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
+        Long version = null;
+        try {
+            version = svnUpdateClient.doUpdate(new File(workspace), SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e) + SYMBOL_NEXT_LINE);
+        }
         return version;
     }
 }
