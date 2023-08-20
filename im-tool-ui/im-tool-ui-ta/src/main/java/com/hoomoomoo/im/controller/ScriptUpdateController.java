@@ -460,7 +460,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
         String treeIdx = menuDto.getTreeIdx().trim();
         String transCode = menuDto.getTransCode().trim();
         String kindCode = menuDto.getKindCode().trim();
-
+        boolean isAccount = "'console-account-ta-vue'".equals(kindCode);
         if ("'fundsysinfo','fundReport'".contains(menuCode)) {
             return menuStd;
         }
@@ -469,6 +469,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             menuDto.setMenuIcon("'icon-icon_menu_fund'");
         } else {
             menuDto.setMenuIcon("' '");
+            menuDto.setRemark("'console-fund-ta-vue'");
         }
         String treeIdxPre = "/frame/";
         String sourcePre = STR_SLASH + kindCode.replaceAll(STR_QUOTES_SINGLE, STR_BLANK);
@@ -478,17 +479,24 @@ public class ScriptUpdateController extends BaseController implements Initializa
         } else if ("'fundAnalysis','fundAnalysisByTrans','fundReportManage'".contains(menuCode)) {
             menuDto.setParentCode(STR_QUOTES_SINGLE + MENU_CODE_QUERY + STR_QUOTES_SINGLE);
             treeIdxPre += MENU_CODE_QUERY;
-        } else if ("'fundDailyDeal','fundLiquidation','fundManual',fundSystemMaintenance','fundSpecialHandling','fundTrade','fundDataPermission','fundOnlineParameters'".contains(menuCode)) {
-            menuDto.setParentCode(STR_QUOTES_SINGLE + MENU_CODE_BUSIN + STR_QUOTES_SINGLE);
-            treeIdxPre += MENU_CODE_BUSIN;
         } else if (treeIdx.contains("fundsysinfo")) {
             treeIdxPre += MENU_CODE_PARAM;
-        } else if (treeIdx.contains("fundAnalysis") || treeIdx.contains("fundAnalysisByTrans") || treeIdx.contains("fundReportManage")) {
+        } else if (treeIdx.contains("fundAnalysis") || treeIdx.contains("fundAnalysisByTrans") || treeIdx.contains("fundReportManage") || "'ptaPrdAccStd'".equals(parentCode)) {
             treeIdxPre += MENU_CODE_QUERY;
-        }  else if (treeIdx.contains("fundDailyDeal") || treeIdx.contains("fundLiquidation") || treeIdx.contains("fundManual") ||
-                treeIdx.contains("fundSystemMaintenance") || treeIdx.contains("fundSpecialHandling") || treeIdx.contains("fundTrade") ||
-                treeIdx.contains("fundDataPermission") || treeIdx.contains("fundOnlineParameters")) {
+        } else if (treeIdx.contains("fundDailyOperations") || treeIdx.contains("fundSpecialHandling") || treeIdx.contains("fundBusinessSecondTrade") || treeIdx.contains("fundPermissionManage")) {
             treeIdxPre += MENU_CODE_BUSIN;
+            if ("'menu'".equals(transCode)) {
+                if ("'fundDailyOperations'".equals(parentCode)) {
+                    menuDto.setParentCode(STR_QUOTES_SINGLE + MENU_CODE_BUSIN + STR_QUOTES_SINGLE);
+                } else {
+                    menuDto.setMenuIcon("' '");
+                }
+            } else {
+                if (treeIdx.contains("fundPermissionManage")) {
+                    menuDto.setParentCode("'fundDataPermission'");
+                    treeIdx = treeIdx.replace("fundPermissionManage", "fundDataPermission");
+                }
+            }
         } else if ("'ptaAccountManageFundOther'".equals(parentCode)) {
             treeIdxPre += MENU_CODE_QUERY;
             menuDto.setParentCode("'ptaAccountReport'");
@@ -497,10 +505,15 @@ public class ScriptUpdateController extends BaseController implements Initializa
             treeIdxPre += MENU_CODE_BUSIN;
             menuDto.setParentCode("'ptaAccountManageFundOther'");
             treeIdx = treeIdx.replace("fundDaily", "ptaAccountManageFundOther");
+        } else if ("'ptaAccountManageFundAccount'".equals(parentCode)) {
+            treeIdxPre += MENU_CODE_QUERY;
+            treeIdx = treeIdx.replace("fundOther", "ptaAccountManageFundAccount");
         } else {
             throw new Exception("菜单[" + menuCode.replaceAll(STR_QUOTES_SINGLE, STR_BLANK) + "]未匹配到UED菜单生成规则");
         }
-        if ("'fundsysinfo'".equals(parentCode) || treeIdx.contains("fundsysinfo") || "'ptaAccountManageFundOther'".equals(parentCode) || "'ptaAccountManageFundDaily'".equals(parentCode)) {
+        if ("'fundsysinfo'".equals(parentCode) || treeIdx.contains("fundsysinfo") || "'ptaAccountManageFundOther'".equals(parentCode) ||
+                "'ptaAccountManageFundDaily'".equals(parentCode) || "'fundReportManage'".equals(parentCode) || "'ptaAccountManageFundAccount'".equals(parentCode) ||
+                treeIdx.contains("fundDailyOperations") || treeIdx.contains("fundDataPermission")) {
             Pattern pattern = Pattern.compile(STR_SLASH);
             Matcher matcher = pattern.matcher(treeIdx);
             int secondMenuCodeEnd = 0;
@@ -546,8 +559,9 @@ public class ScriptUpdateController extends BaseController implements Initializa
         menuDto.setTreeIdx(treeIdx);
         int orderNo = Integer.valueOf(menuDto.getOrderNo().trim().replaceAll(STR_QUOTES_SINGLE, STR_BLANK));
         menuDto.setOrderNo(String.valueOf(500000 + orderNo));
-        menuDto.setRemark("'console-fund-ta-vue'");
-        menuDto.setOpenFlag("'1'");
+        if (isAccount) {
+            menuDto.setOpenFlag("'1'");
+        }
         menuDto.setWindowType("' '");
         String sqlHead = sql.substring(0, sql.indexOf(STR_BRACKETS_RIGHT) + 1).toLowerCase() + STR_NEXT_LINE;
         String values = "values (";
