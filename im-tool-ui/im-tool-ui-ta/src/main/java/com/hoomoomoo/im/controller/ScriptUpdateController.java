@@ -178,7 +178,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 OutputUtils.clearLog(target);
-                OutputUtils.info(target, e.getMessage());
+                OutputUtils.info(target, e.toString());
             } finally {
                 submit.setDisable(false);
                 setProgress(1);
@@ -425,25 +425,36 @@ public class ScriptUpdateController extends BaseController implements Initializa
         MenuDto menuDto = new MenuDto();
         int startIndex = sql.lastIndexOf(STR_BRACKETS_LEFT);
         int endIndex = sql.lastIndexOf(STR_BRACKETS_RIGHT);
-        if (startIndex != -1 && endIndex != -1) {
-            String[] elements = sql.substring(startIndex + 1, endIndex).split(STR_COMMA);
-            menuDto.setMenuCode(elements[0]);
-            menuDto.setKindCode(elements[1]);
-            menuDto.setTransCode(elements[2]);
-            menuDto.setSubTransCode(elements[3]);
-            menuDto.setMenuName(elements[4]);
-            menuDto.setMenuArg(elements[5]);
-            menuDto.setMenuIcon(elements[6]);
-            menuDto.setWindowType(elements[7]);
-            menuDto.setTip(elements[8]);
-            menuDto.setHotKey(elements[9]);
-            menuDto.setParentCode(elements[10]);
-            menuDto.setOrderNo(elements[11]);
-            menuDto.setOpenFlag(elements[12]);
-            menuDto.setTreeIdx(elements[13]);
-            menuDto.setRemark(elements[14]);
-            menuDto.setWindowModel(elements[15]);
+        String paramControl = CommonUtils.getComponentValue(param);
+        String[] elements;
+        if (StringUtils.isNotBlank(paramControl)) {
+            startIndex = sql.indexOf("select") + "select".length();
+            endIndex = sql.indexOf("from");
         }
+        if (startIndex != -1 && endIndex != -1) {
+            elements = sql.substring(startIndex + 1, endIndex).split(STR_COMMA);
+        } else {
+            throw new Exception("菜单[" + sql + "]数据格式错误");
+        }
+        if (elements.length != 16) {
+            throw new Exception("菜单[" + sql + "]数据格式错误");
+        }
+        menuDto.setMenuCode(elements[0]);
+        menuDto.setKindCode(elements[1]);
+        menuDto.setTransCode(elements[2]);
+        menuDto.setSubTransCode(elements[3]);
+        menuDto.setMenuName(elements[4]);
+        menuDto.setMenuArg(elements[5]);
+        menuDto.setMenuIcon(elements[6]);
+        menuDto.setWindowType(elements[7]);
+        menuDto.setTip(elements[8]);
+        menuDto.setHotKey(elements[9]);
+        menuDto.setParentCode(elements[10]);
+        menuDto.setOrderNo(elements[11]);
+        menuDto.setOpenFlag(elements[12]);
+        menuDto.setTreeIdx(elements[13]);
+        menuDto.setRemark(elements[14]);
+        menuDto.setWindowModel(elements[15]);
         String menuCode = menuDto.getMenuCode().trim();
         String parentCode = menuDto.getParentCode().trim();
         String treeIdx = menuDto.getTreeIdx().trim();
@@ -540,6 +551,9 @@ public class ScriptUpdateController extends BaseController implements Initializa
         menuDto.setWindowType("' '");
         String sqlHead = sql.substring(0, sql.indexOf(STR_BRACKETS_RIGHT) + 1).toLowerCase() + STR_NEXT_LINE;
         String values = "values (";
+        if (StringUtils.isNotBlank(paramControl)) {
+            values = " select ";
+        }
         values += menuDto.getMenuCode().trim() + ", ";
         values += menuDto.getKindCode().trim() + ", ";
         values += menuDto.getTransCode().trim() + ", ";
@@ -556,7 +570,16 @@ public class ScriptUpdateController extends BaseController implements Initializa
         values += menuDto.getTreeIdx().trim() + ", ";
         values += menuDto.getRemark().trim() + ", ";
         values += menuDto.getWindowModel().trim();
-        values += ")";
+        if (StringUtils.isNotBlank(paramControl)) {
+            int index = sql.indexOf(" from ");
+            String partSql = sql.substring(index);
+            if (partSql.endsWith(STR_SEMICOLON)) {
+                partSql = partSql.substring(0, partSql.length() - 1);
+            }
+            values += STR_NEXT_LINE + partSql;
+        } else {
+            values += ")";
+        }
         menuStd = sqlHead + values;
         return menuStd;
     }
