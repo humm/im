@@ -6,12 +6,11 @@ import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldTableCell;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
 
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
+import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
 
 /**
  * @author humm23693
@@ -141,7 +140,7 @@ public class OutputUtils {
             } else if (obj instanceof TextField) {
                 ((TextField) obj).clear();
             } else if (obj instanceof Label) {
-                ((Label) obj).setText(SYMBOL_EMPTY);
+                ((Label) obj).setText(STR_BLANK);
             }
         });
     }

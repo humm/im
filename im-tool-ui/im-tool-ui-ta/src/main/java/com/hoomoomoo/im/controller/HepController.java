@@ -218,11 +218,11 @@ public class HepController {
                     }
                     String taskName1 = getValue((Map)o1, KEY_NAME);
                     String taskName2 = getValue((Map)o2, KEY_NAME);
-                    if (taskName1.contains(SYMBOL_BRACKETS_2_RIGHT)) {
-                        taskName1 = taskName1.split(SYMBOL_BRACKETS_2_RIGHT)[1];
+                    if (taskName1.contains(STR_BRACKETS_2_RIGHT)) {
+                        taskName1 = taskName1.split(STR_BRACKETS_2_RIGHT)[1];
                     }
-                    if (taskName2.contains(SYMBOL_BRACKETS_2_RIGHT)) {
-                        taskName2 = taskName2.split(SYMBOL_BRACKETS_2_RIGHT)[1];
+                    if (taskName2.contains(STR_BRACKETS_2_RIGHT)) {
+                        taskName2 = taskName2.split(STR_BRACKETS_2_RIGHT)[1];
                     }
                     return taskName1.compareTo(taskName2);
                 } catch (ParseException e) {
@@ -261,6 +261,6 @@ public class HepController {
         if (item.containsKey(key)) {
             return String.valueOf(item.get(key));
         }
-        return SYMBOL_EMPTY;
+        return STR_BLANK;
     }
 }

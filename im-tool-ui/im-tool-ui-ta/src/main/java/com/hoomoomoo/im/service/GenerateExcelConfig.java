@@ -20,23 +20,23 @@ public class GenerateExcelConfig {
 
     public static String init(GenerateCodeDto generateCodeDto) throws Exception {
         if (PAGE_TYPE_QUERY.equals(generateCodeDto.getPageType())) {
-            return SYMBOL_EMPTY;
+            return STR_BLANK;
         }
         String fileName = generateCodeDto.getImportName();
-        String packageName = generateCodeDto.getImportPackageName().replace(SYMBOL_POINT + fileName, SYMBOL_EMPTY);
+        String packageName = generateCodeDto.getImportPackageName().replace(STR_POINT + fileName, STR_BLANK);
 
         StringBuilder content = new StringBuilder(GenerateCommon.generateFileDescribe(generateCodeDto, fileName, packageName));
 
-        content.append("import com.hundsun.lcpt.fund.annotation.FundExcelUpLoadField;").append(SYMBOL_NEXT_LINE);
-        content.append("import lombok.Data;").append(SYMBOL_NEXT_LINE);
-        content.append("import org.springframework.web.bind.annotation.*;").append(SYMBOL_NEXT_LINE);
-        content.append("import static com.hundsun.lcpt.fund.annotation.FundExcelUpLoadField.*;").append(SYMBOL_NEXT_LINE_2);
+        content.append("import com.hundsun.lcpt.fund.annotation.FundExcelUpLoadField;").append(STR_NEXT_LINE);
+        content.append("import lombok.Data;").append(STR_NEXT_LINE);
+        content.append("import org.springframework.web.bind.annotation.*;").append(STR_NEXT_LINE);
+        content.append("import static com.hundsun.lcpt.fund.annotation.FundExcelUpLoadField.*;").append(STR_NEXT_LINE_2);
 
         content.append(GenerateCommon.generateClassDescribe(generateCodeDto, fileName));
 
-        content.append("@Data").append(SYMBOL_NEXT_LINE);
-        content.append("public class " + fileName + " {").append(SYMBOL_NEXT_LINE_2);
-        content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(SYMBOL_NEXT_LINE_2);
+        content.append("@Data").append(STR_NEXT_LINE);
+        content.append("public class " + fileName + " {").append(STR_NEXT_LINE_2);
+        content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(STR_NEXT_LINE_2);
 
         Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
@@ -63,18 +63,18 @@ public class GenerateExcelConfig {
             }
             if (column.contains(KEY_PRD_CODE)) {
                 content.append(",");
-                content.append(SYMBOL_NEXT_LINE).append("            checkMethod = \"[{\\\"validator\\\":\\\"checkIsAllProductExist\\\",\\\"message\\\":\\\"基金代码不存在或者状态为【6:基金终止】或【9:发行失败】\\\"}]\"");
+                content.append(STR_NEXT_LINE).append("            checkMethod = \"[{\\\"validator\\\":\\\"checkIsAllProductExist\\\",\\\"message\\\":\\\"基金代码不存在或者状态为【6:基金终止】或【9:发行失败】\\\"}]\"");
             } else if (column.contains(KEY_SELLER_CODE)) {
                 content.append(",");
-                content.append(SYMBOL_NEXT_LINE).append("            checkMethod = \"[{\\\"validator\\\":\\\"checkIsAllSeller\\\",\\\"message\\\":\\\"销售商代码不存在或者状态为【T:注销】\\\"}]\"");
+                content.append(STR_NEXT_LINE).append("            checkMethod = \"[{\\\"validator\\\":\\\"checkIsAllSeller\\\",\\\"message\\\":\\\"销售商代码不存在或者状态为【T:注销】\\\"}]\"");
             } else if (column.contains(KEY_BRANCH_NO)) {
                 content.append(",");
-                content.append(SYMBOL_NEXT_LINE).append("            checkMethod = \"[{\\\"validator\\\":\\\"checkBranchInfo\\\",\\\"message\\\":\\\"销售商网点代码不存在\\\"}]\"");
+                content.append(STR_NEXT_LINE).append("            checkMethod = \"[{\\\"validator\\\":\\\"checkBranchInfo\\\",\\\"message\\\":\\\"销售商网点代码不存在\\\"}]\"");
             }
-            content.append(")").append(SYMBOL_NEXT_LINE);
-            content.append("    private String " + column + ";").append(SYMBOL_NEXT_LINE_2);
+            content.append(")").append(STR_NEXT_LINE);
+            content.append("    private String " + column + ";").append(STR_NEXT_LINE_2);
         }
-        content.append("}").append(SYMBOL_NEXT_LINE_2);
+        content.append("}").append(STR_NEXT_LINE_2);
         return GenerateCommon.generateJavaFile(generateCodeDto, packageName, fileName, content.toString());
     }
 
@@ -83,6 +83,6 @@ public class GenerateExcelConfig {
         String packageName = PACKAGE_JAVA_PREFIX + "bean.excelconfig";
 
         generateCodeDto.setImportName(fileName);
-        generateCodeDto.setImportPackageName(packageName + SYMBOL_POINT + fileName);
+        generateCodeDto.setImportPackageName(packageName + STR_POINT + fileName);
     }
 }

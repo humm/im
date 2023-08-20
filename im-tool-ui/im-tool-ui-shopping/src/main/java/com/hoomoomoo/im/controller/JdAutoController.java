@@ -96,7 +96,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                 updateProgress(0.01);
                 ComponentUtils.setButtonDisabled(execute, query, pause);
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                OutputUtils.info(type, SYMBOL_EMPTY);
+                OutputUtils.info(type, STR_BLANK);
                 if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, null)) {
                     queryData(appConfigDto, true);
                 }
@@ -196,7 +196,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
             ShoppingCommonUtil.info(log, e.getMessage());
         } finally {
             if (appConfigDto != null) {
-                appConfigDto.setExecuteType(SYMBOL_EMPTY);
+                appConfigDto.setExecuteType(STR_BLANK);
             }
             ComponentUtils.setButtonEnabled(execute, query);
         }
@@ -258,7 +258,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
     }
 
     public String getHandlerKey(GoodsDto goods) {
-        return goods.getOrderId() + SYMBOL_HYPHEN + goods.getGoodsId() + SYMBOL_HYPHEN + goods.getType();
+        return goods.getOrderId() + STR_HYPHEN + goods.getGoodsId() + STR_HYPHEN + goods.getType();
     }
 
     @Override

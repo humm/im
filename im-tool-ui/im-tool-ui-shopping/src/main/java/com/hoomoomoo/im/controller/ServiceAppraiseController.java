@@ -71,7 +71,7 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
          } catch (Exception e) {
              LoggerUtils.info("获取服务评价类型错误 " + e.getMessage());
          }
-        return serviceNum == 0 ? SYMBOL_EMPTY : serviceNum == 3 ? STR_1 : serviceNum == 5 ? STR_2 : SYMBOL_EMPTY;
+        return serviceNum == 0 ? STR_BLANK : serviceNum == 3 ? STR_1 : serviceNum == 5 ? STR_2 : STR_BLANK;
     }
     public static Document goodsAppraise(AppConfigDto appConfigDto, GoodsDto goodsDto, String type) throws IOException {
         Connection connection = Jsoup.connect(appConfigDto.getJdServiceAppraiseExecute() + "?voteid=145&ruleid=" + goodsDto.getOrderId());
@@ -81,7 +81,7 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
         requestData.put("gid", BaseConst.STR_69);
         requestData.put("sid", BaseConst.STR_549656);
         requestData.put("stid", BaseConst.STR_0);
-        requestData.put("tags", BaseConst.SYMBOL_EMPTY);
+        requestData.put("tags", BaseConst.STR_BLANK);
         if (STR_1.equals(type)) {
             requestData.put("ro1827", "1827A1");
             requestData.put("ro1828", "1828A1");
@@ -116,7 +116,7 @@ public class ServiceAppraiseController extends ShoppingBaseController implements
                     String goodsIdHref = goodsIdEle.attr(KEY_HREF);
                     String goodsName = goodsIdEle.text();
                     String goodsId = ShoppingCommonUtil.getHrefId(goodsIdHref);
-                    String orderId = SYMBOL_EMPTY;
+                    String orderId = STR_BLANK;
                     Elements operateList = order.select("div.operate a");
                     boolean isOperate = false;
                     for (Element operate : operateList) {

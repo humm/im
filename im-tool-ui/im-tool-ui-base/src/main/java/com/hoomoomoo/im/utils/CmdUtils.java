@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 
 import static com.hoomoomoo.im.consts.BaseConst.ENCODING_GBK;
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_NEXT_LINE;
+import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
 
 /**
  * @author humm23693
@@ -23,7 +23,7 @@ public class CmdUtils {
             bufferedReader = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset.forName(ENCODING_GBK)));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                content.append(line + SYMBOL_NEXT_LINE);
+                content.append(line + STR_NEXT_LINE);
             }
         } catch (IOException e) {
             LoggerUtils.info(e);

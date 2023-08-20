@@ -54,7 +54,7 @@ public class ShoppingCommonUtil {
     }
 
     public static String getTypeName(String type) {
-        String name = SYMBOL_EMPTY;
+        String name = STR_BLANK;
         if (type.equals(WAIT_APPRAISE.getCode())) {
             name = WAIT_APPRAISE.getName();
         } else if (type.equals(SHOW_ORDER.getCode())) {
@@ -75,9 +75,9 @@ public class ShoppingCommonUtil {
             return;
         }
         Map<String, String> cookieMap = new LinkedHashMap<>(16);
-        String[] cookies = appConfigDto.getJdCookie().split(BaseConst.SYMBOL_SEMICOLON);
+        String[] cookies = appConfigDto.getJdCookie().split(BaseConst.STR_SEMICOLON);
         for (String item : cookies) {
-            String[] itemCookie = item.split(BaseConst.SYMBOL_EQUALS);
+            String[] itemCookie = item.split(BaseConst.STR_EQUALS);
             if (itemCookie.length == 2) {
                 connection.cookie(itemCookie[0].trim(), itemCookie[1].trim());
                 cookieMap.put(itemCookie[0].trim(), itemCookie[1].trim());
@@ -88,20 +88,20 @@ public class ShoppingCommonUtil {
 
     public static void initLogs(List<String> logs, GoodsDto goodsDto){
         StringBuilder log = new StringBuilder();
-        log.append(goodsDto.getOrderId()).append(SYMBOL_SPACE);
-        log.append(goodsDto.getGoodsId()).append(SYMBOL_SPACE);
-        log.append(goodsDto.getGoodsName()).append(SYMBOL_SPACE);
-        log.append(goodsDto.getStatus()).append(SYMBOL_SPACE);
+        log.append(goodsDto.getOrderId()).append(STR_SPACE);
+        log.append(goodsDto.getGoodsId()).append(STR_SPACE);
+        log.append(goodsDto.getGoodsName()).append(STR_SPACE);
+        log.append(goodsDto.getStatus()).append(STR_SPACE);
         logs.add(log.toString());
     }
 
     public static String getHrefId(String href) {
-        String hrefId = BaseConst.SYMBOL_EMPTY;
+        String hrefId = BaseConst.STR_BLANK;
         if (StringUtils.isBlank(href)) {
             return hrefId;
         }
-        int indexStart = href.lastIndexOf(BaseConst.SYMBOL_SLASH);
-        int indexEnd = href.lastIndexOf(BaseConst.SYMBOL_POINT);
+        int indexStart = href.lastIndexOf(BaseConst.STR_SLASH);
+        int indexEnd = href.lastIndexOf(BaseConst.STR_POINT);
         if (indexEnd != -1 && indexEnd > indexStart) {
             hrefId = href.substring(indexStart + 1, indexEnd);
         }
@@ -109,7 +109,7 @@ public class ShoppingCommonUtil {
     }
 
     public static String getJdOrderId(String href) {
-        String orderId = BaseConst.SYMBOL_EMPTY;
+        String orderId = BaseConst.STR_BLANK;
         if (StringUtils.isBlank(href)) {
             return orderId;
         }
@@ -121,7 +121,7 @@ public class ShoppingCommonUtil {
     }
 
     public static String getJdSortId(String href) {
-        String sortId = BaseConst.SYMBOL_EMPTY;
+        String sortId = BaseConst.STR_BLANK;
         if (StringUtils.isBlank(href)) {
             return sortId;
         }

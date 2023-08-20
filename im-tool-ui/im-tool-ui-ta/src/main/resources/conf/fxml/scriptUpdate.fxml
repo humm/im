@@ -45,15 +45,24 @@
                                                              mnemonicParsing="false" onAction="#selectRewrite"
                                                              text="重写"/>
 
-                                                <Label layoutX="15.0" layoutY="60.0" text="控制参数"/>
+                                                <Label layoutX="600.0" layoutY="24.0" text="生成UED菜单"/>
+                                                <RadioButton fx:id="menuYes" layoutX="715.0" layoutY="24.0"
+                                                             mnemonicParsing="false" onAction="#selectMenuYes"
+                                                             text="是"/>
+                                                <RadioButton fx:id="menuNo" layoutX="770.0" layoutY="24.0"
+                                                             mnemonicParsing="false" onAction="#selectMenuNo"
+                                                             text="否"/>
+
+                                                <Label layoutX="15.0" layoutY="65.0" text="控制参数"/>
                                                 <TextField fx:id="param" layoutX="95.0" layoutY="60.0"
                                                            prefHeight="25.0" prefWidth="415.0"/>
+                                                <Label layoutX="530.0" layoutY="65.0" text="支持tbparam tbdict(也可指定具体选项值)"/>
 
-                                                <ProgressIndicator fx:id="schedule" layoutX="590.0" layoutY="40.0"
+                                                <ProgressIndicator fx:id="schedule" layoutX="920.0" layoutY="50.0"
                                                                    progress="0.0"/>
-                                                <Label fx:id="scheduleText" layoutX="625.0" layoutY="44.0" text="0%"/>
+                                                <Label fx:id="scheduleText" layoutX="960.0" layoutY="54.0" text="0%"/>
 
-                                                <Button fx:id="submit" layoutX="677.0" layoutY="34.0"
+                                                <Button fx:id="submit" layoutX="1050.0" layoutY="44.0"
                                                         mnemonicParsing="false" onAction="#executeSubmit"
                                                         prefHeight="35.0" prefWidth="100.0" text="执行">
                                                     <padding>
@@ -61,7 +70,7 @@
                                                     </padding>
                                                 </Button>
 
-                                                <Button fx:id="copy" layoutX="800.0" layoutY="34.0"
+                                                <Button fx:id="copy" layoutX="1180.0" layoutY="44.0"
                                                         mnemonicParsing="false" onAction="#executeCopy"
                                                         prefHeight="35.0" prefWidth="100.0" text="复制内容">
                                                     <padding>

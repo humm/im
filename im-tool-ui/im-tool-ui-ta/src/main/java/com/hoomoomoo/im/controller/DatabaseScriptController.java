@@ -121,8 +121,8 @@ public class DatabaseScriptController extends BaseController implements Initiali
                             if (CollectionUtils.isNotEmpty(content)) {
                                 StringBuilder sqlPart = new StringBuilder();
                                 for (String sql : content) {
-                                    if (sql.contains(SYMBOL_SEMICOLON)) {
-                                        int index = sql.lastIndexOf(SYMBOL_SEMICOLON);
+                                    if (sql.contains(STR_SEMICOLON)) {
+                                        int index = sql.lastIndexOf(STR_SEMICOLON);
                                         sql = sql.substring(0, index + 1);
                                     }
                                     String checkSql = sql.toLowerCase().trim();
@@ -133,26 +133,26 @@ public class DatabaseScriptController extends BaseController implements Initiali
                                     boolean isFunction = checkSql.toLowerCase().contains("function") && checkSql.toLowerCase().contains("create");
                                     if (!procedure && !multSql && !function && isProcedure) {
                                         procedure = true;
-                                        sqlPart.append(sql).append(SYMBOL_NEXT_LINE);
+                                        sqlPart.append(sql).append(STR_NEXT_LINE);
                                     } else if (!procedure && !multSql && !function && isFunction) {
                                         function = true;
-                                        sqlPart.append(sql).append(SYMBOL_NEXT_LINE);
-                                    } else if (!procedure && !multSql && !function && !checkSql.endsWith(SYMBOL_SEMICOLON)) {
+                                        sqlPart.append(sql).append(STR_NEXT_LINE);
+                                    } else if (!procedure && !multSql && !function && !checkSql.endsWith(STR_SEMICOLON)) {
                                         multSql = true;
-                                        sqlPart.append(sql).append(SYMBOL_NEXT_LINE);
+                                        sqlPart.append(sql).append(STR_NEXT_LINE);
                                     } else if ((procedure || function) && checkSql.equals("/")) {
                                         procedure = false;
                                         String singleSql = sqlPart.toString().trim();
                                         executeSql.add(singleSql);
                                         sqlPart.setLength(0);
-                                    }  else if (multSql && checkSql.endsWith(SYMBOL_SEMICOLON)) {
+                                    }  else if (multSql && checkSql.endsWith(STR_SEMICOLON)) {
                                         multSql = false;
-                                        String singleSql = sqlPart.append(sql).append(SYMBOL_NEXT_LINE).toString().trim();
+                                        String singleSql = sqlPart.append(sql).append(STR_NEXT_LINE).toString().trim();
                                         executeSql.add(singleSql.substring(0, singleSql.length() - 1));
                                         sqlPart.setLength(0);
                                     } else if (procedure || multSql || function) {
-                                        sqlPart.append(sql).append(SYMBOL_NEXT_LINE);
-                                    } else if (checkSql.endsWith(SYMBOL_SEMICOLON)) {
+                                        sqlPart.append(sql).append(STR_NEXT_LINE);
+                                    } else if (checkSql.endsWith(STR_SEMICOLON)) {
                                         procedure = false;
                                         executeSql.add(sql.substring(0, sql.length() - 1));
                                     }
@@ -163,7 +163,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                                     try {
                                         procedure = sql.startsWith("declare") || (sql.toLowerCase().contains("procedure") && sql.toLowerCase().contains("create"));;
                                         function = sql.toLowerCase().contains("function") && sql.toLowerCase().contains("create");
-                                        if (!procedure && !function && sql.endsWith(SYMBOL_SEMICOLON)) {
+                                        if (!procedure && !function && sql.endsWith(STR_SEMICOLON)) {
                                             sql = sql.substring(0, sql.length() - 1);
                                         }
                                         OutputUtils.info(sqlNum, String.valueOf(++executeSqlNum));
@@ -177,11 +177,11 @@ public class DatabaseScriptController extends BaseController implements Initiali
                                             failSql.add(addAnnotation());
                                             nextFlag = false;
                                         }
-                                        String errorMsg = e.getMessage().replaceAll("[\\t\\r\\n]", SYMBOL_EMPTY);
-                                        String errorSql = sql + SYMBOL_NEXT_LINE;
+                                        String errorMsg = e.getMessage().replaceAll("[\\t\\r\\n]", STR_BLANK);
+                                        String errorSql = sql + STR_NEXT_LINE;
                                         LoggerUtils.info(e);
-                                        OutputUtils.info(log, errorMsg + SYMBOL_NEXT_LINE);
-                                        OutputUtils.info(log, errorSql + SYMBOL_NEXT_LINE);
+                                        OutputUtils.info(log, errorMsg + STR_NEXT_LINE);
+                                        OutputUtils.info(log, errorSql + STR_NEXT_LINE);
                                         failSql.add(errorMsg);
                                         failSql.add(errorSql);
                                         OutputUtils.info(sqlFailNum, String.valueOf(++executeFailSqlNum));
@@ -194,7 +194,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                         OutputUtils.info(log, "选文择件夹目录不存在sql文件");
                     }
                     if (executeFailSqlNum == 0) {
-                        FileUtils.writeFile(logFilePath, SYMBOL_EMPTY, false);
+                        FileUtils.writeFile(logFilePath, STR_BLANK, false);
                         return;
                     }
                     LoggerUtils.writeDatabaScriptLogInfo(DATABASE_SCRIPT.getCode(), failSql, logFilePath);

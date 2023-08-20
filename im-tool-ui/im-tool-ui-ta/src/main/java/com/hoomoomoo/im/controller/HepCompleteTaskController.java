@@ -2,7 +2,6 @@ package com.hoomoomoo.im.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskComponent;
 import com.hoomoomoo.im.dto.HepTaskDto;
@@ -118,7 +117,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
                     continue;
                 }
                 if (StringUtils.isNotBlank(modifiedFileValue)) {
-                    modifiedFileValue.append(SYMBOL_NEXT_LINE);
+                    modifiedFileValue.append(STR_NEXT_LINE);
                 }
                 modifiedFileValue.append(file);
             }
@@ -128,7 +127,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
             }
             editDescriptionValue.append(msg);
             if (i != logDtoList.size() - 1) {
-                editDescriptionValue.append(SYMBOL_NEXT_LINE);
+                editDescriptionValue.append(STR_NEXT_LINE);
             }
         }
         OutputUtils.repeatInfo(modifiedFile, modifiedFileValue.toString());
@@ -187,7 +186,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
     void execute(ActionEvent event) throws Exception {
         StringBuilder tips = new StringBuilder();
         String realRorkloadValue = realRorkload.getText();
-        String realFinishTimeValue = SYMBOL_EMPTY;
+        String realFinishTimeValue = STR_BLANK;
         if (realFinishTime.getValue() != null) {
             realFinishTimeValue = realFinishTime.getValue().toString();
         }
@@ -197,20 +196,20 @@ public class HepCompleteTaskController extends BaseController implements Initial
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
         if (StringUtils.isBlank(realRorkloadValue)) {
-            tips.append("【耗费工时】").append(SYMBOL_NEXT_LINE);
+            tips.append("【耗费工时】").append(STR_NEXT_LINE);
         }
         if (StringUtils.isBlank(realFinishTimeValue)) {
-            tips.append("【完成时间】").append(SYMBOL_NEXT_LINE);
+            tips.append("【完成时间】").append(STR_NEXT_LINE);
         }
         if (!OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
             if (StringUtils.isBlank(modifiedFileValue)) {
-                tips.append("【修改文件】").append(SYMBOL_NEXT_LINE);
+                tips.append("【修改文件】").append(STR_NEXT_LINE);
             }
             if (StringUtils.isBlank(editDescriptionValue)) {
-                tips.append("【修改说明】").append(SYMBOL_NEXT_LINE);
+                tips.append("【修改说明】").append(STR_NEXT_LINE);
             }
             if (StringUtils.isBlank(suggestionValue)) {
-                tips.append("【测试建议】").append(SYMBOL_NEXT_LINE);
+                tips.append("【测试建议】").append(STR_NEXT_LINE);
             }
         }
         if (StringUtils.isNotBlank(tips)) {
@@ -222,7 +221,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         }
 
         hepTaskDto.setRealWorkload(realRorkloadValue.trim());
-        hepTaskDto.setRealFinishTime(realFinishTimeValue + SYMBOL_SPACE +CommonUtils.getCurrentDateTime8(new Date()));
+        hepTaskDto.setRealFinishTime(realFinishTimeValue + STR_SPACE +CommonUtils.getCurrentDateTime8(new Date()));
         hepTaskDto.setModifiedFile(TaCommonUtils.formatText(modifiedFileValue, true));
         hepTaskDto.setEditDescription(TaCommonUtils.formatText(editDescriptionValue, true));
         hepTaskDto.setSuggestion(TaCommonUtils.formatText(suggestionValue, true));

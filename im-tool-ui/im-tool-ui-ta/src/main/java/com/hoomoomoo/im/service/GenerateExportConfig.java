@@ -23,19 +23,19 @@ public class GenerateExportConfig {
         String packageName = PACKAGE_JAVA_PREFIX + "bean.exportconfig";
 
         generateCodeDto.setExportName(fileName);
-        generateCodeDto.setExportPackageName(packageName + SYMBOL_POINT + fileName);
+        generateCodeDto.setExportPackageName(packageName + STR_POINT + fileName);
 
         StringBuilder content = new StringBuilder(GenerateCommon.generateFileDescribe(generateCodeDto, fileName, packageName));
 
-        content.append("import com.hundsun.lcpt.fund.annotation.FundExcelExportField;").append(SYMBOL_NEXT_LINE);
-        content.append("import lombok.Data;").append(SYMBOL_NEXT_LINE);
-        content.append("import static com.hundsun.lcpt.fund.annotation.FundExcelExportField.*;").append(SYMBOL_NEXT_LINE_2);
+        content.append("import com.hundsun.lcpt.fund.annotation.FundExcelExportField;").append(STR_NEXT_LINE);
+        content.append("import lombok.Data;").append(STR_NEXT_LINE);
+        content.append("import static com.hundsun.lcpt.fund.annotation.FundExcelExportField.*;").append(STR_NEXT_LINE_2);
 
         content.append(GenerateCommon.generateClassDescribe(generateCodeDto, fileName));
 
-        content.append("@Data").append(SYMBOL_NEXT_LINE);
-        content.append("public class " + fileName + " {").append(SYMBOL_NEXT_LINE_2);
-        content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(SYMBOL_NEXT_LINE_2);
+        content.append("@Data").append(STR_NEXT_LINE);
+        content.append("public class " + fileName + " {").append(STR_NEXT_LINE_2);
+        content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(STR_NEXT_LINE_2);
 
         Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
         Iterator<String> iterator = tableColumn.keySet().iterator();
@@ -53,7 +53,7 @@ public class GenerateExportConfig {
             if (KEY_COLUMN_TYPE_DATE.equals(columnType)) {
                 content.append(", type = FundExcelExportField.DATE");
             } else if (KEY_COLUMN_TYPE_NUMBER.equals(columnType)) {
-                if(columnInfo.getColumnName().contains(SYMBOL_PERCENT)) {
+                if(columnInfo.getColumnName().contains(STR_PERCENT)) {
                     content.append(", type = FundExcelExportField.RATIO");
                 } else {
                     content.append(", type = FundExcelExportField.AMOUNT");
@@ -65,10 +65,10 @@ public class GenerateExportConfig {
                     }
                 }
             }
-            content.append(")").append(SYMBOL_NEXT_LINE);
-            content.append("    private String " + column + ";").append(SYMBOL_NEXT_LINE_2);
+            content.append(")").append(STR_NEXT_LINE);
+            content.append("    private String " + column + ";").append(STR_NEXT_LINE_2);
         }
-        content.append("}").append(SYMBOL_NEXT_LINE_2);
+        content.append("}").append(STR_NEXT_LINE_2);
         return GenerateCommon.generateJavaFile(generateCodeDto, packageName, fileName, content.toString());
     }
 }

@@ -71,13 +71,13 @@ public class WaitAppraiseController extends ShoppingBaseController implements In
                 if (appraiseSize < appraiseNum) {
                     appraiseMsg = ((JSONObject) appraiseList.get(appraiseSize - 1)).get("content").toString();
                 } else {
-                    appraiseMsg = BaseConst.SYMBOL_EMPTY;
+                    appraiseMsg = BaseConst.STR_BLANK;
                     for (int i=appraiseSize-1; i>=appraiseSize-appraiseNum; i--) {
-                        appraiseMsg += ((JSONObject) appraiseList.get(i)).get("content").toString() + BaseConst.SYMBOL_NEXT_LINE;
+                        appraiseMsg += ((JSONObject) appraiseList.get(i)).get("content").toString() + BaseConst.STR_NEXT_LINE;
                     }
                 }
                 if (appraiseMsg.length() < JD_APPRAISE_LENGTH_MIN) {
-                    appraiseMsg = appConfigDto.getJdAppraiseDefault() + BaseConst.SYMBOL_NEXT_LINE + appraiseMsg;
+                    appraiseMsg = appConfigDto.getJdAppraiseDefault() + BaseConst.STR_NEXT_LINE + appraiseMsg;
                 } else if (appraiseMsg.length() > JD_APPRAISE_LENGTH_MAX) {
                     appraiseMsg = appraiseMsg.substring(0, JD_APPRAISE_LENGTH_MAX);
                 }

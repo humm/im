@@ -2,6 +2,7 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.SvnStatDto;
 import com.hoomoomoo.im.utils.*;
@@ -40,12 +41,14 @@ public class SvnRealtimeStatController extends BaseController implements Initial
 
     private LinkedHashMap<String, SvnStatDto> svnStat = new LinkedHashMap<>(16);
 
+    private boolean initFlag = true;
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, SVN_REALTIME_STAT.getName()));
-            if (!TaCommonUtils.checkConfig(stat, SVN_REALTIME_STAT.getCode())) {
+            if (!TaCommonUtils.checkConfig(notice, SVN_REALTIME_STAT.getCode())) {
                 return;
             }
             setProgress(0);
@@ -62,6 +65,11 @@ public class SvnRealtimeStatController extends BaseController implements Initial
             try {
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 while (true) {
+                    if (!initFlag && CommonUtils.isOpen(appConfigDto.getTabPane(), MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT) == null) {
+                        LoggerUtils.info(SVN_REALTIME_STAT.getName() + "已关闭，停止自动刷新");
+                        break;
+                    }
+                    initFlag = false;
                     try {
                         setProgress(0);
                         if (startDate == null) {
@@ -76,8 +84,8 @@ public class SvnRealtimeStatController extends BaseController implements Initial
                         }
                         OutputUtils.info(statTime, CommonUtils.getCurrentDateTime8(date));
                         SvnUtils.getSvnLog(startDate, date, svnStat, true);
-                        OutputUtils.info(notice, BaseConst.SYMBOL_SPACE);
-                        OutputUtils.info(costTime, BaseConst.SYMBOL_SPACE);
+                        OutputUtils.info(notice, BaseConst.STR_SPACE);
+                        OutputUtils.info(costTime, BaseConst.STR_SPACE);
                         OutputUtils.clearLog(stat);
                         List<SvnStatDto> svnStatDtoList = TaCommonUtils.sortSvnStatDtoList(appConfigDto, svnStat);
                         for (SvnStatDto item : svnStatDtoList) {
@@ -87,7 +95,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
                         OutputUtils.info(notice, svnStat.get(KEY_NOTICE).getNotice());
                         OutputUtils.info(costTime, (System.currentTimeMillis() - date.getTime()) / 1000 + "秒");
                     } catch (Exception e) {
-                        OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
+                        OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
                         LoggerUtils.info(e);
                     } finally {
                         setProgress(1);
@@ -95,7 +103,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
                     Thread.sleep(appConfigDto.getSvnStatInterval() * 1000);
                 }
             } catch (Exception e) {
-                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
+                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
                 LoggerUtils.info(e);
             }
         }).start();

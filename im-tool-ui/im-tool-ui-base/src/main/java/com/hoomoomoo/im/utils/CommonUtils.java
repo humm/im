@@ -5,7 +5,6 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.BaseDto;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
 import javafx.collections.ObservableList;
@@ -13,7 +12,6 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -21,7 +19,6 @@ import javafx.scene.image.ImageView;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.cglib.beans.BeanMap;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -128,7 +125,7 @@ public class CommonUtils {
         if (date.length() != 8) {
             return date;
         }
-        return date.substring(0, 4) + SYMBOL_HYPHEN + date.substring(4, 6) + SYMBOL_HYPHEN + date.substring(6);
+        return date.substring(0, 4) + STR_HYPHEN + date.substring(4, 6) + STR_HYPHEN + date.substring(6);
     }
 
     /**
@@ -240,7 +237,7 @@ public class CommonUtils {
     }
 
     public static String checkLicenseDate(AppConfigDto appConfigDto) {
-        String tips = SYMBOL_EMPTY;
+        String tips = STR_BLANK;
         LicenseDto licenseDto = appConfigDto.getLicense();
         String effectiveDate = licenseDto.getEffectiveDate();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(PATTERN3);
@@ -432,7 +429,7 @@ public class CommonUtils {
         if (StringUtils.isBlank(appUser)) {
             return false;
         }
-        String[] user = appUser.split(SYMBOL_COMMA);
+        String[] user = appUser.split(STR_COMMA);
         for (String item : user) {
             if (userName.equals(item)) {
                 return true;
@@ -558,13 +555,13 @@ public class CommonUtils {
      * @return: java.lang.String
      */
     public static String getVersion() {
-        String version = SYMBOL_EMPTY;
+        String version = STR_BLANK;
         try {
             List<String> versionContent = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION), false);
             if (CollectionUtils.isNotEmpty(versionContent)) {
                 for (String item : versionContent) {
                     if (item.startsWith(NAME_CURRENT_VERSION)) {
-                        String[] itemVersion = item.split(SYMBOL_COLON);
+                        String[] itemVersion = item.split(STR_COLON);
                         if (itemVersion.length == 2) {
                             version = itemVersion[1].trim();
                         }
@@ -714,16 +711,18 @@ public class CommonUtils {
      * @date: 2022-09-24
      * @return: void
      */
-    public static void initialize(URL location, ResourceBundle resources, TabPane functionTab, MenuBar menuBar) {
+    public static void initialize(URL location, ResourceBundle resources, TabPane tabPane, MenuBar menuBar) {
         try {
-            AppCache.FUNCTION_TAB_CACHE = functionTab;
+            AppCache.FUNCTION_TAB_CACHE = tabPane;
             // 加载已授权功能
-            CommonUtils.showAuthFunction(menuBar, functionTab);
+            CommonUtils.showAuthFunction(menuBar, tabPane);
 
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            appConfigDto.setTabPane(tabPane);
+
             String showTab = appConfigDto.getAppTabShow();
             if (StringUtils.isNotBlank(showTab)) {
-                String[] tabs = showTab.split(BaseConst.SYMBOL_COMMA);
+                String[] tabs = showTab.split(BaseConst.STR_COMMA);
                 for (String tab : tabs) {
                     if (StringUtils.isBlank(getName(tab))) {
                         LoggerUtils.info(String.format(BaseConst.MSG_FUNCTION_NOT_EXIST, tab));
@@ -738,7 +737,7 @@ public class CommonUtils {
                             getName(tab), functionConfig.getCode(), functionConfig.getName());
                     setTabStyle(openTab, functionConfig);
                     bindTabEvent(openTab);
-                    functionTab.getTabs().add(openTab);
+                    tabPane.getTabs().add(openTab);
                 }
             } else {
                 // 默认打开有权限的第一个功能
@@ -749,7 +748,7 @@ public class CommonUtils {
                     MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
                     setTabStyle(tab, functionConfig);
                     bindTabEvent(tab);
-                    functionTab.getTabs().add(tab);
+                    tabPane.getTabs().add(tab);
                 }
             }
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_INIT, NAME_CONFIG_VIEW));
@@ -759,7 +758,7 @@ public class CommonUtils {
     }
 
     public static String getMenuName(String menuCode, String menuName) {
-        return menuCode + SYMBOL_COLON + menuName;
+        return menuCode + STR_COLON + menuName;
     }
 
     public static String getComponentValue(Object obj) {
@@ -768,6 +767,7 @@ public class CommonUtils {
         } else if (obj instanceof TextField) {
             return ((TextField)obj).getText().trim();
         }
-        return SYMBOL_EMPTY;
+        return STR_BLANK;
     }
+
 }

@@ -2,8 +2,8 @@ package com.hoomoomoo.im.service;
 
 import com.hoomoomoo.im.dto.GenerateCodeDto;
 
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_NEXT_LINE;
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_NEXT_LINE_2;
+import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
+import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE_2;
 
 /**
  * @author humm23693
@@ -21,12 +21,12 @@ public class GenerateRoute {
         String secondMenuName = generateCodeDto.getMenuList().get(1)[1];
         String functionCode = generateCodeDto.getFunctionCode();
         String functionName = generateCodeDto.getFunctionName();
-        content.append("// 二级菜单 " + secondMenuName).append(SYMBOL_NEXT_LINE);
-        content.append("const " + secondMenu + " = {").append(SYMBOL_NEXT_LINE);
-        content.append("  // " + functionName).append(SYMBOL_NEXT_LINE);
+        content.append("// 二级菜单 " + secondMenuName).append(STR_NEXT_LINE);
+        content.append("const " + secondMenu + " = {").append(STR_NEXT_LINE);
+        content.append("  // " + functionName).append(STR_NEXT_LINE);
         String route = firstMenu + "/" + secondMenu + "/" + functionCode;
-        content.append("  " + functionCode + ": () => import(/* webpackChunkName: \"console-fund-ta-vue/" + route + "\" */`@ConsoleFundTaVue/views/" + route + "`),").append(SYMBOL_NEXT_LINE);
-        content.append("}").append(SYMBOL_NEXT_LINE_2);
+        content.append("  " + functionCode + ": () => import(/* webpackChunkName: \"console-fund-ta-vue/" + route + "\" */`@ConsoleFundTaVue/views/" + route + "`),").append(STR_NEXT_LINE);
+        content.append("}").append(STR_NEXT_LINE_2);
         return GenerateCommon.generateRouteFile(generateCodeDto, fileName, content.toString());
     }
 }

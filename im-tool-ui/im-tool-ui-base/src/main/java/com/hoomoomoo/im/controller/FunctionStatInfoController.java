@@ -95,13 +95,13 @@ public class FunctionStatInfoController implements Initializable {
 
     private String getStatInfo(List<String> logStat, int type) {
         if (CollectionUtils.isEmpty(logStat) || logStat.size() != 3) {
-            return SYMBOL_EMPTY;
+            return STR_BLANK;
         }
         String content = logStat.get(type);
-        if (content.contains(BaseConst.SYMBOL_COLON)) {
-            return content.substring(content.indexOf(BaseConst.SYMBOL_COLON) + 1).trim();
+        if (content.contains(BaseConst.STR_COLON)) {
+            return content.substring(content.indexOf(BaseConst.STR_COLON) + 1).trim();
         }
-        return SYMBOL_EMPTY;
+        return STR_BLANK;
     }
 
     private String getOrderInfo(List<FunctionDto> functionDtoList) {
@@ -114,7 +114,7 @@ public class FunctionStatInfoController implements Initializable {
             if (FUNCTION_STAT_INFO.getCode().equals(item.getFunctionCode()) || ABOUT_INFO.getCode().equals(item.getFunctionCode())) {
                 continue;
             }
-            order.append(item.getFunctionName()).append(BaseConst.SYMBOL_SPACE_2);
+            order.append(item.getFunctionName()).append(BaseConst.STR_SPACE_2);
         }
         return order.toString();
 

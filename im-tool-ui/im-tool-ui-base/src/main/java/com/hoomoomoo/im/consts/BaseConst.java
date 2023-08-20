@@ -219,45 +219,42 @@ public class BaseConst {
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
 
-    public static final String SHAKE_MOUSE_UNSTART = "0";
-    public static final String SHAKE_MOUSE_RUNNING = "1";
-    public static final String SHAKE_MOUSE_PAUSE = "2";
-
     public static final String NAME_MENU_UPDATE = "更新";
     public static final String NAME_MENU_COPY = "复制";
 
     public final static String SECURITY_FLAG = "+++";
 
-    public final static String SYMBOL_EMPTY = "";
-    public final static String SYMBOL_AND = "&";
-    public final static String SYMBOL_EQUAL = "=";
-    public final static String SYMBOL_SPACE = " ";
-    public final static String SYMBOL_SPACE_2 = "  ";
-    public final static String SYMBOL_SPACE_3 = "   ";
-    public final static String SYMBOL_SPACE_4 = "    ";
-    public final static String SYMBOL_EQUALS = "=";
-    public static final String SYMBOL_COMMA = ",";
-    public static final String SYMBOL_SEMICOLON = ";";
-    public static final String SYMBOL_COLON = ":";
-    public static final String SYMBOL_HYPHEN = "-";
-    public static final String SYMBOL_HYPHEN_1 = " - ";
-    public final static String SYMBOL_POINT = ".";
-    public final static String SYMBOL_$_SLASH = "\\$";
-    public final static String SYMBOL_S_SLASH = "\\s+";
-    public final static String SYMBOL_POINT_SLASH = "\\.";
-    public static final String SYMBOL_SLASH = "/";
-    public static final String SYMBOL_SLASH_1 = "\\";
-    public static final String SYMBOL_BRACKETS_LEFT = "(";
-    public static final String SYMBOL_BRACKETS_RIGHT = ")";
-    public static final String SYMBOL_BRACKETS_1_LEFT = "[";
-    public final static String SYMBOL_BRACKETS_2_RIGHT = "」";
-    public static final String SYMBOL_BRACKETS_1_RIGHT = "]";
-    public static final String SYMBOL_NEXT_LINE = "\n";
-    public static final String SYMBOL_SLASH_T = "\t";
-    public static final String SYMBOL_NEXT_LINE_2 = "\n\n";
-    public static final String SYMBOL_PERCENT = "%";
-    public static final String SYMBOL_QUOTES = "\"";
-    public static final String SYMBOL_BR = "</br>";
+    public final static String STR_BLANK = "";
+    public final static String STR_AND = "&";
+    public final static String STR_EQUAL = "=";
+    public final static String STR_SPACE = " ";
+    public final static String STR_SPACE_2 = "  ";
+    public final static String STR_SPACE_3 = "   ";
+    public final static String STR_SPACE_4 = "    ";
+    public final static String STR_EQUALS = "=";
+    public static final String STR_COMMA = ",";
+    public static final String STR_SEMICOLON = ";";
+    public static final String STR_COLON = ":";
+    public static final String STR_HYPHEN = "-";
+    public static final String STR_HYPHEN_1 = " - ";
+    public final static String STR_POINT = ".";
+    public final static String STR_$_SLASH = "\\$";
+    public final static String STR_S_SLASH = "\\s+";
+    public final static String STR_POINT_SLASH = "\\.";
+    public static final String STR_SLASH = "/";
+    public static final String STR_SLASH_1 = "\\";
+    public static final String STR_BRACKETS_LEFT = "(";
+    public static final String STR_BRACKETS_RIGHT = ")";
+    public static final String STR_BRACKETS_1_LEFT = "[";
+    public final static String STR_BRACKETS_2_RIGHT = "」";
+    public static final String STR_BRACKETS_1_RIGHT = "]";
+    public static final String STR_NEXT_LINE = "\n";
+    public static final String STR_SLASH_T = "\t";
+    public static final String STR_NEXT_LINE_2 = "\n\n";
+    public static final String STR_PERCENT = "%";
+    public static final String STR_QUOTES = "\"";
+    public static final String STR_QUOTES_SINGLE = "'";
+    public static final String STR_BR = "</br>";
 
     public final static String ANNOTATION_TYPE_NORMAL = "--";
     public final static String ANNOTATION_TYPE_CONFIG = "#";
@@ -276,7 +273,7 @@ public class BaseConst {
     public static final String MSG_PROCESS_GENERATE_PATH_TRANS = "请设置[ process.generate.path.trans ]";
     public static final String MSG_SCRIPT_UPDATE_GENERATE_PATH = "请设置[ script.update.generate.path ]";
     public static final String MSG_SVN_STAT_USER = "请设置[ svn.stat.user. ]";
-    public static final String MSG_SVN_STAT_INTERVAL = "请设置[ svn.stat.interval ]大于等于5";
+    public static final String MSG_SVN_STAT_INTERVAL = "请设置[ svn.stat.interval ]大于等于10";
     public static final String MSG_GENERATE_CODE_PATH = "请设置[ %s ]路径";
     public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请更新京东Cookie";
     public static final String MSG_AUTO_APPRAISE = "自动评价评价";
@@ -398,5 +395,9 @@ public class BaseConst {
     public static final String LEFT_CLICKED = "PRIMARY";
 
     public static final Integer MENUITEM_ICON_SIZE = 20;
+
+    public static final String MENU_CODE_QUERY = "query";
+    public static final String MENU_CODE_PARAM = "param";
+    public static final String MENU_CODE_BUSIN = "busin";
 
 }

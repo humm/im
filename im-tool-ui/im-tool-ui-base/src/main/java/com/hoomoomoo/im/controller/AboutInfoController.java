@@ -42,7 +42,7 @@ public class AboutInfoController implements Initializable {
         try {
             OutputUtils.clearLog(about);
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            OutputUtils.info(about, appConfigDto.getAppName() + SYMBOL_NEXT_LINE_2);
+            OutputUtils.info(about, appConfigDto.getAppName() + STR_NEXT_LINE_2);
             List<String> version = new ArrayList<>(16);
             try {
                 version = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION), false);
@@ -52,24 +52,24 @@ public class AboutInfoController implements Initializable {
             if (CollectionUtils.isNotEmpty(version)) {
                 for (String item : version) {
                     if (StringUtils.isBlank(item) || !isShow(appConfigDto, item)) {
-                        OutputUtils.info(about, SYMBOL_NEXT_LINE);
+                        OutputUtils.info(about, STR_NEXT_LINE);
                         continue;
                     }
-                    OutputUtils.info(about, SYMBOL_SPACE_4 + item + SYMBOL_NEXT_LINE_2);
+                    OutputUtils.info(about, STR_SPACE_4 + item + STR_NEXT_LINE_2);
                 }
             }
 
             if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
-                OutputUtils.info(about, SYMBOL_NEXT_LINE);
+                OutputUtils.info(about, STR_NEXT_LINE);
                 LicenseDto licenseDto = appConfigDto.getLicense();
                 String effectiveDate = CommonUtils.getCurrentDateTime5(licenseDto.getEffectiveDate());
-                OutputUtils.info(about, SYMBOL_SPACE_4 + "授权截止: " + effectiveDate + SYMBOL_NEXT_LINE_2);
+                OutputUtils.info(about, STR_SPACE_4 + "授权截止: " + effectiveDate + STR_NEXT_LINE_2);
 
                 String authStatus = "已过期";
                 if (CommonUtils.checkLicense(null)) {
                     authStatus = "生效中";
                 }
-                OutputUtils.info(about, SYMBOL_SPACE_4 + "授权状态: " + authStatus + SYMBOL_NEXT_LINE_2);
+                OutputUtils.info(about, STR_SPACE_4 + "授权状态: " + authStatus + STR_NEXT_LINE_2);
             }
             LoggerUtils.writeLogInfo(ABOUT_INFO.getCode(), new Date(), new ArrayList<>());
         } catch (Exception e) {
@@ -81,7 +81,7 @@ public class AboutInfoController implements Initializable {
         if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
             return true;
         }
-        String[] showMsg = SHOW_CONTENT.split(SYMBOL_COMMA);
+        String[] showMsg = SHOW_CONTENT.split(STR_COMMA);
         for (String temp : showMsg) {
             if (item.startsWith(temp)) {
                 return true;

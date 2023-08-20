@@ -5,9 +5,9 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.controller.ScriptUpdateController;
 import com.hoomoomoo.im.dto.*;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,7 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_NEXT_LINE;
+import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
@@ -32,36 +32,36 @@ public class TaCommonUtils {
         AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionCode.equals(MenuFunctionConfig.FunctionConfig.SVN_LOG.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
-                OutputUtils.info(log, MSG_SVN_USERNAME + SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_USERNAME + STR_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
-                OutputUtils.info(log, MSG_SVN_PASSWORD + SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_PASSWORD + STR_NEXT_LINE);
                 flag = false;
             }
             if (MapUtils.isEmpty(appConfigDto.getSvnUrl())) {
-                OutputUtils.info(log, MSG_SVN_URL + SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_URL + STR_NEXT_LINE);
                 flag = false;
             }
         }
         if (functionCode.equals(MenuFunctionConfig.FunctionConfig.SVN_UPDATE.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
-                OutputUtils.info(log, MSG_SVN_USERNAME + SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_USERNAME + STR_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
-                OutputUtils.info(log, MSG_SVN_PASSWORD + SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_PASSWORD + STR_NEXT_LINE);
                 flag = false;
             }
             if (CollectionUtils.isEmpty(appConfigDto.getSvnUpdatePath())) {
-                OutputUtils.info(log, MSG_SVN_UPDATE_TA6 + SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_UPDATE_TA6 + STR_NEXT_LINE);
                 flag = false;
             }
         }
         if (functionCode.equals(MenuFunctionConfig.FunctionConfig.SCRIPT_UPDATE.getCode())) {
             if (appConfigDto.getScriptUpdateGenerateFile()) {
                 if (StringUtils.isBlank(appConfigDto.getScriptUpdateGeneratePath())) {
-                    OutputUtils.info(log, MSG_SCRIPT_UPDATE_GENERATE_PATH + SYMBOL_NEXT_LINE);
+                    OutputUtils.info(log, MSG_SCRIPT_UPDATE_GENERATE_PATH + STR_NEXT_LINE);
                     flag = false;
                 }
             }
@@ -113,25 +113,32 @@ public class TaCommonUtils {
                 flag = false;
             }
         }
+        return flag;
+    }
+
+    public static boolean checkConfig(Label log, String functionCode) throws Exception {
+        boolean flag = true;
+        OutputUtils.clearLog(log);
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
         if (functionCode.equals(SVN_REALTIME_STAT.getCode()) || functionCode.equals(SVN_HISTORY_STAT.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
-                OutputUtils.info(log, MSG_SVN_USERNAME + SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_USERNAME + STR_NEXT_LINE);
                 flag = false;
             }
             if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
-                OutputUtils.info(log, MSG_SVN_PASSWORD + SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_PASSWORD + STR_NEXT_LINE);
                 flag = false;
             }
             if (MapUtils.isEmpty(appConfigDto.getSvnUrl())) {
-                OutputUtils.info(log, MSG_SVN_URL + SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_URL + STR_NEXT_LINE);
                 flag = false;
             }
             if (appConfigDto.getSvnStatUser().size() == 0) {
-                OutputUtils.info(log, MSG_SVN_STAT_USER + SYMBOL_NEXT_LINE);
+                OutputUtils.info(log, MSG_SVN_STAT_USER + STR_NEXT_LINE);
                 flag = false;
             }
-            if (appConfigDto.getSvnStatInterval() < 5) {
-                OutputUtils.info(log, MSG_SVN_STAT_INTERVAL + SYMBOL_NEXT_LINE);
+            if (appConfigDto.getSvnStatInterval() < 10) {
+                OutputUtils.info(log, MSG_SVN_STAT_INTERVAL + STR_NEXT_LINE);
                 flag = false;
             }
         }
@@ -265,7 +272,7 @@ public class TaCommonUtils {
                 if (part.toLowerCase().startsWith("delete") || part.toLowerCase().startsWith("-- delete")) {
                     continue;
                 }
-                part = oldSql.get(i-1) + SYMBOL_NEXT_LINE + part;
+                part = oldSql.get(i-1) + STR_NEXT_LINE + part;
                 deleteSql.add(part);
             }
         }
@@ -276,22 +283,22 @@ public class TaCommonUtils {
                 if (part.toLowerCase().startsWith("delete") || part.toLowerCase().startsWith("-- delete")) {
                     continue;
                 }
-                part = newSql.get(i-1) + SYMBOL_NEXT_LINE + part;
+                part = newSql.get(i-1) + STR_NEXT_LINE + part;
                 addSql.add(part);
             }
         }
         ScriptUpdateController scriptUpdateController = new ScriptUpdateController();
         appConfigDto.setScriptUpdateGenerateType(STR_1);
-        List<String> delete = scriptUpdateController.generatesql(appConfigDto, String.join(SYMBOL_EMPTY, deleteSql));
+        List<String> delete = scriptUpdateController.generatesql(appConfigDto, String.join(STR_BLANK, deleteSql));
         appConfigDto.setScriptUpdateGenerateType(STR_2);
-        List<String> add = scriptUpdateController.generatesql(appConfigDto, String.join(SYMBOL_EMPTY, addSql));
+        List<String> add = scriptUpdateController.generatesql(appConfigDto, String.join(STR_BLANK, addSql));
         if (CollectionUtils.isEmpty(add)) {
             sql.addAll(delete);
         } else {
             for (String ele : delete) {
                 boolean hasKey = false;
                 inner: for (String item : add) {
-                    if (item.replaceAll(SYMBOL_NEXT_LINE, SYMBOL_EMPTY).contains(ele.replaceAll(SYMBOL_NEXT_LINE, SYMBOL_EMPTY))) {
+                    if (item.replaceAll(STR_NEXT_LINE, STR_BLANK).contains(ele.replaceAll(STR_NEXT_LINE, STR_BLANK))) {
                         hasKey = true;
                         break inner;
                     }
@@ -320,16 +327,16 @@ public class TaCommonUtils {
         if (toBr) {
             return text.replaceAll("\\n", "\r<br>").trim();
         } else {
-            return text.replaceAll("\r", SYMBOL_EMPTY).replaceAll("<br>", SYMBOL_EMPTY).trim();
+            return text.replaceAll("\r", STR_BLANK).replaceAll("<br>", STR_BLANK).trim();
         }
     }
 
     public static String formatTextBrToNextLine(String text){
-        return text.replaceAll("\r", SYMBOL_EMPTY).replaceAll("<br>", SYMBOL_NEXT_LINE).trim();
+        return text.replaceAll("\r", STR_BLANK).replaceAll("<br>", STR_NEXT_LINE).trim();
     }
 
     public static String getMsgContainDate (String msg) {
-        return CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + msg;
+        return CommonUtils.getCurrentDateTime1() + STR_SPACE + msg;
     }
 
 }

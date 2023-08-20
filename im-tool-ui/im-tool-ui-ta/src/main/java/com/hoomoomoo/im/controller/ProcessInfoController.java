@@ -226,8 +226,8 @@ public class ProcessInfoController extends BaseController implements Initializab
                     // step 3 读group流程，绑定task
                     String[] sheetNames = sheet.getName().split("&");
                     // step 3.1 命名检查
-                    String groupName = BaseConst.SYMBOL_SPACE;
-                    String groupCode = BaseConst.SYMBOL_SPACE;
+                    String groupName = BaseConst.STR_SPACE;
+                    String groupCode = BaseConst.STR_SPACE;
                     if (sheet.getName().compareTo("自由节点") != 0) {
                         if (sheetNames.length != 2) {
                             OutputUtils.info(log, sheet.getName() + "命名不规范,正常的格式为中文名&英文名,请检查");
@@ -260,7 +260,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 writeTaskRegistry(bufferedWriter);
                 OutputUtils.info(log, "tbscheduletaskregistry生成结束");
 
-                bufferedWriter.write(BaseConst.SYMBOL_EMPTY);
+                bufferedWriter.write(BaseConst.STR_BLANK);
                 bufferedWriter.close();
                 schedule.setProgress(1);
                 List<String> path = new ArrayList<>();

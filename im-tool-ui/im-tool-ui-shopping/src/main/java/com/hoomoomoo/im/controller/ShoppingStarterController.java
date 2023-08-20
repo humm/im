@@ -24,10 +24,10 @@ public class ShoppingStarterController implements Initializable {
     private MenuBar shopping;
 
     @FXML
-    private TabPane functionTab;
+    private TabPane tabPane;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        CommonUtils.initialize(location, resources, functionTab, shopping);
+        CommonUtils.initialize(location, resources, tabPane, shopping);
     }
 }

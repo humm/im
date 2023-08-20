@@ -56,7 +56,7 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
         requestData.put(KEY_ORDER_ID, goodsDto.getOrderId());
         requestData.put(KEY_PRODUCT_ID, goodsDto.getGoodsId());
         requestData.put(KEY_CONTENT, URLEncoder.encode(goodsDto.getAppraiseInfo(), ENCODING_UTF8));
-        requestData.put(KEY_IMGS, SYMBOL_EMPTY);
+        requestData.put(KEY_IMGS, STR_BLANK);
         requestData.put(KEY_ANONYMOUS_FLAG, STR_1);
         requestData.put(KEY_SCORE, STR_5);
         connection.data(requestData);
@@ -83,7 +83,7 @@ public class AppendAppraiseController extends ShoppingBaseController implements 
                     String goodsName = goodsIdEle.text();
                     String goodsId = ShoppingCommonUtil.getHrefId(goodsIdHref);
                     Elements operateList = order.select("div.operate a");
-                    String orderId = SYMBOL_EMPTY;
+                    String orderId = STR_BLANK;
                     boolean isOperate = false;
                     for (Element operate : operateList) {
                         String operateName = operate.text();

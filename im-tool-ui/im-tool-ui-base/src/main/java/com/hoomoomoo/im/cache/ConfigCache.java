@@ -79,25 +79,25 @@ public class ConfigCache {
 
         int configIndex = 0;
         ListIterator<String> iterator = content.listIterator();
-        String svnRealtimeStatKey = SVN_REALTIME_STAT.getCode() + SYMBOL_COLON + SVN_REALTIME_STAT.getName();
-        String svnHistoryStatKey = SVN_HISTORY_STAT.getCode() + SYMBOL_COLON + SVN_HISTORY_STAT.getName();
-        String hepTaskTodoKey = TASK_TODO.getCode() + SYMBOL_COLON + TASK_TODO.getName();
+        String svnRealtimeStatKey = SVN_REALTIME_STAT.getCode() + STR_COLON + SVN_REALTIME_STAT.getName();
+        String svnHistoryStatKey = SVN_HISTORY_STAT.getCode() + STR_COLON + SVN_HISTORY_STAT.getName();
+        String hepTaskTodoKey = TASK_TODO.getCode() + STR_COLON + TASK_TODO.getName();
         while (iterator.hasNext()) {
             String item = iterator.next();
             boolean svn = item.contains(svnRealtimeStatKey) || item.contains(svnHistoryStatKey);
             if (!appConfigDto.getAppUser().contains(APP_USER_IM_SVN)) {
                 if (svn) {
-                    item = item.replace(svnRealtimeStatKey, SYMBOL_EMPTY);
-                    item = item.replace(svnHistoryStatKey, SYMBOL_EMPTY);
-                    iterator.set(item.replaceAll("\\s+", SYMBOL_SPACE));
+                    item = item.replace(svnRealtimeStatKey, STR_BLANK);
+                    item = item.replace(svnHistoryStatKey, STR_BLANK);
+                    iterator.set(item.replaceAll("\\s+", STR_SPACE));
                 }
             }
 
             boolean hep = item.contains(hepTaskTodoKey);
             if (!appConfigDto.getAppUser().contains(APP_USER_IM_HEP)) {
                 if (hep) {
-                    item = item.replace(hepTaskTodoKey, SYMBOL_EMPTY);
-                    iterator.set(item.replaceAll("\\s+", SYMBOL_SPACE));
+                    item = item.replace(hepTaskTodoKey, STR_BLANK);
+                    iterator.set(item.replaceAll("\\s+", STR_SPACE));
                 }
             }
 
@@ -124,7 +124,7 @@ public class ConfigCache {
             for (String item : content) {
                 // 代码更新配置
                 if (item.startsWith(KEY_SVN_UPDATE)) {
-                    int index = item.indexOf(SYMBOL_EQUALS);
+                    int index = item.indexOf(STR_EQUALS);
                     String name = item.substring(KEY_SVN_UPDATE.length(), index);
                     String path = item.substring(index + 1);
                     if (StringUtils.isNotBlank(path)) {
@@ -135,15 +135,15 @@ public class ConfigCache {
                 }
                 // 升级脚本配置
                 if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
-                    int index = item.indexOf(SYMBOL_EQUALS);
-                    String tableName = item.substring(KEY_SCRIPT_UPDATE_TABLE.length(), index).toLowerCase() + SYMBOL_POINT;
+                    int index = item.indexOf(STR_EQUALS);
+                    String tableName = item.substring(KEY_SCRIPT_UPDATE_TABLE.length(), index).toLowerCase() + STR_POINT;
                     String tableColumn = item.substring(index + 1);
                     if (StringUtils.isNotBlank(tableColumn)) {
-                        String[] columns = tableColumn.split(SYMBOL_$_SLASH);
+                        String[] columns = tableColumn.split(STR_$_SLASH);
                         for (int i = 0; i < columns.length; i++) {
                             tableName += i;
                             String column = columns[i];
-                            List<String> columnConfig = Arrays.asList(column.split(SYMBOL_COMMA));
+                            List<String> columnConfig = Arrays.asList(column.split(STR_COMMA));
                             LinkedHashMap table = new LinkedHashMap(2);
                             table.put(tableName, columnConfig);
                             appConfigDto.getScriptUpdateTable().add(table);
@@ -152,7 +152,7 @@ public class ConfigCache {
                 }
                 // svn统计配置
                 if (item.startsWith(KEY_SVN_STAT_USER)) {
-                    int index = item.indexOf(SYMBOL_EQUALS);
+                    int index = item.indexOf(STR_EQUALS);
                     String code = item.substring(KEY_SVN_STAT_USER.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
@@ -163,7 +163,7 @@ public class ConfigCache {
                 }
                 // 复制代码配置
                 if (item.startsWith(KEY_COPY_CODE_VERSION)) {
-                    int index = item.indexOf(SYMBOL_EQUALS);
+                    int index = item.indexOf(STR_EQUALS);
                     String code = item.substring(KEY_COPY_CODE_VERSION.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
@@ -175,15 +175,15 @@ public class ConfigCache {
                                 appConfigDto.getSvnUpdatePath().add(version);
                             }
                             if (code.contains(KEY_FUND)) {
-                                replaceSkipVersion.append(code).append(SYMBOL_COMMA);
-                                replaceVersion.append(code).append(SYMBOL_COMMA);
+                                replaceSkipVersion.append(code).append(STR_COMMA);
+                                replaceVersion.append(code).append(STR_COMMA);
                             }
                         }
                     }
                 }
                 // svnUrl配置
                 if (item.startsWith(KEY_SVN_URL)) {
-                    int index = item.indexOf(SYMBOL_EQUALS);
+                    int index = item.indexOf(STR_EQUALS);
                     String code = item.substring(KEY_SVN_URL.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
@@ -194,11 +194,11 @@ public class ConfigCache {
                 }
                 // 替换源路径
                 if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_SOURCE)) {
-                    int index = item.indexOf(SYMBOL_EQUALS);
+                    int index = item.indexOf(STR_EQUALS);
                     String code = item.substring(KEY_COPY_CODE_LOCATION_REPLACE_SOURCE.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
-                        String[] location = name.split(SYMBOL_COMMA);
+                        String[] location = name.split(STR_COMMA);
                         if (!DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getReplaceSourceUrl().put(location[0], location[1]);
                         }
@@ -206,11 +206,11 @@ public class ConfigCache {
                 }
                 // 替换目标路径
                 if (item.startsWith(KEY_COPY_CODE_LOCATION_REPLACE_TARGET)) {
-                    int index = item.indexOf(SYMBOL_EQUALS);
+                    int index = item.indexOf(STR_EQUALS);
                     String code = item.substring(KEY_COPY_CODE_LOCATION_REPLACE_TARGET.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
-                        String[] location = name.split(SYMBOL_COMMA);
+                        String[] location = name.split(STR_COMMA);
                         if (!DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getReplaceTargetUrl().put(location[0], location[1]);
                         }
@@ -219,7 +219,7 @@ public class ConfigCache {
 
                 // 字段翻译配置
                 if (item.startsWith(KEY_FIELD_TRANSLATE)) {
-                    int index = item.indexOf(SYMBOL_EQUALS);
+                    int index = item.indexOf(STR_EQUALS);
                     String code = item.substring(KEY_FIELD_TRANSLATE.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
@@ -270,8 +270,8 @@ public class ConfigCache {
             if (CollectionUtils.isNotEmpty(content)) {
                 for (int i = 0; i < content.size(); i++) {
                     String item = content.get(i);
-                    if (item.contains(SYMBOL_EQUALS) && item.startsWith(KEY_SVN_PASSWORD) && !item.endsWith(SECURITY_FLAG)) {
-                        int index = item.indexOf(SYMBOL_EQUALS) + 1;
+                    if (item.contains(STR_EQUALS) && item.startsWith(KEY_SVN_PASSWORD) && !item.endsWith(SECURITY_FLAG)) {
+                        int index = item.indexOf(STR_EQUALS) + 1;
                         if (StringUtils.isNotBlank(item.substring(index))) {
                             String password = SecurityUtils.getEncryptString(item.substring(index)) + SECURITY_FLAG;
                             item = item.substring(0, index) + password;

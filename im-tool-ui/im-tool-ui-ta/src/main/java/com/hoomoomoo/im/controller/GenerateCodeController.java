@@ -460,7 +460,7 @@ public class GenerateCodeController extends BaseController implements Initializa
 
                 String sqlFile = GenerateSql.init(generateCodeDto);
                 if (StringUtils.isNotEmpty(sqlFile)) {
-                    String[] sql = sqlFile.split(BaseConst.SYMBOL_COMMA);
+                    String[] sql = sqlFile.split(BaseConst.STR_COMMA);
                     for (String item : sql) {
                         fileLog.add(item);
                         String fileName = item.substring(item.lastIndexOf("/") + 1);
@@ -481,8 +481,8 @@ public class GenerateCodeController extends BaseController implements Initializa
                 }
 
                 LoggerUtils.writeGenerateCodeInfo(currentDate, fileLog);
-                String record = generateCodeDto.getFunctionName() + SYMBOL_SPACE + SYMBOL_HYPHEN + SYMBOL_SPACE + CommonUtils.getCurrentDateTime2();
-                record += CONFIG_PREFIX + JSONObject.toJSONString(ConfigCache.getConfigCache().getAppConfigDto()) + SYMBOL_NEXT_LINE;
+                String record = generateCodeDto.getFunctionName() + STR_SPACE + STR_HYPHEN + STR_SPACE + CommonUtils.getCurrentDateTime2();
+                record += CONFIG_PREFIX + JSONObject.toJSONString(ConfigCache.getConfigCache().getAppConfigDto()) + STR_NEXT_LINE;
                 FileUtils.writeFile(FileUtils.getFilePath(String.format(PATH_RECORD_LOG, GENERATE_CODE.getLogFolder())), record, true);
                 setProgress(1);
             } catch (Exception e) {
@@ -515,7 +515,7 @@ public class GenerateCodeController extends BaseController implements Initializa
                 OutputUtils.info(author, appConfigDto.getGenerateCodeAuthor());
             }
             if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeMenuCode())) {
-                String[] menuCode = appConfigDto.getGenerateCodeMenuCode().split(SYMBOL_POINT_SLASH);
+                String[] menuCode = appConfigDto.getGenerateCodeMenuCode().split(STR_POINT_SLASH);
                 if (menuCode.length == 3) {
                     OutputUtils.info(menuCode1, menuCode[0]);
                     OutputUtils.info(menuCode2, menuCode[1]);
@@ -523,7 +523,7 @@ public class GenerateCodeController extends BaseController implements Initializa
                 }
             }
             if (StringUtils.isNotBlank(appConfigDto.getGenerateCodeMenuName())) {
-                String[] menuName = appConfigDto.getGenerateCodeMenuName().split(SYMBOL_POINT_SLASH);
+                String[] menuName = appConfigDto.getGenerateCodeMenuName().split(STR_POINT_SLASH);
                 if (menuName.length == 3) {
                     OutputUtils.info(menuName1, menuName[0]);
                     OutputUtils.info(menuName2, menuName[1]);
@@ -586,7 +586,7 @@ public class GenerateCodeController extends BaseController implements Initializa
     }
 
     private void initHistoryRecord() {
-        record.getItems().add(SYMBOL_EMPTY);
+        record.getItems().add(STR_BLANK);
         List<String> recordList = null;
         try {
             recordList = FileUtils.readNormalFile(FileUtils.getFilePath(String.format(PATH_RECORD_LOG, GENERATE_CODE.getLogFolder())), false);

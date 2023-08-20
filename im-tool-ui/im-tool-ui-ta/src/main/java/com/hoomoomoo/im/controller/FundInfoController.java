@@ -300,7 +300,7 @@ public class FundInfoController extends BaseController implements Initializable 
         for (int i = 1; i < rows; i++) {
             String column = getCellReal(sheet, 4, i);
             String kind = getCellReal(sheet, 11, i);
-            if (SYMBOL_EMPTY.equals(kind.trim())) {
+            if (STR_BLANK.equals(kind.trim())) {
                 COMPONENT_KIND.put(column, "'1'");
             } else {
                 COMPONENT_KIND.put(column, "'" + kind + "'");
@@ -333,7 +333,7 @@ public class FundInfoController extends BaseController implements Initializable 
      */
     private String getCellReal(Sheet sheet, int i, int j) {
         if (sheet.getCell(i, j).getContents().equals("")) {
-            return BaseConst.SYMBOL_SPACE;
+            return BaseConst.STR_SPACE;
         } else {
             return sheet.getCell(i, j).getContents();
         }
@@ -371,7 +371,7 @@ public class FundInfoController extends BaseController implements Initializable 
         bufferedWriter.write("-- " + sheet.getName() + " 开始 \n");
         bufferedWriter.write("delete from tbdataelement where table_name = 'tbfundproduct';\n");
         for (int i = 1; i < rows; i++) {
-            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (STR_BLANK.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             String sql = "insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, " +
@@ -479,7 +479,7 @@ public class FundInfoController extends BaseController implements Initializable 
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (STR_BLANK.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 2, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
@@ -524,7 +524,7 @@ public class FundInfoController extends BaseController implements Initializable 
         int rows = sheet.getRows();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (STR_BLANK.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 1, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
@@ -569,7 +569,7 @@ public class FundInfoController extends BaseController implements Initializable 
         int columns = sheet.getColumns();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (STR_BLANK.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 1, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {
@@ -611,7 +611,7 @@ public class FundInfoController extends BaseController implements Initializable 
         int columns = sheet.getColumns();
         bufferedWriter.write("-- " + sheet.getName() + " " + CURRENT_TEMPLATE_NAME + " 开始 \n");
         for (int i = 1; i < rows; i++) {
-            if (SYMBOL_EMPTY.equals(getCellReal(sheet, 1, i).trim())) {
+            if (STR_BLANK.equals(getCellReal(sheet, 1, i).trim())) {
                 continue;
             }
             if (!getCellReal(sheet, 1, i).trim().startsWith(CURRENT_TEMPLATE_CODE)) {

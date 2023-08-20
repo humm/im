@@ -32,7 +32,7 @@ public class StarterUtils {
             FileUtils.unJar(PATH_APP);
             LoggerUtils.appStartInfo(String.format(MSG_UPDATE, NAME_CONFIG_FILE));
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            String appName = appConfigDto.getAppName() + SYMBOL_SPACE_2;
+            String appName = appConfigDto.getAppName() + STR_SPACE_2;
             if (!FileUtils.startByJar()) {
                 appName += String.format(MSG_APP_TITLE, APP_MODE_NAME, APP_MODE_NAME_APP);
                 String pathFolder = FileUtils.getPathFolder().replace(APP_CODE_BASE, appCode);
@@ -46,12 +46,12 @@ public class StarterUtils {
             appName += String.format(MSG_APP_TITLE, NAME_VERSION, CommonUtils.getVersion());
             // 校验证书是否过期
             if (!CommonUtils.checkLicense(null)) {
-                appName += SYMBOL_SPACE_2 + String.format(MSG_LICENSE_EXPIRE, appConfigDto.getLicense().getEffectiveDate());
+                appName += STR_SPACE_2 + String.format(MSG_LICENSE_EXPIRE, appConfigDto.getLicense().getEffectiveDate());
             } else {
                 // 过期前提醒
                 String tips = CommonUtils.checkLicenseDate(appConfigDto);
                 if (StringUtils.isNotBlank(tips)) {
-                    appName += SYMBOL_SPACE_2 + tips;
+                    appName += STR_SPACE_2 + tips;
                 }
             }
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
@@ -69,7 +69,7 @@ public class StarterUtils {
                     primaryStage.close();
                     if (FileUtils.startByJar()) {
                         String processName = FileUtils.getJarName().replace(FILE_TYPE_JAR, FILE_TYPE_EXE);
-                        processName = processName.substring(processName.lastIndexOf(SYMBOL_SLASH) + 1);
+                        processName = processName.substring(processName.lastIndexOf(STR_SLASH) + 1);
                         Runtime.getRuntime().exec(String.format(CMD_KILL_APP, processName));
                     }
                 } catch (IOException e) {
@@ -85,7 +85,7 @@ public class StarterUtils {
                     if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
                         HttpServerUtils.initServer(SERVER_URL, SERVER_PORT);
                     } else {
-                        LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + SYMBOL_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + SYMBOL_EQUAL + CommonUtils.getVersion()));
+                        LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + STR_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + STR_EQUAL + CommonUtils.getVersion()));
                     }
                 }
             }).start();

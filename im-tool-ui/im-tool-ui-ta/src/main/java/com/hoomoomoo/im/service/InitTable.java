@@ -23,11 +23,11 @@ public class InitTable {
         if (StringUtils.isEmpty(table)) {
             throw new Exception(String.format(MSG_SET, "正式表结构 (oracle)"));
         }
-        int tableStart = table.indexOf(SYMBOL_BRACKETS_LEFT);
+        int tableStart = table.indexOf(STR_BRACKETS_LEFT);
         if (tableStart == -1) {
             throw new Exception(String.format(MSG_SET, "正式表结构 (oracle)"));
         }
-        String[] tableName = table.substring(0, tableStart).split(SYMBOL_S_SLASH);
+        String[] tableName = table.substring(0, tableStart).split(STR_S_SLASH);
         generateCodeDto.setTableName(tableName[tableName.length - 1]);
 
         Map<String, ColumnInfoDto> tableColumn = getColumn(generateCodeDto, table, true);
@@ -112,8 +112,8 @@ public class InitTable {
     private static Map<String, ColumnInfoDto> getColumn(GenerateCodeDto generateCodeDto, String table,
                                                               boolean primaryKey) throws Exception {
         Map<String, ColumnInfoDto> columnMap = new LinkedHashMap<>(16);
-        int tableStart = table.indexOf(SYMBOL_BRACKETS_LEFT);
-        int tableEnd = table.lastIndexOf(SYMBOL_BRACKETS_RIGHT);
+        int tableStart = table.indexOf(STR_BRACKETS_LEFT);
+        int tableEnd = table.lastIndexOf(STR_BRACKETS_RIGHT);
         String[] columnList = table.substring(tableStart + 1, tableEnd).split(KEY_NOT_NULL);
         if (columnList == null || table.length() == 0) {
             throw new Exception("未获取到数据表字段信息");
@@ -124,11 +124,11 @@ public class InitTable {
             String item = columnList[i].trim();
             if (i == columnList.length - 1 && item.contains(KEY_PRIMARY_KEY)) {
                 if (primaryKey) {
-                    int keyStart = item.indexOf(SYMBOL_BRACKETS_LEFT);
-                    int keyEnd = item.lastIndexOf(SYMBOL_BRACKETS_RIGHT);
+                    int keyStart = item.indexOf(STR_BRACKETS_LEFT);
+                    int keyEnd = item.lastIndexOf(STR_BRACKETS_RIGHT);
                     String key = item.substring(keyStart + 1, keyEnd);
-                    generateCodeDto.setPrimaryKey(key.replaceAll(SYMBOL_S_SLASH, SYMBOL_EMPTY));
-                    String[] keyArr = key.replaceAll(SYMBOL_S_SLASH, SYMBOL_EMPTY).split(SYMBOL_COMMA);
+                    generateCodeDto.setPrimaryKey(key.replaceAll(STR_S_SLASH, STR_BLANK));
+                    String[] keyArr = key.replaceAll(STR_S_SLASH, STR_BLANK).split(STR_COMMA);
                     if (keyArr != null) {
                         for (String itemKey : keyArr) {
                             itemKey = itemKey.toLowerCase();
@@ -142,15 +142,15 @@ public class InitTable {
                 continue;
             }
 
-            String[] itemInfo = item.split(SYMBOL_S_SLASH);
+            String[] itemInfo = item.split(STR_S_SLASH);
             String columnUnderline = itemInfo[0];
             String columnType = itemInfo[1];
             if (StringUtils.isEmpty(columnUnderline) && StringUtils.isEmpty(columnType)) {
                 continue;
             }
-            String precision = SYMBOL_EMPTY;
-            if (columnType.indexOf(SYMBOL_COMMA) != -1) {
-                precision = columnType.substring(columnType.indexOf(SYMBOL_COMMA) + 1, columnType.indexOf(SYMBOL_BRACKETS_RIGHT));
+            String precision = STR_BLANK;
+            if (columnType.indexOf(STR_COMMA) != -1) {
+                precision = columnType.substring(columnType.indexOf(STR_COMMA) + 1, columnType.indexOf(STR_BRACKETS_RIGHT));
             }
             String column = CommonUtils.lineToHump(columnUnderline.toLowerCase());
             if (KEY_TA_CODE.equals(column)) {
@@ -175,9 +175,9 @@ public class InitTable {
             if (fieldTranslateMap.containsKey(columnUnderline)) {
                 columnInfo.setColumnName(fieldTranslateMap.get(columnUnderline));
             } else {
-                columnInfo.setColumnName(SYMBOL_EMPTY);
+                columnInfo.setColumnName(STR_BLANK);
             }
-            columnInfo.setColumnDict(SYMBOL_EMPTY);
+            columnInfo.setColumnDict(STR_BLANK);
             columnInfo.setColumnOrder(String.valueOf(orderNo));
             columnMap.put(column, columnInfo);
         }
@@ -186,7 +186,7 @@ public class InitTable {
         transCode.setColumnCode(KEY_TRANS_CODE_AND_SUB_TRANS_CODE);
         transCode.setColumnUnderline(KEY_TRANS_CODE_AND_SUB_TRANS_CODE_UNDERLINE);
         transCode.setColumnType(KEY_COLUMN_TYPE_VARCHAR2);
-        transCode.setColumnPrecision(SYMBOL_EMPTY);
+        transCode.setColumnPrecision(STR_BLANK);
         transCode.setColumnOrder(String.valueOf(orderNo + 10));
         transCode.setColumnWidth(String.valueOf(150));
         columnMap.put(KEY_TRANS_CODE_AND_SUB_TRANS_CODE, transCode);
@@ -214,18 +214,18 @@ public class InitTable {
             if (StringUtils.isNotBlank(columnQueryOrder)) {
                 String order = columnUnderline;
                 if (STR_1.equals(item.getColumnQueryOrderType())) {
-                    order += SYMBOL_SPACE + KEY_ORDER_TYPE_DESC;
+                    order += STR_SPACE + KEY_ORDER_TYPE_DESC;
                 }
                 column.put(columnQueryOrder, order);
             }
         }
         List<String> columnOrder = new ArrayList<>(column.values());
         for (String item : columnOrder) {
-            content.append(item).append(SYMBOL_COMMA).append(SYMBOL_SPACE);
+            content.append(item).append(STR_COMMA).append(STR_SPACE);
         }
         if (StringUtils.isEmpty(content)) {
             return content.toString();
         }
-        return SYMBOL_QUOTES + content.substring(0, content.lastIndexOf(SYMBOL_COMMA)) + SYMBOL_QUOTES;
+        return STR_QUOTES + content.substring(0, content.lastIndexOf(STR_COMMA)) + STR_QUOTES;
     }
 }

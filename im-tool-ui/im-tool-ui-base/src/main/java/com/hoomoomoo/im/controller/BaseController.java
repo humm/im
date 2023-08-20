@@ -7,8 +7,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_PERCENT;
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_POINT_SLASH;
+import static com.hoomoomoo.im.consts.BaseConst.STR_PERCENT;
+import static com.hoomoomoo.im.consts.BaseConst.STR_POINT_SLASH;
 
 /**
  * @author humm23693
@@ -59,11 +59,11 @@ public class BaseController {
             Platform.runLater(() -> {
                 if (value == -1) {
                     schedule.setProgress(0);
-                    OutputUtils.info(scheduleText, String.valueOf(0 * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
+                    OutputUtils.info(scheduleText, String.valueOf(0 * 100).split(STR_POINT_SLASH)[0] + STR_PERCENT);
                     return;
                 }
                 schedule.setProgress(progress);
-                OutputUtils.info(scheduleText, String.valueOf(value * 100).split(SYMBOL_POINT_SLASH)[0] + SYMBOL_PERCENT);
+                OutputUtils.info(scheduleText, String.valueOf(value * 100).split(STR_POINT_SLASH)[0] + STR_PERCENT);
                 //schedule.requestFocus();
             });
         } catch (Exception e) {

@@ -90,7 +90,7 @@ public class CopyCodeController extends BaseController implements Initializable 
             String version = (String)sourceVersion.getSelectionModel().getSelectedItem();
             String path = getLocation(version, appConfigDto.getCopyCodeVersion().get(version));
             if (version.equalsIgnoreCase(KEY_DESKTOP)) {
-                path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
+                path += STR_SLASH + CommonUtils.getCurrentDateTime2();
             }
             OutputUtils.info(sourcePath, path);
         } catch (Exception e) {
@@ -106,7 +106,7 @@ public class CopyCodeController extends BaseController implements Initializable 
             String version =  (String)targetVersion.getSelectionModel().getSelectedItem();
             String path = getLocation(version, appConfigDto.getCopyCodeVersion().get(version));
             if (version.equalsIgnoreCase(KEY_DESKTOP)) {
-                path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
+                path += STR_SLASH + CommonUtils.getCurrentDateTime2();
             }
             OutputUtils.info(targetPath, path);
         } catch (Exception e) {
@@ -144,7 +144,7 @@ public class CopyCodeController extends BaseController implements Initializable 
 
     private void copyCode() throws Exception {
         new Thread(() -> {
-            String fileLocation = SYMBOL_EMPTY;
+            String fileLocation = STR_BLANK;
             try {
                 execute.setDisable(true);
                 successNum = 0;
@@ -154,7 +154,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                 if (StringUtils.isNotBlank(filePathConfig)) {
                     AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                     List<String> fileLog = new ArrayList<>(16);
-                    String[] fileList = filePathConfig.split(SYMBOL_NEXT_LINE);
+                    String[] fileList = filePathConfig.split(STR_NEXT_LINE);
                     if (fileList != null && fileList.length != 0) {
                         for (int i=0; i<fileList.length; i++) {
                             String item = fileList[i].trim();
@@ -168,7 +168,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                             }
                             String copyCodePrefix = appConfigDto.getCopyCodePrefix();
                             if (StringUtils.isNotBlank(copyCodePrefix)) {
-                                String[] items = copyCodePrefix.split(SYMBOL_COMMA);
+                                String[] items = copyCodePrefix.split(STR_COMMA);
                                 for (String prefix : items) {
                                     int index = item.indexOf(prefix);
                                     if (index != -1) {
@@ -182,12 +182,12 @@ public class CopyCodeController extends BaseController implements Initializable 
                                 infoMsg("RPX报表文件不能复制");
                                 continue;
                             }
-                            item = item.replaceAll("\\\\", "/").replace(source, SYMBOL_EMPTY);
+                            item = item.replaceAll("\\\\", "/").replace(source, STR_BLANK);
                             if (yes.isSelected()) {
                                 item = item.replace("src/main/java", "target/classes").replace(FILE_TYPE_JAVA, FILE_TYPE_CLASS);
                             }
-                            fileLocation = source + SYMBOL_SLASH + item;
-                            String targetFileLocation = target + SYMBOL_SLASH + item;
+                            fileLocation = source + STR_SLASH + item;
+                            String targetFileLocation = target + STR_SLASH + item;
                             String targetVersionSelected = (String)targetVersion.getSelectionModel().getSelectedItem();
                             String sourceVersionSelected = (String)sourceVersion.getSelectionModel().getSelectedItem();
                             if (!appConfigDto.getCopyCodeLocationReplaceSkipVersion().contains(targetVersionSelected)) {
@@ -196,9 +196,9 @@ public class CopyCodeController extends BaseController implements Initializable 
                                     String key = iterator.next();
                                     if (targetFileLocation.contains("views/fundAccount")) {
                                         if (appConfigDto.getCopyCodeLocationReplaceSkipAccountVersion().contains(targetVersionSelected)) {
-                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(SYMBOL_SEMICOLON)[1]);
+                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_SEMICOLON)[1]);
                                         } else {
-                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(SYMBOL_SEMICOLON)[0]);
+                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_SEMICOLON)[0]);
                                         }
                                         break;
                                     }
@@ -236,14 +236,14 @@ public class CopyCodeController extends BaseController implements Initializable 
                             }
                             if (CollectionUtils.isNotEmpty(sourceContent)) {
                                 for (int j=0; j<sourceContent.size(); j++) {
-                                    FileUtils.writeFile(targetFileLocation, sourceContent.get(j) + SYMBOL_NEXT_LINE, encode, true);
+                                    FileUtils.writeFile(targetFileLocation, sourceContent.get(j) + STR_NEXT_LINE, encode, true);
                                 }
                                 fileLog.add(targetFileLocation);
                                 infoMsg(getFileName(targetFileLocation) + " 复制完成");
                                 successNum++;
                             }
                         }
-                        String msg = SYMBOL_EMPTY;
+                        String msg = STR_BLANK;
                         if (fileList.length - skipNum == successNum) {
                             msg += "复制成功 总文件数[ " + successNum + " ]";
                         } else {
@@ -274,11 +274,11 @@ public class CopyCodeController extends BaseController implements Initializable 
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String copyCodeLocationReplaceVersion = appConfigDto.getCopyCodeLocationReplaceVersion();
             if (StringUtils.isNotBlank(copyCodeLocationReplaceVersion)) {
-                String[] itemList = copyCodeLocationReplaceVersion.split(SYMBOL_SEMICOLON);
+                String[] itemList = copyCodeLocationReplaceVersion.split(STR_SEMICOLON);
                 for (String item : itemList) {
-                    String[] element = item.split(SYMBOL_COLON);
+                    String[] element = item.split(STR_COLON);
                     String locationKey = element[0];
-                    String[] locationVersion = element[1].split(SYMBOL_COMMA);
+                    String[] locationVersion = element[1].split(STR_COMMA);
                     for (String version : locationVersion) {
                         if (locationReplace.containsKey(version)) {
                             Set<String> ele = new HashSet<>();
@@ -314,7 +314,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                     sourceVersion.getSelectionModel().select(defaultSource);
                     String path = getLocation(defaultSource, appConfigDto.getCopyCodeVersion().get(defaultSource));
                     if (defaultSource.equalsIgnoreCase(KEY_DESKTOP)) {
-                        path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
+                        path += STR_SLASH + CommonUtils.getCurrentDateTime2();
                     }
                     OutputUtils.info(sourcePath, path);
                 }
@@ -326,7 +326,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                     targetVersion.getSelectionModel().select(defaultTarget);
                     String path = getLocation(defaultTarget, appConfigDto.getCopyCodeVersion().get(defaultTarget));
                     if (defaultTarget.equalsIgnoreCase(KEY_DESKTOP)) {
-                        path += SYMBOL_SLASH + CommonUtils.getCurrentDateTime2();
+                        path += STR_SLASH + CommonUtils.getCurrentDateTime2();
                     }
                     OutputUtils.info(targetPath, path);
                 }
@@ -351,7 +351,7 @@ public class CopyCodeController extends BaseController implements Initializable 
     }
 
     private String getFileName(String filePath) {
-        int index = filePath.lastIndexOf(SYMBOL_SLASH);
+        int index = filePath.lastIndexOf(STR_SLASH);
         return filePath.substring(index + 1);
     }
 
@@ -362,7 +362,7 @@ public class CopyCodeController extends BaseController implements Initializable 
         Iterator<String> iterator = locationReplace.get(version).iterator();
         while (iterator.hasNext()) {
             String item = iterator.next();
-            path = path.replace(item, SYMBOL_EMPTY);
+            path = path.replace(item, STR_BLANK);
         }
         return path;
     }

@@ -43,7 +43,7 @@ public class SvnHistoryQueryController extends BaseController implements Initial
     void execute(ActionEvent event) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, SVN_HISTORY_STAT.getName()));
-            if (!TaCommonUtils.checkConfig(stat, MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT.getCode())) {
+            if (!TaCommonUtils.checkConfig(notice, MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT.getCode())) {
                 return;
             }
             setProgress(0);
@@ -73,13 +73,13 @@ public class SvnHistoryQueryController extends BaseController implements Initial
                     }
                     OutputUtils.info(notice, getOrderInfo(svnStatDtoList, appConfigDto));
                 } catch (Exception e) {
-                    OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
+                    OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
                     LoggerUtils.info(e);
                 } finally {
                     setProgress(1);
                 }
             } catch (Exception e) {
-                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
+                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
                 LoggerUtils.info(e);
             }
         }).start();
@@ -95,7 +95,7 @@ public class SvnHistoryQueryController extends BaseController implements Initial
             if (i > 10) {
                 break;
             }
-            order.append(item.getUserName()).append(BaseConst.SYMBOL_SPACE_2);
+            order.append(item.getUserName()).append(BaseConst.STR_SPACE_2);
         }
         return order.toString();
 

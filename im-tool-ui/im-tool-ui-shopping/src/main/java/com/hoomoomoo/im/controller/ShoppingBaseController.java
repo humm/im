@@ -174,7 +174,7 @@ public class ShoppingBaseController extends BaseController{
             ShoppingCommonUtil.info(log, e.getMessage());
         } finally {
             if (appConfigDto != null) {
-                appConfigDto.setExecuteType(SYMBOL_EMPTY);
+                appConfigDto.setExecuteType(STR_BLANK);
             }
             ComponentUtils.setButtonEnabled(execute, query);
         }

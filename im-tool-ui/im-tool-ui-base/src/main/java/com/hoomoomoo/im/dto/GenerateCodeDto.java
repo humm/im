@@ -4,7 +4,7 @@ import lombok.Data;
 
 import java.util.*;
 
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
+import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
 
 /**
  * @author humm23693
@@ -63,24 +63,24 @@ public class GenerateCodeDto {
     private Map<String, String> fieldTranslateMap = new LinkedHashMap<>(16);
 
     public GenerateCodeDto() {
-        this.dtoPackageName = SYMBOL_EMPTY;
-        this.dtoNameDto = SYMBOL_EMPTY;
-        this.interfacePackageName = SYMBOL_EMPTY;
-        this.interfaceName = SYMBOL_EMPTY;
-        this.servicePackageName = SYMBOL_EMPTY;
-        this.serviceName = SYMBOL_EMPTY;
-        this.auditServicePackageName = SYMBOL_EMPTY;
-        this.auditServiceName = SYMBOL_EMPTY;
-        this.exportPackageName = SYMBOL_EMPTY;
-        this.exportName = SYMBOL_EMPTY;
-        this.importPackageName = SYMBOL_EMPTY;
-        this.importName = SYMBOL_EMPTY;
-        this.tableName = SYMBOL_EMPTY;
-        this.primaryKey = SYMBOL_EMPTY;
-        this.functionCode = SYMBOL_EMPTY;
-        this.functionName = SYMBOL_EMPTY;
-        this.menuOrder = SYMBOL_EMPTY;
-        this.menuType = SYMBOL_EMPTY;
+        this.dtoPackageName = STR_BLANK;
+        this.dtoNameDto = STR_BLANK;
+        this.interfacePackageName = STR_BLANK;
+        this.interfaceName = STR_BLANK;
+        this.servicePackageName = STR_BLANK;
+        this.serviceName = STR_BLANK;
+        this.auditServicePackageName = STR_BLANK;
+        this.auditServiceName = STR_BLANK;
+        this.exportPackageName = STR_BLANK;
+        this.exportName = STR_BLANK;
+        this.importPackageName = STR_BLANK;
+        this.importName = STR_BLANK;
+        this.tableName = STR_BLANK;
+        this.primaryKey = STR_BLANK;
+        this.functionCode = STR_BLANK;
+        this.functionName = STR_BLANK;
+        this.menuOrder = STR_BLANK;
+        this.menuType = STR_BLANK;
     }
 
 }

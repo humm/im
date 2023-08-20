@@ -2,7 +2,6 @@ package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.BaseDto;
-import javafx.scene.image.Image;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -108,9 +107,9 @@ public class FileUtils {
         if (CollectionUtils.isEmpty(contentList)) {
             return;
         }
-        String content = SYMBOL_EMPTY;
+        String content = STR_BLANK;
         for (String item : contentList) {
-            content += item + SYMBOL_NEXT_LINE;
+            content += item + STR_NEXT_LINE;
         }
         writeFile(filePath, content, isAppend);
     }
@@ -139,8 +138,8 @@ public class FileUtils {
      */
     public static void writeFile(String filePath, String content, String encode, boolean isAppend) throws IOException {
         // 判断文件夹是否存在
-        filePath = filePath.replaceAll("\\\\", SYMBOL_SLASH);
-        String folderPath = filePath.substring(0, filePath.lastIndexOf(SYMBOL_SLASH));
+        filePath = filePath.replaceAll("\\\\", STR_SLASH);
+        String folderPath = filePath.substring(0, filePath.lastIndexOf(STR_SLASH));
         File file = new File(folderPath);
         if (!file.exists()) {
             file.mkdirs();
@@ -217,17 +216,17 @@ public class FileUtils {
         if (content.startsWith(ANNOTATION_TYPE_CONFIG)) {
             return;
         }
-        if (!content.contains(SYMBOL_EQUALS)) {
+        if (!content.contains(STR_EQUALS)) {
             return;
         }
-        String[] item = content.split(SYMBOL_EQUALS);
+        String[] item = content.split(STR_EQUALS);
         if (item.length == 2) {
             fileContentMap.put(item[0], convertUnicodeToChar(item[1]));
         } else if (item.length > 2) {
-            int index = content.indexOf(SYMBOL_EQUALS) + 1;
+            int index = content.indexOf(STR_EQUALS) + 1;
             fileContentMap.put(item[0], convertUnicodeToChar(content.substring(index)));
         } else {
-            fileContentMap.put(item[0], SYMBOL_EMPTY);
+            fileContentMap.put(item[0], STR_BLANK);
         }
     }
 
@@ -285,7 +284,7 @@ public class FileUtils {
             // 将匹配出的数字按照16进制转换为10进制，转换为char类型，就是对应的正常字符了
             char singleChar = (char) Integer.parseInt(unicodeNum, 16);
             // 替换原始字符串中的unicode码
-            str = str.replace(unicodeFull, singleChar + SYMBOL_EMPTY);
+            str = str.replace(unicodeFull, singleChar + STR_BLANK);
         }
         return str;
     }
@@ -331,7 +330,7 @@ public class FileUtils {
                 boolean isPoint = false;
                 for (int i = 0; i < key.length(); i++) {
                     char single = key.charAt(i);
-                    if (String.valueOf(single).equals(SYMBOL_POINT)) {
+                    if (String.valueOf(single).equals(STR_POINT)) {
                         isPoint = true;
                         continue;
                     } else {
@@ -362,12 +361,12 @@ public class FileUtils {
     public static String getFilePath(String path) {
         String fileAbsolute = getPathFolder() + path;
         if (fileAbsolute.contains(START_MODE_JAR)) {
-            fileAbsolute = new File(SYMBOL_EMPTY).getAbsolutePath() + path;
+            fileAbsolute = new File(STR_BLANK).getAbsolutePath() + path;
         }
-        if (fileAbsolute.startsWith(SYMBOL_SLASH)) {
+        if (fileAbsolute.startsWith(STR_SLASH)) {
             fileAbsolute = fileAbsolute.substring(1);
         }
-        fileAbsolute = fileAbsolute.replace(APP_CODE_BASE + SYMBOL_HYPHEN + APP_VERSION + FILE_TYPE_JAR, KEY_CLASSES);
+        fileAbsolute = fileAbsolute.replace(APP_CODE_BASE + STR_HYPHEN + APP_VERSION + FILE_TYPE_JAR, KEY_CLASSES);
         return fileAbsolute.replaceAll("%20", " ").replaceAll(APP_CODE_BASE, ConfigCache.getAppCodeCache());
     }
 
@@ -385,14 +384,14 @@ public class FileUtils {
             int jarIndex = file.indexOf(START_MODE_JAR);
             int lastIndex = file.lastIndexOf(START_MODE_JAR);
             String filePath = file.substring(lastIndex + 1);
-            filePath = filePath.substring(filePath.indexOf(SYMBOL_SLASH));
+            filePath = filePath.substring(filePath.indexOf(STR_SLASH));
             String folderPath = file.substring(0, jarIndex);
-            folderPath = folderPath.substring(0, folderPath.lastIndexOf(SYMBOL_SLASH));
+            folderPath = folderPath.substring(0, folderPath.lastIndexOf(STR_SLASH));
             file = folderPath + filePath;
         } else {
             file = KEY_FILE + file;
         }
-        file = file.replaceAll(APP_CODE_BASE, ConfigCache.getAppCodeCache()).replaceAll(KEY_LIB, SYMBOL_EMPTY);
+        file = file.replaceAll(APP_CODE_BASE, ConfigCache.getAppCodeCache()).replaceAll(KEY_LIB, STR_BLANK);
         return new URL(file);
     }
 
@@ -420,7 +419,7 @@ public class FileUtils {
      * @return:
      */
     public static String getJarName() {
-        String jarPath = getPathFolder().replace(KEY_FILE_SLASH, SYMBOL_EMPTY);
+        String jarPath = getPathFolder().replace(KEY_FILE_SLASH, STR_BLANK);
         int jarIndex = jarPath.indexOf(START_MODE_JAR);
         String filePath = jarPath.substring(0, jarIndex);
         return filePath.substring(0, jarIndex).replaceAll("%20", " ") + FILE_TYPE_JAR;
@@ -464,8 +463,8 @@ public class FileUtils {
         }
 
         // 解压文件
-        String folder = new File(SYMBOL_EMPTY).getAbsolutePath().replaceAll("%20", " ");
-        String tempFolder = folder + SYMBOL_SLASH + "im-tool-ui.temp" + SYMBOL_SLASH;
+        String folder = new File(STR_BLANK).getAbsolutePath().replaceAll("%20", " ");
+        String tempFolder = folder + STR_SLASH + "im-tool-ui.temp" + STR_SLASH;
         // 生成临时解压文件夹
         File temp = new File(tempFolder);
         deleteFile(temp);
@@ -563,8 +562,8 @@ public class FileUtils {
             while (iterator.hasNext()) {
                 String key = iterator.next();
                 String value = oldAppConfig.get(key);
-                if (item.startsWith(key + SYMBOL_EQUALS)) {
-                    int index = item.indexOf(SYMBOL_EQUALS) + 1;
+                if (item.startsWith(key + STR_EQUALS)) {
+                    int index = item.indexOf(STR_EQUALS) + 1;
                     item = item.substring(0, index) + value;
                 }
             }
@@ -612,9 +611,9 @@ public class FileUtils {
     private static String getOldAppConfig(File file, String url, LinkedHashMap<String, String> oldAppConfig,
                                           String configType) throws Exception {
         // 临时备份历史配置文件名称及路径
-        String bakFileName =file.getName().replace(FILE_TYPE_CONF, SYMBOL_HYPHEN + CommonUtils.getCurrentDateTime2() + FILE_TYPE_CONF);
+        String bakFileName =file.getName().replace(FILE_TYPE_CONF, STR_HYPHEN + CommonUtils.getCurrentDateTime2() + FILE_TYPE_CONF);
         String bakFilePath = file.getParentFile().getParentFile().getPath();
-        String bakFile = bakFilePath + SYMBOL_SLASH + KEY_BACKUP + SYMBOL_SLASH + bakFileName;
+        String bakFile = bakFilePath + STR_SLASH + KEY_BACKUP + STR_SLASH + bakFileName;
         File backFile = new File(bakFile);
         if (!backFile.getParentFile().exists()) {
             backFile.getParentFile().mkdirs();
@@ -654,7 +653,7 @@ public class FileUtils {
             String key = iterator.next();
             String value = content.get(key);
             if (key.startsWith(keyWord)) {
-                String item = key + SYMBOL_EQUALS + value;
+                String item = key + STR_EQUALS + value;
                 update.add(item);
             }
         }

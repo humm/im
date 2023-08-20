@@ -5,7 +5,6 @@ import com.hoomoomoo.im.controller.HepWaitHandleTaskController;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.FileUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
@@ -14,7 +13,6 @@ import lombok.SneakyThrows;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
-import java.io.IOException;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.controller.HepWaitHandleTaskController.OPERATE_TYPE_CUSTOM_UPDATE;
@@ -33,15 +31,15 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 HepTaskDto item = appConfigDto.getHepTaskDto();
                 StringBuilder info = new StringBuilder();
-                info.append("[需求编号]").append(SYMBOL_SPACE).append(SYMBOL_NEXT_LINE);
-                info.append("[修改单编号]").append(SYMBOL_SPACE).append(item.getTaskNumber()).append(SYMBOL_NEXT_LINE);
-                info.append("[修改单版本]").append(SYMBOL_SPACE).append(item.getSprintVersion()).append(SYMBOL_NEXT_LINE);
-                info.append("[需求引入行]").append(SYMBOL_SPACE).append(SYMBOL_NEXT_LINE);
+                info.append("[需求编号]").append(STR_SPACE).append(STR_NEXT_LINE);
+                info.append("[修改单编号]").append(STR_SPACE).append(item.getTaskNumber()).append(STR_NEXT_LINE);
+                info.append("[修改单版本]").append(STR_SPACE).append(item.getSprintVersion()).append(STR_NEXT_LINE);
+                info.append("[需求引入行]").append(STR_SPACE).append(STR_NEXT_LINE);
                 String name = item.getName();
-                if (name.contains(SYMBOL_BRACKETS_2_RIGHT)) {
-                    name = name.split(SYMBOL_BRACKETS_2_RIGHT)[1];
+                if (name.contains(STR_BRACKETS_2_RIGHT)) {
+                    name = name.split(STR_BRACKETS_2_RIGHT)[1];
                 }
-                info.append("[需求描述]").append(SYMBOL_SPACE).append(name);
+                info.append("[需求描述]").append(STR_SPACE).append(name);
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info.toString()), null);
             }
         });

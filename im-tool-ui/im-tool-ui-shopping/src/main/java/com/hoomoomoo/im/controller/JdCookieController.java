@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CONFIG_SET;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.JD_COOKIE;
 
 /**
@@ -87,9 +86,9 @@ public class JdCookieController implements Initializable {
             if (StringUtils.isBlank(item)) {
                 continue;
             }
-            OutputUtils.info(config, item + SYMBOL_NEXT_LINE);
+            OutputUtils.info(config, item + STR_NEXT_LINE);
             if (item.startsWith(CONFIG_PREFIX) && item.contains(NAME_END)) {
-                OutputUtils.info(config, SYMBOL_NEXT_LINE);
+                OutputUtils.info(config, STR_NEXT_LINE);
             }
         }
     }

@@ -38,14 +38,14 @@ public class SvnUtils {
         List<LogDto> logList = new ArrayList<>();
         // 最后一次提交记录
         long endRevision = -1;
-        SVNDirEntry lastSVNDirEntry = repository.info(SYMBOL_POINT, endRevision);
+        SVNDirEntry lastSVNDirEntry = repository.info(STR_POINT, endRevision);
         // 开始版本
         long startRevision = lastSVNDirEntry.getRevision() - Integer.valueOf(appConfigDto.getSvnMaxRevision());
         if (version != 0) {
             startRevision = version;
             endRevision = version;
         }
-        repository.log(new String[]{SYMBOL_EMPTY}, startRevision, endRevision, true, true, svnLogEntry -> {
+        repository.log(new String[]{STR_BLANK}, startRevision, endRevision, true, true, svnLogEntry -> {
             if (StringUtils.equals(svnLogEntry.getAuthor(), appConfigDto.getSvnUsername())) {
                 LogDto svnLogDto = new LogDto();
                 svnLogDto.setVersion(Long.valueOf(svnLogEntry.getRevision()).toString());
@@ -66,12 +66,12 @@ public class SvnUtils {
                 while (iterator.hasNext()) {
                     String key = iterator.next();
                     SVNLogEntryPath value = logMap.get(key);
-                    String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), SYMBOL_EMPTY);
+                    String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), STR_BLANK);
                     if (OPERATE_TYPE_DELETE.equals(String.valueOf(value.getType()))) {
                         path += NAME_DELETE;
                     }
                     svnLogDto.setCodeVersion(getVersion(path));
-                    pathList.add(path + SYMBOL_NEXT_LINE);
+                    pathList.add(path + STR_NEXT_LINE);
                 }
                 logList.add(svnLogDto);
             }
@@ -83,7 +83,7 @@ public class SvnUtils {
     private static String getVersion(String path) {
         String version = KEY_TRUNK;
         if (path.contains(KEY_FIX) && path.contains(KEY_SOURCES)) {
-            path = path.replace(KEY_FUND_SLASH, SYMBOL_EMPTY).replace(KEY_TEMP, SYMBOL_EMPTY);
+            path = path.replace(KEY_FUND_SLASH, STR_BLANK).replace(KEY_TEMP, STR_BLANK);
             version = path.substring(path.indexOf(KEY_FIX) + KEY_FIX.length() + 1, path.indexOf(KEY_SOURCES) - 1);
         }
         return version;
@@ -103,8 +103,8 @@ public class SvnUtils {
                 SvnStatDto svnStatDto = new SvnStatDto();
                 svnStatDto.setUserCode(userCode);
                 svnStatDto.setUserName(userName);
-                svnStatDto.setFirstTime(SYMBOL_EMPTY);
-                svnStatDto.setLastTime(SYMBOL_EMPTY);
+                svnStatDto.setFirstTime(STR_BLANK);
+                svnStatDto.setLastTime(STR_BLANK);
                 svnStatDto.setSubmitTimes(STR_0);
                 svnStatDto.setFileNum(STR_0);
                 svnStatDto.setFileTimes(STR_0);
@@ -114,7 +114,7 @@ public class SvnUtils {
             }
             if (notice) {
                 SvnStatDto svnStatDto = new SvnStatDto();
-                svnStatDto.setNotice(SYMBOL_EMPTY);
+                svnStatDto.setNotice(STR_BLANK);
                 svnStat.put(KEY_NOTICE, svnStatDto);
             }
         }
@@ -153,7 +153,7 @@ public class SvnUtils {
                 } catch (Exception e) {
                     LoggerUtils.info(e);
                     if (notice) {
-                        svnStat.get(KEY_NOTICE).setNotice(CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
+                        svnStat.get(KEY_NOTICE).setNotice(CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
                     }
                     continue;
                 }
@@ -173,7 +173,7 @@ public class SvnUtils {
                             while (iterator.hasNext()) {
                                 String key = iterator.next();
                                 SVNLogEntryPath value = logMap.get(key);
-                                String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), SYMBOL_EMPTY);
+                                String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), STR_BLANK);
                                 if (svnStatDto.getFile().get(path) == null) {
                                     svnStatDto.getFile().put(path, 1);
                                     svnStatDto.setFileNum(String.valueOf(Integer.valueOf(svnStatDto.getFileNum()) + 1));
@@ -202,13 +202,13 @@ public class SvnUtils {
         }
         String msg = svnLogEntry.getMessage();
         if (StringUtils.isNotBlank(msg)) {
-            String[] message = msg.split(SYMBOL_NEXT_LINE);
+            String[] message = msg.split(STR_NEXT_LINE);
             for (String item : message) {
                 if (item.startsWith(indexMsg)) {
-                    if (item.split(SYMBOL_BRACKETS_1_RIGHT).length <= 1) {
+                    if (item.split(STR_BRACKETS_1_RIGHT).length <= 1) {
                         msg = item;
                     } else {
-                        msg = item.split(SYMBOL_BRACKETS_1_RIGHT)[1];
+                        msg = item.split(STR_BRACKETS_1_RIGHT)[1];
                     }
                     break;
                 }
@@ -245,7 +245,7 @@ public class SvnUtils {
             version = svnUpdateClient.doUpdate(new File(workspace), SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e) + SYMBOL_NEXT_LINE);
+            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e) + STR_NEXT_LINE);
         }
         return version;
     }

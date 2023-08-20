@@ -41,7 +41,7 @@ public class InitConfigUtils {
         license.setEffectiveDate(StringUtils.isBlank(effectiveDate) ? "20991231" : effectiveDate);
         license.setFunction(function);
         if (StringUtils.isNotBlank(appFunction)) {
-            String[] functionConfig = appFunction.split(SYMBOL_COMMA);
+            String[] functionConfig = appFunction.split(STR_COMMA);
             Iterator<FunctionDto> iterator = function.iterator();
             out: while (iterator.hasNext()) {
                 FunctionDto functionDto = iterator.next();
@@ -58,7 +58,7 @@ public class InitConfigUtils {
         String licenseContent = SecurityUtils.getEncryptString(JSON.toJSONString(license));
         String licensePath = FileUtils.getFilePath(PATH_LICENSE);
         FileUtils.writeFile(licensePath, licenseContent, false);
-        FileUtils.writeFile(pathAuth, SYMBOL_EMPTY, false);
+        FileUtils.writeFile(pathAuth, STR_BLANK, false);
     }
 
     /**
@@ -126,9 +126,9 @@ public class InitConfigUtils {
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i);
                 if (isUpdate(item, keys)) {
-                    int index = item.indexOf(SYMBOL_EQUALS) + 1;
+                    int index = item.indexOf(STR_EQUALS) + 1;
                     item = item.substring(0, index);
-                    String value = keys.get(item.replace(SYMBOL_EQUALS, SYMBOL_EMPTY));
+                    String value = keys.get(item.replace(STR_EQUALS, STR_BLANK));
                     if (StringUtils.isNotEmpty(value)) {
                         item += value;
                     }
@@ -161,7 +161,7 @@ public class InitConfigUtils {
                     if (item.startsWith(NAME_CURRENT_VERSION)) {
                         int index = item.indexOf(":") + 1;
                         String version = item.substring(index);
-                        String versionNo = version.substring(version.indexOf(SYMBOL_POINT) + 1);
+                        String versionNo = version.substring(version.indexOf(STR_POINT) + 1);
                         if (CommonUtils.getCurrentDateTime12().equals(version.substring(0, 5).trim())) {
                             subVersion = String.valueOf(Long.valueOf(versionNo) + 1);
                             for (int j=subVersion.length(); j<6; j++) {
@@ -176,10 +176,10 @@ public class InitConfigUtils {
                 }
             }
             StringBuilder statLog = new StringBuilder();
-            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime12()).append(SYMBOL_POINT).append(subVersion).append(SYMBOL_NEXT_LINE);
-            statLog.append("发版时间: ").append(CommonUtils.getCurrentDateTime1()).append(SYMBOL_NEXT_LINE_2);
-            statLog.append("首版时间: ").append("2021-05-06 23:17:56").append(SYMBOL_NEXT_LINE);
-            statLog.append("发版次数: ").append(times).append(SYMBOL_NEXT_LINE);
+            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime12()).append(STR_POINT).append(subVersion).append(STR_NEXT_LINE);
+            statLog.append("发版时间: ").append(CommonUtils.getCurrentDateTime1()).append(STR_NEXT_LINE_2);
+            statLog.append("首版时间: ").append("2021-05-06 23:17:56").append(STR_NEXT_LINE);
+            statLog.append("发版次数: ").append(times).append(STR_NEXT_LINE);
             FileUtils.writeFile(versionFilePath, statLog.toString(), false);
             FileUtils.writeFile(versionFilePathSource, statLog.toString(), false);
         } catch (Exception e) {
@@ -237,7 +237,7 @@ public class InitConfigUtils {
      * @return: boolean
      */
     public static boolean isUpdate(String item, Map<String, String> keys) {
-        if (!item.contains(SYMBOL_EQUALS)) {
+        if (!item.contains(STR_EQUALS)) {
             return false;
         }
         Iterator<String> iterator = keys.keySet().iterator();
@@ -276,19 +276,19 @@ public class InitConfigUtils {
                     }
                 }
                 Iterator<String> iterator = functionMap.keySet().iterator();
-                String content = SYMBOL_NEXT_LINE + ANNOTATION_TYPE_CONFIG + SYMBOL_SPACE;
-                String noAuthContent = SYMBOL_NEXT_LINE + ANNOTATION_TYPE_CONFIG + SYMBOL_SPACE;
+                String content = STR_NEXT_LINE + ANNOTATION_TYPE_CONFIG + STR_SPACE;
+                String noAuthContent = STR_NEXT_LINE + ANNOTATION_TYPE_CONFIG + STR_SPACE;
                 int index = 0;
                 while (iterator.hasNext()) {
                     String functionCode = iterator.next();
                     if (Integer.valueOf(functionCode) < FUNCTION_CODE_2000) {
                         index++;
                         if (index % 15 == 0) {
-                            content += SYMBOL_NEXT_LINE + ANNOTATION_TYPE_CONFIG + SYMBOL_SPACE;
+                            content += STR_NEXT_LINE + ANNOTATION_TYPE_CONFIG + STR_SPACE;
                         }
-                        content += functionCode + SYMBOL_COLON + functionMap.get(functionCode).getFunctionName() + SYMBOL_SPACE;
+                        content += functionCode + STR_COLON + functionMap.get(functionCode).getFunctionName() + STR_SPACE;
                     } else {
-                        noAuthContent += functionCode + SYMBOL_COLON + functionMap.get(functionCode).getFunctionName() + SYMBOL_SPACE;
+                        noAuthContent += functionCode + STR_COLON + functionMap.get(functionCode).getFunctionName() + STR_SPACE;
                     }
                 }
                 item += content + noAuthContent;

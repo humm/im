@@ -51,7 +51,7 @@ public class ShowOrderController extends ShoppingBaseController implements Initi
     }
 
     public static String getGoodsImgUrl(AppConfigDto appConfigDto, String goodsId) throws IOException {
-        String imgUrl = SYMBOL_EMPTY;
+        String imgUrl = STR_BLANK;
         Connection connection = Jsoup.connect(appConfigDto.getJdShowOrderInfo() + "?productId=" + goodsId);
         ShoppingCommonUtil.initCookie(appConfigDto,connection);
         Document showOrder = get(connection);

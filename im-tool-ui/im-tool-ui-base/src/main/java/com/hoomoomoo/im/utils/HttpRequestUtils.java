@@ -1,16 +1,13 @@
 package com.hoomoomoo.im.utils;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.List;
-import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BaseConst.ENCODING_GBK;
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
+import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
 
 /**
  * @author humm23693
@@ -34,7 +31,7 @@ public class HttpRequestUtils {
     }
 
     public static String send(String url, String param, boolean post){
-        String result = SYMBOL_EMPTY;
+        String result = STR_BLANK;
         BufferedReader in = null;
         PrintWriter out = null;
         try {

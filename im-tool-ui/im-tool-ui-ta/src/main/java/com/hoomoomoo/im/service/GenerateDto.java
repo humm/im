@@ -23,36 +23,36 @@ public class GenerateDto {
         String packageName = PACKAGE_JAVA_PREFIX + "dto." + generateCodeDto.getMenuList().get(0)[0] + "." + generateCodeDto.getMenuList().get(1)[0];
         packageName = packageName.toLowerCase();
         generateCodeDto.setDtoNameDto(fileName);
-        generateCodeDto.setDtoPackageName(packageName + SYMBOL_POINT + fileName);
+        generateCodeDto.setDtoPackageName(packageName + STR_POINT + fileName);
 
         StringBuilder content = new StringBuilder(GenerateCommon.generateFileDescribe(generateCodeDto, fileName, packageName));
 
-        content.append("import com.hundsun.lcpt.fund.dto.FundBaseDto;").append(SYMBOL_NEXT_LINE);
-        content.append("import lombok.Data;").append(SYMBOL_NEXT_LINE);
-        content.append("import java.io.Serializable;").append(SYMBOL_NEXT_LINE_2);
+        content.append("import com.hundsun.lcpt.fund.dto.FundBaseDto;").append(STR_NEXT_LINE);
+        content.append("import lombok.Data;").append(STR_NEXT_LINE);
+        content.append("import java.io.Serializable;").append(STR_NEXT_LINE_2);
 
         content.append(GenerateCommon.generateClassDescribe(generateCodeDto, fileName));
 
-        content.append("@Data").append(SYMBOL_NEXT_LINE);
-        content.append("public class " + fileName + " extends FundBaseDto implements Serializable {").append(SYMBOL_NEXT_LINE_2);
-        content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(SYMBOL_NEXT_LINE_2);
+        content.append("@Data").append(STR_NEXT_LINE);
+        content.append("public class " + fileName + " extends FundBaseDto implements Serializable {").append(STR_NEXT_LINE_2);
+        content.append("    public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.0 @lastModiDate " + CommonUtils.getCurrentDateTime3() + " @describe " + generateCodeDto.getAuthor() + "\";").append(STR_NEXT_LINE_2);
 
-        content.append("    private static final long serialVersionUID = " + GenerateCommon.getSerialVersionUid() + ";").append(SYMBOL_NEXT_LINE);
+        content.append("    private static final long serialVersionUID = " + GenerateCommon.getSerialVersionUid() + ";").append(STR_NEXT_LINE);
         Map<String, ColumnInfoDto> columnMap = generateCodeDto.getColumnMap();
         Iterator<String> iterator = columnMap.keySet().iterator();
         while (iterator.hasNext()) {
             String column = iterator.next();
-            content.append("    private String " + column + ";").append(SYMBOL_NEXT_LINE);
+            content.append("    private String " + column + ";").append(STR_NEXT_LINE);
         }
 
         Map<String, String> asyKeyMap = generateCodeDto.getAsyKeyMap();
         Iterator<String> asyIterator = asyKeyMap.keySet().iterator();
         while (asyIterator.hasNext()) {
             String column = asyIterator.next();
-            content.append("    private String " + column + ";").append(SYMBOL_NEXT_LINE);
+            content.append("    private String " + column + ";").append(STR_NEXT_LINE);
         }
 
-        content.append("}").append(SYMBOL_NEXT_LINE);
+        content.append("}").append(STR_NEXT_LINE);
         return GenerateCommon.generateJavaFile(generateCodeDto, packageName, fileName, content.toString());
     }
 }

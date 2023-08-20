@@ -140,8 +140,8 @@ public class GenerateSqlController extends BaseController implements Initializab
                 int table = Integer.valueOf(tableNum.getText().trim());
                 String databaseCodeCurrent = databaseCode.getText().trim();
                 String tableCodeCurrent = tableCode.getText().trim();
-                String columnCurrent = column.getText().trim().replaceAll("\\s+", SYMBOL_SPACE);
-                String queryCurrent = query.getText().trim().replaceAll("\\s+", SYMBOL_SPACE);
+                String columnCurrent = column.getText().trim().replaceAll("\\s+", STR_SPACE);
+                String queryCurrent = query.getText().trim().replaceAll("\\s+", STR_SPACE);
                 if (StringUtils.isBlank(databaseCodeCurrent)) {
                     OutputUtils.info(sql, String.format(MSG_SET, "分库代码"));
                     setProgress(-1);
@@ -161,10 +161,10 @@ public class GenerateSqlController extends BaseController implements Initializab
                             if (STR_1.equals(sqlType)) {
                                 content.append("select '" + i + "' 分库号, '" + j + "' 分表号, " + columnCurrent + " t.* from " + databaseCodeCurrent + i + "." + tableCodeCurrent + j + " t " + queryCurrent);
                                 fileLog.add(content.toString());
-                                contentList.add(content.append(SYMBOL_NEXT_LINE).toString());
+                                contentList.add(content.append(STR_NEXT_LINE).toString());
                                 if (j != table) {
                                     fileLog.add("union all");
-                                    contentList.add("union all" + SYMBOL_NEXT_LINE);
+                                    contentList.add("union all" + STR_NEXT_LINE);
                                 }
                                 continue inner;
                             } else if (STR_2.equals(sqlType)) {
@@ -175,12 +175,12 @@ public class GenerateSqlController extends BaseController implements Initializab
                                 content.append("truncate table " + databaseCodeCurrent + i + "." + tableCodeCurrent + j + ";");
                             }
                             fileLog.add(content.toString());
-                            contentList.add(content.append(SYMBOL_NEXT_LINE).toString());
+                            contentList.add(content.append(STR_NEXT_LINE).toString());
                         }
                         if (STR_1.equals(sqlType)) {
                             if (i != database) {
                                 fileLog.add("union all");
-                                contentList.add("union all" + SYMBOL_NEXT_LINE);
+                                contentList.add("union all" + STR_NEXT_LINE);
                             }
                         }
                     }

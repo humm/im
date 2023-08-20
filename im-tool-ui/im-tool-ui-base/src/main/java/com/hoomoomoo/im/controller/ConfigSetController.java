@@ -2,8 +2,6 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.AppCache;
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.consts.MenuFunctionConfig;
-import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
@@ -89,9 +87,9 @@ public class ConfigSetController implements Initializable {
             if (StringUtils.isBlank(item)) {
                 continue;
             }
-            OutputUtils.info(config, item + SYMBOL_NEXT_LINE);
+            OutputUtils.info(config, item + STR_NEXT_LINE);
             if (item.startsWith(CONFIG_PREFIX) && item.contains(NAME_END)) {
-                OutputUtils.info(config, SYMBOL_NEXT_LINE);
+                OutputUtils.info(config, STR_NEXT_LINE);
             }
         }
     }

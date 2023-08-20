@@ -6,7 +6,7 @@ import lombok.Data;
 
 import java.util.*;
 
-import static com.hoomoomoo.im.consts.BaseConst.SYMBOL_EMPTY;
+import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
 
 /**
  * @author humm23693
@@ -67,6 +67,8 @@ public class AppConfigDto extends BaseDto {
     private String scriptUpdateGenerateMode;
 
     private String scriptUpdateGenerateType;
+
+    private String scriptUpdateGenerateUed;
 
     private String scriptUpdateIgnoreSkip;
 
@@ -220,6 +222,8 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolShakeMouseStopTime;
 
+    private TabPane tabPane;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
@@ -237,8 +241,8 @@ public class AppConfigDto extends BaseDto {
         this.replaceTargetUrl = new LinkedHashMap(16);
         this.cookieMap = new HashMap<>(16);
         this.fieldTranslateMap = new HashMap<>(16);
-        this.executeType = SYMBOL_EMPTY;
-        this.appUser = SYMBOL_EMPTY;
+        this.executeType = STR_BLANK;
+        this.appUser = STR_BLANK;
         this.generateCodeDefaultLast = true;
         this.timerList = new ArrayList<>();
     }

@@ -37,7 +37,7 @@ public class HttpResponseUtils implements HttpHandler {
     }
 
     private static Map<String, String> paramPost(HttpExchange exchange) {
-        String result = SYMBOL_EMPTY;
+        String result = STR_BLANK;
         BufferedReader in = null;
         try {
             in = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), ENCODING_GBK));;
@@ -65,9 +65,9 @@ public class HttpResponseUtils implements HttpHandler {
         if (formData == null || formData.trim().length() == 0) {
             return result;
         }
-        String[] items = formData.split(SYMBOL_AND);
+        String[] items = formData.split(STR_AND);
         Arrays.stream(items).forEach(item -> {
-            final String[] keyAndVal = item.split(SYMBOL_EQUAL);
+            final String[] keyAndVal = item.split(STR_EQUAL);
             if (keyAndVal.length == 2) {
                 try {
                     final String key = URLDecoder.decode(keyAndVal[0], ENCODING_GBK);

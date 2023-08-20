@@ -3,7 +3,6 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
@@ -14,10 +13,8 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -87,7 +84,7 @@ public class SystemToolController implements Initializable {
     }
 
     private String getShakeMouseMsg (String msg) {
-        return TaCommonUtils.getMsgContainDate("【"+ NAME_SHAKE_MOUSE + "】") + SYMBOL_SPACE + msg + SYMBOL_NEXT_LINE;
+        return TaCommonUtils.getMsgContainDate("【"+ NAME_SHAKE_MOUSE + "】") + STR_SPACE + msg + STR_NEXT_LINE;
     }
 
     private void doShakeMouse(AppConfigDto appConfigDto) {
@@ -111,7 +108,7 @@ public class SystemToolController implements Initializable {
         OutputUtils.info(logs, getShakeMouseMsg("模拟鼠标移动......"));
         robot.mouseMove(pos.x + moveStep, pos.y + moveStep);
         OutputUtils.info(logs, getShakeMouseMsg("鼠标移动位置: " + pos.x + " * " + pos.y));
-        OutputUtils.info(logs, SYMBOL_NEXT_LINE);
+        OutputUtils.info(logs, STR_NEXT_LINE);
 
         List<String> record = new ArrayList<>();
         record.add(getShakeMouseMsg("鼠标当前位置: " + pos.x + " * " + pos.y));

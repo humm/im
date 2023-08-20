@@ -59,12 +59,12 @@ public class BlankSetController implements Initializable {
             if (generateCodeDto != null) {
                 table = generateCodeDto.getTable();
             }
-            table = StringUtils.isBlank(table) ? SYMBOL_EMPTY : table;
+            table = StringUtils.isBlank(table) ? STR_BLANK : table;
         } else {
             if (generateCodeDto != null) {
                 table = generateCodeDto.getAsyTable();
             }
-            table = StringUtils.isBlank(table) ? SYMBOL_EMPTY : table;
+            table = StringUtils.isBlank(table) ? STR_BLANK : table;
         }
         OutputUtils.info(config, table);
     }

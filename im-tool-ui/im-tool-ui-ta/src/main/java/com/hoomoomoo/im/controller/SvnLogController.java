@@ -144,7 +144,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 LoggerUtils.info(e);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.SYMBOL_SPACE + e.getMessage());
+                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + e.getMessage());
             }
         }).start();
     }
@@ -222,7 +222,7 @@ public class SvnLogController extends BaseController implements Initializable {
                                 if (StringUtils.isBlank(msg)) {
                                     continue;
                                 }
-                                msg = msg.trim() + SYMBOL_NEXT_LINE;
+                                msg = msg.trim() + STR_NEXT_LINE;
                                 if (!fileList.contains(msg)) {
                                     fileList.add(msg);
                                 }
@@ -244,7 +244,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 LoggerUtils.writeSvnLogInfo(date, logDtoList);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + SYMBOL_SPACE + ExceptionMsgUtils.getMsg(e));
+                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + ExceptionMsgUtils.getMsg(e));
             } finally {
                 svnSubmit.setDisable(false);
                 svnResetSubmit.setDisable(false);
@@ -304,9 +304,9 @@ public class SvnLogController extends BaseController implements Initializable {
         if (StringUtils.isBlank(path)) {
             return false;
         }
-        int index = path.lastIndexOf(SYMBOL_SLASH);
+        int index = path.lastIndexOf(STR_SLASH);
         String fileName = path.substring(index + 1);
-        if (fileName.contains(SYMBOL_POINT)) {
+        if (fileName.contains(STR_POINT)) {
             return true;
         }
         return false;

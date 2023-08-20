@@ -31,7 +31,6 @@ import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
-import java.math.BigDecimal;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -153,7 +152,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
         HepTaskDto item = (HepTaskDto)taskList.getSelectionModel().getSelectedItem();
-        item.setOperateType(SYMBOL_EMPTY);
+        item.setOperateType(STR_BLANK);
         OutputUtils.repeatInfo(taskNumber, item.getTaskNumber());
         OutputUtils.repeatInfo(name, item.getName());
         OutputUtils.repeatInfo(sprintVersion, item.getSprintVersion());
@@ -172,8 +171,8 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         if (STATUS_WAIT_START.equals(status)) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
             alert.setTitle("启动任务");
-            String tips = "任务【" + item.getTaskNumber() + "】 " + SYMBOL_NEXT_LINE;
-            tips += "版本【" + item.getSprintVersion() + "】 " + SYMBOL_NEXT_LINE;
+            String tips = "任务【" + item.getTaskNumber() + "】 " + STR_NEXT_LINE;
+            tips += "版本【" + item.getSprintVersion() + "】 " + STR_NEXT_LINE;
             String name = item.getName();
             if (name.length() > 80) {
                 name = name.substring(0, 80) + "...";
@@ -383,7 +382,7 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
             // 实际完成时间
             request.put(KEY_REAL_FINISH_TIME, hepTaskDto.getRealFinishTime());
             // 集成注意
-            request.put(KEY_INTEGRATE_ATTENTION, SYMBOL_EMPTY);
+            request.put(KEY_INTEGRATE_ATTENTION, STR_BLANK);
             // 完成百分比
             request.put(KEY_FINISH_PERCENTAGE, STR_1);
         }
@@ -431,13 +430,13 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     }
 
     public void dealTaskList(JSONArray task, List<String> logsIn, Label waitHandleTaskNumIn, Label todoNumIn, TableView taskListIn) {
-        filterTask(task);
-        sortItems(task);
+        List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
+        filterTask(res);
+        res = sortTask(res);
         for (int i=0; i<task.size(); i++) {
             Map<String, Object> item = (Map)task.get(i);
             logsIn.add(item.toString());
         }
-        List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
         Iterator<HepTaskDto> iterator = res.listIterator();
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
@@ -453,16 +452,16 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         OutputUtils.infoList(taskListIn, res, false);
     }
 
-    public void filterTask(JSONArray task) {
-        Iterator iterator = task.iterator();
+    public void filterTask(List<HepTaskDto> task) {
+        Iterator<HepTaskDto> iterator = task.iterator();
         String taskNumberQ = CommonUtils.getComponentValue(taskNumberQuery);
         String nameQ = CommonUtils.getComponentValue(nameQuery);
         String sprintVersionQ = CommonUtils.getComponentValue(sprintVersionQuery);
         while (iterator.hasNext()) {
-            Map<String, Object> item = (Map)iterator.next();
-            String taskNumer = String.valueOf(item.get(KEY_TASK_NUMBER));
-            String taskName = String.valueOf(item.get(KEY_NAME));
-            String sprintVersion = String.valueOf(item.get(KEY_SPRINT_VERSION));
+            HepTaskDto item = iterator.next();
+            String taskNumer = item.getTaskNumber();
+            String taskName = item.getName();
+            String sprintVersion = item.getSprintVersion();
             if (StringUtils.isNotBlank(taskNumberQ) && !taskNumer.contains(taskNumberQ)) {
                 iterator.remove();
                 continue;
@@ -509,26 +508,26 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
         }
     }
 
-    private JSONArray sortItems(JSONArray task) {
-        JSONArray res = new JSONArray();
+    private List<HepTaskDto> sortTask(List<HepTaskDto> task) {
+        List<HepTaskDto> res = new ArrayList<>();
         Set<String> existkey = new HashSet<>();
-        task.sort(new Comparator<Object>() {
+        task.sort(new Comparator<HepTaskDto>() {
             @Override
-            public int compare(Object o1, Object o2) {
+            public int compare(HepTaskDto o1, HepTaskDto o2) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
-                    Date finishTime1 = simpleDateFormat.parse(getValue((Map)o1, KEY_ESTIMATE_FINISH_TIME));
-                    Date finishTime2 = simpleDateFormat.parse(getValue((Map)o2, KEY_ESTIMATE_FINISH_TIME));
+                    Date finishTime1 = simpleDateFormat.parse(getValue(o1.getEstimateFinishTime()));
+                    Date finishTime2 = simpleDateFormat.parse(getValue(o2.getEstimateFinishTime()));
                     if (finishTime1.getTime() != finishTime2.getTime()) {
                         return finishTime1.compareTo(finishTime2);
                     }
-                    String taskName1 = getValue((Map)o1, KEY_NAME);
-                    String taskName2 = getValue((Map)o2, KEY_NAME);
-                    if (taskName1.contains(SYMBOL_BRACKETS_2_RIGHT)) {
-                        taskName1 = taskName1.split(SYMBOL_BRACKETS_2_RIGHT)[1];
+                    String taskName1 = o1.getName();
+                    String taskName2 = o2.getName();
+                    if (taskName1.contains(STR_BRACKETS_2_RIGHT)) {
+                        taskName1 = taskName1.split(STR_BRACKETS_2_RIGHT)[1];
                     }
-                    if (taskName2.contains(SYMBOL_BRACKETS_2_RIGHT)) {
-                        taskName2 = taskName2.split(SYMBOL_BRACKETS_2_RIGHT)[1];
+                    if (taskName2.contains(STR_BRACKETS_2_RIGHT)) {
+                        taskName2 = taskName2.split(STR_BRACKETS_2_RIGHT)[1];
                     }
                     return taskName1.compareTo(taskName2);
                 } catch (ParseException e) {
@@ -538,18 +537,18 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
             }
         });
         for (int i=0; i<task.size(); i++) {
-            Map item = (Map)task.get(i);
-            String taskNumber = getValue(item, KEY_TASK_NUMBER);
-            String taskName = getValue(item, KEY_NAME);
+            HepTaskDto item = task.get(i);
+            String taskNumber = item.getTaskNumber();
+            String taskName = item.getName();
             if (existkey.contains(taskNumber)) {
                 continue;
             }
             existkey.add(taskNumber);
             res.add(item);
             for (int j=0; j<task.size(); j++) {
-                Map itemTmp = (Map)task.get(j);
-                String taskNumberTmp = getValue(itemTmp, KEY_TASK_NUMBER);
-                String taskNameTmp = getValue(itemTmp, KEY_NAME);
+                HepTaskDto itemTmp = task.get(j);
+                String taskNumberTmp = itemTmp.getTaskNumber();
+                String taskNameTmp = itemTmp.getName();
                 if (existkey.contains(taskNumberTmp)) {
                     continue;
                 }
@@ -563,11 +562,11 @@ public class HepWaitHandleTaskController extends BaseController implements Initi
     }
 
 
-    private String getValue(Map<String, Object> item, String key) {
-        if (item.containsKey(key)) {
-            return String.valueOf(item.get(key));
+    private String getValue(String value) {
+        if (StringUtils.isBlank(value)) {
+            return "2099-12-31 23:59:59";
         }
-        return SYMBOL_EMPTY;
+        return value;
     }
 
     @Override
