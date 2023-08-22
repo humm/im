@@ -101,9 +101,11 @@ public class SystemToolController implements Initializable {
         OutputUtils.info(logs, getShakeMouseMsg("显示器分辨率: " + screenSize.getWidth() + " * " + screenSize.getHeight()));
         OutputUtils.info(logs, getShakeMouseMsg("鼠标当前位置: " + pos.x + " * " + pos.y));
         if (pos.x >= screenSize.getWidth() || pos.y >= screenSize.getHeight()) {
-            moveStep = Math.abs(moveStep) * -1;
+            moveStep = moveStep * -1;
         }
-        moveStep = moveStep * -1;
+        if (pos.x == 0 || pos.y == 0) {
+            moveStep = Math.abs(moveStep);
+        }
         OutputUtils.info(logs, getShakeMouseMsg("模拟鼠标移动步长 " + moveStep));
         OutputUtils.info(logs, getShakeMouseMsg("模拟鼠标移动......"));
         robot.mouseMove(pos.x + moveStep, pos.y + moveStep);
