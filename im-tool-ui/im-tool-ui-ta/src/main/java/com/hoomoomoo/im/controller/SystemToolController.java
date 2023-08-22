@@ -116,7 +116,7 @@ public class SystemToolController implements Initializable {
         record.add(getShakeMouseMsg("鼠标当前位置: " + pos.x + " * " + pos.y));
 
         if (appConfigDto.getSystemToolShakeMouseStopTime().compareTo(CommonUtils.getCurrentDateTime13()) <= 0) {
-            String stopMsg = getShakeMouseMsg("截止时间【" + appConfigDto.getSystemToolShakeMouseStopTime() + "】自动停止......");
+            String stopMsg = getShakeMouseMsg("截止时间【" + appConfigDto.getSystemToolShakeMouseStopTime() + "】自动停止......" + STR_NEXT_LINE);
             OutputUtils.info(logs, stopMsg);
             record.add(stopMsg);
             cancelShakeMouse(null);
