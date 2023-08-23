@@ -46,7 +46,7 @@ import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_TOD
  * @package com.hoomoomoo.im.controller
  * @date 2022/07/30
  */
-public class HepWaitHandleTaskController extends BaseController implements Initializable {
+public class HepTaskTodoController extends BaseController implements Initializable {
     private static Set<String> field = new LinkedHashSet<>();
 
     private final static Integer STATUS_200 = 200;

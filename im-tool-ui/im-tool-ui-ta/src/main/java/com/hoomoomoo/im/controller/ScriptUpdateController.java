@@ -560,8 +560,8 @@ public class ScriptUpdateController extends BaseController implements Initializa
         int orderNo = Integer.valueOf(menuDto.getOrderNo().trim().replaceAll(STR_QUOTES_SINGLE, STR_BLANK));
         menuDto.setOrderNo(String.valueOf(500000 + orderNo));
         if (isAccount) {
-            menuDto.setOpenFlag("'1'");
         }
+        menuDto.setOpenFlag("'1'");
         menuDto.setWindowType("' '");
         String sqlHead = sql.substring(0, sql.indexOf(STR_BRACKETS_RIGHT) + 1).toLowerCase() + STR_NEXT_LINE;
         String values = "values (";

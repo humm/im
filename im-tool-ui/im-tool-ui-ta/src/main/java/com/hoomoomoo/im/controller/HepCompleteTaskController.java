@@ -24,7 +24,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.controller.HepWaitHandleTaskController.*;
+import static com.hoomoomoo.im.controller.HepTaskTodoController.*;
 
 /**
  * @author humm23693
@@ -225,7 +225,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         hepTaskDto.setModifiedFile(TaCommonUtils.formatText(modifiedFileValue, true));
         hepTaskDto.setEditDescription(TaCommonUtils.formatText(editDescriptionValue, true));
         hepTaskDto.setSuggestion(TaCommonUtils.formatText(suggestionValue, true));
-        HepWaitHandleTaskController hep = new HepWaitHandleTaskController();
+        HepTaskTodoController hep = new HepTaskTodoController();
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
         HepTaskComponent hepTaskComponent = appConfigDto.getHepTaskComponent();
         JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);
