@@ -637,6 +637,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
     }
 
     private boolean testScene() {
-        return false;
+        return true;
     }
 }

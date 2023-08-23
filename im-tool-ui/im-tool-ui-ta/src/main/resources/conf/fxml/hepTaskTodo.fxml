@@ -40,7 +40,7 @@
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="312.0">
                                     <children>
                                         <TableView fx:id="taskList" layoutY="14.0" onMouseClicked="#showTaskInfo"
-                                                   prefHeight="318.0" prefWidth="446.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-251.0" AnchorPane.topAnchor="0.0">
+                                                   prefHeight="318.0" prefWidth="446.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
                                                 <TableColumn id="taskNumber" editable="false" prefWidth="145"
                                                              sortable="false" text="编号" style="-fx-alignment: center;">
@@ -48,7 +48,7 @@
                                                         <PropertyValueFactory property="taskNumber" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="name" editable="false" prefWidth="630"
+                                                <TableColumn id="name" editable="false" prefWidth="600"
                                                              sortable="false" text="名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name" />
@@ -60,7 +60,7 @@
                                                         <PropertyValueFactory property="statusName" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="sprintVersion" editable="false" prefWidth="248"
+                                                <TableColumn id="sprintVersion" editable="false" prefWidth="190"
                                                              sortable="false" text="版本">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="sprintVersion" />
