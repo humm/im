@@ -443,6 +443,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
             if (STATUS_WAIT_INTEGRATE.equals(item.getStatus()) || STATUS_WAIT_CHECK.equals(item.getStatus())) {
                 iterator.remove();
             }
+            item.setEstimateFinishDate(item.getEstimateFinishTime().split(STR_SPACE)[0]);
+            item.setEstimateFinishTime(item.getEstimateFinishTime().split(STR_SPACE)[1]);
         }
         OutputUtils.clearLog(waitHandleTaskNumIn);
         OutputUtils.clearLog(todoNumIn);
@@ -619,10 +621,11 @@ public class HepTaskTodoController extends BaseController implements Initializab
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
             item.put(KEY_NAME, "「修复问题」修复问题" + i);
             item.put("product_name", "基金登记过户系统软件V6.0");
-            item.put("sprint_version", "TA6.0V202202.06.001");
+            item.put("sprint_version", "TA6.0-FUND.V202304.07.000M6");
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
-            item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-24 22:59:59");
+            item.put("ESTIMATE_FINISH_DATE", "2024-07-24");
+            item.put(KEY_ESTIMATE_FINISH_TIME, "22:59:59");
             req.add(item);
         }
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(req), HepTaskDto.class);
@@ -637,6 +640,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
     }
 
     private boolean testScene() {
-        return true;
+        return false;
     }
 }

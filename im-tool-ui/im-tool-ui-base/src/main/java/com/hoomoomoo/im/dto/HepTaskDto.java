@@ -19,6 +19,7 @@ public class HepTaskDto extends BaseDto{
     private String sprintVersion;
     private String status;
     private String statusName;
+    private String estimateFinishDate;
     private String estimateFinishTime;
 
     private String realFinishTime;

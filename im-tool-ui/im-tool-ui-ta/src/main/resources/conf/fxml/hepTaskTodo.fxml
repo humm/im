@@ -48,7 +48,7 @@
                                                         <PropertyValueFactory property="taskNumber" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="name" editable="false" prefWidth="600"
+                                                <TableColumn id="name" editable="false" prefWidth="585"
                                                              sortable="false" text="名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name" />
@@ -60,13 +60,22 @@
                                                         <PropertyValueFactory property="statusName" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="sprintVersion" editable="false" prefWidth="190"
+                                                <TableColumn id="sprintVersion" editable="false" prefWidth="250"
                                                              sortable="false" text="版本">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="sprintVersion" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="estimateFinishTime" editable="false" prefWidth="165" sortable="false" text="预计完成时间">
+                                                <TableColumn id="estimateFinishDate" editable="false"
+                                                             prefWidth="120" style="-fx-alignment: center;"
+                                                             sortable="false" text="预计完成日期">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="estimateFinishDate" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="estimateFinishTime" editable="false"
+                                                             prefWidth="100" style="-fx-alignment: center;"
+                                                             sortable="false" text="预计完成时间">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="estimateFinishTime" />
                                                     </cellValueFactory>
