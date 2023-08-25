@@ -48,7 +48,7 @@
                                                         <PropertyValueFactory property="taskNumber" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="name" editable="false" prefWidth="585"
+                                                <TableColumn id="name" editable="false" prefWidth="595"
                                                              sortable="false" text="名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name" />
@@ -74,7 +74,7 @@
                                                     </cellValueFactory>
                                                 </TableColumn>
                                                 <TableColumn id="estimateFinishTime" editable="false"
-                                                             prefWidth="100" style="-fx-alignment: center;"
+                                                             prefWidth="80" style="-fx-alignment: center;"
                                                              sortable="false" text="预计完成时间">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="estimateFinishTime" />
