@@ -13,6 +13,7 @@ import com.hoomoomoo.im.dto.HepTaskComponent;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.service.HepWaitHandleTaskMenu;
 import com.hoomoomoo.im.utils.*;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -467,15 +468,17 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 }
             }
         }
-        ObservableList<Node> nodeObservableList = condition.getChildren();
-        Iterator<Node> nodeIterator = nodeObservableList.iterator();
-        while (nodeIterator.hasNext()) {
-            Node node = nodeIterator.next();
-            String nodeId = node.getId();
-            if (StringUtils.isNotBlank(nodeId) && nodeId.contains("tag")) {
-                nodeIterator.remove();
+        Platform.runLater(() -> {
+            ObservableList<Node> nodeObservableList = condition.getChildren();
+            Iterator<Node> nodeIterator = nodeObservableList.iterator();
+            while (nodeIterator.hasNext()) {
+                Node node = nodeIterator.next();
+                String nodeId = node.getId();
+                if (StringUtils.isNotBlank(nodeId) && nodeId.contains("tag")) {
+                    nodeIterator.remove();
+                }
             }
-        }
+        });
         Iterator<String> iterator = tags.keySet().iterator();
         double layoutX = 60;
         while (iterator.hasNext()) {
@@ -484,26 +487,31 @@ public class HepTaskTodoController extends BaseController implements Initializab
         }
     }
 
-    private double buildTag(String tagName, double layoutX) {
-        Label label = new Label();
-        label.setId("tag" + layoutX);
-        label.setLayoutX(layoutX);
-        label.setLayoutY(175);
-        label.setText(tagName);
-        label.setTextFill(Color.GRAY);
-        condition.getChildren().add(label);
-        label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @SneakyThrows
-            @Override
-            public void handle(MouseEvent event) {
-                String tag = ((Label)event.getSource()).getText();
-                nameQuery.setText(tag);
-                JSONArray res = execute(OPERATE_COMPLETE_QUERY, null);
-                dealTaskList(res, logs, waitHandleTaskNum, taskList, false);
-            }
+    private double buildTag(String tagName, final double layoutX) {
+        Platform.runLater(() -> {
+            Label label = new Label();
+            label.setId("tag" + layoutX);
+            label.setLayoutX(layoutX);
+            label.setLayoutY(175);
+            label.setText(tagName);
+            label.setTextFill(Color.GRAY);
+            condition.getChildren().add(label);
+            label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    String tag = ((Label)event.getSource()).getText();
+                    nameQuery.setText(tag);
+                    JSONArray res = null;
+                    try {
+                        res = execute(OPERATE_COMPLETE_QUERY, null);
+                    } catch (Exception e) {
+
+                    }
+                    dealTaskList(res, logs, waitHandleTaskNum, taskList, false);
+                }
+            });
         });
-        layoutX += 20 * tagName.length();
-        return layoutX;
+        return layoutX +  20 * tagName.length();
     }
 
     public void filterTask(List<HepTaskDto> task) {

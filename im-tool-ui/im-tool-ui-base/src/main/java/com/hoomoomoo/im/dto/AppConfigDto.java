@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.dto;
 
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lombok.Data;
 
