@@ -106,10 +106,10 @@ public class SystemToolController implements Initializable {
         if (pos.x == 0 || pos.y == 0) {
             moveStep = Math.abs(moveStep);
         }
-        OutputUtils.info(logs, getShakeMouseMsg("模拟鼠标移动步长 " + moveStep));
-        OutputUtils.info(logs, getShakeMouseMsg("模拟鼠标移动......"));
+        OutputUtils.info(logs, getShakeMouseMsg("鼠标移动步长: " + moveStep));
+        OutputUtils.info(logs, getShakeMouseMsg("模拟鼠标移动 ......"));
         robot.mouseMove(pos.x + moveStep, pos.y + moveStep);
-        OutputUtils.info(logs, getShakeMouseMsg("鼠标移动位置: " + pos.x + " * " + pos.y));
+        OutputUtils.info(logs, getShakeMouseMsg("鼠标移动位置: " + (pos.x + moveStep) + " * " + (pos.y + moveStep)));
         OutputUtils.info(logs, STR_NEXT_LINE);
 
         List<String> record = new ArrayList<>();

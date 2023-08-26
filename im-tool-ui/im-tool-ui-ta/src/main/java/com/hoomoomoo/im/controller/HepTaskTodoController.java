@@ -13,6 +13,7 @@ import com.hoomoomoo.im.dto.HepTaskComponent;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.service.HepWaitHandleTaskMenu;
 import com.hoomoomoo.im.utils.*;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -27,7 +28,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import lombok.SneakyThrows;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
@@ -102,15 +107,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
     private Label waitHandleTaskNum;
 
     @FXML
-    private Label todoNum;
-
-    @FXML
-    private Label checkNum;
-
-    @FXML
-    private Label bugNum;
-
-    @FXML
     private TextField taskNumber;
 
     @FXML
@@ -148,6 +144,9 @@ public class HepTaskTodoController extends BaseController implements Initializab
 
     @FXML
     private Button reset;
+
+    @FXML
+    private AnchorPane condition;
 
     @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
@@ -283,7 +282,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                         items = (JSONArray)data;
                     }
                     if (OPERATE_QUERY.equals(operateType)) {
-                        dealTaskList(items,  logs, waitHandleTaskNum, todoNum, taskList);
+                        dealTaskList(items,  logs, waitHandleTaskNum, taskList, true);
                     } else if (OPERATE_START.equals(operateType)) {
                         executeQuery(null);
                     }
@@ -364,7 +363,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
         HepTaskComponent hepTaskComponent = new HepTaskComponent();
         hepTaskComponent.setLogs(logs);
         hepTaskComponent.setWaitHandleTaskNum(waitHandleTaskNum);
-        hepTaskComponent.setTodoNum(todoNum);
         hepTaskComponent.setTaskList(taskList);
         appConfigDto.setHepTaskComponent(hepTaskComponent);
     }
@@ -429,10 +427,13 @@ public class HepTaskTodoController extends BaseController implements Initializab
         return request;
     }
 
-    public void dealTaskList(JSONArray task, List<String> logsIn, Label waitHandleTaskNumIn, Label todoNumIn, TableView taskListIn) {
+    public void dealTaskList(JSONArray task, List<String> logsIn, Label waitHandleTaskNumIn, TableView taskListIn, boolean tagFlag) {
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
         filterTask(res);
         res = sortTask(res);
+        if (tagFlag) {
+            initTag(res);
+        }
         for (int i=0; i<task.size(); i++) {
             Map<String, Object> item = (Map)task.get(i);
             logsIn.add(item.toString());
@@ -447,11 +448,62 @@ public class HepTaskTodoController extends BaseController implements Initializab
             item.setEstimateFinishTime(item.getEstimateFinishTime().split(STR_SPACE)[1]);
         }
         OutputUtils.clearLog(waitHandleTaskNumIn);
-        OutputUtils.clearLog(todoNumIn);
         OutputUtils.clearLog(taskListIn);
         OutputUtils.info(waitHandleTaskNumIn, String.valueOf(res.size()));
-        OutputUtils.info(todoNumIn, String.valueOf(res.size()));
         OutputUtils.infoList(taskListIn, res, false);
+    }
+
+    private void initTag(List<HepTaskDto> task) {
+        if (CollectionUtils.isEmpty(task)) {
+            return;
+        }
+        Map<String, String> tags = new LinkedHashMap<>();
+        for (HepTaskDto item : task) {
+            String taskName = item.getName();
+            if (taskName.contains(STR_BRACKETS_2_RIGHT)) {
+                taskName = taskName.substring(1, taskName.indexOf(STR_BRACKETS_2_RIGHT));
+                if (!tags.containsKey(taskName)) {
+                    tags.put(taskName, taskName);
+                }
+            }
+        }
+        ObservableList<Node> nodeObservableList = condition.getChildren();
+        Iterator<Node> nodeIterator = nodeObservableList.iterator();
+        while (nodeIterator.hasNext()) {
+            Node node = nodeIterator.next();
+            String nodeId = node.getId();
+            if (StringUtils.isNotBlank(nodeId) && nodeId.contains("tag")) {
+                nodeIterator.remove();
+            }
+        }
+        Iterator<String> iterator = tags.keySet().iterator();
+        double layoutX = 60;
+        while (iterator.hasNext()) {
+            String tagName = iterator.next();
+            layoutX = buildTag(tagName, layoutX);
+        }
+    }
+
+    private double buildTag(String tagName, double layoutX) {
+        Label label = new Label();
+        label.setId("tag" + layoutX);
+        label.setLayoutX(layoutX);
+        label.setLayoutY(175);
+        label.setText(tagName);
+        label.setTextFill(Color.GRAY);
+        condition.getChildren().add(label);
+        label.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(MouseEvent event) {
+                String tag = ((Label)event.getSource()).getText();
+                nameQuery.setText(tag);
+                JSONArray res = execute(OPERATE_COMPLETE_QUERY, null);
+                dealTaskList(res, logs, waitHandleTaskNum, taskList, false);
+            }
+        });
+        layoutX += 20 * tagName.length();
+        return layoutX;
     }
 
     public void filterTask(List<HepTaskDto> task) {
@@ -614,25 +666,25 @@ public class HepTaskTodoController extends BaseController implements Initializab
         if (!testScene()) {
             return;
         }
-        List<Map> req = new ArrayList<>();
+        JSONArray req = new JSONArray();
         for (int i=0; i<50; i++) {
             Map<String, Object> item = new HashMap<>(16);
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
-            item.put(KEY_NAME, "「修复问题」修复问题" + i);
             item.put("product_name", "基金登记过户系统软件V6.0");
             item.put("sprint_version", "TA6.0-FUND.V202304.07.000M6");
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
-            item.put("ESTIMATE_FINISH_DATE", "2024-07-24");
-            item.put(KEY_ESTIMATE_FINISH_TIME, "22:59:59");
+            item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-24 22:59:59");
+            switch (i % 3) {
+                case 0: item.put(KEY_NAME, "「修复问题」问题" + i);break;
+                case 1: item.put(KEY_NAME, "「自测问题」问题" + i);break;
+                case 2: item.put(KEY_NAME, "「开发」问题" + i);break;
+                default:break;
+            }
             req.add(item);
         }
-        List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(req), HepTaskDto.class);
-        OutputUtils.info(waitHandleTaskNum, String.valueOf(res.size()));
-        OutputUtils.info(todoNum, String.valueOf(res.size()));
-        OutputUtils.clearLog(taskList);
-        OutputUtils.infoList(taskList, res, true);
+        dealTaskList(req, logs, waitHandleTaskNum, taskList, true);
     }
 
     private boolean requestStatus(HttpResponse response) {

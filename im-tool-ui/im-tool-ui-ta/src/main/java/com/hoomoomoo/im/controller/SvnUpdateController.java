@@ -77,16 +77,21 @@ public class SvnUpdateController extends BaseController implements Initializable
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 List<LinkedHashMap<String, String>> pathList = appConfigDto.getSvnUpdatePath();
                 Set<String> updateFlag = new HashSet<>();
+                int workspaceNumWaitUpdate = 0;
                 if (CollectionUtils.isNotEmpty(pathList)) {
                     for (LinkedHashMap<String, String> item : pathList) {
                         Iterator<String> iterator = item.keySet().iterator();
                         while (iterator.hasNext()) {
+                            workspaceNumWaitUpdate = Integer.valueOf(workspaceNum.getText()) - 1;
+                            if (workspaceNumWaitUpdate < 0) {
+                                workspaceNumWaitUpdate = 0;
+                            }
                             String name = iterator.next();
                             String path = item.get(name);
                             if (updateFlag.contains(name)) {
                                 Thread.sleep(500L);
                                 OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "重复路径[ " + name + " ]跳过更新...\n");
-                                OutputUtils.info(workspaceNum, String.valueOf(Integer.valueOf(workspaceNum.getText()) - 1));
+                                OutputUtils.info(workspaceNum, String.valueOf(workspaceNumWaitUpdate));
                                 continue;
                             }
                             updateFlag.add(name);
@@ -109,7 +114,7 @@ public class SvnUpdateController extends BaseController implements Initializable
                                 OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "[ " + name + " ]非svn目录,无需更新\n");
                             }
                         }
-                        OutputUtils.info(workspaceNum, String.valueOf(Integer.valueOf(workspaceNum.getText()) - 1));
+                        OutputUtils.info(workspaceNum, String.valueOf(workspaceNumWaitUpdate));
                     }
                 }
                 setProgress(1);
