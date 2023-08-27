@@ -460,7 +460,6 @@ public class ScriptUpdateController extends BaseController implements Initializa
         String treeIdx = menuDto.getTreeIdx().trim();
         String transCode = menuDto.getTransCode().trim();
         String kindCode = menuDto.getKindCode().trim();
-        boolean isAccount = "'console-account-ta-vue'".equals(kindCode);
         if ("'fundsysinfo','fundReport'".contains(menuCode)) {
             return menuStd;
         }
@@ -501,7 +500,11 @@ public class ScriptUpdateController extends BaseController implements Initializa
             treeIdxPre += MENU_CODE_QUERY;
             menuDto.setParentCode("'ptaAccountReport'");
             treeIdx = treeIdx.replace("fundOther", "ptaAccountReport");
-        }  else if ("'ptaAccountManageFundDaily'".equals(parentCode)) {
+        }  else if ("'ptaAccountManage'".equals(parentCode)) {
+            treeIdxPre += MENU_CODE_QUERY;
+            menuDto.setParentCode(STR_QUOTES_SINGLE + MENU_CODE_QUERY + STR_QUOTES_SINGLE);
+            treeIdx = treeIdx.replace("fundAccount", "ptaAccountManageFundAccount");
+        } else if ("'ptaAccountManageFundDaily'".equals(parentCode)) {
             treeIdxPre += MENU_CODE_BUSIN;
             menuDto.setParentCode("'ptaAccountManageFundOther'");
             treeIdx = treeIdx.replace("fundDaily", "ptaAccountManageFundOther");
@@ -513,7 +516,8 @@ public class ScriptUpdateController extends BaseController implements Initializa
         }
         if ("'fundsysinfo'".equals(parentCode) || treeIdx.contains("fundsysinfo") || "'ptaAccountManageFundOther'".equals(parentCode) ||
                 "'ptaAccountManageFundDaily'".equals(parentCode) || "'fundReportManage'".equals(parentCode) || "'ptaAccountManageFundAccount'".equals(parentCode) ||
-                treeIdx.contains("fundDailyOperations") || treeIdx.contains("fundDataPermission")) {
+                treeIdx.contains("fundDailyOperations") || treeIdx.contains("fundDataPermission") || treeIdx.contains("fundReportManage") ||
+                treeIdx.contains("ptaAccountManageFundAccount")) {
             Pattern pattern = Pattern.compile(STR_SLASH);
             Matcher matcher = pattern.matcher(treeIdx);
             int secondMenuCodeEnd = 0;
@@ -557,10 +561,13 @@ public class ScriptUpdateController extends BaseController implements Initializa
             treeIdx = treeIdx.replace(secondMenuCode, secondMenuCode + "T");
         }
         menuDto.setTreeIdx(treeIdx);
+
+        String menuIcon = menuDto.getMenuIcon();
+        if ("'icon-icon_menu_fund'".equals(menuIcon) && !"'query','param','busin'".contains(parentCode)) {
+            menuDto.setMenuIcon("' '");
+        }
         int orderNo = Integer.valueOf(menuDto.getOrderNo().trim().replaceAll(STR_QUOTES_SINGLE, STR_BLANK));
         menuDto.setOrderNo(String.valueOf(500000 + orderNo));
-        if (isAccount) {
-        }
         menuDto.setOpenFlag("'1'");
         menuDto.setWindowType("' '");
         String sqlHead = sql.substring(0, sql.indexOf(STR_BRACKETS_RIGHT) + 1).toLowerCase() + STR_NEXT_LINE;
