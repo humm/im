@@ -246,8 +246,11 @@ public class BaseConst {
     public static final String STR_BRACKETS_LEFT = "(";
     public static final String STR_BRACKETS_RIGHT = ")";
     public static final String STR_BRACKETS_1_LEFT = "[";
+    public static final String STR_BRACKETS_2_LEFT = "「";
+    public static final String STR_BRACKETS_3_LEFT = "【";
     public static final String STR_BRACKETS_1_RIGHT = "]";
     public final static String STR_BRACKETS_2_RIGHT = "」";
+    public final static String STR_BRACKETS_3_RIGHT = "】";
     public static final String STR_NEXT_LINE = "\n";
     public static final String STR_SLASH_T = "\t";
     public static final String STR_NEXT_LINE_2 = "\n\n";

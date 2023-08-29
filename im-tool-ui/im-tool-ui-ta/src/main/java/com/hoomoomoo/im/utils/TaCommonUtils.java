@@ -324,6 +324,9 @@ public class TaCommonUtils {
     }
 
     public static String formatText(String text, boolean toBr){
+        if (StringUtils.isBlank(text)) {
+            return STR_BLANK;
+        }
         if (toBr) {
             return text.replaceAll("\\n", "\r<br>").trim();
         } else {
@@ -332,6 +335,9 @@ public class TaCommonUtils {
     }
 
     public static String formatTextBrToNextLine(String text){
+        if (StringUtils.isBlank(text)) {
+            return STR_BLANK;
+        }
         return text.replaceAll("\r", STR_BLANK).replaceAll("<br>", STR_NEXT_LINE).trim();
     }
 

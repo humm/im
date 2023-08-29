@@ -320,9 +320,9 @@ public class HepTaskTodoController extends BaseController implements Initializab
                     if (STR_STATUS_200.equals(code)) {
                         Map data = (Map)responseInfo.get(KEY_DATA);
                         hepTaskDto.setRealWorkload(STR_1);
-                        hepTaskDto.setModifiedFile(TaCommonUtils.formatTextBrToNextLine(String.valueOf(data.get(KEY_MODIFIED_FILE))));
-                        hepTaskDto.setEditDescription(TaCommonUtils.formatTextBrToNextLine(String.valueOf(data.get(KEY_EDIT_DESCRIPTION))));
-                        hepTaskDto.setSuggestion(TaCommonUtils.formatTextBrToNextLine(String.valueOf(data.get(KEY_SUGGESTION))));
+                        hepTaskDto.setModifiedFile(TaCommonUtils.formatTextBrToNextLine((String)data.get(KEY_MODIFIED_FILE)));
+                        hepTaskDto.setEditDescription(TaCommonUtils.formatTextBrToNextLine((String)data.get(KEY_EDIT_DESCRIPTION)));
+                        hepTaskDto.setSuggestion(TaCommonUtils.formatTextBrToNextLine((String)data.get(KEY_SUGGESTION)));
                     }
                 }
                 // 每次页面都重新打开
@@ -521,10 +521,16 @@ public class HepTaskTodoController extends BaseController implements Initializab
         String sprintVersionQ = CommonUtils.getComponentValue(sprintVersionQuery);
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
-            String taskNumer = item.getTaskNumber();
+            String taskNumber = item.getTaskNumber();
             String taskName = item.getName();
             String sprintVersion = item.getSprintVersion();
-            if (StringUtils.isNotBlank(taskNumberQ) && !taskNumer.contains(taskNumberQ)) {
+            String taskNameTag = getTaskNameTag(taskName);
+            if (taskNameTag.contains("缺陷")) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
+            } else if (taskNameTag.contains("问题")) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
+            }
+            if (StringUtils.isNotBlank(taskNumberQ) && !taskNumber.contains(taskNumberQ)) {
                 iterator.remove();
                 continue;
             }
@@ -537,6 +543,15 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 continue;
             }
         }
+    }
+
+    private String getTaskNameTag(String taskName) {
+        if (taskName.startsWith(STR_BRACKETS_2_LEFT) && taskName.contains(STR_BRACKETS_2_RIGHT)) {
+            return taskName.substring(1, taskName.indexOf(STR_BRACKETS_2_RIGHT));
+        } else if (taskName.startsWith(STR_BRACKETS_3_LEFT) && taskName.contains(STR_BRACKETS_3_RIGHT)) {
+            return taskName.substring(1, taskName.indexOf(STR_BRACKETS_3_RIGHT));
+        }
+        return taskName;
     }
 
     private HttpResponse sendPost(Map<String, Object> param) {
@@ -578,8 +593,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
             public int compare(HepTaskDto o1, HepTaskDto o2) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
-                    Date finishTime1 = simpleDateFormat.parse(getValue(o1.getEstimateFinishTime()));
-                    Date finishTime2 = simpleDateFormat.parse(getValue(o2.getEstimateFinishTime()));
+                    Date finishTime1 = simpleDateFormat.parse(getValue(o1.getEstimateFinishTime(), STR_BLANK));
+                    Date finishTime2 = simpleDateFormat.parse(getValue(o2.getEstimateFinishTime(), STR_BLANK));
                     if (finishTime1.getTime() != finishTime2.getTime()) {
                         return finishTime1.compareTo(finishTime2);
                     }
@@ -624,9 +639,13 @@ public class HepTaskTodoController extends BaseController implements Initializab
     }
 
 
-    private String getValue(String value) {
+    private String getValue(String value, String type) {
         if (StringUtils.isBlank(value)) {
-            return "2099-12-31 23:59:59";
+            if (StringUtils.isBlank(type) || STR_1.equals(type)) {
+                return "2099-12-31 23:59:59";
+            } else {
+                return "2098-12-31 23:59:59";
+            }
         }
         return value;
     }

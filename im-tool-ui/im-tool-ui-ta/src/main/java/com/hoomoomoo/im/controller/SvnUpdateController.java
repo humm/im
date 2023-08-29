@@ -82,7 +82,7 @@ public class SvnUpdateController extends BaseController implements Initializable
                     for (LinkedHashMap<String, String> item : pathList) {
                         Iterator<String> iterator = item.keySet().iterator();
                         while (iterator.hasNext()) {
-                            workspaceNumWaitUpdate = Integer.valueOf(workspaceNum.getText()) - 1;
+                            workspaceNumWaitUpdate--;
                             if (workspaceNumWaitUpdate < 0) {
                                 workspaceNumWaitUpdate = 0;
                             }
