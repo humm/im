@@ -511,7 +511,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 }
             });
         });
-        return layoutX +  20 * tagName.length();
+        return layoutX + 20 * tagName.length();
     }
 
     public void filterTask(List<HepTaskDto> task) {
@@ -529,6 +529,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
             } else if (taskNameTag.contains("问题")) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
+            } else if (taskNameTag.contains("已提交")) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_3));
             }
             if (StringUtils.isNotBlank(taskNumberQ) && !taskNumber.contains(taskNumberQ)) {
                 iterator.remove();
@@ -643,8 +645,10 @@ public class HepTaskTodoController extends BaseController implements Initializab
         if (StringUtils.isBlank(value)) {
             if (StringUtils.isBlank(type) || STR_1.equals(type)) {
                 return "2099-12-31 23:59:59";
-            } else {
+            } else if (STR_2.equals(type)) {
                 return "2098-12-31 23:59:59";
+            } else if (STR_3.equals(type)) {
+                return "2097-12-31 23:59:59";
             }
         }
         return value;
@@ -719,6 +723,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
     }
 
     private boolean testScene() {
-        return false;
+        return true;
     }
 }
