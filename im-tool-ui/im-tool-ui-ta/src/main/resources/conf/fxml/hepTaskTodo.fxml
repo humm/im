@@ -80,7 +80,7 @@
                                                         <PropertyValueFactory property="estimateFinishTime" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="productName" editable="false" prefWidth="240"
+                                                <TableColumn id="productName" editable="false" prefWidth="290"
                                                              sortable="false" text="产品名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="productName" />

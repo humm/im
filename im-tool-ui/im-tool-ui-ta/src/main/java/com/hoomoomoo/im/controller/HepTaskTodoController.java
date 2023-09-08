@@ -467,6 +467,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
                     tags.put(taskName, taskName);
                 }
             }
+            if (taskName.contains(STR_BRACKETS_3_RIGHT)) {
+                taskName = taskName.substring(1, taskName.indexOf(STR_BRACKETS_3_RIGHT));
+                if (!tags.containsKey(taskName)) {
+                    tags.put(taskName, taskName);
+                }
+            }
         }
         Platform.runLater(() -> {
             ObservableList<Node> nodeObservableList = condition.getChildren();
@@ -519,19 +525,13 @@ public class HepTaskTodoController extends BaseController implements Initializab
         String taskNumberQ = CommonUtils.getComponentValue(taskNumberQuery);
         String nameQ = CommonUtils.getComponentValue(nameQuery);
         String sprintVersionQ = CommonUtils.getComponentValue(sprintVersionQuery);
+        Map<String, String> taskType = new HashMap<>();
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String taskNumber = item.getTaskNumber();
             String taskName = item.getName();
             String sprintVersion = item.getSprintVersion();
             String taskNameTag = getTaskNameTag(taskName);
-            if (taskNameTag.contains("缺陷")) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
-            } else if (taskNameTag.contains("问题")) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
-            } else if (taskNameTag.contains("已提交")) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_3));
-            }
             if (StringUtils.isNotBlank(taskNumberQ) && !taskNumber.contains(taskNumberQ)) {
                 iterator.remove();
                 continue;
@@ -544,6 +544,23 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 iterator.remove();
                 continue;
             }
+            if (taskNameTag.contains("缺陷")) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
+                taskType.put(STR_2, STR_2);
+            } else if (taskNameTag.contains("问题")) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
+                taskType.put(STR_1, STR_1);
+            } else if (taskName.contains("已提交")) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_3));
+                taskType.put(STR_3, STR_3);
+            } else if (taskName.contains("已修改")) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
+                taskType.put(STR_4, STR_4);
+            }
+        }
+        Iterator<String> iteratorTask = taskType.keySet().iterator();
+        while (iteratorTask.hasNext()) {
+            task.add(getDivideTask(iteratorTask.next()));
         }
     }
 
@@ -640,15 +657,52 @@ public class HepTaskTodoController extends BaseController implements Initializab
         return res;
     }
 
+    private HepTaskDto getDivideTask(String type) {
+        int blankNumber = Integer.valueOf(type);
+        String blankType = STR_BLANK;
+        for (int i=0; i<blankNumber; i++) {
+            blankType += STR_SPACE;
+        }
+        HepTaskDto item = new HepTaskDto();
+        item.setEstimateFinishTime(getDivideValue(STR_BLANK, type));
+        item.setId(STR_BLANK);
+        item.setTaskNumber(blankType);
+        item.setName(blankType);
+        item.setOperateType(STR_BLANK);
+        item.setSprintVersion(STR_BLANK);
+        item.setProductName(STR_BLANK);
+        return item;
+    }
 
     private String getValue(String value, String type) {
         if (StringUtils.isBlank(value)) {
             if (StringUtils.isBlank(type) || STR_1.equals(type)) {
-                return "2099-12-31 23:59:59";
+                return "9900-12-31 23:59:59";
             } else if (STR_2.equals(type)) {
-                return "2098-12-31 23:59:59";
+                return "9800-12-31 23:59:59";
             } else if (STR_3.equals(type)) {
-                return "2097-12-31 23:59:59";
+                return "9700-12-31 23:59:59";
+            } else if (STR_4.equals(type)) {
+                return "9600-12-31 23:59:59";
+            } else if (STR_5.equals(type)) {
+                return "9500-12-31 23:59:59";
+            }
+        }
+        return value;
+    }
+
+    private String getDivideValue(String value, String type) {
+        if (StringUtils.isBlank(value)) {
+            if (StringUtils.isBlank(type) || STR_1.equals(type)) {
+                return "9850-12-31 23:59:59";
+            } else if (STR_2.equals(type)) {
+                return "9750-12-31 23:59:59";
+            } else if (STR_3.equals(type)) {
+                return "9650-12-31 23:59:59";
+            } else if (STR_4.equals(type)) {
+                return "9550-12-31 23:59:59";
+            } else if (STR_5.equals(type)) {
+                return "9450-12-31 23:59:59";
             }
         }
         return value;
@@ -698,7 +752,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             return;
         }
         JSONArray req = new JSONArray();
-        for (int i=0; i<50; i++) {
+        for (int i=0; i<6; i++) {
             Map<String, Object> item = new HashMap<>(16);
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
@@ -707,10 +761,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-24 22:59:59");
-            switch (i % 3) {
+            switch (i % 5) {
                 case 0: item.put(KEY_NAME, "「修复问题」问题" + i);break;
-                case 1: item.put(KEY_NAME, "「自测问题」问题" + i);break;
+                case 1: item.put(KEY_NAME, "【缺陷】问题" + i);break;
                 case 2: item.put(KEY_NAME, "「开发」问题" + i);break;
+                case 3: item.put(KEY_NAME, "「开发」已修改 问题" + i);break;
+                case 4: item.put(KEY_NAME, "「开发」已提交 问题" + i);break;
                 default:break;
             }
             req.add(item);
@@ -723,6 +779,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
     }
 
     private boolean testScene() {
-        return true;
+        return !FileUtils.startByJar();
     }
 }
