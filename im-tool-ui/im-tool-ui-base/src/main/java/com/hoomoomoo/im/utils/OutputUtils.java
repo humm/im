@@ -1,11 +1,15 @@
 package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.dto.BaseDto;
+import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.dto.LogDto;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.paint.Color;
+import javafx.util.Callback;
 
 import java.util.Date;
 import java.util.List;
@@ -77,7 +81,7 @@ public class OutputUtils {
         });
     }
 
-    private static void setEnabled(TableView tableView) {
+    public static void setEnabled(TableView tableView) {
         tableView.setEditable(true);
         ObservableList<TableColumn> columns = tableView.getColumns();
         for (int i=0; i<columns.size(); i++) {
