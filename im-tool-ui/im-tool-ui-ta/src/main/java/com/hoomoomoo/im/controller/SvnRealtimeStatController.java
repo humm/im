@@ -83,7 +83,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
                             }
                         }
                         OutputUtils.info(statTime, CommonUtils.getCurrentDateTime8(date));
-                        SvnUtils.getSvnLog(startDate, date, svnStat, true);
+                        SvnUtils.getSvnLog(startDate, date, svnStat, false);
                         OutputUtils.info(notice, BaseConst.STR_SPACE);
                         OutputUtils.info(costTime, BaseConst.STR_SPACE);
                         OutputUtils.clearLog(stat);

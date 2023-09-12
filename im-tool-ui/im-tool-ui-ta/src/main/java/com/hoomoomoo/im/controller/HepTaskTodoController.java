@@ -452,8 +452,13 @@ public class HepTaskTodoController extends BaseController implements Initializab
             if (first && StringUtils.isBlank(status)) {
                 iterator.remove();
             }
-            item.setEstimateFinishDate(item.getEstimateFinishTime().split(STR_SPACE)[0]);
-            item.setEstimateFinishTime(item.getEstimateFinishTime().split(STR_SPACE)[1]);
+            if (StringUtils.isBlank(item.getId())) {
+                item.setEstimateFinishDate(STR_BLANK);
+                item.setEstimateFinishTime(STR_BLANK);
+            } else {
+                item.setEstimateFinishDate(item.getEstimateFinishTime().split(STR_SPACE)[0]);
+                item.setEstimateFinishTime(item.getEstimateFinishTime().split(STR_SPACE)[1]);
+            }
             first = false;
         }
         OutputUtils.clearLog(waitHandleTaskNumIn);
@@ -471,7 +476,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             String taskName = item.getName();
             if (taskName.contains(STR_BRACKETS_3_RIGHT)) {
                 String taskNameTmp = taskName.substring( taskName.indexOf(STR_BRACKETS_3_LEFT) + 1, taskName.indexOf(STR_BRACKETS_3_RIGHT));
-                if (taskNameTmp.contains("缺陷")) {
+                if (taskNameTmp.contains("缺陷") || taskName.startsWith(STR_BRACKETS_3_LEFT)) {
                     if (taskNameTmp.contains(STR_COLON)) {
                         taskNameTmp = taskNameTmp.split(STR_COLON)[0];
                     }
@@ -500,18 +505,22 @@ public class HepTaskTodoController extends BaseController implements Initializab
         });
         Iterator<String> iterator = tags.keySet().iterator();
         double layoutX = 60;
+        double layoutY = 175;
         while (iterator.hasNext()) {
             String tagName = iterator.next();
-            layoutX = buildTag(tagName, layoutX);
+            layoutX = buildTag(tagName, layoutX, layoutY);
+            if (layoutX == 60) {
+                layoutY = 200;
+            }
         }
     }
 
-    private double buildTag(String tagName, final double layoutX) {
+    private double buildTag(String tagName, final double layoutX, final double layoutY) {
         Platform.runLater(() -> {
             Label label = new Label();
             label.setId("tag" + layoutX);
             label.setLayoutX(layoutX);
-            label.setLayoutY(175);
+            label.setLayoutY(layoutY);
             label.setText(tagName);
             label.setTextFill(Color.GRAY);
             condition.getChildren().add(label);
@@ -530,7 +539,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 }
             });
         });
-        return layoutX + 20 * tagName.length();
+        double x = layoutX + 20 * tagName.length();
+        return x > 240 ? 60 : x;
     }
 
     public void filterTask(List<HepTaskDto> task) {
@@ -560,7 +570,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             if (taskNameTag.contains("缺陷")) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
                 taskType.put(STR_2, STR_2);
-            } else if (taskNameTag.contains("问题")) {
+            } else if (taskNameTag.contains("问题") || taskNameTag.contains("任务") ) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
                 taskType.put(STR_1, STR_1);
             } else if (taskName.contains("已提交") || taskName.contains("已修改")) {
@@ -758,16 +768,16 @@ public class HepTaskTodoController extends BaseController implements Initializab
             Map<String, Object> item = new HashMap<>(16);
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
-            item.put("product_name", "基金登记过户系统软件V6.0");
+            item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
             item.put("sprint_version", "TA6.0-FUND.V202304.07.000M6");
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-24 22:59:59");
             switch (i % 6) {
-                case 0: item.put(KEY_NAME, "「开发」问题" + i);break;
-                case 1: item.put(KEY_NAME, "「开发」【缺陷:45454】问题" + i);break;
+                case 0: item.put(KEY_NAME, "「开发任务」问题" + i);break;
+                case 1: item.put(KEY_NAME, "【缺陷:45454】问题" + i);break;
                 case 2: item.put(KEY_NAME, "「自测问题」问题" + i);break;
-                case 3: item.put(KEY_NAME, "「开发」已修改 问题" + i);break;
+                case 3: item.put(KEY_NAME, "「自测任务」已修改 问题" + i);break;
                 case 4: item.put(KEY_NAME, "「开发」已提交 问题" + i);break;
                 case 5: item.put(KEY_NAME, "「修复问题」问题" + i);break;
                 default:break;

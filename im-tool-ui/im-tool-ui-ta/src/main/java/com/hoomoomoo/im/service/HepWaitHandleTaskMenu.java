@@ -38,6 +38,8 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                 String name = item.getName();
                 if (name.contains(STR_BRACKETS_2_RIGHT)) {
                     name = name.split(STR_BRACKETS_2_RIGHT)[1];
+                } else if (name.contains(STR_BRACKETS_3_RIGHT)) {
+                    name = name.split(STR_BRACKETS_3_RIGHT)[1];
                 }
                 info.append("[需求描述]").append(STR_SPACE).append(name);
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info.toString()), null);
