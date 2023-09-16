@@ -42,12 +42,6 @@
                                         <TableView fx:id="taskList" layoutY="14.0" onMouseClicked="#showTaskInfo"
                                                    prefHeight="318.0" prefWidth="446.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="taskNumber" editable="false" prefWidth="145"
-                                                             sortable="false" text="任务单编号" style="-fx-alignment: center;">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="taskNumber" />
-                                                    </cellValueFactory>
-                                                </TableColumn>
                                                 <TableColumn id="name" editable="false" prefWidth="595"
                                                              sortable="false" text="任务单名称">
                                                     <cellValueFactory>
@@ -64,6 +58,12 @@
                                                              sortable="false" text="版本">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="sprintVersion" />
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="taskNumber" editable="false" prefWidth="145"
+                                                             sortable="false" text="任务单编号" style="-fx-alignment: center;">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="taskNumber" />
                                                     </cellValueFactory>
                                                 </TableColumn>
                                                 <TableColumn id="estimateFinishDate" editable="false"

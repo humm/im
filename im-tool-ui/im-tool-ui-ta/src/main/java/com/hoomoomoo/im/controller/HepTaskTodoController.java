@@ -9,7 +9,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.BaseDto;
 import com.hoomoomoo.im.dto.HepTaskComponent;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.service.HepWaitHandleTaskMenu;
@@ -25,16 +24,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -43,7 +38,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_TODO;
@@ -217,9 +211,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
             try {
                 setProgress(0);
                 updateProgress();
-                /*OutputUtils.clearLog(taskList);
-                OutputUtils.clearLog(waitHandleTaskNum);
-                OutputUtils.clearLog(todoNum);*/
                 executeQuery();
             } catch (Exception e) {
                 LoggerUtils.info(e);
@@ -442,29 +433,113 @@ public class HepTaskTodoController extends BaseController implements Initializab
             logsIn.add(item.toString());
         }
         Iterator<HepTaskDto> iterator = res.listIterator();
-        boolean first = true;
+        boolean hasBlank = false;
+        int taskTotal = 0;
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String status = item.getStatus();
             if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
                 iterator.remove();
+                continue;
             }
-            if (first && StringUtils.isBlank(status)) {
+            if (hasBlank && StringUtils.isBlank(status)) {
                 iterator.remove();
+                continue;
             }
-            if (StringUtils.isBlank(item.getId())) {
+            if (StringUtils.isBlank(status)) {
+                hasBlank = true;
+                taskTotal++;
+            } else {
+                hasBlank = false;
+            }
+            if (StringUtils.isBlank(status)) {
                 item.setEstimateFinishDate(STR_BLANK);
                 item.setEstimateFinishTime(STR_BLANK);
             } else {
                 item.setEstimateFinishDate(item.getEstimateFinishTime().split(STR_SPACE)[0]);
                 item.setEstimateFinishTime(item.getEstimateFinishTime().split(STR_SPACE)[1]);
             }
-            first = false;
         }
         OutputUtils.clearLog(waitHandleTaskNumIn);
         OutputUtils.clearLog(taskListIn);
-        OutputUtils.info(waitHandleTaskNumIn, String.valueOf(res.size()));
-        OutputUtils.infoList(taskListIn, res, false);
+        OutputUtils.info(waitHandleTaskNumIn, String.valueOf(res.size() - taskTotal));
+        infoTaskList(taskListIn, res);
+    }
+
+    private void infoTaskList(TableView taskListIn, List<HepTaskDto> res) {
+        if (taskListIn == null) {
+            return;
+        }
+        Platform.runLater(() -> {
+            for (HepTaskDto hepTaskDto : res) {
+                taskListIn.getItems().add(hepTaskDto);
+                // 设置行
+                initRowColor(taskListIn);
+
+                // 设置单元格
+                //initCellColor(taskListIn);
+            }
+            OutputUtils.setEnabled(taskListIn);
+        });
+    }
+
+    private void initRowColor(TableView taskListIn) {
+        taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>(){
+            @Override
+            public TableRow<HepTaskDto> call(TableView<HepTaskDto> param) {
+                final TableRow<HepTaskDto> row = new TableRow<HepTaskDto>() {
+                    @Override
+                    protected void updateItem(HepTaskDto item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if(item != null && getIndex() > -1){
+                            String taskName = item.getName();
+                            String taskNameTag = getTaskNameTag(taskName);
+                            if (taskNameTag.contains("缺陷")) {
+                                setStyle("-fx-text-background-color: red;");
+                            } else if (taskNameTag.contains("问题") || taskNameTag.contains("任务")) {
+                                setStyle("-fx-text-background-color: #804000;");
+                            } else if (taskName.contains("已修改") || taskName.contains("已提交")) {
+                                setStyle("-fx-text-background-color: #550080;");
+                            } else {
+                                setStyle("-fx-text-background-color: blue;");
+                            }
+                        }
+                    }
+                };
+                return row;
+            }
+        });
+    }
+
+    private void initCellColor(TableView taskListIn) {
+        ((TableColumn)taskListIn.getColumns().get(0)).setCellFactory(column -> {
+            return new TableCell<HepTaskDto, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (StringUtils.isNotBlank(item)) {
+                        String taskName =item;
+                        String taskNameTag = getTaskNameTag(item);
+                        setText(item);
+                        if(getIndex() > -1){
+                            if (taskNameTag.contains("缺陷")) {
+                                setStyle("-fx-text-fill: #ff6200;");
+                            } else if (taskNameTag.contains("问题")) {
+                                setStyle("-fx-text-fill: #510080;");
+                            } else if (taskNameTag.contains("任务")) {
+                                setStyle("-fx-text-fill: #800062;");
+                            } else if (taskName.contains("已修改")) {
+                                setStyle("-fx-text-fill: #5c8000;");
+                            } else if (taskName.contains("已提交")) {
+                                setStyle("-fx-text-fill: #00805e;");
+                            } else {
+                                setStyle("-fx-text-fill: #804000;");
+                            }
+                        }
+                    }
+                }
+            };
+        });
     }
 
     private void initTag(List<HepTaskDto> task) {
@@ -578,10 +653,10 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 taskType.put(STR_9, STR_9);
             }
         }
-        Iterator<String> iteratorTask = taskType.keySet().iterator();
+        /*Iterator<String> iteratorTask = taskType.keySet().iterator();
         while (iteratorTask.hasNext()) {
             task.add(getDivideTask(iteratorTask.next()));
-        }
+        }*/
     }
 
     private static String getTaskNameTag(String taskName) {
@@ -699,7 +774,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             if (StringUtils.isBlank(type) || STR_1.equals(type)) {
                 return "9900-12-31 23:59:59";
             } else if (STR_2.equals(type)) {
-                return "9800-12-31 23:59:59";
+                return "1900-12-31 23:59:59";
             } else if (STR_9.equals(type)) {
                 return "9999-12-31 23:59:59";
             }
@@ -773,11 +848,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-24 22:59:59");
-            switch (i % 6) {
-                case 0: item.put(KEY_NAME, "「开发任务」问题" + i);break;
-                case 1: item.put(KEY_NAME, "【缺陷:45454】问题" + i);break;
+            switch (i % 7) {
+                case 0: item.put(KEY_NAME, "「开发」问题" + i);break;
+                case 1: item.put(KEY_NAME, "「开发」【缺陷:45454】问题" + i);break;
                 case 2: item.put(KEY_NAME, "「自测问题」问题" + i);break;
-                case 3: item.put(KEY_NAME, "「自测任务」已修改 问题" + i);break;
+                case 6: item.put(KEY_NAME, "「自建任务」问题" + i);break;
+                case 3: item.put(KEY_NAME, "「开发」已修改 问题" + i);break;
                 case 4: item.put(KEY_NAME, "「开发」已提交 问题" + i);break;
                 case 5: item.put(KEY_NAME, "「修复问题」问题" + i);break;
                 default:break;
