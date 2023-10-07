@@ -221,6 +221,7 @@ public class BaseConst {
 
     public static final String NAME_MENU_UPDATE = "更新";
     public static final String NAME_MENU_COPY = "复制";
+    public static final String NAME_MENU_SIMPLE_COPY = "简单复制";
 
     public final static String SECURITY_FLAG = "+++";
 

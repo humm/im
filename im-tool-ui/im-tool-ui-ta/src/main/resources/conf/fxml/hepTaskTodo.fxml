@@ -61,7 +61,7 @@
                                                     </cellValueFactory>
                                                 </TableColumn>
                                                 <TableColumn id="taskNumber" editable="false" prefWidth="145"
-                                                             sortable="false" text="任务单编号" style="-fx-alignment: center;">
+                                                             sortable="false" text="任务单编号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="taskNumber" />
                                                     </cellValueFactory>

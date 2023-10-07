@@ -30,19 +30,20 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             public void handle(ActionEvent event) {
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 HepTaskDto item = appConfigDto.getHepTaskDto();
-                StringBuilder info = new StringBuilder();
-                info.append("[需求编号]").append(STR_SPACE).append(STR_NEXT_LINE);
-                info.append("[修改单编号]").append(STR_SPACE).append(item.getTaskNumber()).append(STR_NEXT_LINE);
-                info.append("[修改单版本]").append(STR_SPACE).append(item.getSprintVersion()).append(STR_NEXT_LINE);
-                info.append("[需求引入行]").append(STR_SPACE).append(STR_NEXT_LINE);
-                String name = item.getName();
-                if (name.contains(STR_BRACKETS_2_RIGHT)) {
-                    name = name.split(STR_BRACKETS_2_RIGHT)[1];
-                } else if (name.contains(STR_BRACKETS_3_RIGHT)) {
-                    name = name.split(STR_BRACKETS_3_RIGHT)[1];
-                }
-                info.append("[需求描述]").append(STR_SPACE).append(name);
-                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info.toString()), null);
+                String info = getCopyContent(item, true);
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info), null);
+            }
+        });
+        MenuItem copyTaskSimple = new MenuItem(NAME_MENU_SIMPLE_COPY);
+        CommonUtils.setIcon(copyTaskSimple, COPY_ICON, MENUITEM_ICON_SIZE);
+        copyTaskSimple.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                HepTaskDto item = appConfigDto.getHepTaskDto();
+                String info = getCopyContent(item, false);
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info), null);
             }
         });
         MenuItem updateTask = new MenuItem(NAME_MENU_UPDATE);
@@ -59,6 +60,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
         getItems().add(copyTask);
+        getItems().add(copyTaskSimple);
         getItems().add(updateTask);
     }
 
@@ -67,6 +69,24 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             instance = new HepWaitHandleTaskMenu();
         }
         return instance;
+    }
+
+    private String getCopyContent(HepTaskDto item, boolean hasDescribe) {
+        StringBuilder info = new StringBuilder();
+        info.append("[需求编号]").append(STR_SPACE).append(STR_NEXT_LINE);
+        info.append("[修改单编号]").append(STR_SPACE).append(item.getTaskNumber()).append(STR_NEXT_LINE);
+        info.append("[修改单版本]").append(STR_SPACE).append(item.getSprintVersion()).append(STR_NEXT_LINE);
+        info.append("[需求引入行]").append(STR_SPACE);
+        if (hasDescribe) {
+            String name = item.getName();
+            if (name.contains(STR_BRACKETS_2_RIGHT)) {
+                name = name.substring(name.lastIndexOf(STR_BRACKETS_2_RIGHT) + 1);
+            } else if (name.contains(STR_BRACKETS_3_RIGHT)) {
+                name = name.substring(name.lastIndexOf(STR_BRACKETS_3_RIGHT) + 1);
+            }
+            info.append(STR_NEXT_LINE).append("[需求描述]").append(STR_SPACE).append(name);
+        }
+        return info.toString();
     }
 }
 

@@ -261,7 +261,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         }
         JSONArray items = new JSONArray();
         if (response != null) {
-            LoggerUtils.info("response: " + response.body());
+            //LoggerUtils.info("response: " + response.body());
             Map<String, Object> responseInfo;
             String message = response.body();
             if (requestStatus(response)) {
@@ -495,13 +495,13 @@ public class HepTaskTodoController extends BaseController implements Initializab
                             String taskName = item.getName();
                             String taskNameTag = getTaskNameTag(taskName);
                             if (taskNameTag.contains("缺陷")) {
-                                setStyle("-fx-text-background-color: red;");
+                                setStyle("-fx-text-background-color: blue;");
                             } else if (taskNameTag.contains("问题") || taskNameTag.contains("任务")) {
                                 setStyle("-fx-text-background-color: #804000;");
                             } else if (taskName.contains("已修改") || taskName.contains("已提交")) {
                                 setStyle("-fx-text-background-color: #550080;");
                             } else {
-                                setStyle("-fx-text-background-color: blue;");
+                                setStyle("-fx-text-background-color: black;");
                             }
                         }
                     }
@@ -679,9 +679,9 @@ public class HepTaskTodoController extends BaseController implements Initializab
         DigestAlgorithm digestAlgorithm = DigestAlgorithm.MD5;
         String sign = SecureUtil.signParams(digestAlgorithm, jsonObject, "&", "=", true, new String[0]).toUpperCase();
         jsonObject.set(KEY_SIGN, sign);
-        LoggerUtils.info("url: " + REQUEST_URL);
-        LoggerUtils.info("method: " + jsonObject.get(KEY_METHOD));
-        LoggerUtils.info("request: " + jsonObject);
+        //LoggerUtils.info("url: " + REQUEST_URL);
+        //LoggerUtils.info("method: " + jsonObject.get(KEY_METHOD));
+        //LoggerUtils.info("request: " + jsonObject);
         if (testScene()) {
             return null;
         }
@@ -774,7 +774,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             if (StringUtils.isBlank(type) || STR_1.equals(type)) {
                 return "9900-12-31 23:59:59";
             } else if (STR_2.equals(type)) {
-                return "1900-12-31 23:59:59";
+                return "9990-12-31 23:59:59";
             } else if (STR_9.equals(type)) {
                 return "9999-12-31 23:59:59";
             }
