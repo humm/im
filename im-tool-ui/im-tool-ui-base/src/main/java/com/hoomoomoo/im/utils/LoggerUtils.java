@@ -151,22 +151,6 @@ public class LoggerUtils {
         writeLogInfo(COPY_CODE.getCode(), startDate, fileName);
     }
 
-    public static void writeWaitAppraiseInfo(Date startDate, List<String> logs) {
-        writeLogInfo(WAIT_APPRAISE.getCode(), startDate, logs);
-    }
-
-    public static void writeShowOrderInfo(Date startDate, List<String> logs) {
-        writeLogInfo(SHOW_ORDER.getCode(), startDate, logs);
-    }
-
-    public static void writeAppendAppraise(Date startDate, List<String> logs) {
-        writeLogInfo(APPEND_APPRAISE.getCode(), startDate, logs);
-    }
-
-    public static void writeServiceAppraise(Date startDate, List<String> logs) {
-        writeLogInfo(SERVICE_APPRAISE.getCode(), startDate, logs);
-    }
-
     public static void writeLogInfo(String functionCode, Date startDate, List<String> logs) {
         try {
             MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionCode);
@@ -211,16 +195,6 @@ public class LoggerUtils {
                 return;
             }
             FileUtils.writeFile(filePath, logs, false);
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-        }
-    }
-
-    public static void writeStatInfo(MenuFunctionConfig.FunctionConfig functionConfig) {
-        try {
-            // 写统计文件
-            String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, functionConfig.getLogFolder() + FILE_TYPE_STAT));
-            writeStatFile(statFilePath);
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

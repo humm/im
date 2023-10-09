@@ -34,6 +34,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -435,6 +436,31 @@ public class HepTaskTodoController extends BaseController implements Initializab
         Iterator<HepTaskDto> iterator = res.listIterator();
         boolean hasBlank = false;
         int taskTotal = 0;
+        Map<String, Map<String, String>> version = new HashMap<>();
+        try {
+            String currentDate = CommonUtils.getCurrentDateTime3();
+            List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
+            for (String item : versionList) {
+                String[] elements = item.split(STR_SEMICOLON);
+                Map<String, String> ele = new HashMap<>();
+                String closeDate = CommonUtils.getIntervalDays(currentDate, elements[1]);
+                String publishDate = CommonUtils.getIntervalDays(currentDate, elements[2]);
+                if (closeDate.contains(STR_HYPHEN)) {
+                    closeDate = STR_0;
+                }
+                if (publishDate.contains(STR_HYPHEN)) {
+                    publishDate = STR_0;
+                }
+                ele.put("closeDate", closeDate);
+                ele.put("publishDate", publishDate);
+                ele.put("customer", elements[3]);
+                version.put(elements[0], ele);
+            }
+        } catch (IOException e) {
+            LoggerUtils.info(e);
+        } catch (ParseException e) {
+            LoggerUtils.info(e);
+        }
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String status = item.getStatus();
@@ -445,6 +471,13 @@ public class HepTaskTodoController extends BaseController implements Initializab
             if (hasBlank && StringUtils.isBlank(status)) {
                 iterator.remove();
                 continue;
+            }
+
+            if (version.containsKey(item.getSprintVersion())) {
+                Map<String, String> versionInfo = version.get(item.getSprintVersion());
+                item.setCloseDate(versionInfo.get("closeDate"));
+                item.setPublishDate(versionInfo.get("publishDate"));
+                item.setCustomer(versionInfo.get("customer"));
             }
             if (StringUtils.isBlank(status)) {
                 hasBlank = true;
@@ -844,7 +877,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
             item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
-            item.put("sprint_version", "TA6.0-FUND.V202304.07.000M6");
+            item.put("sprint_version", i % 2 == 0 ? "TA6.0V202202.02.036" : "TA6.0-FUND.V202304.03.001M5");
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-24 22:59:59");

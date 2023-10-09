@@ -29,4 +29,8 @@ public class HepTaskDto extends BaseDto{
     private String suggestion;
 
     private String operateType;
+
+    private String closeDate;
+    private String publishDate;
+    private String customer;
 }

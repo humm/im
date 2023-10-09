@@ -3,18 +3,19 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.LoggerUtils;
-import com.hoomoomoo.im.utils.OutputUtils;
-import com.hoomoomoo.im.utils.TaCommonUtils;
+import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import jxl.Sheet;
+import jxl.Workbook;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -39,12 +40,25 @@ public class SystemToolController implements Initializable {
     @FXML
     private Button cancelShakeMouseBtn;
 
+    @FXML
+    private Button updateVersionBtn;
+
     private Timer shakeMouseTimer;
 
     private Robot robot;
 
     private int moveStep = 1;
 
+
+    @SneakyThrows
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        moveStep = Integer.valueOf(appConfigDto.getSystemToolShakeMouseStep());
+        if (Boolean.valueOf(appConfigDto.getSystemToolShakeMouseAuto())) {
+            shakeMouse(null);
+        }
+    }
 
     @FXML
     void shakeMouse(ActionEvent event) throws Exception {
@@ -73,18 +87,62 @@ public class SystemToolController implements Initializable {
         }
     }
 
-    @SneakyThrows
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        moveStep = Integer.valueOf(appConfigDto.getSystemToolShakeMouseStep());
-        if (Boolean.valueOf(appConfigDto.getSystemToolShakeMouseAuto())) {
-            shakeMouse(null);
+    @FXML
+    void updateVersion(ActionEvent event) {
+        updateVersionBtn.setDisable(true);
+        List<String> list = new ArrayList<>();
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            String filePath = appConfigDto.getSystemToolUpdateVersionPath();
+            if (StringUtils.isBlank(filePath)) {
+                OutputUtils.info(logs, getUpdateVersionMsg("请配置【system.tool.update.version.path】"));
+            } else {
+                Workbook workbook = Workbook.getWorkbook(new File(filePath));
+                Sheet[] sheetList = workbook.getSheets();
+                if (sheetList != null) {
+                    Sheet sheet = sheetList[0];
+                    int rows = sheet.getRows();
+                    for (int i = 2; i < rows; i++) {
+                        StringBuilder item = new StringBuilder();
+                        String version = getCellReal(sheet, 2, i);
+                        if (StringUtils.isBlank(version)) {
+                            continue;
+                        }
+                        String closeDate = getCellReal(sheet, 4, i);
+                        String publishDate = getCellReal(sheet, 6, i);
+                        String customer = getCellReal(sheet, 9, i);
+                        if (StringUtils.isBlank(closeDate)) {
+                            closeDate = publishDate;
+                        }
+                        item.append(version).append(STR_SEMICOLON).append(closeDate).append(STR_SEMICOLON).append(publishDate).append(STR_SEMICOLON).append(customer);
+                        list.add(item.toString());
+                    }
+                }
+            }
+            String statPath = FileUtils.getFilePath(PATH_VERSION_STAT);
+            FileUtils.writeFile(statPath, list, false);
+            OutputUtils.info(logs, getUpdateVersionMsg("更新成功"));
+
+            List<String> record = new ArrayList<>();
+            record.add(getUpdateVersionMsg("更新成功"));
+            LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+        } catch (Exception e) {
+            OutputUtils.info(logs, e.getMessage());
+        } finally {
+            updateVersionBtn.setDisable(false);
         }
+    }
+
+    private String getCellReal(Sheet sheet, int i, int j) {
+        return sheet.getCell(i, j).getContents();
     }
 
     private String getShakeMouseMsg (String msg) {
         return TaCommonUtils.getMsgContainDate("【"+ NAME_SHAKE_MOUSE + "】") + STR_SPACE + msg + STR_NEXT_LINE;
+    }
+
+    private String getUpdateVersionMsg (String msg) {
+        return TaCommonUtils.getMsgContainDate("【"+ NAME_UPDATE_VERSION + "】") + STR_SPACE + msg + STR_NEXT_LINE;
     }
 
     private void doShakeMouse(AppConfigDto appConfigDto) {

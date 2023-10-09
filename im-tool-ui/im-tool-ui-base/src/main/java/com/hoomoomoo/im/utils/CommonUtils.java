@@ -770,4 +770,10 @@ public class CommonUtils {
         return STR_BLANK;
     }
 
+    public static String getIntervalDays(String start, String end) throws ParseException {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(PATTERN3);
+        Long startDate = simpleDateFormat.parse(start).getTime();
+        Long endDate = simpleDateFormat.parse(end).getTime();
+        return String.valueOf((endDate - startDate) / 24 / 60 / 60 / 1000);
+    }
 }

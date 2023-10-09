@@ -20,7 +20,6 @@
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
                                     <children>
                                         <Label layoutX="50.0" layoutY="50.0" prefHeight="15.0" prefWidth="120.0" text="模拟鼠标移动" style="-fx-font-size: 16;"/>
-
                                         <Button fx:id="shakeMouseBtn" layoutX="180.0" layoutY="45"
                                                 mnemonicParsing="false" onAction="#shakeMouse" prefWidth="100.0" text="开始">
                                             <padding>
@@ -33,6 +32,16 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                             </padding>
                                         </Button>
+
+
+                                        <Label layoutX="50.0" layoutY="120.0" prefHeight="15.0" prefWidth="120.0" text="更新发版时间" style="-fx-font-size: 16;"/>
+                                        <Button fx:id="updateVersionBtn" layoutX="180.0" layoutY="115"
+                                                mnemonicParsing="false" onAction="#updateVersion" prefWidth="100.0" text="更新">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </Button>
+
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">

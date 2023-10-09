@@ -223,6 +223,8 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolShakeMouseStopTime;
 
+    private String systemToolUpdateVersionPath;
+
     private TabPane tabPane;
 
     public AppConfigDto() {

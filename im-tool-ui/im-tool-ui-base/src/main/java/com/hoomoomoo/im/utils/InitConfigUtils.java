@@ -455,6 +455,8 @@ public class InitConfigUtils {
 
         keys.put("hep.task.user", null);
 
+        keys.put("system.tool.update.version.path", null);
+
     }
 
     /**

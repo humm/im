@@ -218,6 +218,7 @@ public class BaseConst {
     public static final String NAME_MENU_HEP_TASK_TODO = "#################### 效能";
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
+    public static final String NAME_UPDATE_VERSION = "更新发版时间";
 
     public static final String NAME_MENU_UPDATE = "更新";
     public static final String NAME_MENU_COPY = "复制";
@@ -338,6 +339,7 @@ public class BaseConst {
     public static final String PATH_COMPLETE_TASK_FXML = "/conf/fxml/completeTask.fxml";
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_RECORD_LOG = "/records/%s.record";
+    public static final String PATH_VERSION_STAT = "/stats/version.stat";
 
     public static final String PACKAGE_JAVA_PREFIX = "com.hundsun.lcpt.fund.";
     public static final String PATH_JAVA_PREFIX = "/src/main/java/";
