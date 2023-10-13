@@ -3,7 +3,6 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
@@ -53,7 +52,7 @@ public class CopyCodeController extends BaseController implements Initializable 
     private ComboBox targetVersion;
 
     @FXML
-    private TableView log;
+    private TextArea log;
 
     @FXML
     private Button execute;
@@ -243,11 +242,11 @@ public class CopyCodeController extends BaseController implements Initializable 
                                 successNum++;
                             }
                         }
-                        String msg = STR_BLANK;
+                        String msg = STR_NEXT_LINE;
                         if (fileList.length - skipNum == successNum) {
-                            msg += "复制成功 总文件数[ " + successNum + " ]";
+                            msg += "复制成功 总文件数【 " + successNum + " 】";
                         } else {
-                            msg += "复制失败 总文件数[ " + successNum + " ] 失败文件数[ " + (fileList.length - successNum) + " ]";
+                            msg += "复制失败 总文件数【 " + successNum + " 】 失败文件数【 " + (fileList.length - successNum) + " 】";
                         }
                         infoMsg(msg);
                     }
@@ -256,7 +255,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                 setProgress(1);
             } catch (Exception e) {
                 if (e instanceof FileNotFoundException) {
-                    OutputUtils.info(log, fileLocation.substring(fileLocation.lastIndexOf("/") + 1)+ " 不存在", true);
+                    OutputUtils.info(log, fileLocation.substring(fileLocation.lastIndexOf("/") + 1)+ " 不存在" + STR_NEXT_LINE);
                 } else {
                     OutputUtils.info(log, e.getMessage());
                 }
@@ -344,10 +343,7 @@ public class CopyCodeController extends BaseController implements Initializable 
     }
 
     private void infoMsg(String msg) {
-        LogDto logDto = new LogDto();
-        logDto.setTime(CommonUtils.getCurrentDateTime8(new Date()));
-        logDto.setMsg(msg);
-        OutputUtils.info(log, logDto);
+        OutputUtils.info(log, msg + STR_NEXT_LINE);
     }
 
     private String getFileName(String filePath) {

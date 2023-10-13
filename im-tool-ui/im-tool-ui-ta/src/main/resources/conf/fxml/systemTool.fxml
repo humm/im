@@ -13,7 +13,7 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.41778523489932884" layoutX="174.0" layoutY="76.0"
+                        <SplitPane dividerPositions="0.3078523489932884" layoutX="174.0" layoutY="76.0"
                                    prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>

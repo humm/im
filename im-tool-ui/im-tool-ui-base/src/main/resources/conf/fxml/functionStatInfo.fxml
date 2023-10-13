@@ -30,28 +30,28 @@
                                                                   prefHeight="321.8823426228261" prefWidth="597.7814934423914" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                                            <columns>
                                                                <TableColumn id="functionName" editable="false"
-                                                                            prefWidth="300" sortable="false"
+                                                                            prefWidth="420" sortable="false"
                                                                             text="功能名称">
                                                                    <cellValueFactory>
                                                                        <PropertyValueFactory property="functionName"/>
                                                                    </cellValueFactory>
                                                                </TableColumn>
                                                                <TableColumn id="firstTime" editable="false"
-                                                                            prefWidth="300" sortable="false"
+                                                                            prefWidth="420" sortable="false"
                                                                             text="首次使用时间">
                                                                    <cellValueFactory>
                                                                        <PropertyValueFactory property="firstTime"/>
                                                                    </cellValueFactory>
                                                                </TableColumn>
                                                                <TableColumn id="lastTime" editable="false"
-                                                                            prefWidth="300" sortable="false"
+                                                                            prefWidth="430" sortable="false"
                                                                             text="末次使用时间">
                                                                    <cellValueFactory>
                                                                        <PropertyValueFactory property="lastTime"/>
                                                                    </cellValueFactory>
                                                                </TableColumn>
                                                                <TableColumn id="submitTimes" editable="false"
-                                                                            prefWidth="300" sortable="false"
+                                                                            prefWidth="430" sortable="false"
                                                                             text="使用次数">
                                                                    <cellValueFactory>
                                                                        <PropertyValueFactory property="submitTimes"/>

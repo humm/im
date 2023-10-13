@@ -19,7 +19,7 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.33153003680400354" layoutX="174.0" layoutY="76.0"
+                        <SplitPane dividerPositions="0.25153003680400354" layoutX="174.0" layoutY="76.0"
                                    prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
@@ -103,7 +103,7 @@
                                                         <PropertyValueFactory property="codeVersion" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="270"
+                                                <TableColumn id="msg" editable="false" prefWidth="525"
                                                              sortable="false" text="提交备注">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="msg" />
@@ -114,7 +114,7 @@
                                                         <PropertyValueFactory property="time" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="version" editable="false" prefWidth="85"
+                                                <TableColumn id="version" editable="false" prefWidth="100"
                                                              sortable="false" text="SVN编号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="version" />

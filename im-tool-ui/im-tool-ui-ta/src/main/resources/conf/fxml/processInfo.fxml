@@ -18,62 +18,26 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.45778523489932884" layoutX="174.0" layoutY="76.0"
-                                   prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <items>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
-                                    <children>
-                                        <Label layoutX="14.0" layoutY="14.0" prefHeight="15.0" prefWidth="80.0" text="流程Excel" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
-                                        <TextField fx:id="filePath" layoutX="90.0" layoutY="11.0" prefHeight="23.0" prefWidth="200.0" />
-                                        <Button fx:id="selectFile" layoutX="300.0" layoutY="12.0" mnemonicParsing="false" onAction="#executeSelect" prefHeight="23.0" prefWidth="25.0" text="···" />
+                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
+                            <children>
+                                <Label layoutX="14.0" layoutY="14.0" prefHeight="15.0" prefWidth="80.0" text="流程Excel" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="15.0" />
+                                <TextField fx:id="filePath" layoutX="90.0" layoutY="11.0" prefHeight="23.0" prefWidth="800.0" />
+                                <Button fx:id="selectFile" layoutX="900.0" layoutY="12.0" mnemonicParsing="false" onAction="#executeSelect" prefHeight="23.0" prefWidth="25.0" text="···" />
 
-                                        <!--<Label layoutX="15.0" layoutY="60.0" prefHeight="15.0" prefWidth="80.0"
-                                               text="缓存信息"/>
-                                        <Button layoutX="90.0" layoutY="55.0"
-                                                mnemonicParsing="false" onAction="#executeClear" text="清除缓存"/>-->
+                                <ProgressIndicator fx:id="schedule" layoutX="1000.0" layoutY="14.0" progress="0.0" />
+                                <Label fx:id="scheduleText" layoutX="1050.0" layoutY="18.0" text="0%" />
 
-                                        <ProgressIndicator fx:id="schedule" layoutX="390.0" layoutY="30.0" progress="0.0" />
-                                        <Label fx:id="scheduleText" layoutX="430.0" layoutY="33.0" text="0%" />
+                                <Button fx:id="submit" layoutX="1150.0" layoutY="10.0"
+                                        mnemonicParsing="false" onAction="#executeSubmit" prefHeight="35.0"
+                                        prefWidth="100.0" text="执行">
+                                    <padding>
+                                        <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
+                                    </padding>
+                                </Button>
 
-                                        <Button fx:id="submit" layoutX="210.0" layoutY="100.0"
-                                                mnemonicParsing="false" onAction="#executeSubmit" prefHeight="35.0"
-                                                prefWidth="100.0" text="执行">
-                                            <padding>
-                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
-                                            </padding>
-                                        </Button>
-
-                                        <!--<Label layoutX="15.0" layoutY="220.0" prefHeight="15.0"
-                                               text="缓存信息用于自动生成升级脚本，完成一次之后需手动清除一次"/>
-                                        <Label layoutX="15.0" layoutY="245.0" prefHeight="15.0"
-                                               text="生成升级脚本仅供参考，请核对确认  功能未启用"/>-->
-
-                                        <TextArea fx:id="errMsg" layoutX="14.0" layoutY="295.0" prefHeight="280.0"
-                                                  prefWidth="660.0" />
-                                    </children>
-                                </AnchorPane>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">
-                                    <children>
-                                        <TableView fx:id="log" layoutY="14.0" prefHeight="188.0" prefWidth="201.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <columns>
-                                                <TableColumn id="time" editable="false" prefWidth="215"
-                                                             sortable="false" text="生成时间">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="time" />
-                                                    </cellValueFactory>
-                                                </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="590"
-                                                             sortable="false" text="生成日志">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="msg" />
-                                                    </cellValueFactory>
-                                                </TableColumn>
-                                            </columns>
-                                        </TableView>
-                                    </children>
-                                </AnchorPane>
-                            </items>
-                        </SplitPane>
+                                <TextArea fx:id="log" layoutX="30.0" layoutY="100.0" prefHeight="620.0"  prefWidth="1655.0" />
+                            </children>
+                        </AnchorPane>
                     </children>
                 </AnchorPane>
             </items>

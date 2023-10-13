@@ -476,6 +476,10 @@ public class CommonUtils {
         for (MenuFunctionConfig.FunctionConfig functionConfig : MenuFunctionConfig.FunctionConfig.values()) {
             int functionCode = Integer.valueOf(functionConfig.getCode());
             if (APP_CODE_TA.equals(appCode) && functionCode < FUNCTION_CODE_1000) {
+                // 临时注释 不授权 生成代码功能
+                if (functionCode == FUNCTION_CODE_310) {
+                    continue;
+                }
                 functionConfigList.add(functionConfig);
             } else if (APP_CODE_SHOPPING.equals(appCode) && functionCode >= FUNCTION_CODE_1000 && functionCode < FUNCTION_CODE_2000) {
                 functionConfigList.add(functionConfig);

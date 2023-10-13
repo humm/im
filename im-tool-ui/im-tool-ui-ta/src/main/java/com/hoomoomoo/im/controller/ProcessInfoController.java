@@ -5,7 +5,6 @@ import com.hoomoomoo.im.cache.TaskMemoryCache;
 import com.hoomoomoo.im.cache.TransMemoryCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import com.hoomoomoo.im.utils.TaCommonUtils;
@@ -17,7 +16,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -25,6 +23,7 @@ import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.cache.TaskMemoryCache.*;
+import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.PROCESS_INFO;
 
 
@@ -49,17 +48,11 @@ public class ProcessInfoController extends BaseController implements Initializab
     private String taCode = "000000";
 
     @FXML
-    private TableView log;
-
-    @FXML
-    private TextArea errMsg;
+    private TextArea log;
 
     private Map<String, String> jobToGroup = new HashMap<>(16);
 
     private Map<String, String> taskToJob = new HashMap<>(16);
-
-    List<String> cache = new ArrayList<>(16);
-
 
 
     @FXML
@@ -74,17 +67,11 @@ public class ProcessInfoController extends BaseController implements Initializab
     }
 
     @FXML
-    void executeClear(ActionEvent event) {
-        cache.clear();
-        OutputUtils.info(log, "缓存清除完成");
-    }
-
-    @FXML
     void executeSubmit(ActionEvent event) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, PROCESS_INFO.getName()));
             if (StringUtils.isBlank(filePath.getText())) {
-                OutputUtils.info(log, "请选择流程信息Excel文件");
+                OutputUtils.info(log, "请选择流程信息Excel文件" + STR_NEXT_LINE);
                 return;
             }
             int index = filePath.getText().lastIndexOf("/");
@@ -108,7 +95,7 @@ public class ProcessInfoController extends BaseController implements Initializab
             generateScript();
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(log, e.getMessage());
+            OutputUtils.info(log, e.getMessage() + STR_NEXT_LINE);
         }
     }
 
@@ -126,7 +113,7 @@ public class ProcessInfoController extends BaseController implements Initializab
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(log, e.getMessage());
+            OutputUtils.info(log, e.getMessage() + STR_NEXT_LINE);
         }
     }
 
@@ -138,7 +125,6 @@ public class ProcessInfoController extends BaseController implements Initializab
                 submit.setDisable(true);
                 Date date = new Date();
                 OutputUtils.clearLog(log);
-                OutputUtils.clearLog(errMsg);
                 // 创建生成脚本目录
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 String processSchedule = appConfigDto.getProcessGeneratePathSchedule();
@@ -152,12 +138,6 @@ public class ProcessInfoController extends BaseController implements Initializab
                     pathFolderTrans.mkdirs();
                 }
 
-                String configSqlPath = filePath.getText().replace("schedule-config.xls", "tbtrans-fund.sql");
-                if (CollectionUtils.isEmpty(cache)) {
-                    cache = FileUtils.readNormalFile(configSqlPath, false);
-                    cache.addAll(FileUtils.readNormalFile(configSqlPath.replace("tbtrans-fund.sql", "tbschedule-fund_000000.sql"), false));
-                }
-
                 // 打开workbook
                 Workbook workbook = Workbook.getWorkbook(new File(filePath.getText()));
 
@@ -165,13 +145,13 @@ public class ProcessInfoController extends BaseController implements Initializab
                 Sheet[] sheetList = workbook.getSheets();
                 Sheet taskSheet = workbook.getSheet("任务配置");
                 if (taskSheet == null) {
-                    OutputUtils.info(log, "[任务配置]sheet页面不存在");
+                    OutputUtils.info(log, "[任务配置]sheet页面不存在" + STR_NEXT_LINE);
                     return;
                 } else {
-                    OutputUtils.info(log, "任务缓存加载开始");
+                    OutputUtils.info(log, "任务缓存加载开始" + STR_NEXT_LINE);
                     TaskMemoryCache.initCache(taskSheet);
                     TaskMemoryCache.cleaExistMap();
-                    OutputUtils.info(log, "任务缓存加载结束");
+                    OutputUtils.info(log, "任务缓存加载结束" + STR_NEXT_LINE);
                 }
                 // 校验task配置合理性
                 Map<String, String> check = new HashMap<>(16);
@@ -183,7 +163,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                     String checkKey = task.get(FUNCTION_ID) + "-" + task.get(PARENT_FUNCTION_ID) + "-" +  task.get(SCHE_TASK_RESERVE);
                     if (check.containsKey(checkKey)) {
                         String msg = String.format("任务配置中【%s】和【%s】的【功能号】【父功能号】【扩展参数】相同，请调整", check.get(checkKey),taskCode);
-                        OutputUtils.info(errMsg, msg);
+                        OutputUtils.info(log, msg + STR_NEXT_LINE);
                         LoggerUtils.info(msg);
                         throw new Exception(msg);
                     } else {
@@ -210,7 +190,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 // step 3 在输出文件内 写 组信息 和 页 信息
                 Sheet flowSheet = workbook.getSheet("基本流程信息");
                 if (flowSheet == null) {
-                    OutputUtils.info(log, "[基本流程信息]sheet页面不存在");
+                    OutputUtils.info(log, "[基本流程信息]sheet页面不存在" + STR_NEXT_LINE);
                     return;
                 }
                 writeFlowInfo(taCode, flowSheet, bufferedWriter);
@@ -230,35 +210,35 @@ public class ProcessInfoController extends BaseController implements Initializab
                     String groupCode = BaseConst.STR_SPACE;
                     if (sheet.getName().compareTo("自由节点") != 0) {
                         if (sheetNames.length != 2) {
-                            OutputUtils.info(log, sheet.getName() + "命名不规范,正常的格式为中文名&英文名,请检查");
+                            OutputUtils.info(log, sheet.getName() + "命名不规范,正常的格式为中文名&英文名,请检查" + STR_NEXT_LINE);
                         } else {
                             groupCode = sheetNames[1];
                         }
                     }
                     groupName = sheetNames[0];
-                    OutputUtils.info(log, "开始生成[" + groupName + "]");
+                    OutputUtils.info(log, "开始生成[" + groupName + "]" + STR_NEXT_LINE);
                     // step 3.2 开始写流程文件
                     jobWithTaskMap = writeJobFile(groupCode, groupName, taCode, sheet, bufferedWriter);
-                    OutputUtils.info(log, "tbscheduletask生成开始");
+                    OutputUtils.info(log, "tbscheduletask生成开始" + STR_NEXT_LINE);
                     // 通过 jobTaskMap 和  Cache  生成 sql
                     writeTaskInfo(taCode, bufferedWriter, jobWithTaskMap);
-                    OutputUtils.info(log, "tbscheduletask生成结束");
+                    OutputUtils.info(log, "tbscheduletask生成结束" + STR_NEXT_LINE);
                 }
 
                 // step 3.2.5 开始写流程文件 tbscheduletrigger
-                OutputUtils.info(log, "tbscheduletrigger生成开始");
+                OutputUtils.info(log, "tbscheduletrigger生成开始" + STR_NEXT_LINE);
                 Sheet triggerSheet = workbook.getSheet("定时任务配置");
                 if (triggerSheet == null) {
-                    OutputUtils.info(log, "[定时任务配置]sheet页面不存在");
+                    OutputUtils.info(log, "[定时任务配置]sheet页面不存在" + STR_NEXT_LINE);
                     return;
                 }
                 writeTriggerInfo(taCode, triggerSheet, bufferedWriter);
-                OutputUtils.info(log, "tbscheduletrigger生成结束");
+                OutputUtils.info(log, "tbscheduletrigger生成结束" + STR_NEXT_LINE);
 
                 // step 3.3 开始写流程文件 tbscheduletaskregistry
-                OutputUtils.info(log, "tbscheduletaskregistry生成开始");
+                OutputUtils.info(log, "tbscheduletaskregistry生成开始" + STR_NEXT_LINE);
                 writeTaskRegistry(bufferedWriter);
-                OutputUtils.info(log, "tbscheduletaskregistry生成结束");
+                OutputUtils.info(log, "tbscheduletaskregistry生成结束" + STR_NEXT_LINE);
 
                 bufferedWriter.write(BaseConst.STR_BLANK);
                 bufferedWriter.close();
@@ -267,19 +247,10 @@ public class ProcessInfoController extends BaseController implements Initializab
                 path.add(transPath);
                 path.add(schedulePath);
                 LoggerUtils.writeProcessInfo(date, path);
-                /*OutputUtils.info(log, "生成升级脚本 开始");
-                List<String> sqlInfo = FileUtils.readNormalFile(configSqlPath, false);
-                sqlInfo.addAll(FileUtils.readNormalFile(configSqlPath.replace("tbtrans-fund.sql", "tbschedule-fund_000000.sql"), false));
-                List<String> sql = TaCommonUtil.buildSql(appConfigDto, cache, sqlInfo);
-                if (CollectionUtils.isEmpty(sql)) {
-                    sql.add("-- 脚本无差异");
-                }
-                FileUtils.writeFile(configSqlPath.replace("tbtrans-fund", "tbschedule-fund_temp"), sql, false);
-                OutputUtils.info(log, "生成升级脚本 结束");*/
-                OutputUtils.info(log, "执行完成");
+                OutputUtils.info(log, "执行完成" + STR_NEXT_LINE);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(log, e.getMessage());
+                OutputUtils.info(log, e.getMessage() + STR_NEXT_LINE);
             } finally {
                 setProgress(1);
                 submit.setDisable(false);
@@ -293,7 +264,7 @@ public class ProcessInfoController extends BaseController implements Initializab
      * @param bf
      */
     private void writeTransInfo(BufferedWriter bf) throws IOException {
-        OutputUtils.info(log, "交易配置信息生成开始");
+        OutputUtils.info(log, "交易配置信息生成开始" + STR_NEXT_LINE);
         bf.write("-- ***************************************************\n");
         bf.write("-- TA6.0 交易配置\n");
         bf.write("-- 版权所述：TA研发二部\n");
@@ -320,7 +291,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                     "'" + (row.get(TransMemoryCache.RESERVE3).equals("") ? " " : row.get(TransMemoryCache.RESERVE3)) + "');\n");
         }
         bf.write("commit;");
-        OutputUtils.info(log, "交易配置信息生成结束");
+        OutputUtils.info(log, "交易配置信息生成结束" + STR_NEXT_LINE);
     }
 
     /**
@@ -332,7 +303,7 @@ public class ProcessInfoController extends BaseController implements Initializab
      * @throws IOException
      */
     private void writeFlowInfo(String taCode, Sheet sheet, BufferedWriter bufferedWriter) throws IOException {
-        OutputUtils.info(log, "流程基础信息开始");
+        OutputUtils.info(log, "流程基础信息开始" + STR_NEXT_LINE);
         bufferedWriter.write("-- ***************************************************\n");
         bufferedWriter.write("-- TA6.0流程\n");
         bufferedWriter.write("-- 版权所述：TA研发二部\n");
@@ -368,7 +339,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 bufferedWriter.write("-- 流程组配置脚本 end\n\n");
             }
         }
-        OutputUtils.info(log, "流程基础信息生成结束");
+        OutputUtils.info(log, "流程基础信息生成结束" + STR_NEXT_LINE);
     }
 
     /**
@@ -433,7 +404,6 @@ public class ProcessInfoController extends BaseController implements Initializab
                 String jobCode = sheet.getCell(2, k).getContents();
                 if (jobToGroup.containsKey(jobCode)) {
                     String msg = String.format("一级JOB【%s】不能同时出现在流程【%s】和【%s】，请调整", jobCode, groupCode, jobToGroup.get(jobCode));
-                    OutputUtils.info(errMsg, msg);
                     LoggerUtils.info(msg);
                     throw new Exception(msg);
                 } else {
@@ -494,8 +464,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 // 校验job配置合理性
                 String jobCode = sheet.getCell(2, k).getContents();
                 if (jobToGroup.containsKey(jobCode)) {
-                    String msg = String.format("一级JOB【%s】不能同时出现在流程【%s】和【%s】，请调整", jobCode, groupCode, jobToGroup.get(jobCode));
-                    OutputUtils.info(errMsg, msg);
+                    String msg = String.format("二级JOB【%s】不能同时出现在流程【%s】和【%s】，请调整", jobCode, groupCode, jobToGroup.get(jobCode));
                     LoggerUtils.info(msg);
                     throw new Exception(msg);
                 } else {
@@ -583,15 +552,14 @@ public class ProcessInfoController extends BaseController implements Initializab
                 Map map = TaskMemoryCache.getCacheMap(taskCode);
                 if (map == null) {
                     String msg = key + "的TASK[" + taskCode + "]在【任务配置】sheet页中不存在";
-                    OutputUtils.info(errMsg, msg);
-                    OutputUtils.info(log, msg);
+                    OutputUtils.info(log, msg + STR_NEXT_LINE);
+                    OutputUtils.info(log, msg + STR_NEXT_LINE);
                     LoggerUtils.info(msg);
                     return;
                 }
                 // 校验task配置合理性
                 if (taskToJob.containsKey(taskCode)) {
                     String msg = String.format("任务代码【%s】不能同时出现在一级JOB【%s】和【%s】，请调整", taskCode, key, taskToJob.get(taskCode));
-                    OutputUtils.info(errMsg, msg);
                     LoggerUtils.info(msg);
                     throw new Exception(msg);
                 } else {

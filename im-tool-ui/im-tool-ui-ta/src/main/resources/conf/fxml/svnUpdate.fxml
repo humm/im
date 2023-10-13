@@ -13,7 +13,7 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.43778523489932884" layoutX="174.0" layoutY="76.0"
+                        <SplitPane dividerPositions="0.21778523489932884" layoutX="174.0" layoutY="76.0"
                                    prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
@@ -53,19 +53,19 @@
                                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="version" editable="false" prefWidth="165"
+                                                <TableColumn id="version" editable="false" prefWidth="200"
                                                              sortable="false" text="版本号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="version"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="name" editable="false" prefWidth="435" sortable="false"
+                                                <TableColumn id="name" editable="false" prefWidth="700" sortable="false"
                                                              text="名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="time" editable="false" prefWidth="235" sortable="false"
+                                                <TableColumn id="time" editable="false" prefWidth="425" sortable="false"
                                                              text="更新时间">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="time"/>

@@ -451,9 +451,26 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 if (publishDate.contains(STR_HYPHEN)) {
                     publishDate = STR_0;
                 }
+                String customer = elements[3];
+                String[] customerList;
+                if (customer.contains("无人使用")) {
+                    customerList = new String[]{STR_BLANK};
+                } else if (customer.contains(STR_COMMA_1)) {
+                    customerList = customer.split(STR_COMMA_1);
+                } else if (customer.contains(STR_CAESURA)) {
+                    customerList = customer.split(STR_CAESURA);
+                } else {
+                    customerList = new String[]{customer};
+                }
+                customer = STR_BLANK;
+                for (String element : customerList) {
+                    if (element.length() > 4) {
+                        customer += element.substring(0, 4) + STR_SPACE;
+                    }
+                }
                 ele.put("closeDate", closeDate);
                 ele.put("publishDate", publishDate);
-                ele.put("customer", elements[3]);
+                ele.put("customer", customer);
                 version.put(elements[0], ele);
             }
         } catch (IOException e) {
@@ -877,12 +894,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
             item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
-            item.put("sprint_version", i % 2 == 0 ? "TA6.0V202202.02.036" : "TA6.0-FUND.V202304.03.001M5");
+            item.put("sprint_version", i % 2 == 0 ? "TA6.0-FUND.V202304.00.008" : "TA6.0-FUND.V202304.00.004M5");
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-24 22:59:59");
             switch (i % 7) {
-                case 0: item.put(KEY_NAME, "「开发」问题" + i);break;
+                case 0: item.put(KEY_NAME, "「开发」问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题" + i);break;
                 case 1: item.put(KEY_NAME, "「开发」【缺陷:45454】问题" + i);break;
                 case 2: item.put(KEY_NAME, "「自测问题」问题" + i);break;
                 case 6: item.put(KEY_NAME, "「自建任务」问题" + i);break;

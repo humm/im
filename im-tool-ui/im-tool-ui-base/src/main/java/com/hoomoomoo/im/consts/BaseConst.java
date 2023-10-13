@@ -235,6 +235,8 @@ public class BaseConst {
     public final static String STR_SPACE_4 = "    ";
     public final static String STR_EQUALS = "=";
     public static final String STR_COMMA = ",";
+    public static final String STR_COMMA_1 = "，";
+    public static final String STR_CAESURA  = "、";
     public static final String STR_SEMICOLON = ";";
     public static final String STR_COLON = ":";
     public static final String STR_HYPHEN = "-";
@@ -266,6 +268,7 @@ public class BaseConst {
 
     public final static Integer FUNCTION_CODE_1000 = 1000;
     public final static Integer FUNCTION_CODE_2000 = 2000;
+    public final static Integer FUNCTION_CODE_310 = 310;
 
     public static final Pattern STR_PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
 

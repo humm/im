@@ -42,7 +42,7 @@
                                         <TableView fx:id="taskList" layoutY="14.0" onMouseClicked="#showTaskInfo"
                                                    prefHeight="318.0" prefWidth="446.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="name" editable="false" prefWidth="595"
+                                                <TableColumn id="name" editable="false" prefWidth="725"
                                                              sortable="false" text="任务单名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name" />
@@ -72,7 +72,7 @@
                                                         <PropertyValueFactory property="publishDate" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="customer" editable="false" prefWidth="165"
+                                                <TableColumn id="customer" editable="false" prefWidth="180"
                                                              sortable="false" text="客户名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="customer" />

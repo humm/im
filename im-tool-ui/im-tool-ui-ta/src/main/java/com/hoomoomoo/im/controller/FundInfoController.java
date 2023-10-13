@@ -3,7 +3,6 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -42,7 +41,7 @@ public class FundInfoController extends BaseController implements Initializable 
     private TextField filePath;
 
     @FXML
-    private TableView fundLog;
+    private TextArea fundLog;
 
     Map<String, String> COMPONENT_KIND = new ConcurrentHashMap(16);
 
@@ -54,9 +53,6 @@ public class FundInfoController extends BaseController implements Initializable 
 
     private static boolean STD = false;
 
-    List<String> cache = new ArrayList<>(16);
-
-
     @FXML
     void executeSelect(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -66,12 +62,6 @@ public class FundInfoController extends BaseController implements Initializable 
             OutputUtils.clearLog(filePath);
             OutputUtils.info(filePath, file.getAbsolutePath());
         }
-    }
-
-    @FXML
-    void executeClear(ActionEvent event) {
-        cache.clear();
-        infoMsg("缓存清除完成");
     }
 
     @FXML
@@ -122,10 +112,6 @@ public class FundInfoController extends BaseController implements Initializable 
                 scriptSubmit.setDisable(true);
                 Date date = new Date();
                 OutputUtils.clearLog(fundLog);
-                String configSqlPath = filePath.getText().replace(".xls", ".oracle.sql");
-                if (CollectionUtils.isEmpty(cache)) {
-                    cache = FileUtils.readNormalFile(configSqlPath, false);
-                }
 
                 // 创建生成脚本目录
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
@@ -268,14 +254,6 @@ public class FundInfoController extends BaseController implements Initializable 
                 logList.add(productPathPg);
                 logList.add(productPathMysql);
                 LoggerUtils.writeFundInfo(date, logList);
-                /*infoMsg("生成升级脚本 开始");
-                List<String> sqlInfo = FileUtils.readNormalFile(configSqlPath, false);
-                List<String> sql = TaCommonUtil.buildSql(appConfigDto, cache, sqlInfo);
-                if (CollectionUtils.isEmpty(sql)) {
-                    sql.add("-- 脚本无差异");
-                }
-                FileUtils.writeFile(configSqlPath.replace("oracle", "temp"), sql, false);
-                infoMsg("生成升级脚本 结束");*/
                 infoMsg("执行完成");
                 schedule.setProgress(1);
             } catch (Exception e) {
@@ -702,9 +680,6 @@ public class FundInfoController extends BaseController implements Initializable 
     }
 
     private void infoMsg(String msg) {
-        LogDto logDto = new LogDto();
-        logDto.setTime(CommonUtils.getCurrentDateTime1());
-        logDto.setMsg(msg);
-        OutputUtils.info(fundLog, logDto);
+        OutputUtils.info(fundLog, msg + STR_NEXT_LINE);
     }
 }

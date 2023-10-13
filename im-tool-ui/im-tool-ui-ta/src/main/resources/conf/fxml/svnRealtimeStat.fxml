@@ -31,37 +31,37 @@
                                <TableView fx:id="stat" layoutX="105.0" layoutY="61.0"
                                           prefHeight="321.8823426228261" prefWidth="597.7814934423914" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                    <columns>
-                                       <TableColumn id="userName" editable="false" prefWidth="200" sortable="false"
+                                       <TableColumn id="userName" editable="false" prefWidth="280" sortable="false"
                                                     text="用户名称">
                                            <cellValueFactory>
                                                <PropertyValueFactory property="userName"/>
                                            </cellValueFactory>
                                        </TableColumn>
-                                       <TableColumn id="firstTime" editable="false" prefWidth="200" sortable="false"
+                                       <TableColumn id="firstTime" editable="false" prefWidth="280" sortable="false"
                                                     text="首次提交时间">
                                            <cellValueFactory>
                                                <PropertyValueFactory property="firstTime"/>
                                            </cellValueFactory>
                                        </TableColumn>
-                                       <TableColumn id="lastTime" editable="false" prefWidth="200" sortable="false"
+                                       <TableColumn id="lastTime" editable="false" prefWidth="280" sortable="false"
                                                     text="末次提交时间">
                                            <cellValueFactory>
                                                <PropertyValueFactory property="lastTime"/>
                                            </cellValueFactory>
                                        </TableColumn>
-                                       <TableColumn id="submitTimes" editable="false" prefWidth="200" sortable="false"
+                                       <TableColumn id="submitTimes" editable="false" prefWidth="280" sortable="false"
                                                     text="提交代码次数">
                                            <cellValueFactory>
                                                <PropertyValueFactory property="submitTimes"/>
                                            </cellValueFactory>
                                        </TableColumn>
-                                       <TableColumn id="fileNum" editable="false" prefWidth="200" sortable="false"
+                                       <TableColumn id="fileNum" editable="false" prefWidth="285" sortable="false"
                                                     text="修改文件个数">
                                            <cellValueFactory>
                                                <PropertyValueFactory property="fileNum"/>
                                            </cellValueFactory>
                                        </TableColumn>
-                                       <TableColumn id="fileTimes" editable="false" prefWidth="200" sortable="false"
+                                       <TableColumn id="fileTimes" editable="false" prefWidth="295" sortable="false"
                                                     text="修改文件次数">
                                            <cellValueFactory>
                                                <PropertyValueFactory property="fileTimes"/>
