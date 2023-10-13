@@ -103,7 +103,7 @@
                                                         <PropertyValueFactory property="codeVersion" />
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="525"
+                                                <TableColumn id="msg" editable="false" prefWidth="510"
                                                              sortable="false" text="提交备注">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="msg" />

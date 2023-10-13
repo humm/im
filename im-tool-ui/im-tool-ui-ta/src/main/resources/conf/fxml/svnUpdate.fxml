@@ -59,7 +59,7 @@
                                                         <PropertyValueFactory property="version"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="name" editable="false" prefWidth="700" sortable="false"
+                                                <TableColumn id="name" editable="false" prefWidth="685" sortable="false"
                                                              text="名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>

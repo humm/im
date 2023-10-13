@@ -57,9 +57,11 @@ public class SvnUpdateController extends BaseController implements Initializable
             OutputUtils.clearLog(fileLog);
             OutputUtils.clearLog(workspaceNum);
             OutputUtils.clearLog(failNum);
+
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             OutputUtils.info(workspaceNum, String.valueOf(appConfigDto.getSvnUpdatePath().size()));
             OutputUtils.info(failNum, STR_0);
+
             updateProgress(0.01);
             getSvnUpdate();
         } catch (Exception e) {
@@ -77,7 +79,7 @@ public class SvnUpdateController extends BaseController implements Initializable
                 AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
                 List<LinkedHashMap<String, String>> pathList = appConfigDto.getSvnUpdatePath();
                 Set<String> updateFlag = new HashSet<>();
-                int workspaceNumWaitUpdate = 0;
+                int workspaceNumWaitUpdate = appConfigDto.getSvnUpdatePath().size();
                 if (CollectionUtils.isNotEmpty(pathList)) {
                     for (LinkedHashMap<String, String> item : pathList) {
                         Iterator<String> iterator = item.keySet().iterator();
