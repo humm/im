@@ -13,9 +13,16 @@ import jxl.Sheet;
 import jxl.Workbook;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.awt.*;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -91,32 +98,35 @@ public class SystemToolController implements Initializable {
     void updateVersion(ActionEvent event) {
         updateVersionBtn.setDisable(true);
         List<String> list = new ArrayList<>();
+        FileInputStream fileInputStream = null;
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
             String filePath = appConfigDto.getSystemToolUpdateVersionPath();
             if (StringUtils.isBlank(filePath)) {
                 OutputUtils.info(logs, getUpdateVersionMsg("请配置【system.tool.update.version.path】"));
             } else {
-                Workbook workbook = Workbook.getWorkbook(new File(filePath));
-                Sheet[] sheetList = workbook.getSheets();
-                if (sheetList != null) {
-                    Sheet sheet = sheetList[0];
-                    int rows = sheet.getRows();
-                    for (int i = 2; i < rows; i++) {
-                        StringBuilder item = new StringBuilder();
-                        String version = getCellReal(sheet, 2, i);
-                        if (StringUtils.isBlank(version)) {
-                            continue;
-                        }
-                        String closeDate = getCellReal(sheet, 4, i);
-                        String publishDate = getCellReal(sheet, 6, i);
-                        String customer = getCellReal(sheet, 9, i);
-                        if (StringUtils.isBlank(closeDate)) {
-                            closeDate = publishDate;
-                        }
-                        item.append(version).append(STR_SEMICOLON).append(closeDate).append(STR_SEMICOLON).append(publishDate).append(STR_SEMICOLON).append(customer);
-                        list.add(item.toString());
+                fileInputStream = new FileInputStream(filePath);
+                XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+                XSSFSheet sheet = workbook.getSheetAt(0);
+                int rows = sheet.getLastRowNum();
+                for (int i = 2; i < rows; i++) {
+                    StringBuilder item = new StringBuilder();
+                    XSSFRow row = sheet.getRow(i);
+                    if (row == null) {
+                        continue;
                     }
+                    String version = row.getCell(2).toString();
+                    if (StringUtils.isBlank(version)) {
+                        continue;
+                    }
+                    String closeDate = formatDate(row.getCell(4).toString());
+                    String publishDate = formatDate(row.getCell(5).toString());
+                    if (StringUtils.isBlank(closeDate)) {
+                        closeDate = publishDate;
+                    }
+                    String customer = row.getCell(7).toString();
+                    item.append(version).append(STR_SEMICOLON).append(closeDate).append(STR_SEMICOLON).append(publishDate).append(STR_SEMICOLON).append(customer);
+                    list.add(item.toString());
                 }
             }
             String statPath = FileUtils.getFilePath(PATH_VERSION_STAT);
@@ -129,12 +139,21 @@ public class SystemToolController implements Initializable {
         } catch (Exception e) {
             OutputUtils.info(logs, e.getMessage());
         } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                }
+            }
             updateVersionBtn.setDisable(false);
         }
     }
 
-    private String getCellReal(Sheet sheet, int i, int j) {
-        return sheet.getCell(i, j).getContents();
+    private String formatDate(String date) {
+        if (StringUtils.isNotBlank(date) && (date.contains("E") || date.contains("e"))) {
+            date = new BigDecimal(date).toPlainString();
+        }
+        return date;
     }
 
     private String getShakeMouseMsg (String msg) {

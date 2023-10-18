@@ -156,6 +156,7 @@ public class BaseConst {
     public final static String KEY_INTEGRATE_ATTENTION = "integrate_attention";
     public final static String KEY_MODIFIED_FILE = "modified_file";
     public final static String KEY_EDIT_DESCRIPTION = "edit_description";
+    public final static String KEY_NEXT = "next";
 
     public static final String METHOD_QUERY_DATA = "queryData";
     public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
@@ -222,7 +223,8 @@ public class BaseConst {
 
     public static final String NAME_MENU_UPDATE = "更新";
     public static final String NAME_MENU_COPY = "复制";
-    public static final String NAME_MENU_SIMPLE_COPY = "简单复制";
+    public static final String NAME_MENU_SIMPLE_COPY = "简复";
+    public static final String NAME_MENU_DETAIL = "详情";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -335,7 +337,9 @@ public class BaseConst {
     public static final String PATH_ICON = "/conf/image/icon.png";
     public static final String FACTORY_ICON = "/conf/image/factory.png";
     public static final String COPY_ICON = "/conf/image/copy.png";
+    public static final String COPY_SIMPLE_ICON = "/conf/image/copySimple.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
+    public static final String DETAIL_ICON = "/conf/image/detail.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
     public static final String PATH_STARTER_CSS = "/conf/style/progressIndicator.css";
     public static final String PATH_COLUMN_SET_FXML = "/conf/fxml/generateCodeColumnSet.fxml";
@@ -408,5 +412,9 @@ public class BaseConst {
     public static final String MENU_CODE_QUERY = "query";
     public static final String MENU_CODE_PARAM = "param";
     public static final String MENU_CODE_BUSIN = "busin";
+
+    public static final String PAGE_TYPE_GENERATE_CODE_TABLE = "table";
+    public static final String PAGE_TYPE_GENERATE_CODE_ASY_TABLE = "asyTable";
+    public static final String PAGE_TYPE_HEP_DETAIL = "detail";
 
 }

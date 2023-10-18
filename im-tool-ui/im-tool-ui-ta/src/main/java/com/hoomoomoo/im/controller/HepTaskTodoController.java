@@ -262,7 +262,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
         }
         JSONArray items = new JSONArray();
         if (response != null) {
-            //LoggerUtils.info("response: " + response.body());
             Map<String, Object> responseInfo;
             String message = response.body();
             if (requestStatus(response)) {
@@ -729,9 +728,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
         DigestAlgorithm digestAlgorithm = DigestAlgorithm.MD5;
         String sign = SecureUtil.signParams(digestAlgorithm, jsonObject, "&", "=", true, new String[0]).toUpperCase();
         jsonObject.set(KEY_SIGN, sign);
-        //LoggerUtils.info("url: " + REQUEST_URL);
-        //LoggerUtils.info("method: " + jsonObject.get(KEY_METHOD));
-        //LoggerUtils.info("request: " + jsonObject);
         if (testScene()) {
             return null;
         }
@@ -897,6 +893,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             item.put("sprint_version", i % 2 == 0 ? "TA6.0-FUND.V202304.00.008" : "TA6.0-FUND.V202304.00.004M5");
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
+            item.put("description", i % 2 == 0 ? "洛洛洛</p>洛洛洛" : "开发中");
             item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-24 22:59:59");
             switch (i % 7) {
                 case 0: item.put(KEY_NAME, "「开发」问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题" + i);break;

@@ -5,14 +5,21 @@ import com.hoomoomoo.im.controller.HepTaskTodoController;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.utils.CommonUtils;
+import com.hoomoomoo.im.utils.FileUtils;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 import lombok.SneakyThrows;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.io.FileInputStream;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.controller.HepTaskTodoController.OPERATE_TYPE_CUSTOM_UPDATE;
@@ -35,7 +42,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
         MenuItem copyTaskSimple = new MenuItem(NAME_MENU_SIMPLE_COPY);
-        CommonUtils.setIcon(copyTaskSimple, COPY_ICON, MENUITEM_ICON_SIZE);
+        CommonUtils.setIcon(copyTaskSimple, COPY_SIMPLE_ICON, MENUITEM_ICON_SIZE);
         copyTaskSimple.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -59,9 +66,46 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                 hepWaitHandleTaskController.completeTask(item);
             }
         });
+        MenuItem detailTask = new MenuItem(NAME_MENU_DETAIL);
+        CommonUtils.setIcon(detailTask, DETAIL_ICON, MENUITEM_ICON_SIZE);
+        detailTask.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                appConfigDto.setPageType(PAGE_TYPE_HEP_DETAIL);
+                Stage stage = appConfigDto.getTaskStage();
+                // 每次页面都重新打开
+                if (stage != null) {
+                    stage.close();
+                    appConfigDto.setTaskStage(null);
+                    stage = null;
+                }
+
+                if (stage == null) {
+                    Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
+                    Scene scene = new Scene(root);
+                    scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+                    stage = new Stage();
+                    stage.getIcons().add(new Image(PATH_ICON));
+                    stage.setScene(scene);
+                    stage.setTitle("任务详情");
+                    stage.setResizable(false);
+                    stage.show();
+                    appConfigDto.setTaskStage(stage);
+                    stage.setOnCloseRequest(columnEvent -> {
+                        appConfigDto.getTaskStage().close();
+                        appConfigDto.setTaskStage(null);
+                    });
+                } else {
+                    stage.toFront();
+                }
+            }
+        });
         getItems().add(copyTask);
         getItems().add(copyTaskSimple);
         getItems().add(updateTask);
+        getItems().add(detailTask);
     }
 
     public static HepWaitHandleTaskMenu getInstance() {

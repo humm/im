@@ -230,8 +230,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         HepTaskComponent hepTaskComponent = appConfigDto.getHepTaskComponent();
         JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);
         hep.dealTaskList(res, hepTaskComponent.getLogs(), hepTaskComponent.getWaitHandleTaskNum(), hepTaskComponent.getTaskList(), true);
-        Stage taskStage = appConfigDto.getTaskStage();
-        taskStage.close();
+        appConfigDto.getTaskStage().close();
         appConfigDto.setTaskStage(null);
     }
 

@@ -217,6 +217,8 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolShakeMouseAuto;
 
+    private String hepTaskTodoDetailSymbol;
+
     private String systemToolShakeMouseTimer;
 
     private String systemToolShakeMouseStep;

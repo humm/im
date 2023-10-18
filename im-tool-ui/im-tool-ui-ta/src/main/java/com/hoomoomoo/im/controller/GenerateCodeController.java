@@ -346,7 +346,7 @@ public class GenerateCodeController extends BaseController implements Initializa
     void tableConfig(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            appConfigDto.setPageType(STR_1);
+            appConfigDto.setPageType(PAGE_TYPE_GENERATE_CODE_TABLE);
             Stage stage = appConfigDto.getTableStage();
             if (stage == null) {
                 Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
@@ -376,7 +376,7 @@ public class GenerateCodeController extends BaseController implements Initializa
     void asyTableConfig(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-            appConfigDto.setPageType(STR_2);
+            appConfigDto.setPageType(PAGE_TYPE_GENERATE_CODE_TABLE);
             Stage stage = appConfigDto.getAsyTableStage();
             if (stage == null) {
                 Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));

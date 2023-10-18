@@ -36,9 +36,21 @@
         <spring-core.version>5.0.7.RELEASE</spring-core.version>
         <ojdbc6.version>11.2.0.3</ojdbc6.version>
         <cn.hutool>5.4.0</cn.hutool>
+        <poi-ooxml>3.17</poi-ooxml>
+        <poi-ooxml-schemas>3.17</poi-ooxml-schemas>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi-ooxml}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>${poi-ooxml-schemas}</version>
+        </dependency>
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
