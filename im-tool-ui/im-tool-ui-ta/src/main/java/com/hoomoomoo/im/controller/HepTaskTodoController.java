@@ -105,6 +105,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
     private Label waitHandleTaskNum;
 
     @FXML
+    private Label weekPublish;
+
+    @FXML
+    private Label dayPublish;
+
+    @FXML
     private TextField taskNumber;
 
     @FXML
@@ -436,14 +442,19 @@ public class HepTaskTodoController extends BaseController implements Initializab
         boolean hasBlank = false;
         int taskTotal = 0;
         Map<String, Map<String, String>> version = new HashMap<>();
+        StringBuilder weekVersion = new StringBuilder();
+        StringBuilder dayVersion = new StringBuilder();
+        String currentDay = CommonUtils.getCurrentDateTime3();
+        String weekDay = getLastDayByWeek();
         try {
-            String currentDate = CommonUtils.getCurrentDateTime3();
             List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
             for (String item : versionList) {
                 String[] elements = item.split(STR_SEMICOLON);
                 Map<String, String> ele = new HashMap<>();
-                String closeDate = CommonUtils.getIntervalDays(currentDate, elements[1]);
-                String publishDate = CommonUtils.getIntervalDays(currentDate, elements[2]);
+                String oriCloseDate = getRealDate(elements[1]);
+                String oriPublishDate = getRealDate(elements[2]);
+                String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
+                String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
                 if (closeDate.contains(STR_HYPHEN)) {
                     closeDate = STR_0;
                 }
@@ -470,6 +481,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 ele.put("closeDate", closeDate);
                 ele.put("publishDate", publishDate);
                 ele.put("customer", customer);
+                if (currentDay.equals(oriCloseDate) || currentDay.equals(oriPublishDate)) {
+                    dayVersion.append(elements[0]).append(STR_SPACE);
+                }
+                if ((weekDay.compareTo(oriCloseDate) >= 0 && currentDay.compareTo(oriCloseDate) <= 0) || (weekDay.compareTo(oriPublishDate) >= 0 && currentDay.compareTo(oriPublishDate) <= 0)) {
+                    weekVersion.append(elements[0]).append(STR_SPACE);
+                }
                 version.put(elements[0], ele);
             }
         } catch (IOException e) {
@@ -477,6 +494,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
         } catch (ParseException e) {
             LoggerUtils.info(e);
         }
+        int dayVersionNum = 0;
+        int weekVersionNum = 0;
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String status = item.getStatus();
@@ -488,13 +507,20 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 iterator.remove();
                 continue;
             }
-
-            if (version.containsKey(item.getSprintVersion())) {
-                Map<String, String> versionInfo = version.get(item.getSprintVersion());
+            String sprintVersion = item.getSprintVersion();
+            if (version.containsKey(sprintVersion)) {
+                Map<String, String> versionInfo = version.get(sprintVersion);
                 item.setCloseDate(versionInfo.get("closeDate"));
                 item.setPublishDate(versionInfo.get("publishDate"));
                 item.setCustomer(versionInfo.get("customer"));
             }
+            if (dayVersion.toString().contains(sprintVersion + STR_SPACE)) {
+                dayVersionNum++;
+            }
+            if (weekVersion.toString().contains(sprintVersion + STR_SPACE)) {
+                weekVersionNum++;
+            }
+
             if (StringUtils.isBlank(status)) {
                 hasBlank = true;
                 taskTotal++;
@@ -509,10 +535,48 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 item.setEstimateFinishTime(item.getEstimateFinishTime().split(STR_SPACE)[1]);
             }
         }
+        if (StringUtils.isBlank(dayVersion)) {
+            dayVersion.append(". . . 悠闲喝茶 . . .");
+        } else {
+            dayVersion.append(STR_SPACE_3 + "待提交任务：" + dayVersionNum);
+        }
+        if (StringUtils.isBlank(weekVersion)) {
+            weekVersion.append(". . . 悠闲喝茶 . . .");
+        } else {
+            weekVersion.append(STR_SPACE_3 + "待提交任务：" + weekVersionNum);
+        }
+
+        OutputUtils.info(dayPublish, dayVersion.toString());
+        OutputUtils.info(weekPublish, weekVersion.toString());
+
         OutputUtils.clearLog(waitHandleTaskNumIn);
         OutputUtils.clearLog(taskListIn);
         OutputUtils.info(waitHandleTaskNumIn, String.valueOf(res.size() - taskTotal));
         infoTaskList(taskListIn, res);
+    }
+
+    private String getRealDate(String oriDate) {
+        StringBuilder date = new StringBuilder();
+        if (StringUtils.isNotBlank(oriDate)) {
+            for (int i=0; i<oriDate.length(); i++) {
+                char item = oriDate.charAt(i);
+                if (Character.isDigit(item)) {
+                    date.append(item);
+                }
+            }
+        }
+        if (date.length() > 8) {
+            return date.substring(8);
+        }
+        return date.toString();
+    }
+
+    private String getLastDayByWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMaximum(Calendar.DAY_OF_WEEK));
+        calendar.add(Calendar.DAY_OF_WEEK, 1);
+        Date date = calendar.getTime();
+        return CommonUtils.getCurrentDateTime9(date);
     }
 
     private void infoTaskList(TableView taskListIn, List<HepTaskDto> res) {
@@ -890,7 +954,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
             item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
-            item.put("sprint_version", i % 2 == 0 ? "TA6.0-FUND.V202304.00.008" : "TA6.0-FUND.V202304.00.004M5");
+            item.put("sprint_version", i % 2 == 0 ? "TA6.0-FUND.V202304.00.008" : "TA6.0-FUND.V202304.08.000");
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put("description", i % 2 == 0 ? "洛洛洛</p>洛洛洛" : "开发中");

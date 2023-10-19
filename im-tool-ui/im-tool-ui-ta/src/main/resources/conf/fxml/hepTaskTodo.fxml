@@ -19,11 +19,15 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="164.0" prefWidth="599.0">
                     <children>
-                        <Label layoutX="415.0" layoutY="18.0" text="待处理任务" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
-                        <Label fx:id="waitHandleTaskNum" layoutX="500.0" layoutY="18.0" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
-                        <ProgressIndicator fx:id="schedule" layoutX="630.0" layoutY="15.0" progress="0.0" />
-                        <Label fx:id="scheduleText" layoutX="670" layoutY="18.0" text="0%" />
-                        <Button fx:id="query" layoutX="800.0" layoutY="8.0"
+                        <Label layoutX="20.0" layoutY="5.0" text="本周发版：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="weekPublish" layoutX="100.0" layoutY="5.0"/>
+                        <Label layoutX="20.0" layoutY="30.0" text="今天发版：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="dayPublish" layoutX="100.0" layoutY="30.0"/>
+                        <Label layoutX="1360.0" layoutY="18.0" text="待处理任务：" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+                        <Label fx:id="waitHandleTaskNum" layoutX="1450.0" layoutY="18.0" style="-fx-font-weight: bold; -fx-font-size: 15;"/>
+                        <ProgressIndicator fx:id="schedule" layoutX="1500.0" layoutY="15.0" progress="0.0" />
+                        <Label fx:id="scheduleText" layoutX="1535" layoutY="18.0" text="0%" />
+                        <Button fx:id="query" layoutX="1600.0" layoutY="8.0"
                                 mnemonicParsing="false" onAction="#executeQuery" prefHeight="35.0"
                                 prefWidth="100.0" text="查询">
                             <padding>
