@@ -20,6 +20,10 @@ public class HepTaskComponent extends BaseDto{
 
     private Label waitHandleTaskNum;
 
+    private Label dayPublish;
+
+    private Label weekPublish;
+
     private Label todoNum;
 
     private TableView taskList;

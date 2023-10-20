@@ -153,6 +153,9 @@ public class HepTaskTodoController extends BaseController implements Initializab
     private AnchorPane condition;
 
     @FXML
+    private Button updateVersion;
+
+    @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
         HepTaskDto item = (HepTaskDto)taskList.getSelectionModel().getSelectedItem();
         item.setOperateType(STR_BLANK);
@@ -202,6 +205,27 @@ public class HepTaskTodoController extends BaseController implements Initializab
         } else {
             LoggerUtils.info("不支持的操作类型");
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("不支持的操作类型"));
+        }
+    }
+
+    @FXML
+    void executeUpdateVersion(ActionEvent event) throws Exception {
+        updateVersion.setDisable(true);
+        FileInputStream fileInputStream = null;
+        try {
+            new SystemToolController().executeUpdateVersion(fileInputStream);
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("更新成功"));
+            executeQuery(null);
+        } catch (Exception e) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
+        } finally {
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                }
+            }
+            updateVersion.setDisable(false);
         }
     }
 
@@ -282,7 +306,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                         items = (JSONArray)data;
                     }
                     if (OPERATE_QUERY.equals(operateType)) {
-                        dealTaskList(items,  logs, waitHandleTaskNum, taskList, true);
+                        dealTaskList(items,  logs, waitHandleTaskNum, dayPublish, weekPublish, taskList, true);
                     } else if (OPERATE_START.equals(operateType)) {
                         executeQuery(null);
                     }
@@ -364,6 +388,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
         hepTaskComponent.setLogs(logs);
         hepTaskComponent.setWaitHandleTaskNum(waitHandleTaskNum);
         hepTaskComponent.setTaskList(taskList);
+        hepTaskComponent.setDayPublish(dayPublish);
+        hepTaskComponent.setWeekPublish(weekPublish);
         appConfigDto.setHepTaskComponent(hepTaskComponent);
     }
 
@@ -427,7 +453,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         return request;
     }
 
-    public void dealTaskList(JSONArray task, List<String> logsIn, Label waitHandleTaskNumIn, TableView taskListIn, boolean tagFlag) {
+    public void dealTaskList(JSONArray task, List<String> logsIn, Label waitHandleTaskNumIn, Label dayPublishIn, Label weekPublishIn, TableView taskListIn, boolean tagFlag) {
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
         filterTask(res);
         res = sortTask(res);
@@ -546,8 +572,10 @@ public class HepTaskTodoController extends BaseController implements Initializab
             weekVersion.append(STR_SPACE_3 + "待提交任务：" + weekVersionNum);
         }
 
-        OutputUtils.info(dayPublish, dayVersion.toString());
-        OutputUtils.info(weekPublish, weekVersion.toString());
+        OutputUtils.clearLog(dayPublishIn);
+        OutputUtils.clearLog(weekPublishIn);
+        OutputUtils.info(dayPublishIn, dayVersion.toString());
+        OutputUtils.info(weekPublishIn, weekVersion.toString());
 
         OutputUtils.clearLog(waitHandleTaskNumIn);
         OutputUtils.clearLog(taskListIn);
@@ -723,7 +751,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                     } catch (Exception e) {
 
                     }
-                    dealTaskList(res, logs, waitHandleTaskNum, taskList, false);
+                    dealTaskList(res, logs, waitHandleTaskNum, dayPublish, weekPublish, taskList, false);
                 }
             });
         });
@@ -971,7 +999,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             }
             req.add(item);
         }
-        dealTaskList(req, logs, waitHandleTaskNum, taskList, true);
+        dealTaskList(req, logs, waitHandleTaskNum, dayPublish, weekPublish, taskList, true);
     }
 
     private boolean requestStatus(HttpResponse response) {
