@@ -9,9 +9,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.HepTaskComponent;
+import com.hoomoomoo.im.dto.HepTaskComponentDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
-import com.hoomoomoo.im.service.HepWaitHandleTaskMenu;
+import com.hoomoomoo.im.extend.HepWaitHandleTaskMenu;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -165,7 +165,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         OutputUtils.repeatInfo(statusName, item.getStatusName());
         OutputUtils.repeatInfo(id, item.getId());
         String clickType = event.getButton().toString();
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setHepTaskDto(item);
         if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
             operateTask(item);
@@ -214,7 +214,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         FileInputStream fileInputStream = null;
         try {
             new SystemToolController().executeUpdateVersion(fileInputStream);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("更新成功"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("同步成功"));
             executeQuery(null);
         } catch (Exception e) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
@@ -232,7 +232,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
     @FXML
     void executeQuery(ActionEvent event) throws Exception {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         CURRENT_USER_ID = appConfigDto.getHepTaskUser();
         if (StringUtils.isBlank(CURRENT_USER_ID)) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("请配置[ hep.task.user ]"));
@@ -334,8 +334,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
         response = sendPost(request);
         if (requestStatus(response)) {
             try {
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-                Stage stage = appConfigDto.getTaskStage();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                Stage stage = appConfigDto.getChildStage();
                 setTaskComponent(appConfigDto);
                 if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
                     Map responseInfo = (Map)JSONObject.parse(response.body());
@@ -351,7 +351,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 // 每次页面都重新打开
                 if (stage != null) {
                     stage.close();
-                    appConfigDto.setTaskStage(null);
+                    appConfigDto.setChildStage(null);
                     stage = null;
                 }
 
@@ -368,10 +368,10 @@ public class HepTaskTodoController extends BaseController implements Initializab
                     }
                     stage.setResizable(false);
                     stage.show();
-                    appConfigDto.setTaskStage(stage);
+                    appConfigDto.setChildStage(stage);
                     stage.setOnCloseRequest(columnEvent -> {
-                        appConfigDto.getTaskStage().close();
-                        appConfigDto.setTaskStage(null);
+                        appConfigDto.getChildStage().close();
+                        appConfigDto.setChildStage(null);
                     });
                 } else {
                     stage.toFront();
@@ -384,13 +384,13 @@ public class HepTaskTodoController extends BaseController implements Initializab
     }
 
     private void setTaskComponent(AppConfigDto appConfigDto) {
-        HepTaskComponent hepTaskComponent = new HepTaskComponent();
-        hepTaskComponent.setLogs(logs);
-        hepTaskComponent.setWaitHandleTaskNum(waitHandleTaskNum);
-        hepTaskComponent.setTaskList(taskList);
-        hepTaskComponent.setDayPublish(dayPublish);
-        hepTaskComponent.setWeekPublish(weekPublish);
-        appConfigDto.setHepTaskComponent(hepTaskComponent);
+        HepTaskComponentDto hepTaskComponentDto = new HepTaskComponentDto();
+        hepTaskComponentDto.setLogs(logs);
+        hepTaskComponentDto.setWaitHandleTaskNum(waitHandleTaskNum);
+        hepTaskComponentDto.setTaskList(taskList);
+        hepTaskComponentDto.setDayPublish(dayPublish);
+        hepTaskComponentDto.setWeekPublish(weekPublish);
+        appConfigDto.setHepTaskComponentDto(hepTaskComponentDto);
     }
 
     private Map<String, Object> executeCompletTask(HepTaskDto hepTaskDto) throws Exception {
@@ -937,7 +937,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
     public void initialize(URL location, ResourceBundle resources) {
         try {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             CURRENT_USER_ID = appConfigDto.getHepTaskUser();
             addTaskMenu(appConfigDto);
             executeQuery(null);

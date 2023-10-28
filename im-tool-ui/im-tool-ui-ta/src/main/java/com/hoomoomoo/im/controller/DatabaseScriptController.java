@@ -240,7 +240,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
     public void initialize(URL location, ResourceBundle resources) {
         try {
             OutputUtils.clearLog(databasePath);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(appConfigDto.getDatabaseScriptLocation())) {
                 OutputUtils.info(databasePath, appConfigDto.getDatabaseScriptLocation());
             }

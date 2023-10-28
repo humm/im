@@ -29,7 +29,7 @@ public class TaCommonUtils {
     public static boolean checkConfig(TextArea log, String functionCode) throws Exception {
         boolean flag = true;
         OutputUtils.clearLog(log);
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (functionCode.equals(MenuFunctionConfig.FunctionConfig.SVN_LOG.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(log, MSG_SVN_USERNAME + STR_NEXT_LINE);
@@ -96,7 +96,7 @@ public class TaCommonUtils {
     public static boolean checkConfig(TableView log, String functionCode) throws Exception {
         boolean flag = true;
         OutputUtils.clearLog(log);
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (functionCode.equals(MenuFunctionConfig.FunctionConfig.FUND_INFO.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getFundGeneratePath())) {
                 OutputUtils.info(log, MSG_FUND_GENERATE_PATH);
@@ -119,7 +119,7 @@ public class TaCommonUtils {
     public static boolean checkConfig(Label log, String functionCode) throws Exception {
         boolean flag = true;
         OutputUtils.clearLog(log);
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (functionCode.equals(SVN_REALTIME_STAT.getCode()) || functionCode.equals(SVN_HISTORY_STAT.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(log, MSG_SVN_USERNAME + STR_NEXT_LINE);
@@ -145,67 +145,87 @@ public class TaCommonUtils {
         return flag;
     }
 
-    public static boolean checkConfigGenerateCode(TableView log, GenerateCodeDto generateCodeDto) throws Exception {
+    public static boolean checkConfigGenerateCode(TextArea log, AppConfigDto appConfigDto) throws Exception {
         boolean flag = true;
         OutputUtils.clearLog(log);
-        if (StringUtils.isBlank(generateCodeDto.getJavaPath())) {
-            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_PATH, "java文件路径"));
+        if (StringUtils.isBlank(appConfigDto.getGenerateCodeJavaPath())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "generate.code.java.path"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getVuePath())) {
-            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_PATH, "vue文件路径"));
+        if (StringUtils.isBlank(appConfigDto.getGenerateCodeVuePath())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "generate.code.vue.path"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getSqlPath())) {
-            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_PATH, "sql文件路径"));
+        if (StringUtils.isBlank(appConfigDto.getGenerateCodeSqlPath())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "generate.code.sql.path"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getRoutePath())) {
-            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_PATH, "route文件路径"));
+        if (StringUtils.isBlank(appConfigDto.getGenerateCodeRoutePath())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "generate.code.route.path"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getPageType())) {
-            OutputUtils.info(log, String.format(MSG_SET, "页面类型"));
+        if (StringUtils.isBlank(appConfigDto.getGenerateCodeCheckPath())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "generate.code.check.path"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getAuthor())) {
-            OutputUtils.info(log, String.format(MSG_SET, "作者"));
+        if (StringUtils.isBlank(appConfigDto.getFirstMenuCode()) || StringUtils.isBlank(appConfigDto.getFirstMenuName())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "一级菜单"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getDbType())) {
-            OutputUtils.info(log, String.format(MSG_SET, "数据源"));
+        if (StringUtils.isBlank(appConfigDto.getSecondMenuCode()) || StringUtils.isBlank(appConfigDto.getSecondMenuName())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "二级菜单"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getDtoCode())) {
-            OutputUtils.info(log, String.format(MSG_SET, "DTO代码"));
+        if (StringUtils.isBlank(appConfigDto.getThirdMenuCode())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "三级菜单代码"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getMenuCode1()) || StringUtils.isBlank(generateCodeDto.getMenuCode2()) || StringUtils.isBlank(generateCodeDto.getMenuCode3())) {
-            OutputUtils.info(log, String.format(MSG_SET, "菜单代码"));
-            OutputUtils.info(log, MSG_MENU_STYLE);
+        if (StringUtils.isBlank(appConfigDto.getThirdMenuName())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "三级菜单名称"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getMenuName1()) || StringUtils.isBlank(generateCodeDto.getMenuName2()) || StringUtils.isBlank(generateCodeDto.getMenuName3())) {
-            OutputUtils.info(log, String.format(MSG_SET, "菜单名称"));
-            OutputUtils.info(log, MSG_MENU_STYLE);
+        if (StringUtils.isBlank(appConfigDto.getGenerateCodeMenuType())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "菜单类型"));
             flag = false;
         }
-        if (StringUtils.isEmpty(generateCodeDto.getMenuOrder())) {
-            OutputUtils.info(log, String.format(MSG_SET, "菜单顺序"));
+        if (StringUtils.isBlank(appConfigDto.getGenerateCodeMenuFunction())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "菜单功能"));
             flag = false;
         }
-        if (StringUtils.isBlank(generateCodeDto.getTable())) {
-            OutputUtils.info(log, String.format(MSG_SET, "正式表结构 (oracle)"));
+        if (StringUtils.isBlank(appConfigDto.getMenuOrder())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "菜单排序"));
+            flag = false;
+        } else {
+            try {
+                Integer.valueOf(appConfigDto.getMenuOrder());
+            } catch (NumberFormatException e) {
+                OutputUtils.info(log, "[ 菜单排序 ]只能为整数\n");
+                flag = false;
+            }
+        }
+        if (StringUtils.isBlank(appConfigDto.getEntityCode())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "实体类代码"));
             flag = false;
         }
-        if (PAGE_TYPE_SET.equals(generateCodeDto.getPageType()) && StringUtils.isBlank(generateCodeDto.getAsyTable())) {
-            OutputUtils.info(log, String.format(MSG_SET, "复核表结构 (oracle)"));
+        if (StringUtils.isBlank(appConfigDto.getGenerateCodeMenuAuthor())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "开发人员"));
             flag = false;
         }
-        if (CollectionUtils.isEmpty(generateCodeDto.getColumn())) {
-            OutputUtils.info(log, String.format(MSG_SET, "配置字段信息"));
+        if (StringUtils.isBlank(appConfigDto.getTableCode())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "表代码"));
             flag = false;
         }
+        if (MENU_FUNCTION_SET_CODE.equals(appConfigDto.getGenerateCodeMenuFunction())) {
+            if (StringUtils.isBlank(appConfigDto.getAsyTableCode())) {
+                OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "复核表代码"));
+                flag = false;
+            }
+        }
+        if (StringUtils.isBlank(appConfigDto.getGenerateCodeMenuMultipleTable())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "分库分表"));
+            flag = false;
+        }
+
         return flag;
     }
 

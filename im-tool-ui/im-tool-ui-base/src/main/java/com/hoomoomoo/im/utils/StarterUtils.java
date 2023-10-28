@@ -31,7 +31,7 @@ public class StarterUtils {
             LoggerUtils.info(String.format(MSG_START, NAME_APP_START));
             FileUtils.unJar(PATH_APP);
             LoggerUtils.appStartInfo(String.format(MSG_UPDATE, NAME_CONFIG_FILE));
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String appName = appConfigDto.getAppName() + STR_SPACE_2;
             if (!FileUtils.startByJar()) {
                 appName += String.format(MSG_APP_TITLE, APP_MODE_NAME, APP_MODE_NAME_APP);

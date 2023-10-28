@@ -95,7 +95,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
                 setProgress(0);
                 updateProgress(0.01);
                 ComponentUtils.setButtonDisabled(execute, query, pause);
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 OutputUtils.info(type, STR_BLANK);
                 if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, null)) {
                     queryData(appConfigDto, true);
@@ -154,7 +154,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
         try {
             pauseStatus = false;
             handle.clear();
-            appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            appConfigDto = ConfigCache.getAppConfigDtoCache();
             appConfigDto.setExecuteType(JD_AUTO.getCode());
             if(!ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, null)) {
                 return;
@@ -265,7 +265,7 @@ public class JdAutoController extends ShoppingBaseController implements Initiali
     public void initialize(URL location, ResourceBundle resources) {
         shoppingDtoList = new ArrayList<>();
         try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (appConfigDto.getJdInitQuery()) {
                 if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
                     query(null);

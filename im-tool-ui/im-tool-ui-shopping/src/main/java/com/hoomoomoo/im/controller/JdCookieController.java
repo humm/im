@@ -50,7 +50,7 @@ public class JdCookieController implements Initializable {
         String content = config.getText();
         String confPath = FileUtils.getFilePath(PATH_JD_COOKIE);
         FileUtils.writeFile(confPath, content, false);
-        ConfigCache.initCache();
+        ConfigCache.initConfigCache();
         OutputUtils.info(tips, NAME_SAVE_SUCCESS + CommonUtils.getCurrentDateTime8(new Date()));
         LoggerUtils.writeConfigSetInfo(JD_COOKIE.getCode());
         if (AppCache.FUNCTION_TAB_CACHE != null) {

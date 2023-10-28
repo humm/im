@@ -2,7 +2,6 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.GenerateCodeDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.event.ActionEvent;
@@ -32,43 +31,23 @@ public class BlankSetController implements Initializable {
     @FXML
     private Button submit;
 
-    private String pageType;
-
     @FXML
     void onSave(ActionEvent event) throws Exception {
-        String content = config.getText();
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        if (PAGE_TYPE_GENERATE_CODE_TABLE.equals(pageType)) {
-            appConfigDto.getGenerateCodeDto().setTable(content);
-            appConfigDto.getTableStage().close();
-            appConfigDto.setTableStage(null);
-        } else if (PAGE_TYPE_GENERATE_CODE_TABLE.equals(pageType)) {
-            appConfigDto.getGenerateCodeDto().setAsyTable(content);
-            appConfigDto.getAsyTableStage().close();
-            appConfigDto.setAsyTableStage(null);
-        } else if (PAGE_TYPE_HEP_DETAIL.equals(pageType)) {
-            appConfigDto.getTaskStage().close();
-            appConfigDto.setTaskStage(null);
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+         if (PAGE_TYPE_HEP_DETAIL.equals(appConfigDto.getPageType())) {
+            appConfigDto.getChildStage().close();
+            appConfigDto.setChildStage(null);
         }
     }
 
     @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
-        GenerateCodeDto generateCodeDto = appConfigDto.getGenerateCodeDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
-        pageType = appConfigDto.getPageType();
+        String pageType = appConfigDto.getPageType();
         String info = null;
-        if (PAGE_TYPE_GENERATE_CODE_TABLE.equals(pageType)) {
-            if (generateCodeDto != null) {
-                info = generateCodeDto.getTable();
-            }
-        } else if (PAGE_TYPE_GENERATE_CODE_ASY_TABLE.equals(pageType)) {
-            if (generateCodeDto != null) {
-                info = generateCodeDto.getAsyTable();
-            }
-        } else if (PAGE_TYPE_HEP_DETAIL.equals(pageType)) {
+        if (PAGE_TYPE_HEP_DETAIL.equals(pageType)) {
             if (hepTaskDto != null) {
                 info = hepTaskDto.getDescription();
                 String hepTaskTodoDetailSymbol = appConfigDto.getHepTaskTodoDetailSymbol();

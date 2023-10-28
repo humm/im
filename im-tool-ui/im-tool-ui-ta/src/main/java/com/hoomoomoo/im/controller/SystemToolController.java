@@ -56,7 +56,7 @@ public class SystemToolController implements Initializable {
     @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         moveStep = Integer.valueOf(appConfigDto.getSystemToolShakeMouseStep());
         if (Boolean.valueOf(appConfigDto.getSystemToolShakeMouseAuto())) {
             shakeMouse(null);
@@ -66,7 +66,7 @@ public class SystemToolController implements Initializable {
     @FXML
     void shakeMouse(ActionEvent event) throws Exception {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, NAME_SHAKE_MOUSE));
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         shakeMouseBtn.setDisable(true);
         cancelShakeMouseBtn.setDisable(false);
         if (shakeMouseTimer == null) {
@@ -163,7 +163,7 @@ public class SystemToolController implements Initializable {
 
     public void executeUpdateVersion(FileInputStream fileInputStream) throws Exception {
         List<String> list = new ArrayList<>();
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String filePath = appConfigDto.getSystemToolUpdateVersionPath();
         if (StringUtils.isBlank(filePath)) {
             if (logs != null) {
@@ -199,11 +199,11 @@ public class SystemToolController implements Initializable {
         String statPath = FileUtils.getFilePath(PATH_VERSION_STAT);
         FileUtils.writeFile(statPath, list, false);
         if (logs != null) {
-            OutputUtils.info(logs, getUpdateVersionMsg("更新成功"));
+            OutputUtils.info(logs, getUpdateVersionMsg("同步成功"));
         }
 
         List<String> record = new ArrayList<>();
-        record.add(getUpdateVersionMsg("更新成功"));
+        record.add(getUpdateVersionMsg("同步成功"));
         LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
     }
 }

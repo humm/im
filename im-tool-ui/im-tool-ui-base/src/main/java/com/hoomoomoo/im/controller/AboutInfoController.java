@@ -41,7 +41,7 @@ public class AboutInfoController implements Initializable {
         LoggerUtils.info(String.format(MSG_USE, ABOUT_INFO.getName()));
         try {
             OutputUtils.clearLog(about);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             OutputUtils.info(about, appConfigDto.getAppName() + STR_NEXT_LINE_2);
             List<String> version = new ArrayList<>(16);
             try {

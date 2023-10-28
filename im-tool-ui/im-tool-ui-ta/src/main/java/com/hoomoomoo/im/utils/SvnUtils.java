@@ -33,7 +33,7 @@ import static org.apache.commons.beanutils.BeanUtils.copyProperties;
 public class SvnUtils {
 
     public static List<LogDto> getSvnLog(int version, String modifyNo) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         SVNRepository repository = getSVNRepository(appConfigDto);
         List<LogDto> logList = new ArrayList<>();
         // 最后一次提交记录
@@ -90,7 +90,7 @@ public class SvnUtils {
     }
 
     public static LinkedHashMap<String, SvnStatDto> getSvnLog(Date start, Date end, LinkedHashMap<String, SvnStatDto> svnStat, boolean notice) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         AppConfigDto item = new AppConfigDto();
         copyProperties(item, appConfigDto);
         if (svnStat.isEmpty()) {
@@ -232,7 +232,7 @@ public class SvnUtils {
     }
 
     public static Long updateSvn(String workspace, TextArea fileLog) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String svnName = appConfigDto.getSvnUsername();
         String svnPassword = appConfigDto.getSvnPassword();
         SVNRepositoryFactoryImpl.setup();

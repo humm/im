@@ -72,7 +72,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 infoMsg("请选择基金信息Excel文件");
                 return;
             }
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isEmpty(appConfigDto.getFundGeneratePath())) {
                 int index = filePath.getText().lastIndexOf("/");
                 if (index == -1) {
@@ -96,7 +96,7 @@ public class FundInfoController extends BaseController implements Initializable 
     public void initialize(URL location, ResourceBundle resources) {
         try {
             OutputUtils.clearLog(filePath);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(appConfigDto.getFundExcelPath())) {
                 OutputUtils.info(filePath, appConfigDto.getFundExcelPath());
             }
@@ -114,7 +114,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 OutputUtils.clearLog(fundLog);
 
                 // 创建生成脚本目录
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 File pathFolder = new File(appConfigDto.getFundGeneratePath());
                 if (!pathFolder.exists()) {
                     pathFolder.mkdirs();

@@ -58,7 +58,7 @@ public class SvnUpdateController extends BaseController implements Initializable
             OutputUtils.clearLog(workspaceNum);
             OutputUtils.clearLog(failNum);
 
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             OutputUtils.info(workspaceNum, String.valueOf(appConfigDto.getSvnUpdatePath().size()));
             OutputUtils.info(failNum, STR_0);
 
@@ -76,7 +76,7 @@ public class SvnUpdateController extends BaseController implements Initializable
                 svnSubmit.setDisable(true);
                 Date date = new Date();
                 List<String> updatePath = new ArrayList<>();
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 List<LinkedHashMap<String, String>> pathList = appConfigDto.getSvnUpdatePath();
                 Set<String> updateFlag = new HashSet<>();
                 int workspaceNumWaitUpdate = appConfigDto.getSvnUpdatePath().size();
@@ -136,7 +136,7 @@ public class SvnUpdateController extends BaseController implements Initializable
             OutputUtils.clearLog(svnName);
             OutputUtils.clearLog(workspaceNum);
             OutputUtils.clearLog(failNum);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(svnName, appConfigDto.getSvnUsername());
             }

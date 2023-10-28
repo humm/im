@@ -63,7 +63,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
     private void stat() {
         new Thread(() -> {
             try {
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 while (true) {
                     if (!initFlag && CommonUtils.isOpen(appConfigDto.getTabPane(), MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT) == null) {
                         LoggerUtils.info(SVN_REALTIME_STAT.getName() + "已关闭，停止自动刷新");

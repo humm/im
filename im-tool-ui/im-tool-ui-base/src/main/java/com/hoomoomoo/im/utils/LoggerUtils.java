@@ -31,7 +31,7 @@ public class LoggerUtils {
 
     public static void appStartInfo(String msg) {
         try {
-            AppConfigDto appConfigDto = ConfigCache.getInitAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache(false);
             if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
                 info(msg, true);
             }
@@ -94,7 +94,7 @@ public class LoggerUtils {
             writeStatFile(statFilePath);
 
             // 写日志文件
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (!appConfigDto.getAppLogEnable()) {
                 return;
             }
@@ -158,7 +158,7 @@ public class LoggerUtils {
             String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, functionConfig.getLogFolder() + FILE_TYPE_STAT));
             writeStatFile(statFilePath);
 
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (!appConfigDto.getAppLogEnable()) {
                 return;
             }
@@ -190,7 +190,7 @@ public class LoggerUtils {
             String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, functionConfig.getLogFolder() + FILE_TYPE_STAT));
             writeStatFile(statFilePath);
 
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (!appConfigDto.getAppLogEnable()) {
                 return;
             }

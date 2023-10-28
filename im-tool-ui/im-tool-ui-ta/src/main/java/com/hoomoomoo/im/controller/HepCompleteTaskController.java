@@ -3,7 +3,7 @@ package com.hoomoomoo.im.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.HepTaskComponent;
+import com.hoomoomoo.im.dto.HepTaskComponentDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
@@ -15,7 +15,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -73,7 +72,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
     void syncSvn(ActionEvent event) throws Exception {
         execute.setDisable(true);
         sync.setDisable(true);
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
         String taskNumber = hepTaskDto.getTaskNumber();
         List<LogDto> logDtoList = new ArrayList<>(16);
@@ -193,7 +192,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         String modifiedFileValue = modifiedFile.getText();
         String editDescriptionValue = editDescription.getText();
         String suggestionValue = suggestion.getText();
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
         if (StringUtils.isBlank(realRorkloadValue)) {
             tips.append("【耗费工时】").append(STR_NEXT_LINE);
@@ -227,18 +226,18 @@ public class HepCompleteTaskController extends BaseController implements Initial
         hepTaskDto.setSuggestion(TaCommonUtils.formatText(suggestionValue, true));
         HepTaskTodoController hep = new HepTaskTodoController();
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
-        HepTaskComponent hepTaskComponent = appConfigDto.getHepTaskComponent();
+        HepTaskComponentDto hepTaskComponentDto = appConfigDto.getHepTaskComponentDto();
         JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);
-        hep.dealTaskList(res, hepTaskComponent.getLogs(), hepTaskComponent.getWaitHandleTaskNum(), hepTaskComponent.getDayPublish(), hepTaskComponent.getWeekPublish(),
-                hepTaskComponent.getTaskList(), true);
-        appConfigDto.getTaskStage().close();
-        appConfigDto.setTaskStage(null);
+        hep.dealTaskList(res, hepTaskComponentDto.getLogs(), hepTaskComponentDto.getWaitHandleTaskNum(), hepTaskComponentDto.getDayPublish(), hepTaskComponentDto.getWeekPublish(),
+                hepTaskComponentDto.getTaskList(), true);
+        appConfigDto.getChildStage().close();
+        appConfigDto.setChildStage(null);
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
             OutputUtils.clearLog(modifiedFile);
             OutputUtils.clearLog(editDescription);

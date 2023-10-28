@@ -38,7 +38,7 @@ public class ShoppingCommonUtil {
     public static boolean checkConfig(TableView log, String functionType) throws Exception {
         boolean flag = true;
         OutputUtils.clearLog(log);
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (functionType.equals(WAIT_APPRAISE.getCode()) || functionType.equals(SHOW_ORDER.getCode())
                 || functionType.equals(APPEND_APPRAISE.getCode()) || functionType.equals(MenuFunctionConfig.FunctionConfig.SERVICE_APPRAISE.getCode())) {
             if (StringUtils.isBlank(appConfigDto.getJdCookie())) {

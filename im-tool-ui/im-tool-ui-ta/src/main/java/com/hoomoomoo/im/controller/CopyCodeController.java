@@ -85,7 +85,7 @@ public class CopyCodeController extends BaseController implements Initializable 
     @FXML
     void selectSource(ActionEvent event) {
         try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String version = (String)sourceVersion.getSelectionModel().getSelectedItem();
             String path = getLocation(version, appConfigDto.getCopyCodeVersion().get(version));
             if (version.equalsIgnoreCase(KEY_DESKTOP)) {
@@ -101,7 +101,7 @@ public class CopyCodeController extends BaseController implements Initializable 
     @FXML
     void selectTarget(ActionEvent event) {
         try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String version =  (String)targetVersion.getSelectionModel().getSelectedItem();
             String path = getLocation(version, appConfigDto.getCopyCodeVersion().get(version));
             if (version.equalsIgnoreCase(KEY_DESKTOP)) {
@@ -151,7 +151,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                 String filePathConfig = filePath.getText().trim();
                 int skipNum = 0;
                 if (StringUtils.isNotBlank(filePathConfig)) {
-                    AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                    AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                     List<String> fileLog = new ArrayList<>(16);
                     String[] fileList = filePathConfig.split(STR_NEXT_LINE);
                     if (fileList != null && fileList.length != 0) {
@@ -195,9 +195,9 @@ public class CopyCodeController extends BaseController implements Initializable 
                                     String key = iterator.next();
                                     if (targetFileLocation.contains("views/fundAccount")) {
                                         if (appConfigDto.getCopyCodeLocationReplaceSkipAccountVersion().contains(targetVersionSelected)) {
-                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_SEMICOLON)[1]);
+                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_$_SLASH)[1]);
                                         } else {
-                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_SEMICOLON)[0]);
+                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_$_SLASH)[0]);
                                         }
                                         break;
                                     }
@@ -270,7 +270,7 @@ public class CopyCodeController extends BaseController implements Initializable 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String copyCodeLocationReplaceVersion = appConfigDto.getCopyCodeLocationReplaceVersion();
             if (StringUtils.isNotBlank(copyCodeLocationReplaceVersion)) {
                 String[] itemList = copyCodeLocationReplaceVersion.split(STR_SEMICOLON);

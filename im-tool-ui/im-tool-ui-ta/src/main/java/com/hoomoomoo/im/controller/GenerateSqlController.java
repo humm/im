@@ -214,7 +214,7 @@ public class GenerateSqlController extends BaseController implements Initializab
     public void initialize(URL location, ResourceBundle resources) {
         AppConfigDto appConfigDto = null;
         try {
-            appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            appConfigDto = ConfigCache.getAppConfigDtoCache();
 
             if (StringUtils.isNotBlank(appConfigDto.getGenerateSqlDatabaseNum())) {
                 OutputUtils.info(databaseNum, appConfigDto.getGenerateSqlDatabaseNum());

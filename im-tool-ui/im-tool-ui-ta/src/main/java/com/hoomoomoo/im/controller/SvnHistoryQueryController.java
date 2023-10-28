@@ -58,7 +58,7 @@ public class SvnHistoryQueryController extends BaseController implements Initial
     private void stat() {
         new Thread(() -> {
             try {
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 try {
                     setProgress(0);
                     String startSelected = dateStart.getValue().toString();

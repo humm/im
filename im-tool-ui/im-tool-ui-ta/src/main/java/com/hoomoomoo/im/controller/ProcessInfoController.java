@@ -79,7 +79,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 index = filePath.getText().lastIndexOf("\\");
             }
             String path = filePath.getText().substring(0, index);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isEmpty(appConfigDto.getProcessGeneratePathSchedule())) {
                 appConfigDto.setProcessGeneratePathSchedule(path);
             }
@@ -104,7 +104,7 @@ public class ProcessInfoController extends BaseController implements Initializab
         try {
             OutputUtils.clearLog(filePath);
             OutputUtils.clearLog(taCode);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(appConfigDto.getProcessExcelPath())) {
                 OutputUtils.info(filePath, appConfigDto.getProcessExcelPath());
             }
@@ -126,7 +126,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 Date date = new Date();
                 OutputUtils.clearLog(log);
                 // 创建生成脚本目录
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 String processSchedule = appConfigDto.getProcessGeneratePathSchedule();
                 String processPathTrans = appConfigDto.getProcessGeneratePathTrans();
                 File pathFolderSchedule = new File(processSchedule);

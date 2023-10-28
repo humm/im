@@ -82,23 +82,9 @@ public class BaseConst {
     public static final String KEY_FILE = "file:";
     public static final String KEY_APP_LOG = "appLog";
     public static final String KEY_DELETE = "delete";
-    public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE = "transCodeAndSubTransCode";
-    public static final String KEY_TA_CODE = "taCode";
-    public static final String KEY_TA_CODE_UNDERLINE = "ta_code";
-    public static final String KEY_TRANS_CODE_AND_SUB_TRANS_CODE_UNDERLINE = "trans_code_and_sub_trans_code";
-    public static final String KEY_PRD_CODE = "prdCode";
-    public static final String KEY_SELLER_CODE = "sellerCode";
-    public static final String KEY_BRANCH_NO = "branchNo";
-    public static final String KEY_SEARCH_FORM = "searchForm.";
-    public static final String KEY_ADD_FORM = "addForm.";
-    public static final String KEY_UPDATE_FORM = "updateForm.";
-    public static final String KEY_BATCH_UPDATE_FORM = "batchUpdateForm.";
     public static final String KEY_HREF = "href";
     public static final String KEY_ORDER_ID = "orderId";
     public static final String KEY_PRODUCT_ID = "productId";
-    public static final String KEY_BEGIN_DATE = "begin_date";
-    public static final String KEY_ORI_BEG_DATE = "ori_beg_date";
-    public static final String KEY_ORI = "ori";
     public static final String KEY_SORT = "sort";
     public static final String KEY_SCORE = "score";
     public static final String KEY_SAVE_STATUS = "saveStatus";
@@ -107,10 +93,6 @@ public class BaseConst {
     public static final String KEY_IMGS = "imgs";
     public static final String KEY_UNICK = "unick";
     public static final String KEY_LIB = "/lib";
-    public static final String KEY_PRD_CODE_NAME = "基金名称";
-    public static final String KEY_PRIMARY_KEY = "primary key";
-    public static final String KEY_DATE = "Date";
-    public static final String KEY_NOT_NULL = "not null,";
     public static final String KEY_VERSION = "version";
     public static final String KEY_TRUNK = "trunk";
     public static final String KEY_BRANCHES = "branches";
@@ -123,13 +105,6 @@ public class BaseConst {
     public static final String KEY_FUND = "FUND";
     public static final String KEY_SOURCES_TA_FUND = "/Sources/ta/fund";
     public static final String KEY_TEMP = "temp/";
-
-    public static final String KEY_COLUMN_TYPE_DATE = "date";
-    public static final String KEY_COLUMN_TYPE_INTEGER = "integer";
-    public static final String KEY_COLUMN_TYPE_NUMBER = "number";
-    public static final String KEY_COLUMN_TYPE_VARCHAR2 = "varchar2";
-
-    public static final String KEY_ORDER_TYPE_DESC = "desc";
 
     public final static String KEY_APP_ID = "app_id";
     public final static String KEY_APP_KEY = "app_key";
@@ -160,7 +135,6 @@ public class BaseConst {
 
     public static final String METHOD_QUERY_DATA = "queryData";
     public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
-    public static final String METHOD_SERVICE_APPRAISE = "serviceAppraise";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
@@ -219,7 +193,7 @@ public class BaseConst {
     public static final String NAME_MENU_HEP_TASK_TODO = "#################### 效能";
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
-    public static final String NAME_UPDATE_VERSION = "更新发版时间";
+    public static final String NAME_UPDATE_VERSION = "同步发版时间";
 
     public static final String NAME_MENU_UPDATE = "更新";
     public static final String NAME_MENU_COPY = "复制";
@@ -270,7 +244,6 @@ public class BaseConst {
 
     public final static Integer FUNCTION_CODE_1000 = 1000;
     public final static Integer FUNCTION_CODE_2000 = 2000;
-    public final static Integer FUNCTION_CODE_310 = 310;
 
     public static final Pattern STR_PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
 
@@ -284,11 +257,9 @@ public class BaseConst {
     public static final String MSG_SCRIPT_UPDATE_GENERATE_PATH = "请设置[ script.update.generate.path ]";
     public static final String MSG_SVN_STAT_USER = "请设置[ svn.stat.user. ]";
     public static final String MSG_SVN_STAT_INTERVAL = "请设置[ svn.stat.interval ]大于等于10";
-    public static final String MSG_GENERATE_CODE_PATH = "请设置[ %s ]路径";
+    public static final String MSG_GENERATE_CODE_TIPS = "请设置[ %s ]\n";
     public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请更新京东Cookie";
-    public static final String MSG_AUTO_APPRAISE = "自动评价评价";
     public static final String MSG_SET = "请设置[ %s ]\n";
-    public static final String MSG_MENU_STYLE = "格式[ 一级菜单 二级菜单 三级菜单 ]";
     public static final String MSG_APP_TITLE = "【%s: %s】";
 
 
@@ -301,7 +272,6 @@ public class BaseConst {
     public static final String MSG_CHECK = "校验[ %s ] 完成";
     public static final String MSG_START = "启动[ %s ] 开始";
     public static final String MSG_COMPLETE = "启动[ %s ] 完成";
-    public static final String MSG_FILE_GENERATE = "%s文件生成成功";
     public static final String MSG_FUNCTION_NOT_EXIST = "功能[ %s ]不存在";
     public static final String MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件[ license.init ]";
     public static final String MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止[ %s ]";
@@ -312,9 +282,6 @@ public class BaseConst {
     public static final String MSG_SVN_REALTIME_STAT = "%s  %s  %s  %s";
     public static final String MSG_EXECUTE = "[%s]执行中,请稍后再试";
     public static final String MSG_TIPS = "[ %s ]";
-
-    public static final String CONFIG_COLUMN = "配置字段信息";
-    public static final String CONFIG_TABLE = "配置正式表结构";
 
     public static final String APP_MODE_NAME = "模式";
     public static final String APP_MODE_NAME_APP = "工厂模式";
@@ -345,56 +312,7 @@ public class BaseConst {
     public static final String PATH_COLUMN_SET_FXML = "/conf/fxml/generateCodeColumnSet.fxml";
     public static final String PATH_COMPLETE_TASK_FXML = "/conf/fxml/completeTask.fxml";
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
-    public static final String PATH_RECORD_LOG = "/records/%s.record";
     public static final String PATH_VERSION_STAT = "/stats/version.stat";
-
-    public static final String PACKAGE_JAVA_PREFIX = "com.hundsun.lcpt.fund.";
-    public static final String PATH_JAVA_PREFIX = "/src/main/java/";
-    public static final String PACKAGE_VUE_PREFIX = "views.";
-
-    public static final String METHOD_RETURN_PARAM_IDATASET = "com.hundsun.jres.interfaces.share.dataset.IDataset";
-    public static final String METHOD_RETURN_PARAM_QUERY_STAT_INFO = "com.hundsun.lcpt.ta.base.webmanager.QueryStatInfo";
-    public static final String METHOD_RETURN_PARAM_HS_SQL_STRING = "com.hundsun.lcpt.util.HsSqlString";
-    public static final String METHOD_RETURN_PARAM_LIST = "java.util.List<%s>";
-    public static final String METHOD_RETURN_PARAM_STRING = "java.lang.String";
-
-    public static final String METHOD_REQUEST_PARAM_STRING = "dataset";
-    public static final String METHOD_REQUEST_PARAM_TABLE_NAME = "tableName";
-    public static final String METHOD_REQUEST_PARAM_AUDIT_TABLE_NAME = "auditTableName";
-    public static final String METHOD_REQUEST_PARAM_ENTITY_DETAILS = "entityDetails";
-    public static final String METHOD_REQUEST_PARAM_SESSION = "session";
-    public static final String METHOD_REQUEST_PARAM_DTO = "dto";
-    public static final String METHOD_REQUEST_PARAM_MAP = "map";
-    public static final String METHOD_REQUEST_PARAM_WORK_PROCESS_DTO = "workProcessDTO";
-    public static final String METHOD_REQUEST_PARAM_ASYN_AUDIT_DTO = "asynAuditDTO";
-    public static final String METHOD_REQUEST_PARAM_ENTRY_SERIAL_NO = "entrySerialNo";
-    public static final String METHOD_REQUEST_PARAM_ENTRY_ORDER_NO = "entryOrderNo";
-    public static final String METHOD_REQUEST_PARAM_OPERATOR_MODE = "operatorMode";
-    public static final String METHOD_REQUEST_PARAM_FLAG = "flag";
-
-    public static final String METHOD_TYPE_QUERY = "查询";
-    public static final String METHOD_TYPE_ADD = "新增";
-    public static final String METHOD_TYPE_EDIT = "修改";
-    public static final String METHOD_TYPE_DELETE = "删除";
-    public static final String METHOD_TYPE_IMPORT = "导入";
-    public static final String METHOD_TYPE_EXPORT = "导出";
-
-    public static final String SUB_TRANSCODE_ADD = "Add";
-    public static final String SUB_TRANSCODE_EDIT = "Edit";
-    public static final String SUB_TRANSCODE_DELETE = "Delete";
-    public static final String SUB_TRANSCODE_IMPORT = "Import";
-
-    public static final String DB_TYPE_PUB = "1";
-    public static final String DB_TYPE_TRANS = "2";
-    public static final String DB_TYPE_TRANS_QUERY = "3";
-    public static final String DB_TYPE_TRANS_ORDER = "4";
-
-    public static final String PAGE_TYPE_SET = "1";
-    public static final String PAGE_TYPE_QUERY = "2";
-    public static final String PAGE_TYPE_QUERY_CONFIG = "3";
-
-    public static final String MENU_TYPE_FUND = "1";
-    public static final String MENU_TYPE_ACCOUNT = "2";
 
     public static final Integer JD_APPRAISE_LENGTH_MIN = 30;
     public static final Integer JD_APPRAISE_LENGTH_MAX = 450;
@@ -413,8 +331,32 @@ public class BaseConst {
     public static final String MENU_CODE_PARAM = "param";
     public static final String MENU_CODE_BUSIN = "busin";
 
-    public static final String PAGE_TYPE_GENERATE_CODE_TABLE = "table";
-    public static final String PAGE_TYPE_GENERATE_CODE_ASY_TABLE = "asyTable";
     public static final String PAGE_TYPE_HEP_DETAIL = "detail";
+
+    public static final String MENU_TYPE_FUND_CODE = "1";
+    public static final String MENU_TYPE_FUND_NAME = "自建业务";
+    public static final String MENU_TYPE_ACCOUNT_CODE = "2";
+    public static final String MENU_TYPE_ACCOUNT_NAME = "账户中心";
+
+    public static final String MENU_FUNCTION_SET_CODE = "1";
+    public static final String MENU_FUNCTION_SET_NAME = "方案设置";
+    public static final String MENU_FUNCTION_QUERY_CODE = "2";
+    public static final String MENU_FUNCTION_QUERY_NAME = "数据查询";
+
+    public static final String MENU_DATASOURCE_PUB_CODE = "1";
+    public static final String MENU_DATASOURCE_PUB_NAME = "主库";
+    public static final String MENU_DATASOURCE_QUERY_CODE = "2";
+    public static final String MENU_DATASOURCE_QUERY_NAME = "查询库";
+    public static final String MENU_DATASOURCE_SHARDING_CODE = "3";
+    public static final String MENU_DATASOURCE_SHARDING_NAME = "sharding";
+
+    public static final String MENU_MULTIPLE_TABLE_YES_CODE = "1";
+    public static final String MENU_MULTIPLE_TABLE_YES_NAME = "是";
+    public static final String MENU_MULTIPLE_TABLE_NO_CODE = "0";
+    public static final String MENU_MULTIPLE_TABLE_NO_NAME = "否";
+
+
+
+
 
 }

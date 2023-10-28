@@ -262,7 +262,7 @@ public class CommonUtils {
     }
 
     public static boolean checkLicense(String functionCode) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         LicenseDto licenseDto = appConfigDto.getLicense();
         if (StringUtils.isBlank(functionCode)) {
             if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
@@ -300,7 +300,7 @@ public class CommonUtils {
     }
 
     public static List<FunctionDto> getAuthFunction() throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         LicenseDto licenseDto = appConfigDto.getLicense();
         if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
             return new ArrayList<>();
@@ -309,7 +309,7 @@ public class CommonUtils {
     }
 
     public static void showAuthFunction(MenuBar menuBar, TabPane functionTab) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
         if (CollectionUtils.isEmpty(functionDtoList)) {
             return;
@@ -345,7 +345,7 @@ public class CommonUtils {
 
     public static void initMenuBar(MenuBar menuBar, List<FunctionDto> functionDtoList) throws Exception {
         if (CollectionUtils.isNotEmpty(functionDtoList)) {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             Map<String, MenuFunctionConfig.MenuConfig> menuConfigList = new LinkedHashMap<>(16);
             Map<String, Integer> authMenu = new LinkedHashMap<>(16);
             for (FunctionDto functionDto : functionDtoList) {
@@ -476,10 +476,6 @@ public class CommonUtils {
         for (MenuFunctionConfig.FunctionConfig functionConfig : MenuFunctionConfig.FunctionConfig.values()) {
             int functionCode = Integer.valueOf(functionConfig.getCode());
             if (APP_CODE_TA.equals(appCode) && functionCode < FUNCTION_CODE_1000) {
-                // 临时注释 不授权 生成代码功能
-                if (functionCode == FUNCTION_CODE_310) {
-                    continue;
-                }
                 functionConfigList.add(functionConfig);
             } else if (APP_CODE_SHOPPING.equals(appCode) && functionCode >= FUNCTION_CODE_1000 && functionCode < FUNCTION_CODE_2000) {
                 functionConfigList.add(functionConfig);
@@ -696,7 +692,7 @@ public class CommonUtils {
             @SneakyThrows
             @Override
             public void handle(Event t) {
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 List<Timer> timerList = appConfigDto.getTimerList();
                 if (CollectionUtils.isNotEmpty(timerList)) {
                     for (Timer timer : timerList) {
@@ -721,7 +717,7 @@ public class CommonUtils {
             // 加载已授权功能
             CommonUtils.showAuthFunction(menuBar, tabPane);
 
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             appConfigDto.setTabPane(tabPane);
 
             String showTab = appConfigDto.getAppTabShow();

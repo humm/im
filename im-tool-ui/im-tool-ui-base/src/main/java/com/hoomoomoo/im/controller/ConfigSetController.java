@@ -51,7 +51,7 @@ public class ConfigSetController implements Initializable {
         String content = config.getText();
         String confPath = FileUtils.getFilePath(PATH_APP);
         FileUtils.writeFile(confPath, content, false);
-        ConfigCache.initCache();
+        ConfigCache.initConfigCache();
         OutputUtils.info(tips, NAME_SAVE_SUCCESS + CommonUtils.getCurrentDateTime8(new Date()));
         LoggerUtils.writeConfigSetInfo(CONFIG_SET.getCode());
         if (AppCache.FUNCTION_TAB_CACHE != null) {

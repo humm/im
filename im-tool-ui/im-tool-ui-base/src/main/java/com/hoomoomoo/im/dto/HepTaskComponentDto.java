@@ -14,7 +14,7 @@ import java.util.List;
  */
 
 @Data
-public class HepTaskComponent extends BaseDto{
+public class HepTaskComponentDto extends BaseDto{
 
     private List<String> logs;
 

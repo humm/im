@@ -2,27 +2,18 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.ColumnInfoDto;
-import com.hoomoomoo.im.dto.GenerateCodeDto;
-import com.hoomoomoo.im.service.GenerateCommon;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
-import com.sun.javafx.sg.prism.NGNode;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.ComboBoxTableCell;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
-import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -53,7 +44,6 @@ public class GenerateCodeColumnSetController implements Initializable {
     @FXML
     private TableColumn columnMultiSingle;
 
-    private List<ColumnInfoDto> columnInfoDtoList  = new ArrayList<>();
 
     @FXML
     void columnNameEdit(TableColumn.CellEditEvent event) {
@@ -139,56 +129,56 @@ public class GenerateCodeColumnSetController implements Initializable {
         if (StringUtils.isNotBlank(value)) {
             value = value.trim();
         }
-        for (int i=0; i<columnInfoDtoList.size(); i++) {
-            ColumnInfoDto columnInfoDto = columnInfoDtoList.get(i);
+        /*for (int i = 0; i< generateColumnInfoDtoList.size(); i++) {
+            GenerateColumnInfoDto generateColumnInfoDto = generateColumnInfoDtoList.get(i);
             if (i == rowNum) {
                 switch (updateType) {
                     case STR_1:
-                        columnInfoDto.setColumnName(value);
+                        generateColumnInfoDto.setColumnName(value);
                         break;
                     case STR_2:
-                        columnInfoDto.setColumnDict(value);
+                        generateColumnInfoDto.setColumnDict(value);
                         break;
                     case STR_3:
-                        columnInfoDto.setColumnMulti(value);
+                        generateColumnInfoDto.setColumnMulti(value);
                         break;
                     case STR_4:
-                        columnInfoDto.setColumnDate(value);
+                        generateColumnInfoDto.setColumnDate(value);
                         break;
                     case STR_5:
-                        columnInfoDto.setColumnPrecision(value);
+                        generateColumnInfoDto.setColumnPrecision(value);
                         break;
                     case STR_6:
-                        columnInfoDto.setColumnRequired(value);
+                        generateColumnInfoDto.setColumnRequired(value);
                         break;
                     case STR_7:
-                        columnInfoDto.setColumnDefault(value);
+                        generateColumnInfoDto.setColumnDefault(value);
                         break;
                     case STR_8:
-                        columnInfoDto.setColumnOrder(value);
+                        generateColumnInfoDto.setColumnOrder(value);
                         break;
                     case STR_9:
-                        columnInfoDto.setColumnWidth(value);
+                        generateColumnInfoDto.setColumnWidth(value);
                         break;
                     case STR_10:
-                        columnInfoDto.setColumnQuery(value);
+                        generateColumnInfoDto.setColumnQuery(value);
                         break;
                     case STR_11:
-                        columnInfoDto.setColumnUpdate(value);
+                        generateColumnInfoDto.setColumnUpdate(value);
                         break;
                     case STR_12:
-                        columnInfoDto.setColumnQueryOrder(value);
+                        generateColumnInfoDto.setColumnQueryOrder(value);
                         break;
                     case STR_13:
-                        columnInfoDto.setColumnQueryOrderType(value);
+                        generateColumnInfoDto.setColumnQueryOrderType(value);
                     case STR_14:
-                        columnInfoDto.setColumnBatchUpdate(value);
+                        generateColumnInfoDto.setColumnBatchUpdate(value);
                         break;
                     case STR_15:
-                        columnInfoDto.setColumnQueryStat(value);
+                        generateColumnInfoDto.setColumnQueryStat(value);
                         break;
                     case STR_16:
-                        columnInfoDto.setColumnMultiSingle(value);
+                        generateColumnInfoDto.setColumnMultiSingle(value);
                         break;
                     default:
                         break;
@@ -197,38 +187,38 @@ public class GenerateCodeColumnSetController implements Initializable {
             }
         }
         if (STR_8.equals(updateType)) {
-            Collections.sort(columnInfoDtoList);
+            Collections.sort(generateColumnInfoDtoList);
         }
         OutputUtils.clearLog(columnInfo);
-        OutputUtils.infoList(columnInfo, columnInfoDtoList, false);
+        OutputUtils.infoList(columnInfo, generateColumnInfoDtoList, false);*/
     }
 
     @FXML
     void onSave(ActionEvent event) throws Exception {
-        try {
+        /*try {
             OutputUtils.clearLog(tips);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             List<String> errorInfo = new ArrayList();
             Map<String, String> queryOrder = new HashMap<>(16);
-            for (ColumnInfoDto columnInfoDto : columnInfoDtoList) {
-                String columnUnderline = columnInfoDto.getColumnUnderline();
-                if (StringUtils.isBlank(columnInfoDto.getColumnName())) {
+            for (GenerateColumnInfoDto generateColumnInfoDto : generateColumnInfoDtoList) {
+                String columnUnderline = generateColumnInfoDto.getColumnUnderline();
+                if (StringUtils.isBlank(generateColumnInfoDto.getColumnName())) {
                     errorInfo.add(columnUnderline + " 名称不能为空");
                     break;
                 }
-                if (!CommonUtils.isNumber(columnInfoDto.getColumnWidth())) {
+                if (!CommonUtils.isNumber(generateColumnInfoDto.getColumnWidth())) {
                     errorInfo.add(columnUnderline + " 显示宽度只能为整数");
                     break;
                 }
-                if (!CommonUtils.isNumber(columnInfoDto.getColumnPrecision())) {
+                if (!CommonUtils.isNumber(generateColumnInfoDto.getColumnPrecision())) {
                     errorInfo.add(columnUnderline + " 小数位数只能为整数");
                     break;
                 }
-                if (!CommonUtils.isNumber(columnInfoDto.getColumnOrder())) {
+                if (!CommonUtils.isNumber(generateColumnInfoDto.getColumnOrder())) {
                     errorInfo.add(columnUnderline + " 显示顺序只能为整数");
                     break;
                 }
-                String columnQueryOrder = columnInfoDto.getColumnQueryOrder();
+                String columnQueryOrder = generateColumnInfoDto.getColumnQueryOrder();
                 if (!CommonUtils.isNumber(columnQueryOrder)) {
                     errorInfo.add(columnUnderline + " 查询排序只能为整数");
                     break;
@@ -246,19 +236,17 @@ public class GenerateCodeColumnSetController implements Initializable {
                 return;
             }
             save.setDisable(true);
-            appConfigDto.getGenerateCodeDto().setColumn(columnInfoDtoList);
-            Stage columnStage = appConfigDto.getColumnStage();
-            columnStage.close();
-            appConfigDto.setColumnStage(null);
+            appConfigDto.getGenerateCodeDto().setColumn(generateColumnInfoDtoList);
+
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
-        save.setDisable(false);
+        save.setDisable(false);*/
     }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        try {
+       /* try {
             ObservableList<String> options = FXCollections.observableArrayList(
                     "1",
                     "2",
@@ -286,26 +274,23 @@ public class GenerateCodeColumnSetController implements Initializable {
                 }
             },"选项1","选项2","选项3"));
 
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             GenerateCodeDto generateCodeDto = appConfigDto.getGenerateCodeDto();
-            columnInfoDtoList = generateCodeDto.getColumn();
-            if (CollectionUtils.isEmpty(columnInfoDtoList)) {
-                columnInfoDtoList = new ArrayList<>();
+            generateColumnInfoDtoList = generateCodeDto.getColumn();
+            if (CollectionUtils.isEmpty(generateColumnInfoDtoList)) {
+                generateColumnInfoDtoList = new ArrayList<>();
             }
-            Map<String, ColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
+            Map<String, GenerateColumnInfoDto> tableColumn = generateCodeDto.getColumnMap();
             Iterator<String> iterator = tableColumn.keySet().iterator();
             while (iterator.hasNext()) {
                 String columnCode = iterator.next();
-                ColumnInfoDto columnInfoDto = tableColumn.get(columnCode);
-                if (GenerateCommon.skipColumn(columnInfoDto, false)) {
-                    continue;
-                }
-                OutputUtils.info(columnInfo, columnInfoDto, false);
+                GenerateColumnInfoDto generateColumnInfoDto = tableColumn.get(columnCode);
+                OutputUtils.info(columnInfo, generateColumnInfoDto, false);
                 if (isAppend(columnCode)) {
-                    columnInfoDtoList.add(columnInfoDto);
+                    generateColumnInfoDtoList.add(generateColumnInfoDto);
                 }
             }
-            Iterator<ColumnInfoDto> columnIterator = columnInfoDtoList.listIterator();
+            Iterator<GenerateColumnInfoDto> columnIterator = generateColumnInfoDtoList.listIterator();
             while (columnIterator.hasNext()) {
                 if (tableColumn.get(columnIterator.next().getColumnCode()) == null) {
                     columnIterator.remove();
@@ -313,18 +298,18 @@ public class GenerateCodeColumnSetController implements Initializable {
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
-        }
+        }*/
     }
 
-    private boolean isAppend(String columnCode) {
+    /*private boolean isAppend(String columnCode) {
         boolean append = true;
-        for (ColumnInfoDto item : columnInfoDtoList) {
+        for (GenerateColumnInfoDto item : generateColumnInfoDtoList) {
             if (columnCode.equals(item.getColumnCode())) {
                 append = false;
                 break;
             }
         }
         return append;
-    }
+    }*/
 
 }

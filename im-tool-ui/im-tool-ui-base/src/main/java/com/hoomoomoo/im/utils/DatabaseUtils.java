@@ -25,7 +25,7 @@ public class DatabaseUtils {
         if (connection != null) {
             return connection;
         }
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         connection = DriverManager.getConnection(appConfigDto.getDatabaseScriptUrl(), appConfigDto.getDatabaseScriptUsername(),
             appConfigDto.getDatabaseScriptPassword());
         return connection;

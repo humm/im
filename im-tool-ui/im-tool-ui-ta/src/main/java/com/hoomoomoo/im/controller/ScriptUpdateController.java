@@ -87,7 +87,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             if (onlyDelete.isSelected() == false && all.isSelected() == false) {
                 selectAll(null);
             }
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             appConfigDto.setScriptUpdateGenerateMode(rewrite.isSelected() ? STR_2 : STR_1);
             appConfigDto.setScriptUpdateGenerateType(all.isSelected() ? STR_2 : STR_1);
             appConfigDto.setScriptUpdateGenerateUed(menuYes.isSelected() ? STR_1 : STR_2);
@@ -102,7 +102,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String mode = appConfigDto.getScriptUpdateGenerateMode();
             String type = appConfigDto.getScriptUpdateGenerateType();
             String ued = appConfigDto.getScriptUpdateGenerateUed();

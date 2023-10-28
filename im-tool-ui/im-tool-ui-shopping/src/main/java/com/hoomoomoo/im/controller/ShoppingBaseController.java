@@ -85,7 +85,7 @@ public class ShoppingBaseController extends BaseController{
                 setProgress(0);
                 updateProgress(0.01);
                 ComponentUtils.setButtonDisabled(execute, query, pause);
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
                     query(appConfigDto, clazz, true);
                 }
@@ -121,7 +121,7 @@ public class ShoppingBaseController extends BaseController{
         try {
             pauseStatus = false;
             int currentNum = orderNumValue;
-            appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            appConfigDto = ConfigCache.getAppConfigDtoCache();
             appConfigDto.setExecuteType(functionConfig.getCode());
             if(!ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
                 return;
@@ -185,7 +185,7 @@ public class ShoppingBaseController extends BaseController{
             instance = clazz.newInstance();
             instanceService = ServiceAppraiseController.class.newInstance();
             pauseStatus = false;
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (appConfigDto.getJdInitQuery()) {
                 if (ShoppingCommonUtil.initJdUser(appConfigDto, log, userName, orderNum)) {
                     query(appConfigDto, clazz, true);
@@ -224,7 +224,7 @@ public class ShoppingBaseController extends BaseController{
             if (MapUtils.isNotEmpty(requestData)) {
                 AppConfigDto appConfigDto = null;
                 try {
-                    appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                    appConfigDto = ConfigCache.getAppConfigDtoCache();
                 } catch (Exception exception) {
                     LoggerUtils.info(e);
                 }

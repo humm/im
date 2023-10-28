@@ -42,8 +42,6 @@ public class SvnLogController extends BaseController implements Initializable {
     @FXML
     private TextField svnTimes;
 
-
-
     @FXML
     private TextField version;
 
@@ -98,7 +96,7 @@ public class SvnLogController extends BaseController implements Initializable {
 
     @FXML
     void svnResetSubmit(ActionEvent event) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         OutputUtils.clearLog(modifyNo);
         OutputUtils.clearLog(svnTimes);
         OutputUtils.info(svnTimes, appConfigDto.getSvnRecentTime());
@@ -157,7 +155,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 svnDescribe.setDisable(true);
                 copy.setDisable(true);
                 Date date = new Date();
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 List<LogDto> logDtoList = new ArrayList<>(16);
                 int maxTime = times;
                 if (StringUtils.isNotBlank(modifyNo)) {
@@ -257,7 +255,7 @@ public class SvnLogController extends BaseController implements Initializable {
     @FXML
     void selectSvnVersion(ActionEvent event) {
         try {
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String version = (String)svnVersion.getSelectionModel().getSelectedItem();
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -270,7 +268,7 @@ public class SvnLogController extends BaseController implements Initializable {
         try {
             OutputUtils.clearLog(svnName);
             OutputUtils.clearLog(svnTimes);
-            AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(appConfigDto.getSvnUsername())) {
                 OutputUtils.info(svnName, appConfigDto.getSvnUsername());
             }
@@ -284,9 +282,6 @@ public class SvnLogController extends BaseController implements Initializable {
                 Iterator<String> version = svnVersionMap.keySet().iterator();
                 while (version.hasNext()) {
                     String ver = version.next();
-                    if (maxVer.compareTo(ver) == -1) {
-
-                    }
                     if (KEY_DESKTOP.equals(ver)) {
                         continue;
                     }

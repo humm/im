@@ -1,4 +1,4 @@
-package com.hoomoomoo.im.service;
+package com.hoomoomoo.im.extend;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.controller.HepTaskTodoController;
@@ -35,7 +35,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 HepTaskDto item = appConfigDto.getHepTaskDto();
                 String info = getCopyContent(item, true);
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info), null);
@@ -47,7 +47,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 HepTaskDto item = appConfigDto.getHepTaskDto();
                 String info = getCopyContent(item, false);
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info), null);
@@ -59,7 +59,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 HepTaskDto item = appConfigDto.getHepTaskDto();
                 item.setOperateType(OPERATE_TYPE_CUSTOM_UPDATE);
                 HepTaskTodoController hepWaitHandleTaskController = new HepTaskTodoController();
@@ -72,13 +72,13 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                AppConfigDto appConfigDto = ConfigCache.getConfigCache().getAppConfigDto();
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 appConfigDto.setPageType(PAGE_TYPE_HEP_DETAIL);
-                Stage stage = appConfigDto.getTaskStage();
+                Stage stage = appConfigDto.getChildStage();
                 // 每次页面都重新打开
                 if (stage != null) {
                     stage.close();
-                    appConfigDto.setTaskStage(null);
+                    appConfigDto.setChildStage(null);
                     stage = null;
                 }
 
@@ -92,10 +92,10 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                     stage.setTitle("任务详情");
                     stage.setResizable(false);
                     stage.show();
-                    appConfigDto.setTaskStage(stage);
+                    appConfigDto.setChildStage(stage);
                     stage.setOnCloseRequest(columnEvent -> {
-                        appConfigDto.getTaskStage().close();
-                        appConfigDto.setTaskStage(null);
+                        appConfigDto.getChildStage().close();
+                        appConfigDto.setChildStage(null);
                     });
                 } else {
                     stage.toFront();

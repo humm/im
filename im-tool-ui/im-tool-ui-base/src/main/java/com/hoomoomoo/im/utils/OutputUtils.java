@@ -14,6 +14,7 @@ import javafx.util.Callback;
 import java.util.Date;
 import java.util.List;
 
+import static com.hoomoomoo.im.consts.BaseConst.MENU_TYPE_FUND_NAME;
 import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
 
 /**
@@ -106,6 +107,8 @@ public class OutputUtils {
                 ((TextField) obj).setText(text);
             } else if (obj instanceof Label) {
                 ((Label) obj).setText(text);
+            } else if (obj instanceof ComboBox) {
+                ((ComboBox) obj).getSelectionModel().select(text);
             }
         });
     }

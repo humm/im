@@ -30,38 +30,42 @@ public class ConfigCache {
 
     private static String appCodeCache;
 
-    public static String getAppCodeCache() {
-        return appCodeCache;
+    private ConfigCache() throws Exception {
+        init(true);
     }
 
     public static void initAppCodeCache(String appCode) {
         appCodeCache = appCode;
     }
 
-    public static ConfigCache getConfigCache() throws Exception {
+    public static String getAppCodeCache() {
+        return appCodeCache;
+    }
+
+    public static void initConfigCache() throws Exception {
+        configCache = new ConfigCache();
+    }
+
+    public static AppConfigDto getAppConfigDtoCache() throws Exception{
+        return getConfigCache().getAppConfigDto();
+    }
+
+    public static AppConfigDto getAppConfigDtoCache(boolean initExtend) throws Exception{
+        if (appConfigDto == null) {
+            init(initExtend);
+        }
+        return appConfigDto;
+    }
+
+    private AppConfigDto getAppConfigDto() {
+        return appConfigDto;
+    }
+
+    private static ConfigCache getConfigCache() throws Exception {
         if (configCache == null) {
             configCache = new ConfigCache();
         }
         return configCache;
-    }
-
-    public static void initCache() throws Exception {
-        configCache = new ConfigCache();
-    }
-
-    public AppConfigDto getAppConfigDto() {
-        return appConfigDto;
-    }
-
-    public static AppConfigDto getInitAppConfigDto() throws Exception{
-        if (appConfigDto == null) {
-            init(false);
-        }
-        return appConfigDto;
-    }
-
-    private ConfigCache() throws Exception {
-        init(true);
     }
 
     private static void init(boolean extend) throws Exception {
@@ -105,7 +109,7 @@ public class ConfigCache {
                 continue;
             }
             // 删除未授权功能配置信息
-            if (item.contains(NAME_SVN_STAT) || item.contains(NAME_SVN_STAT_REALTIME) || item.contains(NAME_SVN_STAT_HISTORY)) {
+            if (item.contains(NAME_SVN_STAT) || item.contains(NAME_SVN_STAT_REALTIME) || item.contains(NAME_SVN_STAT_HISTORY) || item.contains(NAME_MENU_HEP_TASK_TODO)) {
                 configIndex++;
                 iterator.remove();
             } else if (configIndex == 1) {

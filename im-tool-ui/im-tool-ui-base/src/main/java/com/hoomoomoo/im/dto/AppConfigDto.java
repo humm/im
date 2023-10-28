@@ -1,7 +1,6 @@
 package com.hoomoomoo.im.dto;
 
 import javafx.scene.control.TabPane;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import lombok.Data;
 
@@ -85,20 +84,6 @@ public class AppConfigDto extends BaseDto {
 
     private String appUser;
 
-    private String generateCodeJavaPath;
-
-    private String generateCodeSqlPath;
-
-    private String generateCodeVuePath;
-
-    private String generateCodeRoutePath;
-
-    private String generateCodeAuthor;
-
-    private String generateCodeDbType;
-
-    private String generateCodePageType;
-
     private String copyCodeDefaultSource;
 
     private String copyCodeDefaultTarget;
@@ -175,21 +160,7 @@ public class AppConfigDto extends BaseDto {
 
     private String generateSqlTableCode;
 
-    private String generateCodeMenuCode;
-
-    private String generateCodeMenuName;
-
-    private Boolean generateCodeDefaultLast;
-
-    private GenerateCodeDto generateCodeDto;
-
-    private Stage columnStage;
-
-    private Stage taskStage;
-
-    private Stage tableStage;
-
-    private Stage asyTableStage;
+    private Stage childStage;
 
     private String pageType;
 
@@ -201,13 +172,11 @@ public class AppConfigDto extends BaseDto {
 
     private String databaseScriptLocation;
 
-    private String generateCodeMenuType;
-
     private Map<String, String> fieldTranslateMap;
 
     private HepTaskDto hepTaskDto;
 
-    private HepTaskComponent hepTaskComponent;
+    private HepTaskComponentDto hepTaskComponentDto;
 
     private String hepTaskTodoCostTime;
 
@@ -229,6 +198,46 @@ public class AppConfigDto extends BaseDto {
 
     private TabPane tabPane;
 
+    private String generateCodeJavaPath;
+
+    private String generateCodeSqlPath;
+
+    private String generateCodeVuePath;
+
+    private String generateCodeRoutePath;
+
+    private String generateCodeCheckPath;
+
+    private String generateCodeMenuType;
+
+    private String generateCodeMenuFunction;
+
+    private String generateCodeMenuDataSource;
+
+    private String generateCodeMenuAuthor;
+
+    private String generateCodeMenuMultipleTable;
+
+    private String firstMenuCode;
+
+    private String firstMenuName;
+
+    private String secondMenuCode;
+
+    private String secondMenuName;
+
+    private String thirdMenuCode;
+
+    private String thirdMenuName;
+
+    private String menuOrder;
+
+    private String entityCode;
+
+    private String tableCode;
+
+    private String asyTableCode;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
@@ -248,7 +257,6 @@ public class AppConfigDto extends BaseDto {
         this.fieldTranslateMap = new HashMap<>(16);
         this.executeType = STR_BLANK;
         this.appUser = STR_BLANK;
-        this.generateCodeDefaultLast = true;
         this.timerList = new ArrayList<>();
     }
 }
