@@ -132,6 +132,16 @@ public class BaseConst {
     public final static String KEY_MODIFIED_FILE = "modified_file";
     public final static String KEY_EDIT_DESCRIPTION = "edit_description";
     public final static String KEY_NEXT = "next";
+    public final static String KEY_MENU_CODE = "menu_code";
+    public final static String KEY_MENU_NAME = "menu_name";
+    public final static String KEY_MENU_SUB = "menu_sub";
+    public final static String KEY_COLUMN_NAME = "column_name";
+    public final static String KEY_PK_NAME = "pk_name";
+    public final static String KEY_DATA_TYPE = "data_type";
+    public final static String KEY_DATA_LENGTH = "data_length";
+    public final static String KEY_DATA_PRECISION = "data_precision";
+    public final static String KEY_DATA_SCALE = "data_scale";
+    public final static String KEY_DATA_DEFAULT = "data_default";
 
     public static final String METHOD_QUERY_DATA = "queryData";
     public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
@@ -163,7 +173,7 @@ public class BaseConst {
     public static final String NAME_APPRAISEING = "评价开始";
     public static final String NAME_APPRAISE_SUCCESS = "评价成功";
     public static final String NAME_APPRAISE_FAIL = "评价失败";
-    public static final String NAME_REST_MOMENT = "策略休息[%s]秒";
+    public static final String NAME_REST_MOMENT = "策略休息【%s】秒";
     public static final String NAME_APPRAISE_COMPLETE = "评价完成";
     public static final String NAME_NO_APPRAISE_GOODS = "无评价商品";
     public static final String NAME_JD_LOGIN = "欢迎登录";
@@ -191,6 +201,7 @@ public class BaseConst {
     public static final String NAME_SVN_STAT_REALTIME = "#################### 实时统计";
     public static final String NAME_SVN_STAT_HISTORY = "#################### 历史统计";
     public static final String NAME_MENU_HEP_TASK_TODO = "#################### 效能";
+    public static final String NAME_CONFIG_COLUMN = "字段配置";
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
     public static final String NAME_UPDATE_VERSION = "同步发版时间";
@@ -247,41 +258,41 @@ public class BaseConst {
 
     public static final Pattern STR_PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
 
-    public static final String MSG_SVN_USERNAME = "请设置[ svn.username ]";
-    public static final String MSG_SVN_PASSWORD = "请设置[ svn.password ]";
-    public static final String MSG_SVN_URL = "请设置[ svn.url ]且名称不能为[ svn.url.demo ]";
-    public static final String MSG_SVN_UPDATE_TA6 = "请设置[ svn.update.ta6 ]";
-    public static final String MSG_FUND_GENERATE_PATH = "请设置[ fund.generate.path ]";
-    public static final String MSG_PROCESS_GENERATE_PATH_SCHEDULE = "请设置[ process.generate.path.schedule ]";
-    public static final String MSG_PROCESS_GENERATE_PATH_TRANS = "请设置[ process.generate.path.trans ]";
-    public static final String MSG_SCRIPT_UPDATE_GENERATE_PATH = "请设置[ script.update.generate.path ]";
-    public static final String MSG_SVN_STAT_USER = "请设置[ svn.stat.user. ]";
-    public static final String MSG_SVN_STAT_INTERVAL = "请设置[ svn.stat.interval ]大于等于10";
-    public static final String MSG_GENERATE_CODE_TIPS = "请设置[ %s ]\n";
+    public static final String MSG_SVN_USERNAME = "请设置【 svn.username 】";
+    public static final String MSG_SVN_PASSWORD = "请设置【 svn.password 】";
+    public static final String MSG_SVN_URL = "请设置【 svn.url 】且名称不能为【 svn.url.demo 】";
+    public static final String MSG_SVN_UPDATE_TA6 = "请设置【 svn.update.ta6 】";
+    public static final String MSG_FUND_GENERATE_PATH = "请设置【 fund.generate.path 】";
+    public static final String MSG_PROCESS_GENERATE_PATH_SCHEDULE = "请设置【 process.generate.path.schedule 】";
+    public static final String MSG_PROCESS_GENERATE_PATH_TRANS = "请设置【 process.generate.path.trans 】";
+    public static final String MSG_SCRIPT_UPDATE_GENERATE_PATH = "请设置【 script.update.generate.path 】";
+    public static final String MSG_SVN_STAT_USER = "请设置【 svn.stat.user. 】";
+    public static final String MSG_SVN_STAT_INTERVAL = "请设置【 svn.stat.interval 】大于等于10";
+    public static final String MSG_GENERATE_CODE_TIPS = "请设置【 %s 】\n";
     public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请更新京东Cookie";
-    public static final String MSG_SET = "请设置[ %s ]\n";
+    public static final String MSG_SET = "请设置【 %s 】\n";
     public static final String MSG_APP_TITLE = "【%s: %s】";
 
 
-    public static final String MSG_OPEN = "打开[ %s ] 功能界面";
-    public static final String MSG_USE = "使用[ %s ] 功能";
-    public static final String MSG_UPDATE = "更新[ %s ] 完成";
-    public static final String MSG_LOAD = "加载[ %s ] 完成";
-    public static final String MSG_INIT = "初始化[ %s ] 完成";
-    public static final String MSG_ENCRYPT = "加密[ %s ] 完成";
-    public static final String MSG_CHECK = "校验[ %s ] 完成";
-    public static final String MSG_START = "启动[ %s ] 开始";
-    public static final String MSG_COMPLETE = "启动[ %s ] 完成";
-    public static final String MSG_FUNCTION_NOT_EXIST = "功能[ %s ]不存在";
-    public static final String MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件[ license.init ]";
-    public static final String MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止[ %s ]";
-    public static final String MSG_LICENSE_EXPIRE_TIPS = "距离授权截止日期还有[ %s ]天";
-    public static final String MSG_LICENSE_NOT_AUTH = "功能[ %s ]未授权";
-    public static final String MSG_LICENSE_NOT_USE = "未启用[ %s ]功能";
+    public static final String MSG_OPEN = "打开【 %s 】 功能界面";
+    public static final String MSG_USE = "使用【 %s 】 功能";
+    public static final String MSG_UPDATE = "更新【 %s 】 完成";
+    public static final String MSG_LOAD = "加载【 %s 】 完成";
+    public static final String MSG_INIT = "初始化【 %s 】 完成";
+    public static final String MSG_ENCRYPT = "加密【 %s 】 完成";
+    public static final String MSG_CHECK = "校验【 %s 】 完成";
+    public static final String MSG_START = "启动【 %s 】 开始";
+    public static final String MSG_COMPLETE = "启动【 %s 】 完成";
+    public static final String MSG_FUNCTION_NOT_EXIST = "功能【 %s 】不存在";
+    public static final String MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件【 license.init 】";
+    public static final String MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止【 %s 】";
+    public static final String MSG_LICENSE_EXPIRE_TIPS = "距离授权截止日期还有【 %s 】天";
+    public static final String MSG_LICENSE_NOT_AUTH = "功能【 %s 】未授权";
+    public static final String MSG_LICENSE_NOT_USE = "未启用【 %s 】功能";
     public static final String MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ";
     public static final String MSG_SVN_REALTIME_STAT = "%s  %s  %s  %s";
-    public static final String MSG_EXECUTE = "[%s]执行中,请稍后再试";
-    public static final String MSG_TIPS = "[ %s ]";
+    public static final String MSG_EXECUTE = "【%s】执行中,请稍后再试";
+    public static final String MSG_TIPS = "【 %s 】";
 
     public static final String APP_MODE_NAME = "模式";
     public static final String APP_MODE_NAME_APP = "工厂模式";
@@ -311,6 +322,7 @@ public class BaseConst {
     public static final String PATH_STARTER_CSS = "/conf/style/progressIndicator.css";
     public static final String PATH_COLUMN_SET_FXML = "/conf/fxml/generateCodeColumnSet.fxml";
     public static final String PATH_COMPLETE_TASK_FXML = "/conf/fxml/completeTask.fxml";
+    public static final String PATH_BLANK_TABLE_VIEW = "/conf/fxml/blankTableView.fxml";
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_VERSION_STAT = "/stats/version.stat";
 
@@ -355,8 +367,11 @@ public class BaseConst {
     public static final String MENU_MULTIPLE_TABLE_NO_CODE = "0";
     public static final String MENU_MULTIPLE_TABLE_NO_NAME = "否";
 
+    public static final String COLUMN_TYPE_VARCHAR2 = "varchar2";
+    public static final String COLUMN_TYPE_NUMBER = "number";
+    public static final String COLUMN_TYPE_INTEGER = "integer";
+    public static final String COLUMN_TYPE_CLOB = "clob";
 
-
-
+    public static final String STYLE_CENTER = "-fx-alignment: center;";
 
 }

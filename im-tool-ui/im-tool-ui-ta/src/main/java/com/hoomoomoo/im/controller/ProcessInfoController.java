@@ -145,7 +145,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 Sheet[] sheetList = workbook.getSheets();
                 Sheet taskSheet = workbook.getSheet("任务配置");
                 if (taskSheet == null) {
-                    OutputUtils.info(log, "[任务配置]sheet页面不存在" + STR_NEXT_LINE);
+                    OutputUtils.info(log, "【任务配置】sheet页面不存在" + STR_NEXT_LINE);
                     return;
                 } else {
                     OutputUtils.info(log, "任务缓存加载开始" + STR_NEXT_LINE);
@@ -190,7 +190,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 // step 3 在输出文件内 写 组信息 和 页 信息
                 Sheet flowSheet = workbook.getSheet("基本流程信息");
                 if (flowSheet == null) {
-                    OutputUtils.info(log, "[基本流程信息]sheet页面不存在" + STR_NEXT_LINE);
+                    OutputUtils.info(log, "【基本流程信息】sheet页面不存在" + STR_NEXT_LINE);
                     return;
                 }
                 writeFlowInfo(taCode, flowSheet, bufferedWriter);
@@ -216,7 +216,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                         }
                     }
                     groupName = sheetNames[0];
-                    OutputUtils.info(log, "开始生成[" + groupName + "]" + STR_NEXT_LINE);
+                    OutputUtils.info(log, "开始生成【" + groupName + "】" + STR_NEXT_LINE);
                     // step 3.2 开始写流程文件
                     jobWithTaskMap = writeJobFile(groupCode, groupName, taCode, sheet, bufferedWriter);
                     OutputUtils.info(log, "tbscheduletask生成开始" + STR_NEXT_LINE);
@@ -229,7 +229,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 OutputUtils.info(log, "tbscheduletrigger生成开始" + STR_NEXT_LINE);
                 Sheet triggerSheet = workbook.getSheet("定时任务配置");
                 if (triggerSheet == null) {
-                    OutputUtils.info(log, "[定时任务配置]sheet页面不存在" + STR_NEXT_LINE);
+                    OutputUtils.info(log, "【定时任务配置】sheet页面不存在" + STR_NEXT_LINE);
                     return;
                 }
                 writeTriggerInfo(taCode, triggerSheet, bufferedWriter);
@@ -551,7 +551,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 }
                 Map map = TaskMemoryCache.getCacheMap(taskCode);
                 if (map == null) {
-                    String msg = key + "的TASK[" + taskCode + "]在【任务配置】sheet页中不存在";
+                    String msg = key + "的TASK【" + taskCode + "】在【任务配置】sheet页中不存在";
                     OutputUtils.info(log, msg + STR_NEXT_LINE);
                     OutputUtils.info(log, msg + STR_NEXT_LINE);
                     LoggerUtils.info(msg);

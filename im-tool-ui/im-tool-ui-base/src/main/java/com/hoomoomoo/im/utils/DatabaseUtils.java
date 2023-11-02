@@ -5,9 +5,11 @@ import com.hoomoomoo.im.dto.AppConfigDto;
 import org.apache.ibatis.jdbc.ScriptRunner;
 
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author humm23693
@@ -54,5 +56,27 @@ public class DatabaseUtils {
     public static void executeSql(String sql, String encode) throws Exception {
         InputStreamReader inputStreamReader = new InputStreamReader(new ByteArrayInputStream(sql.getBytes()));
         getScriptRunner().runScript(inputStreamReader);
+    }
+
+    public static List<Map<String, String>> executeQuery(String sql) throws Exception {
+        List<Map<String, String>> result = new ArrayList<>();
+        Connection connection = getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
+        int columnCount = resultSetMetaData.getColumnCount();
+        while (resultSet.next()) {
+            Map<String, String> item = new LinkedHashMap<>();
+            result.add(item);
+            for (int i=1; i<=columnCount; i++) {
+                String columnName = resultSetMetaData.getColumnName(i);
+                String columnValue = resultSet.getString(i);
+                item.put(columnName.toLowerCase(), columnValue);
+            }
+        }
+        resultSet.close();
+        statement.close();
+        closeConnection();
+        return result;
     }
 }

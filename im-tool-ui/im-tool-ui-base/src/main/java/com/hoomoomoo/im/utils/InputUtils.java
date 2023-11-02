@@ -31,6 +31,7 @@ public class InputUtils {
     }
 
     public static String getComboBoxValue(ActionEvent event) {
-        return ((ComboBox)event.getSource()).getSelectionModel().getSelectedItem().toString();
+        Object value = ((ComboBox)event.getSource()).getSelectionModel().getSelectedItem();
+        return value == null ? STR_BLANK : value.toString();
     }
 }

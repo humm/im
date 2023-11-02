@@ -79,27 +79,21 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                 if (stage != null) {
                     stage.close();
                     appConfigDto.setChildStage(null);
-                    stage = null;
                 }
-
-                if (stage == null) {
-                    Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
-                    Scene scene = new Scene(root);
-                    scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
-                    stage = new Stage();
-                    stage.getIcons().add(new Image(PATH_ICON));
-                    stage.setScene(scene);
-                    stage.setTitle("任务详情");
-                    stage.setResizable(false);
-                    stage.show();
-                    appConfigDto.setChildStage(stage);
-                    stage.setOnCloseRequest(columnEvent -> {
-                        appConfigDto.getChildStage().close();
-                        appConfigDto.setChildStage(null);
-                    });
-                } else {
-                    stage.toFront();
-                }
+                Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+                stage = new Stage();
+                stage.getIcons().add(new Image(PATH_ICON));
+                stage.setScene(scene);
+                stage.setTitle("任务详情");
+                stage.setResizable(false);
+                stage.show();
+                appConfigDto.setChildStage(stage);
+                stage.setOnCloseRequest(columnEvent -> {
+                    appConfigDto.getChildStage().close();
+                    appConfigDto.setChildStage(null);
+                });
             }
         });
         getItems().add(copyTask);

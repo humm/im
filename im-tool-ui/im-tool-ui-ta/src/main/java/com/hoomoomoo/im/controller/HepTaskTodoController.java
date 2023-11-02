@@ -11,6 +11,7 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskComponentDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
+import com.hoomoomoo.im.dto.VersionDto;
 import com.hoomoomoo.im.extend.HepWaitHandleTaskMenu;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
@@ -156,6 +157,9 @@ public class HepTaskTodoController extends BaseController implements Initializab
     private Button updateVersion;
 
     @FXML
+    private Button showVersion;
+
+    @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
         HepTaskDto item = (HepTaskDto)taskList.getSelectionModel().getSelectedItem();
         item.setOperateType(STR_BLANK);
@@ -211,21 +215,69 @@ public class HepTaskTodoController extends BaseController implements Initializab
     @FXML
     void executeUpdateVersion(ActionEvent event) throws Exception {
         updateVersion.setDisable(true);
-        FileInputStream fileInputStream = null;
         try {
-            new SystemToolController().executeUpdateVersion(fileInputStream);
+            new SystemToolController().executeUpdateVersion();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("同步成功"));
             executeQuery(null);
         } catch (Exception e) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
         } finally {
-            if (fileInputStream != null) {
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
+            updateVersion.setDisable(false);
+        }
+    }
+
+    @FXML
+    void showVersion(ActionEvent event) throws Exception {
+        showVersion.setDisable(true);
+        try {
+            new SystemToolController().executeUpdateVersion();
+            List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
+            List<VersionDto> versionDtoList = new ArrayList<>();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            appConfigDto.setVersionDtoList(versionDtoList);
+            if (CollectionUtils.isNotEmpty(versionList)) {
+                String currentDay = CommonUtils.getCurrentDateTime3();
+                for (String item : versionList) {
+                    String[] elements = item.split(STR_SEMICOLON);
+                    VersionDto versionDto = new VersionDto();
+                    String oriCloseDate = getRealDate(elements[1]);
+                    String oriPublishDate = getRealDate(elements[2]);
+                    String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
+                    String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
+                    versionDto.setCode(elements[0]);
+                    versionDto.setCloseDate(oriCloseDate);
+                    versionDto.setPublishDate(oriPublishDate);
+                    versionDto.setClientName(elements[3]);
+                    versionDto.setCloseInterval(closeDate);
+                    versionDto.setPublishInterval(publishDate);
+                    versionDto.setMemo(elements[4]);
+                    versionDtoList.add(versionDto);
                 }
             }
-            updateVersion.setDisable(false);
+            Stage stage = appConfigDto.getChildStage();
+            // 每次页面都重新打开
+            if (stage != null) {
+                stage.close();
+                appConfigDto.setChildStage(null);
+            }
+            Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_TABLE_VIEW)));
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+            stage = new Stage();
+            stage.getIcons().add(new Image(PATH_ICON));
+            stage.setScene(scene);
+            stage.setTitle("发版日期");
+            stage.setResizable(false);
+            stage.show();
+            appConfigDto.setChildStage(stage);
+            stage.setOnCloseRequest(columnEvent -> {
+                appConfigDto.getChildStage().close();
+                appConfigDto.setChildStage(null);
+            });
+        } catch (Exception e) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
+        } finally {
+            showVersion.setDisable(false);
         }
     }
 
@@ -235,7 +287,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         CURRENT_USER_ID = appConfigDto.getHepTaskUser();
         if (StringUtils.isBlank(CURRENT_USER_ID)) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("请配置[ hep.task.user ]"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("请配置【 hep.task.user 】"));
             return;
         }
         new Thread(() -> {
@@ -352,30 +404,24 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 if (stage != null) {
                     stage.close();
                     appConfigDto.setChildStage(null);
-                    stage = null;
                 }
-
-                if (stage == null) {
-                    Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_COMPLETE_TASK_FXML)));
-                    Scene scene = new Scene(root);
-                    scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
-                    stage = new Stage();
-                    stage.getIcons().add(new Image(PATH_ICON));
-                    stage.setScene(scene);
-                    stage.setTitle("完成任务");
-                    if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
-                        stage.setTitle("更新任务");
-                    }
-                    stage.setResizable(false);
-                    stage.show();
-                    appConfigDto.setChildStage(stage);
-                    stage.setOnCloseRequest(columnEvent -> {
-                        appConfigDto.getChildStage().close();
-                        appConfigDto.setChildStage(null);
-                    });
-                } else {
-                    stage.toFront();
+                Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_COMPLETE_TASK_FXML)));
+                Scene scene = new Scene(root);
+                scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+                stage = new Stage();
+                stage.getIcons().add(new Image(PATH_ICON));
+                stage.setScene(scene);
+                stage.setTitle("完成任务");
+                if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
+                    stage.setTitle("更新任务");
                 }
+                stage.setResizable(false);
+                stage.show();
+                appConfigDto.setChildStage(stage);
+                stage.setOnCloseRequest(columnEvent -> {
+                    appConfigDto.getChildStage().close();
+                    appConfigDto.setChildStage(null);
+                });
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
@@ -481,12 +527,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 String oriPublishDate = getRealDate(elements[2]);
                 String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
                 String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
-                if (closeDate.contains(STR_HYPHEN)) {
-                    closeDate = STR_0;
-                }
-                if (publishDate.contains(STR_HYPHEN)) {
-                    publishDate = STR_0;
-                }
                 String customer = elements[3];
                 String[] customerList;
                 if (customer.contains("无人使用")) {
@@ -562,12 +602,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
             }
         }
         if (StringUtils.isBlank(dayVersion)) {
-            dayVersion.append(". . . 悠闲喝茶 . . .");
+            dayVersion.append(". . . 今日喝茶 . . .");
         } else {
             dayVersion.append(STR_SPACE_3 + "待提交任务：" + dayVersionNum);
         }
         if (StringUtils.isBlank(weekVersion)) {
-            weekVersion.append(". . . 悠闲喝茶 . . .");
+            weekVersion.append(". . . 本周喝茶 . . .");
         } else {
             weekVersion.append(STR_SPACE_3 + "待提交任务：" + weekVersionNum);
         }

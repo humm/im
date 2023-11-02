@@ -238,6 +238,10 @@ public class AppConfigDto extends BaseDto {
 
     private String asyTableCode;
 
+    private List<ColumnDto> columnDtoList;
+
+    private List<VersionDto> versionDtoList ;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
@@ -258,5 +262,6 @@ public class AppConfigDto extends BaseDto {
         this.executeType = STR_BLANK;
         this.appUser = STR_BLANK;
         this.timerList = new ArrayList<>();
+        this.columnDtoList = new ArrayList<>(16);
     }
 }

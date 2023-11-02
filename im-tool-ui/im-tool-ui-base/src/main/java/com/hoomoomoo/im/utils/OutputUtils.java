@@ -10,12 +10,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
 import java.util.List;
 
-import static com.hoomoomoo.im.consts.BaseConst.MENU_TYPE_FUND_NAME;
-import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
  * @author humm23693
@@ -101,14 +101,15 @@ public class OutputUtils {
             return;
         }
         Platform.runLater(() -> {
+            String finalText = text;
             if (obj instanceof TextArea) {
-                ((TextArea) obj).appendText(text);
+                ((TextArea) obj).appendText(finalText);
             } else if (obj instanceof TextField) {
-                ((TextField) obj).setText(text);
+                ((TextField) obj).setText(finalText);
             } else if (obj instanceof Label) {
-                ((Label) obj).setText(text);
+                ((Label) obj).setText(finalText);
             } else if (obj instanceof ComboBox) {
-                ((ComboBox) obj).getSelectionModel().select(text);
+                ((ComboBox) obj).getSelectionModel().select(finalText);
             }
         });
     }

@@ -434,10 +434,10 @@ public class ScriptUpdateController extends BaseController implements Initializa
         if (startIndex != -1 && endIndex != -1) {
             elements = sql.substring(startIndex + 1, endIndex).split(STR_COMMA);
         } else {
-            throw new Exception("菜单[" + sql + "]数据格式错误");
+            throw new Exception("菜单【" + sql + "】数据格式错误");
         }
         if (elements.length != 16) {
-            throw new Exception("菜单[" + sql + "]数据格式错误");
+            throw new Exception("菜单【" + sql + "】数据格式错误");
         }
         menuDto.setMenuCode(elements[0]);
         menuDto.setKindCode(elements[1]);
@@ -512,7 +512,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             treeIdxPre += MENU_CODE_QUERY;
             treeIdx = treeIdx.replace("fundOther", "ptaAccountManageFundAccount");
         } else {
-            throw new Exception("菜单[" + menuCode.replaceAll(STR_QUOTES_SINGLE, STR_BLANK) + "]未匹配到UED菜单生成规则");
+            throw new Exception("菜单【" + menuCode.replaceAll(STR_QUOTES_SINGLE, STR_BLANK) + "】未匹配到UED菜单生成规则");
         }
         if ("'fundsysinfo'".equals(parentCode) || treeIdx.contains("fundsysinfo") || "'ptaAccountManageFundOther'".equals(parentCode) ||
                 "'ptaAccountManageFundDaily'".equals(parentCode) || "'fundReportManage'".equals(parentCode) || "'ptaAccountManageFundAccount'".equals(parentCode) ||

@@ -92,28 +92,28 @@ public class SvnUpdateController extends BaseController implements Initializable
                             String path = item.get(name);
                             if (updateFlag.contains(name)) {
                                 Thread.sleep(500L);
-                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "重复路径[ " + name + " ]跳过更新...\n");
+                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "重复路径【 " + name + " 】跳过更新...\n");
                                 OutputUtils.info(workspaceNum, String.valueOf(workspaceNumWaitUpdate));
                                 continue;
                             }
                             updateFlag.add(name);
                             updatePath.add(path);
-                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新[ " + name + " ]开始\n");
+                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】开始\n");
                             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE_4 + path + "\n");
                             if (FileUtils.isSuffixDirectory(new File(path), BaseConst.FILE_TYPE_SVN)) {
                                 Long version = SvnUtils.updateSvn(path, fileLog);
                                 if (version == null) {
                                     infoMsg(name, version, "更新异常");
                                     OutputUtils.info(failNum, String.valueOf(Integer.valueOf(failNum.getText()) + 1));
-                                    OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新[ " + name + " ]异常\n");
+                                    OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】异常\n");
                                 } else {
                                     infoMsg(name, version, "更新完成");
-                                    OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新[ " + name + " ]完成\n");
+                                    OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】完成\n");
                                 }
                             } else {
                                 Thread.sleep(500L);
                                 infoMsg(name, -1L, "无需更新");
-                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "[ " + name + " ]非svn目录,无需更新\n");
+                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "【 " + name + " 】非svn目录,无需更新\n");
                             }
                         }
                         OutputUtils.info(workspaceNum, String.valueOf(workspaceNumWaitUpdate));

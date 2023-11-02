@@ -93,18 +93,11 @@ public class SystemToolController implements Initializable {
     @FXML
     void updateVersion(ActionEvent event) {
         updateVersionBtn.setDisable(true);
-        FileInputStream fileInputStream = null;
         try {
-            executeUpdateVersion(fileInputStream);
+            executeUpdateVersion();
         } catch (Exception e) {
             OutputUtils.info(logs, e.getMessage());
         } finally {
-            if (fileInputStream != null) {
-                try {
-                    fileInputStream.close();
-                } catch (IOException e) {
-                }
-            }
             updateVersionBtn.setDisable(false);
         }
     }
@@ -161,10 +154,11 @@ public class SystemToolController implements Initializable {
         LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
     }
 
-    public void executeUpdateVersion(FileInputStream fileInputStream) throws Exception {
+    public void executeUpdateVersion() throws Exception {
         List<String> list = new ArrayList<>();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String filePath = appConfigDto.getSystemToolUpdateVersionPath();
+        FileInputStream fileInputStream = null;
         if (StringUtils.isBlank(filePath)) {
             if (logs != null) {
                 OutputUtils.info(logs, getUpdateVersionMsg("请配置【system.tool.update.version.path】"));
@@ -172,38 +166,51 @@ public class SystemToolController implements Initializable {
                 throw new Exception("请配置【system.tool.update.version.path】");
             }
         } else {
-            fileInputStream = new FileInputStream(filePath);
-            XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
-            XSSFSheet sheet = workbook.getSheetAt(0);
-            int rows = sheet.getLastRowNum();
-            for (int i = 2; i < rows; i++) {
-                StringBuilder item = new StringBuilder();
-                XSSFRow row = sheet.getRow(i);
-                if (row == null) {
-                    continue;
+            try {
+                fileInputStream = new FileInputStream(filePath);
+                XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+                XSSFSheet sheet = workbook.getSheetAt(0);
+                int rows = sheet.getLastRowNum();
+                for (int i = 2; i <= rows; i++) {
+                    StringBuilder item = new StringBuilder();
+                    XSSFRow row = sheet.getRow(i);
+                    if (row == null) {
+                        continue;
+                    }
+                    String version = row.getCell(2).toString();
+                    if (StringUtils.isBlank(version)) {
+                        continue;
+                    }
+                    String closeDate = formatDate(row.getCell(4).toString());
+                    String publishDate = formatDate(row.getCell(5).toString());
+                    if (StringUtils.isBlank(closeDate)) {
+                        closeDate = publishDate;
+                    }
+                    String customer = row.getCell(7).toString();
+                    String memo = row.getCell(3).toString();
+                    item.append(version).append(STR_SEMICOLON).append(closeDate).append(STR_SEMICOLON).append(publishDate)
+                            .append(STR_SEMICOLON).append(customer).append(STR_SEMICOLON).append(memo);
+                    list.add(item.toString());
                 }
-                String version = row.getCell(2).toString();
-                if (StringUtils.isBlank(version)) {
-                    continue;
+                String statPath = FileUtils.getFilePath(PATH_VERSION_STAT);
+                FileUtils.writeFile(statPath, list, false);
+                if (logs != null) {
+                    OutputUtils.info(logs, getUpdateVersionMsg("同步成功"));
                 }
-                String closeDate = formatDate(row.getCell(4).toString());
-                String publishDate = formatDate(row.getCell(5).toString());
-                if (StringUtils.isBlank(closeDate)) {
-                    closeDate = publishDate;
+
+                List<String> record = new ArrayList<>();
+                record.add(getUpdateVersionMsg("同步成功"));
+                LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+            } catch (Exception e) {
+                throw new Exception(e);
+            } finally {
+                if (fileInputStream != null) {
+                    try {
+                        fileInputStream.close();
+                    } catch (IOException e) {
+                    }
                 }
-                String customer = row.getCell(7).toString();
-                item.append(version).append(STR_SEMICOLON).append(closeDate).append(STR_SEMICOLON).append(publishDate).append(STR_SEMICOLON).append(customer);
-                list.add(item.toString());
             }
         }
-        String statPath = FileUtils.getFilePath(PATH_VERSION_STAT);
-        FileUtils.writeFile(statPath, list, false);
-        if (logs != null) {
-            OutputUtils.info(logs, getUpdateVersionMsg("同步成功"));
-        }
-
-        List<String> record = new ArrayList<>();
-        record.add(getUpdateVersionMsg("同步成功"));
-        LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
     }
 }

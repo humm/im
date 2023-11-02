@@ -18,7 +18,7 @@ public class HttpServerUtils {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
             server.createContext(serverUrl, new HttpResponseUtils());
             server.start();
-            LoggerUtils.info("服务器[" + serverUrl + "]" + " 端口[" + port + "]初始化成功......");
+            LoggerUtils.info("服务器【" + serverUrl + "】" + " 端口【" + port + "】初始化成功......");
         } catch (IOException e) {
             LoggerUtils.info(e);
         }

@@ -693,7 +693,7 @@ public class FileUtils {
     public static void copyFolder(String resource, String target) throws Exception {
         File resourceFile = new File(resource);
         if (!resourceFile.exists()) {
-            throw new Exception("源目标路径：[" + resource + "] 不存在...");
+            throw new Exception("源目标路径：【" + resource + "】 不存在...");
         }
         File targetFile = new File(target);
         if (!targetFile.exists()) {

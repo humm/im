@@ -112,7 +112,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                             nextFlag = true;
                             // String encode = FileUtils.getFileEncode(item.getAbsolutePath());
                             OutputUtils.info(fileNum, String.valueOf(++filelNum));
-                            OutputUtils.info(log, String.format("执行[ %s ]开始\n", item));
+                            OutputUtils.info(log, String.format("执行【 %s 】开始\n", item));
                             executeSql.clear();
                             content = FileUtils.readNormalFile(item.getAbsolutePath(), false);
                             boolean procedure = false;
@@ -188,7 +188,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                                     }
                                 }
                             }
-                            OutputUtils.info(log, String.format("执行[ %s ]结束\n", item));
+                            OutputUtils.info(log, String.format("执行【 %s 】结束\n", item));
                         }
                     } else {
                         OutputUtils.info(log, "选文择件夹目录不存在sql文件");

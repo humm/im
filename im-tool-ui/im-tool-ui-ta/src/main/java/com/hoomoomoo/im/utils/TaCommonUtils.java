@@ -199,7 +199,7 @@ public class TaCommonUtils {
             try {
                 Integer.valueOf(appConfigDto.getMenuOrder());
             } catch (NumberFormatException e) {
-                OutputUtils.info(log, "[ 菜单排序 ]只能为整数\n");
+                OutputUtils.info(log, "【 菜单排序 】只能为整数\n");
                 flag = false;
             }
         }
@@ -212,7 +212,7 @@ public class TaCommonUtils {
             flag = false;
         }
         if (StringUtils.isBlank(appConfigDto.getTableCode())) {
-            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "表代码"));
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "正表代码"));
             flag = false;
         }
         if (MENU_FUNCTION_SET_CODE.equals(appConfigDto.getGenerateCodeMenuFunction())) {
@@ -225,7 +225,18 @@ public class TaCommonUtils {
             OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "分库分表"));
             flag = false;
         }
-
+        if (StringUtils.isBlank(appConfigDto.getDatabaseScriptUrl())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "database.script.url"));
+            flag = false;
+        }
+        if (StringUtils.isBlank(appConfigDto.getDatabaseScriptUsername())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "database.script.username"));
+            flag = false;
+        }
+        if (StringUtils.isBlank(appConfigDto.getDatabaseScriptPassword())) {
+            OutputUtils.info(log, String.format(MSG_GENERATE_CODE_TIPS, "database.script.password"));
+            flag = false;
+        }
         return flag;
     }
 
