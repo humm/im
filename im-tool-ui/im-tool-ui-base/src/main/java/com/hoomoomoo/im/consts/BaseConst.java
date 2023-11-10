@@ -142,6 +142,7 @@ public class BaseConst {
     public final static String KEY_DATA_PRECISION = "data_precision";
     public final static String KEY_DATA_SCALE = "data_scale";
     public final static String KEY_DATA_DEFAULT = "data_default";
+    public final static String KEY_PRIMARY = "primary";
 
     public static final String METHOD_QUERY_DATA = "queryData";
     public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
@@ -201,7 +202,7 @@ public class BaseConst {
     public static final String NAME_SVN_STAT_REALTIME = "#################### 实时统计";
     public static final String NAME_SVN_STAT_HISTORY = "#################### 历史统计";
     public static final String NAME_MENU_HEP_TASK_TODO = "#################### 效能";
-    public static final String NAME_CONFIG_COLUMN = "字段配置";
+    public static final String NAME_CONFIG_COLUMN = "字段参数";
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
     public static final String NAME_UPDATE_VERSION = "同步发版时间";
@@ -210,6 +211,11 @@ public class BaseConst {
     public static final String NAME_MENU_COPY = "复制";
     public static final String NAME_MENU_SIMPLE_COPY = "简复";
     public static final String NAME_MENU_DETAIL = "详情";
+
+
+    public static final String NAME_MENU_DCIT = "字典";
+    public static final String NAME_MENU_DATE = "日期";
+    public static final String NAME_MENU_DECIMAL = "小数";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -325,6 +331,7 @@ public class BaseConst {
     public static final String PATH_BLANK_TABLE_VIEW = "/conf/fxml/blankTableView.fxml";
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_VERSION_STAT = "/stats/version.stat";
+    public static final String PATH_VERSION_EXTEND_STAT = "/stats/versionExtend.stat";
 
     public static final Integer JD_APPRAISE_LENGTH_MIN = 30;
     public static final Integer JD_APPRAISE_LENGTH_MAX = 450;

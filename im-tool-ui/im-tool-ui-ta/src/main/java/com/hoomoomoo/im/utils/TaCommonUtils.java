@@ -145,6 +145,8 @@ public class TaCommonUtils {
         return flag;
     }
 
+
+
     public static boolean checkConfigGenerateCode(TextArea log, AppConfigDto appConfigDto) throws Exception {
         boolean flag = true;
         OutputUtils.clearLog(log);

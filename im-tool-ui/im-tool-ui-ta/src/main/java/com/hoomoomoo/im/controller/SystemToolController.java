@@ -186,7 +186,7 @@ public class SystemToolController implements Initializable {
                     if (StringUtils.isBlank(closeDate)) {
                         closeDate = publishDate;
                     }
-                    String customer = row.getCell(7).toString();
+                    String customer = row.getCell(6).toString();
                     String memo = row.getCell(3).toString();
                     item.append(version).append(STR_SEMICOLON).append(closeDate).append(STR_SEMICOLON).append(publishDate)
                             .append(STR_SEMICOLON).append(customer).append(STR_SEMICOLON).append(memo);

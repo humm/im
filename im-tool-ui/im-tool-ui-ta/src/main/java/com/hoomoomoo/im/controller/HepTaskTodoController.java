@@ -231,29 +231,9 @@ public class HepTaskTodoController extends BaseController implements Initializab
         showVersion.setDisable(true);
         try {
             new SystemToolController().executeUpdateVersion();
-            List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
-            List<VersionDto> versionDtoList = new ArrayList<>();
+            List<VersionDto> versionDtoList = getVersionInfo();
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             appConfigDto.setVersionDtoList(versionDtoList);
-            if (CollectionUtils.isNotEmpty(versionList)) {
-                String currentDay = CommonUtils.getCurrentDateTime3();
-                for (String item : versionList) {
-                    String[] elements = item.split(STR_SEMICOLON);
-                    VersionDto versionDto = new VersionDto();
-                    String oriCloseDate = getRealDate(elements[1]);
-                    String oriPublishDate = getRealDate(elements[2]);
-                    String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
-                    String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
-                    versionDto.setCode(elements[0]);
-                    versionDto.setCloseDate(oriCloseDate);
-                    versionDto.setPublishDate(oriPublishDate);
-                    versionDto.setClientName(elements[3]);
-                    versionDto.setCloseInterval(closeDate);
-                    versionDto.setPublishInterval(publishDate);
-                    versionDto.setMemo(elements[4]);
-                    versionDtoList.add(versionDto);
-                }
-            }
             Stage stage = appConfigDto.getChildStage();
             // 每次页面都重新打开
             if (stage != null) {
@@ -275,10 +255,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 appConfigDto.setChildStage(null);
             });
         } catch (Exception e) {
+            LoggerUtils.info(e);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
         } finally {
             showVersion.setDisable(false);
         }
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(STR_BLANK));
     }
 
     @FXML
@@ -520,11 +502,17 @@ public class HepTaskTodoController extends BaseController implements Initializab
         String weekDay = getLastDayByWeek();
         try {
             List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
+            Map<String, String[]> versionExtend = getVersionExtendInfo();
             for (String item : versionList) {
                 String[] elements = item.split(STR_SEMICOLON);
                 Map<String, String> ele = new HashMap<>();
                 String oriCloseDate = getRealDate(elements[1]);
                 String oriPublishDate = getRealDate(elements[2]);
+                String versionCode = elements[0];
+                if (versionExtend.containsKey(versionCode)) {
+                    oriCloseDate = versionExtend.get(versionCode)[0];
+                    oriPublishDate = versionExtend.get(versionCode)[1];
+                }
                 String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
                 String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
                 String customer = elements[3];
@@ -548,12 +536,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 ele.put("publishDate", publishDate);
                 ele.put("customer", customer);
                 if (currentDay.equals(oriCloseDate) || currentDay.equals(oriPublishDate)) {
-                    dayVersion.append(elements[0]).append(STR_SPACE);
+                    dayVersion.append(versionCode).append(STR_SPACE);
                 }
                 if ((weekDay.compareTo(oriCloseDate) >= 0 && currentDay.compareTo(oriCloseDate) <= 0) || (weekDay.compareTo(oriPublishDate) >= 0 && currentDay.compareTo(oriPublishDate) <= 0)) {
-                    weekVersion.append(elements[0]).append(STR_SPACE);
+                    weekVersion.append(versionCode).append(STR_SPACE);
                 }
-                version.put(elements[0], ele);
+                version.put(versionCode, ele);
             }
         } catch (IOException e) {
             LoggerUtils.info(e);
@@ -623,7 +611,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         infoTaskList(taskListIn, res);
     }
 
-    private String getRealDate(String oriDate) {
+    private static String getRealDate(String oriDate) {
         StringBuilder date = new StringBuilder();
         if (StringUtils.isNotBlank(oriDate)) {
             for (int i=0; i<oriDate.length(); i++) {
@@ -987,6 +975,54 @@ public class HepTaskTodoController extends BaseController implements Initializab
         }
     }
 
+    public static List<VersionDto> getVersionInfo() throws Exception {
+        List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
+        Map<String, String[]> versionExtend = getVersionExtendInfo();
+        List<VersionDto> versionDtoList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(versionList)) {
+            String currentDay = CommonUtils.getCurrentDateTime3();
+            for (String item : versionList) {
+                String[] elements = item.split(STR_SEMICOLON);
+                VersionDto versionDto = new VersionDto();
+                String oriCloseDate = getRealDate(elements[1]);
+                String oriPublishDate = getRealDate(elements[2]);
+                String versionCode = elements[0];
+                if (versionExtend.containsKey(versionCode)) {
+                    oriCloseDate = versionExtend.get(versionCode)[0];
+                    oriPublishDate = versionExtend.get(versionCode)[1];
+                }
+                String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
+                String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
+                versionDto.setCode(versionCode);
+                versionDto.setCloseDate(oriCloseDate);
+                versionDto.setPublishDate(oriPublishDate);
+                versionDto.setClientName(elements[3]);
+                versionDto.setCloseInterval(closeDate);
+                versionDto.setPublishInterval(publishDate);
+                versionDto.setMemo(elements[4]);
+                versionDtoList.add(versionDto);
+            }
+        }
+        return versionDtoList;
+    }
+
+    private static Map<String, String[]> getVersionExtendInfo() {
+        Map<String, String[]> version = new HashMap<>();
+        List<String> versionExtendList = null;
+        try {
+            versionExtendList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_EXTEND_STAT), false);
+        } catch (IOException e) {
+            LoggerUtils.info(e);
+        }
+        if (CollectionUtils.isNotEmpty(versionExtendList)) {
+            for (String item : versionExtendList) {
+                String[] elementList = item.split(STR_SEMICOLON);
+                version.put(elementList[0], new String[]{elementList[1], elementList[2]});
+            }
+        }
+        return version;
+    }
+
     private void addTaskMenu(AppConfigDto appConfigDto) {
         taskList.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @Override
@@ -995,7 +1031,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 if (RIGHT_CLICKED.equals(clickType)) {
                     Node node = event.getPickResult().getIntersectedNode();
                     HepWaitHandleTaskMenu hepWaitHandleTaskMenu = HepWaitHandleTaskMenu.getInstance();
-                    HepTaskDto hepTaskDto = (HepTaskDto)taskList.getSelectionModel().getSelectedItem();
+                    HepTaskDto hepTaskDto = (HepTaskDto) taskList.getSelectionModel().getSelectedItem();
                     hepWaitHandleTaskMenu.getItems().forEach((item) -> {
                         if (NAME_MENU_UPDATE.equals(item.getText())) {
                             if (STATUS_DEV.equals(hepTaskDto.getStatus())) {

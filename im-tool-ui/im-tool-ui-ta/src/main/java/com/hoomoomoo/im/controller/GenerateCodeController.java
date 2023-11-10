@@ -222,6 +222,43 @@ public class GenerateCodeController extends BaseController implements Initializa
     void configColumn(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            buildInputInfo();
+            if (!TaCommonUtils.checkConfigGenerateCode(log, appConfigDto)) {
+            //    return;
+            }
+            String tableName = InputUtils.getComponentValue(tableCode);
+            List<ColumnDto> tableColumn = getConfigTableColumnInfo(tableName);
+            String pkName = getConfigTablePkInfo(tableName);
+            if (StringUtils.isNotBlank(pkName)) {
+                pkName = pkName.substring(pkName.indexOf("("), pkName.indexOf(STR_BRACKETS_RIGHT));
+            }
+            String asyTableName = InputUtils.getComponentValue(asyTableCode);
+            List<ColumnDto> asyTableColumn = getConfigTableColumnInfo(asyTableName);
+            if (CollectionUtils.isNotEmpty(asyTableColumn)) {
+                for (ColumnDto item : asyTableColumn) {
+                    String columnCode = item.getColumnCode();
+                    boolean flag = false;
+                    for (ColumnDto columnDto : tableColumn) {
+                        if (columnCode.equals(columnDto.getColumnCode())) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                    if (!flag) {
+                        tableColumn.add(item);
+                    }
+                }
+            }
+            if (StringUtils.isNotBlank(pkName)) {
+                ColumnDto pk = new ColumnDto();
+                pk.setColumnCode(pkName);
+                pk.setPrimary(true);
+                pk.setSkip(true);
+                tableColumn.add(pk);
+            }
+
+            appConfigDto.setTableColumnList(tableColumn);
+
             Stage stage = appConfigDto.getChildStage();
             if (stage != null) {
                 stage.close();
@@ -475,7 +512,7 @@ public class GenerateCodeController extends BaseController implements Initializa
                     if (i != columnInfo.size() - 1) {
                         pk += STR_COMMA + STR_SPACE;
                     } else {
-                        pk += ")";
+                        pk += STR_BRACKETS_RIGHT;
                     }
                 }
             }
@@ -492,7 +529,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             OutputUtils.info(log, String.format("数据表" + MSG_TIPS + "不存在，请先建表", tableName));
             return;
         }
-        String table = "create table " + tableName + "(" + STR_NEXT_LINE;
+        String table = "create table " + tableName + STR_BRACKETS_LEFT + STR_NEXT_LINE;
         boolean appendComma = true;
         for (int i=0; i<columnInfo.size(); i++) {
             ColumnDto columnDto = columnInfo.get(i);
@@ -506,7 +543,7 @@ public class GenerateCodeController extends BaseController implements Initializa
         if (StringUtils.isNotBlank(pkName)) {
             table += STR_SPACE_4 + pkName + STR_NEXT_LINE;
         }
-        table += ")" + STR_NEXT_LINE;
+        table += STR_BRACKETS_RIGHT + STR_NEXT_LINE;
         OutputUtils.clearLog(log);
         OutputUtils.info(log, table);
     }
@@ -519,13 +556,13 @@ public class GenerateCodeController extends BaseController implements Initializa
         String dataType = column.getColumnDataType();
         switch (dataType) {
             case COLUMN_TYPE_VARCHAR2:
-                dataType += "(" + column.getColumnDataPrecision() + ")";
+                dataType += STR_BRACKETS_LEFT + column.getColumnDataPrecision() + STR_BRACKETS_RIGHT;
                 break;
             case COLUMN_TYPE_NUMBER:
                 if (STR_0.equals(column.getColumnDataScale())) {
                     dataType = COLUMN_TYPE_INTEGER;
                 } else {
-                    dataType += "(" + column.getColumnDataPrecision() + "," + column.getColumnDataScale() + ")";
+                    dataType += STR_BRACKETS_LEFT + column.getColumnDataPrecision() + STR_COMMA + column.getColumnDataScale() + STR_BRACKETS_RIGHT;
                 }
                 break;
         }
