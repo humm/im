@@ -3,38 +3,24 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.ColumnDto;
-import com.hoomoomoo.im.dto.HepTaskDto;
-import com.hoomoomoo.im.extend.ConfigColumnMenu;
-import com.hoomoomoo.im.extend.HepWaitHandleTaskMenu;
-import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseEvent;
-import javafx.util.StringConverter;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
-import java.lang.reflect.Parameter;
 import java.net.URL;
 import java.util.*;
-import java.util.List;
 
-import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.STYLE_CENTER;
 
 /**
  * @author humm23693
@@ -54,57 +40,64 @@ public class GenerateCodeColumnSetController implements Initializable {
     private Label tips;
 
 
+    @SneakyThrows
     @FXML
     void saveColumn(ActionEvent event) {
-
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        List<ColumnDto> configColumnList = appConfigDto.getConfigColumnList();
     }
 
     @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        ArrayList<TableColumn> columnList = new ArrayList<TableColumn>();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<ColumnDto> tableColumnList = appConfigDto.getTableColumnList();
         List<ColumnDto> configColumnList = appConfigDto.getConfigColumnList();
         if (CollectionUtils.isEmpty(configColumnList)) {
             configColumnList = tableColumnList;
+            appConfigDto.setConfigColumnList(tableColumnList);
         }
-        OutputUtils.clearLog(columnInfo);
+
+        Set<String> modeList = new HashSet<>();
+        modeList.add("0");
+        modeList.add("1");
+
         TableColumn columnCode = new TableColumn<>("字段代码");
         columnCode.setCellValueFactory(new PropertyValueFactory<>("columnCode"));
         columnCode.setPrefWidth(300);
+        columnCode.setEditable(false);
+        columnList.add(columnCode);
 
         TableColumn columnName = new TableColumn<>("字段名称");
         columnName.setCellValueFactory(new PropertyValueFactory<>("columnName"));
         columnName.setPrefWidth(300);
-        columnName.setEditable(true);
+        columnName.setOnEditCommit(event -> {
+            getColumnInfo(event).setColumnName(getColumnValue(event));
+        });
+        columnList.add(columnName);
 
-        TableColumn columnType = new TableColumn<>("字段类型");
+        TableColumn<ColumnDto, String> columnType = new TableColumn<>("字段类型");
         columnType.setCellValueFactory(new PropertyValueFactory<>("columnType"));
         columnType.setPrefWidth(100);
-        columnType.setEditable(false);
+        columnType.setStyle(STYLE_CENTER);
+        columnType.setCellFactory(ComboBoxTableCell.forTableColumn(FXCollections.observableArrayList(modeList)));
+        //columnList.add(columnType);
 
-        columnInfo.getColumns().addAll(columnCode, columnName, columnType);
+        columnInfo.getColumns().add(columnType);
+        columnInfo.getColumns().addAll(columnList);
+        columnInfo.setEditable(true);
+
+        OutputUtils.clearLog(columnInfo);
         OutputUtils.infoList(columnInfo, configColumnList, false);
-
-        addColumnMenu(appConfigDto);
     }
 
-    private void addColumnMenu(AppConfigDto appConfigDto) {
-        columnInfo.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                String clickType = event.getButton().toString();
-                if (RIGHT_CLICKED.equals(clickType)) {
-                    Node node = event.getPickResult().getIntersectedNode();
-                    ConfigColumnMenu configColumnMenu = ConfigColumnMenu.getInstance();
-                    ColumnDto columnDto = (ColumnDto) columnInfo.getSelectionModel().getSelectedItem();
-                    configColumnMenu.getItems().forEach((item) -> {
+    private ColumnDto getColumnInfo(javafx.event.Event event) {
+        int index = ((TableColumn.CellEditEvent<ColumnDto, Object>) event).getTablePosition().getRow();
+        return ((TableColumn.CellEditEvent<ColumnDto, Object>) event).getTableView().getItems().get(index);
+    }
 
-                    });
-                    configColumnMenu.show(node, event.getScreenX(), event.getScreenY());
-                    appConfigDto.setColumnDto(columnDto);
-                }
-            }
-        });
+    private String getColumnValue(javafx.event.Event event) {
+        return ((TableColumn.CellEditEvent<ColumnDto, Object>) event).getNewValue().toString();
     }
 }

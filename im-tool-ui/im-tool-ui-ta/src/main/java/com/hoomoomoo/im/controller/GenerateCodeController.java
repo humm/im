@@ -230,7 +230,17 @@ public class GenerateCodeController extends BaseController implements Initializa
             List<ColumnDto> tableColumn = getConfigTableColumnInfo(tableName);
             String pkName = getConfigTablePkInfo(tableName);
             if (StringUtils.isNotBlank(pkName)) {
-                pkName = pkName.substring(pkName.indexOf("("), pkName.indexOf(STR_BRACKETS_RIGHT));
+                pkName = pkName.substring(pkName.indexOf("(") + 1, pkName.indexOf(STR_BRACKETS_RIGHT));
+                Set<String> pkColumn = new HashSet<>();
+                String[] pkColumnTmp = pkName.split(STR_COMMA);
+                for (String item : pkColumnTmp) {
+                    pkColumn.add(item.trim());
+                }
+                for (ColumnDto columnDto : tableColumn) {
+                    if (pkColumn.contains(columnDto.getColumnCode())) {
+                        columnDto.setPrimary(true);
+                    }
+                }
             }
             String asyTableName = InputUtils.getComponentValue(asyTableCode);
             List<ColumnDto> asyTableColumn = getConfigTableColumnInfo(asyTableName);
@@ -249,14 +259,6 @@ public class GenerateCodeController extends BaseController implements Initializa
                     }
                 }
             }
-            if (StringUtils.isNotBlank(pkName)) {
-                ColumnDto pk = new ColumnDto();
-                pk.setColumnCode(pkName);
-                pk.setPrimary(true);
-                pk.setSkip(true);
-                tableColumn.add(pk);
-            }
-
             appConfigDto.setTableColumnList(tableColumn);
 
             Stage stage = appConfigDto.getChildStage();
@@ -362,6 +364,8 @@ public class GenerateCodeController extends BaseController implements Initializa
                 OutputUtils.info(author, menuAuthor);
             }
 
+            OutputUtils.info(tableCode, "tbfundproduct");
+            OutputUtils.info(asyTableCode, "tbfundproductasy");
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.getMessage());

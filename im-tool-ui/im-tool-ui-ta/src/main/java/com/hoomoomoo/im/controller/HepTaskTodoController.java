@@ -31,6 +31,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -158,6 +159,15 @@ public class HepTaskTodoController extends BaseController implements Initializab
 
     @FXML
     private Button showVersion;
+
+    @FXML
+    private Label dayTodo;
+
+    @FXML
+    private Label weekTodo;
+
+    @FXML
+    private Label allTodo;
 
     @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
@@ -340,7 +350,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                         items = (JSONArray)data;
                     }
                     if (OPERATE_QUERY.equals(operateType)) {
-                        dealTaskList(items,  logs, waitHandleTaskNum, dayPublish, weekPublish, taskList, true);
+                        dealTaskList(items,  logs, dayTodo, weekTodo, waitHandleTaskNum, dayPublish, weekPublish, taskList, true);
                     } else if (OPERATE_START.equals(operateType)) {
                         executeQuery(null);
                     }
@@ -414,6 +424,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
     private void setTaskComponent(AppConfigDto appConfigDto) {
         HepTaskComponentDto hepTaskComponentDto = new HepTaskComponentDto();
         hepTaskComponentDto.setLogs(logs);
+        hepTaskComponentDto.setDayTodo(dayTodo);
+        hepTaskComponentDto.setWeekTodo(weekTodo);
         hepTaskComponentDto.setWaitHandleTaskNum(waitHandleTaskNum);
         hepTaskComponentDto.setTaskList(taskList);
         hepTaskComponentDto.setDayPublish(dayPublish);
@@ -481,7 +493,11 @@ public class HepTaskTodoController extends BaseController implements Initializab
         return request;
     }
 
-    public void dealTaskList(JSONArray task, List<String> logsIn, Label waitHandleTaskNumIn, Label dayPublishIn, Label weekPublishIn, TableView taskListIn, boolean tagFlag) {
+    @SneakyThrows
+    public void dealTaskList(JSONArray task, List<String> logsIn, Label dayTodoIn, Label weekTodoIn, Label waitHandleTaskNumIn, Label dayPublishIn, Label weekPublishIn, TableView taskListIn, boolean tagFlag) {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
+        List<String> weekPublishVersion = appConfigDto.getWeekPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
         filterTask(res);
         res = sortTask(res);
@@ -532,14 +548,16 @@ public class HepTaskTodoController extends BaseController implements Initializab
                         customer += element.substring(0, 4) + STR_SPACE;
                     }
                 }
-                ele.put("closeDate", closeDate);
-                ele.put("publishDate", publishDate);
-                ele.put("customer", customer);
+                ele.put(KEY_CLOSE_DATE, closeDate);
+                ele.put(KEY_PUBLISH_DATE, publishDate);
+                ele.put(KEY_CUSTOMER, customer);
                 if (currentDay.equals(oriCloseDate) || currentDay.equals(oriPublishDate)) {
                     dayVersion.append(versionCode).append(STR_SPACE);
+                    dayPublishVersion.add(versionCode);
                 }
                 if ((weekDay.compareTo(oriCloseDate) >= 0 && currentDay.compareTo(oriCloseDate) <= 0) || (weekDay.compareTo(oriPublishDate) >= 0 && currentDay.compareTo(oriPublishDate) <= 0)) {
                     weekVersion.append(versionCode).append(STR_SPACE);
+                    weekPublishVersion.add(versionCode);
                 }
                 version.put(versionCode, ele);
             }
@@ -564,9 +582,13 @@ public class HepTaskTodoController extends BaseController implements Initializab
             String sprintVersion = item.getSprintVersion();
             if (version.containsKey(sprintVersion)) {
                 Map<String, String> versionInfo = version.get(sprintVersion);
-                item.setCloseDate(versionInfo.get("closeDate"));
-                item.setPublishDate(versionInfo.get("publishDate"));
-                item.setCustomer(versionInfo.get("customer"));
+                item.setCloseDate(versionInfo.get(KEY_CLOSE_DATE));
+                item.setPublishDate(versionInfo.get(KEY_PUBLISH_DATE));
+                item.setCustomer(versionInfo.get(KEY_CUSTOMER));
+            }
+            String endDate = item.getEstimateFinishTime().split(STR_SPACE)[0].replaceAll(STR_HYPHEN, STR_BLANK);
+            if (!endDate.startsWith(STR_99)) {
+                item.setEndDate(CommonUtils.getIntervalDays(currentDay, endDate));
             }
             if (dayVersion.toString().contains(sprintVersion + STR_SPACE)) {
                 dayVersionNum++;
@@ -591,23 +613,27 @@ public class HepTaskTodoController extends BaseController implements Initializab
         }
         if (StringUtils.isBlank(dayVersion)) {
             dayVersion.append(". . . 今日喝茶 . . .");
-        } else {
-            dayVersion.append(STR_SPACE_3 + "待提交任务：" + dayVersionNum);
         }
         if (StringUtils.isBlank(weekVersion)) {
             weekVersion.append(". . . 本周喝茶 . . .");
-        } else {
-            weekVersion.append(STR_SPACE_3 + "待提交任务：" + weekVersionNum);
         }
 
+        OutputUtils.clearLog(dayTodoIn);
+        OutputUtils.info(dayTodoIn, String.valueOf(dayVersionNum));
+
+        OutputUtils.clearLog(weekTodoIn);
+        OutputUtils.info(weekTodoIn, String.valueOf(weekVersionNum));
+
         OutputUtils.clearLog(dayPublishIn);
-        OutputUtils.clearLog(weekPublishIn);
         OutputUtils.info(dayPublishIn, dayVersion.toString());
+
+        OutputUtils.clearLog(weekPublishIn);
         OutputUtils.info(weekPublishIn, weekVersion.toString());
 
         OutputUtils.clearLog(waitHandleTaskNumIn);
-        OutputUtils.clearLog(taskListIn);
         OutputUtils.info(waitHandleTaskNumIn, String.valueOf(res.size() - taskTotal));
+
+        OutputUtils.clearLog(taskListIn);
         infoTaskList(taskListIn, res);
     }
 
@@ -779,7 +805,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                     } catch (Exception e) {
 
                     }
-                    dealTaskList(res, logs, waitHandleTaskNum, dayPublish, weekPublish, taskList, false);
+                    dealTaskList(res, logs, dayTodo, weekTodo, waitHandleTaskNum, dayPublish, weekPublish, taskList, false);
                 }
             });
         });
@@ -1048,7 +1074,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         });
     }
 
-    private void buildTestData() {
+    private void buildTestData() throws Exception {
         if (!testScene()) {
             return;
         }
@@ -1062,7 +1088,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put("description", i % 2 == 0 ? "洛洛洛</p>洛洛洛" : "开发中");
-            item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-24 22:59:59");
+            item.put(KEY_ESTIMATE_FINISH_TIME, "2023-12-24 22:59:59");
             switch (i % 7) {
                 case 0: item.put(KEY_NAME, "「开发」问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题" + i);break;
                 case 1: item.put(KEY_NAME, "「开发」【缺陷:45454】问题" + i);break;
@@ -1075,7 +1101,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             }
             req.add(item);
         }
-        dealTaskList(req, logs, waitHandleTaskNum, dayPublish, weekPublish, taskList, true);
+        dealTaskList(req, logs, dayTodo, weekTodo, waitHandleTaskNum, dayPublish, weekPublish, taskList, true);
     }
 
     private boolean requestStatus(HttpResponse response) {

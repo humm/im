@@ -41,6 +41,12 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                             </padding>
                                         </Button>
+                                        <Button fx:id="clearVersionBtn" layoutX="330.0" layoutY="115"
+                                                mnemonicParsing="false" onAction="#clearVersion" prefWidth="100.0" text="清除个性化">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </Button>
 
                                     </children>
                                 </AnchorPane>

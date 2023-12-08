@@ -8,7 +8,7 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.control.Label?>
 
-<AnchorPane prefHeight="630.0" prefWidth="1600.0" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane prefHeight="750.0" prefWidth="1600.0" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.hoomoomoo.im.controller.GenerateCodeColumnSetController">
    <children>
       <SplitPane dividerPositions="0.93" layoutX="59.0" layoutY="81.0" orientation="VERTICAL" prefHeight="400.0"

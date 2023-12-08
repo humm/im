@@ -246,6 +246,10 @@ public class AppConfigDto extends BaseDto {
 
     private List<VersionDto> versionDtoList;
 
+    private List<String> dayPublishVersion;
+
+    private List<String> weekPublishVersion;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
@@ -268,5 +272,7 @@ public class AppConfigDto extends BaseDto {
         this.timerList = new ArrayList<>();
         this.configColumnList = new ArrayList<>(16);
         this.tableColumnList = new ArrayList<>(16);
+        this.dayPublishVersion = new ArrayList<>(16);
+        this.weekPublishVersion = new ArrayList<>(16);
     }
 }

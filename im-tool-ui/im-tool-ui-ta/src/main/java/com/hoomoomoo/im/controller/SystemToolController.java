@@ -44,6 +44,9 @@ public class SystemToolController implements Initializable {
     private Button cancelShakeMouseBtn;
 
     @FXML
+    private Button clearVersionBtn;
+
+    @FXML
     private Button updateVersionBtn;
 
     private Timer shakeMouseTimer;
@@ -99,6 +102,24 @@ public class SystemToolController implements Initializable {
             OutputUtils.info(logs, e.getMessage());
         } finally {
             updateVersionBtn.setDisable(false);
+        }
+    }
+
+    @FXML
+    void clearVersion(ActionEvent event) {
+        clearVersionBtn.setDisable(true);
+        try {
+            String statPath = FileUtils.getFilePath(PATH_VERSION_EXTEND_STAT);
+            FileUtils.writeFile(statPath, STR_BLANK, false);
+            OutputUtils.info(logs, getUpdateVersionMsg("清除个性化成功"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            List<String> record = new ArrayList<>();
+            record.add(getUpdateVersionMsg("清除个性化成功"));
+            LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+        } catch (Exception e) {
+            OutputUtils.info(logs, e.getMessage());
+        } finally {
+            clearVersionBtn.setDisable(false);
         }
     }
 
@@ -196,6 +217,7 @@ public class SystemToolController implements Initializable {
                 FileUtils.writeFile(statPath, list, false);
                 if (logs != null) {
                     OutputUtils.info(logs, getUpdateVersionMsg("同步成功"));
+                    OutputUtils.info(logs, STR_NEXT_LINE);
                 }
 
                 List<String> record = new ArrayList<>();

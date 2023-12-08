@@ -49,6 +49,7 @@ public class BaseConst {
     public static final String STR_19 = "19";
     public static final String STR_20 = "20";
     public static final String STR_69 = "69";
+    public static final String STR_99 = "99";
     public static final String STR_145 = "145";
     public static final String STR_549656 = "549656";
     public static final String STR_999999999 = "999999999";
@@ -143,6 +144,9 @@ public class BaseConst {
     public final static String KEY_DATA_SCALE = "data_scale";
     public final static String KEY_DATA_DEFAULT = "data_default";
     public final static String KEY_PRIMARY = "primary";
+    public final static String KEY_CLOSE_DATE = "closeDate";
+    public final static String KEY_PUBLISH_DATE = "publishDate";
+    public final static String KEY_CUSTOMER = "customer";
 
     public static final String METHOD_QUERY_DATA = "queryData";
     public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
@@ -378,6 +382,37 @@ public class BaseConst {
     public static final String COLUMN_TYPE_NUMBER = "number";
     public static final String COLUMN_TYPE_INTEGER = "integer";
     public static final String COLUMN_TYPE_CLOB = "clob";
+
+    public enum COLUMN_TYPE {
+        DICT("1", "字典"),
+        DATE("2", "日期"),
+        DECIMAL("3", "小数");
+
+        private String code;
+
+        private String name;
+
+        public String getCode() {
+            return code;
+        }
+
+        public void setCode(String code) {
+            this.code = code;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        COLUMN_TYPE(String code, String name) {
+            this.code = code;
+            this.name = name;
+        }
+    }
 
     public static final String STYLE_CENTER = "-fx-alignment: center;";
 

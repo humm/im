@@ -18,6 +18,10 @@ public class HepTaskComponentDto extends BaseDto{
 
     private List<String> logs;
 
+    private Label dayTodo;
+
+    private Label weekTodo;
+
     private Label waitHandleTaskNum;
 
     private Label dayPublish;
