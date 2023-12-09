@@ -516,6 +516,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         StringBuilder dayVersion = new StringBuilder();
         String currentDay = CommonUtils.getCurrentDateTime3();
         String weekDay = getLastDayByWeek();
+        String endDateCode = appConfigDto.getHepTaskTodoEndDateVersion();
         try {
             List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
             Map<String, String[]> versionExtend = getVersionExtendInfo();
@@ -587,8 +588,10 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 item.setCustomer(versionInfo.get(KEY_CUSTOMER));
             }
             String endDate = item.getEstimateFinishTime().split(STR_SPACE)[0].replaceAll(STR_HYPHEN, STR_BLANK);
-            if (!endDate.startsWith(STR_99)) {
-                item.setEndDate(CommonUtils.getIntervalDays(currentDay, endDate));
+            if (StringUtils.isNotBlank(endDateCode) && endDateCode.contains(sprintVersion)) {
+                if (!endDate.startsWith(STR_99)) {
+                    item.setEndDate(CommonUtils.getIntervalDays(currentDay, endDate));
+                }
             }
             if (dayVersion.toString().contains(sprintVersion + STR_SPACE)) {
                 dayVersionNum++;
@@ -877,7 +880,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
         if (testScene()) {
             return null;
         }
-        HttpResponse response = HttpRequest.post(REQUEST_URL).timeout(10 * 1000).form(jsonObject).execute();;
+        HttpResponse response = HttpRequest.post(REQUEST_URL).timeout(10 * 1000).form(jsonObject).execute();
+        LoggerUtils.info(response.toString());
         return response;
     }
 

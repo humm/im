@@ -78,7 +78,7 @@
                                                         <PropertyValueFactory property="taskNumber"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="name" editable="false" prefWidth="730"
+                                                <TableColumn id="name" editable="false" prefWidth="775"
                                                              sortable="false" text="任务单名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>
@@ -96,19 +96,19 @@
                                                         <PropertyValueFactory property="sprintVersion"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="endDate" editable="false" prefWidth="60"
+                                                <TableColumn id="endDate" editable="false" prefWidth="45"
                                                              sortable="false" text="截止">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="endDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="closeDate" editable="false" prefWidth="60"
+                                                <TableColumn id="closeDate" editable="false" prefWidth="45"
                                                              sortable="false" text="封版">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="closeDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="publishDate" editable="false" prefWidth="60"
+                                                <TableColumn id="publishDate" editable="false" prefWidth="45"
                                                              sortable="false" text="发版">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="publishDate"/>
