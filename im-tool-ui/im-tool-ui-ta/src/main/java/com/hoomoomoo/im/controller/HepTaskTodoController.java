@@ -104,9 +104,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
     }
 
     @FXML
-    private Label waitHandleTaskNum;
-
-    @FXML
     private Label weekPublish;
 
     @FXML
@@ -167,7 +164,9 @@ public class HepTaskTodoController extends BaseController implements Initializab
     private Label weekTodo;
 
     @FXML
-    private Label allTodo;
+    private Label waitHandleTaskNum;
+
+    Map<String, Integer> minDate = new HashMap<>();
 
     @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
@@ -500,7 +499,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
         List<String> weekPublishVersion = appConfigDto.getWeekPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
         filterTask(res);
-        res = sortTask(res);
         if (tagFlag) {
             initTag(res);
         }
@@ -516,7 +514,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
         StringBuilder dayVersion = new StringBuilder();
         String currentDay = CommonUtils.getCurrentDateTime3();
         String weekDay = getLastDayByWeek();
-        String endDateCode = appConfigDto.getHepTaskTodoEndDateVersion();
         try {
             List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
             Map<String, String[]> versionExtend = getVersionExtendInfo();
@@ -588,11 +585,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 item.setCustomer(versionInfo.get(KEY_CUSTOMER));
             }
             String endDate = item.getEstimateFinishTime().split(STR_SPACE)[0].replaceAll(STR_HYPHEN, STR_BLANK);
-            if (StringUtils.isNotBlank(endDateCode) && endDateCode.contains(sprintVersion)) {
-                if (!endDate.startsWith(STR_99)) {
-                    item.setEndDate(CommonUtils.getIntervalDays(currentDay, endDate));
-                }
-            }
+            item.setEndDate(CommonUtils.getIntervalDays(currentDay, endDate));
             if (dayVersion.toString().contains(sprintVersion + STR_SPACE)) {
                 dayVersionNum++;
             }
@@ -613,7 +606,22 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 item.setEstimateFinishDate(item.getEstimateFinishTime().split(STR_SPACE)[0]);
                 item.setEstimateFinishTime(item.getEstimateFinishTime().split(STR_SPACE)[1]);
             }
+
+            initMinDate(minDate, item);
         }
+
+        for (HepTaskDto item : res) {
+            String taskName = item.getName();
+            if (minDate.containsKey(taskName)) {
+                int min = minDate.get(taskName);
+                String estimateFinishDate = item.getEstimateFinishDate();
+                if (estimateFinishDate.startsWith(STR_9)) {
+                    min = Integer.valueOf(estimateFinishDate.replaceAll(STR_HYPHEN, STR_BLANK));
+                }
+                item.setEndDate(String.valueOf(min));
+            }
+        }
+        res = sortTask(res);
         if (StringUtils.isBlank(dayVersion)) {
             dayVersion.append(". . . 今日喝茶 . . .");
         }
@@ -638,6 +646,30 @@ public class HepTaskTodoController extends BaseController implements Initializab
 
         OutputUtils.clearLog(taskListIn);
         infoTaskList(taskListIn, res);
+    }
+
+    private static void initMinDate (Map<String, Integer> minDate, HepTaskDto item) {
+        String closeDate = item.getCloseDate();
+        if (StringUtils.isBlank(closeDate)) {
+            closeDate = STR_999999999;
+        }
+        String publishDate = item.getPublishDate();
+        if (StringUtils.isBlank(publishDate)) {
+            publishDate = STR_999999999;
+        }
+        String endDate = item.getEndDate();
+        if (StringUtils.isBlank(endDate)) {
+            endDate = STR_999999999;
+        }
+        String taskName = item.getName();
+        int min = Math.min(Math.min(Integer.valueOf(closeDate), Integer.valueOf(publishDate)), Integer.valueOf(endDate));
+        if (minDate.containsKey(taskName)) {
+            if (minDate.get(taskName) > min) {
+                minDate.put(taskName, min);
+            }
+        } else {
+            minDate.put(taskName, min);
+        }
     }
 
     private static String getRealDate(String oriDate) {
@@ -851,10 +883,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 taskType.put(STR_9, STR_9);
             }
         }
-        /*Iterator<String> iteratorTask = taskType.keySet().iterator();
-        while (iteratorTask.hasNext()) {
-            task.add(getDivideTask(iteratorTask.next()));
-        }*/
     }
 
     private static String getTaskNameTag(String taskName) {
@@ -903,8 +931,27 @@ public class HepTaskTodoController extends BaseController implements Initializab
             public int compare(HepTaskDto o1, HepTaskDto o2) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
-                    Date finishTime1 = simpleDateFormat.parse(getValue(o1.getEstimateFinishTime(), STR_BLANK));
-                    Date finishTime2 = simpleDateFormat.parse(getValue(o2.getEstimateFinishTime(), STR_BLANK));
+                    int endDate1 = Integer.valueOf(o1.getEndDate());
+                    int endDate2 = Integer.valueOf(o2.getEndDate());
+                    if (endDate1 != endDate2) {
+                        return endDate1 - endDate2;
+                    }
+
+                    int closeDate1 = Integer.valueOf(o1.getCloseDate());
+                    int closeDate2 = Integer.valueOf(o2.getCloseDate());
+                    if (closeDate1 != closeDate2) {
+                        return closeDate1 - closeDate2;
+                    }
+
+                    int publishDate1 = Integer.valueOf(o1.getPublishDate());
+                    int publishDate2 = Integer.valueOf(o2.getPublishDate());
+                    if (publishDate1 != publishDate2) {
+                        return publishDate1 - publishDate2;
+                    }
+
+
+                    Date finishTime1 = simpleDateFormat.parse(getValue(o1.getEstimateFinishDate() +  STR_SPACE + o1.getEstimateFinishTime(), STR_BLANK));
+                    Date finishTime2 = simpleDateFormat.parse(getValue(o2.getEstimateFinishDate() +  STR_SPACE + o2.getEstimateFinishTime(), STR_BLANK));
                     if (finishTime1.getTime() != finishTime2.getTime()) {
                         return finishTime1.compareTo(finishTime2);
                     }
@@ -918,7 +965,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                     }
                     return taskName1.compareTo(taskName2);
                 } catch (ParseException e) {
-                    e.printStackTrace();
+                    LoggerUtils.info(e);
                 }
                 return 1;
             }
@@ -1088,18 +1135,29 @@ public class HepTaskTodoController extends BaseController implements Initializab
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
             item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
-            item.put("sprint_version", i % 2 == 0 ? "TA6.0-FUND.V202304.00.008" : "TA6.0-FUND.V202304.08.000");
+            item.put(KEY_ESTIMATE_FINISH_TIME, "2023-12-24 22:59:59");
+            switch (i % 7) {
+                case 0: item.put("sprint_version", "TA6.0-FUND.V202304.10.000");break;
+                case 1: item.put("sprint_version", "TA6.0-FUND.V202304.00.009");break;
+                case 2: item.put("sprint_version", "TA6.0-FUND.V202304.00.002M9");break;
+                case 3: item.put("sprint_version", "TA6.0V202202.06.026");break;
+                case 4: item.put("sprint_version", "TA6.0-FUND.V202304.07.002");
+                        item.put(KEY_ESTIMATE_FINISH_TIME, "2023-11-24 22:59:59");
+                    break;
+                case 5: item.put("sprint_version", "TA6.0-FUND.V202304.06.001");break;
+                case 6: item.put("sprint_version", "TA6.0-FUND.V202304.04.002");break;
+                default:break;
+            }
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put("description", i % 2 == 0 ? "洛洛洛</p>洛洛洛" : "开发中");
-            item.put(KEY_ESTIMATE_FINISH_TIME, "2023-12-24 22:59:59");
             switch (i % 7) {
                 case 0: item.put(KEY_NAME, "「开发」问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题" + i);break;
                 case 1: item.put(KEY_NAME, "「开发」【缺陷:45454】问题" + i);break;
                 case 2: item.put(KEY_NAME, "「自测问题」问题" + i);break;
                 case 6: item.put(KEY_NAME, "「自建任务」问题" + i);break;
                 case 3: item.put(KEY_NAME, "「开发」已修改 问题" + i);break;
-                case 4: item.put(KEY_NAME, "「开发」已提交 问题" + i);break;
+                case 4: item.put(KEY_NAME, "「开发」 问题" + i);break;
                 case 5: item.put(KEY_NAME, "「修复问题」问题" + i);break;
                 default:break;
             }
