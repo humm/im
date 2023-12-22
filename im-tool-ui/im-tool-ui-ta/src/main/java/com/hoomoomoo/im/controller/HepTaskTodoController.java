@@ -909,7 +909,19 @@ public class HepTaskTodoController extends BaseController implements Initializab
             return null;
         }
         HttpResponse response = HttpRequest.post(REQUEST_URL).timeout(10 * 1000).form(jsonObject).execute();
-        LoggerUtils.info(response.toString());
+        Map result = (Map)JSONObject.parse(response.body());
+        LoggerUtils.info(result.toString());
+        Object data = result.get("data");
+        if (data instanceof JSONArray) {
+            JSONArray ele = (JSONArray)data;
+            if (ele.size() > 1) {
+                StringBuilder msg = new StringBuilder(STR_NEXT_LINE);
+                for (int i=0; i<ele.size(); i++) {
+                    msg.append(STR_SPACE_3 + ele.get(i).toString()).append(STR_NEXT_LINE);
+                }
+                LoggerUtils.info(msg.toString());
+            }
+        }
         return response;
     }
 
