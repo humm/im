@@ -33,11 +33,14 @@
                                                 <RadioButton fx:id="onlyDelete" layoutX="95.0" layoutY="24.0"
                                                              mnemonicParsing="false" onAction="#selectOnlyDelete"
                                                              text="仅删除"/>
-                                                <RadioButton fx:id="all" layoutX="180.0" layoutY="24.0"
+                                                <RadioButton fx:id="all" layoutX="175.0" layoutY="24.0"
                                                              mnemonicParsing="false" onAction="#selectAll"
                                                              text="全部"/>
+                                                <RadioButton fx:id="update" layoutX="235.0" layoutY="24.0"
+                                                             mnemonicParsing="false" onAction="#selectUpdate"
+                                                             text="更新"/>
 
-                                                <Label layoutX="300.0" layoutY="24.0" text="文件模式"/>
+                                                <Label layoutX="315.0" layoutY="24.0" text="文件模式"/>
                                                 <RadioButton fx:id="append" layoutX="380.0" layoutY="24.0"
                                                              mnemonicParsing="false" onAction="#selectAppend"
                                                              text="追加"/>

@@ -166,8 +166,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
     @FXML
     private Label waitHandleTaskNum;
 
-    Map<String, Integer> minDate = new HashMap<>();
-
     @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
         HepTaskDto item = (HepTaskDto)taskList.getSelectionModel().getSelectedItem();
@@ -496,7 +494,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
     public void dealTaskList(JSONArray task, List<String> logsIn, Label dayTodoIn, Label weekTodoIn, Label waitHandleTaskNumIn, Label dayPublishIn, Label weekPublishIn, TableView taskListIn, boolean tagFlag) {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
-        List<String> weekPublishVersion = appConfigDto.getWeekPublishVersion();
+        //List<String> weekPublishVersion = appConfigDto.getWeekPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
         filterTask(res);
         if (tagFlag) {
@@ -514,6 +512,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         StringBuilder dayVersion = new StringBuilder();
         String currentDay = CommonUtils.getCurrentDateTime3();
         String weekDay = getLastDayByWeek();
+        int weekNum = 0;
         try {
             List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
             Map<String, String[]> versionExtend = getVersionExtendInfo();
@@ -554,8 +553,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
                     dayPublishVersion.add(versionCode);
                 }
                 if ((weekDay.compareTo(oriCloseDate) >= 0 && currentDay.compareTo(oriCloseDate) <= 0) || (weekDay.compareTo(oriPublishDate) >= 0 && currentDay.compareTo(oriPublishDate) <= 0)) {
-                    weekVersion.append(versionCode).append(STR_SPACE);
-                    weekPublishVersion.add(versionCode);
+                    weekNum++;
+                    if (weekNum < 7) {
+                        weekVersion.append(versionCode).append(STR_SPACE);
+                    } else if (weekNum == 7) {
+                        weekVersion.append("...");
+                    }
                 }
                 version.put(versionCode, ele);
             }
@@ -566,6 +569,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         }
         int dayVersionNum = 0;
         int weekVersionNum = 0;
+        Map<String, Integer> minDate = new HashMap<>();
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String status = item.getStatus();
@@ -606,16 +610,14 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 item.setEstimateFinishDate(item.getEstimateFinishTime().split(STR_SPACE)[0]);
                 item.setEstimateFinishTime(item.getEstimateFinishTime().split(STR_SPACE)[1]);
             }
-
             initMinDate(minDate, item);
         }
-
         for (HepTaskDto item : res) {
             String taskName = item.getName();
             if (minDate.containsKey(taskName)) {
                 int min = minDate.get(taskName);
                 String estimateFinishDate = item.getEstimateFinishDate();
-                if (estimateFinishDate.startsWith(STR_9)) {
+                if (estimateFinishDate.startsWith(STR_9) || estimateFinishDate.startsWith(STR_1)) {
                     min = Integer.valueOf(estimateFinishDate.replaceAll(STR_HYPHEN, STR_BLANK));
                 }
                 item.setEndDate(String.valueOf(min));
@@ -651,15 +653,15 @@ public class HepTaskTodoController extends BaseController implements Initializab
     private static void initMinDate (Map<String, Integer> minDate, HepTaskDto item) {
         String closeDate = item.getCloseDate();
         if (StringUtils.isBlank(closeDate)) {
-            closeDate = STR_999999999;
+            closeDate = STR_99999999;
         }
         String publishDate = item.getPublishDate();
         if (StringUtils.isBlank(publishDate)) {
-            publishDate = STR_999999999;
+            publishDate = STR_99999999;
         }
         String endDate = item.getEndDate();
         if (StringUtils.isBlank(endDate)) {
-            endDate = STR_999999999;
+            endDate = STR_99999999;
         }
         String taskName = item.getName();
         int min = Math.min(Math.min(Integer.valueOf(closeDate), Integer.valueOf(publishDate)), Integer.valueOf(endDate));
@@ -1029,7 +1031,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             if (StringUtils.isBlank(type) || STR_1.equals(type)) {
                 return "9900-12-31 23:59:59";
             } else if (STR_2.equals(type)) {
-                return "9990-12-31 23:59:59";
+                return "1990-12-31 23:59:59";
             } else if (STR_9.equals(type)) {
                 return "9999-12-31 23:59:59";
             }

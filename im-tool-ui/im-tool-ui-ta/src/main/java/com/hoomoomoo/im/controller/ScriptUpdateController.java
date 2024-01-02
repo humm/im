@@ -60,6 +60,9 @@ public class ScriptUpdateController extends BaseController implements Initializa
     private RadioButton all;
 
     @FXML
+    private RadioButton update;
+
+    @FXML
     private RadioButton menuYes;
 
     @FXML
@@ -81,15 +84,21 @@ public class ScriptUpdateController extends BaseController implements Initializa
             if (!TaCommonUtils.checkConfig(target, SCRIPT_UPDATE.getCode())) {
                 return;
             }
-            if (rewrite.isSelected() == false && append.isSelected() == false) {
+            if (!rewrite.isSelected() && !append.isSelected()) {
                 selectRewrite(null);
             }
-            if (onlyDelete.isSelected() == false && all.isSelected() == false) {
+            if (!onlyDelete.isSelected() && !all.isSelected() && !update.isSelected()) {
                 selectAll(null);
             }
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            if (onlyDelete.isSelected()) {
+                appConfigDto.setScriptUpdateGenerateType(STR_1);
+            } else if (all.isSelected()) {
+                appConfigDto.setScriptUpdateGenerateType(STR_2);
+            } else {
+                appConfigDto.setScriptUpdateGenerateType(STR_3);
+            }
             appConfigDto.setScriptUpdateGenerateMode(rewrite.isSelected() ? STR_2 : STR_1);
-            appConfigDto.setScriptUpdateGenerateType(all.isSelected() ? STR_2 : STR_1);
             appConfigDto.setScriptUpdateGenerateUed(menuYes.isSelected() ? STR_1 : STR_2);
             setProgress(0);
             updateProgress();
@@ -120,6 +129,8 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 selectAll(null);
             } else if (STR_1.equals(type)) {
                 selectOnlyDelete(null);
+            } else if (STR_3.equals(type)) {
+                selectUpdate(null);
             }
 
             if (StringUtils.isBlank(ued) || STR_1.equals(ued)) {
@@ -148,12 +159,21 @@ public class ScriptUpdateController extends BaseController implements Initializa
     void selectOnlyDelete(ActionEvent event) {
         OutputUtils.selected(onlyDelete, true);
         OutputUtils.selected(all, false);
+        OutputUtils.selected(update, false);
     }
 
     @FXML
     void selectAll(ActionEvent event) {
-        OutputUtils.selected(onlyDelete, false);
         OutputUtils.selected(all, true);
+        OutputUtils.selected(onlyDelete, false);
+        OutputUtils.selected(update, false);
+    }
+
+    @FXML
+    void selectUpdate(ActionEvent event) {
+        OutputUtils.selected(update, true);
+        OutputUtils.selected(all, false);
+        OutputUtils.selected(onlyDelete, false);
     }
 
     @FXML
@@ -333,8 +353,8 @@ public class ScriptUpdateController extends BaseController implements Initializa
                         int index = sql.lastIndexOf(BaseConst.STR_BRACKETS_RIGHT);
                         sql = sql.substring(0, index) + paramSql;
                     }
-                    String updateSql = generateUpdate(sqlKey);
-                    if (sql.toLowerCase().startsWith("insert")) {
+                    String updateSql = generateUpdate(sqlKey, deleteSqlMap.get(sqlKey), true);
+                    if (sql.toLowerCase().startsWith("insert") && !STR_3.equals(appConfigDto.getScriptUpdateGenerateType())) {
                         if (target != null) {
                             OutputUtils.info(target, deleteSqlMap.get(sqlKey) + STR_NEXT_LINE);
                         } else {
@@ -360,6 +380,15 @@ public class ScriptUpdateController extends BaseController implements Initializa
                             logList.add(updateSql);
                             scriptList.add(updateSql);
                         }
+                    } else if (STR_3.equals(appConfigDto.getScriptUpdateGenerateType())) {
+                        String ele = generateUpdate(sqlKey, deleteSqlMap.get(sqlKey), false);
+                        if (target != null) {
+                            OutputUtils.info(target, ele + STR_NEXT_LINE_2);
+                        } else {
+                            result.add(ele + STR_NEXT_LINE);
+                        }
+                        logList.add(deleteSqlMap.get(ele));
+                        scriptList.add(deleteSqlMap.get(ele));
                     }
                 }
                 if (STR_1.equals(appConfigDto.getScriptUpdateGenerateType())) {
@@ -605,38 +634,79 @@ public class ScriptUpdateController extends BaseController implements Initializa
         return menuStd;
     }
 
-    private static String generateUpdate(String item) throws Exception{
+    private static String generateUpdate(String item, String updateKey, boolean generate) throws Exception{
+        Set<String> keyColumn = new HashSet<>();
+        if (StringUtils.isNotBlank(updateKey)) {
+            updateKey = updateKey.split("where")[1].trim();
+            String[] updateItem = updateKey.split("and");
+            for (String ele : updateItem) {
+                keyColumn.add(ele.split("=")[0].trim());
+            }
+        }
         StringBuilder updateSql = new StringBuilder();
+        if (generate) {
+            if (!item.toLowerCase().contains("tbmenucondition")) {
+                return STR_BLANK;
+            }
+        }
         if (item.toLowerCase().contains("tbmenucondition")) {
             updateSql.append("update tbmenuconditionuser set ");
-            item = item.replaceAll("\\s+", STR_BLANK);
-            String[] sql = item.split(BaseConst.KEY_VALUES);
-            if (sql.length != 2) {
-                sql = item.split(BaseConst.KEY_VALUES.toUpperCase());
-                if (sql.length != 2) {
-                    throw new Exception("sql语句未包含或者包含多个" + BaseConst.KEY_VALUES + STR_NEXT_LINE + item);
-                }
-            }
-            String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
-            String[] value = sql[1].substring(sql[1].indexOf("(") + 1, sql[1].indexOf(")")).split("',");
-            for (int i=0; i<column.length; i++) {
-                if (i == 0 || i == 2 || i == 3) {
-                    continue;
-                }
-                if (i != 1) {
-                    updateSql.append(", ");
-                }
-                updateSql.append(column[i] + " = " + (value[i].length() == 1 ? value[i] + STR_SPACE : value[i]));
-                if (i != column.length - 1) {
-                    updateSql.append(STR_QUOTES_SINGLE);
-                }
-            }
-            updateSql.append(" where " + column[0] + " = " + value[0] + STR_QUOTES_SINGLE);
-            updateSql.append(" and " + column[2] + " = " + value[2] + STR_QUOTES_SINGLE);
-            updateSql.append(" and " + column[3] + " = " + value[3] + STR_QUOTES_SINGLE);
-            updateSql.append(";");
+        } else {
+            updateSql.append("update " + getTableName(item) + " set ");
         }
+        updateSql.append(STR_NEXT_LINE);
+        item = item.replaceAll("\\s+", STR_BLANK);
+        String[] sql = item.split(BaseConst.KEY_VALUES);
+        if (sql.length != 2) {
+            sql = item.split(BaseConst.KEY_VALUES.toUpperCase());
+            if (sql.length != 2) {
+                throw new Exception("sql语句未包含或者包含多个" + BaseConst.KEY_VALUES + STR_NEXT_LINE + item);
+            }
+        }
+        String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
+        String[] value = handleValue(column.length, sql[1].substring(sql[1].indexOf("(") + 1, sql[1].indexOf(")")).split(","));
+        for (int i=0; i<column.length; i++) {
+            if (keyColumn.contains(column[i])) {
+                continue;
+            }
+            updateSql.append(STR_SPACE_2);
+            updateSql.append(column[i] + " = " + ("''".equals(value[i]) ? "' '": value[i]));
+            if (i != column.length - 1) {
+                updateSql.append(STR_COMMA).append(STR_NEXT_LINE);
+            }
+        }
+        updateSql.append(STR_NEXT_LINE + "where " + updateKey);
         return updateSql.toString();
+    }
+
+    private static String[] handleValue(int len, String[] value) {
+        String[] res = new String[len];
+        int index = 0;
+        String val = STR_BLANK;
+        for (String item : value) {
+            if (item.startsWith(STR_QUOTES_SINGLE) && item.endsWith(STR_QUOTES_SINGLE)) {
+                res[index] = item;
+                index++;
+            } else if (!item.contains(STR_QUOTES_SINGLE)) {
+                if (StringUtils.isNotBlank(val)) {
+                    val += item + STR_COMMA;
+                } else {
+                    res[index] = item;
+                    index++;
+                }
+            } else if (item.startsWith(STR_QUOTES_SINGLE) || item.endsWith(STR_QUOTES_SINGLE)) {
+                val += item + STR_COMMA;
+                if (item.endsWith(STR_QUOTES_SINGLE)) {
+                    if (val.endsWith(STR_COMMA)) {
+                        val = val.substring(0, val.length() - 1);
+                    }
+                    res[index] = val;
+                    val = STR_BLANK;
+                    index++;
+                }
+            }
+        }
+        return res;
     }
 
     private static String getTableName(String sql) {

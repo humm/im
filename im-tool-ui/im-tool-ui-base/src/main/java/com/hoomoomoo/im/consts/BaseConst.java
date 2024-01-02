@@ -53,6 +53,7 @@ public class BaseConst {
     public static final String STR_145 = "145";
     public static final String STR_549656 = "549656";
     public static final String STR_999999999 = "999999999";
+    public static final String STR_99999999 = "99999999";
     public static final String STR_999999999999 = "999999999999";
 
     public final static String ENCODING_UTF8 = "UTF-8";
