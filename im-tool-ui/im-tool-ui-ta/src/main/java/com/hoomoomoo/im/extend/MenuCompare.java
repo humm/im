@@ -25,6 +25,7 @@ public class MenuCompare {
     private Map<String, String> menuExistCache = new LinkedHashMap<>();
     private int extFileNum = 0;
     private int needAddMenuNum = 0;
+    private Map<String, String> totalMenu = new HashMap<>();
     private List<String> needAddMenu = new ArrayList<>();
     Set<String> skip = new HashSet<>();
 
@@ -71,113 +72,63 @@ public class MenuCompare {
     }
 
     public void check() throws Exception {
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("analysis 开始"));
-        analysis();
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("analysis 结束"));
-
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("dailyOperationsRouter 开始"));
-        dailyOperationsRouter();
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("dailyOperationsRouter 结束"));
-
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundAccount 开始"));
-        fundAccount();
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundAccount 结束"));
-
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundDataPermission 开始"));
-        fundDataPermission();
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundDataPermission 结束"));
-
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundOnlineParameters 开始"));
-        fundOnlineParameters();
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundOnlineParameters 结束"));
-
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundOrder 开始"));
-        fundOrder();
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundOrder 结束"));
-
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundReport 开始"));
-        fundReport();
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundReport 结束"));
-
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundTrade 开始"));
-        fundTrade();
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("fundTrade 结束"));
-
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("specialHandling 开始"));
-        specialHandling();
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("specialHandling 结束"));
-
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("sysinfoRouter 开始"));
-        sysinfoRouter();
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("sysinfoRouter 结束"));
-
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("汇总统计 开始"));
-        needAddMenu.add(0, "-- 待处理菜单总共【" + needAddMenuNum + "】");
+        File file = new File(basePathRouter);
+        if (!file.isDirectory()) {
+            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("路由文件目录不存在，清检查"));
+            return;
+        }
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        Set<String> skipRouter = new HashSet<>();
+        String systemToolCheckMenuSkipRouter = appConfigDto.getSystemToolCheckMenuSkipRouter();
+        if (StringUtils.isNotBlank(systemToolCheckMenuSkipRouter)) {
+            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("忽略路由文件 " + systemToolCheckMenuSkipRouter));
+            String[] skip = systemToolCheckMenuSkipRouter.split(",");
+            for (String item : skip) {
+                skipRouter.add(item);
+            }
+        }
+        File[] fileList = file.listFiles();
+        for (File item : fileList) {
+            String fileName = item.getName().replace(".js", "");
+            if ("analysisByTrans".equals(fileName) || skipRouter.contains(fileName)) {
+                continue;
+            }
+            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg(fileName + " 开始"));
+            List<String> menuCodeList = FileUtils.readNormalFile(item.getPath(), false);
+            Map<String, String> menuMap = initMenuRouter(menuCodeList);
+            if ("analysis".equals(fileName)) {
+                List<String> extendMenuCodeList = FileUtils.readNormalFile(basePathRouter + "analysisByTrans.js", false);
+                menuMap.putAll(initMenuRouter(extendMenuCodeList));
+            }
+            compareMenu(menuMap, fileName + ".sql");
+            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg(fileName + " 结束"));
+        }
+        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("统计 开始"));
+        needAddMenu.add(0, "-- 菜单总数【" + totalMenu.size() + "】 待处理【" + needAddMenuNum + "】");
+        needAddMenu.add(0, "-- ************************ total ************************");
         FileUtils.writeFile(resultPath + "menu.sql", needAddMenu, false);
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("汇总统计 结束"));
-    }
 
-    private void sysinfoRouter() throws Exception {
-        List<String> sysinfoRouter = FileUtils.readNormalFile(basePathRouter + "sysinfoRouter.js", false);
-        Map<String, String> menuMap = initMenuRouter(sysinfoRouter);
-        compareMenu(menuMap, "sysinfoRouter.sql");
-    }
+        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("路由检查 开始"));
+        Set<String> lackRouter = new HashSet<>();
+        Iterator<String> iterator = menuCache.keySet().iterator();
+        while (iterator.hasNext()) {
+            String menuCode = iterator.next();
+            if (!totalMenu.containsKey(menuCode)) {
+                lackRouter.add(menuCode);
+            }
+        }
+        List<String> menuCodeList = new ArrayList<>();
+        Iterator<String> iteratorLack = lackRouter.iterator();
+        while (iteratorLack.hasNext()) {
+            String menuCode = iteratorLack.next();
+            menuCodeList.add(buildMenuCodeInfo(menuCode));
+        }
+        menuCodeList.add(0, "-- 待处理【" + menuCodeList.size() + "】\n\n");
+        menuCodeList.add(0, "-- ************************ 菜单存在脚本配置 缺少路由信息 ************************");
+        FileUtils.writeFile(resultPath + "lackRouter.sql", menuCodeList, false);
+        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("路由检查 结束"));
 
-    private void specialHandling() throws Exception {
-        List<String> specialHandling = FileUtils.readNormalFile(basePathRouter + "specialHandling.js", false);
-        Map<String, String> menuMap = initMenuRouter(specialHandling);
-        compareMenu(menuMap, "specialHandling.sql");
-    }
-
-    private void fundTrade() throws Exception {
-        List<String> fundTrade = FileUtils.readNormalFile(basePathRouter + "fundTrade.js", false);
-        Map<String, String> menuMap = initMenuRouter(fundTrade);
-        compareMenu(menuMap, "fundTrade.sql");
-    }
-
-    private void fundReport() throws Exception {
-        List<String> fundReport = FileUtils.readNormalFile(basePathRouter + "fundReport.js", false);
-        Map<String, String> menuMap = initMenuRouter(fundReport);
-        compareMenu(menuMap, "fundReport.sql");
-    }
-
-    private void fundOrder() throws Exception {
-        List<String> fundOrder = FileUtils.readNormalFile(basePathRouter + "fundOrder.js", false);
-        Map<String, String> menuMap = initMenuRouter(fundOrder);
-        compareMenu(menuMap, "fundOrder.sql");
-    }
-
-    private void fundOnlineParameters() throws Exception {
-        List<String> fundOnlineParameters = FileUtils.readNormalFile(basePathRouter + "fundOnlineParameters.js", false);
-        Map<String, String> menuMap = initMenuRouter(fundOnlineParameters);
-        compareMenu(menuMap, "fundOnlineParameters.sql");
-    }
-
-    private void fundDataPermission() throws Exception {
-        List<String> fundDataPermission = FileUtils.readNormalFile(basePathRouter + "fundDataPermission.js", false);
-        Map<String, String> menuMap = initMenuRouter(fundDataPermission);
-        compareMenu(menuMap, "fundDataPermission.sql");
-    }
-
-    private void fundAccount() throws Exception {
-        List<String> fundAccount = FileUtils.readNormalFile(basePathRouter + "fundAccount.js", false);
-        Map<String, String> menuMap = initMenuRouter(fundAccount);
-        compareMenu(menuMap, "fundAccount.sql");
-    }
-
-    private void dailyOperationsRouter() throws Exception {
-        List<String> dailyOperationsRouter = FileUtils.readNormalFile(basePathRouter + "dailyOperationsRouter.js", false);
-        Map<String, String> menuMap = initMenuRouter(dailyOperationsRouter);
-        compareMenu(menuMap, "dailyOperationsRouter.sql");
-    }
-
-
-    private void analysis() throws Exception {
-        List<String> analysis = FileUtils.readNormalFile(basePathRouter + "analysis.js", false);
-        List<String> analysisByTrans = FileUtils.readNormalFile(basePathRouter + "analysisByTrans.js", false);
-        Map<String, String> menuMap = initMenuRouter(analysis);
-        menuMap.putAll(initMenuRouter(analysisByTrans));
-        compareMenu(menuMap, "analysis.sql");
+        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("统计 结束"));
     }
 
     private void compareMenu(Map<String, String> menuMap, String fileName) throws Exception {
@@ -203,20 +154,12 @@ public class MenuCompare {
         while(extendIterator.hasNext()) {
             String menuCode = extendIterator.next();
             if (!skip.contains(menuCode)) {
-                List<String> menuInfo = menuCache.get(menuCode);
-                if (menuInfo != null) {
-                    menuCode += "   " + menuInfo.get(0) + "\n";
-                    for (int i=1; i<menuInfo.size(); i++) {
-                        menuCode += "   --" + menuInfo.get(i) + "\n";
-                    }
-                } else {
-                    menuCode += "\n";
-                }
-                menuCodeList.add(menuCode);
+                menuCodeList.add(buildMenuCodeInfo(menuCode));
                 needAddMenuNum++;
             }
         }
-        menuCodeList.add(0, "-- 待处理菜单【" + menuCodeList.size() + "】\n");
+        totalMenu.putAll(menuMap);
+        menuCodeList.add(0, "-- 菜单总数【" + menuMap.size() + "】 待处理【" + menuCodeList.size() + "】\n");
         needAddMenu.add("\n\n-- ************************ " + fileName.replace(".sql", " ************************"));
         needAddMenu.addAll(menuCodeList);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
@@ -224,6 +167,19 @@ public class MenuCompare {
             return;
         }
         FileUtils.writeFile(resultPath + fileName, menuCodeList, false);
+    }
+
+    private String buildMenuCodeInfo(String menuCode) {
+        List<String> menuInfo = menuCache.get(menuCode);
+        if (menuInfo != null) {
+            menuCode += "   " + menuInfo.get(0) + "\n";
+            for (int i=1; i<menuInfo.size(); i++) {
+                menuCode += "   --" + menuInfo.get(i) + "\n";
+            }
+        } else {
+            menuCode += "\n";
+        }
+        return menuCode;
     }
 
     private Map<String, String> initConfigMenuCache() throws Exception {
