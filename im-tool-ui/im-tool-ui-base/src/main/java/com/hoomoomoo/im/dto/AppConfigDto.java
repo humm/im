@@ -258,6 +258,8 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolCheckMenuSubFile;
 
+    private String systemToolCheckMenuEndFlag;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;

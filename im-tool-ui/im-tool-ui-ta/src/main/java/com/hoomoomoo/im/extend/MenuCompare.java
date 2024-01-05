@@ -180,13 +180,13 @@ public class MenuCompare {
         compareMenu(menuMap, "analysis.sql");
     }
 
-    private void compareMenu(Map<String, String> analysisMap, String fileName) throws Exception {
+    private void compareMenu(Map<String, String> menuMap, String fileName) throws Exception {
         Map<String, String> menu = new LinkedHashMap();
-        Iterator iterator = analysisMap.keySet().iterator();
+        Iterator iterator = menuMap.keySet().iterator();
         while(iterator.hasNext()) {
             String key = (String)iterator.next();
             if (!menu.containsKey(key) && !menu.containsKey(key + "T") && !menu.containsKey(key.substring(0, key.length() - 1))) {
-                menu.put(key, analysisMap.get(key));
+                menu.put(key, menuMap.get(key));
             }
         }
         Map<String, String> extend = new LinkedHashMap();
@@ -226,12 +226,13 @@ public class MenuCompare {
         FileUtils.writeFile(resultPath + fileName, menuCodeList, false);
     }
 
-    private Map<String, String> initConfigMenuCache() throws IOException {
+    private Map<String, String> initConfigMenuCache() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> config = FileUtils.readNormalFile(newUedPage, false);
         Iterator<String> iterator = config.iterator();
         while(iterator.hasNext()) {
             String item = iterator.next();
-            if (item.contains("统一TA")) {
+            if (item.contains(appConfigDto.getSystemToolCheckMenuEndFlag())) {
                 break;
             }
             String menuCode = getMenuCode(item);

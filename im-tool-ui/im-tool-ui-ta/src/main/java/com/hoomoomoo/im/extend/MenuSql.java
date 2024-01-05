@@ -38,6 +38,7 @@ public class MenuSql {
     }
 
     public void generateSql() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> sql = new ArrayList<>();
         List<String> config = FileUtils.readNormalFile(newUedPage, false);
         Set<String> deleteMenuCode = getNeedDeleteMenuCode(config);
@@ -77,7 +78,7 @@ public class MenuSql {
                         }
                         ele = "";
                     }
-                    if (item.contains("统一TA")) {
+                    if (item.contains(appConfigDto.getSystemToolCheckMenuEndFlag())) {
                         break;
                     }
                 } else {
