@@ -211,6 +211,8 @@ public class BaseConst {
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
     public static final String NAME_UPDATE_VERSION = "同步发版时间";
+    public static final String NAME_CHECK_MENU = "全量菜单核对";
+    public static final String NAME_UPDATE_MENU = "菜单升级脚本";
 
     public static final String NAME_MENU_UPDATE = "更新";
     public static final String NAME_MENU_COPY = "复制";
@@ -315,6 +317,7 @@ public class BaseConst {
 
     public static final String PATH_APP = "/conf/app.conf";
     public static final String PATH_APP_EXTEND = "/conf/appExtend.conf";
+    public static final String PATH_MENU_SKIP = "/conf/menuSkip.conf";
     public static final String PATH_JD_COOKIE = "/conf/jdCookie.conf";
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
@@ -356,6 +359,7 @@ public class BaseConst {
     public static final String MENU_CODE_BUSIN = "busin";
 
     public static final String PAGE_TYPE_HEP_DETAIL = "detail";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP = "skip";
 
     public static final String MENU_TYPE_FUND_CODE = "1";
     public static final String MENU_TYPE_FUND_NAME = "自建业务";

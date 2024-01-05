@@ -3,6 +3,7 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
+import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,6 +14,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -34,10 +36,13 @@ public class BlankSetController implements Initializable {
     @FXML
     void onSave(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-         if (PAGE_TYPE_HEP_DETAIL.equals(appConfigDto.getPageType())) {
-            appConfigDto.getChildStage().close();
-            appConfigDto.setChildStage(null);
+         if (PAGE_TYPE_SYSTEM_TOOL_SKIP.equals(appConfigDto.getPageType())) {
+             String content = config.getText();
+             String confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
+             FileUtils.writeFile(confPath, content, false);
         }
+        appConfigDto.getChildStage().close();
+        appConfigDto.setChildStage(null);
     }
 
     @SneakyThrows
@@ -67,7 +72,17 @@ public class BlankSetController implements Initializable {
                 }
             }
             submit.setText("关闭");
+        } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP.equals(pageType)) {
+            String confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
+            List<String> content = FileUtils.readNormalFile(confPath, false);
+            for (String item : content) {
+                if (StringUtils.isBlank(item)) {
+                    continue;
+                }
+                OutputUtils.info(config, item + STR_NEXT_LINE);
+            }
         }
+
         info = StringUtils.isBlank(info) ? STR_BLANK : info;
         OutputUtils.info(config, info);
     }

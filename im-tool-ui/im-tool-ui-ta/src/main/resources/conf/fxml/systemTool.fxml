@@ -48,6 +48,27 @@
                                             </padding>
                                         </Button>
 
+                                        <Label layoutX="50.0" layoutY="190.0" prefHeight="15.0" prefWidth="120.0" text="全量菜单核对" style="-fx-font-size: 16;"/>
+                                        <Button fx:id="checkMenuBtn" layoutX="180.0" layoutY="185"
+                                                mnemonicParsing="false" onAction="#checkMenu" prefWidth="100.0" text="核对">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </Button>
+                                        <Button fx:id="skipMenuBtn" layoutX="330.0" layoutY="185"
+                                                mnemonicParsing="false" onAction="#skipMenu" prefWidth="100.0" text="配置忽略菜单">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </Button>
+
+                                        <Label layoutX="50.0" layoutY="260.0" prefHeight="15.0" prefWidth="120.0" text="菜单升级脚本" style="-fx-font-size: 16;"/>
+                                        <Button fx:id="updateMenuBtn" layoutX="180.0" layoutY="255"
+                                                mnemonicParsing="false" onAction="#updateMenu" prefWidth="100.0" text="生成">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </Button>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">

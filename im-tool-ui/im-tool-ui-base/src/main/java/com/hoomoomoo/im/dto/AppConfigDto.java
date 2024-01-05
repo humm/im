@@ -252,6 +252,12 @@ public class AppConfigDto extends BaseDto {
 
     private List<String> weekPublishVersion;
 
+    private String systemToolCheckMenuBasePath;
+
+    private String systemToolCheckMenuResultPath;
+
+    private String systemToolCheckMenuSubFile;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;

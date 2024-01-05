@@ -458,6 +458,9 @@ public class InitConfigUtils {
         keys.put("system.tool.update.version.path", null);
         keys.put("hep.task.todo.end.date.version", null);
 
+        keys.put("system.tool.check.menu.base.path", null);
+        keys.put("system.tool.check.menu.result.path", null);
+
     }
 
     /**

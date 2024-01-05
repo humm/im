@@ -3,12 +3,19 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.extend.MenuCompare;
+import com.hoomoomoo.im.extend.MenuSql;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -45,6 +52,12 @@ public class SystemToolController implements Initializable {
 
     @FXML
     private Button clearVersionBtn;
+
+    @FXML
+    private Button checkMenuBtn;
+
+    @FXML
+    private Button updateMenuBtn;
 
     @FXML
     private Button updateVersionBtn;
@@ -123,6 +136,78 @@ public class SystemToolController implements Initializable {
         }
     }
 
+    @FXML
+    void checkMenu(ActionEvent event) {
+        try {
+            new Thread(new Runnable() {
+                @SneakyThrows
+                @Override
+                public void run() {
+                    checkMenuBtn.setDisable(true);
+                    OutputUtils.info(logs, getCheckMenuMsg("核对开始"));
+                    new MenuCompare(logs).check();
+                    OutputUtils.info(logs, getCheckMenuMsg("核对结束"));
+                    OutputUtils.info(logs, STR_NEXT_LINE);
+                    List<String> record = new ArrayList<>();
+                    record.add(getCheckMenuMsg("核对成功"));
+                    LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+                    checkMenuBtn.setDisable(false);
+                }
+            }).start();
+        } catch (Exception e) {
+            OutputUtils.info(logs, e.getMessage());
+        }
+    }
+
+    @FXML
+    void skipMenu(ActionEvent event) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        appConfigDto.setPageType(PAGE_TYPE_SYSTEM_TOOL_SKIP);
+        Stage stage = appConfigDto.getChildStage();
+        // 每次页面都重新打开
+        if (stage != null) {
+            stage.close();
+            appConfigDto.setChildStage(null);
+        }
+        Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+        stage = new Stage();
+        stage.getIcons().add(new Image(PATH_ICON));
+        stage.setScene(scene);
+        stage.setTitle("配置忽略菜单");
+        stage.setResizable(false);
+        stage.show();
+        appConfigDto.setChildStage(stage);
+        stage.setOnCloseRequest(columnEvent -> {
+            appConfigDto.getChildStage().close();
+            appConfigDto.setChildStage(null);
+        });
+    }
+
+    @FXML
+    void updateMenu(ActionEvent event) {
+        try {
+            new Thread(new Runnable() {
+                @SneakyThrows
+                @Override
+                public void run() {
+                    updateMenuBtn.setDisable(true);
+                    OutputUtils.info(logs, getUpdateMenuMsg("生成开始"));
+                    new MenuSql(logs).generateSql();
+                    OutputUtils.info(logs, getUpdateMenuMsg("生成结束"));
+                    OutputUtils.info(logs, STR_NEXT_LINE);
+                    List<String> record = new ArrayList<>();
+                    record.add(getUpdateMenuMsg("生成成功"));
+                    LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+                    updateMenuBtn.setDisable(false);
+                }
+            }).start();
+        } catch (Exception e) {
+            OutputUtils.info(logs, e.getMessage());
+        }
+    }
+
     private String formatDate(String date) {
         if (StringUtils.isNotBlank(date) && (date.contains("E") || date.contains("e"))) {
             date = new BigDecimal(date).toPlainString();
@@ -136,6 +221,14 @@ public class SystemToolController implements Initializable {
 
     private String getUpdateVersionMsg (String msg) {
         return TaCommonUtils.getMsgContainDate("【"+ NAME_UPDATE_VERSION + "】") + STR_SPACE + msg + STR_NEXT_LINE;
+    }
+
+    public static String getCheckMenuMsg (String msg) {
+        return TaCommonUtils.getMsgContainDate("【"+ NAME_CHECK_MENU + "】") + STR_SPACE + msg + STR_NEXT_LINE;
+    }
+
+    public static String getUpdateMenuMsg (String msg) {
+        return TaCommonUtils.getMsgContainDate("【"+ NAME_UPDATE_MENU + "】") + STR_SPACE + msg + STR_NEXT_LINE;
     }
 
     private void doShakeMouse(AppConfigDto appConfigDto) {
@@ -221,7 +314,7 @@ public class SystemToolController implements Initializable {
                 }
 
                 List<String> record = new ArrayList<>();
-                record.add(getUpdateVersionMsg("同步成功"));
+                record.add(getUpdateVersionMsg("同步发版时间成功"));
                 LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
             } catch (Exception e) {
                 throw new Exception(e);
