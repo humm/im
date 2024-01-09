@@ -13,7 +13,7 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.3078523489932884" layoutX="174.0" layoutY="76.0"
+                        <SplitPane dividerPositions="0.4078523489932884" layoutX="174.0" layoutY="76.0"
                                    prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
@@ -57,6 +57,12 @@
                                         </Button>
                                         <Button fx:id="skipMenuBtn" layoutX="330.0" layoutY="185"
                                                 mnemonicParsing="false" onAction="#skipMenu" prefWidth="100.0" text="配置忽略菜单">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </Button>
+                                        <Button fx:id="skipRouterBtn" layoutX="480.0" layoutY="185"
+                                                mnemonicParsing="false" onAction="#skipRouter" prefWidth="100.0" text="配置忽略路由">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                             </padding>

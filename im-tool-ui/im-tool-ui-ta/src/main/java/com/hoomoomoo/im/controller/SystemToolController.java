@@ -162,7 +162,7 @@ public class SystemToolController implements Initializable {
     @FXML
     void skipMenu(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        appConfigDto.setPageType(PAGE_TYPE_SYSTEM_TOOL_SKIP);
+        appConfigDto.setPageType(PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU);
         Stage stage = appConfigDto.getChildStage();
         // 每次页面都重新打开
         if (stage != null) {
@@ -176,6 +176,32 @@ public class SystemToolController implements Initializable {
         stage.getIcons().add(new Image(PATH_ICON));
         stage.setScene(scene);
         stage.setTitle("配置忽略菜单");
+        stage.setResizable(false);
+        stage.show();
+        appConfigDto.setChildStage(stage);
+        stage.setOnCloseRequest(columnEvent -> {
+            appConfigDto.getChildStage().close();
+            appConfigDto.setChildStage(null);
+        });
+    }
+
+    @FXML
+    void skipRouter(ActionEvent event) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        appConfigDto.setPageType(PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER);
+        Stage stage = appConfigDto.getChildStage();
+        // 每次页面都重新打开
+        if (stage != null) {
+            stage.close();
+            appConfigDto.setChildStage(null);
+        }
+        Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+        stage = new Stage();
+        stage.getIcons().add(new Image(PATH_ICON));
+        stage.setScene(scene);
+        stage.setTitle("配置忽略路由");
         stage.setResizable(false);
         stage.show();
         appConfigDto.setChildStage(stage);

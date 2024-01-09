@@ -318,6 +318,7 @@ public class BaseConst {
     public static final String PATH_APP = "/conf/app.conf";
     public static final String PATH_APP_EXTEND = "/conf/appExtend.conf";
     public static final String PATH_MENU_SKIP = "/conf/menuSkip.conf";
+    public static final String PATH_ROUTER_SKIP = "/conf/routerSkip.conf";
     public static final String PATH_JD_COOKIE = "/conf/jdCookie.conf";
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
@@ -359,7 +360,8 @@ public class BaseConst {
     public static final String MENU_CODE_BUSIN = "busin";
 
     public static final String PAGE_TYPE_HEP_DETAIL = "detail";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP = "skip";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU = "skipMenu";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER = "skipRouter";
 
     public static final String MENU_TYPE_FUND_CODE = "1";
     public static final String MENU_TYPE_FUND_NAME = "自建业务";

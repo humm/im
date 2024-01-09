@@ -945,20 +945,20 @@ public class HepTaskTodoController extends BaseController implements Initializab
             public int compare(HepTaskDto o1, HepTaskDto o2) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
-                    int endDate1 = Integer.valueOf(o1.getEndDate());
-                    int endDate2 = Integer.valueOf(o2.getEndDate());
+                    int endDate1 = Integer.valueOf(o1.getEndDate() == null ? STR_99999999 : o1.getEndDate());
+                    int endDate2 = Integer.valueOf(o2.getEndDate() == null ? STR_99999999 : o2.getEndDate());
                     if (endDate1 != endDate2) {
                         return endDate1 - endDate2;
                     }
 
-                    int closeDate1 = Integer.valueOf(o1.getCloseDate());
-                    int closeDate2 = Integer.valueOf(o2.getCloseDate());
+                    int closeDate1 = Integer.valueOf(o1.getCloseDate() == null ? STR_99999999 : o1.getCloseDate());
+                    int closeDate2 = Integer.valueOf(o2.getCloseDate() == null ? STR_99999999 : o2.getCloseDate());
                     if (closeDate1 != closeDate2) {
                         return closeDate1 - closeDate2;
                     }
 
-                    int publishDate1 = Integer.valueOf(o1.getPublishDate());
-                    int publishDate2 = Integer.valueOf(o2.getPublishDate());
+                    int publishDate1 = Integer.valueOf(o1.getPublishDate() == null ? STR_99999999 : o1.getPublishDate());
+                    int publishDate2 = Integer.valueOf(o2.getPublishDate() == null ? STR_99999999 : o2.getPublishDate());
                     if (publishDate1 != publishDate2) {
                         return publishDate1 - publishDate2;
                     }

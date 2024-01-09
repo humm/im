@@ -22,12 +22,14 @@ public class MenuCompare {
     private String baseMenu = "\\sql\\pub\\001initdata\\basedata\\07console-fund-ta-vue-menu.sql";
     private String newUedPage = "UED\\newUedPage.sql";
     private Map<String, List<String>> menuCache = new LinkedHashMap<>();
+    private Map<String, List<String>> transCache = new LinkedHashMap<>();
     private Map<String, String> menuExistCache = new LinkedHashMap<>();
     private int extFileNum = 0;
     private int needAddMenuNum = 0;
     private Map<String, String> totalMenu = new HashMap<>();
     private List<String> needAddMenu = new ArrayList<>();
-    Set<String> skip = new HashSet<>();
+    Set<String> skipMenuCache = new HashSet<>();
+    Set<String> skipRouterCache = new HashSet<>();
 
     private TextArea logs;
 
@@ -57,7 +59,16 @@ public class MenuCompare {
                 if (StringUtils.isBlank(item)) {
                     continue;
                 }
-                skip.add(item.trim());
+                skipMenuCache.add(item.trim());
+            }
+
+            String routerPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
+            content = FileUtils.readNormalFile(routerPath, false);
+            for (String item : content) {
+                if (StringUtils.isBlank(item)) {
+                    continue;
+                }
+                skipRouterCache.add(item.trim());
             }
 
             OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("扫描菜单脚本 开始"));
@@ -113,7 +124,7 @@ public class MenuCompare {
         Iterator<String> iterator = menuCache.keySet().iterator();
         while (iterator.hasNext()) {
             String menuCode = iterator.next();
-            if (!totalMenu.containsKey(menuCode)) {
+            if (!totalMenu.containsKey(menuCode) && transCache.containsKey(menuCode) && !skipRouterCache.contains(menuCode)) {
                 lackRouter.add(menuCode);
             }
         }
@@ -153,7 +164,7 @@ public class MenuCompare {
         List<String> menuCodeList = new ArrayList<>();
         while(extendIterator.hasNext()) {
             String menuCode = extendIterator.next();
-            if (!skip.contains(menuCode)) {
+            if (!skipMenuCache.contains(menuCode)) {
                 menuCodeList.add(buildMenuCodeInfo(menuCode));
                 needAddMenuNum++;
             }
@@ -294,6 +305,37 @@ public class MenuCompare {
                             menuCache.put(menuCode, menu);
                         }
                         extFileNum++;
+                    }
+                    endFlag = true;
+                }
+            }
+
+            for (String item : content) {
+                if (item.toLowerCase().contains("delete") || item.toLowerCase().contains("tsys_menu_std") || item.toLowerCase().contains("tsys_menu_ext")) {
+                    continue;
+                }
+                if (item.toLowerCase().contains("tbfundgranttablestmp")) {
+                    continue;
+                }
+                if (item.contains("tsys_trans") || item.contains("TSYS_TRANS")) {
+                    endFlag = false;
+                }
+                if (!endFlag && item.trim().endsWith(";")) {
+                    String menuCode = getMenuCode(item);
+                    if (menuCode != null) {
+                        String filePath = file.getPath();
+                        if (filePath.endsWith("newUedPage.sql")) {
+                            continue;
+                        }
+                        if (transCache.containsKey(menuCode)) {
+                            transCache.get(menuCode).add(filePath);
+                        } else {
+                            List<String> menu = new ArrayList<>();
+                            if (!filePath.endsWith("07console-fund-ta-vue-menu.sql")) {
+                                menu.add(filePath);
+                            }
+                            transCache.put(menuCode, menu);
+                        }
                     }
                     endFlag = true;
                 }
