@@ -457,9 +457,10 @@ public class FileUtils {
         File[] oldFileList = confFolder.listFiles();
         if (oldFileList != null) {
             for (File item : oldFileList) {
-                deleteFile(item);
+                if (!extendConfFolder(item)) {
+                    deleteFile(item);
+                }
             }
-            deleteFile(confFolder);
         }
 
         // 解压文件
@@ -709,7 +710,15 @@ public class FileUtils {
                     file1.mkdirs();
                 }
                 File targetFile1 = new File(file1.getAbsolutePath() + File.separator + file.getName());
-                copyFile(file, targetFile1);
+                if (extendConfFile(targetFile1)) {
+                    if (targetFile1.exists()) {
+                        continue;
+                    } else {
+                        copyFile(file, targetFile1);
+                    }
+                } else {
+                    copyFile(file, targetFile1);
+                }
             }
             // 复制文件夹
             if (file.isDirectory()) {
@@ -719,6 +728,14 @@ public class FileUtils {
             }
         }
 
+    }
+
+    private static boolean extendConfFile(File file) {
+        return file.getName().endsWith(FILE_TYPE_CONF) && file.getPath().contains("extend");
+    }
+
+    private static boolean extendConfFolder(File file) {
+        return file.getPath().contains("extend");
     }
 
     /**

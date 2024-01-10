@@ -5,13 +5,19 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.controller.ScriptUpdateController;
 import com.hoomoomoo.im.dto.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.FileInputStream;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -378,4 +384,28 @@ public class TaCommonUtils {
         return CommonUtils.getCurrentDateTime1() + STR_SPACE + msg;
     }
 
+    public static void openBlankChildStage(String pageType, String title) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        appConfigDto.setPageType(pageType);
+        Stage stage = appConfigDto.getChildStage();
+        // 每次页面都重新打开
+        if (stage != null) {
+            stage.close();
+            appConfigDto.setChildStage(null);
+        }
+        Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+        stage = new Stage();
+        stage.getIcons().add(new Image(PATH_ICON));
+        stage.setScene(scene);
+        stage.setTitle(title);
+        stage.setResizable(false);
+        stage.show();
+        appConfigDto.setChildStage(stage);
+        stage.setOnCloseRequest(columnEvent -> {
+            appConfigDto.getChildStage().close();
+            appConfigDto.setChildStage(null);
+        });
+    }
 }

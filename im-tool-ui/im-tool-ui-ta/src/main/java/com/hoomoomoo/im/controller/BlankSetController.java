@@ -36,15 +36,19 @@ public class BlankSetController implements Initializable {
     @FXML
     void onSave(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-         if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU.equals(appConfigDto.getPageType())) {
-             String content = config.getText();
-             String confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
-             FileUtils.writeFile(confPath, content, false);
-        } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER.equals(appConfigDto.getPageType())) {
-             String content = config.getText();
-             String confPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
-             FileUtils.writeFile(confPath, content, false);
-         }
+        String pageType = appConfigDto.getPageType();
+        if (!PAGE_TYPE_HEP_DETAIL.equals(pageType)) {
+            String content = config.getText();
+            String confPath = STR_BLANK;
+            if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_ALL.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_MENU_ALL_SKIP);
+            }
+            FileUtils.writeFile(confPath, content, false);
+        }
         appConfigDto.getChildStage().close();
         appConfigDto.setChildStage(null);
     }
@@ -76,17 +80,15 @@ public class BlankSetController implements Initializable {
                 }
             }
             submit.setText("关闭");
-        } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU.equals(pageType)) {
-            String confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
-            List<String> content = FileUtils.readNormalFile(confPath, false);
-            for (String item : content) {
-                if (StringUtils.isBlank(item)) {
-                    continue;
-                }
-                OutputUtils.info(config, item + STR_NEXT_LINE);
+        } else  {
+            String confPath = STR_BLANK;
+            if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU.equals(pageType)){
+                confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER.equals(pageType)) {
+                confPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_ALL.equals(pageType)) {
+                confPath = FileUtils.getFilePath(PATH_MENU_ALL_SKIP);
             }
-        } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER.equals(pageType)) {
-            String confPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
             List<String> content = FileUtils.readNormalFile(confPath, false);
             for (String item : content) {
                 if (StringUtils.isBlank(item)) {
@@ -95,7 +97,6 @@ public class BlankSetController implements Initializable {
                 OutputUtils.info(config, item + STR_NEXT_LINE);
             }
         }
-
         info = StringUtils.isBlank(info) ? STR_BLANK : info;
         OutputUtils.info(config, info);
     }

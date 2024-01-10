@@ -8,14 +8,9 @@ import com.hoomoomoo.im.extend.MenuSql;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -43,6 +38,9 @@ public class SystemToolController implements Initializable {
 
     @FXML
     private TextArea logs;
+
+    @FXML
+    private TextArea baseLogs;
 
     @FXML
     private Button shakeMouseBtn;
@@ -143,7 +141,6 @@ public class SystemToolController implements Initializable {
                 @SneakyThrows
                 @Override
                 public void run() {
-                    checkMenuBtn.setDisable(true);
                     OutputUtils.info(logs, getCheckMenuMsg("核对开始"));
                     new MenuCompare(logs).check();
                     OutputUtils.info(logs, getCheckMenuMsg("核对结束"));
@@ -151,7 +148,6 @@ public class SystemToolController implements Initializable {
                     List<String> record = new ArrayList<>();
                     record.add(getCheckMenuMsg("核对成功"));
                     LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
-                    checkMenuBtn.setDisable(false);
                 }
             }).start();
         } catch (Exception e) {
@@ -161,54 +157,17 @@ public class SystemToolController implements Initializable {
 
     @FXML
     void skipMenu(ActionEvent event) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        appConfigDto.setPageType(PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU);
-        Stage stage = appConfigDto.getChildStage();
-        // 每次页面都重新打开
-        if (stage != null) {
-            stage.close();
-            appConfigDto.setChildStage(null);
-        }
-        Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
-        stage = new Stage();
-        stage.getIcons().add(new Image(PATH_ICON));
-        stage.setScene(scene);
-        stage.setTitle("配置忽略菜单");
-        stage.setResizable(false);
-        stage.show();
-        appConfigDto.setChildStage(stage);
-        stage.setOnCloseRequest(columnEvent -> {
-            appConfigDto.getChildStage().close();
-            appConfigDto.setChildStage(null);
-        });
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU, "配置忽略菜单");
     }
 
     @FXML
     void skipRouter(ActionEvent event) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        appConfigDto.setPageType(PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER);
-        Stage stage = appConfigDto.getChildStage();
-        // 每次页面都重新打开
-        if (stage != null) {
-            stage.close();
-            appConfigDto.setChildStage(null);
-        }
-        Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
-        stage = new Stage();
-        stage.getIcons().add(new Image(PATH_ICON));
-        stage.setScene(scene);
-        stage.setTitle("配置忽略路由");
-        stage.setResizable(false);
-        stage.show();
-        appConfigDto.setChildStage(stage);
-        stage.setOnCloseRequest(columnEvent -> {
-            appConfigDto.getChildStage().close();
-            appConfigDto.setChildStage(null);
-        });
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER, "配置忽略路由");
+    }
+
+    @FXML
+    void skipAllMenu(ActionEvent event) throws Exception {
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_ALL, "配置忽略全量");
     }
 
     @FXML
@@ -264,30 +223,30 @@ public class SystemToolController implements Initializable {
             }
         } catch (AWTException e) {
             LoggerUtils.info(getShakeMouseMsg(e.getMessage()));
-            OutputUtils.info(logs, getShakeMouseMsg(e.getMessage()));
+            OutputUtils.info(baseLogs, getShakeMouseMsg(e.getMessage()));
         }
         Point pos = MouseInfo.getPointerInfo().getLocation();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        OutputUtils.info(logs, getShakeMouseMsg("显示器分辨率: " + screenSize.getWidth() + " * " + screenSize.getHeight()));
-        OutputUtils.info(logs, getShakeMouseMsg("鼠标当前位置: " + pos.x + " * " + pos.y));
+        OutputUtils.info(baseLogs, getShakeMouseMsg("显示器分辨率: " + screenSize.getWidth() + " * " + screenSize.getHeight()));
+        OutputUtils.info(baseLogs, getShakeMouseMsg("鼠标当前位置: " + pos.x + " * " + pos.y));
         if (pos.x >= screenSize.getWidth() || pos.y >= screenSize.getHeight()) {
             moveStep = moveStep * -1;
         }
         if (pos.x == 0 || pos.y == 0) {
             moveStep = Math.abs(moveStep);
         }
-        OutputUtils.info(logs, getShakeMouseMsg("鼠标移动步长: " + moveStep));
-        OutputUtils.info(logs, getShakeMouseMsg("模拟鼠标移动 ......"));
+        OutputUtils.info(baseLogs, getShakeMouseMsg("鼠标移动步长: " + moveStep));
+        OutputUtils.info(baseLogs, getShakeMouseMsg("模拟鼠标移动 ......"));
         robot.mouseMove(pos.x + moveStep, pos.y + moveStep);
-        OutputUtils.info(logs, getShakeMouseMsg("鼠标移动位置: " + (pos.x + moveStep) + " * " + (pos.y + moveStep)));
-        OutputUtils.info(logs, STR_NEXT_LINE);
+        OutputUtils.info(baseLogs, getShakeMouseMsg("鼠标移动位置: " + (pos.x + moveStep) + " * " + (pos.y + moveStep)));
+        OutputUtils.info(baseLogs, STR_NEXT_LINE);
 
         List<String> record = new ArrayList<>();
         record.add(getShakeMouseMsg("鼠标当前位置: " + pos.x + " * " + pos.y));
 
         if (appConfigDto.getSystemToolShakeMouseStopTime().compareTo(CommonUtils.getCurrentDateTime13()) <= 0) {
             String stopMsg = getShakeMouseMsg("截止时间【" + appConfigDto.getSystemToolShakeMouseStopTime() + "】自动停止......" + STR_NEXT_LINE);
-            OutputUtils.info(logs, stopMsg);
+            OutputUtils.info(baseLogs, stopMsg);
             record.add(stopMsg);
             cancelShakeMouse(null);
         }

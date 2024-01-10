@@ -86,7 +86,7 @@ public class MenuSql {
                 }
             }
         }
-        FileUtils.writeFile(resultPath + "update.sql", sql, false);
+        FileUtils.writeFile(resultPath + "updateMenu.sql", sql, false);
     }
 
     private Set<String> getNeedDeleteMenuCode(List<String> config) {

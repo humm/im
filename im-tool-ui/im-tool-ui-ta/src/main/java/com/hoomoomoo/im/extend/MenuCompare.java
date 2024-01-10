@@ -116,8 +116,8 @@ public class MenuCompare {
         }
         OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("统计 开始"));
         needAddMenu.add(0, "-- 菜单总数【" + totalMenu.size() + "】 待处理【" + needAddMenuNum + "】");
-        needAddMenu.add(0, "-- ************************ total ************************");
-        FileUtils.writeFile(resultPath + "menu.sql", needAddMenu, false);
+        needAddMenu.add(0, "-- ************************************* 存在老版UED菜单 缺少新版UED菜单 *************************************");
+        FileUtils.writeFile(resultPath + "lackMenu.sql", needAddMenu, false);
 
         OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("路由检查 开始"));
         Set<String> lackRouter = new HashSet<>();
@@ -135,7 +135,7 @@ public class MenuCompare {
             menuCodeList.add(buildMenuCodeInfo(menuCode));
         }
         menuCodeList.add(0, "-- 待处理【" + menuCodeList.size() + "】\n\n");
-        menuCodeList.add(0, "-- ************************ 菜单存在脚本配置 缺少路由信息 ************************");
+        menuCodeList.add(0, "-- ************************************* 存在脚本配置 缺少路由信息 *************************************");
         FileUtils.writeFile(resultPath + "lackRouter.sql", menuCodeList, false);
         OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("路由检查 结束"));
 
@@ -171,10 +171,10 @@ public class MenuCompare {
         }
         totalMenu.putAll(menuMap);
         menuCodeList.add(0, "-- 菜单总数【" + menuMap.size() + "】 待处理【" + menuCodeList.size() + "】\n");
-        needAddMenu.add("\n\n-- ************************ " + fileName.replace(".sql", " ************************"));
+        needAddMenu.add("\n\n-- ************************************* " + fileName.replace(".sql", " *************************************"));
         needAddMenu.addAll(menuCodeList);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (STR_0.equals(appConfigDto.getSystemToolCheckMenuSubFile()) && !"menu.sql".equals(fileName)) {
+        if (STR_0.equals(appConfigDto.getSystemToolCheckMenuSubFile()) && !"lackMenu.sql".equals(fileName)) {
             return;
         }
         FileUtils.writeFile(resultPath + fileName, menuCodeList, false);
