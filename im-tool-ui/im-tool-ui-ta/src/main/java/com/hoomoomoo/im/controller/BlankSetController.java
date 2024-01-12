@@ -5,6 +5,8 @@ import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -79,6 +81,8 @@ public class BlankSetController implements Initializable {
                     }
                 }
             }
+            info = StringUtils.isBlank(info) ? STR_BLANK : info;
+            OutputUtils.info(config, info);
             submit.setText("关闭");
         } else  {
             String confPath = STR_BLANK;
@@ -97,7 +101,5 @@ public class BlankSetController implements Initializable {
                 OutputUtils.info(config, item + STR_NEXT_LINE);
             }
         }
-        info = StringUtils.isBlank(info) ? STR_BLANK : info;
-        OutputUtils.info(config, info);
     }
 }

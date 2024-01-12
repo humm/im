@@ -33,9 +33,6 @@ import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CONFIG_S
 public class ConfigSetController implements Initializable {
 
     @FXML
-    private AnchorPane configSet;
-
-    @FXML
     private TextArea config;
 
     @FXML

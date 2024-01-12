@@ -118,6 +118,7 @@ public class MenuCompare {
         needAddMenu.add(0, "-- 菜单总数【" + totalMenu.size() + "】 待处理【" + needAddMenuNum + "】");
         needAddMenu.add(0, "-- ************************************* 存在老版UED菜单 缺少新版UED菜单 *************************************");
         FileUtils.writeFile(resultPath + "lackMenu.sql", needAddMenu, false);
+        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("统计 结束"));
 
         OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("路由检查 开始"));
         Set<String> lackRouter = new HashSet<>();
@@ -139,7 +140,6 @@ public class MenuCompare {
         FileUtils.writeFile(resultPath + "lackRouter.sql", menuCodeList, false);
         OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("路由检查 结束"));
 
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("统计 结束"));
     }
 
     private void compareMenu(Map<String, String> menuMap, String fileName) throws Exception {
@@ -277,6 +277,11 @@ public class MenuCompare {
                 initMenuByFile(item);
             }
         } else {
+            String fileName = file.getName();
+            if (!fileName.endsWith(FILE_TYPE_SQL)) {
+                return;
+            }
+            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("扫描文件 " + fileName));
             List<String> content = FileUtils.readNormalFile(file.getPath(), false);
             boolean endFlag = true;
             for (String item : content) {

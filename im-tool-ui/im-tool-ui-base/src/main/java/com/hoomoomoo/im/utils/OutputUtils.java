@@ -96,6 +96,7 @@ public class OutputUtils {
         clearLog(obj);
         info(obj, text);
     }
+
     public static void info(Object obj, String text) {
         if (obj == null) {
             return;
