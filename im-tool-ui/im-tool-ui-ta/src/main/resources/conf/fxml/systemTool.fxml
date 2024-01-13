@@ -60,7 +60,7 @@
                                             </padding>
                                         </Button>
 
-                                        <Button fx:id="skipAllMenuBtn" layoutX="630.0" layoutY="185" mnemonicParsing="false" onAction="#skipAllMenu" prefWidth="100.0" text="配置忽略全量">
+                                        <Button fx:id="skipBaseMenuBtn" layoutX="630.0" layoutY="185" mnemonicParsing="false" onAction="#skipBaseMenu" prefWidth="100.0" text="配置忽略全量">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>

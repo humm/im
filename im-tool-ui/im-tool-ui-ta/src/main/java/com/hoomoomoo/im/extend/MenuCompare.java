@@ -4,8 +4,6 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.controller.SystemToolController;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.FileUtils;
-import com.hoomoomoo.im.utils.OutputUtils;
-import javafx.scene.control.TextArea;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -21,30 +19,41 @@ public class MenuCompare {
     private String basePathRouter = "\\front\\HUI1.0\\console-fund-ta-vue\\router\\modules\\";
     private String baseMenu = "\\sql\\pub\\001initdata\\basedata\\07console-fund-ta-vue-menu.sql";
     private String newUedPage = "UED\\newUedPage.sql";
-    private Map<String, List<String>> menuCache = new LinkedHashMap<>();
-    private Map<String, List<String>> transCache = new LinkedHashMap<>();
-    private Map<String, String> menuExistCache = new LinkedHashMap<>();
+    // 扫描文件数量
     private int extFileNum = 0;
-    private int needAddMenuNum = 0;
+    private int needAddUedMenuNum = 0;
+    // 所有菜单
     private Map<String, String> totalMenu = new HashMap<>();
-    private List<String> needAddMenu = new ArrayList<>();
+    // 新版ued需增加菜单
+    private List<String> needAddUedMenu = new ArrayList<>();
+    // 所有菜单缓存
+    private Map<String, List<String>> menuCache = new LinkedHashMap<>();
+    // 增值功能菜单缓存
+    private Map<String, List<String>> menuExtCache = new LinkedHashMap<>();
+    // 所有交易码缓存
+    private Map<String, List<String>> transCache = new LinkedHashMap<>();
+    // 新版ued已配置菜单
+    private Map<String, String> menuUedExistCache = new LinkedHashMap<>();
+    // 全量脚本已配置菜单
+    private Map<String, String> menuBaseExistCache = new LinkedHashMap<>();
+    // 新版ued菜单忽略
     Set<String> skipMenuCache = new HashSet<>();
+    // 全量菜单忽略
+    Set<String> skipBaseMenuCache = new HashSet<>();
+    // 路由信息忽略
     Set<String> skipRouterCache = new HashSet<>();
 
-    private TextArea logs;
-
-    public MenuCompare(TextArea logs) throws Exception {
+    public MenuCompare() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         try {
-            this.logs = logs;
-            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
             if (StringUtils.isBlank(basePath)) {
-                OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("请配置参数【system.tool.check.menu.base.path】"));
+                 System.out.println(SystemToolController.getCheckMenuMsg("请配置参数【system.tool.check.menu.base.path】"));
                 throw new Exception("请配置参数【system.tool.check.menu.base.path】");
             }
             String resPath = appConfigDto.getSystemToolCheckMenuResultPath();
             if (StringUtils.isBlank(resPath)) {
-                OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("请配置参数【system.tool.check.menu.result.path】"));
+                System.out.println(SystemToolController.getCheckMenuMsg("请配置参数【system.tool.check.menu.result.path】"));
                 throw new Exception("请配置参数【system.tool.check.menu.result.path】");
             }
             basePathExt = basePath + basePathExt;
@@ -55,44 +64,54 @@ public class MenuCompare {
 
             String confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
             List<String> content = FileUtils.readNormalFile(confPath, false);
-            for (String item : content) {
-                if (StringUtils.isBlank(item)) {
-                    continue;
-                }
-                skipMenuCache.add(item.trim());
-            }
+            initSkipCache(content, skipMenuCache);
 
-            String routerPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
-            content = FileUtils.readNormalFile(routerPath, false);
-            for (String item : content) {
-                if (StringUtils.isBlank(item)) {
-                    continue;
-                }
-                skipRouterCache.add(item.trim());
-            }
+            confPath = FileUtils.getFilePath(PATH_MENU_BASE_SKIP);
+            content = FileUtils.readNormalFile(confPath, false);
+            initSkipCache(content, skipBaseMenuCache);
+            
+            confPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
+            content = FileUtils.readNormalFile(confPath, false);
+            initSkipCache(content, skipRouterCache);
 
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("扫描菜单脚本 开始"));
-            initMenuExt();
-            initConfigMenuCache();
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("扫描菜单脚本【" + extFileNum + "】"));
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("现有菜单【" + menuCache.size() + "】"));
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("扫描菜单脚本 结束"));
+            System.out.println(SystemToolController.getCheckMenuMsg("扫描菜单脚本 开始"));
+            initMenuExt(appConfigDto);
+            initConfigUedMenuCache();
+            initConfigBaseMenuCache();
+            System.out.println(SystemToolController.getCheckMenuMsg("扫描菜单脚本【" + extFileNum + "】"));
+            System.out.println(SystemToolController.getCheckMenuMsg("现有菜单【" + menuCache.size() + "】"));
+            System.out.println(SystemToolController.getCheckMenuMsg("扫描菜单脚本 结束"));
         } catch (IOException e) {
-            OutputUtils.info(logs, e.getMessage());
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void initSkipCache(List<String> content, Set<String> skipCache) {
+        for (String item : content) {
+            if (StringUtils.isBlank(item)) {
+                continue;
+            }
+            String[] element = item.split(STR_SPACE);
+            for (String ele : element) {
+                if (StringUtils.isBlank(ele)) {
+                    continue;
+                }
+                skipCache.add(ele.trim());
+            }
         }
     }
 
     public void check() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         File file = new File(basePathRouter);
         if (!file.isDirectory()) {
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("路由文件目录不存在，清检查"));
+            System.out.println(SystemToolController.getCheckMenuMsg("路由文件目录不存在，清检查"));
             return;
         }
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         Set<String> skipRouter = new HashSet<>();
         String systemToolCheckMenuSkipRouter = appConfigDto.getSystemToolCheckMenuSkipRouter();
         if (StringUtils.isNotBlank(systemToolCheckMenuSkipRouter)) {
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("忽略路由文件 " + systemToolCheckMenuSkipRouter));
+            System.out.println(SystemToolController.getCheckMenuMsg("忽略路由文件 " + systemToolCheckMenuSkipRouter));
             String[] skip = systemToolCheckMenuSkipRouter.split(",");
             for (String item : skip) {
                 skipRouter.add(item);
@@ -104,7 +123,7 @@ public class MenuCompare {
             if ("analysisByTrans".equals(fileName) || skipRouter.contains(fileName)) {
                 continue;
             }
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg(fileName + " 开始"));
+            System.out.println(SystemToolController.getCheckMenuMsg(fileName + " 开始"));
             List<String> menuCodeList = FileUtils.readNormalFile(item.getPath(), false);
             Map<String, String> menuMap = initMenuRouter(menuCodeList);
             if ("analysis".equals(fileName)) {
@@ -112,15 +131,15 @@ public class MenuCompare {
                 menuMap.putAll(initMenuRouter(extendMenuCodeList));
             }
             compareMenu(menuMap, fileName + ".sql");
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg(fileName + " 结束"));
+            System.out.println(SystemToolController.getCheckMenuMsg(fileName + " 结束"));
         }
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("统计 开始"));
-        needAddMenu.add(0, "-- 菜单总数【" + totalMenu.size() + "】 待处理【" + needAddMenuNum + "】");
-        needAddMenu.add(0, "-- ************************************* 存在老版UED菜单 缺少新版UED菜单 *************************************");
-        FileUtils.writeFile(resultPath + "lackMenu.sql", needAddMenu, false);
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("统计 结束"));
+        System.out.println(SystemToolController.getCheckMenuMsg("统计 开始"));
+        needAddUedMenu.add(0, "-- 菜单总数【" + totalMenu.size() + "】 待处理【" + needAddUedMenuNum + "】");
+        needAddUedMenu.add(0, "-- ************************************* 存在老版UED菜单 缺少新版UED菜单 *************************************");
+        FileUtils.writeFile(resultPath + "lackMenu.sql", needAddUedMenu, false);
+        System.out.println(SystemToolController.getCheckMenuMsg("统计 结束"));
 
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("路由检查 开始"));
+        System.out.println(SystemToolController.getCheckMenuMsg("路由检查 开始"));
         Set<String> lackRouter = new HashSet<>();
         Iterator<String> iterator = menuCache.keySet().iterator();
         while (iterator.hasNext()) {
@@ -138,7 +157,27 @@ public class MenuCompare {
         menuCodeList.add(0, "-- 待处理【" + menuCodeList.size() + "】\n\n");
         menuCodeList.add(0, "-- ************************************* 存在脚本配置 缺少路由信息 *************************************");
         FileUtils.writeFile(resultPath + "lackRouter.sql", menuCodeList, false);
-        OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("路由检查 结束"));
+        System.out.println(SystemToolController.getCheckMenuMsg("路由检查 结束"));
+
+        System.out.println(SystemToolController.getCheckMenuMsg("全量脚本检查 开始"));
+        Set<String> lackMenu = new HashSet<>();
+        Iterator<String> iteratorExt = menuExtCache.keySet().iterator();
+        while (iteratorExt.hasNext()) {
+            String menuCode = iteratorExt.next();
+            if (!menuBaseExistCache.containsKey(menuCode) && transCache.containsKey(menuCode) && !skipBaseMenuCache.contains(menuCode)) {
+                lackMenu.add(menuCode);
+            }
+        }
+        List<String> lackMenuList = new ArrayList<>();
+        Iterator<String> iteratorLackMenu = lackMenu.iterator();
+        while (iteratorLackMenu.hasNext()) {
+            String menuCode = iteratorLackMenu.next();
+            lackMenuList.add(buildMenuCodeInfo(menuCode));
+        }
+        lackMenuList.add(0, "-- 待处理【" + lackMenuList.size() + "】\n\n");
+        lackMenuList.add(0, "-- ************************************* 存在开通脚本菜单 缺少老版本全量菜单 *************************************");
+        FileUtils.writeFile(resultPath + "lackBaseMenu.sql", lackMenuList, false);
+        System.out.println(SystemToolController.getCheckMenuMsg("全量脚本检查 结束"));
 
     }
 
@@ -155,7 +194,7 @@ public class MenuCompare {
         Iterator checkIterator = menu.keySet().iterator();
         while(checkIterator.hasNext()) {
             String key = (String)checkIterator.next();
-            if (!menuExistCache.containsKey(key) && !menuExistCache.containsKey(key + "T")) {
+            if (!menuUedExistCache.containsKey(key) && !menuUedExistCache.containsKey(key + "T")) {
                 extend.put(key, menu.get(key));
             }
         }
@@ -166,13 +205,13 @@ public class MenuCompare {
             String menuCode = extendIterator.next();
             if (!skipMenuCache.contains(menuCode)) {
                 menuCodeList.add(buildMenuCodeInfo(menuCode));
-                needAddMenuNum++;
+                needAddUedMenuNum++;
             }
         }
         totalMenu.putAll(menuMap);
         menuCodeList.add(0, "-- 菜单总数【" + menuMap.size() + "】 待处理【" + menuCodeList.size() + "】\n");
-        needAddMenu.add("\n\n-- ************************************* " + fileName.replace(".sql", " *************************************"));
-        needAddMenu.addAll(menuCodeList);
+        needAddUedMenu.add("\n\n-- ************************************* " + fileName.replace(".sql", " *************************************"));
+        needAddUedMenu.addAll(menuCodeList);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (STR_0.equals(appConfigDto.getSystemToolCheckMenuSubFile()) && !"lackMenu.sql".equals(fileName)) {
             return;
@@ -193,7 +232,7 @@ public class MenuCompare {
         return menuCode;
     }
 
-    private Map<String, String> initConfigMenuCache() throws Exception {
+    private void initConfigUedMenuCache() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> config = FileUtils.readNormalFile(newUedPage, false);
         Iterator<String> iterator = config.iterator();
@@ -204,10 +243,25 @@ public class MenuCompare {
             }
             String menuCode = getMenuCode(item);
             if (menuCode != null) {
-                menuExistCache.put(menuCode, menuCode);
+                menuUedExistCache.put(menuCode, menuCode);
             }
         }
-        return menuExistCache;
+    }
+
+    private void initConfigBaseMenuCache() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        List<String> config = FileUtils.readNormalFile(baseMenu, false);
+        Iterator<String> iterator = config.iterator();
+        while(iterator.hasNext()) {
+            String item = iterator.next();
+            if (item.contains(appConfigDto.getSystemToolCheckMenuEndFlag())) {
+                break;
+            }
+            String menuCode = getMenuCode(item);
+            if (menuCode != null) {
+                menuBaseExistCache.put(menuCode, menuCode);
+            }
+        }
     }
 
     private static String handleMenu(String item) {
@@ -262,26 +316,33 @@ public class MenuCompare {
         return menuMap;
     }
 
-    private void initMenuExt() throws IOException {
-        initMenuByFile(new File(baseMenu));
-        extFileNum++;
+    private void initMenuExt(AppConfigDto appConfigDto) throws IOException {
         File fileExt = new File(basePathExt);
         for (File file : fileExt.listFiles()) {
-            initMenuByFile(file);
+            initMenuByFile(appConfigDto, file);
         }
+        // 缓存增值功能
+        Iterator<String> iterator = menuCache.keySet().iterator();
+        while (iterator.hasNext()) {
+            String key = iterator.next();
+            List<String> menu = menuCache.get(key);
+            menuExtCache.put(key, menu);
+        }
+        initMenuByFile(appConfigDto, new File(baseMenu));
+        extFileNum++;
     }
 
-    private void initMenuByFile(File file) throws IOException {
+    private void initMenuByFile(AppConfigDto appConfigDto, File file) throws IOException {
         if (file.isDirectory()) {
             for (File item : file.listFiles()) {
-                initMenuByFile(item);
+                initMenuByFile(appConfigDto, item);
             }
         } else {
             String fileName = file.getName();
             if (!fileName.endsWith(FILE_TYPE_SQL)) {
                 return;
             }
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("扫描文件 " + fileName));
+            System.out.println(SystemToolController.getCheckMenuMsg("扫描文件" + fileName));
             List<String> content = FileUtils.readNormalFile(file.getPath(), false);
             boolean endFlag = true;
             for (String item : content) {

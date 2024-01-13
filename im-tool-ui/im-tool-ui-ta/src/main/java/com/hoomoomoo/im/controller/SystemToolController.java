@@ -52,9 +52,6 @@ public class SystemToolController implements Initializable {
     private Button clearVersionBtn;
 
     @FXML
-    private Button checkMenuBtn;
-
-    @FXML
     private Button updateMenuBtn;
 
     @FXML
@@ -134,20 +131,33 @@ public class SystemToolController implements Initializable {
         }
     }
 
+    private boolean checkFlaging = false;
+
     @FXML
     void checkMenu(ActionEvent event) {
+        if (checkFlaging) {
+            OutputUtils.info(logs, getCheckMenuMsg("核对进行中 >>>  请稍后再试 > > >"));
+            return;
+        }
+        checkFlaging = true;
         try {
             new Thread(new Runnable() {
-                @SneakyThrows
                 @Override
                 public void run() {
-                    OutputUtils.info(logs, getCheckMenuMsg("核对开始"));
-                    new MenuCompare(logs).check();
-                    OutputUtils.info(logs, getCheckMenuMsg("核对结束"));
-                    OutputUtils.info(logs, STR_NEXT_LINE);
-                    List<String> record = new ArrayList<>();
-                    record.add(getCheckMenuMsg("核对成功"));
-                    LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+                    try {
+                        OutputUtils.info(logs, getCheckMenuMsg("核对开始"));
+                        OutputUtils.info(logs, getCheckMenuMsg("核对进行中 >>>  请稍后 > > >"));
+                        new MenuCompare().check();
+                        OutputUtils.info(logs, getCheckMenuMsg("核对结束"));
+                        OutputUtils.info(logs, STR_NEXT_LINE);
+                        List<String> record = new ArrayList<>();
+                        record.add(getCheckMenuMsg("核对成功"));
+                        LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+                    } catch (Exception e) {
+                        OutputUtils.info(logs, e.getMessage());
+                    } finally {
+                        checkFlaging = false;
+                    }
                 }
             }).start();
         } catch (Exception e) {
@@ -166,8 +176,8 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
-    void skipAllMenu(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_ALL, "配置忽略全量");
+    void skipBaseMenu(ActionEvent event) throws Exception {
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_BASE, "配置忽略全量");
     }
 
     @FXML

@@ -5,8 +5,6 @@ import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -46,8 +44,8 @@ public class BlankSetController implements Initializable {
                 confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
             } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER.equals(appConfigDto.getPageType())) {
                 confPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
-            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_ALL.equals(appConfigDto.getPageType())) {
-                confPath = FileUtils.getFilePath(PATH_MENU_ALL_SKIP);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_BASE.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_MENU_BASE_SKIP);
             }
             FileUtils.writeFile(confPath, content, false);
         }
@@ -90,8 +88,8 @@ public class BlankSetController implements Initializable {
                 confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
             } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER.equals(pageType)) {
                 confPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
-            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_ALL.equals(pageType)) {
-                confPath = FileUtils.getFilePath(PATH_MENU_ALL_SKIP);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_BASE.equals(pageType)) {
+                confPath = FileUtils.getFilePath(PATH_MENU_BASE_SKIP);
             }
             List<String> content = FileUtils.readNormalFile(confPath, false);
             for (String item : content) {
