@@ -144,7 +144,7 @@ public class MenuSql {
                 }
             }
             String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
-            String[] value = handleValue(column.length, sql[1].substring(sql[1].indexOf("(") + 1, sql[1].indexOf(")")).split(","));
+            String[] value = handleValue(column.length, sql[1].substring(sql[1].indexOf("(") + 1, sql[1].lastIndexOf(")")).split(","));
             for(int i = 0; i < column.length; ++i) {
                 if (!keyColumn.contains(column[i])) {
                     updateSql.append("  ");

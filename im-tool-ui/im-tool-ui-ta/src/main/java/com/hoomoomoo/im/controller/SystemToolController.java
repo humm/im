@@ -136,7 +136,7 @@ public class SystemToolController implements Initializable {
     @FXML
     void checkMenu(ActionEvent event) {
         if (checkFlaging) {
-            OutputUtils.info(logs, getCheckMenuMsg("核对进行中 >>>  请稍后再试 > > >"));
+            OutputUtils.info(logs, getCheckMenuMsg("核对中 >>>  请稍后再试 >>>"));
             return;
         }
         checkFlaging = true;
@@ -146,7 +146,7 @@ public class SystemToolController implements Initializable {
                 public void run() {
                     try {
                         OutputUtils.info(logs, getCheckMenuMsg("核对开始"));
-                        OutputUtils.info(logs, getCheckMenuMsg("核对进行中 >>>  请稍后 > > >"));
+                        OutputUtils.info(logs, getCheckMenuMsg("核对中 >>>  请稍后 >>>  大约10秒左右 >>>"));
                         new MenuCompare().check();
                         OutputUtils.info(logs, getCheckMenuMsg("核对结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
