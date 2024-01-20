@@ -3,14 +3,20 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.extend.MenuCompare;
-import com.hoomoomoo.im.extend.MenuSql;
+import com.hoomoomoo.im.extend.MenuCompareSql;
+import com.hoomoomoo.im.extend.MenuUpdateSql;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.fxml.LoadException;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -19,6 +25,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.awt.*;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -50,9 +57,6 @@ public class SystemToolController implements Initializable {
 
     @FXML
     private Button clearVersionBtn;
-
-    @FXML
-    private Button updateMenuBtn;
 
     @FXML
     private Button updateVersionBtn;
@@ -136,7 +140,7 @@ public class SystemToolController implements Initializable {
     @FXML
     void checkMenu(ActionEvent event) {
         if (checkFlaging) {
-            OutputUtils.info(logs, getCheckMenuMsg("核对中 >>>  请稍后再试 >>>"));
+            OutputUtils.info(logs, getCheckMenuMsg("检查中 >>>  请稍后再试 >>>"));
             return;
         }
         checkFlaging = true;
@@ -145,29 +149,45 @@ public class SystemToolController implements Initializable {
                 @Override
                 public void run() {
                     try {
-                        OutputUtils.info(logs, getCheckMenuMsg("核对开始"));
-                        OutputUtils.info(logs, getCheckMenuMsg("核对中 >>>  请稍后 >>>  大约10秒左右 >>>"));
-                        new MenuCompare().check();
-                        OutputUtils.info(logs, getCheckMenuMsg("核对结束"));
+                        OutputUtils.info(logs, getCheckMenuMsg("检查开始"));
+                        OutputUtils.info(logs, getCheckMenuMsg("检查中 >>>  请稍后 >>>  >>>  >>>"));
+                        new MenuCompareSql().check();
+                        OutputUtils.info(logs, getCheckMenuMsg("检查结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
                         List<String> record = new ArrayList<>();
-                        record.add(getCheckMenuMsg("核对成功"));
+                        record.add(getCheckMenuMsg("检查成功"));
                         LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
                     } catch (Exception e) {
-                        OutputUtils.info(logs, e.getMessage());
+                        e.printStackTrace();
+                        OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
                     } finally {
                         checkFlaging = false;
                     }
                 }
             }).start();
         } catch (Exception e) {
-            OutputUtils.info(logs, e.getMessage());
+            OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
         }
     }
 
     @FXML
-    void skipMenu(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU, "配置忽略菜单");
+    void skipNewMenu(ActionEvent event) throws Exception {
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU, "忽略全量新版");
+    }
+
+    @FXML
+    void skipOldMenu(ActionEvent event) throws Exception {
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU, "忽略全量老版");
+    }
+
+    @FXML
+    void skipNewDiff(ActionEvent event) throws Exception {
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU, "忽略全量开通新版");
+    }
+
+    @FXML
+    void skipOldDiff(ActionEvent event) throws Exception {
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU, "忽略全量开通老版");
     }
 
     @FXML
@@ -176,30 +196,64 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
-    void skipBaseMenu(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_BASE, "配置忽略全量");
+    void skipLog(ActionEvent event) throws Exception {
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG, "忽略日志信息");
+    }
+
+    @FXML
+    void skipErrorLog(ActionEvent event) throws Exception {
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG, "忽略错误日志");
+    }
+
+    @FXML
+    void showCheckResult(ActionEvent event) {
+        try {
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT, "检查结果");
+        } catch (Exception e) {
+            if (e instanceof LoadException) {
+                OutputUtils.info(logs, getCheckMenuMsg("结果文件不存在 >>> 请检查"));
+            } else {
+                OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
+            }
+        }
+    }
+
+    @FXML
+    void showUpdateResult(ActionEvent event) {
+        try {
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT, "检查结果");
+        } catch (Exception e) {
+            if (e instanceof LoadException) {
+                OutputUtils.info(logs, getUpdateMenuMsg("结果文件不存在 >>> 请检查"));
+            } else {
+                OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
+            }
+        }
     }
 
     @FXML
     void updateMenu(ActionEvent event) {
         try {
             new Thread(new Runnable() {
-                @SneakyThrows
                 @Override
                 public void run() {
-                    updateMenuBtn.setDisable(true);
-                    OutputUtils.info(logs, getUpdateMenuMsg("生成开始"));
-                    new MenuSql(logs).generateSql();
-                    OutputUtils.info(logs, getUpdateMenuMsg("生成结束"));
-                    OutputUtils.info(logs, STR_NEXT_LINE);
-                    List<String> record = new ArrayList<>();
-                    record.add(getUpdateMenuMsg("生成成功"));
-                    LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
-                    updateMenuBtn.setDisable(false);
+                    try {
+                        // 设置颜色
+                        // logs.setStyle("-fx-text-fill: green;");
+                        OutputUtils.info(logs, getUpdateMenuMsg("生成开始"));
+                        new MenuUpdateSql().generateSql();
+                        OutputUtils.info(logs, getUpdateMenuMsg("生成结束"));
+                        OutputUtils.info(logs, STR_NEXT_LINE);
+                        List<String> record = new ArrayList<>();
+                        record.add(getUpdateMenuMsg("生成成功"));
+                        LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+                    } catch (Exception e) {
+                        OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
+                    }
                 }
             }).start();
         } catch (Exception e) {
-            OutputUtils.info(logs, e.getMessage());
+            OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
         }
     }
 

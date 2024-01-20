@@ -4,6 +4,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.MenuDto;
+import com.hoomoomoo.im.extend.MenuUpdateSql;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -186,6 +187,24 @@ public class ScriptUpdateController extends BaseController implements Initializa
     void selectMenuNo(ActionEvent event) {
         OutputUtils.selected(menuYes, false);
         OutputUtils.selected(menuNo, true);
+    }
+
+    @FXML
+    void updateUed(ActionEvent event) throws Exception {
+        String sourceScript = source.getText();
+        if (StringUtils.isBlank(sourceScript)) {
+            return;
+        }
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String[] source = sourceScript.split(STR_NEXT_LINE);
+        List<String> content = new ArrayList<>();
+        for (String item : source) {
+            content.add(item);
+        }
+        List<String> res = MenuUpdateSql.getUpdateSql(appConfigDto, content);
+        for (String item : res) {
+            OutputUtils.info(target, item + STR_NEXT_LINE);
+        }
     }
 
     public void generateScript(AppConfigDto appConfigDto) {

@@ -1,46 +1,40 @@
 package com.hoomoomoo.im.extend;
 
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.controller.SystemToolController;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.FileUtils;
-import com.hoomoomoo.im.utils.OutputUtils;
-import javafx.scene.control.TextArea;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-public class MenuSql {
+public class MenuUpdateSql {
 
     private String resultPath = "";
-    private String basePathExt = "\\sql\\pub\\001initdata\\extradata\\";
-    private String newUedPage = "UED\\newUedPage.sql";
+    private String newUedPage = "\\sql\\pub\\001initdata\\basedata\\07console-fund-ta-vue-menu-new-ued.sql";
 
-
-    private TextArea logs;
-
-    public MenuSql (TextArea logs) throws Exception {
-        this.logs = logs;
+    public MenuUpdateSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
         if (StringUtils.isBlank(basePath)) {
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("请配置参数【system.tool.check.menu.base.path】"));
-            throw new Exception("请配置参数【system.tool.check.menu.base.path】");
+            throw new Exception("请配置参数【system.tool.check.menu.base.path】\n");
         }
         String resPath = appConfigDto.getSystemToolCheckMenuResultPath();
         if (StringUtils.isBlank(resPath)) {
-            OutputUtils.info(logs, SystemToolController.getCheckMenuMsg("请配置参数【system.tool.check.menu.result.path】"));
-            throw new Exception("请配置参数【system.tool.check.menu.result.path】");
+            throw new Exception("请配置参数【system.tool.check.menu.result.path】\n");
         }
-        basePathExt = basePath + basePathExt;
-        newUedPage = basePathExt + newUedPage;
+        newUedPage = basePath + newUedPage;
         resultPath = resPath + "\\";
     }
 
     public void generateSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        List<String> sql = new ArrayList<>();
         List<String> config = FileUtils.readNormalFile(newUedPage, false);
+        List<String> sql = getUpdateSql(appConfigDto, config);
+        FileUtils.writeFile(resultPath + "10.全量新版UED升级.sql", sql, false);
+    }
+
+    public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {
+        List<String> sql = new ArrayList<>();
         Set<String> deleteMenuCode = getNeedDeleteMenuCode(config);
         String ele = "";
         boolean nextFlag = false;
@@ -86,10 +80,10 @@ public class MenuSql {
                 }
             }
         }
-        FileUtils.writeFile(resultPath + "updateMenu.sql", sql, false);
+        return sql;
     }
 
-    private Set<String> getNeedDeleteMenuCode(List<String> config) {
+    private static Set<String> getNeedDeleteMenuCode(List<String> config) {
         Set<String> delete = new HashSet();
         Iterator<String> iterator = config.iterator();
 
@@ -102,7 +96,7 @@ public class MenuSql {
         return delete;
     }
 
-    private String getMenuCode(String sql) {
+    private static String getMenuCode(String sql) {
         String menuCode = "";
         if (sql.contains("delete")) {
             menuCode = sql.split("where")[1].split("=")[1].trim();
@@ -112,7 +106,7 @@ public class MenuSql {
         return menuCode.replaceAll("'", "").replaceAll("\\(", "").replaceAll(";", "");
     }
 
-    private String generateUpdate(String item, String updateKey, boolean generate) throws Exception {
+    private static String generateUpdate(String item, String updateKey, boolean generate) throws Exception {
         Set<String> keyColumn = new HashSet();
         String[] sql;
         if (StringUtils.isNotBlank(updateKey)) {
@@ -159,23 +153,23 @@ public class MenuSql {
         }
     }
 
-    private String[] handleValue(int len, String[] value) {
+    public static String[] handleValue(int len, String[] value) {
         String[] res = new String[len];
         int index = 0;
         String val = "";
-        String[] var5 = value;
+        String[] temp = value;
         int length = value.length;
         for(int i = 0; i < length; i++) {
-            String item = var5[i];
+            String item = temp[i].trim();
             if (item.startsWith("'") && item.endsWith("'")) {
                 res[index] = item;
-                ++index;
+                index++;
             } else if (!item.contains("'")) {
                 if (StringUtils.isNotBlank(val)) {
                     val = val + item + ",";
                 } else {
                     res[index] = item;
-                    ++index;
+                    index++;
                 }
             } else if (item.startsWith("'") || item.endsWith("'")) {
                 val = val + item + ",";
@@ -185,14 +179,14 @@ public class MenuSql {
                     }
                     res[index] = val;
                     val = "";
-                    ++index;
+                    index++;
                 }
             }
         }
         return res;
     }
 
-    private String getTableName(String sql) {
+    private static String getTableName(String sql) {
         int tableNameStartIndex = sql.toLowerCase().indexOf("into");
         int tableNameStartEnd = sql.toLowerCase().indexOf("(");
         return sql.substring(tableNameStartIndex + 4, tableNameStartEnd).toLowerCase().trim();

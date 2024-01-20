@@ -408,4 +408,29 @@ public class TaCommonUtils {
             appConfigDto.setChildStage(null);
         });
     }
+
+    public static void openMultipleBlankChildStage(String pageType, String title) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        appConfigDto.setPageType(pageType);
+        Stage stage = appConfigDto.getCheckResultStage();
+        // 每次页面都重新打开
+        if (stage != null) {
+            stage.close();
+            appConfigDto.setCheckResultStage(null);
+        }
+        Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_CHECK_RESULT_FXML)));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+        stage = new Stage();
+        stage.getIcons().add(new Image(PATH_ICON));
+        stage.setScene(scene);
+        stage.setTitle(title);
+        stage.setResizable(false);
+        stage.show();
+        appConfigDto.setCheckResultStage(stage);
+        stage.setOnCloseRequest(columnEvent -> {
+            appConfigDto.getCheckResultStage().close();
+            appConfigDto.setCheckResultStage(null);
+        });
+    }
 }

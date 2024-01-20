@@ -14,7 +14,7 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.4578523489932884" layoutX="174.0" layoutY="76.0" prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane dividerPositions="0.578523489932884" layoutX="174.0" layoutY="76.0" prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="482.0">
                                     <children>
@@ -43,31 +43,68 @@
                                             </padding>
                                         </Button>
 
-                                        <Label layoutX="50.0" layoutY="190.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-size: 16;" text="全量菜单核对" />
-                                        <Button fx:id="checkMenuBtn" layoutX="180.0" layoutY="185" mnemonicParsing="false" onAction="#checkMenu" prefWidth="100.0" text="核对">
-                                            <padding>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                            </padding>
-                                        </Button>
-                                        <Button fx:id="skipMenuBtn" layoutX="330.0" layoutY="185" mnemonicParsing="false" onAction="#skipMenu" prefWidth="100.0" text="配置忽略菜单">
-                                            <padding>
-                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                            </padding>
-                                        </Button>
-                                        <Button fx:id="skipRouterBtn" layoutX="480.0" layoutY="185" mnemonicParsing="false" onAction="#skipRouter" prefWidth="100.0" text="配置忽略路由">
+                                        <Label layoutX="50.0" layoutY="190.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-size: 16;" text="全量菜单检查" />
+                                        <Button layoutX="180.0" layoutY="185" mnemonicParsing="false" onAction="#checkMenu" prefWidth="100.0" text="检查">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
                                         </Button>
 
-                                        <Button fx:id="skipBaseMenuBtn" layoutX="630.0" layoutY="185" mnemonicParsing="false" onAction="#skipBaseMenu" prefWidth="100.0" text="配置忽略全量">
+                                        <Button layoutX="330.0" layoutY="185" mnemonicParsing="false" onAction="#showCheckResult" prefWidth="100.0" text="查看结果">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
                                         </Button>
 
-                                        <Label layoutX="50.0" layoutY="260.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-size: 16;" text="菜单升级脚本" />
-                                        <Button fx:id="updateMenuBtn" layoutX="180.0" layoutY="255" mnemonicParsing="false" onAction="#updateMenu" prefWidth="100.0" text="生成">
+                                        <Button layoutX="180.0" layoutY="235" mnemonicParsing="false" onAction="#skipNewMenu" prefWidth="100.0" text="忽略全量新版">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
+
+                                        <Button layoutX="330.0" layoutY="235" mnemonicParsing="false" onAction="#skipOldMenu" prefWidth="100.0" text="忽略全量老版">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
+
+                                        <Button layoutX="480.0" layoutY="235" mnemonicParsing="false" onAction="#skipNewDiff" prefWidth="140.0" text="忽略全量开通新版">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
+
+                                        <Button layoutX="670.0" layoutY="235" mnemonicParsing="false" onAction="#skipOldDiff" prefWidth="140.0" text="忽略全量开通老版">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
+
+                                        <Button layoutX="860.0" layoutY="235" mnemonicParsing="false" onAction="#skipRouter" prefWidth="100.0" text="配置忽略路由">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
+
+                                        <Button layoutX="180.0" layoutY="285" mnemonicParsing="false" onAction="#skipLog" prefWidth="100.0" text="忽略日志信息">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
+
+                                        <Button layoutX="330.0" layoutY="285" mnemonicParsing="false" onAction="#skipErrorLog" prefWidth="100.0" text="忽略错误日志">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
+
+                                        <Label layoutX="50.0" layoutY="360.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-size: 16;" text="菜单升级脚本" />
+                                        <Button layoutX="180.0" layoutY="355" mnemonicParsing="false" onAction="#updateMenu" prefWidth="100.0" text="生成">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
+                                        <Button layoutX="330.0" layoutY="355" mnemonicParsing="false" onAction="#showUpdateResult" prefWidth="100.0" text="查看结果">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>

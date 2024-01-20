@@ -52,8 +52,9 @@ public class BaseConst {
     public static final String STR_99 = "99";
     public static final String STR_145 = "145";
     public static final String STR_549656 = "549656";
-    public static final String STR_999999999 = "999999999";
+    public static final String STR_9990 = "9990";
     public static final String STR_99999999 = "99999999";
+    public static final String STR_999999999 = "999999999";
     public static final String STR_999999999999 = "999999999999";
 
     public final static String ENCODING_UTF8 = "UTF-8";
@@ -211,7 +212,7 @@ public class BaseConst {
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
     public static final String NAME_UPDATE_VERSION = "同步发版时间";
-    public static final String NAME_CHECK_MENU = "全量菜单核对";
+    public static final String NAME_CHECK_MENU = "全量菜单检查";
     public static final String NAME_UPDATE_MENU = "菜单升级脚本";
 
     public static final String NAME_MENU_UPDATE = "更新";
@@ -317,9 +318,13 @@ public class BaseConst {
 
     public static final String PATH_APP = "/conf/app.conf";
     public static final String PATH_APP_EXTEND = "/conf/extend/appExtend.conf";
-    public static final String PATH_MENU_SKIP = "/conf/extend/menuSkip.conf";
-    public static final String PATH_ROUTER_SKIP = "/conf/extend/routerSkip.conf";
-    public static final String PATH_MENU_BASE_SKIP = "/conf/extend/menuBaseSkip.conf";
+    public static final String PATH_SKIP_NEW_MENU = "/conf/extend/skipNewMenu.conf";
+    public static final String PATH_SKIP_OLD_MENU = "/conf/extend/skipOldMenu.conf";
+    public static final String PATH_SKIP_NEW_DIFF_MENU = "/conf/extend/skipNewDiffMenu.conf";
+    public static final String PATH_SKIP_OLD_DIFF_MENU = "/conf/extend/skipOldDiffMenu.conf";
+    public static final String PATH_SKIP_ROUTER = "/conf/extend/skipRouter.conf";
+    public static final String PATH_SKIP_LOG = "/conf/extend/skipLog.conf";
+    public static final String PATH_SKIP_ERROR_LOG = "/conf/extend/skipErrorLog.conf";
     public static final String PATH_JD_COOKIE = "/conf/jdCookie.conf";
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
@@ -340,6 +345,7 @@ public class BaseConst {
     public static final String PATH_COMPLETE_TASK_FXML = "/conf/fxml/completeTask.fxml";
     public static final String PATH_BLANK_TABLE_VIEW = "/conf/fxml/blankTableView.fxml";
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
+    public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/stats/version.stat";
     public static final String PATH_VERSION_EXTEND_STAT = "/stats/versionExtend.stat";
 
@@ -361,9 +367,16 @@ public class BaseConst {
     public static final String MENU_CODE_BUSIN = "busin";
 
     public static final String PAGE_TYPE_HEP_DETAIL = "detail";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU = "skipMenu";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU = "skipNewMenu";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU = "skipOldMenu";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU = "skipNewDiffMenu";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU = "skipOldDiffMenu";
     public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER = "skipRouter";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_BASE = "skipMenuBase";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG = "skipLog";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG = "skipErrorLog";
+
+    public static final String PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT = "checkResult";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT = "updateResult";
 
     public static final String MENU_TYPE_FUND_CODE = "1";
     public static final String MENU_TYPE_FUND_NAME = "自建业务";

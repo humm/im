@@ -617,7 +617,9 @@ public class HepTaskTodoController extends BaseController implements Initializab
             if (minDate.containsKey(taskName)) {
                 int min = minDate.get(taskName);
                 String estimateFinishDate = item.getEstimateFinishDate();
-                if (estimateFinishDate.startsWith(STR_9) || estimateFinishDate.startsWith(STR_1)) {
+                if (estimateFinishDate.startsWith(STR_9990)) {
+                    min = -999;
+                } else if (estimateFinishDate.startsWith(STR_9)) {
                     min = Integer.valueOf(estimateFinishDate.replaceAll(STR_HYPHEN, STR_BLANK));
                 }
                 item.setEndDate(String.valueOf(min));
@@ -1009,6 +1011,19 @@ public class HepTaskTodoController extends BaseController implements Initializab
         return res;
     }
 
+    private String getValue(String value, String type) {
+        if (StringUtils.isBlank(value)) {
+            if (StringUtils.isBlank(type) || STR_1.equals(type)) {
+                return "9900-12-31 23:59:59";
+            } else if (STR_2.equals(type)) {
+                return "9990-12-31 23:59:59";
+            } else if (STR_9.equals(type)) {
+                return "9999-12-31 23:59:59";
+            }
+        }
+        return value;
+    }
+
     private HepTaskDto getDivideTask(String type) {
         int blankNumber = Integer.valueOf(type);
         String blankType = STR_BLANK;
@@ -1024,19 +1039,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
         item.setSprintVersion(STR_BLANK);
         item.setProductName(STR_BLANK);
         return item;
-    }
-
-    private String getValue(String value, String type) {
-        if (StringUtils.isBlank(value)) {
-            if (StringUtils.isBlank(type) || STR_1.equals(type)) {
-                return "9900-12-31 23:59:59";
-            } else if (STR_2.equals(type)) {
-                return "1990-12-31 23:59:59";
-            } else if (STR_9.equals(type)) {
-                return "9999-12-31 23:59:59";
-            }
-        }
-        return value;
     }
 
     private String getDivideValue(String value, String type) {

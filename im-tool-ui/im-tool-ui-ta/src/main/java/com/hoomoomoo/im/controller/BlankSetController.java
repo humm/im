@@ -40,12 +40,20 @@ public class BlankSetController implements Initializable {
         if (!PAGE_TYPE_HEP_DETAIL.equals(pageType)) {
             String content = config.getText();
             String confPath = STR_BLANK;
-            if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU.equals(appConfigDto.getPageType())) {
-                confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
+            if (PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_SKIP_NEW_MENU);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_SKIP_OLD_MENU);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_SKIP_NEW_DIFF_MENU);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_SKIP_OLD_DIFF_MENU);
             } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER.equals(appConfigDto.getPageType())) {
-                confPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
-            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_BASE.equals(appConfigDto.getPageType())) {
-                confPath = FileUtils.getFilePath(PATH_MENU_BASE_SKIP);
+                confPath = FileUtils.getFilePath(PATH_SKIP_ROUTER);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_SKIP_LOG);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_SKIP_ERROR_LOG);
             }
             FileUtils.writeFile(confPath, content, false);
         }
@@ -84,12 +92,20 @@ public class BlankSetController implements Initializable {
             submit.setText("关闭");
         } else  {
             String confPath = STR_BLANK;
-            if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU.equals(pageType)){
-                confPath = FileUtils.getFilePath(PATH_MENU_SKIP);
+            if (PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU.equals(pageType)){
+                confPath = FileUtils.getFilePath(PATH_SKIP_NEW_MENU);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU.equals(pageType)){
+                confPath = FileUtils.getFilePath(PATH_SKIP_OLD_MENU);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_SKIP_NEW_DIFF_MENU);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_SKIP_OLD_DIFF_MENU);
             } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER.equals(pageType)) {
-                confPath = FileUtils.getFilePath(PATH_ROUTER_SKIP);
-            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_MENU_BASE.equals(pageType)) {
-                confPath = FileUtils.getFilePath(PATH_MENU_BASE_SKIP);
+                confPath = FileUtils.getFilePath(PATH_SKIP_ROUTER);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_SKIP_LOG);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG.equals(appConfigDto.getPageType())) {
+                confPath = FileUtils.getFilePath(PATH_SKIP_ERROR_LOG);
             }
             List<String> content = FileUtils.readNormalFile(confPath, false);
             for (String item : content) {

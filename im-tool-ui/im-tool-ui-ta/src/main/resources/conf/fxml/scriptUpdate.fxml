@@ -81,6 +81,14 @@
                                                     </padding>
                                                 </Button>
 
+                                                <Button fx:id="updateUed" layoutX="1380.0" layoutY="44.0"
+                                                        mnemonicParsing="false" onAction="#updateUed"
+                                                        prefHeight="35.0" prefWidth="130.0" text="新版UED升级">
+                                                    <padding>
+                                                        <Insets bottom="10.0" left="5.0" right="5.0" top="10.0"/>
+                                                    </padding>
+                                                </Button>
+
                                             </children>
                                         </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="210.0" prefWidth="596.0">
