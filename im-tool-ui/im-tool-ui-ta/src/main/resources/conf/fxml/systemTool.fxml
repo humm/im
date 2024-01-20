@@ -80,7 +80,7 @@
                                             </padding>
                                         </Button>
 
-                                        <Button layoutX="860.0" layoutY="235" mnemonicParsing="false" onAction="#skipRouter" prefWidth="100.0" text="配置忽略路由">
+                                        <Button layoutX="860.0" layoutY="235" mnemonicParsing="false" onAction="#skipRouter" prefWidth="100.0" text="忽略路由信息">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>

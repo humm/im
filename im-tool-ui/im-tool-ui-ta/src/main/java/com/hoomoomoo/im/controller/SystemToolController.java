@@ -76,6 +76,7 @@ public class SystemToolController implements Initializable {
         if (Boolean.valueOf(appConfigDto.getSystemToolShakeMouseAuto())) {
             shakeMouse(null);
         }
+        addLog(NAME_SHAKE_MOUSE);
     }
 
     @FXML
@@ -93,6 +94,7 @@ public class SystemToolController implements Initializable {
                 doShakeMouse(appConfigDto);
             }
         }, 1, Long.valueOf(appConfigDto.getSystemToolShakeMouseTimer()) * 1000);
+        addLog(NAME_SHAKE_MOUSE);
     }
 
     @FXML
@@ -103,6 +105,7 @@ public class SystemToolController implements Initializable {
             shakeMouseTimer.cancel();
             shakeMouseTimer = null;
         }
+        addLog(NAME_SHAKE_MOUSE);
     }
 
     @FXML
@@ -125,14 +128,12 @@ public class SystemToolController implements Initializable {
             FileUtils.writeFile(statPath, STR_BLANK, false);
             OutputUtils.info(logs, getUpdateVersionMsg("清除个性化成功"));
             OutputUtils.info(logs, STR_NEXT_LINE);
-            List<String> record = new ArrayList<>();
-            record.add(getUpdateVersionMsg("清除个性化成功"));
-            LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
         } catch (Exception e) {
             OutputUtils.info(logs, e.getMessage());
         } finally {
             clearVersionBtn.setDisable(false);
         }
+        addLog("同步发版时间");
     }
 
     private boolean checkFlaging = false;
@@ -154,11 +155,8 @@ public class SystemToolController implements Initializable {
                         new MenuCompareSql().check();
                         OutputUtils.info(logs, getCheckMenuMsg("检查结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
-                        List<String> record = new ArrayList<>();
-                        record.add(getCheckMenuMsg("检查成功"));
-                        LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+                        addLog("全量菜单检查");
                     } catch (Exception e) {
-                        e.printStackTrace();
                         OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
                     } finally {
                         checkFlaging = false;
@@ -173,60 +171,62 @@ public class SystemToolController implements Initializable {
     @FXML
     void skipNewMenu(ActionEvent event) throws Exception {
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU, "忽略全量新版");
+        addLog("忽略全量新版");
     }
 
     @FXML
     void skipOldMenu(ActionEvent event) throws Exception {
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU, "忽略全量老版");
+        addLog("忽略全量老版");
     }
 
     @FXML
     void skipNewDiff(ActionEvent event) throws Exception {
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU, "忽略全量开通新版");
+        addLog("忽略全量开通新版");
     }
 
     @FXML
     void skipOldDiff(ActionEvent event) throws Exception {
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU, "忽略全量开通老版");
+        addLog("忽略全量开通老版");
     }
 
     @FXML
     void skipRouter(ActionEvent event) throws Exception {
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER, "配置忽略路由");
+        addLog("配置忽略路由");
     }
 
     @FXML
     void skipLog(ActionEvent event) throws Exception {
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG, "忽略日志信息");
+        addLog("忽略日志信息");
     }
 
     @FXML
     void skipErrorLog(ActionEvent event) throws Exception {
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG, "忽略错误日志");
+        addLog("忽略错误日志");
     }
 
     @FXML
     void showCheckResult(ActionEvent event) {
         try {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT, "检查结果");
+            addLog("检查结果");
         } catch (Exception e) {
-            if (e instanceof LoadException) {
-                OutputUtils.info(logs, getCheckMenuMsg("结果文件不存在 >>> 请检查"));
-            } else {
-            }
+            OutputUtils.info(logs, getCheckMenuMsg("请检查结果文件是否不存在"));
         }
     }
 
     @FXML
     void showUpdateResult(ActionEvent event) {
         try {
-            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT, "检查结果");
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT, "升级脚本");
+            addLog("升级脚本");
         } catch (Exception e) {
-            if (e instanceof LoadException) {
-                OutputUtils.info(logs, getUpdateMenuMsg("结果文件不存在 >>> 请检查"));
-            } else {
-                OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
-            }
+            OutputUtils.info(logs, getUpdateMenuMsg("请检查结果文件是否不存在"));
         }
     }
 
@@ -243,9 +243,7 @@ public class SystemToolController implements Initializable {
                         new MenuUpdateSql().generateSql();
                         OutputUtils.info(logs, getUpdateMenuMsg("生成结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
-                        List<String> record = new ArrayList<>();
-                        record.add(getUpdateMenuMsg("生成成功"));
-                        LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+                        addLog("菜单升级脚本");
                     } catch (Exception e) {
                         OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
                     }
@@ -304,16 +302,11 @@ public class SystemToolController implements Initializable {
         OutputUtils.info(baseLogs, getShakeMouseMsg("鼠标移动位置: " + (pos.x + moveStep) + " * " + (pos.y + moveStep)));
         OutputUtils.info(baseLogs, STR_NEXT_LINE);
 
-        List<String> record = new ArrayList<>();
-        record.add(getShakeMouseMsg("鼠标当前位置: " + pos.x + " * " + pos.y));
-
         if (appConfigDto.getSystemToolShakeMouseStopTime().compareTo(CommonUtils.getCurrentDateTime13()) <= 0) {
             String stopMsg = getShakeMouseMsg("截止时间【" + appConfigDto.getSystemToolShakeMouseStopTime() + "】自动停止......" + STR_NEXT_LINE);
             OutputUtils.info(baseLogs, stopMsg);
-            record.add(stopMsg);
             cancelShakeMouse(null);
         }
-        LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
     }
 
     public void executeUpdateVersion() throws Exception {
@@ -360,10 +353,7 @@ public class SystemToolController implements Initializable {
                     OutputUtils.info(logs, getUpdateVersionMsg("同步成功"));
                     OutputUtils.info(logs, STR_NEXT_LINE);
                 }
-
-                List<String> record = new ArrayList<>();
-                record.add(getUpdateVersionMsg("同步发版时间成功"));
-                LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), record);
+                addLog("同步发版时间");
             } catch (Exception e) {
                 throw new Exception(e);
             } finally {
@@ -375,5 +365,11 @@ public class SystemToolController implements Initializable {
                 }
             }
         }
+    }
+
+    public static void addLog(String msg) {
+        List<String> logs = new ArrayList<>();
+        logs.add(msg);
+        LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), logs);
     }
 }
