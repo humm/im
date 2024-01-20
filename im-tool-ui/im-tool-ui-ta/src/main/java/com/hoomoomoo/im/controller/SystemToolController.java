@@ -213,7 +213,6 @@ public class SystemToolController implements Initializable {
             if (e instanceof LoadException) {
                 OutputUtils.info(logs, getCheckMenuMsg("结果文件不存在 >>> 请检查"));
             } else {
-                OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
             }
         }
     }

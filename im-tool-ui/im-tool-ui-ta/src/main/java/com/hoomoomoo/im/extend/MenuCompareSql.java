@@ -355,8 +355,8 @@ public class MenuCompareSql {
         Iterator<String> subTransIterator = subTransCache.keySet().iterator();
         List<String> subTransExtList = new ArrayList<>();
         while (subTransIterator.hasNext()) {
-            String transCode = subTransIterator.next();
-            if (!subTransExtCache.containsKey(transCode) && !skipLogCache.contains(transCode)) {
+            String transCode = subTransIterator.next().trim();
+            if (!subTransExtCache.containsKey(transCode) && !skipLogCache.contains(transCode) && !transCode.endsWith("QryC") && !transCode.endsWith("ColC")) {
                 subTransExtList.add(buildMenuInfo(subTransCache, transCode));
             }
         }
@@ -445,8 +445,6 @@ public class MenuCompareSql {
         menu.add(0, "-- ************************************* 所有非弹窗菜单 *************************************");
         FileUtils.writeFile(resultPath + "8.所有非弹窗菜单.sql", menu, false);
         System.out.print(SystemToolController.getCheckMenuMsg("所有菜单检查 结束"));
-
-
     }
 
     private void compareMenu(Map<String, String> menuMap, String fileName) throws Exception {

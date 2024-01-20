@@ -34,57 +34,37 @@ public class CheckResultController implements Initializable {
     @FXML
     private TabPane functionTab;
 
+    private int index = -1;
+
     @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // 1.全量新版UED缺少菜单
-        // 2.全量老版UED缺少菜单
-        // 3.新版UED菜单全量开通不一致
-        // 4.老板UED菜单全量开通不一致
-        // 5.存在菜单缺少路由
-        // 6.缺少日志信息.sql
-        // 7.日志错误信息.sql
-        // 8.所有非弹窗菜单.sql
-        // 10.全量新版UED升级.sql
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String pageType = appConfigDto.getPageType();
         if (PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT.equals(pageType)) {
-            Tab tab1 = new Tab("全量新版UED缺少菜单");
-            outputContent(tab1, getContent(appConfigDto, "1.全量新版UED缺少菜单.sql"));
-            functionTab.getTabs().add(tab1);
-
-            Tab tab2 = new Tab("全量老版UED缺少菜单");
-            outputContent(tab2, getContent(appConfigDto, "2.全量老版UED缺少菜单.sql"));
-            functionTab.getTabs().add(tab2);
-
-            Tab tab3 = new Tab("新版UED菜单全量开通不一致");
-            outputContent(tab3, getContent(appConfigDto, "3.新版UED菜单全量开通不一致.sql"));
-            functionTab.getTabs().add(tab3);
-
-            Tab tab4 = new Tab("老板UED菜单全量开通不一致");
-            outputContent(tab4, getContent(appConfigDto, "4.老板UED菜单全量开通不一致.sql"));
-            functionTab.getTabs().add(tab4);
-
-            Tab tab5 = new Tab("存在菜单缺少路由");
-            outputContent(tab5, getContent(appConfigDto, "5.存在菜单缺少路由.sql"));
-            functionTab.getTabs().add(tab5);
-
-            Tab tab6 = new Tab("缺少日志信息");
-            outputContent(tab6, getContent(appConfigDto, "6.缺少日志信息.sql"));
-            functionTab.getTabs().add(tab6);
-
-            Tab tab7 = new Tab("日志错误信息");
-            outputContent(tab7, getContent(appConfigDto, "7.日志错误信息.sql"));
-            functionTab.getTabs().add(tab7);
-
-            Tab tab8 = new Tab("所有非弹窗菜单");
-            outputContent(tab8, getContent(appConfigDto, "8.所有非弹窗菜单.sql"));
-            functionTab.getTabs().add(tab8);
+            initTab(appConfigDto, "1.全量新版UED缺少菜单.sql");
+            initTab(appConfigDto, "2.全量老版UED缺少菜单.sql");
+            initTab(appConfigDto, "3.新版UED菜单全量开通不一致.sql");
+            initTab(appConfigDto, "4.老板UED菜单全量开通不一致.sql");
+            initTab(appConfigDto, "5.存在菜单缺少路由.sql");
+            initTab(appConfigDto, "6.缺少日志信息.sql");
+            initTab(appConfigDto, "7.日志错误信息.sql");
+            initTab(appConfigDto, "8.所有非弹窗菜单.sql");
         } else if (PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT.equals(pageType)) {
-            Tab tab1 = new Tab("全量新版UED升级");
-            outputContent(tab1, getContent(appConfigDto, "10.全量新版UED升级.sql"));
-            functionTab.getTabs().add(tab1);
+            initTab(appConfigDto, "10.全量新版UED升级.sql");
         }
+    }
+
+    private void initTab(AppConfigDto appConfigDto, String fileName) throws IOException {
+        index = -1;
+        Tab tab = new Tab();
+        outputContent(tab, getContent(appConfigDto, fileName));
+        String tabName = fileName.split("\\.")[1];
+        if (index != -1) {
+            tabName += "【" + index + "】";
+        }
+        tab.setText(tabName);
+        functionTab.getTabs().add(tab);
     }
 
     private List<String> getContent(AppConfigDto appConfigDto, String path) throws IOException {
@@ -95,6 +75,9 @@ public class CheckResultController implements Initializable {
     private void outputContent(Tab tab, List<String> content) {
         StringBuilder text = new StringBuilder();
         for (String item : content) {
+            if (index == -1 && item.contains("待处理") && item.contains("【") && item.contains("】")) {
+                index = Integer.valueOf(item.split("【")[1].split("】")[0]);
+            }
             text.append(item.replaceAll("--", "")).append(STR_NEXT_LINE);
         }
         tab.setContent(new TextArea(text.toString()));
