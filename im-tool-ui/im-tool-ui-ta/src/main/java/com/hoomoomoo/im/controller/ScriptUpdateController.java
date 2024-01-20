@@ -191,6 +191,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
 
     @FXML
     void updateUed(ActionEvent event) throws Exception {
+        OutputUtils.clearLog(target);
         String sourceScript = source.getText();
         if (StringUtils.isBlank(sourceScript)) {
             return;
