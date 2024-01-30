@@ -78,7 +78,7 @@
                                                         <PropertyValueFactory property="taskNumber"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="name" editable="false" prefWidth="775"
+                                                <TableColumn id="name" editable="false" prefWidth="680"
                                                              sortable="false" text="任务单名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>

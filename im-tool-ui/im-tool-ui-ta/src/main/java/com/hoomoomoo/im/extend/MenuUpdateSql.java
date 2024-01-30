@@ -3,6 +3,7 @@ package com.hoomoomoo.im.extend;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.FileUtils;
+import com.hoomoomoo.im.utils.LoggerUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -137,6 +138,7 @@ public class MenuUpdateSql {
                     throw new Exception("sql语句未包含或者包含多个values\n" + item);
                 }
             }
+            LoggerUtils.info(sql[1]);
             String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
             String[] value = handleValue(column.length, sql[1].substring(sql[1].indexOf("(") + 1, sql[1].lastIndexOf(")")).split(","));
             for(int i = 0; i < column.length; ++i) {

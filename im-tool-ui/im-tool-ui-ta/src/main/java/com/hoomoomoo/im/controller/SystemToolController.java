@@ -245,6 +245,7 @@ public class SystemToolController implements Initializable {
                         OutputUtils.info(logs, STR_NEXT_LINE);
                         addLog("菜单升级脚本");
                     } catch (Exception e) {
+                        LoggerUtils.info(e);
                         OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
                     }
                 }
