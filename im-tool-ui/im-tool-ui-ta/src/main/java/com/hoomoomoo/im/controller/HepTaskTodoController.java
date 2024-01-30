@@ -166,6 +166,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
     @FXML
     private Label waitHandleTaskNum;
 
+    private static Map<String, Integer> minDateCache = new HashMap<>();
+
     @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
         HepTaskDto item = (HepTaskDto)taskList.getSelectionModel().getSelectedItem();
@@ -283,6 +285,9 @@ public class HepTaskTodoController extends BaseController implements Initializab
             try {
                 setProgress(0);
                 updateProgress();
+                if (event != null) {
+                    minDateCache.clear();
+                }
                 executeQuery();
             } catch (Exception e) {
                 LoggerUtils.info(e);
@@ -494,7 +499,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
     public void dealTaskList(JSONArray task, List<String> logsIn, Label dayTodoIn, Label weekTodoIn, Label waitHandleTaskNumIn, Label dayPublishIn, Label weekPublishIn, TableView taskListIn, boolean tagFlag) {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
-        //List<String> weekPublishVersion = appConfigDto.getWeekPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
         filterTask(res);
         if (tagFlag) {
@@ -616,11 +620,13 @@ public class HepTaskTodoController extends BaseController implements Initializab
             String taskName = item.getName();
             if (minDate.containsKey(taskName)) {
                 int min = minDate.get(taskName);
+                int minCache = minDateCache.get(taskName);
+                if (minCache < min) {
+                    min = minCache;
+                }
                 String estimateFinishDate = item.getEstimateFinishDate();
-                if (estimateFinishDate.startsWith(STR_9990)) {
-                    min = -999;
-                } else if (estimateFinishDate.startsWith(STR_9)) {
-                    min = Integer.valueOf(estimateFinishDate.replaceAll(STR_HYPHEN, STR_BLANK));
+                if (estimateFinishDate.startsWith(STR_9)) {
+                    min = Integer.valueOf(estimateFinishDate.replaceAll(STR_HYPHEN, STR_BLANK)) * -1;
                 }
                 item.setEndDate(String.valueOf(min));
             }
@@ -673,6 +679,13 @@ public class HepTaskTodoController extends BaseController implements Initializab
             }
         } else {
             minDate.put(taskName, min);
+        }
+        if (minDateCache.containsKey(taskName)) {
+            if (minDateCache.get(taskName) > min) {
+                minDateCache.put(taskName, min);
+            }
+        } else {
+            minDateCache.put(taskName, min);
         }
     }
 
@@ -964,7 +977,6 @@ public class HepTaskTodoController extends BaseController implements Initializab
                     if (publishDate1 != publishDate2) {
                         return publishDate1 - publishDate2;
                     }
-
 
                     Date finishTime1 = simpleDateFormat.parse(getValue(o1.getEstimateFinishDate() +  STR_SPACE + o1.getEstimateFinishTime(), STR_BLANK));
                     Date finishTime2 = simpleDateFormat.parse(getValue(o2.getEstimateFinishDate() +  STR_SPACE + o2.getEstimateFinishTime(), STR_BLANK));

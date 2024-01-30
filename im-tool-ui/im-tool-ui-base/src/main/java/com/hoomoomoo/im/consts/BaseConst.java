@@ -52,7 +52,9 @@ public class BaseConst {
     public static final String STR_99 = "99";
     public static final String STR_145 = "145";
     public static final String STR_549656 = "549656";
+    public static final String STR_9900 = "9900";
     public static final String STR_9990 = "9990";
+    public static final String STR_9999 = "9999";
     public static final String STR_99999999 = "99999999";
     public static final String STR_999999999 = "999999999";
     public static final String STR_999999999999 = "999999999999";

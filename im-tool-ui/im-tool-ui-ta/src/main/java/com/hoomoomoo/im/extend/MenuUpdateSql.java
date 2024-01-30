@@ -138,19 +138,24 @@ public class MenuUpdateSql {
                     throw new Exception("sql语句未包含或者包含多个values\n" + item);
                 }
             }
-            LoggerUtils.info(sql[1]);
-            String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
-            String[] value = handleValue(column.length, sql[1].substring(sql[1].indexOf("(") + 1, sql[1].lastIndexOf(")")).split(","));
-            for(int i = 0; i < column.length; ++i) {
-                if (!keyColumn.contains(column[i])) {
-                    updateSql.append("  ");
-                    updateSql.append(column[i] + " = " + ("''".equals(value[i]) ? "' '" : value[i]));
-                    if (i != column.length - 1) {
-                        updateSql.append(",").append("\n");
+            try {
+                String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
+                String[] value = handleValue(column.length, sql[1].substring(sql[1].indexOf("(") + 1, sql[1].lastIndexOf(")")).split(","));
+                for(int i = 0; i < column.length; ++i) {
+                    if (!keyColumn.contains(column[i])) {
+                        updateSql.append("  ");
+                        updateSql.append(column[i] + " = " + ("''".equals(value[i]) ? "' '" : value[i]));
+                        if (i != column.length - 1) {
+                            updateSql.append(",").append("\n");
+                        }
                     }
                 }
+                updateSql.append("\nwhere " + updateKey + "\n");
+            }catch (Exception e){
+                LoggerUtils.info(sql[0]);
+                LoggerUtils.info(sql[1]);
+                LoggerUtils.info(e);
             }
-            updateSql.append("\nwhere " + updateKey + "\n");
             return updateSql.toString();
         }
     }
