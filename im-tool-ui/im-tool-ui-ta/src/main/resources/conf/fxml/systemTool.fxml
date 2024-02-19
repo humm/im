@@ -56,43 +56,43 @@
                                             </padding>
                                         </Button>
 
-                                        <Button layoutX="180.0" layoutY="235" mnemonicParsing="false" onAction="#skipNewMenu" prefWidth="100.0" text="忽略全量新版">
+                                        <Button layoutX="180.0" layoutY="235" mnemonicParsing="false" onAction="#skipNewMenu" prefWidth="100.0" text="缺少新版全量">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
                                         </Button>
 
-                                        <Button layoutX="330.0" layoutY="235" mnemonicParsing="false" onAction="#skipOldMenu" prefWidth="100.0" text="忽略全量老版">
+                                        <Button layoutX="330.0" layoutY="235" mnemonicParsing="false" onAction="#skipOldMenu" prefWidth="100.0" text="缺少老版全量">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
                                         </Button>
 
-                                        <Button layoutX="480.0" layoutY="235" mnemonicParsing="false" onAction="#skipNewDiff" prefWidth="140.0" text="忽略全量开通新版">
+                                        <Button layoutX="480.0" layoutY="235" mnemonicParsing="false" onAction="#skipNewDiff" prefWidth="140.0" text="新版全量开通不同">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
                                         </Button>
 
-                                        <Button layoutX="670.0" layoutY="235" mnemonicParsing="false" onAction="#skipOldDiff" prefWidth="140.0" text="忽略全量开通老版">
+                                        <Button layoutX="670.0" layoutY="235" mnemonicParsing="false" onAction="#skipOldDiff" prefWidth="140.0" text="老版全量开通不同">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
                                         </Button>
 
-                                        <Button layoutX="860.0" layoutY="235" mnemonicParsing="false" onAction="#skipRouter" prefWidth="100.0" text="忽略路由信息">
+                                        <Button layoutX="860.0" layoutY="235" mnemonicParsing="false" onAction="#skipRouter" prefWidth="100.0" text="缺少路由">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
                                         </Button>
 
-                                        <Button layoutX="180.0" layoutY="285" mnemonicParsing="false" onAction="#skipLog" prefWidth="100.0" text="忽略日志信息">
+                                        <Button layoutX="180.0" layoutY="285" mnemonicParsing="false" onAction="#skipLog" prefWidth="100.0" text="缺少日志">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
                                         </Button>
 
-                                        <Button layoutX="330.0" layoutY="285" mnemonicParsing="false" onAction="#skipErrorLog" prefWidth="100.0" text="忽略错误日志">
+                                        <Button layoutX="330.0" layoutY="285" mnemonicParsing="false" onAction="#skipErrorLog" prefWidth="100.0" text="日志错误">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>

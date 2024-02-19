@@ -42,17 +42,17 @@ public class CheckResultController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String pageType = appConfigDto.getPageType();
         if (PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT.equals(pageType)) {
-            initTab(appConfigDto, "1.全量新版UED缺少菜单.sql");
-            initTab(appConfigDto, "3.新版UED菜单全量开通不一致.sql");
-            initTab(appConfigDto, "9.新版UED菜单合法性.sql");
-            initTab(appConfigDto, "2.全量老版UED缺少菜单.sql");
-            initTab(appConfigDto, "4.老板UED菜单全量开通不一致.sql");
-            initTab(appConfigDto, "5.存在菜单缺少路由.sql");
-            initTab(appConfigDto, "6.缺少日志信息.sql");
-            initTab(appConfigDto, "7.日志错误信息.sql");
-            initTab(appConfigDto, "8.所有非弹窗菜单.sql");
+            initTab(appConfigDto, "10.缺少新版全量.sql");
+            initTab(appConfigDto, "30.新版菜单全量开通不同.sql");
+            initTab(appConfigDto, "80.新版菜单合法性.sql");
+            initTab(appConfigDto, "20.缺少老版全量.sql");
+            initTab(appConfigDto, "40.老版菜单全量开通不同.sql");
+            initTab(appConfigDto, "50.缺少路由.sql");
+            initTab(appConfigDto, "60.缺少日志.sql");
+            initTab(appConfigDto, "70.日志错误.sql");
+            initTab(appConfigDto, "5.所有菜单.sql");
         } else if (PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT.equals(pageType)) {
-            initTab(appConfigDto, "99.全量新版UED升级.sql");
+            initTab(appConfigDto, "1.全量新版升级.sql");
         }
     }
 
@@ -76,8 +76,10 @@ public class CheckResultController implements Initializable {
     private void outputContent(Tab tab, List<String> content) {
         StringBuilder text = new StringBuilder();
         for (String item : content) {
-            if (index == -1 && item.contains("待处理") && item.contains("【") && item.contains("】")) {
-                index = Integer.valueOf(item.split("【")[1].split("】")[0]);
+            if (index == -1) {
+                if ((item.contains("待处理") || item.contains("菜单总数")) && item.contains("【") && item.contains("】")) {
+                    index = Integer.valueOf(item.split("【")[1].split("】")[0]);
+                }
             }
             text.append(item.replaceAll("--", "")).append(STR_NEXT_LINE);
         }

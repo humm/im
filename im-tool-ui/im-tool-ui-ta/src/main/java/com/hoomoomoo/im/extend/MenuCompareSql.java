@@ -111,19 +111,9 @@ public class MenuCompareSql {
             content = FileUtils.readNormalFile(confPath, false);
             initSkipTransCache(content, skipErrorLogCache);
 
-            System.out.print(SystemToolController.getCheckMenuMsg("扫描菜单脚本 开始"));
-            System.out.print(SystemToolController.getCheckMenuMsg("扫描开通脚本 开始"));
             initBaseAndExtMenuCache();
-            System.out.print(SystemToolController.getCheckMenuMsg("扫描开通脚本 结束"));
-            System.out.print(SystemToolController.getCheckMenuMsg("扫描新版全量脚本 开始"));
             initConfigUedMenuCache();
-            System.out.print(SystemToolController.getCheckMenuMsg("扫描新版全量脚本 结束"));
-            System.out.print(SystemToolController.getCheckMenuMsg("扫描老板全量脚本 开始"));
             initConfigBaseMenuCache();
-            System.out.print(SystemToolController.getCheckMenuMsg("扫描老板全量脚本 结束"));
-            System.out.print(SystemToolController.getCheckMenuMsg("扫描菜单脚本【" + extFileNum + "】"));
-            System.out.print(SystemToolController.getCheckMenuMsg("现有菜单【" + menuCache.size() + "】"));
-            System.out.print(SystemToolController.getCheckMenuMsg("扫描菜单脚本 结束"));
         } catch (IOException e) {
             LoggerUtils.info(e);
         }
@@ -169,15 +159,39 @@ public class MenuCompareSql {
 
     public void check() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+
+        // 缺少新版全量
+        lackNewAllMenuCheck(appConfigDto);
+        // 缺少老版全量
+        lackOldAllMenuCheck(appConfigDto);
+        // 新版菜单全量开通不同
+        newMenuAllDiffExtCheck(appConfigDto);
+        // 老版菜单全量开通不同
+        oldMenuAllDiffExtCheck(appConfigDto);
+        // 缺少路由
+        lackRouterCheck(appConfigDto);
+        // 缺少日志
+        lackLogCheck(appConfigDto);
+        // 日志错误
+        logErrorCheck(appConfigDto);
+        // 所有菜单
+        allMenuStat(appConfigDto);
+        // 新版菜单合法性
+        newMenuLegalCheck(appConfigDto);
+    }
+
+    /**
+     * 缺少新版全量
+     */
+    private void lackNewAllMenuCheck(AppConfigDto appConfigDto) throws Exception {
         File file = new File(basePathRouter);
         if (!file.isDirectory()) {
-            System.out.print(SystemToolController.getCheckMenuMsg("路由文件目录不存在，清检查"));
-            return;
+            throw new Exception("路由文件目录不存在，请检查\n");
         }
         Set<String> skipRouter = new HashSet<>();
         String systemToolCheckMenuSkipRouter = appConfigDto.getSystemToolCheckMenuSkipRouter();
         if (StringUtils.isNotBlank(systemToolCheckMenuSkipRouter)) {
-            System.out.print(SystemToolController.getCheckMenuMsg("忽略路由文件 " + systemToolCheckMenuSkipRouter));
+            System.out.println(SystemToolController.getCheckMenuMsg("忽略路由文件 " + systemToolCheckMenuSkipRouter));
             String[] skip = systemToolCheckMenuSkipRouter.split(",");
             for (String item : skip) {
                 skipRouter.add(item);
@@ -189,7 +203,6 @@ public class MenuCompareSql {
             if ("analysisByTrans".equals(fileName) || skipRouter.contains(fileName)) {
                 continue;
             }
-            System.out.print(SystemToolController.getCheckMenuMsg(fileName + " 开始"));
             List<String> menuCodeList = FileUtils.readNormalFile(item.getPath(), false);
             Map<String, String> menuMap = initMenuRouter(menuCodeList);
             if ("analysis".equals(fileName)) {
@@ -197,15 +210,16 @@ public class MenuCompareSql {
                 menuMap.putAll(initMenuRouter(extendMenuCodeList));
             }
             compareMenu(menuMap, fileName + ".sql");
-            System.out.print(SystemToolController.getCheckMenuMsg(fileName + " 结束"));
         }
-        System.out.print(SystemToolController.getCheckMenuMsg("统计 开始"));
         needAddUedMenu.add(0, "-- 待处理【" + needAddUedMenuNum + "】");
-        needAddUedMenu.add(0, "-- ************************************* 全量新版UED缺少菜单 *************************************");
-        FileUtils.writeFile(resultPath + "1.全量新版UED缺少菜单.sql", needAddUedMenu, false);
-        System.out.print(SystemToolController.getCheckMenuMsg("统计 结束"));
+        needAddUedMenu.add(0, "-- ************************************* 缺少新版全量 *************************************");
+        FileUtils.writeFile(resultPath + "10.缺少新版全量.sql", needAddUedMenu, false);
+    }
 
-        System.out.print(SystemToolController.getCheckMenuMsg("全量老版菜单检查 开始"));
+    /**
+     * 缺少老版全量
+     */
+    private void lackOldAllMenuCheck(AppConfigDto appConfigDto) throws Exception {
         Set<String> lackMenu = new HashSet<>();
         Iterator<String> iteratorExt = menuExtCache.keySet().iterator();
         while (iteratorExt.hasNext()) {
@@ -221,12 +235,16 @@ public class MenuCompareSql {
             lackMenuList.add(buildMenuInfo(menuCode));
         }
         lackMenuList.add(0, "-- 待处理【" + lackMenu.size() + "】\n\n");
-        lackMenuList.add(0, "-- ************************************* 全量老版UED缺少菜单 *************************************");
-        FileUtils.writeFile(resultPath + "2.全量老版UED缺少菜单.sql", lackMenuList, false);
-        System.out.print(SystemToolController.getCheckMenuMsg("全量老版菜单检查 结束"));
+        lackMenuList.add(0, "-- ************************************* 缺少老版全量 *************************************");
+        FileUtils.writeFile(resultPath + "20.缺少老版全量.sql", lackMenuList, false);
+    }
 
-        // 新版UED菜单 全量开通不一致
-        System.out.print(SystemToolController.getCheckMenuMsg("新版UED菜单全量开通不一致检查 开始"));
+    /**
+     * 新版菜单全量开通不同
+     *
+     * @throws IOException
+     */
+    private void newMenuAllDiffExtCheck(AppConfigDto appConfigDto) throws Exception {
         Map<String, List<String>> newMenDiff = new LinkedHashMap<>();
         Iterator<String> newMenuIterator = newMenuExtCache.keySet().iterator();
         while (newMenuIterator.hasNext()) {
@@ -274,12 +292,17 @@ public class MenuCompareSql {
             newMenDiffInfo.add(buildMenuInfo(newMenDiff, menuCode));
         }
         newMenDiffInfo.add(0, "-- 待处理【" + newMenDiff.size() + "】\n\n");
-        newMenDiffInfo.add(0, "-- ************************************* 新版UED菜单全量开通不一致 *************************************");
-        FileUtils.writeFile(resultPath + "3.新版UED菜单全量开通不一致.sql", newMenDiffInfo, false);
-        System.out.print(SystemToolController.getCheckMenuMsg("新版UED菜单全量开通不一致检查 结束"));
+        newMenDiffInfo.add(0, "-- ************************************* 新版菜单全量开通不同 *************************************");
+        FileUtils.writeFile(resultPath + "30.新版菜单全量开通不同.sql", newMenDiffInfo, false);
+    }
 
-        // 老板UED菜单 全量开通不一致
-        System.out.print(SystemToolController.getCheckMenuMsg("老板UED菜单全量开通不一致检查 开始"));
+    /**
+     * 老版菜单全量开通不同
+     *
+     * @param appConfigDto
+     * @throws Exception
+     */
+    private void oldMenuAllDiffExtCheck(AppConfigDto appConfigDto) throws Exception {
         Map<String, List<String>> oldMenDiff = new LinkedHashMap<>();
         Iterator<String> oldMenuIterator = oldMenuExtCache.keySet().iterator();
         while (oldMenuIterator.hasNext()) {
@@ -327,11 +350,17 @@ public class MenuCompareSql {
             oldMenDiffInfo.add(buildMenuInfo(oldMenDiff, menuCode));
         }
         oldMenDiffInfo.add(0, "-- 待处理【" + oldMenDiff.size() + "】\n\n");
-        oldMenDiffInfo.add(0, "-- ************************************* 老板UED菜单全量开通不一致 *************************************");
-        FileUtils.writeFile(resultPath + "4.老板UED菜单全量开通不一致.sql", oldMenDiffInfo, false);
-        System.out.print(SystemToolController.getCheckMenuMsg("老板UED菜单全量开通不一致检查 结束"));
+        oldMenDiffInfo.add(0, "-- ************************************* 老版菜单全量开通不同 *************************************");
+        FileUtils.writeFile(resultPath + "40.老版菜单全量开通不同.sql", oldMenDiffInfo, false);
+    }
 
-        System.out.print(SystemToolController.getCheckMenuMsg("路由检查 开始"));
+    /**
+     * 缺少路由
+     *
+     * @param appConfigDto
+     * @throws Exception
+     */
+    private void lackRouterCheck(AppConfigDto appConfigDto) throws Exception {
         Set<String> lackRouter = new HashSet<>();
         Iterator<String> iterator = menuCache.keySet().iterator();
         while (iterator.hasNext()) {
@@ -347,12 +376,15 @@ public class MenuCompareSql {
             menuCodeList.add(buildMenuInfo(menuCode));
         }
         menuCodeList.add(0, "-- 待处理【" + lackRouter.size() + "】\n\n");
-        menuCodeList.add(0, "-- ************************************* 存在菜单缺少路由 *************************************");
-        FileUtils.writeFile(resultPath + "5.存在菜单缺少路由.sql", menuCodeList, false);
-        System.out.print(SystemToolController.getCheckMenuMsg("路由检查 结束"));
+        menuCodeList.add(0, "-- ************************************* 缺少路由 *************************************");
+        FileUtils.writeFile(resultPath + "50.缺少路由.sql", menuCodeList, false);
+    }
 
+    /**
+     * 缺少日志
+     */
+    private void lackLogCheck(AppConfigDto appConfigDto) throws Exception {
         // 缺少日志配置检查
-        System.out.print(SystemToolController.getCheckMenuMsg("日志检查 开始"));
         Iterator<String> subTransIterator = subTransCache.keySet().iterator();
         List<String> subTransExtList = new ArrayList<>();
         while (subTransIterator.hasNext()) {
@@ -362,12 +394,18 @@ public class MenuCompareSql {
             }
         }
         subTransExtList.add(0, "-- 待处理【" + subTransExtList.size() + "】\n\n");
-        subTransExtList.add(0, "-- ************************************* 缺少日志信息 *************************************");
-        FileUtils.writeFile(resultPath + "6.缺少日志信息.sql", subTransExtList, false);
-        System.out.print(SystemToolController.getCheckMenuMsg("日志检查 结束"));
+        subTransExtList.add(0, "-- ************************************* 缺少日志 *************************************");
+        FileUtils.writeFile(resultPath + "60.缺少日志.sql", subTransExtList, false);
+    }
 
+    /**
+     * 日志错误
+     *
+     * @param appConfigDto
+     * @throws Exception
+     */
+    private void logErrorCheck(AppConfigDto appConfigDto) throws Exception {
         // 日志配置错误检查
-        System.out.print(SystemToolController.getCheckMenuMsg("日志错误检查 开始"));
         Iterator<String> subTransExtIterator = subTransExtCache.keySet().iterator();
         List<String> subTransExtErrorList = new ArrayList<>();
         while (subTransExtIterator.hasNext()) {
@@ -424,11 +462,17 @@ public class MenuCompareSql {
         }
         subTransExtErrorList.add(0, "-- 待处理【" + subTransExtErrorList.size() + "】\n\n");
         subTransExtErrorList.add(0, "-- ************************************* 0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入 *************************************");
-        subTransExtErrorList.add(0, "-- ******************************************************* 日志错误信息 *******************************************************");
-        FileUtils.writeFile(resultPath + "7.日志错误信息.sql", subTransExtErrorList, false);
-        System.out.print(SystemToolController.getCheckMenuMsg("日志错误检查 结束"));
+        subTransExtErrorList.add(0, "-- ******************************************************* 日志错误 *******************************************************");
+        FileUtils.writeFile(resultPath + "70.日志错误.sql", subTransExtErrorList, false);
+    }
 
-        System.out.print(SystemToolController.getCheckMenuMsg("所有菜单检查 开始"));
+    /**
+     * 所有菜单
+     *
+     * @param appConfigDto
+     * @throws Exception
+     */
+    private void allMenuStat(AppConfigDto appConfigDto) throws Exception {
         Iterator<String> menuIterator = menuCache.keySet().iterator();
         List<String> menu = new ArrayList<>();
         Set<String> existMenu = new HashSet<>();
@@ -443,11 +487,17 @@ public class MenuCompareSql {
             }
         }
         menu.add(0, "-- 菜单总数【" + existMenu.size() + "】\n\n");
-        menu.add(0, "-- ************************************* 所有非弹窗菜单 *************************************");
-        FileUtils.writeFile(resultPath + "8.所有非弹窗菜单.sql", menu, false);
-        System.out.print(SystemToolController.getCheckMenuMsg("所有菜单检查 结束"));
+        menu.add(0, "-- ************************************* 所有菜单 *************************************");
+        FileUtils.writeFile(resultPath + "5.所有菜单.sql", menu, false);
+    }
 
-        System.out.print(SystemToolController.getCheckMenuMsg("新版UED菜单合法性检查 开始"));
+    /**
+     * 新版菜单合法性
+     *
+     * @param appConfigDto
+     * @throws Exception
+     */
+    private void newMenuLegalCheck(AppConfigDto appConfigDto) throws Exception {
         Iterator<String> menuUedExistIterator = menuUedExistCache.keySet().iterator();
         List<String> uedMenu = new ArrayList<>();
         while (menuUedExistIterator.hasNext()) {
@@ -462,11 +512,8 @@ public class MenuCompareSql {
         uedMenu.add(0, "-- 待处理【" + uedMenu.size() + "】\n\n");
         uedMenu.add(0, "-- ************************************* 菜单名称存在空格 *************************************");
         uedMenu.add(0, "-- 待处理【" + total + "】\n\n");
-        uedMenu.add(0, "-- ************************************* 新版UED菜单合法性 *************************************");
-        FileUtils.writeFile(resultPath + "9.新版UED菜单合法性.sql", uedMenu, false);
-        System.out.print(SystemToolController.getCheckMenuMsg("新版UED菜单合法性检查 结束"));
-
-
+        uedMenu.add(0, "-- ************************************* 新版菜单合法性 *************************************");
+        FileUtils.writeFile(resultPath + "80.新版菜单合法性.sql", uedMenu, false);
     }
 
     private void compareMenu(Map<String, String> menuMap, String fileName) throws Exception {
@@ -501,7 +548,7 @@ public class MenuCompareSql {
         needAddUedMenu.add("\n\n-- ************************************* " + fileName.replace(".sql", " *************************************"));
         needAddUedMenu.addAll(menuCodeList);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (STR_0.equals(appConfigDto.getSystemToolCheckMenuSubFile()) && !"1.全量新版UED缺少菜单.sql".equals(fileName)) {
+        if (STR_0.equals(appConfigDto.getSystemToolCheckMenuSubFile()) && !"10.缺少新版全量.sql".equals(fileName)) {
             return;
         }
         FileUtils.writeFile(resultPath + fileName, menuCodeList, false);
@@ -708,7 +755,6 @@ public class MenuCompareSql {
             if (!fileName.endsWith(FILE_TYPE_SQL)) {
                 return;
             }
-            //System.out.print(SystemToolController.getCheckMenuMsg("扫描文件" + fileName));
             List<String> content = FileUtils.readNormalFile(file.getPath(), false);
             // 缓存菜单信息
             boolean endFlag = true;
