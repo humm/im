@@ -151,7 +151,7 @@ public class SystemToolController implements Initializable {
                 public void run() {
                     try {
                         OutputUtils.info(logs, getCheckMenuMsg("检查开始"));
-                        OutputUtils.info(logs, getCheckMenuMsg("检查中 >>>  请稍后 >>>  >>>  >>>"));
+                        OutputUtils.info(logs, getCheckMenuMsg("检查中 >>>  请稍后 >>>  耐心等候  >>>  需要点时间  >>>"));
                         new MenuCompareSql().check();
                         OutputUtils.info(logs, getCheckMenuMsg("检查结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
@@ -239,9 +239,9 @@ public class SystemToolController implements Initializable {
                     try {
                         // 设置颜色
                         // logs.setStyle("-fx-text-fill: green;");
-                        OutputUtils.info(logs, getUpdateMenuMsg("生成开始"));
+                        OutputUtils.info(logs, getUpdateMenuMsg("执行开始"));
                         new MenuUpdateSql().generateSql();
-                        OutputUtils.info(logs, getUpdateMenuMsg("生成结束"));
+                        OutputUtils.info(logs, getUpdateMenuMsg("执行结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
                         addLog("菜单升级脚本");
                     } catch (Exception e) {

@@ -4,6 +4,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.controller.SystemToolController;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.FileUtils;
+import com.hoomoomoo.im.utils.LoggerUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -124,7 +125,7 @@ public class MenuCompareSql {
             System.out.print(SystemToolController.getCheckMenuMsg("现有菜单【" + menuCache.size() + "】"));
             System.out.print(SystemToolController.getCheckMenuMsg("扫描菜单脚本 结束"));
         } catch (IOException e) {
-            System.out.print(e.getMessage());
+            LoggerUtils.info(e);
         }
     }
 
@@ -445,6 +446,27 @@ public class MenuCompareSql {
         menu.add(0, "-- ************************************* 所有非弹窗菜单 *************************************");
         FileUtils.writeFile(resultPath + "8.所有非弹窗菜单.sql", menu, false);
         System.out.print(SystemToolController.getCheckMenuMsg("所有菜单检查 结束"));
+
+        System.out.print(SystemToolController.getCheckMenuMsg("新版UED菜单合法性检查 开始"));
+        Iterator<String> menuUedExistIterator = menuUedExistCache.keySet().iterator();
+        List<String> uedMenu = new ArrayList<>();
+        while (menuUedExistIterator.hasNext()) {
+            String menuCode = menuUedExistIterator.next();
+            String menuName = menuUedExistCache.get(menuCode);
+            if (menuName.length() != menuName.trim().length()) {
+                uedMenu.add(menuCode + "   " + menuName);
+            }
+
+        }
+        int total = uedMenu.size();
+        uedMenu.add(0, "-- 待处理【" + uedMenu.size() + "】\n\n");
+        uedMenu.add(0, "-- ************************************* 菜单名称存在空格 *************************************");
+        uedMenu.add(0, "-- 待处理【" + total + "】\n\n");
+        uedMenu.add(0, "-- ************************************* 新版UED菜单合法性 *************************************");
+        FileUtils.writeFile(resultPath + "9.新版UED菜单合法性.sql", uedMenu, false);
+        System.out.print(SystemToolController.getCheckMenuMsg("新版UED菜单合法性检查 结束"));
+
+
     }
 
     private void compareMenu(Map<String, String> menuMap, String fileName) throws Exception {
@@ -543,11 +565,12 @@ public class MenuCompareSql {
                 break;
             }
             String menuCode = getMenuCode(item);
+            String menuName = getMenuName(item);
             if (menuCode != null) {
-                menuUedExistCache.put(menuCode, menuCode);
                 if (getMenuValueLen(item) != 18) {
                     continue;
                 }
+                menuUedExistCache.put(menuCode, menuName);
                 if (newMenuBaseCache.containsKey(menuCode)) {
                     newMenuBaseCache.get(menuCode).put(newUedPage, getMenuDetail(18, item));
                 } else {
@@ -685,7 +708,7 @@ public class MenuCompareSql {
             if (!fileName.endsWith(FILE_TYPE_SQL)) {
                 return;
             }
-            System.out.print(SystemToolController.getCheckMenuMsg("扫描文件" + fileName));
+            //System.out.print(SystemToolController.getCheckMenuMsg("扫描文件" + fileName));
             List<String> content = FileUtils.readNormalFile(file.getPath(), false);
             // 缓存菜单信息
             boolean endFlag = true;

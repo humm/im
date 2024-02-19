@@ -31,7 +31,7 @@ public class MenuUpdateSql {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> config = FileUtils.readNormalFile(newUedPage, false);
         List<String> sql = getUpdateSql(appConfigDto, config);
-        FileUtils.writeFile(resultPath + "10.全量新版UED升级.sql", sql, false);
+        FileUtils.writeFile(resultPath + "99.全量新版UED升级.sql", sql, false);
     }
 
     public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {

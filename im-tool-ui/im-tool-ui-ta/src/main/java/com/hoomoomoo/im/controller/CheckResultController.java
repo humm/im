@@ -44,6 +44,7 @@ public class CheckResultController implements Initializable {
         if (PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT.equals(pageType)) {
             initTab(appConfigDto, "1.全量新版UED缺少菜单.sql");
             initTab(appConfigDto, "3.新版UED菜单全量开通不一致.sql");
+            initTab(appConfigDto, "9.新版UED菜单合法性.sql");
             initTab(appConfigDto, "2.全量老版UED缺少菜单.sql");
             initTab(appConfigDto, "4.老板UED菜单全量开通不一致.sql");
             initTab(appConfigDto, "5.存在菜单缺少路由.sql");
@@ -51,7 +52,7 @@ public class CheckResultController implements Initializable {
             initTab(appConfigDto, "7.日志错误信息.sql");
             initTab(appConfigDto, "8.所有非弹窗菜单.sql");
         } else if (PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT.equals(pageType)) {
-            initTab(appConfigDto, "10.全量新版UED升级.sql");
+            initTab(appConfigDto, "99.全量新版UED升级.sql");
         }
     }
 
