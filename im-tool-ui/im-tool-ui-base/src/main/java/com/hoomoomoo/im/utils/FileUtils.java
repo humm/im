@@ -443,15 +443,6 @@ public class FileUtils {
         LinkedHashMap<String, String> oldAppConfig = new LinkedHashMap<>(16);
         String bakFileConf = getOldAppConfig(file, url, oldAppConfig, FILE_TYPE_CONFIG);
 
-        LinkedHashMap<String, String> jdCookieConfig = new LinkedHashMap<>(16);
-        String jdCookieUrl = null;
-        String bakFileJdCookie = null;
-        if (APP_CODE_SHOPPING.equals(ConfigCache.getAppCodeCache())) {
-            jdCookieUrl = getFilePath(PATH_JD_COOKIE);
-            File jdCookieFile = new File(jdCookieUrl);
-            bakFileJdCookie = getOldAppConfig(jdCookieFile, jdCookieUrl, jdCookieConfig, FILE_TYPE_NORMAL);
-        }
-
         // 删除历史解压文件
         File confFolder = file.getParentFile();
         File[] oldFileList = confFolder.listFiles();
@@ -571,11 +562,6 @@ public class FileUtils {
             updateContent.add(item);
         }
         FileUtils.writeFile(url, new ArrayList<>(updateContent), false);
-
-        if (APP_CODE_SHOPPING.equals(ConfigCache.getAppCodeCache())) {
-            FileUtils.writeFile(jdCookieUrl, jdCookieConfig.get(jdCookieUrl), false);
-            deleteBackupConfigFile(new File(bakFileJdCookie));
-        }
 
         // 删除 备份历史配置文件
         deleteBackupConfigFile(new File(bakFileConf));

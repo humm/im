@@ -21,7 +21,6 @@ public class BaseConst {
 
     public static final String APP_CODE_BASE = "im-tool-ui-base";
     public static final String APP_CODE_TA = "im-tool-ui-ta";
-    public static final String APP_CODE_SHOPPING = "im-tool-ui-shopping";
 
     public static final String APP_VERSION = "1.0.0.0";
 
@@ -176,23 +175,6 @@ public class BaseConst {
     public static final String NAME_END = "结束";
     public static final String NAME_SVN_DESCRIBE = "[需求描述]";
     public static final String NAME_SVN_MODIFY_NO = "[修改单编号]";
-    public static final String NAME_APPRAISE = "评价";
-    public static final String NAME_SERVICE_APPRAISE = "服务评价";
-    public static final String NAME_ORDER_DETAIL = "订单详情";
-    public static final String NAME_APPRAISEING = "评价开始";
-    public static final String NAME_APPRAISE_SUCCESS = "评价成功";
-    public static final String NAME_APPRAISE_FAIL = "评价失败";
-    public static final String NAME_REST_MOMENT = "策略休息【%s】秒";
-    public static final String NAME_APPRAISE_COMPLETE = "评价完成";
-    public static final String NAME_NO_APPRAISE_GOODS = "无评价商品";
-    public static final String NAME_JD_LOGIN = "欢迎登录";
-    public static final String NAME_JD_SHOW_ORDER = "继续晒单";
-    public static final String NAME_JD_APPEND_APPRAISEING = "追评";
-    public static final String NAME_GOODS_NOT_EXIST = "商品已下架";
-    public static final String NAME_NET_CONNECT = "请连接网络";
-    public static final String NAME_PAUSE_START = "暂停开始";
-    public static final String NAME_PAUSE_COMPLETE = "暂停完成";
-    public static final String NAME_TYPE_NOT_EXIST = "事件类型不存在";
     public static final String NAME_CURRENT_VERSION = "当前版本:";
     public static final String NAME_SAVE_SUCCESS = "修改成功 ";
     public static final String NAME_APP_START = "应用";
@@ -269,8 +251,7 @@ public class BaseConst {
     public final static String ANNOTATION_TYPE_NORMAL = "--";
     public final static String ANNOTATION_TYPE_CONFIG = "#";
 
-    public final static Integer FUNCTION_CODE_1000 = 1000;
-    public final static Integer FUNCTION_CODE_2000 = 2000;
+    public final static Integer FUNCTION_CONFIG_SET = 9999;
 
     public static final Pattern STR_PATTERN = Pattern.compile("(\\\\u(\\w{4}))");
 
@@ -285,7 +266,6 @@ public class BaseConst {
     public static final String MSG_SVN_STAT_USER = "请设置【 svn.stat.user. 】";
     public static final String MSG_SVN_STAT_INTERVAL = "请设置【 svn.stat.interval 】大于等于10";
     public static final String MSG_GENERATE_CODE_TIPS = "请设置【 %s 】\n";
-    public static final String MSG_WAIT_APPRAISE_JD_COOKIE = "请更新京东Cookie";
     public static final String MSG_SET = "请设置【 %s 】\n";
     public static final String MSG_APP_TITLE = "【%s: %s】";
 
@@ -327,7 +307,6 @@ public class BaseConst {
     public static final String PATH_SKIP_ROUTER = "/conf/extend/skipRouter.conf";
     public static final String PATH_SKIP_LOG = "/conf/extend/skipLog.conf";
     public static final String PATH_SKIP_ERROR_LOG = "/conf/extend/skipErrorLog.conf";
-    public static final String PATH_JD_COOKIE = "/conf/jdCookie.conf";
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
     public static final String PATH_VERSION = "/conf/init/version.init";
@@ -350,9 +329,6 @@ public class BaseConst {
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/stats/version.stat";
     public static final String PATH_VERSION_EXTEND_STAT = "/stats/versionExtend.stat";
-
-    public static final Integer JD_APPRAISE_LENGTH_MIN = 30;
-    public static final Integer JD_APPRAISE_LENGTH_MAX = 450;
 
     public static final String SERVER_HTTP = "http://127.0.0.1";
     public static final String SERVER_URL = "/tool/im";

@@ -398,11 +398,9 @@ public class CommonUtils {
 
     public static boolean checkAuth(String checkType, String functionCode) {
         if (STR_1.equals(checkType)) {
-            return ABOUT_INFO.getCode().equals(functionCode) || CONFIG_SET.getCode().equals(functionCode)
-                    || FUNCTION_STAT_INFO.getCode().equals(functionCode) || JD_COOKIE.getCode().equals(functionCode);
+            return CONFIG_SET.getCode().equals(functionCode);
         } else if (STR_2.equals(checkType)) {
-            return ABOUT_INFO.getMenuId().equals(functionCode) || CONFIG_SET.getMenuId().equals(functionCode)
-                    || FUNCTION_STAT_INFO.getMenuId().equals(functionCode) || JD_COOKIE.getMenuId().equals(functionCode);
+            return CONFIG_SET.getMenuId().equals(functionCode);
         }
         return false;
     }
@@ -474,15 +472,7 @@ public class CommonUtils {
     public static List<MenuFunctionConfig.FunctionConfig> getAppFunctionConfig(String appCode) {
         List<MenuFunctionConfig.FunctionConfig> functionConfigList = new ArrayList<>();
         for (MenuFunctionConfig.FunctionConfig functionConfig : MenuFunctionConfig.FunctionConfig.values()) {
-            int functionCode = Integer.valueOf(functionConfig.getCode());
-            if (APP_CODE_TA.equals(appCode) && functionCode < FUNCTION_CODE_1000) {
-                functionConfigList.add(functionConfig);
-            } else if (APP_CODE_SHOPPING.equals(appCode) && functionCode >= FUNCTION_CODE_1000 && functionCode < FUNCTION_CODE_2000) {
-                functionConfigList.add(functionConfig);
-            }
-            if (functionCode >= FUNCTION_CODE_2000) {
-                functionConfigList.add(functionConfig);
-            }
+            functionConfigList.add(functionConfig);
         }
         return functionConfigList;
     }
@@ -499,10 +489,7 @@ public class CommonUtils {
         List<MenuFunctionConfig.FunctionConfig> functionConfigList = new ArrayList<>();
         for (MenuFunctionConfig.FunctionConfig functionConfig : MenuFunctionConfig.FunctionConfig.values()) {
             int functionCode = Integer.valueOf(functionConfig.getCode());
-            if (JD_COOKIE.getCode().equals(functionCode)) {
-                functionConfigList.add(functionConfig);
-            }
-            if (functionCode > 2000) {
+            if (functionCode == FUNCTION_CONFIG_SET) {
                 functionConfigList.add(functionConfig);
             }
         }
@@ -664,7 +651,7 @@ public class CommonUtils {
         if (menuConfig == null) {
             return;
         }
-        CommonUtils.setIcon(tab, "/conf/image/" + menuConfig.getMenuIcon() + ".png", MENUITEM_ICON_SIZE);
+        //CommonUtils.setIcon(tab, "/conf/image/" + menuConfig.getMenuIcon() + ".png", MENUITEM_ICON_SIZE);
     }
 
     private static void setMenuStyle(Menu menu, String icon) {

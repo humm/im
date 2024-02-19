@@ -17,9 +17,6 @@ public class MenuFunctionConfig {
         MENU_HEP("menuHep", "效能", 40, "hep"),
         MENU_SYSTEM("menuSystem", "系统", 50, "system"),
 
-        // Shopping菜单
-        MENU_JD("menuJd", "京东", 10, "jd"),
-
         // 公共菜单
         MENU_SET("menuSet", "设置", 1000, "set"),
         MENU_HELP("menuHelp", "帮助", 1100, "help");
@@ -93,26 +90,12 @@ public class MenuFunctionConfig {
 
         SYSTEM_TOOL("500", "便捷工具", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuSystem"),
 
-        // Shopping 1000-1999
-        JD_AUTO("1000", "自动评价", "/conf/fxml/jdAuto.fxml", "jdAuto", "jdAuto", "menuJd"),
-
-        WAIT_APPRAISE("1100", "待评价", "/conf/fxml/waitAppraise.fxml", "waitAppraise", "waitAppraise", "menuJd"),
-
-        SHOW_ORDER("1200", "待晒单", "/conf/fxml/showOrder.fxml", "showOrder", "showOrder", "menuJd"),
-
-        APPEND_APPRAISE("1300", "待追评", "/conf/fxml/appendAppraise.fxml", "appendAppraise", "appendAppraise", "menuJd"),
-
-        SERVICE_APPRAISE("1400", "服务评价", "/conf/fxml/serviceAppraise.fxml", "serviceAppraise", "serviceAppraise", "menuJd"),
-
-        JD_COOKIE("1900", "京东Cookie设置", "/conf/fxml/jdCookie.fxml", "jdCookie", "jdCookie", "menuSet"),
-
-
-        // 公共组件 2000-2999
-        CONFIG_SET("2000", "参数设置", "/conf/fxml/configSet.fxml", "configSet", "configSet", "menuSet"),
-
+        // 公共组件 2000-9999
         FUNCTION_STAT_INFO("3000", "使用统计", "/conf/fxml/functionStatInfo.fxml", "functionStatInfo", "functionStatInfo", "menuHelp"),
 
-        ABOUT_INFO("3100", "关于", "/conf/fxml/aboutInfo.fxml", "aboutInfo", "aboutInfo", "menuHelp");
+        ABOUT_INFO("3100", "关于", "/conf/fxml/aboutInfo.fxml", "aboutInfo", "aboutInfo", "menuHelp"),
+
+        CONFIG_SET("9999", "参数设置", "/conf/fxml/configSet.fxml", "configSet", "configSet", "menuSet");
 
         private String code;
 

@@ -110,45 +110,9 @@ public class AppConfigDto extends BaseDto {
 
     private String svnStartPrefix;
 
-    private String jdCookie;
-
-    private String jdAppraiseNum;
-
-    private String jdIntervalTime;
-
-    private String jdAppraiseDefault;
-
-    private String jdAppraiseInfo;
-
-    private String jdAppraiseWait;
-
-    private String jdAppraiseWaitGoods;
-
-    private String jdShowOrder;
-
-    private String jdShowOrderExecute;
-
-    private String jdShowOrderInfo;
-
-    private String jdAppendAppraise;
-
-    private String jdAppendAppraiseExecute;
-
-    private String jdServiceAppraise;
-
-    private String jdServiceAppraiseExecute;
-
-    private Boolean jdInitQuery;
-
-    private String jdUser;
-
-    private String jdUserCode;
-
     private Map<String, String> cookieMap;
 
     private String executeType;
-
-    private String jdServiceType;
 
     private String generateSqlDatabaseNum;
 
@@ -269,7 +233,6 @@ public class AppConfigDto extends BaseDto {
         this.svnDefaultAppendBiz = false;
         this.scriptUpdateSkip = false;
         this.scriptUpdateGenerateFile = false;
-        this.jdInitQuery = false;
         this.svnUpdatePath = new ArrayList<>(16);
         this.scriptUpdateTable = new ArrayList<>(16);
         this.svnStatUser = new LinkedHashMap<>(16);

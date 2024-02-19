@@ -287,28 +287,6 @@ public class ConfigCache {
             FileUtils.writeFile(confPath, content, false);
         }
 
-        // 京东配置文件
-        if (appConfigDto != null && APP_CODE_SHOPPING.equals(appCodeCache)) {
-            String jdCookiePath = FileUtils.getFilePath(PATH_JD_COOKIE);
-            List<String> jdCookieContent = FileUtils.readNormalFile(jdCookiePath, false);
-            StringBuilder jdCookie = new StringBuilder();
-            if (!CollectionUtils.isEmpty(jdCookieContent)) {
-                for (String item : jdCookieContent) {
-                    jdCookie.append(item);
-                }
-                String cookie = jdCookie.toString();
-                if (cookie.endsWith(SECURITY_FLAG)) {
-                    // 解密
-                    cookie = SecurityUtils.getDecryptString(cookie.substring(0, cookie.length() - 3));
-                    appConfigDto.setJdCookie(cookie);
-                } else {
-                    // 加密
-                    appConfigDto.setJdCookie(cookie);
-                    cookie = SecurityUtils.getEncryptString(cookie) + SECURITY_FLAG;
-                    FileUtils.writeFile(jdCookiePath, cookie, false);
-                }
-            }
-        }
         LoggerUtils.appStartInfo(String.format(MSG_ENCRYPT, NAME_CONFIG_USER));
     }
 }

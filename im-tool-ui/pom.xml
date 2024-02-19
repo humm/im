@@ -12,7 +12,6 @@
 
     <modules>
         <module>im-tool-ui-ta</module>
-        <module>im-tool-ui-shopping</module>
         <module>im-tool-ui-base</module>
     </modules>
 

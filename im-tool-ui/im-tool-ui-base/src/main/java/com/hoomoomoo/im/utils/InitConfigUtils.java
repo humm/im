@@ -50,7 +50,7 @@ public class InitConfigUtils {
                         continue out;
                     }
                 }
-                if (Integer.valueOf(functionDto.getFunctionCode()) < FUNCTION_CODE_2000) {
+                if (Integer.valueOf(functionDto.getFunctionCode()) < FUNCTION_CONFIG_SET) {
                     iterator.remove();
                 }
             }
@@ -91,8 +91,7 @@ public class InitConfigUtils {
             case APP_CODE_TA:
                 buildConfigByTa(appCode, content);
                 break;
-            case APP_CODE_SHOPPING:
-                buildConfigByShopping(appCode, content);
+            default:
                 break;
         }
 
@@ -115,8 +114,7 @@ public class InitConfigUtils {
             case APP_CODE_TA:
                 updateConfigByTa(keys);
                 break;
-            case APP_CODE_SHOPPING:
-                updateConfigByShopping(keys);
+            default:
                 break;
         }
 
@@ -281,7 +279,7 @@ public class InitConfigUtils {
                 int index = 0;
                 while (iterator.hasNext()) {
                     String functionCode = iterator.next();
-                    if (Integer.valueOf(functionCode) < FUNCTION_CODE_2000) {
+                    if (Integer.valueOf(functionCode) < FUNCTION_CONFIG_SET) {
                         index++;
                         if (index % 15 == 0) {
                             content += STR_NEXT_LINE + ANNOTATION_TYPE_CONFIG + STR_SPACE;
@@ -461,18 +459,6 @@ public class InitConfigUtils {
         keys.put("system.tool.check.menu.base.path", null);
         keys.put("system.tool.check.menu.result.path", null);
 
-    }
-
-    /**
-     * 更新Shopping配置信息
-     *
-     * @param keys
-     * @author: humm23693
-     * @date: 2022-09-24
-     * @return: void
-     */
-    public static void  updateConfigByShopping(Map<String, String> keys) {
-        keys.put("app.tab.show", "1000");
     }
 
     /**
