@@ -8,12 +8,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-public class MenuUpdateSql {
+public class ScriptUpdateSql {
 
     private String resultPath = "";
     private String newUedPage = "\\sql\\pub\\001initdata\\basedata\\07console-fund-ta-vue-menu-new-ued.sql";
 
-    public MenuUpdateSql() throws Exception {
+    public ScriptUpdateSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
         if (StringUtils.isBlank(basePath)) {

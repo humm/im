@@ -43,10 +43,10 @@ public class CheckResultController implements Initializable {
         String pageType = appConfigDto.getPageType();
         if (PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT.equals(pageType)) {
             initTab(appConfigDto, "10.缺少新版全量.sql");
-            initTab(appConfigDto, "30.新版菜单全量开通不同.sql");
+            initTab(appConfigDto, "30.新版全量开通不同.sql");
             initTab(appConfigDto, "80.新版菜单合法性.sql");
             initTab(appConfigDto, "20.缺少老版全量.sql");
-            initTab(appConfigDto, "40.老版菜单全量开通不同.sql");
+            initTab(appConfigDto, "40.老版全量开通不同.sql");
             initTab(appConfigDto, "50.缺少路由.sql");
             initTab(appConfigDto, "60.缺少日志.sql");
             initTab(appConfigDto, "70.日志错误.sql");

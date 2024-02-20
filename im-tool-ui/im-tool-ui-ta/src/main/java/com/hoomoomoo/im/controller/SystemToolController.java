@@ -3,20 +3,14 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.extend.MenuCompareSql;
-import com.hoomoomoo.im.extend.MenuUpdateSql;
+import com.hoomoomoo.im.extend.ScriptCompareSql;
+import com.hoomoomoo.im.extend.ScriptUpdateSql;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.fxml.LoadException;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -25,7 +19,6 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.awt.*;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -152,7 +145,7 @@ public class SystemToolController implements Initializable {
                     try {
                         OutputUtils.info(logs, getCheckMenuMsg("检查开始"));
                         OutputUtils.info(logs, getCheckMenuMsg("检查中 >>>  请稍后 >>>  耐心等候  >>>  需要点时间  >>>"));
-                        new MenuCompareSql().check();
+                        new ScriptCompareSql().check();
                         OutputUtils.info(logs, getCheckMenuMsg("检查结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
                         addLog("全量菜单检查");
@@ -240,7 +233,7 @@ public class SystemToolController implements Initializable {
                         // 设置颜色
                         // logs.setStyle("-fx-text-fill: green;");
                         OutputUtils.info(logs, getUpdateMenuMsg("执行开始"));
-                        new MenuUpdateSql().generateSql();
+                        new ScriptUpdateSql().generateSql();
                         OutputUtils.info(logs, getUpdateMenuMsg("执行结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
                         addLog("菜单升级脚本");

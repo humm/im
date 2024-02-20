@@ -15,7 +15,7 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 
-public class MenuCompareSql {
+public class ScriptCompareSql {
 
     private String resultPath = "";
     private String basePathExt = "\\sql\\pub\\001initdata\\extradata\\";
@@ -66,7 +66,7 @@ public class MenuCompareSql {
     // 忽略日志信息
     Set<String> skipErrorLogCache = new HashSet<>();
 
-    public MenuCompareSql() throws Exception {
+    public ScriptCompareSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         try {
             String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
@@ -164,9 +164,9 @@ public class MenuCompareSql {
         lackNewAllMenuCheck(appConfigDto);
         // 缺少老版全量
         lackOldAllMenuCheck(appConfigDto);
-        // 新版菜单全量开通不同
+        // 新版全量开通不同
         newMenuAllDiffExtCheck(appConfigDto);
-        // 老版菜单全量开通不同
+        // 老版全量开通不同
         oldMenuAllDiffExtCheck(appConfigDto);
         // 缺少路由
         lackRouterCheck(appConfigDto);
@@ -240,7 +240,7 @@ public class MenuCompareSql {
     }
 
     /**
-     * 新版菜单全量开通不同
+     * 新版全量开通不同
      *
      * @throws IOException
      */
@@ -292,12 +292,12 @@ public class MenuCompareSql {
             newMenDiffInfo.add(buildMenuInfo(newMenDiff, menuCode));
         }
         newMenDiffInfo.add(0, "-- 待处理【" + newMenDiff.size() + "】\n\n");
-        newMenDiffInfo.add(0, "-- ************************************* 新版菜单全量开通不同 *************************************");
-        FileUtils.writeFile(resultPath + "30.新版菜单全量开通不同.sql", newMenDiffInfo, false);
+        newMenDiffInfo.add(0, "-- ************************************* 新版全量开通不同 *************************************");
+        FileUtils.writeFile(resultPath + "30.新版全量开通不同.sql", newMenDiffInfo, false);
     }
 
     /**
-     * 老版菜单全量开通不同
+     * 老版全量开通不同
      *
      * @param appConfigDto
      * @throws Exception
@@ -350,8 +350,8 @@ public class MenuCompareSql {
             oldMenDiffInfo.add(buildMenuInfo(oldMenDiff, menuCode));
         }
         oldMenDiffInfo.add(0, "-- 待处理【" + oldMenDiff.size() + "】\n\n");
-        oldMenDiffInfo.add(0, "-- ************************************* 老版菜单全量开通不同 *************************************");
-        FileUtils.writeFile(resultPath + "40.老版菜单全量开通不同.sql", oldMenDiffInfo, false);
+        oldMenDiffInfo.add(0, "-- ************************************* 老版全量开通不同 *************************************");
+        FileUtils.writeFile(resultPath + "40.老版全量开通不同.sql", oldMenDiffInfo, false);
     }
 
     /**
@@ -703,7 +703,7 @@ public class MenuCompareSql {
         String res = STR_BLANK;
         item = handleMenu(item);
         if (item != null) {
-            String[] value = MenuUpdateSql.handleValue(len, item.substring(item.indexOf("(") + 1, item.lastIndexOf(")")).split(","));
+            String[] value = ScriptUpdateSql.handleValue(len, item.substring(item.indexOf("(") + 1, item.lastIndexOf(")")).split(","));
             for (String ele : value) {
                 if (!StringUtils.isBlank(res)) {
                     res += "-";

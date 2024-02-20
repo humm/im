@@ -43,7 +43,7 @@
                                             </padding>
                                         </Button>
 
-                                        <Label layoutX="50.0" layoutY="190.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-size: 16;" text="全量菜单检查" />
+                                        <Label layoutX="50.0" layoutY="190.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-size: 16;" text="配置脚本检查" />
                                         <Button layoutX="180.0" layoutY="185" mnemonicParsing="false" onAction="#checkMenu" prefWidth="100.0" text="检查">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -98,7 +98,7 @@
                                             </padding>
                                         </Button>
 
-                                        <Label layoutX="50.0" layoutY="360.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-size: 16;" text="菜单升级脚本" />
+                                        <Label layoutX="50.0" layoutY="360.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-size: 16;" text="新版全量升级" />
                                         <Button layoutX="180.0" layoutY="355" mnemonicParsing="false" onAction="#updateMenu" prefWidth="100.0" text="执行">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

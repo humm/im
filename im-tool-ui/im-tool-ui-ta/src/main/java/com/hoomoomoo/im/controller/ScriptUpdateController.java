@@ -4,7 +4,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.MenuDto;
-import com.hoomoomoo.im.extend.MenuUpdateSql;
+import com.hoomoomoo.im.extend.ScriptUpdateSql;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -202,7 +202,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
         for (String item : source) {
             content.add(item);
         }
-        List<String> res = MenuUpdateSql.getUpdateSql(appConfigDto, content);
+        List<String> res = ScriptUpdateSql.getUpdateSql(appConfigDto, content);
         for (String item : res) {
             OutputUtils.info(target, item + STR_NEXT_LINE);
         }
