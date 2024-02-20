@@ -65,6 +65,8 @@ public class ScriptCompareSql {
     Set<String> skipLogCache = new HashSet<>();
     // 忽略日志信息
     Set<String> skipErrorLogCache = new HashSet<>();
+    // 路由缓存信息
+    Map<String, String> menuRouterCache = new LinkedHashMap<>();
 
     public ScriptCompareSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
@@ -210,6 +212,7 @@ public class ScriptCompareSql {
                 menuMap.putAll(initMenuRouter(extendMenuCodeList));
             }
             compareMenu(menuMap, fileName + ".sql");
+            menuRouterCache.putAll(menuMap);
         }
         needAddUedMenu.add(0, "-- 待处理【" + needAddUedMenuNum + "】");
         needAddUedMenu.add(0, "-- ************************************* 缺少新版全量 *************************************");
@@ -478,7 +481,7 @@ public class ScriptCompareSql {
         Set<String> existMenu = new HashSet<>();
         while (menuIterator.hasNext()) {
             String menuCode = menuIterator.next();
-            if (!skipNewMenuCache.contains(menuCode) && transCache.containsKey(menuCode)) {
+            if (menuRouterCache.containsKey(menuCode)) {
                 if (existMenu.contains(menuCode) || existMenu.contains(menuCode + "T") || existMenu.contains(menuCode.substring(0, menuCode.length() - 1))) {
                     continue;
                 }

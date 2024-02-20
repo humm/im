@@ -2,7 +2,9 @@ package com.hoomoomoo.im.cache;
 
 import com.alibaba.fastjson.JSON;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.SecurityUtils;
@@ -80,46 +82,6 @@ public class ConfigCache {
     private static void initExtend(String confPath, AppConfigDto appConfigDto) throws Exception{
         // 更新配置信息
         List<String> content = FileUtils.readNormalFile(confPath, false);
-
-        int configIndex = 0;
-        ListIterator<String> iterator = content.listIterator();
-        String svnRealtimeStatKey = SVN_REALTIME_STAT.getCode() + STR_COLON + SVN_REALTIME_STAT.getName();
-        String svnHistoryStatKey = SVN_HISTORY_STAT.getCode() + STR_COLON + SVN_HISTORY_STAT.getName();
-        String hepTaskTodoKey = TASK_TODO.getCode() + STR_COLON + TASK_TODO.getName();
-        while (iterator.hasNext()) {
-            String item = iterator.next();
-            boolean svn = item.contains(svnRealtimeStatKey) || item.contains(svnHistoryStatKey);
-            if (!appConfigDto.getAppUser().contains(APP_USER_IM_SVN)) {
-                if (svn) {
-                    item = item.replace(svnRealtimeStatKey, STR_BLANK);
-                    item = item.replace(svnHistoryStatKey, STR_BLANK);
-                    iterator.set(item.replaceAll("\\s+", STR_SPACE));
-                }
-            }
-
-            boolean hep = item.contains(hepTaskTodoKey);
-            if (!appConfigDto.getAppUser().contains(APP_USER_IM_HEP)) {
-                if (hep) {
-                    item = item.replace(hepTaskTodoKey, STR_BLANK);
-                    iterator.set(item.replaceAll("\\s+", STR_SPACE));
-                }
-            }
-
-            if (true) {
-                continue;
-            }
-            // 删除未授权功能配置信息
-            if (item.contains(NAME_SVN_STAT) || item.contains(NAME_SVN_STAT_REALTIME) || item.contains(NAME_SVN_STAT_HISTORY) || item.contains(NAME_MENU_HEP_TASK_TODO)) {
-                configIndex++;
-                iterator.remove();
-            } else if (configIndex == 1) {
-                iterator.remove();
-            }
-            if (configIndex == 2) {
-                configIndex = 0;
-            }
-        }
-        FileUtils.writeFile(confPath, content, false);
 
         // 加载配置信息
         if (CollectionUtils.isNotEmpty(content)) {
@@ -263,6 +225,29 @@ public class ConfigCache {
         }
 
         LoggerUtils.appStartInfo(String.format(MSG_LOAD, NAME_CONFIG_LICENSE));
+
+        ListIterator<String> iterator = content.listIterator();
+        String svnLogKey = SVN_LOG.getCode() + STR_COLON + SVN_LOG.getName();
+        String configSetKey = CONFIG_SET.getCode() + STR_COLON + CONFIG_SET.getName();
+        String appCode = ConfigCache.getAppCodeCache();
+        List<FunctionDto> functionDtoList = appConfigDto.getLicense().getFunction();
+        if (CommonUtils.isSuperUser()) {
+            functionDtoList = CommonUtils.functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+        }
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            if (item.contains(svnLogKey) || item.contains(configSetKey)) {
+                StringBuilder msg = new StringBuilder("#");
+                for (FunctionDto functionDto : functionDtoList) {
+                    int functionCode = Integer.valueOf(functionDto.getFunctionCode());
+                    if ((item.contains(svnLogKey) && functionCode < MAX_COMMON_FUNCTION_CODE) || (item.contains(configSetKey) && functionCode >= MAX_COMMON_FUNCTION_CODE)) {
+                        msg.append(STR_SPACE).append(functionDto.getFunctionCode()).append(STR_COLON).append(functionDto.getFunctionName());
+                    }
+                }
+                iterator.set(msg.toString());
+            }
+        }
+        FileUtils.writeFile(confPath, content, false);
 
         // 解密
         if (appConfigDto != null && appConfigDto.getSvnPassword() != null && appConfigDto.getSvnPassword().endsWith(SECURITY_FLAG)) {

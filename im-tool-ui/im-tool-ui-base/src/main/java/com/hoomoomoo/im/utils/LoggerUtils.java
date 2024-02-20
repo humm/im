@@ -32,7 +32,7 @@ public class LoggerUtils {
     public static void appStartInfo(String msg) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache(false);
-            if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
+            if (CommonUtils.isSuperUser()) {
                 info(msg, true);
             }
         } catch (Exception e) {

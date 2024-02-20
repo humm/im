@@ -276,6 +276,9 @@ public class CopyCodeController extends BaseController implements Initializable 
                 String[] itemList = copyCodeLocationReplaceVersion.split(STR_SEMICOLON);
                 for (String item : itemList) {
                     String[] element = item.split(STR_COLON);
+                    if (element.length != 2) {
+                        continue;
+                    }
                     String locationKey = element[0];
                     String[] locationVersion = element[1].split(STR_COMMA);
                     for (String version : locationVersion) {

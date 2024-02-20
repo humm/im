@@ -36,7 +36,7 @@ public class InitConfigUtils {
         LinkedHashMap<String, String> content = FileUtils.readConfigFileToMapIncludePoint(pathAuth);
         String appFunction = content.get("app.license.function");
         String effectiveDate = content.get("app.license.effective.date");
-        List<FunctionDto> function = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+        List<FunctionDto> function = CommonUtils.functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
         LicenseDto license = new LicenseDto();
         license.setEffectiveDate(StringUtils.isBlank(effectiveDate) ? "20991231" : effectiveDate);
         license.setFunction(function);
@@ -108,7 +108,6 @@ public class InitConfigUtils {
      */
     public static void updateConfig(String appCode) throws Exception {
         Map<String, String> keys = new LinkedHashMap<>();
-        keys.put("app.user", null);
         keys.put("app.about.detail", "false");
         switch (appCode) {
             case APP_CODE_TA:
@@ -459,24 +458,6 @@ public class InitConfigUtils {
         keys.put("system.tool.check.menu.base.path", null);
         keys.put("system.tool.check.menu.result.path", null);
 
-    }
-
-    /**
-     * 功能类型转换
-     *
-     * @param functionConfigList
-     * @author: humm23693
-     * @date: 2022-09-24
-     * @return: java.util.List<com.hoomoomoo.im.dto.FunctionDto>
-     */
-    public static List<FunctionDto> functionConfigToFunctionDto(String appCode, List<MenuFunctionConfig.FunctionConfig> functionConfigList) {
-        List<FunctionDto> functionDtoList = new ArrayList<>();
-        if (CollectionUtils.isNotEmpty(functionConfigList)) {
-            for (MenuFunctionConfig.FunctionConfig item : functionConfigList) {
-                functionDtoList.add(new FunctionDto(item.getCode(), item.getName()));
-            }
-        }
-        return functionDtoList;
     }
 
     /**

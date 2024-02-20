@@ -10,14 +10,7 @@ import java.util.regex.Pattern;
  */
 public class BaseConst {
 
-    /** 控制未授权功能控制台打印日志 */
-    public static final String APP_USER_IM = "im";
-    /** 控制svn统计功能 */
-    public static final String APP_USER_IM_SVN = "im-svn";
-    /** 控制服务端 */
-    public static final String APP_USER_IM_SERVER = "im-server";
-    /** 控制效能功能 */
-    public static final String APP_USER_IM_HEP = "im-hep";
+    public static final String SUPER_MAC_ADDRESS = "9F:DE:06:A0:6D:0D 00:50:56:89:8B:E7";
 
     public static final String APP_CODE_BASE = "im-tool-ui-base";
     public static final String APP_CODE_TA = "im-tool-ui-ta";
@@ -25,6 +18,8 @@ public class BaseConst {
     public static final String APP_VERSION = "1.0.0.0";
 
     public static final String DEMO = "demo10000";
+
+    public static final int MAX_COMMON_FUNCTION_CODE = 3000;
 
     public static final String STR_0 = "0";
     public static final String STR_1 = "1";
@@ -186,6 +181,7 @@ public class BaseConst {
     public static final String NAME_FILE_SAME = "文件一致性";
     public static final String NAME_CONFIG_FILE = "配置文件";
     public static final String NAME_VERSION = "版本";
+    public static final String NAME_MAC = "MAC地址";
     public static final String NAME_APP_TAB_SHOW = "# 默认展示tab页";
     public static final String NAME_APP_TAB_SHOW_CODE = "app.tab.show";
     public static final String NAME_SVN_STAT = "#################### svn统计";
@@ -267,7 +263,7 @@ public class BaseConst {
     public static final String MSG_SVN_STAT_INTERVAL = "请设置【 svn.stat.interval 】大于等于10";
     public static final String MSG_GENERATE_CODE_TIPS = "请设置【 %s 】\n";
     public static final String MSG_SET = "请设置【 %s 】\n";
-    public static final String MSG_APP_TITLE = "【%s: %s】";
+    public static final String MSG_APP_TITLE = "   【%s: %s】";
 
 
     public static final String MSG_OPEN = "打开【 %s 】 功能界面";

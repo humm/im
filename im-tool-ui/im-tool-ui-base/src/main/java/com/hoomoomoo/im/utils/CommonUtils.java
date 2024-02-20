@@ -22,6 +22,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,6 +52,8 @@ public class CommonUtils {
     private final static String PATTERN8 = "yyyy-MM";
     private final static String PATTERN9 = "yyyy";
     private final static String PATTERN10 = "HHmmss";
+
+    private static String MAC_ADDRESS_CACHE = "";
 
     private static Pattern LINE_PATTERN = Pattern.compile("_(\\w)");
 
@@ -272,29 +276,18 @@ public class CommonUtils {
                 return true;
             }
         }
-        if (!checkUser(appConfigDto, STR_1, functionCode)) {
-            if (checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
-                LoggerUtils.info(String.format(MSG_LICENSE_NOT_USE, MenuFunctionConfig.FunctionConfig.getName(functionCode)));
-            }
-            return false;
-        }
         if (checkAuth(STR_1, functionCode)) {
             return true;
         }
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
-        if (CollectionUtils.isEmpty(functionDtoList)) {
-            if (checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
-                LoggerUtils.info(String.format(MSG_LICENSE_NOT_AUTH, MenuFunctionConfig.FunctionConfig.getName(functionCode)));
-            }
-            return false;
+        if (isSuperUser()) {
+            String appCode = ConfigCache.getAppCodeCache();
+            functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
         }
         for (FunctionDto functionDto : functionDtoList) {
             if (functionCode.equals(functionDto.getFunctionCode())) {
                 return true;
             }
-        }
-        if (checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
-            LoggerUtils.info(String.format(MSG_LICENSE_NOT_AUTH, MenuFunctionConfig.FunctionConfig.getName(functionCode)));
         }
         return false;
     }
@@ -309,8 +302,11 @@ public class CommonUtils {
     }
 
     public static void showAuthFunction(MenuBar menuBar, TabPane functionTab) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String appCode = ConfigCache.getAppCodeCache();
         List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
+        if (isSuperUser()) {
+            functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+        }
         if (CollectionUtils.isEmpty(functionDtoList)) {
             return;
         }
@@ -321,12 +317,6 @@ public class CommonUtils {
             for (FunctionDto functionDto : functionDtoList) {
                 MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
                 if (menu.getId().equals(functionConfig.getParentMenuId())) {
-                    if (!checkUser(appConfigDto, STR_2, functionConfig.getMenuId())) {
-                        if (checkUser(appConfigDto.getAppUser(), APP_USER_IM)) {
-                            LoggerUtils.info(String.format(MSG_LICENSE_NOT_USE, functionDto.getFunctionName()));
-                        }
-                        continue;
-                    }
                     MenuItem item = new MenuItem();
                     item.setId(functionConfig.getMenuId());
                     item.setText(functionConfig.getName());
@@ -351,7 +341,7 @@ public class CommonUtils {
             for (FunctionDto functionDto : functionDtoList) {
                 MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
                 if (functionConfig != null) {
-                    int hasAuth = checkUser(appConfigDto, STR_1, functionDto.getFunctionCode()) ? 1 : 0;
+                    int hasAuth = 1;
                     String parentMenuId = functionConfig.getParentMenuId();
                     if (authMenu.containsKey(parentMenuId)) {
                         authMenu.put(parentMenuId, authMenu.get(parentMenuId) + hasAuth);
@@ -405,35 +395,8 @@ public class CommonUtils {
         return false;
     }
 
-    public static boolean checkUser(AppConfigDto appConfigDto, String checkType, String functionCode) {
-        String appUser = appConfigDto.getAppUser();
-        if (STR_1.equals(checkType)) {
-            if (SVN_REALTIME_STAT.getCode().equals(functionCode) || SVN_HISTORY_STAT.getCode().equals(functionCode)) {
-                return checkUser(appUser, APP_USER_IM_SVN);
-            } else if (TASK_TODO.getCode().equals(functionCode)) {
-                return checkUser(appUser, APP_USER_IM_HEP);
-            }
-        } else if (STR_2.equals(checkType)) {
-            if (SVN_REALTIME_STAT.getMenuId().equals(functionCode) || SVN_HISTORY_STAT.getMenuId().equals(functionCode)) {
-                return checkUser(appUser, APP_USER_IM_SVN);
-            } else if (TASK_TODO.getMenuId().equals(functionCode)) {
-                return checkUser(appUser, APP_USER_IM_HEP);
-            }
-        }
-        return true;
-    }
-
-    public static boolean checkUser(String appUser, String userName) {
-        if (StringUtils.isBlank(appUser)) {
-            return false;
-        }
-        String[] user = appUser.split(STR_COMMA);
-        for (String item : user) {
-            if (userName.equals(item)) {
-                return true;
-            }
-        }
-        return false;
+    public static boolean isSuperUser() {
+        return SUPER_MAC_ADDRESS.contains(getMacAddress());
     }
 
     public static String initialUpper(String str) {
@@ -763,5 +726,49 @@ public class CommonUtils {
         Long startDate = simpleDateFormat.parse(start).getTime();
         Long endDate = simpleDateFormat.parse(end).getTime();
         return String.valueOf((endDate - startDate) / 24 / 60 / 60 / 1000);
+    }
+
+    public static String getMacAddress() {
+        if (!StringUtils.isBlank(MAC_ADDRESS_CACHE)) {
+            return MAC_ADDRESS_CACHE;
+        }
+        try {
+            Enumeration<NetworkInterface> networkInterfaces = NetworkInterface.getNetworkInterfaces();
+            while (networkInterfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = networkInterfaces.nextElement();
+                byte[] mac = networkInterface.getHardwareAddress();
+                if (mac != null) {
+                    StringBuilder stringBuilder = new StringBuilder();
+                    for (byte b : mac) {
+                        stringBuilder.append(String.format("%02X:", b));
+                    }
+                    if (stringBuilder.length() > 0) {
+                        stringBuilder.deleteCharAt(stringBuilder.length() - 1);
+                    }
+                    MAC_ADDRESS_CACHE = stringBuilder.toString();
+                }
+            }
+        } catch (SocketException e) {
+            LoggerUtils.info(e);
+        }
+        return MAC_ADDRESS_CACHE;
+    }
+
+    /**
+     * 功能类型转换
+     *
+     * @param functionConfigList
+     * @author: humm23693
+     * @date: 2022-09-24
+     * @return: java.util.List<com.hoomoomoo.im.dto.FunctionDto>
+     */
+    public static List<FunctionDto> functionConfigToFunctionDto(String appCode, List<MenuFunctionConfig.FunctionConfig> functionConfigList) {
+        List<FunctionDto> functionDtoList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(functionConfigList)) {
+            for (MenuFunctionConfig.FunctionConfig item : functionConfigList) {
+                functionDtoList.add(new FunctionDto(item.getCode(), item.getName()));
+            }
+        }
+        return functionDtoList;
     }
 }

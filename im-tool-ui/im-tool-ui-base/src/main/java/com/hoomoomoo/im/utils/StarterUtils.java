@@ -43,7 +43,10 @@ public class StarterUtils {
             } else {
                 primaryStage.getIcons().add(new Image(PATH_ICON));
             }
+            String mac = CommonUtils.getMacAddress();
             appName += String.format(MSG_APP_TITLE, NAME_VERSION, CommonUtils.getVersion());
+            appName += String.format(MSG_APP_TITLE, NAME_MAC, mac);
+            LoggerUtils.info(mac);
             // 校验证书是否过期
             if (!CommonUtils.checkLicense(null)) {
                 appName += STR_SPACE_2 + String.format(MSG_LICENSE_EXPIRE, appConfigDto.getLicense().getEffectiveDate());
@@ -82,7 +85,7 @@ public class StarterUtils {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    if (CommonUtils.checkUser(appConfigDto.getAppUser(), APP_USER_IM_SERVER)) {
+                    if (CommonUtils.isSuperUser()) {
                         HttpServerUtils.initServer(SERVER_URL, SERVER_PORT);
                     } else {
                         LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + STR_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + STR_EQUAL + CommonUtils.getVersion()));
