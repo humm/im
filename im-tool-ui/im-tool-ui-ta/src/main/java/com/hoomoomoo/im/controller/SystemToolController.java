@@ -129,22 +129,37 @@ public class SystemToolController implements Initializable {
         addLog("同步发版时间");
     }
 
-    private boolean checkFlaging = false;
+    private boolean checkFlag = false;
 
     @FXML
     void checkMenu(ActionEvent event) {
-        if (checkFlaging) {
-            OutputUtils.info(logs, getCheckMenuMsg("检查中 >>>  请稍后再试 >>>"));
+        if (checkFlag) {
+            OutputUtils.info(logs, getCheckMenuMsg("检查中 ··· 请稍后 ···"));
             return;
         }
-        checkFlaging = true;
+        checkFlag = true;
         try {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         OutputUtils.info(logs, getCheckMenuMsg("检查开始"));
-                        OutputUtils.info(logs, getCheckMenuMsg("检查中 >>>  请稍后 >>>  耐心等候  >>>  需要点时间  >>>"));
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                while (true) {
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException e) {
+                                    }
+                                    if (checkFlag) {
+                                        OutputUtils.info(logs, getCheckMenuMsg("检查中 ··· ··· ···"));
+                                    } else {
+                                        break;
+                                    }
+                                }
+                            }
+                        }).start();
                         new ScriptCompareSql().check();
                         OutputUtils.info(logs, getCheckMenuMsg("检查结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
@@ -152,7 +167,7 @@ public class SystemToolController implements Initializable {
                     } catch (Exception e) {
                         OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
                     } finally {
-                        checkFlaging = false;
+                        checkFlag = false;
                     }
                 }
             }).start();

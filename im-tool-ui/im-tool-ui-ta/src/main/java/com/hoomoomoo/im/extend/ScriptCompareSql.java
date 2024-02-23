@@ -26,7 +26,7 @@ public class ScriptCompareSql {
     private int extFileNum = 0;
     private int needAddUedMenuNum = 0;
     // 所有菜单
-    private Map<String, String> totalMenu = new HashMap<>();
+    private Set<String> totalMenu = new HashSet<>();
     // 新版ued需增加菜单
     private List<String> needAddUedMenu = new ArrayList<>();
     // 所有菜单缓存
@@ -47,10 +47,12 @@ public class ScriptCompareSql {
     private Map<String, List<String>> subTransExtCache = new LinkedHashMap<>();
     // 所有交易码缓存
     private Map<String, List<String>> transCache = new LinkedHashMap<>();
-    // 新版ued已配置菜单
+    // 新版ued已配置菜单  menu_code/menu_name
     private Map<String, String> menuUedExistCache = new LinkedHashMap<>();
+    // 新版ued已配置菜单  menu_code/menu_name reserve
+    private Map<String, String[]> menuUedReserveCache = new LinkedHashMap<>();
     // 全量脚本已配置菜单
-    private Map<String, String> menuBaseExistCache = new LinkedHashMap<>();
+    private Set<String> menuBaseExistCache = new LinkedHashSet<>();
     // 忽略全量新版
     Set<String> skipNewMenuCache = new HashSet<>();
     // 忽略全量老版
@@ -66,7 +68,7 @@ public class ScriptCompareSql {
     // 忽略日志信息
     Set<String> skipErrorLogCache = new HashSet<>();
     // 路由缓存信息
-    Map<String, String> menuRouterCache = new LinkedHashMap<>();
+    Set<String> menuRouterCache = new LinkedHashSet<>();
 
     public ScriptCompareSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
@@ -206,13 +208,13 @@ public class ScriptCompareSql {
                 continue;
             }
             List<String> menuCodeList = FileUtils.readNormalFile(item.getPath(), false);
-            Map<String, String> menuMap = initMenuRouter(menuCodeList);
+            Set<String> menuMap = initMenuRouter(menuCodeList);
             if ("analysis".equals(fileName)) {
                 List<String> extendMenuCodeList = FileUtils.readNormalFile(basePathRouter + "analysisByTrans.js", false);
-                menuMap.putAll(initMenuRouter(extendMenuCodeList));
+                menuMap.addAll(initMenuRouter(extendMenuCodeList));
             }
             compareMenu(menuMap, fileName + ".sql");
-            menuRouterCache.putAll(menuMap);
+            menuRouterCache.addAll(menuMap);
         }
         needAddUedMenu.add(0, "-- 待处理【" + needAddUedMenuNum + "】");
         needAddUedMenu.add(0, "-- ************************************* 缺少新版全量 *************************************");
@@ -227,7 +229,7 @@ public class ScriptCompareSql {
         Iterator<String> iteratorExt = menuExtCache.keySet().iterator();
         while (iteratorExt.hasNext()) {
             String menuCode = iteratorExt.next();
-            if (!menuBaseExistCache.containsKey(menuCode) && transCache.containsKey(menuCode) && !skipOldMenuCache.contains(menuCode)) {
+            if (!menuBaseExistCache.contains(menuCode) && transCache.containsKey(menuCode) && !skipOldMenuCache.contains(menuCode)) {
                 lackMenu.add(menuCode);
             }
         }
@@ -368,7 +370,7 @@ public class ScriptCompareSql {
         Iterator<String> iterator = menuCache.keySet().iterator();
         while (iterator.hasNext()) {
             String menuCode = iterator.next();
-            if (!totalMenu.containsKey(menuCode) && transCache.containsKey(menuCode) && !skipRouterCache.contains(menuCode)) {
+            if (!totalMenu.contains(menuCode) && transCache.containsKey(menuCode) && !skipRouterCache.contains(menuCode)) {
                 lackRouter.add(menuCode);
             }
         }
@@ -481,7 +483,7 @@ public class ScriptCompareSql {
         Set<String> existMenu = new HashSet<>();
         while (menuIterator.hasNext()) {
             String menuCode = menuIterator.next();
-            if (menuRouterCache.containsKey(menuCode)) {
+            if (menuRouterCache.contains(menuCode)) {
                 if (existMenu.contains(menuCode) || existMenu.contains(menuCode + "T") || existMenu.contains(menuCode.substring(0, menuCode.length() - 1))) {
                     continue;
                 }
@@ -501,43 +503,119 @@ public class ScriptCompareSql {
      * @throws Exception
      */
     private void newMenuLegalCheck(AppConfigDto appConfigDto) throws Exception {
+        // 菜单名称存在空格
         Iterator<String> menuUedExistIterator = menuUedExistCache.keySet().iterator();
-        List<String> uedMenu = new ArrayList<>();
+        List<String> menuInfo = new ArrayList<>();
         while (menuUedExistIterator.hasNext()) {
             String menuCode = menuUedExistIterator.next();
             String menuName = menuUedExistCache.get(menuCode);
             if (menuName.length() != menuName.trim().length()) {
-                uedMenu.add(menuCode + "   " + menuName);
+                menuInfo.add(menuCode + "   " + menuName);
             }
 
         }
-        int total = uedMenu.size();
-        uedMenu.add(0, "-- 待处理【" + uedMenu.size() + "】\n\n");
-        uedMenu.add(0, "-- ************************************* 菜单名称存在空格 *************************************");
-        uedMenu.add(0, "-- 待处理【" + total + "】\n\n");
-        uedMenu.add(0, "-- ************************************* 新版菜单合法性 *************************************");
-        FileUtils.writeFile(resultPath + "80.新版菜单合法性.sql", uedMenu, false);
+        int total = menuInfo.size();
+        menuInfo.add(0, "-- 待处理【" + menuInfo.size() + "】\n\n");
+        menuInfo.add(0, "-- ************************************* 菜单名称存在空格 *************************************");
+
+        // 存在系统间合并不存在合并后菜单
+        Iterator<String> iterator = menuUedReserveCache.keySet().iterator();
+        List<String> reserve1List = new ArrayList<>();
+        while (iterator.hasNext()) {
+            String menuCode = iterator.next();
+            String menuName = menuUedReserveCache.get(menuCode)[0];
+            String menuReserve = menuUedReserveCache.get(menuCode)[1];
+            if (StringUtils.isBlank(menuReserve.trim()) || !STR_0.equals(menuReserve)) {
+                continue;
+            }
+            Iterator<String> iteratorTmp = menuUedReserveCache.keySet().iterator();
+            boolean flag = false;
+            while (iteratorTmp.hasNext()) {
+                String menuCodeTmp = iteratorTmp.next();
+                if (menuCode.equals(menuCodeTmp)) {
+                    continue;
+                }
+                String menuReserveTmp = menuUedReserveCache.get(menuCodeTmp)[1];
+                String[] reserve = menuReserveTmp.split(STR_COMMA);
+                for (String item : reserve) {
+                    if (menuCode.equals(item)) {
+                        flag = true;
+                        break;
+                    }
+                }
+            }
+            if (!flag) {
+                String menu = menuCode + "   " + menuName;
+                reserve1List.add(menu);
+            }
+        }
+        total += reserve1List.size();
+        menuInfo.add("\n\n-- ************************************* 存在系统间合并不存在合并后菜单 *************************************");
+        menuInfo.add("-- 待处理【" + reserve1List.size() + "】\n\n");
+        menuInfo.addAll(reserve1List);
+
+        // 存在合并后菜单不存在系统间合并
+        Iterator<String> iteratorReserve2 = menuUedReserveCache.keySet().iterator();
+        List<String> reserve2List = new ArrayList<>();
+        while (iteratorReserve2.hasNext()) {
+            String menuCode = iteratorReserve2.next();
+            String menuName = menuUedReserveCache.get(menuCode)[0];
+            String menuReserve = menuUedReserveCache.get(menuCode)[1];
+            if (StringUtils.isBlank(menuReserve.trim()) || STR_0.equals(menuReserve)) {
+                continue;
+            }
+            String[] menuReserveList = menuReserve.split(STR_COMMA);
+            for (String item : menuReserveList) {
+                Iterator<String> iteratorTmp = menuUedReserveCache.keySet().iterator();
+                boolean flag = false;
+                while (iteratorTmp.hasNext()) {
+                    String menuCodeTmp = iteratorTmp.next();
+                    if (menuCode.equals(menuCodeTmp)) {
+                        continue;
+                    }
+                    String menuReserveTmp = menuUedReserveCache.get(menuCodeTmp)[1];
+                    if (item.equals(menuCodeTmp) && STR_0.equals(menuReserveTmp)) {
+                        flag = true;
+                        break;
+                    }
+                }
+                if (!flag) {
+                    String menu = item + "   " + menuUedExistCache.get(item);
+                    ;
+                    reserve2List.add(menu);
+                }
+            }
+        }
+
+        total += reserve2List.size();
+        menuInfo.add("\n\n-- ************************************* 存在合并后菜单不存在系统间合并 *************************************");
+        menuInfo.add("-- 待处理【" + reserve2List.size() + "】\n\n");
+        menuInfo.addAll(reserve2List);
+
+
+        menuInfo.add(0, "-- 待处理【" + total + "】\n\n");
+        menuInfo.add(0, "-- ************************************* 新版菜单合法性 *************************************");
+        FileUtils.writeFile(resultPath + "80.新版菜单合法性.sql", menuInfo, false);
     }
 
-    private void compareMenu(Map<String, String> menuMap, String fileName) throws Exception {
-        Map<String, String> menu = new LinkedHashMap();
-        Iterator iterator = menuMap.keySet().iterator();
+    private void compareMenu(Set<String> menuMap, String fileName) throws Exception {
+        Set<String> menu = new LinkedHashSet<>();
+        Iterator iterator = menuMap.iterator();
         while (iterator.hasNext()) {
             String key = (String) iterator.next();
-            if (!menu.containsKey(key) && !menu.containsKey(key + "T") && !menu.containsKey(key.substring(0, key.length() - 1))) {
-                menu.put(key, menuMap.get(key));
+            if (!menu.contains(key) && !menu.contains(key + "T") && !menu.contains(key.substring(0, key.length() - 1))) {
+                menu.add(key);
             }
         }
-        Map<String, String> extend = new LinkedHashMap();
-        Iterator checkIterator = menu.keySet().iterator();
+        Set<String> extend = new LinkedHashSet<>();
+        Iterator checkIterator = menu.iterator();
         while (checkIterator.hasNext()) {
             String key = (String) checkIterator.next();
             if (!menuUedExistCache.containsKey(key) && !menuUedExistCache.containsKey(key + "T")) {
-                extend.put(key, menu.get(key));
+                extend.add(key);
             }
         }
-        Iterator<String> extendIterator = extend.keySet().iterator();
-
+        Iterator<String> extendIterator = extend.iterator();
         List<String> menuCodeList = new ArrayList<>();
         while (extendIterator.hasNext()) {
             String menuCode = extendIterator.next();
@@ -546,7 +624,7 @@ public class ScriptCompareSql {
                 needAddUedMenuNum++;
             }
         }
-        totalMenu.putAll(menuMap);
+        totalMenu.addAll(menuMap);
         menuCodeList.add(0, "-- 待处理【" + menuCodeList.size() + "】\n");
         needAddUedMenu.add("\n\n-- ************************************* " + fileName.replace(".sql", " *************************************"));
         needAddUedMenu.addAll(menuCodeList);
@@ -615,12 +693,14 @@ public class ScriptCompareSql {
                 break;
             }
             String menuCode = getMenuCode(item);
-            String menuName = getMenuName(item);
             if (menuCode != null) {
-                if (getMenuValueLen(item) != 18) {
+                if (getMenuValueLen(item) < 18) {
                     continue;
                 }
+                String menuName = getMenuName(item);
+                String menuReserve = getMenuReserve(item);
                 menuUedExistCache.put(menuCode, menuName);
+                menuUedReserveCache.put(menuCode, new String[]{menuName, menuReserve});
                 if (newMenuBaseCache.containsKey(menuCode)) {
                     newMenuBaseCache.get(menuCode).put(newUedPage, getMenuDetail(18, item));
                 } else {
@@ -643,7 +723,7 @@ public class ScriptCompareSql {
             }
             String menuCode = getMenuCode(item);
             if (menuCode != null) {
-                menuBaseExistCache.put(menuCode, menuCode);
+                menuBaseExistCache.add(menuCode);
                 if (getMenuValueLen(item) != 16) {
                     continue;
                 }
@@ -695,6 +775,37 @@ public class ScriptCompareSql {
         return menuName;
     }
 
+    private static String getMenuReserve(String item) {
+        String menuReserve = STR_BLANK;
+        item = handleMenu(item);
+        if (item != null) {
+            String[] menuCodeInfo = item.split(",");
+            if (menuCodeInfo.length >= 17) {
+                for (int i=17; i<menuCodeInfo.length; i++) {
+                    String ele =  menuCodeInfo[i];
+                    if (ele.contains("'")) {
+                        if (ele.trim().startsWith("'")) {
+                            ele = ele.split("'")[1];
+                        } else {
+                            ele = ele.split("'")[0];
+                        }
+                    }
+                    menuReserve += ele + STR_COMMA;
+                }
+            }
+        }
+        if (menuReserve.contains("'")) {
+            menuReserve = menuReserve.split("'")[0];
+        }
+        if (menuReserve.contains(STR_BRACKETS_RIGHT)) {
+            menuReserve = menuReserve.substring(0, menuReserve.lastIndexOf(STR_BRACKETS_RIGHT));
+        }
+        if (menuReserve.endsWith(STR_COMMA)) {
+            menuReserve = menuReserve.substring(0, menuReserve.lastIndexOf(STR_COMMA));
+        }
+        return menuReserve;
+    }
+
     private static int getMenuValueLen(String item) {
         if (!item.contains("(") || !item.contains(")")) {
             return -1;
@@ -717,19 +828,19 @@ public class ScriptCompareSql {
         return res.trim().substring(1);
     }
 
-    private static Map<String, String> initMenuRouter(List<String> menu) {
-        Map<String, String> menuMap = new LinkedHashMap();
+    private static Set<String> initMenuRouter(List<String> menu) {
+        Set<String> menuSet = new LinkedHashSet<>();
         Iterator<String> iterator = menu.iterator();
         while (iterator.hasNext()) {
             String item = iterator.next();
             if (item.contains("=>")) {
                 String menuCode = item.split("=>")[0].split(":")[0].trim();
                 if (!menuCode.startsWith("//")) {
-                    menuMap.put(menuCode, menuCode);
+                    menuSet.add(menuCode);
                 }
             }
         }
-        return menuMap;
+        return menuSet;
     }
 
     private void initBaseAndExtMenuCache() throws Exception {

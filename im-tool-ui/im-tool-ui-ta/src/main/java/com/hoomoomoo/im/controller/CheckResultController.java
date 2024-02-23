@@ -61,6 +61,9 @@ public class CheckResultController implements Initializable {
         Tab tab = new Tab();
         outputContent(tab, getContent(appConfigDto, fileName));
         String tabName = fileName.split("\\.")[1];
+        if (index == 0) {
+            return;
+        }
         if (index != -1) {
             tabName += "【" + index + "】";
         }
