@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -133,6 +134,7 @@ public class SystemToolController implements Initializable {
 
     @FXML
     void checkMenu(ActionEvent event) {
+        closeCheckResultStage();
         if (checkFlag) {
             OutputUtils.info(logs, getCheckMenuMsg("检查中 ··· 请稍后 ···"));
             return;
@@ -240,6 +242,7 @@ public class SystemToolController implements Initializable {
 
     @FXML
     void updateMenu(ActionEvent event) {
+        closeCheckResultStage();
         try {
             new Thread(new Runnable() {
                 @Override
@@ -380,5 +383,19 @@ public class SystemToolController implements Initializable {
         List<String> logs = new ArrayList<>();
         logs.add(msg);
         LoggerUtils.writeLogInfo(SYSTEM_TOOL.getCode(), new Date(), logs);
+    }
+
+    private static void closeCheckResultStage() {
+        AppConfigDto appConfigDto = null;
+        try {
+            appConfigDto = ConfigCache.getAppConfigDtoCache();
+            Stage stage = appConfigDto.getCheckResultStage();
+            if (stage != null) {
+                stage.close();
+                appConfigDto.setCheckResultStage(null);
+            }
+        } catch (Exception e) {
+            LoggerUtils.info(getCheckMenuMsg(e.getMessage()));
+        }
     }
 }
