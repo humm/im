@@ -92,7 +92,7 @@
                                             </padding>
                                         </Button>
 
-                                        <Button layoutX="330.0" layoutY="285" mnemonicParsing="false" onAction="#skipErrorLog" prefWidth="100.0" text="日志错误">
+                                        <Button layoutX="330.0" layoutY="285" mnemonicParsing="false" onAction="#skipErrorLog" prefWidth="100.0" text="错误日志">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>

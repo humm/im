@@ -222,8 +222,6 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolCheckMenuResultPath;
 
-    private String systemToolCheckMenuSubFile;
-
     private String systemToolCheckMenuEndFlag;
 
     private String systemToolCheckMenuSkipRouter;

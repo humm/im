@@ -49,7 +49,7 @@ public class CheckResultController implements Initializable {
             initTab(appConfigDto, "40.老版全量开通不同.sql");
             initTab(appConfigDto, "50.缺少路由.sql");
             initTab(appConfigDto, "60.缺少日志.sql");
-            initTab(appConfigDto, "70.日志错误.sql");
+            initTab(appConfigDto, "70.错误日志.sql");
             initTab(appConfigDto, "5.所有菜单.sql");
         } else if (PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT.equals(pageType)) {
             initTab(appConfigDto, "1.全量新版升级.sql");

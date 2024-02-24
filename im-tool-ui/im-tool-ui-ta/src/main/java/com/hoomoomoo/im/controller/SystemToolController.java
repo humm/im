@@ -151,7 +151,7 @@ public class SystemToolController implements Initializable {
                             public void run() {
                                 while (true) {
                                     try {
-                                        Thread.sleep(1000);
+                                        Thread.sleep(1500);
                                     } catch (InterruptedException e) {
                                     }
                                     if (checkFlag) {
@@ -180,37 +180,37 @@ public class SystemToolController implements Initializable {
 
     @FXML
     void skipNewMenu(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU, "忽略全量新版");
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU, "忽略新版全量");
         addLog("忽略全量新版");
     }
 
     @FXML
     void skipOldMenu(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU, "忽略全量老版");
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU, "忽略老版全量");
         addLog("忽略全量老版");
     }
 
     @FXML
     void skipNewDiff(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU, "忽略全量开通新版");
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU, "忽略新版全量开通不同");
         addLog("忽略全量开通新版");
     }
 
     @FXML
     void skipOldDiff(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU, "忽略全量开通老版");
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU, "忽略老版全量开通不同");
         addLog("忽略全量开通老版");
     }
 
     @FXML
     void skipRouter(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER, "配置忽略路由");
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER, "忽略路由");
         addLog("配置忽略路由");
     }
 
     @FXML
     void skipLog(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG, "忽略日志信息");
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG, "忽略缺少日志");
         addLog("忽略日志信息");
     }
 

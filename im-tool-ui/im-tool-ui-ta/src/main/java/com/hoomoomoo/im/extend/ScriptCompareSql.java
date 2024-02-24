@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.extend;
 
+import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.controller.SystemToolController;
 import com.hoomoomoo.im.dto.AppConfigDto;
@@ -27,7 +28,7 @@ public class ScriptCompareSql {
     private int needAddUedMenuNum = 0;
     // 所有菜单
     private Set<String> totalMenu = new HashSet<>();
-    // 新版ued需增加菜单
+    // 新版需增加菜单
     private List<String> needAddUedMenu = new ArrayList<>();
     // 所有菜单缓存
     private Map<String, List<String>> menuCache = new LinkedHashMap<>();
@@ -47,9 +48,9 @@ public class ScriptCompareSql {
     private Map<String, List<String>> subTransExtCache = new LinkedHashMap<>();
     // 所有交易码缓存
     private Map<String, List<String>> transCache = new LinkedHashMap<>();
-    // 新版ued已配置菜单  menu_code/menu_name
+    // 新版已配置菜单  menu_code/menu_name
     private Map<String, String> menuUedExistCache = new LinkedHashMap<>();
-    // 新版ued已配置菜单  menu_code/menu_name reserve
+    // 新版已配置菜单  menu_code/menu_name reserve
     private Map<String, String[]> menuUedReserveCache = new LinkedHashMap<>();
     // 全量脚本已配置菜单
     private Set<String> menuBaseExistCache = new LinkedHashSet<>();
@@ -176,7 +177,7 @@ public class ScriptCompareSql {
         lackRouterCheck(appConfigDto);
         // 缺少日志
         lackLogCheck(appConfigDto);
-        // 日志错误
+        // 错误日志
         logErrorCheck(appConfigDto);
         // 所有菜单
         allMenuStat(appConfigDto);
@@ -202,6 +203,7 @@ public class ScriptCompareSql {
             }
         }
         File[] fileList = file.listFiles();
+        Set<String> allRouterMenu = new HashSet<>();
         for (File item : fileList) {
             String fileName = item.getName().replace(".js", "");
             if ("analysisByTrans".equals(fileName) || skipRouter.contains(fileName)) {
@@ -213,9 +215,37 @@ public class ScriptCompareSql {
                 List<String> extendMenuCodeList = FileUtils.readNormalFile(basePathRouter + "analysisByTrans.js", false);
                 menuMap.addAll(initMenuRouter(extendMenuCodeList));
             }
+            allRouterMenu.addAll(menuMap);
             compareMenu(menuMap, fileName + ".sql");
             menuRouterCache.addAll(menuMap);
         }
+
+        // 校验多余非四级菜单
+        List<String> menuCodeList = new ArrayList<>();
+        Map<String, Map<String, String>> menuTemp = JSONObject.parseObject(JSONObject.toJSONString(newMenuExtCache), Map.class);
+        Iterator<String> allRouterIterator = allRouterMenu.iterator();
+        while (allRouterIterator.hasNext()) {
+            String key = allRouterIterator.next();
+            menuTemp.remove(key);
+            menuTemp.remove(key + "T");
+            menuTemp.remove(key.substring(0, key.length() - 1));
+        }
+        Iterator<String> uedExistIterator = menuUedExistCache.keySet().iterator();
+        while (uedExistIterator.hasNext()) {
+            String menuCode = uedExistIterator.next();
+            menuTemp.remove(menuCode);
+            menuTemp.remove(menuCode + "T");
+        }
+        Iterator<String> menuTempIterator = menuTemp.keySet().iterator();
+        while (menuTempIterator.hasNext()) {
+            String menuCode = menuTempIterator.next();
+            if (skipNewMenuCache.contains(menuCode)) {
+                continue;
+            }
+            menuCodeList.add(buildMenuInfo(menuCode));
+            needAddUedMenuNum++;
+        }
+        writeFile(menuCodeList, "extend.sql");
         needAddUedMenu.add(0, "-- 待处理【" + needAddUedMenuNum + "】");
         needAddUedMenu.add(0, "-- ************************************* 缺少新版全量 *************************************");
         FileUtils.writeFile(resultPath + "10.缺少新版全量.sql", needAddUedMenu, false);
@@ -404,7 +434,7 @@ public class ScriptCompareSql {
     }
 
     /**
-     * 日志错误
+     * 错误日志
      *
      * @param appConfigDto
      * @throws Exception
@@ -467,8 +497,8 @@ public class ScriptCompareSql {
         }
         subTransExtErrorList.add(0, "-- 待处理【" + subTransExtErrorList.size() + "】\n\n");
         subTransExtErrorList.add(0, "-- ************************************* 0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入 *************************************");
-        subTransExtErrorList.add(0, "-- ******************************************************* 日志错误 *******************************************************");
-        FileUtils.writeFile(resultPath + "70.日志错误.sql", subTransExtErrorList, false);
+        subTransExtErrorList.add(0, "-- ******************************************************* 错误日志 *******************************************************");
+        FileUtils.writeFile(resultPath + "70.错误日志.sql", subTransExtErrorList, false);
     }
 
     /**
@@ -625,11 +655,15 @@ public class ScriptCompareSql {
             }
         }
         totalMenu.addAll(menuMap);
+        writeFile(menuCodeList, fileName);
+    }
+
+    private void writeFile(List<String> menuCodeList, String fileName) throws Exception {
         menuCodeList.add(0, "-- 待处理【" + menuCodeList.size() + "】\n");
         needAddUedMenu.add("\n\n-- ************************************* " + fileName.replace(".sql", " *************************************"));
         needAddUedMenu.addAll(menuCodeList);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (STR_0.equals(appConfigDto.getSystemToolCheckMenuSubFile()) && !"10.缺少新版全量.sql".equals(fileName)) {
+        if (!"10.缺少新版全量.sql".equals(fileName)) {
             return;
         }
         FileUtils.writeFile(resultPath + fileName, menuCodeList, false);
@@ -949,6 +983,7 @@ public class ScriptCompareSql {
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
                     String menuCode = getMenuCode(item);
+                    String menuName = getMenuName(item);
                     if (menuCode != null) {
                         String filePath = file.getPath();
                         if (addFilePath(filePath)) {
@@ -959,6 +994,29 @@ public class ScriptCompareSql {
                                 fileMap.put(filePath, getMenuDetail(18, item));
                                 newMenuExtCache.put(menuCode, fileMap);
                             }
+                        }
+                        // 补充菜单名称信息
+                        if (menuCache.containsKey(menuCode)) {
+                            if (addFilePath(filePath)) {
+                                List<String> location = menuCache.get(menuCode);
+                                boolean flag = true;
+                                for (String ele : location) {
+                                    if (ele.equals(filePath)) {
+                                        flag = false;
+                                        break;
+                                    }
+                                }
+                                if (flag) {
+                                    menuCache.get(menuCode).add(filePath);
+                                }
+                            }
+                        } else {
+                            List<String> menu = new ArrayList<>();
+                            menu.add(menuName);
+                            if (addFilePath(filePath)) {
+                                menu.add(filePath);
+                            }
+                            menuCache.put(menuCode, menu);
                         }
                     }
                     endFlag = true;
