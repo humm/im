@@ -32,7 +32,7 @@ public class StarterUtils {
             FileUtils.unJar(PATH_APP);
             LoggerUtils.appStartInfo(String.format(MSG_UPDATE, NAME_CONFIG_FILE));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            String appName = appConfigDto.getAppName() + STR_SPACE_2;
+            String appName = getAppName(appConfigDto.getAppName()) + STR_SPACE_2;
             if (!FileUtils.startByJar()) {
                 appName += String.format(MSG_APP_TITLE, APP_MODE_NAME, APP_MODE_NAME_APP);
                 String pathFolder = FileUtils.getPathFolder().replace(APP_CODE_BASE, appCode);
@@ -95,5 +95,19 @@ public class StarterUtils {
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
+    }
+
+    private static String getAppName(String appName) {
+        if (StringUtils.isBlank(appName)) {
+            return "TA小工具";
+        }
+        String[] ele = appName.trim().split(STR_SEMICOLON);
+        if (ele.length != 1) {
+            int min = 0;
+            int max = ele.length - 1;
+            int index = min + (int) (Math.random() * (max - min + 1));
+            appName = ele[index];
+        }
+        return appName;
     }
 }

@@ -450,48 +450,7 @@ public class ScriptCompareSql {
             }
             String subTransCode = transCode.split("-")[1].trim();
             String opDir = subTransExtCache.get(transCode).get(0).split("-")[0];
-            // 0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入
-            boolean error = false;
-            switch (opDir) {
-                case STR_0:
-                    if (!subTransCode.endsWith("Add")) {
-                        error = true;
-                    }
-                    break;
-                case STR_1:
-                    if (!subTransCode.endsWith("Edit") && !subTransCode.endsWith("Edt")) {
-                        error = true;
-                    }
-                    break;
-                case STR_2:
-                    if (!subTransCode.endsWith("Delete") && !subTransCode.endsWith("Del")) {
-                        error = true;
-                    }
-                    break;
-                case STR_3:
-                    error = true;
-                    break;
-                case STR_4:
-                    if (!subTransCode.endsWith("Query") && !subTransCode.endsWith("Qry")) {
-                        error = true;
-                    }
-                    break;
-                case STR_5:
-                    if (!subTransCode.endsWith("Export") && !subTransCode.endsWith("Exp") && !subTransCode.endsWith("Download") && !subTransCode.endsWith("Dwn")) {
-                        error = true;
-                    }
-                    break;
-                case STR_6:
-                    if (!subTransCode.endsWith("Import") && !subTransCode.endsWith("Imp")) {
-                        error = true;
-                    }
-                    break;
-                default:
-                    error = true;
-                    break;
-
-            }
-            if (error) {
+            if (!opDir.equals(ScriptUtils.getSubTransCodeOpDir(subTransCode, STR_BLANK))) {
                 subTransExtErrorList.add(buildMenuTransInfo(subTransExtCache, transCode));
             }
         }
@@ -844,6 +803,9 @@ public class ScriptCompareSql {
         if (!item.contains("(") || !item.contains(")")) {
             return -1;
         }
+        if (item.toLowerCase().contains("insert") && item.toLowerCase().contains("values")) {
+            return -1;
+        }
         return item.substring(item.indexOf("(") + 1, item.lastIndexOf(")")).split(",").length;
     }
 
@@ -907,13 +869,14 @@ public class ScriptCompareSql {
             // 缓存菜单信息
             boolean endFlag = true;
             for (String item : content) {
-                if (item.toLowerCase().contains("delete")) {
+                String itemLower = item.toLowerCase();
+                if (itemLower.contains("delete")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tsys_menu_std") || item.toLowerCase().contains("tsys_menu_ext") || item.toLowerCase().contains("tbfundgranttablestmp")) {
+                if (itemLower.contains("tsys_menu_std") || itemLower.contains("tsys_menu_ext") || itemLower.contains("tbfundgranttablestmp")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tsys_menu")) {
+                if (itemLower.contains("tsys_menu")) {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
@@ -942,13 +905,14 @@ public class ScriptCompareSql {
             // 缓存老版本菜单详情信息
             endFlag = true;
             for (String item : content) {
-                if (item.toLowerCase().contains("delete")) {
+                String itemLower = item.toLowerCase();
+                if (itemLower.contains("delete")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tsys_menu_std") || item.toLowerCase().contains("tsys_menu_ext") || item.toLowerCase().contains("tbfundgranttablestmp")) {
+                if (itemLower.contains("tsys_menu_std") || itemLower.contains("tsys_menu_ext") || itemLower.contains("tbfundgranttablestmp")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tsys_menu")) {
+                if (itemLower.contains("tsys_menu")) {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
@@ -972,13 +936,14 @@ public class ScriptCompareSql {
             // 缓存新版本菜单详情信息
             endFlag = true;
             for (String item : content) {
-                if (item.toLowerCase().contains("delete")) {
+                String itemLower = item.toLowerCase();
+                if (itemLower.contains("delete")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tsys_menu ") || item.toLowerCase().contains("tsys_menu_ext") || item.toLowerCase().contains("tbfundgranttablestmp")) {
+                if (itemLower.contains("tsys_menu ") || itemLower.contains("tsys_menu_ext") || itemLower.contains("tbfundgranttablestmp")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tsys_menu_std")) {
+                if (itemLower.contains("tsys_menu_std")) {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
@@ -1026,13 +991,14 @@ public class ScriptCompareSql {
             // 缓存交易码信息
             endFlag = true;
             for (String item : content) {
-                if (item.toLowerCase().contains("delete")) {
+                String itemLower = item.toLowerCase();
+                if (itemLower.contains("delete")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tbfundgranttablestmp")) {
+                if (itemLower.contains("tbfundgranttablestmp")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tsys_trans")) {
+                if (itemLower.contains("tsys_trans")) {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
@@ -1058,13 +1024,15 @@ public class ScriptCompareSql {
             // 缓存子交易码信息
             endFlag = true;
             for (String item : content) {
-                if (item.toLowerCase().contains("delete")) {
+                String itemLower = item.toLowerCase();
+                if (itemLower.contains("delete")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tbfundgranttablestmp") || item.toLowerCase().contains("tsys_trans ") || item.toLowerCase().contains("tsys_subtrans_ext")) {
+                if (itemLower.contains("tbfundgranttablestmp")
+                        || itemLower.contains("tsys_trans ") || itemLower.contains("tsys_subtrans_ext")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tsys_subtrans")) {
+                if (itemLower.contains("tsys_subtrans")) {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
@@ -1095,13 +1063,14 @@ public class ScriptCompareSql {
             // 缓存日志信息
             endFlag = true;
             for (String item : content) {
-                if (item.toLowerCase().contains("delete")) {
+                String itemLower = item.toLowerCase();
+                if (itemLower.contains("delete")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tbfundgranttablestmp") || item.toLowerCase().contains("tsys_subtrans ") || item.toLowerCase().contains("tsys_trans ")) {
+                if (itemLower.contains("tbfundgranttablestmp") || itemLower.contains("tsys_subtrans ") || itemLower.contains("tsys_trans ")) {
                     continue;
                 }
-                if (item.toLowerCase().contains("tsys_subtrans_ext")) {
+                if (itemLower.contains("tsys_subtrans_ext")) {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {

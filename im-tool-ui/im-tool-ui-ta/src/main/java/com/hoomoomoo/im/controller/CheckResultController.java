@@ -71,9 +71,9 @@ public class CheckResultController implements Initializable {
         functionTab.getTabs().add(tab);
     }
 
-    private List<String> getContent(AppConfigDto appConfigDto, String path) throws IOException {
+    private List<String> getContent(AppConfigDto appConfigDto, String fileName) throws IOException {
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
-        return FileUtils.readNormalFile(resultPath + "\\" + path, false);
+        return FileUtils.readNormalFile(resultPath + "\\" + fileName, false);
     }
 
     private void outputContent(Tab tab, List<String> content) {

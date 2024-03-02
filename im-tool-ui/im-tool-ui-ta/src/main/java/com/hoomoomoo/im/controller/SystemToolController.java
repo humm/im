@@ -4,6 +4,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.extend.ScriptCompareSql;
+import com.hoomoomoo.im.extend.ScriptRepairSql;
 import com.hoomoomoo.im.extend.ScriptUpdateSql;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
@@ -61,6 +62,7 @@ public class SystemToolController implements Initializable {
 
     private int moveStep = 1;
 
+    private boolean doing = false;
 
     @SneakyThrows
     @Override
@@ -130,38 +132,21 @@ public class SystemToolController implements Initializable {
         addLog("同步发版时间");
     }
 
-    private boolean checkFlag = false;
-
     @FXML
     void checkMenu(ActionEvent event) {
         closeCheckResultStage();
-        if (checkFlag) {
+        if (doing) {
             OutputUtils.info(logs, getCheckMenuMsg("检查中 ··· 请稍后 ···"));
             return;
         }
-        checkFlag = true;
+        doing = true;
         try {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
                     try {
                         OutputUtils.info(logs, getCheckMenuMsg("检查开始"));
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                while (true) {
-                                    try {
-                                        Thread.sleep(1500);
-                                    } catch (InterruptedException e) {
-                                    }
-                                    if (checkFlag) {
-                                        OutputUtils.info(logs, getCheckMenuMsg("检查中 ··· ··· ···"));
-                                    } else {
-                                        break;
-                                    }
-                                }
-                            }
-                        }).start();
+                        showScheduleInfo(NAME_CHECK_MENU, "检查");
                         new ScriptCompareSql().check();
                         OutputUtils.info(logs, getCheckMenuMsg("检查结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
@@ -169,12 +154,13 @@ public class SystemToolController implements Initializable {
                     } catch (Exception e) {
                         OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
                     } finally {
-                        checkFlag = false;
+                        doing = false;
                     }
                 }
             }).start();
         } catch (Exception e) {
             OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
+            doing = false;
         }
     }
 
@@ -227,6 +213,37 @@ public class SystemToolController implements Initializable {
             addLog("检查结果");
         } catch (Exception e) {
             OutputUtils.info(logs, getCheckMenuMsg("请检查结果文件是否不存在"));
+        }
+    }
+
+    @FXML
+    void addLackLog(ActionEvent event) {
+        if (doing) {
+            OutputUtils.info(logs, getRepairLackExt("修复中 ··· 请稍后 ···"));
+            return;
+        }
+        doing = true;
+        try {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        OutputUtils.info(logs, getRepairLackExt("修复开始"));
+                        showScheduleInfo(NAME_REPAIR_LACK_EXT_NAME, "修复");
+                        ScriptRepairSql.addLackLog();
+                        OutputUtils.info(logs, getRepairLackExt("修复结束"));
+                        OutputUtils.info(logs, STR_NEXT_LINE);
+                        addLog("修复缺少日志");
+                    } catch (Exception e) {
+                        OutputUtils.info(logs, getRepairLackExt(e.getMessage()));
+                    } finally {
+                        doing = false;
+                    }
+                }
+            }).start();
+        } catch (Exception e) {
+            OutputUtils.info(logs, getRepairLackExt(e.getMessage()));
+            doing = false;
         }
     }
 
@@ -285,8 +302,16 @@ public class SystemToolController implements Initializable {
         return TaCommonUtils.getMsgContainDate("【"+ NAME_CHECK_MENU + "】") + STR_SPACE + msg + STR_NEXT_LINE;
     }
 
+    public static String getRepairLackExt (String msg) {
+        return TaCommonUtils.getMsgContainDate("【"+ NAME_REPAIR_LACK_EXT_NAME + "】") + STR_SPACE + msg + STR_NEXT_LINE;
+    }
+
     public static String getUpdateMenuMsg (String msg) {
         return TaCommonUtils.getMsgContainDate("【"+ NAME_UPDATE_MENU + "】") + STR_SPACE + msg + STR_NEXT_LINE;
+    }
+
+    public static String getCommonMsg (String functionName, String msg) {
+        return TaCommonUtils.getMsgContainDate("【"+ functionName + "】") + STR_SPACE + msg + STR_NEXT_LINE;
     }
 
     private void doShakeMouse(AppConfigDto appConfigDto) {
@@ -397,5 +422,28 @@ public class SystemToolController implements Initializable {
         } catch (Exception e) {
             LoggerUtils.info(getCheckMenuMsg(e.getMessage()));
         }
+    }
+
+    private void showScheduleInfo(String functionName, String msg) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                    }
+                    if (doing) {
+                        String tips = STR_BLANK;
+                        if (NAME_REPAIR_LACK_EXT_NAME.equals(functionName)) {
+                            tips = " 低速行驶中 ···";
+                        }
+                        OutputUtils.info(logs, getCommonMsg(functionName, msg + "中 ··· ··· ···" + tips));
+                    } else {
+                        break;
+                    }
+                }
+            }
+        }).start();
     }
 }
