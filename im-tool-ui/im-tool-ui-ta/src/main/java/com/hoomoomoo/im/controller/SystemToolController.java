@@ -62,7 +62,7 @@ public class SystemToolController implements Initializable {
 
     private int moveStep = 1;
 
-    private boolean doing = false;
+    private boolean executeFlag = false;
 
     @SneakyThrows
     @Override
@@ -110,6 +110,7 @@ public class SystemToolController implements Initializable {
         try {
             executeUpdateVersion();
         } catch (Exception e) {
+            LoggerUtils.info(e);
             OutputUtils.info(logs, e.getMessage());
         } finally {
             updateVersionBtn.setDisable(false);
@@ -125,6 +126,7 @@ public class SystemToolController implements Initializable {
             OutputUtils.info(logs, getUpdateVersionMsg("清除个性化成功"));
             OutputUtils.info(logs, STR_NEXT_LINE);
         } catch (Exception e) {
+            LoggerUtils.info(e);
             OutputUtils.info(logs, e.getMessage());
         } finally {
             clearVersionBtn.setDisable(false);
@@ -135,11 +137,11 @@ public class SystemToolController implements Initializable {
     @FXML
     void checkMenu(ActionEvent event) {
         closeCheckResultStage();
-        if (doing) {
+        if (executeFlag) {
             OutputUtils.info(logs, getCheckMenuMsg("检查中 ··· 请稍后 ···"));
             return;
         }
-        doing = true;
+        executeFlag = true;
         try {
             new Thread(new Runnable() {
                 @Override
@@ -152,15 +154,17 @@ public class SystemToolController implements Initializable {
                         OutputUtils.info(logs, STR_NEXT_LINE);
                         addLog("全量菜单检查");
                     } catch (Exception e) {
+                        LoggerUtils.info(e);
                         OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
                     } finally {
-                        doing = false;
+                        executeFlag = false;
                     }
                 }
             }).start();
         } catch (Exception e) {
+            LoggerUtils.info(e);
             OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
-            doing = false;
+            executeFlag = false;
         }
     }
 
@@ -212,17 +216,18 @@ public class SystemToolController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT, "检查结果");
             addLog("检查结果");
         } catch (Exception e) {
+            LoggerUtils.info(e);
             OutputUtils.info(logs, getCheckMenuMsg("请检查结果文件是否不存在"));
         }
     }
 
     @FXML
     void addLackLog(ActionEvent event) {
-        if (doing) {
+        if (executeFlag) {
             OutputUtils.info(logs, getRepairLackExt("修复中 ··· 请稍后 ···"));
             return;
         }
-        doing = true;
+        executeFlag = true;
         try {
             new Thread(new Runnable() {
                 @Override
@@ -235,15 +240,50 @@ public class SystemToolController implements Initializable {
                         OutputUtils.info(logs, STR_NEXT_LINE);
                         addLog("修复缺少日志");
                     } catch (Exception e) {
+                        LoggerUtils.info(e);
                         OutputUtils.info(logs, getRepairLackExt(e.getMessage()));
                     } finally {
-                        doing = false;
+                        executeFlag = false;
                     }
                 }
             }).start();
         } catch (Exception e) {
+            LoggerUtils.info(e);
             OutputUtils.info(logs, getRepairLackExt(e.getMessage()));
-            doing = false;
+            executeFlag = false;
+        }
+    }
+
+    @FXML
+    void repairLogDiff(ActionEvent event) {
+        if (executeFlag) {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF_NAME, "修复中 ··· 请稍后 ···"));
+            return;
+        }
+        executeFlag = true;
+        try {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF_NAME, "修复开始"));
+                        showScheduleInfo(NAME_REPAIR_LOG_DIFF_NAME, "修复");
+                        ScriptRepairSql.repairLogDiff();
+                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF_NAME, "修复结束"));
+                        OutputUtils.info(logs, STR_NEXT_LINE);
+                        addLog("修复全量开通同时存在日志");
+                    } catch (Exception e) {
+                        LoggerUtils.info(e);
+                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF_NAME, e.getMessage()));
+                    } finally {
+                        executeFlag = false;
+                    }
+                }
+            }).start();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF_NAME, e.getMessage()));
+            executeFlag = false;
         }
     }
 
@@ -253,6 +293,7 @@ public class SystemToolController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT, "升级脚本");
             addLog("升级脚本");
         } catch (Exception e) {
+            LoggerUtils.info(e);
             OutputUtils.info(logs, getUpdateMenuMsg("请检查结果文件是否不存在"));
         }
     }
@@ -279,6 +320,7 @@ public class SystemToolController implements Initializable {
                 }
             }).start();
         } catch (Exception e) {
+            LoggerUtils.info(e);
             OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
         }
     }
@@ -392,6 +434,7 @@ public class SystemToolController implements Initializable {
                 }
                 addLog("同步发版时间");
             } catch (Exception e) {
+                LoggerUtils.info(e);
                 throw new Exception(e);
             } finally {
                 if (fileInputStream != null) {
@@ -420,30 +463,54 @@ public class SystemToolController implements Initializable {
                 appConfigDto.setCheckResultStage(null);
             }
         } catch (Exception e) {
+            LoggerUtils.info(e);
             LoggerUtils.info(getCheckMenuMsg(e.getMessage()));
         }
     }
 
     private void showScheduleInfo(String functionName, String msg) {
+        long start = System.currentTimeMillis();
         new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
-                    try {
-                        Thread.sleep(1500);
-                    } catch (InterruptedException e) {
-                    }
-                    if (doing) {
-                        String tips = STR_BLANK;
-                        if (NAME_REPAIR_LACK_EXT_NAME.equals(functionName)) {
-                            tips = " 低速行驶中 ···";
-                        }
-                        OutputUtils.info(logs, getCommonMsg(functionName, msg + "中 ··· ··· ···" + tips));
+                    if (executeFlag) {
+                        OutputUtils.info(logs, getCommonMsg(functionName, msg + "中 ··· ··· ··· 耗时 " + getRunTime(start) + " ··· "));
                     } else {
-                        break;
+                       break;
+                    }
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
                     }
                 }
             }
         }).start();
+    }
+
+    private String getRunTime(long start) {
+        String time = STR_BLANK;
+        long end = System.currentTimeMillis();
+        long cost = (end - start) / 1000;
+        long second = 0;
+        long hour = 0;
+        long minute = 0;
+        second = cost % 60;
+        minute = cost / 60;
+        if (minute > 60) {
+            hour = minute / 60;
+            minute = minute % 60;
+        }
+        if (hour > 0) {
+            time = hour + "时";
+        }
+        if (minute > 0) {
+            time += minute + "分";
+        }
+        if (hour == 0 && minute == 0 && second == 0) {
+            second = 1;
+        }
+        time += second + "秒";
+        return time;
     }
 }

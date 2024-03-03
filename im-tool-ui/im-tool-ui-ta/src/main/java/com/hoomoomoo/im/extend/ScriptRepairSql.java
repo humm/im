@@ -6,8 +6,9 @@ import com.hoomoomoo.im.utils.FileUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 
@@ -15,6 +16,9 @@ public class ScriptRepairSql {
 
     private static String CONSOLE_FUND_TA_VUE_MENU_LINE_INDEX = "-- * * * * * * * * * * * * * * * * * * *";
     private static String EXT_LINE_INDEX = "commit";
+
+    private static Map<String, List<Map<String, String>>> totalLogCache = new LinkedHashMap<>();
+    private static Set<String> totalSubTransExtCache = new LinkedHashSet<>();
 
     public static void addLackLog() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
@@ -25,7 +29,7 @@ public class ScriptRepairSql {
         }
         String transCode = STR_BLANK;
         String subTransCode = STR_BLANK;
-        for (int i=2; i<logList.size(); i++) {
+        for (int i = 2; i < logList.size(); i++) {
             String item = logList.get(i).replace(ANNOTATION_TYPE_NORMAL, STR_BLANK).trim();
             if (StringUtils.isBlank(item)) {
                 continue;
@@ -37,19 +41,19 @@ public class ScriptRepairSql {
                     transCode = trans[0];
                     subTransCode = trans[1].trim().split(STR_SPACE)[0];
                     // 全量脚本
-                    addSubTransExt(transCode, subTransCode,  appConfigDto.getSystemToolCheckMenuBasePath() + "\\sql\\pub\\001initdata\\basedata\\07console-fund-ta-vue-menu.sql");
+                    addSubTransExt(transCode, subTransCode, null,appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu);
                 } else {
                     transCode = STR_BLANK;
                     subTransCode = STR_BLANK;
                 }
             } else {
                 // 实际路径
-                addSubTransExt(transCode, subTransCode, item);
+                addSubTransExt(transCode, subTransCode, null, item);
             }
         }
     }
 
-    private static void addSubTransExt(String transCode, String subTransCode, String path) throws IOException {
+    private static void addSubTransExt(String transCode, String subTransCode, String opDir, String path) throws IOException {
         if (StringUtils.isBlank(transCode) || StringUtils.isBlank(path)) {
             return;
         }
@@ -72,8 +76,8 @@ public class ScriptRepairSql {
                 String[] sqlPart = ele.split("values");
                 if (sqlPart.length == 2) {
                     String valuePart = sqlPart[1];
-                    String transCodeLine = ScriptUtils.getTransCode(valuePart);
-                    String subTransCodeLine = ScriptUtils.getSubTransCode(valuePart);
+                    String transCodeLine = ScriptSqlUtils.getTransCode(valuePart);
+                    String subTransCodeLine = ScriptSqlUtils.getSubTransCode(valuePart);
                     if (transCode.equals(transCodeLine)) {
                         lineIndex = valuePart;
                     }
@@ -83,10 +87,10 @@ public class ScriptRepairSql {
                 }
             }
         }
-        for (int i=0; i<item.size(); i++) {
+        for (int i = 0; i < item.size(); i++) {
             String ele = item.get(i);
             if (ele.contains(lineIndex)) {
-                String extInfo = buildSubTransExt(transCode, subTransCode);
+                String extInfo = buildSubTransExt(transCode, subTransCode, opDir);
                 if (lineIndex.toLowerCase().contains(EXT_LINE_INDEX) || CONSOLE_FUND_TA_VUE_MENU_LINE_INDEX.equals(lineIndex)) {
                     extInfo = STR_NEXT_LINE + extInfo + STR_NEXT_LINE_2;
                     ele = extInfo + ele;
@@ -100,12 +104,169 @@ public class ScriptRepairSql {
         FileUtils.writeFile(path, item, false);
     }
 
-    private static String buildSubTransExt(String transCode, String subTransCode) {
+    private static String buildSubTransExt(String transCode, String subTransCode, String opDir) {
         StringBuilder ext = new StringBuilder();
-        String opDir = ScriptUtils.getSubTransCodeOpDir(subTransCode, STR_3);
+        if (StringUtils.isBlank(opDir)) {
+            opDir = ScriptSqlUtils.getSubTransCodeOpDir(subTransCode, STR_3);
+        }
         ext.append("delete from tsys_subtrans_ext where trans_code = '" + transCode + "' and sub_trans_code = '" + subTransCode + "';").append(STR_NEXT_LINE);
         ext.append("insert into tsys_subtrans_ext (trans_code, sub_trans_code, op_dir, remark, need_active, ta_status_ctrl, active_flag)").append(STR_NEXT_LINE);
         ext.append("values ('" + transCode + "', '" + subTransCode + "','" + opDir + "', ' ', '1', ' ', ' ');");
         return ext.toString();
+    }
+
+    public static void repairLogDiff() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String basePath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu;
+        List<String> item = FileUtils.readNormalFile(basePath, false);
+        StringBuilder content = new StringBuilder();
+        for (String ele : item) {
+            content.append(ele);
+        }
+        String[] sql = content.toString().split(STR_SEMICOLON);
+        for (String ele : sql) {
+            if (!ele.toLowerCase().contains("tsys_subtrans_ext")) {
+                continue;
+            }
+            String[] sqlPart = ele.split("values");
+            if (sqlPart.length == 2) {
+                String valuePart = sqlPart[1];
+                String transCode = ScriptSqlUtils.getTransCode(valuePart);
+                String subTransCode = ScriptSqlUtils.getSubTransCode(valuePart);
+                String subTransOpDir = ScriptSqlUtils.getSubTransOpDir(valuePart);
+                if (totalLogCache.containsKey(transCode)) {
+                    totalLogCache.get(transCode).add(buildSubTrans(transCode, subTransCode, subTransOpDir));
+                } else {
+                    List<Map<String, String>> logList = new ArrayList<>();
+                    logList.add(buildSubTrans(transCode, subTransCode, subTransOpDir));
+                    totalLogCache.put(transCode, logList);
+                }
+            }
+        }
+
+        File fileExt = new File(appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.basePathExt);
+        for (File file : fileExt.listFiles()) {
+            repairByFile(file);
+        }
+
+        boolean subTransCodeIndex = false;
+        for (int i=0; i<item.size(); i++) {
+            String ele = item.get(i);
+            String eleLower = ele.toLowerCase().trim();
+            if (!eleLower.contains("tsys_subtrans_ext") && !subTransCodeIndex) {
+                continue;
+            }
+            String transCode = null;
+            String subTransCode = null;
+            if (eleLower.startsWith("delete")) {
+                transCode = ScriptSqlUtils.getTransCodeByDeleteSql(ele);
+                subTransCode = ScriptSqlUtils.getSubTransCodeByDeleteSql(ele);
+            } else if (eleLower.startsWith("insert")){
+                subTransCodeIndex = true;
+            } else {
+                subTransCodeIndex = false;
+                transCode = ScriptSqlUtils.getTransCode(ele);
+                subTransCode = ScriptSqlUtils.getSubTransCode(ele);
+            }
+            if (transCode == null) {
+                continue;
+            }
+            String key = transCode + STR_HYPHEN + subTransCode;
+            if (totalSubTransExtCache.contains(key)) {
+                if (!ele.contains("--")) {
+                    ele = "-- " + ele;
+                    if (i > 0) {
+                        String prevLine = item.get(i - 1);
+                        if (prevLine.contains("tsys_subtrans_ext") && !prevLine.contains("--")) {
+                            item.set(i - 1, "-- " + prevLine);
+                        }
+                    }
+                }
+            }
+            item.set(i, ele);
+        }
+        FileUtils.writeFile(basePath, item, false);
+    }
+
+    private static void repairByFile(File file) throws Exception {
+        if (file.isDirectory()) {
+            for (File item : file.listFiles()) {
+                repairByFile(item);
+            }
+        } else {
+            String fileName = file.getName();
+            if (!fileName.endsWith(FILE_TYPE_SQL)) {
+                return;
+            }
+            List<String> item = FileUtils.readNormalFile(file.getPath(), false);
+            StringBuilder content = new StringBuilder();
+            for (String ele : item) {
+                content.append(ele);
+            }
+            Set<String> subTransCache = new LinkedHashSet<>();
+            Set<String> subTransExtCache = new LinkedHashSet<>();
+            String[] sql = content.toString().split(STR_SEMICOLON);
+            for (String ele : sql) {
+                if (!ele.toLowerCase().contains("tsys_subtrans_ext") && !ele.toLowerCase().contains("tsys_subtrans")) {
+                    continue;
+                }
+                String[] sqlPart = ele.split("values");
+                if (sqlPart.length == 2) {
+                    String valuePart = sqlPart[1];
+                    String transCode = ScriptSqlUtils.getTransCode(valuePart);
+                    String subTransCode = ScriptSqlUtils.getSubTransCode(valuePart);
+                    String subTransName = ScriptSqlUtils.getSubTransName(valuePart);
+                    if (subTransCode.endsWith("QryC") || subTransCode.endsWith("QueryC") || subTransCode.endsWith("ColC")
+                            || subTransName.endsWith("查询列") || subTransName.endsWith("结果列")) {
+                        continue;
+                    }
+                    String key = transCode + STR_HYPHEN + subTransCode;
+                    if (ele.toLowerCase().contains("tsys_subtrans_ext")) {
+                        subTransExtCache.add(key);
+                    } else if (ele.toLowerCase().contains("tsys_subtrans")) {
+                        subTransCache.add(key);
+                    }
+                }
+            }
+            totalSubTransExtCache.addAll(subTransCache);
+            Set<String> needAddLog = new HashSet<>();
+            Iterator<String> iterator = subTransCache.iterator();
+            while (iterator.hasNext()) {
+                String transCode = iterator.next();
+                if (!subTransExtCache.contains(transCode)) {
+                    needAddLog.add(transCode);
+                }
+            }
+            Iterator<String> needIterator = needAddLog.iterator();
+            while (needIterator.hasNext()) {
+                String[] key = needIterator.next().split(STR_HYPHEN);
+                if (key.length == 2) {
+                    String transCode = key[0].trim();
+                    String subTransCode = key[1].trim();
+                    addSubTransExt(transCode, subTransCode, getOpDir(transCode, subTransCode), file.getPath());
+                }
+            }
+        }
+    }
+
+    private static String getOpDir(String transCode, String subTransCode) {
+        List<Map<String, String>> logList = totalLogCache.get(transCode);
+        if (CollectionUtils.isEmpty(logList)) {
+            return null;
+        }
+        for (Map<String, String> item : logList) {
+            if (transCode.equals(item.get("transCode")) && subTransCode.equals(item.get("subTransCode"))) {
+                return item.get("subTransOpDir");
+            }
+        }
+        return null;
+    }
+
+    private static Map<String, String> buildSubTrans(String transCode, String subTransCode, String subTransOpDir) {
+        Map<String, String> subTrans = new LinkedHashMap<>();
+        subTrans.put("transCode", transCode);
+        subTrans.put("subTransCode", subTransCode);
+        subTrans.put("subTransOpDir", subTransOpDir);
+        return subTrans;
     }
 }

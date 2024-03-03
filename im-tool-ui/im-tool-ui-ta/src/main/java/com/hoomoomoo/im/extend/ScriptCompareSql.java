@@ -19,10 +19,11 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
 public class ScriptCompareSql {
 
     private String resultPath = "";
-    private String basePathExt = "\\sql\\pub\\001initdata\\extradata\\";
-    private String basePathRouter = "\\front\\HUI1.0\\console-fund-ta-vue\\router\\modules\\";
-    private String baseMenu = "\\sql\\pub\\001initdata\\basedata\\07console-fund-ta-vue-menu.sql";
-    private String newUedPage = "\\sql\\pub\\001initdata\\basedata\\07console-fund-ta-vue-menu-new-ued.sql";
+    private String basePathExt = "";
+    private String basePathRouter = "";
+    private String baseMenu = "";
+    private String newUedPage = "";
+
     // 扫描文件数量
     private int extFileNum = 0;
     private int needAddUedMenuNum = 0;
@@ -82,10 +83,10 @@ public class ScriptCompareSql {
             if (StringUtils.isBlank(resPath)) {
                 throw new Exception("请配置参数【system.tool.check.menu.result.path】\n");
             }
-            basePathExt = basePath + basePathExt;
-            basePathRouter = basePath + basePathRouter;
-            baseMenu = basePath + baseMenu;
-            newUedPage = basePath + newUedPage;
+            basePathExt = basePath + ScriptSqlUtils.basePathExt;
+            basePathRouter = basePath + ScriptSqlUtils.basePathRouter;
+            baseMenu = basePath + ScriptSqlUtils.baseMenu;
+            newUedPage = basePath + ScriptSqlUtils.newUedPage;
             resultPath = resPath + "\\";
 
             String confPath = FileUtils.getFilePath(PATH_SKIP_NEW_MENU);
@@ -424,8 +425,12 @@ public class ScriptCompareSql {
         List<String> subTransExtList = new ArrayList<>();
         while (subTransIterator.hasNext()) {
             String transCode = subTransIterator.next().trim();
-            if (!subTransExtCache.containsKey(transCode) && !skipLogCache.contains(transCode) && !transCode.endsWith("QryC") && !transCode.endsWith("ColC")) {
-                subTransExtList.add(buildMenuInfo(subTransCache, transCode));
+            if (!subTransExtCache.containsKey(transCode) && !skipLogCache.contains(transCode) && !transCode.endsWith("QryC") && !transCode.endsWith("QueryC") && !transCode.endsWith("ColC")) {
+               String menu = buildMenuInfo(subTransCache, transCode);
+               if (menu.contains("查询列") || menu.contains("确认列")) {
+                   continue;
+               }
+               subTransExtList.add(menu);
             }
         }
         subTransExtList.add(0, "-- 待处理【" + subTransExtList.size() + "】\n\n");
@@ -450,7 +455,7 @@ public class ScriptCompareSql {
             }
             String subTransCode = transCode.split("-")[1].trim();
             String opDir = subTransExtCache.get(transCode).get(0).split("-")[0];
-            if (!opDir.equals(ScriptUtils.getSubTransCodeOpDir(subTransCode, STR_BLANK))) {
+            if (!opDir.equals(ScriptSqlUtils.getSubTransCodeOpDir(subTransCode, STR_BLANK))) {
                 subTransExtErrorList.add(buildMenuTransInfo(subTransExtCache, transCode));
             }
         }

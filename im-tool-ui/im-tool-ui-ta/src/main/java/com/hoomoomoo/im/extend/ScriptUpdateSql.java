@@ -11,7 +11,7 @@ import java.util.*;
 public class ScriptUpdateSql {
 
     private String resultPath = "";
-    private String newUedPage = "\\sql\\pub\\001initdata\\basedata\\07console-fund-ta-vue-menu-new-ued.sql";
+    private String newUedPage = "";
 
     public ScriptUpdateSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
@@ -23,7 +23,7 @@ public class ScriptUpdateSql {
         if (StringUtils.isBlank(resPath)) {
             throw new Exception("请配置参数【system.tool.check.menu.result.path】\n");
         }
-        newUedPage = basePath + newUedPage;
+        newUedPage = basePath + ScriptSqlUtils.newUedPage;
         resultPath = resPath + "\\";
     }
 

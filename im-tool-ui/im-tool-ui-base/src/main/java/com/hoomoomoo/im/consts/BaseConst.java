@@ -195,6 +195,7 @@ public class BaseConst {
     public static final String NAME_CHECK_MENU = "全量菜单检查";
     public static final String NAME_UPDATE_MENU = "菜单升级脚本";
     public static final String NAME_REPAIR_LACK_EXT_NAME = "修复缺少日志";
+    public static final String NAME_REPAIR_LOG_DIFF_NAME = "修复全量开通同时存在日志";
 
     public static final String NAME_MENU_UPDATE = "更新";
     public static final String NAME_MENU_COPY = "复制";
