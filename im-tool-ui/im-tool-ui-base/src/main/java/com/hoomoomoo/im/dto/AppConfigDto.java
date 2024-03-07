@@ -226,6 +226,8 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolCheckMenuSkipRouter;
 
+    private int systemToolScriptRepairBatchNum;
+
     public AppConfigDto() {
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;

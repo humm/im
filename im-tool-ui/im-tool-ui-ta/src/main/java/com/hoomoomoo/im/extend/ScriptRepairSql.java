@@ -145,8 +145,14 @@ public class ScriptRepairSql {
         }
 
         File fileExt = new File(appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.basePathExt);
+        int batchNum = appConfigDto.getSystemToolScriptRepairBatchNum();
+        int index = 0;
         for (File file : fileExt.listFiles()) {
+            index++;
             repairByFile(file);
+            if (batchNum > 0 && index == batchNum) {
+                break;
+            }
         }
 
         boolean subTransCodeIndex = false;
