@@ -13,6 +13,7 @@ import com.hoomoomoo.im.dto.HepTaskComponentDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.dto.VersionDto;
 import com.hoomoomoo.im.extend.HepWaitHandleTaskMenu;
+import com.hoomoomoo.im.extend.ScriptCompareSql;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -158,6 +159,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
     private Button showVersion;
 
     @FXML
+    private Button scriptCheck;
+
+    @FXML
+    private Button scriptShow;
+
+    @FXML
     private Label dayTodo;
 
     @FXML
@@ -270,6 +277,42 @@ public class HepTaskTodoController extends BaseController implements Initializab
             showVersion.setDisable(false);
         }
         OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(STR_BLANK));
+    }
+
+    @FXML
+    void scriptCheckBtn(ActionEvent event) throws Exception {
+        doScriptCheck();
+    }
+
+    private void doScriptCheck() {
+        scriptCheck.setDisable(true);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    new ScriptCompareSql().check();
+                    OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("脚本检查完成，请查看检查结果"));
+                } catch (Exception e) {
+                    LoggerUtils.info(e);
+                    OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
+                } finally {
+                    scriptCheck.setDisable(false);
+                }
+            }
+        }).start();
+    }
+
+    @FXML
+    void scriptShowBtn(ActionEvent event) throws Exception {
+        scriptShow.setDisable(true);
+        try {
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT, "检查结果");
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
+        } finally {
+            scriptShow.setDisable(false);
+        }
     }
 
     @FXML
@@ -1075,6 +1118,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             addTaskMenu(appConfigDto);
             executeQuery(null);
             buildTestData();
+            doScriptCheck();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

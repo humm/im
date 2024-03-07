@@ -19,6 +19,7 @@ public class ScriptRepairSql {
 
     private static Map<String, List<Map<String, String>>> totalLogCache = new LinkedHashMap<>();
     private static Set<String> totalSubTransExtCache = new LinkedHashSet<>();
+    private static int repairFileNum = 0;
 
     public static void addLackLog() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
@@ -145,14 +146,8 @@ public class ScriptRepairSql {
         }
 
         File fileExt = new File(appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.basePathExt);
-        int batchNum = appConfigDto.getSystemToolScriptRepairBatchNum();
-        int index = 0;
         for (File file : fileExt.listFiles()) {
-            index++;
-            repairByFile(file);
-            if (batchNum > 0 && index == batchNum) {
-                break;
-            }
+            repairByFile(appConfigDto, file);
         }
 
         boolean subTransCodeIndex = false;
@@ -194,10 +189,14 @@ public class ScriptRepairSql {
         FileUtils.writeFile(basePath, item, false);
     }
 
-    private static void repairByFile(File file) throws Exception {
+    private static void repairByFile(AppConfigDto appConfigDto, File file) throws Exception {
+        int batchNum = appConfigDto.getSystemToolScriptRepairBatchNum();
+        if (batchNum > 0 && repairFileNum >= batchNum) {
+            return;
+        }
         if (file.isDirectory()) {
             for (File item : file.listFiles()) {
-                repairByFile(item);
+                repairByFile(appConfigDto, item);
             }
         } else {
             String fileName = file.getName();
@@ -251,6 +250,9 @@ public class ScriptRepairSql {
                     String subTransCode = key[1].trim();
                     addSubTransExt(transCode, subTransCode, getOpDir(transCode, subTransCode), file.getPath());
                 }
+            }
+            if (CollectionUtils.isNotEmpty(needAddLog)) {
+                repairFileNum++;
             }
         }
     }
