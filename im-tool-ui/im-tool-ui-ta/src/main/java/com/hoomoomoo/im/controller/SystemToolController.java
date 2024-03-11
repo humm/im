@@ -135,13 +135,14 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
-    void checkMenu(ActionEvent event) {
+    void checkMenu(ActionEvent event) throws Exception {
         closeCheckResultStage();
         if (executeFlag) {
             OutputUtils.info(logs, getCheckMenuMsg("检查中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
+        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             new Thread(new Runnable() {
                 @Override
@@ -222,12 +223,13 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
-    void repairLackLog(ActionEvent event) {
+    void repairLackLog(ActionEvent event) throws Exception {
         if (executeFlag) {
             OutputUtils.info(logs, getRepairLackExt("修复中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
+        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             new Thread(new Runnable() {
                 @Override
@@ -255,12 +257,13 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
-    void repairLogDiff(ActionEvent event) {
+    void repairLogDiff(ActionEvent event) throws Exception {
         if (executeFlag) {
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
+        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             new Thread(new Runnable() {
                 @Override
@@ -295,6 +298,7 @@ public class SystemToolController implements Initializable {
             return;
         }
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG, NAME_REPAIR_ERROR_EXT);
+        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             new Thread(new Runnable() {
                 @Override
