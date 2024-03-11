@@ -8,6 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
+import static com.hoomoomoo.im.consts.BaseConst.FILE_SQL_NAME_NEW_MENU_UPDATE;
+
 public class ScriptUpdateSql {
 
     private String resultPath = "";
@@ -31,7 +33,7 @@ public class ScriptUpdateSql {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> config = FileUtils.readNormalFile(newUedPage, false);
         List<String> sql = getUpdateSql(appConfigDto, config);
-        FileUtils.writeFile(resultPath + "1.全量新版升级.sql", sql, false);
+        FileUtils.writeFile(resultPath + FILE_SQL_NAME_NEW_MENU_UPDATE, sql, false);
     }
 
     public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {

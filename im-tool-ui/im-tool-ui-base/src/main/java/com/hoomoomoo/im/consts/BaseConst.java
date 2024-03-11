@@ -194,8 +194,9 @@ public class BaseConst {
     public static final String NAME_UPDATE_VERSION = "同步发版时间";
     public static final String NAME_CHECK_MENU = "配置脚本检查";
     public static final String NAME_UPDATE_MENU = "新版全量升级";
-    public static final String NAME_REPAIR_LACK_EXT_NAME = "修复缺少日志";
-    public static final String NAME_REPAIR_LOG_DIFF_NAME = "修正日志信息";
+    public static final String NAME_REPAIR_LACK_EXT = "修复缺少日志";
+    public static final String NAME_REPAIR_ERROR_EXT = "修复错误日志";
+    public static final String NAME_REPAIR_LOG_DIFF = "修正日志信息";
 
     public static final String NAME_MENU_UPDATE = "更新";
     public static final String NAME_MENU_COPY = "复制";
@@ -350,6 +351,7 @@ public class BaseConst {
     public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER = "skipRouter";
     public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG = "skipLog";
     public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG = "skipErrorLog";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG = "repairErrorLog";
 
     public static final String PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT = "checkResult";
     public static final String PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT = "updateResult";
@@ -380,6 +382,18 @@ public class BaseConst {
     public static final String COLUMN_TYPE_NUMBER = "number";
     public static final String COLUMN_TYPE_INTEGER = "integer";
     public static final String COLUMN_TYPE_CLOB = "clob";
+
+    public static final String FILE_SQL_NAME_NEW_MENU_UPDATE = "1.全量新版升级.sql";
+    public static final String FILE_SQL_NAME_ALL_MENU = "5.所有菜单.sql";
+    public static final String FILE_SQL_NAME_LACK_NEW_MENU_ALL = "10.缺少新版全量.sql";
+    public static final String FILE_SQL_NAME_LACK_OLD_NEW_ALL = "20.缺少老版全量.sql";
+    public static final String FILE_SQL_NAME_DIFF_NEW_ALL_EXT = "30.新版全量开通不同.sql";
+    public static final String FILE_SQL_NAME_DIFF_OLD_ALL_EXT = "40.老版全量开通不同.sql";
+    public static final String FILE_SQL_NAME_LACK_ROUTER = "50.缺少路由.sql";
+    public static final String FILE_SQL_NAME_LACK_LOG = "60.缺少日志.sql";
+    public static final String FILE_SQL_NAME_ERROR_LOG = "70.错误日志.sql";
+    public static final String FILE_SQL_NAME_LEGAL_NEW_MENU = "80.新版菜单合法性.sql";
+
 
     public enum COLUMN_TYPE {
         DICT("1", "字典"),

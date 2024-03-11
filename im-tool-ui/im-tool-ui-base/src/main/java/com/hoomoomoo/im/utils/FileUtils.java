@@ -168,6 +168,10 @@ public class FileUtils {
      * @return:
      */
     public static Object readFile(String filePath, String fileType, boolean skipAnnotation) throws IOException {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            throw new IOException("文件不存在，请检查");
+        }
         List<String> fileContent = new LinkedList();
         LinkedHashMap<String, String> fileContentMap = new LinkedHashMap<>(16);
         BufferedReader bufferedReader;

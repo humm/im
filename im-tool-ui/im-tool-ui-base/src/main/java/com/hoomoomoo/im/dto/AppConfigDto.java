@@ -228,7 +228,11 @@ public class AppConfigDto extends BaseDto {
 
     private int systemToolScriptRepairBatchNum;
 
+    private Boolean execute;
+    private String repairSchedule;
+
     public AppConfigDto() {
+        this.execute = false;
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
         this.scriptUpdateSkip = false;

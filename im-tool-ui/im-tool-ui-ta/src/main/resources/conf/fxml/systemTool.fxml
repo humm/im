@@ -112,7 +112,12 @@
                                         </Button>
 
                                         <Label layoutX="50.0" layoutY="430.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="检查结果修复" />
-                                        <Button layoutX="160.0" layoutY="425" mnemonicParsing="false" onAction="#addLackLog" prefWidth="100.0" text="修复缺少日志">
+                                        <Button layoutX="160.0" layoutY="425" mnemonicParsing="false" onAction="#repairLackLog" prefWidth="100.0" text="修复缺少日志">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
+                                        <Button layoutX="290.0" layoutY="425" mnemonicParsing="false" onAction="#repairErrorLog" prefWidth="100.0" text="修复错误日志">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>

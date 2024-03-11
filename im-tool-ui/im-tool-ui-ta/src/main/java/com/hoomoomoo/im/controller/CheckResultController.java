@@ -2,25 +2,18 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
-import com.hoomoomoo.im.utils.OutputUtils;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import lombok.SneakyThrows;
-import org.apache.commons.lang3.StringUtils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.getName;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.getPath;
 
 
 /**
@@ -42,17 +35,17 @@ public class CheckResultController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String pageType = appConfigDto.getPageType();
         if (PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT.equals(pageType)) {
-            initTab(appConfigDto, "10.缺少新版全量.sql");
-            initTab(appConfigDto, "30.新版全量开通不同.sql");
-            initTab(appConfigDto, "80.新版菜单合法性.sql");
-            initTab(appConfigDto, "20.缺少老版全量.sql");
-            initTab(appConfigDto, "40.老版全量开通不同.sql");
-            initTab(appConfigDto, "50.缺少路由.sql");
-            initTab(appConfigDto, "60.缺少日志.sql");
-            initTab(appConfigDto, "70.错误日志.sql");
-            initTab(appConfigDto, "5.所有菜单.sql");
+            initTab(appConfigDto, FILE_SQL_NAME_LACK_NEW_MENU_ALL);
+            initTab(appConfigDto, FILE_SQL_NAME_DIFF_NEW_ALL_EXT);
+            initTab(appConfigDto, FILE_SQL_NAME_LEGAL_NEW_MENU);
+            initTab(appConfigDto, FILE_SQL_NAME_LACK_OLD_NEW_ALL);
+            initTab(appConfigDto, FILE_SQL_NAME_DIFF_OLD_ALL_EXT);
+            initTab(appConfigDto, FILE_SQL_NAME_LACK_ROUTER);
+            initTab(appConfigDto, FILE_SQL_NAME_LACK_LOG);
+            initTab(appConfigDto, FILE_SQL_NAME_ERROR_LOG);
+            initTab(appConfigDto, FILE_SQL_NAME_ALL_MENU);
         } else if (PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT.equals(pageType)) {
-            initTab(appConfigDto, "1.全量新版升级.sql");
+            initTab(appConfigDto, FILE_SQL_NAME_NEW_MENU_UPDATE);
         }
     }
 

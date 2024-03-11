@@ -152,7 +152,7 @@ public class SystemToolController implements Initializable {
                         new ScriptCompareSql().check();
                         OutputUtils.info(logs, getCheckMenuMsg("检查结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
-                        addLog("全量菜单检查");
+                        addLog(NAME_CHECK_MENU);
                     } catch (Exception e) {
                         LoggerUtils.info(e);
                         OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
@@ -222,7 +222,7 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
-    void addLackLog(ActionEvent event) {
+    void repairLackLog(ActionEvent event) {
         if (executeFlag) {
             OutputUtils.info(logs, getRepairLackExt("修复中 ··· 请稍后 ···"));
             return;
@@ -234,11 +234,11 @@ public class SystemToolController implements Initializable {
                 public void run() {
                     try {
                         OutputUtils.info(logs, getRepairLackExt("修复开始"));
-                        showScheduleInfo(NAME_REPAIR_LACK_EXT_NAME, "修复");
-                        ScriptRepairSql.addLackLog();
+                        showScheduleInfo(NAME_REPAIR_LACK_EXT, "修复");
+                        ScriptRepairSql.repairLackLog();
                         OutputUtils.info(logs, getRepairLackExt("修复结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
-                        addLog("修复缺少日志");
+                        addLog(NAME_REPAIR_LACK_EXT);
                     } catch (Exception e) {
                         LoggerUtils.info(e);
                         OutputUtils.info(logs, getRepairLackExt(e.getMessage()));
@@ -257,7 +257,7 @@ public class SystemToolController implements Initializable {
     @FXML
     void repairLogDiff(ActionEvent event) {
         if (executeFlag) {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF_NAME, "修复中 ··· 请稍后 ···"));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
@@ -266,15 +266,15 @@ public class SystemToolController implements Initializable {
                 @Override
                 public void run() {
                     try {
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF_NAME, "修复开始"));
-                        showScheduleInfo(NAME_REPAIR_LOG_DIFF_NAME, "修复");
+                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复开始"));
+                        showScheduleInfo(NAME_REPAIR_LOG_DIFF, "修复");
                         ScriptRepairSql.repairLogDiff();
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF_NAME, "修复结束"));
+                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复结束"));
                         OutputUtils.info(logs, STR_NEXT_LINE);
-                        addLog("修复全量开通同时存在日志");
+                        addLog(NAME_REPAIR_LOG_DIFF);
                     } catch (Exception e) {
                         LoggerUtils.info(e);
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF_NAME, e.getMessage()));
+                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, e.getMessage()));
                     } finally {
                         executeFlag = false;
                     }
@@ -282,8 +282,53 @@ public class SystemToolController implements Initializable {
             }).start();
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF_NAME, e.getMessage()));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, e.getMessage()));
             executeFlag = false;
+        }
+    }
+
+    @FXML
+     void repairErrorLog(ActionEvent event) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        if (appConfigDto.getExecute()) {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复中 ··· 请稍后 ···"));
+            return;
+        }
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG, NAME_REPAIR_ERROR_EXT);
+        try {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        while (true) {
+                            boolean execute = ConfigCache.getAppConfigDtoCache().getExecute();
+                            if (!executeFlag && execute) {
+                                OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复开始"));
+                                showScheduleInfo(NAME_REPAIR_ERROR_EXT, "修复");
+                                executeFlag = true;
+                            }
+                            if (executeFlag && !execute) {
+                                OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复结束"));
+                                OutputUtils.info(logs, STR_NEXT_LINE);
+                                addLog(NAME_REPAIR_ERROR_EXT);
+                                break;
+                            }
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                            }
+                        }
+                    } catch (Exception e) {
+                        LoggerUtils.info(e);
+                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, e.getMessage()));
+                    } finally {
+                        executeFlag = false;
+                    }
+                }
+            }).start();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, e.getMessage()));
         }
     }
 
@@ -345,7 +390,7 @@ public class SystemToolController implements Initializable {
     }
 
     public static String getRepairLackExt (String msg) {
-        return TaCommonUtils.getMsgContainDate("【"+ NAME_REPAIR_LACK_EXT_NAME + "】") + STR_SPACE + msg + STR_NEXT_LINE;
+        return TaCommonUtils.getMsgContainDate("【"+ NAME_REPAIR_LACK_EXT + "】") + STR_SPACE + msg + STR_NEXT_LINE;
     }
 
     public static String getUpdateMenuMsg (String msg) {
@@ -471,11 +516,17 @@ public class SystemToolController implements Initializable {
     private void showScheduleInfo(String functionName, String msg) {
         long start = System.currentTimeMillis();
         new Thread(new Runnable() {
+            @SneakyThrows
             @Override
             public void run() {
                 while (true) {
+                    String repairSchedule = ConfigCache.getAppConfigDtoCache().getRepairSchedule();
                     if (executeFlag) {
-                        OutputUtils.info(logs, getCommonMsg(functionName, msg + "中 ··· ··· ··· 耗时 " + getRunTime(start) + " ··· "));
+                        String tips = msg + "中 ··· ··· ··· 耗时 " + getRunTime(start) + " ··· ";
+                        if (StringUtils.isNotBlank(repairSchedule)) {
+                            tips += STR_SPACE_3 + repairSchedule;
+                        }
+                        OutputUtils.info(logs, getCommonMsg(functionName, tips));
                     } else {
                        break;
                     }

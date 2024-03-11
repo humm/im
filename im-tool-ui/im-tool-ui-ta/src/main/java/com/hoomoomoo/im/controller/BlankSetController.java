@@ -3,7 +3,9 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
+import com.hoomoomoo.im.extend.ScriptRepairSql;
 import com.hoomoomoo.im.utils.FileUtils;
+import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -54,8 +56,26 @@ public class BlankSetController implements Initializable {
                 confPath = FileUtils.getFilePath(PATH_SKIP_LOG);
             } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG.equals(appConfigDto.getPageType())) {
                 confPath = FileUtils.getFilePath(PATH_SKIP_ERROR_LOG);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
+                String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
+                confPath = resultPath + "\\" + FILE_SQL_NAME_ERROR_LOG;
             }
             FileUtils.writeFile(confPath, content, false);
+        }
+        if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        appConfigDto.setExecute(true);
+                        ScriptRepairSql.repairErrorLog();
+                    } catch (Exception e) {
+                        LoggerUtils.info(e);
+                    } finally {
+                        appConfigDto.setExecute(false);
+                    }
+                }
+            }).start();
         }
         appConfigDto.getChildStage().close();
         appConfigDto.setChildStage(null);
@@ -106,11 +126,18 @@ public class BlankSetController implements Initializable {
                 confPath = FileUtils.getFilePath(PATH_SKIP_LOG);
             } else if (PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG.equals(appConfigDto.getPageType())) {
                 confPath = FileUtils.getFilePath(PATH_SKIP_ERROR_LOG);
+            } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
+                String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
+                confPath = resultPath + "\\" + FILE_SQL_NAME_ERROR_LOG;
+                submit.setText("修复");
             }
             List<String> content = FileUtils.readNormalFile(confPath, false);
             for (String item : content) {
-                if (StringUtils.isBlank(item)) {
+                if (StringUtils.isBlank(item) && !PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
                     continue;
+                }
+                if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
+                    item = item.replace(ANNOTATION_TYPE_NORMAL, STR_BLANK);
                 }
                 OutputUtils.info(config, item + STR_NEXT_LINE);
             }

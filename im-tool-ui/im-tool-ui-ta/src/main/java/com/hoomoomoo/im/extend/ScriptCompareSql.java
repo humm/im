@@ -249,7 +249,7 @@ public class ScriptCompareSql {
         writeFile(menuCodeList, "extend.sql");
         needAddUedMenu.add(0, "-- 待处理【" + needAddUedMenuNum + "】");
         needAddUedMenu.add(0, "-- ************************************* 缺少新版全量 *************************************");
-        FileUtils.writeFile(resultPath + "10.缺少新版全量.sql", needAddUedMenu, false);
+        FileUtils.writeFile(resultPath + FILE_SQL_NAME_LACK_NEW_MENU_ALL, needAddUedMenu, false);
     }
 
     /**
@@ -272,7 +272,7 @@ public class ScriptCompareSql {
         }
         lackMenuList.add(0, "-- 待处理【" + lackMenu.size() + "】\n\n");
         lackMenuList.add(0, "-- ************************************* 缺少老版全量 *************************************");
-        FileUtils.writeFile(resultPath + "20.缺少老版全量.sql", lackMenuList, false);
+        FileUtils.writeFile(resultPath + FILE_SQL_NAME_LACK_OLD_NEW_ALL, lackMenuList, false);
     }
 
     /**
@@ -329,7 +329,7 @@ public class ScriptCompareSql {
         }
         newMenDiffInfo.add(0, "-- 待处理【" + newMenDiff.size() + "】\n\n");
         newMenDiffInfo.add(0, "-- ************************************* 新版全量开通不同 *************************************");
-        FileUtils.writeFile(resultPath + "30.新版全量开通不同.sql", newMenDiffInfo, false);
+        FileUtils.writeFile(resultPath + FILE_SQL_NAME_DIFF_NEW_ALL_EXT, newMenDiffInfo, false);
     }
 
     /**
@@ -387,7 +387,7 @@ public class ScriptCompareSql {
         }
         oldMenDiffInfo.add(0, "-- 待处理【" + oldMenDiff.size() + "】\n\n");
         oldMenDiffInfo.add(0, "-- ************************************* 老版全量开通不同 *************************************");
-        FileUtils.writeFile(resultPath + "40.老版全量开通不同.sql", oldMenDiffInfo, false);
+        FileUtils.writeFile(resultPath + FILE_SQL_NAME_DIFF_OLD_ALL_EXT, oldMenDiffInfo, false);
     }
 
     /**
@@ -413,7 +413,7 @@ public class ScriptCompareSql {
         }
         menuCodeList.add(0, "-- 待处理【" + lackRouter.size() + "】\n\n");
         menuCodeList.add(0, "-- ************************************* 缺少路由 *************************************");
-        FileUtils.writeFile(resultPath + "50.缺少路由.sql", menuCodeList, false);
+        FileUtils.writeFile(resultPath + FILE_SQL_NAME_LACK_ROUTER, menuCodeList, false);
     }
 
     /**
@@ -435,7 +435,7 @@ public class ScriptCompareSql {
         }
         subTransExtList.add(0, "-- 待处理【" + subTransExtList.size() + "】\n\n");
         subTransExtList.add(0, "-- ************************************* 缺少日志 *************************************");
-        FileUtils.writeFile(resultPath + "60.缺少日志.sql", subTransExtList, false);
+        FileUtils.writeFile(resultPath + FILE_SQL_NAME_LACK_LOG, subTransExtList, false);
     }
 
     /**
@@ -454,7 +454,7 @@ public class ScriptCompareSql {
                 continue;
             }
             String subTransCode = transCode.split("-")[1].trim();
-            String opDir = subTransExtCache.get(transCode).get(0).split("-")[0];
+            String opDir = subTransExtCache.get(transCode).get(0).split(STR_SPACE)[0];
             if (!opDir.equals(ScriptSqlUtils.getSubTransCodeOpDir(subTransCode, STR_BLANK))) {
                 subTransExtErrorList.add(buildMenuTransInfo(subTransExtCache, transCode));
             }
@@ -462,7 +462,7 @@ public class ScriptCompareSql {
         subTransExtErrorList.add(0, "-- 待处理【" + subTransExtErrorList.size() + "】\n\n");
         subTransExtErrorList.add(0, "-- ************************************* 0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入 *************************************");
         subTransExtErrorList.add(0, "-- ******************************************************* 错误日志 *******************************************************");
-        FileUtils.writeFile(resultPath + "70.错误日志.sql", subTransExtErrorList, false);
+        FileUtils.writeFile(resultPath + FILE_SQL_NAME_ERROR_LOG, subTransExtErrorList, false);
     }
 
     /**
@@ -487,7 +487,7 @@ public class ScriptCompareSql {
         }
         menu.add(0, "-- 菜单总数【" + existMenu.size() + "】\n\n");
         menu.add(0, "-- ************************************* 所有菜单 *************************************");
-        FileUtils.writeFile(resultPath + "5.所有菜单.sql", menu, false);
+        FileUtils.writeFile(resultPath + FILE_SQL_NAME_ALL_MENU, menu, false);
     }
 
     /**
@@ -575,7 +575,6 @@ public class ScriptCompareSql {
                 }
                 if (!flag) {
                     String menu = item + "   " + menuUedExistCache.get(item);
-                    ;
                     reserve2List.add(menu);
                 }
             }
@@ -589,7 +588,7 @@ public class ScriptCompareSql {
 
         menuInfo.add(0, "-- 待处理【" + total + "】\n\n");
         menuInfo.add(0, "-- ************************************* 新版菜单合法性 *************************************");
-        FileUtils.writeFile(resultPath + "80.新版菜单合法性.sql", menuInfo, false);
+        FileUtils.writeFile(resultPath + FILE_SQL_NAME_LEGAL_NEW_MENU, menuInfo, false);
     }
 
     private void compareMenu(Set<String> menuMap, String fileName) throws Exception {
@@ -627,7 +626,7 @@ public class ScriptCompareSql {
         needAddUedMenu.add("\n\n-- ************************************* " + fileName.replace(".sql", " *************************************"));
         needAddUedMenu.addAll(menuCodeList);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (!"10.缺少新版全量.sql".equals(fileName)) {
+        if (!FILE_SQL_NAME_LACK_NEW_MENU_ALL.equals(fileName)) {
             return;
         }
         FileUtils.writeFile(resultPath + fileName, menuCodeList, false);
@@ -1109,25 +1108,25 @@ public class ScriptCompareSql {
         // 0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入
         switch (opDir) {
             case STR_0:
-                opDir = "0-新增";
+                opDir = "0 新增";
                 break;
             case STR_1:
-                opDir = "1-修改";
+                opDir = "1 修改";
                 break;
             case STR_2:
-                opDir = "2-删除";
+                opDir = "2 删除";
                 break;
             case STR_3:
-                opDir = "3-其他";
+                opDir = "3 其他";
                 break;
             case STR_4:
-                opDir = "4-查询";
+                opDir = "4 查询";
                 break;
             case STR_5:
-                opDir = "5-下载";
+                opDir = "5 下载";
                 break;
             case STR_6:
-                opDir = "6-导入";
+                opDir = "6 导入";
                 break;
             default:
                 break;

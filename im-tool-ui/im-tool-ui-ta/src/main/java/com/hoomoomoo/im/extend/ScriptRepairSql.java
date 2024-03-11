@@ -21,13 +21,16 @@ public class ScriptRepairSql {
     private static Set<String> totalSubTransExtCache = new LinkedHashSet<>();
     private static int repairFileNum = 0;
 
-    public static void addLackLog() throws Exception {
+    public static void repairLackLog() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
-        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + "60.缺少日志.sql", false);
+        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + FILE_SQL_NAME_LACK_LOG, false);
         if (CollectionUtils.isEmpty(logList) || logList.size() <= 2) {
             return;
         }
+        int total = getRepairTotal(logList);
+        int repair = 0;
+
         String transCode = STR_BLANK;
         String subTransCode = STR_BLANK;
         for (int i = 2; i < logList.size(); i++) {
@@ -36,6 +39,8 @@ public class ScriptRepairSql {
                 continue;
             }
             if (item.contains(STR_HYPHEN_1)) {
+                repair++;
+                appConfigDto.setRepairSchedule(repair + " / " + total);
                 // 日志类型
                 String[] trans = item.split(STR_HYPHEN_1);
                 if (trans.length == 2) {
@@ -52,6 +57,84 @@ public class ScriptRepairSql {
                 addSubTransExt(transCode, subTransCode, null, item);
             }
         }
+    }
+
+    public static void repairErrorLog() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
+        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + FILE_SQL_NAME_ERROR_LOG, false);
+        if (CollectionUtils.isEmpty(logList) || logList.size() <= 3) {
+            return;
+        }
+        int total = getRepairTotal(logList);
+        int repair = 0;
+
+        String transCode = STR_BLANK;
+        String subTransCode = STR_BLANK;
+        String opDir = STR_BLANK;
+        for (int i = 3; i < logList.size(); i++) {
+            String item = logList.get(i).replace(ANNOTATION_TYPE_NORMAL, STR_BLANK).trim();
+            if (StringUtils.isBlank(item)) {
+                continue;
+            }
+            if (item.contains(STR_HYPHEN_1)) {
+                // 日志类型
+                String[] trans = item.split(STR_HYPHEN_1);
+                if (trans.length == 2) {
+                    repair++;
+                    appConfigDto.setRepairSchedule(repair + " / " + total);
+                    transCode = trans[0];
+                    String[] other = trans[1].trim().replaceAll("\\s+", STR_SPACE).split(STR_SPACE);
+                    if (other.length < 3) {
+                        continue;
+                    }
+                    subTransCode = other[0].trim();
+                    opDir = other[2].trim();
+                    // 全量脚本
+                    updateSubTransExt(transCode, subTransCode, opDir,appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu);
+                } else {
+                    transCode = STR_BLANK;
+                    subTransCode = STR_BLANK;
+                }
+            } else {
+                // 实际路径
+                updateSubTransExt(transCode, subTransCode, opDir, item);
+            }
+        }
+    }
+
+    private static void updateSubTransExt(String transCode, String subTransCode, String opDir, String path) throws IOException {
+        if (StringUtils.isBlank(transCode) || StringUtils.isBlank(path) || StringUtils.isBlank(opDir)) {
+            return;
+        }
+        List<String> item = FileUtils.readNormalFile(path, false);
+        String status = STR_0;
+        for (int i = 0; i < item.size(); i++) {
+            String ele = item.get(i).trim();
+            String eleLower = ele.toLowerCase();
+            if (StringUtils.isBlank(ele)) {
+                continue;
+            }
+            if (eleLower.contains("tsys_subtrans_ext") && eleLower.contains("insert")) {
+                status = STR_1;
+            } else if (STR_1.equals(status)){
+                status = STR_2;
+            }
+            if (STR_2.equals(status)) {
+                status = STR_0;
+                String transCodeLine = ScriptSqlUtils.getTransCode(ele);
+                String subTransCodeLine = ScriptSqlUtils.getSubTransCode(ele);
+                if (transCode.equals(transCodeLine) && subTransCode.equals(subTransCodeLine)) {
+                    String extValue = getSubTransExtValue(transCode, subTransCode, opDir);
+                    if (ele.contains("--")) {
+                        extValue = "-- " + extValue;
+                    }
+                    item.set(i, extValue);
+                    break;
+                }
+            }
+        }
+        FileUtils.writeFile(path, item, false);
     }
 
     private static void addSubTransExt(String transCode, String subTransCode, String opDir, String path) throws IOException {
@@ -112,6 +195,12 @@ public class ScriptRepairSql {
         }
         ext.append("delete from tsys_subtrans_ext where trans_code = '" + transCode + "' and sub_trans_code = '" + subTransCode + "';").append(STR_NEXT_LINE);
         ext.append("insert into tsys_subtrans_ext (trans_code, sub_trans_code, op_dir, remark, need_active, ta_status_ctrl, active_flag)").append(STR_NEXT_LINE);
+        ext.append("values ('" + transCode + "', '" + subTransCode + "','" + opDir + "', ' ', '1', ' ', ' ');");
+        return ext.toString();
+    }
+
+    private static String getSubTransExtValue(String transCode, String subTransCode, String opDir) {
+        StringBuilder ext = new StringBuilder();
         ext.append("values ('" + transCode + "', '" + subTransCode + "','" + opDir + "', ' ', '1', ' ', ' ');");
         return ext.toString();
     }
@@ -194,6 +283,9 @@ public class ScriptRepairSql {
         if (batchNum > 0 && repairFileNum >= batchNum) {
             return;
         }
+        if (batchNum <= 0) {
+            batchNum = 999999;
+        }
         if (file.isDirectory()) {
             for (File item : file.listFiles()) {
                 repairByFile(appConfigDto, item);
@@ -253,6 +345,7 @@ public class ScriptRepairSql {
             }
             if (CollectionUtils.isNotEmpty(needAddLog)) {
                 repairFileNum++;
+                appConfigDto.setRepairSchedule(repairFileNum + " / " + batchNum);
             }
         }
     }
@@ -277,4 +370,19 @@ public class ScriptRepairSql {
         subTrans.put("subTransOpDir", subTransOpDir);
         return subTrans;
     }
+
+    private static int getRepairTotal(List<String> logList) {
+        int total = 0;
+        for (int i = 3; i < logList.size(); i++) {
+            String item = logList.get(i).replace(ANNOTATION_TYPE_NORMAL, STR_BLANK).trim();
+            if (StringUtils.isBlank(item)) {
+                continue;
+            }
+            if (item.contains(STR_HYPHEN_1)) {
+                total++;
+            }
+        }
+        return total;
+    }
+
 }
