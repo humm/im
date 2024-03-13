@@ -44,6 +44,9 @@ public class ScriptUpdateSql {
         boolean head = true;
         for(int i = 0; i < config.size(); ++i) {
             String item = config.get(i);
+            if (item.contains("commit;")) {
+                break;
+            }
             if (!StringUtils.isBlank(item)) {
                 String itemTmp = item.toLowerCase();
                 if (head && (itemTmp.contains("delete") || itemTmp.contains("insert") || itemTmp.contains("values"))) {

@@ -304,14 +304,18 @@ public class SystemToolController implements Initializable {
                 @Override
                 public void run() {
                     try {
+                        boolean startFlag = false;
                         while (true) {
                             boolean execute = ConfigCache.getAppConfigDtoCache().getExecute();
+                            if (execute && !startFlag) {
+                                startFlag = true;
+                            }
                             if (!executeFlag && execute) {
                                 OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复开始"));
                                 showScheduleInfo(NAME_REPAIR_ERROR_EXT, "修复");
                                 executeFlag = true;
                             }
-                            if (executeFlag && !execute) {
+                            if (executeFlag && startFlag && !execute) {
                                 OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复结束"));
                                 OutputUtils.info(logs, STR_NEXT_LINE);
                                 addLog(NAME_REPAIR_ERROR_EXT);

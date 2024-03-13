@@ -512,7 +512,7 @@ public class ScriptCompareSql {
         menuInfo.add(0, "-- 待处理【" + menuInfo.size() + "】\n\n");
         menuInfo.add(0, "-- ************************************* 菜单名称存在空格 *************************************");
 
-        // 存在系统间合并不存在合并后菜单
+        // 存在合并后菜单不存在系统间合并
         Iterator<String> iterator = menuUedReserveCache.keySet().iterator();
         List<String> reserve1List = new ArrayList<>();
         while (iterator.hasNext()) {
@@ -539,16 +539,19 @@ public class ScriptCompareSql {
                 }
             }
             if (!flag) {
+                if (StringUtils.isBlank(menuName)) {
+                    menuName = STR_BLANK;
+                }
                 String menu = menuCode + "   " + menuName;
                 reserve1List.add(menu);
             }
         }
         total += reserve1List.size();
-        menuInfo.add("\n\n-- ************************************* 存在系统间合并不存在合并后菜单 *************************************");
+        menuInfo.add("\n\n-- ************************************* 存在合并后菜单不存在系统间合并 *************************************");
         menuInfo.add("-- 待处理【" + reserve1List.size() + "】\n\n");
         menuInfo.addAll(reserve1List);
 
-        // 存在合并后菜单不存在系统间合并
+        // 存在系统间合并不存在合并后菜单
         Iterator<String> iteratorReserve2 = menuUedReserveCache.keySet().iterator();
         List<String> reserve2List = new ArrayList<>();
         while (iteratorReserve2.hasNext()) {
@@ -574,14 +577,14 @@ public class ScriptCompareSql {
                     }
                 }
                 if (!flag) {
-                    String menu = item + "   " + menuUedExistCache.get(item);
+                    String menu = item + "   " + getMenuNameByCache(item);
                     reserve2List.add(menu);
                 }
             }
         }
 
         total += reserve2List.size();
-        menuInfo.add("\n\n-- ************************************* 存在合并后菜单不存在系统间合并 *************************************");
+        menuInfo.add("\n\n-- ************************************* 存在系统间合并不存在合并后菜单 *************************************");
         menuInfo.add("-- 待处理【" + reserve2List.size() + "】\n\n");
         menuInfo.addAll(reserve2List);
 
@@ -1178,6 +1181,13 @@ public class ScriptCompareSql {
         return transName;
     }
 
+    private String getMenuNameByCache(String menuCode) {
+        List<String> menu = menuCache.get(menuCode);
+        if (CollectionUtils.isNotEmpty(menu)) {
+            return menu.get(0);
+        }
+        return STR_BLANK;
+    }
 
     private static boolean addFilePath(String path) {
         return !path.endsWith("07console-fund-ta-vue-menu.sql");

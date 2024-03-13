@@ -52,7 +52,7 @@ public class CheckResultController implements Initializable {
     private void initTab(AppConfigDto appConfigDto, String fileName) throws IOException {
         index = -1;
         Tab tab = new Tab();
-        outputContent(tab, getContent(appConfigDto, fileName));
+        outputContent(tab, getContent(appConfigDto, fileName), fileName);
         String tabName = fileName.split("\\.")[1];
         if (index == 0) {
             return;
@@ -69,7 +69,7 @@ public class CheckResultController implements Initializable {
         return FileUtils.readNormalFile(resultPath + "\\" + fileName, false);
     }
 
-    private void outputContent(Tab tab, List<String> content) {
+    private void outputContent(Tab tab, List<String> content, String fileName) {
         StringBuilder text = new StringBuilder();
         for (String item : content) {
             if (index == -1) {
@@ -77,7 +77,10 @@ public class CheckResultController implements Initializable {
                     index = Integer.valueOf(item.split("【")[1].split("】")[0]);
                 }
             }
-            text.append(item.replaceAll("--", "")).append(STR_NEXT_LINE);
+            if (!FILE_SQL_NAME_NEW_MENU_UPDATE.equals(fileName)) {
+                item = item.replaceAll("--", "");
+            }
+            text.append(item).append(STR_NEXT_LINE);
         }
         tab.setContent(new TextArea(text.toString()));
     }
