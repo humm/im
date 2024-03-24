@@ -22,6 +22,7 @@ public class ScriptRepairSql {
     private static int repairFileNum = 0;
 
     public static void repairLackLog() throws Exception {
+        repairFileNum = 0;
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
         List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + FILE_SQL_NAME_LACK_LOG, false);
@@ -60,6 +61,7 @@ public class ScriptRepairSql {
     }
 
     public static void repairErrorLog() throws Exception {
+        repairFileNum = 0;
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
         List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + FILE_SQL_NAME_ERROR_LOG, false);
@@ -206,6 +208,7 @@ public class ScriptRepairSql {
     }
 
     public static void repairLogDiff() throws Exception {
+        repairFileNum = 0;
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String basePath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu;
         List<String> item = FileUtils.readNormalFile(basePath, false);
