@@ -28,6 +28,10 @@ public class HepTaskComponentDto extends BaseDto{
 
     private Label weekPublish;
 
+    private Label dayClose;
+
+    private Label weekClose;
+
     private Label todoNum;
 
     private TableView taskList;

@@ -15,7 +15,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.hoomoomoo.im.controller.HepTaskTodoController">
     <children>
-        <SplitPane dividerPositions="0.1142713567839195, 0.9241164658634538" layoutX="98.0" layoutY="100.0"
+        <SplitPane dividerPositions="0.1842713567839195, 0.9241164658634538" layoutX="98.0" layoutY="100.0"
                    orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0"
                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -25,34 +25,40 @@
                         <Label fx:id="weekPublish" layoutX="100.0" layoutY="5.0"/>
                         <Label layoutX="20.0" layoutY="30.0" text="今日发版：" style="-fx-font-weight: bold;"/>
                         <Label fx:id="dayPublish" layoutX="100.0" layoutY="30.0"/>
-                        <Label layoutX="20.0" layoutY="55.0" text="今日待提交：" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="dayTodo" layoutX="110.0" layoutY="55.0"/>
-                        <Label layoutX="220.0" layoutY="55.0" text="本周待提交：" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="weekTodo" layoutX="310.0" layoutY="55.0"/>
-                        <Label layoutX="420.0" layoutY="55.0" text="待提交：" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="waitHandleTaskNum" layoutX="480.0" layoutY="55.0"/>
 
-                        <ProgressIndicator fx:id="schedule" layoutX="1360.0" layoutY="27.0" progress="0.0"/>
-                        <Label fx:id="scheduleText" layoutX="1395" layoutY="30.0" text="0%"/>
+                        <Label layoutX="20.0" layoutY="55.0" text="本周定版：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="weekClose" layoutX="100.0" layoutY="55.0"/>
+                        <Label layoutX="20.0" layoutY="80.0" text="今日定版：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="dayClose" layoutX="100.0" layoutY="80.0"/>
+
+                        <Label layoutX="20.0" layoutY="105.0" text="今日待提交：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="dayTodo" layoutX="110.0" layoutY="105.0"/>
+                        <Label layoutX="220.0" layoutY="105.0" text="本周待提交：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="weekTodo" layoutX="310.0" layoutY="105.0"/>
+                        <Label layoutX="420.0" layoutY="105.0" text="待提交：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="waitHandleTaskNum" layoutX="480.0" layoutY="105.0"/>
+
+                        <ProgressIndicator fx:id="schedule" layoutX="1360.0" layoutY="62.0" progress="0.0"/>
+                        <Label fx:id="scheduleText" layoutX="1395" layoutY="65.0" text="0%"/>
 
                         <Button fx:id="query" layoutX="1450.0" layoutY="8.0"
-                                mnemonicParsing="false" onAction="#executeQuery" prefHeight="65.0"
-                                prefWidth="50.0" text="查询">
+                                mnemonicParsing="false" onAction="#executeQuery" prefHeight="120.0"
+                                prefWidth="60.0" text="查询">
                             <padding>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </padding>
                         </Button>
                         <TextField layoutX="60.0" layoutY="1000.0" prefWidth="240" text="默认光标聚焦点"/>
 
-                        <Label layoutX="1520.0" layoutY="12.0" text="发版计划"/>
-                        <Button fx:id="updateVersion" layoutX="1590.0" layoutY="5.0"
+                        <Label layoutX="1520.0" layoutY="32.0" text="发版计划"/>
+                        <Button fx:id="updateVersion" layoutX="1590.0" layoutY="25.0"
                                 mnemonicParsing="false" onAction="#executeUpdateVersion" prefHeight="30.0"
                                 prefWidth="55.0" text="同步">
                             <padding>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </padding>
                         </Button>
-                        <Button fx:id="showVersion" layoutX="1650.0" layoutY="5.0"
+                        <Button fx:id="showVersion" layoutX="1650.0" layoutY="25.0"
                                 mnemonicParsing="false" onAction="#showVersion" prefHeight="30.0"
                                 prefWidth="55.0" text="查看">
                             <padding>
@@ -60,15 +66,15 @@
                             </padding>
                         </Button>
 
-                        <Label layoutX="1520.0" layoutY="50.0" text="脚本检查"/>
-                        <Button fx:id="scriptCheck" layoutX="1590.0" layoutY="45.0"
+                        <Label layoutX="1520.0" layoutY="80.0" text="脚本检查"/>
+                        <Button fx:id="scriptCheck" layoutX="1590.0" layoutY="75.0"
                                 mnemonicParsing="false" onAction="#scriptCheckBtn" prefHeight="30.0"
                                 prefWidth="55.0" text="检查">
                             <padding>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </padding>
                         </Button>
-                        <Button fx:id="scriptShow" layoutX="1650.0" layoutY="45.0"
+                        <Button fx:id="scriptShow" layoutX="1650.0" layoutY="75.0"
                                 mnemonicParsing="false" onAction="#scriptShowBtn" prefHeight="30.0"
                                 prefWidth="55.0" text="查看">
                             <padding>

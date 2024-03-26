@@ -230,7 +230,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);
         hep.dealTaskList(res, hepTaskComponentDto.getLogs(), hepTaskComponentDto.getDayTodo(), hepTaskComponentDto.getWeekTodo(),
                 hepTaskComponentDto.getWaitHandleTaskNum(), hepTaskComponentDto.getDayPublish(), hepTaskComponentDto.getWeekPublish(),
-                hepTaskComponentDto.getTaskList(), true);
+                hepTaskComponentDto.getDayClose(), hepTaskComponentDto.getWeekClose(), hepTaskComponentDto.getTaskList(), true);
         appConfigDto.getChildStage().close();
         appConfigDto.setChildStage(null);
     }

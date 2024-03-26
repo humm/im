@@ -322,7 +322,7 @@ public class SystemToolController implements Initializable {
                                 break;
                             }
                             try {
-                                Thread.sleep(1000);
+                                Thread.sleep(2000);
                             } catch (InterruptedException e) {
                             }
                         }
@@ -539,7 +539,7 @@ public class SystemToolController implements Initializable {
                        break;
                     }
                     try {
-                        Thread.sleep(1000);
+                        Thread.sleep(2000);
                     } catch (InterruptedException e) {
                     }
                 }
