@@ -880,7 +880,7 @@ public class ScriptCompareSql {
                 res += ele;
             }
         }
-        return res.trim().substring(1);
+        return res.trim();
     }
 
     private static Set<String> initMenuRouter(List<String> menu) {

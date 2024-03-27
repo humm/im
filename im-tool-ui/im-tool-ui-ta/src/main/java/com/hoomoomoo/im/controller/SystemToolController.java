@@ -171,44 +171,51 @@ public class SystemToolController implements Initializable {
 
     @FXML
     void skipNewMenu(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU, "忽略新版全量");
-        addLog("忽略全量新版");
+        String title = getTitle(FILE_SQL_NAME_LACK_NEW_MENU_ALL);
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU, title);
+        addLog(title);
     }
 
     @FXML
     void skipOldMenu(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU, "忽略老版全量");
-        addLog("忽略全量老版");
+        String title = getTitle(FILE_SQL_NAME_LACK_OLD_NEW_ALL);
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU, title);
+        addLog(title);
     }
 
     @FXML
     void skipNewDiff(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU, "忽略新版全量开通不同");
-        addLog("忽略全量开通新版");
+        String title = getTitle(FILE_SQL_NAME_DIFF_NEW_ALL_EXT);
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU, title);
+        addLog(title);
     }
 
     @FXML
     void skipOldDiff(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU, "忽略老版全量开通不同");
-        addLog("忽略全量开通老版");
+        String title = getTitle(FILE_SQL_NAME_DIFF_OLD_ALL_EXT);
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU, title);
+        addLog(title);
     }
 
     @FXML
     void skipRouter(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER, "忽略路由");
-        addLog("配置忽略路由");
+        String title = getTitle(FILE_SQL_NAME_LACK_ROUTER);
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER, title);
+        addLog(title);
     }
 
     @FXML
     void skipLog(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG, "忽略缺少日志");
-        addLog("忽略日志信息");
+        String title = getTitle(FILE_SQL_NAME_LACK_LOG);
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG, title);
+        addLog(title);
     }
 
     @FXML
     void skipErrorLog(ActionEvent event) throws Exception {
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG, "忽略错误日志");
-        addLog("忽略错误日志");
+        String title = getTitle(FILE_SQL_NAME_ERROR_LOG);
+        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG, title);
+        addLog(title);
     }
 
     @FXML
@@ -571,5 +578,11 @@ public class SystemToolController implements Initializable {
         }
         time += second + "秒";
         return time;
+    }
+
+    private String getTitle(String title) {
+        int start = title.indexOf(".");
+        int end = title.lastIndexOf(".");
+        return "忽略" + title.substring(start + 1, end);
     }
 }
