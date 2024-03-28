@@ -580,7 +580,6 @@ public class ScriptCompareSql {
         List<String> reserve2List = new ArrayList<>();
         while (iteratorReserve2.hasNext()) {
             String menuCode = iteratorReserve2.next();
-            String menuName = newMenuReserveCache.get(menuCode)[0];
             String menuReserve = newMenuReserveCache.get(menuCode)[1];
             if (StringUtils.isBlank(menuReserve.trim()) || STR_0.equals(menuReserve)) {
                 continue;
@@ -612,27 +611,24 @@ public class ScriptCompareSql {
         menuInfo.add("-- 待处理【" + reserve2List.size() + "】\n\n");
         menuInfo.addAll(reserve2List);
 
-        // 存在相同注释内容 将导致全量升级脚本生成有问题
+        // 注释内容不存在开始结束标识
         List<String> config = FileUtils.readNormalFile(newUedPage, false);
-        List<String> remark = new ArrayList<>();
-        List<String> sameRemark = new ArrayList<>();
+        List<String> remarkError = new ArrayList<>();
         for (int i=5; i<config.size(); i++) {
-            String item = config.get(i);
-            if (item.toLowerCase().contains("tsys_menu_std")) {
+            String item = config.get(i).trim();
+            if (!item.contains(ANNOTATION_TYPE_NORMAL)) {
                 continue;
             }
-            if (item.contains(ANNOTATION_TYPE_NORMAL)) {
-                if (remark.contains(item)) {
-                    sameRemark.add(item);
-                } else {
-                    remark.add(item);
+            if (!item.contains("开始") && !item.contains("结束")) {
+                if (!remarkError.contains(item)) {
+                    remarkError.add(item);
                 }
             }
         }
-        total += sameRemark.size();
-        menuInfo.add("\n\n-- ************************************* 存在相同注释内容 将导致全量升级脚本生成有问题 *************************************");
-        menuInfo.add("-- 待处理【" + sameRemark.size() + "】\n\n");
-        menuInfo.addAll(sameRemark);
+        total += remarkError.size();
+        menuInfo.add("\n\n-- ************************************* 注释内容不存在开始结束标识 *************************************");
+        menuInfo.add("-- 待处理【" + remarkError.size() + "】\n\n");
+        menuInfo.addAll(remarkError);
 
 
         menuInfo.add(0, "-- 待处理【" + total + "】\n\n");
