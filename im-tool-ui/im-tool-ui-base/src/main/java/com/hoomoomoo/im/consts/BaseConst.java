@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  */
 public class BaseConst {
 
-    public static final String SUPER_MAC_ADDRESS = "9F::DE:06:A0:6D:0D 00:::50:56:89:8B:E7";
+    public static final String SUPER_MAC_ADDRESS = "9F:DE:06:A0:6D:0D 00:50:56:89:8B:E7";
 
     public static final String APP_CODE_BASE = "im-tool-ui-base";
     public static final String APP_CODE_TA = "im-tool-ui-ta";
@@ -389,6 +389,8 @@ public class BaseConst {
     public static final String COLUMN_TYPE_CLOB = "clob";
 
     public static final String STYLE_CENTER = "-fx-alignment: center;";
+
+    public static final String CONF_FUNCTION_PREFIX = "####################";
 
     public enum SQL_CHECK_TYPE {
         CHECK_RESULT_SUMMARY(10, "结果汇总", "10.结果汇总.sql"),

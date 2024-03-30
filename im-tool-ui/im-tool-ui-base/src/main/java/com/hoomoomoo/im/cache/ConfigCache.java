@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.cache;
 
 import com.alibaba.fastjson.JSON;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
@@ -223,31 +224,7 @@ public class ConfigCache {
             LicenseDto licenseDto = JSON.parseObject(SecurityUtils.getDecryptString(license.toString()), LicenseDto.class);
             appConfigDto.setLicense(licenseDto);
         }
-
         LoggerUtils.appStartInfo(String.format(MSG_LOAD, NAME_CONFIG_LICENSE));
-
-        ListIterator<String> iterator = content.listIterator();
-        String svnLogKey = SVN_LOG.getCode() + STR_COLON + SVN_LOG.getName();
-        String configSetKey = CONFIG_SET.getCode() + STR_COLON + CONFIG_SET.getName();
-        String appCode = ConfigCache.getAppCodeCache();
-        List<FunctionDto> functionDtoList = appConfigDto.getLicense().getFunction();
-        if (CommonUtils.isSuperUser()) {
-            functionDtoList = CommonUtils.functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
-        }
-        while (iterator.hasNext()) {
-            String item = iterator.next();
-            if (item.contains(svnLogKey) || item.contains(configSetKey)) {
-                StringBuilder msg = new StringBuilder("#");
-                for (FunctionDto functionDto : functionDtoList) {
-                    int functionCode = Integer.valueOf(functionDto.getFunctionCode());
-                    if ((item.contains(svnLogKey) && functionCode < MAX_COMMON_FUNCTION_CODE) || (item.contains(configSetKey) && functionCode >= MAX_COMMON_FUNCTION_CODE)) {
-                        msg.append(STR_SPACE).append(functionDto.getFunctionCode()).append(STR_COLON).append(functionDto.getFunctionName());
-                    }
-                }
-                iterator.set(msg.toString());
-            }
-        }
-        FileUtils.writeFile(confPath, content, false);
 
         // 解密
         if (appConfigDto != null && appConfigDto.getSvnPassword() != null && appConfigDto.getSvnPassword().endsWith(SECURITY_FLAG)) {
@@ -269,9 +246,73 @@ public class ConfigCache {
                     }
                 }
             }
-            FileUtils.writeFile(confPath, content, false);
         }
         LoggerUtils.appStartInfo(String.format(MSG_ENCRYPT, NAME_CONFIG_USER));
+
+        String scriptUpdateKey = SCRIPT_UPDATE.getCode() + STR_COLON + SCRIPT_UPDATE.getName();
+        String configSetKey = CONFIG_SET.getCode() + STR_COLON + CONFIG_SET.getName();
+        String appCode = ConfigCache.getAppCodeCache();
+        List<FunctionDto> functionDtoList = appConfigDto.getLicense().getFunction();
+        if (CommonUtils.isSuperUser()) {
+            functionDtoList = CommonUtils.functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+        }
+        // 配置文件参数参数项控制
+        content = FileUtils.readNormalFile(confPath, false);
+        Set<String> authConf = new HashSet<>();
+        for (FunctionDto functionDto : functionDtoList) {
+            MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
+            String[] titleConf = functionConfig.getTitleConf().split(STR_COMMA);
+            for (String title : titleConf) {
+                authConf.add(title);
+            }
+        }
+        for (int i = 0; i < content.size(); i++) {
+            String item = content.get(i);
+            if (item.contains(scriptUpdateKey) || item.contains(configSetKey)) {
+                StringBuilder msg = new StringBuilder("#");
+                for (FunctionDto functionDto : functionDtoList) {
+                    int functionCode = Integer.valueOf(functionDto.getFunctionCode());
+                    if ((item.contains(scriptUpdateKey) && functionCode < MAX_COMMON_FUNCTION_CODE) || (item.contains(configSetKey) && functionCode >= MAX_COMMON_FUNCTION_CODE)) {
+                        msg.append(STR_SPACE).append(functionDto.getFunctionCode()).append(STR_COLON).append(functionDto.getFunctionName());
+                    }
+                }
+                content.set(i, msg.toString());
+            }
+        }
+        ListIterator<String> iterator = content.listIterator();
+        int index = 0;
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            String functionName = getFunctionName(item);
+            if (StringUtils.isNotBlank(functionName) && !authConf.contains(functionName)) {
+                index++;
+                if (index == 2) {
+                    index = 0;
+                }
+                iterator.remove();
+                continue;
+            }
+            if (index == 1) {
+                iterator.remove();
+            }
+        }
+        boolean remove = false;
+        iterator = content.listIterator();
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            if (StringUtils.isNotBlank(item)) {
+                remove = false;
+            }
+            if (remove) {
+                iterator.remove();
+                continue;
+            }
+            if (StringUtils.isBlank(item)) {
+                remove = true;
+            }
+        }
+
+        FileUtils.writeFile(confPath, content, false);
 
         // 设置参数默认值
         if (StringUtils.isBlank(appConfigDto.getSystemToolCheckMenuResultPath())) {
@@ -280,5 +321,16 @@ public class ConfigCache {
         if (StringUtils.isBlank(appConfigDto.getScriptUpdateGeneratePath())) {
             appConfigDto.setScriptUpdateGeneratePath(FileUtils.getFilePath(DEFAULT_FOLDER));
         }
+    }
+
+    private static String getFunctionName(String item) {
+        String functionName = STR_BLANK;
+        if (item.contains(CONF_FUNCTION_PREFIX)) {
+            String[] element = item.split(STR_SPACE);
+            if (element.length == 4) {
+                functionName = element[1];
+            }
+        }
+        return functionName;
     }
 }

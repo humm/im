@@ -381,31 +381,6 @@ public class InitConfigUtils {
     }
 
     /**
-     * 生成Shopping配置信息
-     *
-     * @param content
-     * @author: humm23693
-     * @date: 2022-09-24
-     * @return: void
-     */
-    public static void buildConfigByShopping(String appCode, List<String> content) {
-        boolean svnUpdate = false;
-        ListIterator<String> iterator = content.listIterator();
-        while (iterator.hasNext()) {
-            String item = iterator.next();
-            buildFunctionName(appCode, item, iterator);
-            if (item.startsWith(KEY_SVN_UPDATE)) {
-                if (svnUpdate) {
-                    iterator.remove();
-                } else {
-                    svnUpdate = true;
-                    iterator.set("svn.update.demo=D:/workspace/demo");
-                }
-            }
-        }
-    }
-
-    /**
      * 更新TA配置信息
      *
      * @param keys
