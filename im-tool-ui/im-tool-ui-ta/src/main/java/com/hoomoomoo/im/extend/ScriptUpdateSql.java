@@ -1,14 +1,13 @@
 package com.hoomoomoo.im.extend;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
-
-import static com.hoomoomoo.im.consts.BaseConst.FILE_SQL_NAME_NEW_MENU_UPDATE;
 
 public class ScriptUpdateSql {
 
@@ -33,7 +32,7 @@ public class ScriptUpdateSql {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> config = FileUtils.readNormalFile(newUedPage, false);
         List<String> sql = getUpdateSql(appConfigDto, config);
-        FileUtils.writeFile(resultPath + FILE_SQL_NAME_NEW_MENU_UPDATE, sql, false);
+        FileUtils.writeFile(resultPath + BaseConst.SQL_CHECK_TYPE.NEW_MENU_UPDATE.getFileName(), sql, false);
     }
 
     public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {

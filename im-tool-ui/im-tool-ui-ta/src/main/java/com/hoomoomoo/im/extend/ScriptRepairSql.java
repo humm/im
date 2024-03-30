@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.ERROR_LOG;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.LACK_LOG;
 
 public class ScriptRepairSql {
 
@@ -25,7 +27,7 @@ public class ScriptRepairSql {
         repairFileNum = 0;
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
-        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + FILE_SQL_NAME_LACK_LOG, false);
+        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + LACK_LOG.getFileName(), false);
         if (CollectionUtils.isEmpty(logList) || logList.size() <= 2) {
             return;
         }
@@ -64,7 +66,7 @@ public class ScriptRepairSql {
         repairFileNum = 0;
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
-        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + FILE_SQL_NAME_ERROR_LOG, false);
+        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + ERROR_LOG.getFileName(), false);
         if (CollectionUtils.isEmpty(logList) || logList.size() <= 3) {
             return;
         }

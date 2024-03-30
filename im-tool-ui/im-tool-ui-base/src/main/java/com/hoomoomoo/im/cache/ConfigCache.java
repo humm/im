@@ -271,7 +271,14 @@ public class ConfigCache {
             }
             FileUtils.writeFile(confPath, content, false);
         }
-
         LoggerUtils.appStartInfo(String.format(MSG_ENCRYPT, NAME_CONFIG_USER));
+
+        // 设置参数默认值
+        if (StringUtils.isBlank(appConfigDto.getSystemToolCheckMenuResultPath())) {
+            appConfigDto.setSystemToolCheckMenuResultPath(FileUtils.getFilePath(DEFAULT_FOLDER + "/check"));
+        }
+        if (StringUtils.isBlank(appConfigDto.getScriptUpdateGeneratePath())) {
+            appConfigDto.setScriptUpdateGeneratePath(FileUtils.getFilePath(DEFAULT_FOLDER));
+        }
     }
 }

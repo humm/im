@@ -414,7 +414,7 @@ public class InitConfigUtils {
      * @return: void
      */
     public static void  updateConfigByTa(Map<String, String> keys) {
-        keys.put("app.tab.show", "100");
+        keys.put("app.tab.show", "200");
 
         keys.put("svn.username", null);
         keys.put("svn.password", null);

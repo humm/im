@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  */
 public class BaseConst {
 
-    public static final String SUPER_MAC_ADDRESS = "9F:DE:06:A0:6D:0D 00:50:56:89:8B:E7";
+    public static final String SUPER_MAC_ADDRESS = "9F::DE:06:A0:6D:0D 00:::50:56:89:8B:E7";
 
     public static final String APP_CODE_BASE = "im-tool-ui-base";
     public static final String APP_CODE_TA = "im-tool-ui-ta";
@@ -242,6 +242,7 @@ public class BaseConst {
     public static final String STR_NEXT_LINE = "\n";
     public static final String STR_SLASH_T = "\t";
     public static final String STR_NEXT_LINE_2 = "\n\n";
+    public static final String STR_NEXT_LINE_3 = "\n\n\n";
     public static final String STR_PERCENT = "%";
     public static final String STR_QUOTES = "\"";
     public static final String STR_QUOTES_SINGLE = "'";
@@ -286,8 +287,11 @@ public class BaseConst {
     public static final String MSG_LICENSE_NOT_USE = "未启用【 %s 】功能";
     public static final String MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ";
     public static final String MSG_SVN_REALTIME_STAT = "%s  %s  %s  %s";
-    public static final String MSG_EXECUTE = "【%s】执行中,请稍后再试";
-    public static final String MSG_TIPS = "【 %s 】";
+    public static final String MSG_TIPS = "【%s】";
+    public static final String MSG_WAIT_HANDLE_NUM = "-- 待处理【%s】\n\n";
+    public static final String MSG_WAIT_HANDLE_NUM_1 = "-- 待处理【%s】\n";
+    public static final String MSG_WAIT_HANDLE_NUM_0 = "-- 待处理【%s】";
+    public static final String MSG_WAIT_HANDLE_EVENT = "-- *************************************  %s  *************************************";
 
     public static final String APP_MODE_NAME = "模式";
     public static final String APP_MODE_NAME_APP = "工厂模式";
@@ -297,6 +301,7 @@ public class BaseConst {
 
     public static final String CMD_KILL_APP = "taskill /f /t /im %s";
 
+    public static final String DEFAULT_FOLDER = "/extend";
     public static final String PATH_APP = "/conf/app.conf";
     public static final String PATH_APP_EXTEND = "/conf/extend/appExtend.conf";
     public static final String PATH_SKIP_NEW_MENU = "/conf/extend/skipNewMenu.conf";
@@ -383,17 +388,57 @@ public class BaseConst {
     public static final String COLUMN_TYPE_INTEGER = "integer";
     public static final String COLUMN_TYPE_CLOB = "clob";
 
-    public static final String FILE_SQL_NAME_NEW_MENU_UPDATE = "1.全量新版升级.sql";
-    public static final String FILE_SQL_NAME_ALL_MENU = "5.所有菜单.sql";
-    public static final String FILE_SQL_NAME_LACK_NEW_MENU_ALL = "10.缺少新版全量.sql";
-    public static final String FILE_SQL_NAME_LACK_OLD_NEW_ALL = "20.缺少老版全量.sql";
-    public static final String FILE_SQL_NAME_DIFF_NEW_ALL_EXT = "30.新版全量开通不同.sql";
-    public static final String FILE_SQL_NAME_DIFF_OLD_ALL_EXT = "40.老版全量开通不同.sql";
-    public static final String FILE_SQL_NAME_LACK_ROUTER = "50.缺少路由.sql";
-    public static final String FILE_SQL_NAME_LACK_LOG = "60.缺少日志.sql";
-    public static final String FILE_SQL_NAME_ERROR_LOG = "70.错误日志.sql";
-    public static final String FILE_SQL_NAME_LEGAL_NEW_MENU = "80.新版菜单合法性.sql";
+    public static final String STYLE_CENTER = "-fx-alignment: center;";
 
+    public enum SQL_CHECK_TYPE {
+        CHECK_RESULT_SUMMARY(10, "结果汇总", "10.结果汇总.sql"),
+        LACK_NEW_MENU_ALL(100, "缺少新版全量", "100.缺少新版全量.sql"),
+        DIFF_NEW_ALL_EXT(200, "新版全量开通不同", "200.新版全量开通不同.sql"),
+        LEGAL_NEW_MENU(300, "新版菜单合法性", "300.新版菜单合法性.sql"),
+        LACK_ROUTER(400, "缺少路由", "400.缺少路由.sql"),
+        LACK_LOG(500, "缺少日志", "500.缺少日志.sql"),
+        ERROR_LOG(600, "错误日志", "600.错误日志.sql"),
+        DIFF_OLD_ALL_EXT(700, "老版全量开通不同", "700.老版全量开通不同.sql"),
+        LACK_OLD_NEW_ALL(800, "缺少老版全量", "800.缺少老版全量.sql"),
+        ALL_MENU(10000, "所有菜单", "5.所有菜单.sql"),
+        NEW_MENU_UPDATE(20000, "全量新版升级", "1.全量新版升级.sql");
+
+        private int index;
+
+        private String name;
+
+        private String fileName;
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
+        }
+
+        SQL_CHECK_TYPE(int index, String name, String fileName) {
+            this.index = index;
+            this.name = name;
+            this.fileName = fileName;
+        }
+    }
 
     public enum COLUMN_TYPE {
         DICT("1", "字典"),
@@ -425,7 +470,5 @@ public class BaseConst {
             this.name = name;
         }
     }
-
-    public static final String STYLE_CENTER = "-fx-alignment: center;";
 
 }

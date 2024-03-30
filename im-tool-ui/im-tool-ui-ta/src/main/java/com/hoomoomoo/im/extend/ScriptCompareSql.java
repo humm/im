@@ -6,6 +6,7 @@ import com.hoomoomoo.im.controller.SystemToolController;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
+import com.hoomoomoo.im.utils.TaCommonUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,6 +16,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.*;
 
 public class ScriptCompareSql {
 
@@ -53,8 +55,8 @@ public class ScriptCompareSql {
     private Map<String, String> newMenuExistCache = new LinkedHashMap<>();
     // 新版已配置trans
     private Set<String> newMenuTransExistCache = new LinkedHashSet<>();
-    // 新版已配置菜单  menu_code/menu_name reserve
-    private Map<String, String[]> newMenuReserveCache = new LinkedHashMap<>();
+    // 新版已配置菜单  menu_code/menu_name reserve parent_code
+    private Map<String, String[]> newMenuElementCache = new LinkedHashMap<>();
     // 全量脚本已配置菜单
     private Set<String> menuBaseExistCache = new LinkedHashSet<>();
     // 忽略全量新版
@@ -186,6 +188,36 @@ public class ScriptCompareSql {
         allMenuStat(appConfigDto);
         // 新版菜单合法性
         newMenuLegalCheck(appConfigDto);
+        // 检查结果汇总
+        fileSummary(appConfigDto);
+    }
+
+    private void fileSummary(AppConfigDto appConfigDto) throws Exception {
+        List<String> fileContent = new ArrayList<>();
+        SQL_CHECK_TYPE[] fileList = SQL_CHECK_TYPE.values();
+        int summary = -1;
+        int total = 0;
+        for (SQL_CHECK_TYPE item : fileList) {
+            if (NEW_MENU_UPDATE.getName().equals(item.getName()) || CHECK_RESULT_SUMMARY.getName().equals(item.getName())) {
+                continue;
+            }
+            summary = -1;
+            List<String> content = FileUtils.readNormalFile(resultPath + "\\" + item.getFileName(), false);
+            for (String line : content) {
+                if (line.contains("待处理") && line.contains("【") && line.contains("】")) {
+                    summary = Integer.valueOf(line.split("【")[1].split("】")[0]);
+                    break;
+                }
+            }
+            if (summary > 0) {
+                total += summary;
+                content.add(STR_NEXT_LINE_3);
+                fileContent.addAll(content);
+            }
+        }
+        fileContent.add(0, String.format(MSG_WAIT_HANDLE_NUM, total));
+        fileContent.add(0, String.format(MSG_WAIT_HANDLE_EVENT, CHECK_RESULT_SUMMARY.getName()));
+        FileUtils.writeFile(resultPath + CHECK_RESULT_SUMMARY.getFileName(), fileContent, false);
     }
 
     /**
@@ -219,7 +251,7 @@ public class ScriptCompareSql {
                 menuMap.addAll(initMenuRouter(extendMenuCodeList));
             }
             allRouterMenu.addAll(menuMap);
-            compareMenu(menuMap, fileName + ".sql");
+            compareMenu(menuMap, LACK_NEW_MENU_ALL.getName() + STR_SPACE_2 + fileName + ".sql");
             menuRouterCache.addAll(menuMap);
         }
 
@@ -248,10 +280,12 @@ public class ScriptCompareSql {
             menuCodeList.add(buildMenuInfo(menuCode));
             needAddUedMenuNum++;
         }
-        writeFile(menuCodeList, "extend.sql");
-        needAddUedMenu.add(0, "-- 待处理【" + needAddUedMenuNum + "】");
-        needAddUedMenu.add(0, "-- ************************************* 缺少新版全量 *************************************");
-        FileUtils.writeFile(resultPath + FILE_SQL_NAME_LACK_NEW_MENU_ALL, needAddUedMenu, false);
+        if (CollectionUtils.isNotEmpty(menuCodeList)) {
+            writeFile(menuCodeList, LACK_NEW_MENU_ALL.getName() + STR_SPACE_2 + "extend.sql");
+        }
+        needAddUedMenu.add(0, String.format(MSG_WAIT_HANDLE_NUM_0, needAddUedMenuNum));
+        needAddUedMenu.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LACK_NEW_MENU_ALL.getName()));
+        FileUtils.writeFile(resultPath + LACK_NEW_MENU_ALL.getFileName(), needAddUedMenu, false);
     }
 
     /**
@@ -272,9 +306,9 @@ public class ScriptCompareSql {
             String menuCode = iteratorLackMenu.next();
             lackMenuList.add(buildMenuInfo(menuCode));
         }
-        lackMenuList.add(0, "-- 待处理【" + lackMenu.size() + "】\n\n");
-        lackMenuList.add(0, "-- ************************************* 缺少老版全量 *************************************");
-        FileUtils.writeFile(resultPath + FILE_SQL_NAME_LACK_OLD_NEW_ALL, lackMenuList, false);
+        lackMenuList.add(0, String.format(MSG_WAIT_HANDLE_NUM, lackMenu.size()));
+        lackMenuList.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LACK_OLD_NEW_ALL.getName()));
+        FileUtils.writeFile(resultPath + LACK_OLD_NEW_ALL.getFileName(), lackMenuList, false);
     }
 
     /**
@@ -329,9 +363,9 @@ public class ScriptCompareSql {
             String menuCode = newMenDiffIterator.next();
             newMenDiffInfo.add(buildMenuInfo(newMenDiff, menuCode));
         }
-        newMenDiffInfo.add(0, "-- 待处理【" + newMenDiff.size() + "】\n\n");
-        newMenDiffInfo.add(0, "-- ************************************* 新版全量开通不同 *************************************");
-        FileUtils.writeFile(resultPath + FILE_SQL_NAME_DIFF_NEW_ALL_EXT, newMenDiffInfo, false);
+        newMenDiffInfo.add(0, String.format(MSG_WAIT_HANDLE_NUM, newMenDiff.size()));
+        newMenDiffInfo.add(0, String.format(MSG_WAIT_HANDLE_EVENT, DIFF_NEW_ALL_EXT.getName()));
+        FileUtils.writeFile(resultPath + DIFF_NEW_ALL_EXT.getFileName(), newMenDiffInfo, false);
     }
 
     /**
@@ -387,9 +421,9 @@ public class ScriptCompareSql {
             String menuCode = oldMenDiffIterator.next();
             oldMenDiffInfo.add(buildMenuInfo(oldMenDiff, menuCode));
         }
-        oldMenDiffInfo.add(0, "-- 待处理【" + oldMenDiff.size() + "】\n\n");
-        oldMenDiffInfo.add(0, "-- ************************************* 老版全量开通不同 *************************************");
-        FileUtils.writeFile(resultPath + FILE_SQL_NAME_DIFF_OLD_ALL_EXT, oldMenDiffInfo, false);
+        oldMenDiffInfo.add(0, String.format(MSG_WAIT_HANDLE_NUM, oldMenDiff.size()));
+        oldMenDiffInfo.add(0, String.format(MSG_WAIT_HANDLE_EVENT, DIFF_OLD_ALL_EXT.getName()));
+        FileUtils.writeFile(resultPath + DIFF_OLD_ALL_EXT.getFileName(), oldMenDiffInfo, false);
     }
 
     /**
@@ -413,9 +447,9 @@ public class ScriptCompareSql {
             String menuCode = iteratorLack.next();
             menuCodeList.add(buildMenuInfo(menuCode));
         }
-        menuCodeList.add(0, "-- 待处理【" + lackRouter.size() + "】\n\n");
-        menuCodeList.add(0, "-- ************************************* 缺少路由 *************************************");
-        FileUtils.writeFile(resultPath + FILE_SQL_NAME_LACK_ROUTER, menuCodeList, false);
+        menuCodeList.add(0, String.format(MSG_WAIT_HANDLE_NUM, lackRouter.size()));
+        menuCodeList.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LACK_ROUTER.getName()));
+        FileUtils.writeFile(resultPath + LACK_ROUTER.getFileName(), menuCodeList, false);
     }
 
     /**
@@ -435,9 +469,9 @@ public class ScriptCompareSql {
                subTransExtList.add(menu);
             }
         }
-        subTransExtList.add(0, "-- 待处理【" + subTransExtList.size() + "】\n\n");
-        subTransExtList.add(0, "-- ************************************* 缺少日志 *************************************");
-        FileUtils.writeFile(resultPath + FILE_SQL_NAME_LACK_LOG, subTransExtList, false);
+        subTransExtList.add(0, String.format(MSG_WAIT_HANDLE_NUM, subTransExtList.size()));
+        subTransExtList.add(0, String.format(MSG_WAIT_HANDLE_EVENT,LACK_LOG.getName()));
+        FileUtils.writeFile(resultPath + LACK_LOG.getFileName(), subTransExtList, false);
     }
 
     /**
@@ -461,10 +495,10 @@ public class ScriptCompareSql {
                 subTransExtErrorList.add(buildMenuTransInfo(subTransExtCache, transCode));
             }
         }
-        subTransExtErrorList.add(0, "-- 待处理【" + subTransExtErrorList.size() + "】\n\n");
-        subTransExtErrorList.add(0, "-- ************************************* 0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入 *************************************");
-        subTransExtErrorList.add(0, "-- ******************************************************* 错误日志 *******************************************************");
-        FileUtils.writeFile(resultPath + FILE_SQL_NAME_ERROR_LOG, subTransExtErrorList, false);
+        subTransExtErrorList.add(0, String.format(MSG_WAIT_HANDLE_NUM, subTransExtErrorList.size()));
+        subTransExtErrorList.add(0, "-- *************************************  0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入  *************************************");
+        subTransExtErrorList.add(0, String.format(MSG_WAIT_HANDLE_EVENT, ERROR_LOG.getName()));
+        FileUtils.writeFile(resultPath + ERROR_LOG.getFileName(), subTransExtErrorList, false);
     }
 
     /**
@@ -487,9 +521,9 @@ public class ScriptCompareSql {
                 menu.add(buildMenuInfo(menuCode));
             }
         }
-        menu.add(0, "-- 菜单总数【" + existMenu.size() + "】\n\n");
-        menu.add(0, "-- ************************************* 所有菜单 *************************************");
-        FileUtils.writeFile(resultPath + FILE_SQL_NAME_ALL_MENU, menu, false);
+        menu.add(0, String.format(MSG_WAIT_HANDLE_NUM, existMenu.size()).replace("待处理", "菜单总数"));
+        menu.add(0, String.format(MSG_WAIT_HANDLE_EVENT, ALL_MENU.getName()));
+        FileUtils.writeFile(resultPath + ALL_MENU.getFileName(), menu, false);
     }
 
     /**
@@ -527,33 +561,37 @@ public class ScriptCompareSql {
             }
         }
         int total = menuInfo.size();
-        menuInfo.add(0, "-- 待处理【" + menuInfo.size() + "】\n\n");
-        menuInfo.add(0, "-- ************************************* 菜单名称存在空格 *************************************");
+        if (CollectionUtils.isNotEmpty(menuInfo)) {
+            menuInfo.add(0, String.format(MSG_WAIT_HANDLE_NUM, menuInfo.size()));
+            menuInfo.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_NEW_MENU.getName() + STR_SPACE_2 + "菜单名称存在空格"));
+        }
 
         // 存在相同菜单名称
         total += sameMenuName.size();
-        menuInfo.add("\n\n-- ************************************* 存在相同菜单名称 *************************************");
-        menuInfo.add("-- 待处理【" + sameMenuName.size() + "】\n\n");
-        menuInfo.addAll(sameMenuName);
+        if (CollectionUtils.isNotEmpty(sameMenuName)) {
+            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_NEW_MENU.getName() + STR_SPACE_2 + "存在相同菜单名称"));
+            menuInfo.add(String.format(MSG_WAIT_HANDLE_NUM, sameMenuName.size()));
+            menuInfo.addAll(sameMenuName);
+        }
 
         // 存在合并后菜单不存在系统间合并
-        Iterator<String> iterator = newMenuReserveCache.keySet().iterator();
+        Iterator<String> iterator = newMenuElementCache.keySet().iterator();
         List<String> reserve1List = new ArrayList<>();
         while (iterator.hasNext()) {
             String menuCode = iterator.next();
-            String menuName = newMenuReserveCache.get(menuCode)[0];
-            String menuReserve = newMenuReserveCache.get(menuCode)[1];
+            String menuName = newMenuElementCache.get(menuCode)[0];
+            String menuReserve = newMenuElementCache.get(menuCode)[1];
             if (StringUtils.isBlank(menuReserve.trim()) || !STR_0.equals(menuReserve)) {
                 continue;
             }
-            Iterator<String> iteratorTmp = newMenuReserveCache.keySet().iterator();
+            Iterator<String> iteratorTmp = newMenuElementCache.keySet().iterator();
             boolean flag = false;
             while (iteratorTmp.hasNext()) {
                 String menuCodeTmp = iteratorTmp.next();
                 if (menuCode.equals(menuCodeTmp)) {
                     continue;
                 }
-                String menuReserveTmp = newMenuReserveCache.get(menuCodeTmp)[1];
+                String menuReserveTmp = newMenuElementCache.get(menuCodeTmp)[1];
                 String[] reserve = menuReserveTmp.split(STR_COMMA);
                 for (String item : reserve) {
                     if (menuCode.equals(item)) {
@@ -571,29 +609,31 @@ public class ScriptCompareSql {
             }
         }
         total += reserve1List.size();
-        menuInfo.add("\n\n-- ************************************* 存在合并后菜单不存在系统间合并 *************************************");
-        menuInfo.add("-- 待处理【" + reserve1List.size() + "】\n\n");
-        menuInfo.addAll(reserve1List);
+        if (CollectionUtils.isNotEmpty(reserve1List)) {
+            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_NEW_MENU.getName() + STR_SPACE_2 + "存在合并后菜单不存在系统间合并"));
+            menuInfo.add(String.format(MSG_WAIT_HANDLE_NUM, reserve1List.size()));
+            menuInfo.addAll(reserve1List);
+        }
 
         // 存在系统间合并不存在合并后菜单
-        Iterator<String> iteratorReserve2 = newMenuReserveCache.keySet().iterator();
+        Iterator<String> iteratorReserve2 = newMenuElementCache.keySet().iterator();
         List<String> reserve2List = new ArrayList<>();
         while (iteratorReserve2.hasNext()) {
             String menuCode = iteratorReserve2.next();
-            String menuReserve = newMenuReserveCache.get(menuCode)[1];
+            String menuReserve = newMenuElementCache.get(menuCode)[1];
             if (StringUtils.isBlank(menuReserve.trim()) || STR_0.equals(menuReserve)) {
                 continue;
             }
             String[] menuReserveList = menuReserve.split(STR_COMMA);
             for (String item : menuReserveList) {
-                Iterator<String> iteratorTmp = newMenuReserveCache.keySet().iterator();
+                Iterator<String> iteratorTmp = newMenuElementCache.keySet().iterator();
                 boolean flag = false;
                 while (iteratorTmp.hasNext()) {
                     String menuCodeTmp = iteratorTmp.next();
                     if (menuCode.equals(menuCodeTmp)) {
                         continue;
                     }
-                    String menuReserveTmp = newMenuReserveCache.get(menuCodeTmp)[1];
+                    String menuReserveTmp = newMenuElementCache.get(menuCodeTmp)[1];
                     if (item.equals(menuCodeTmp) && STR_0.equals(menuReserveTmp)) {
                         flag = true;
                         break;
@@ -607,16 +647,21 @@ public class ScriptCompareSql {
         }
 
         total += reserve2List.size();
-        menuInfo.add("\n\n-- ************************************* 存在系统间合并不存在合并后菜单 *************************************");
-        menuInfo.add("-- 待处理【" + reserve2List.size() + "】\n\n");
-        menuInfo.addAll(reserve2List);
+        if (CollectionUtils.isNotEmpty(reserve2List)) {
+            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_NEW_MENU.getName() + STR_SPACE_2 + "存在系统间合并不存在合并后菜单"));
+            menuInfo.add(String.format(MSG_WAIT_HANDLE_NUM, reserve2List.size()));
+            menuInfo.addAll(reserve2List);
+        }
 
         // 注释内容不存在开始结束标识
         List<String> config = FileUtils.readNormalFile(newUedPage, false);
         List<String> remarkError = new ArrayList<>();
-        for (int i=5; i<config.size(); i++) {
-            String item = config.get(i).trim();
+        for (int i=6; i<config.size(); i++) {
+            String item = config.get(i).toLowerCase().trim();
             if (!item.contains(ANNOTATION_TYPE_NORMAL)) {
+                continue;
+            }
+            if (item.contains("delete") || item.contains("insert") || item.contains("values") || item.contains("废弃页面已抽取到平台")) {
                 continue;
             }
             if (!item.contains("开始") && !item.contains("结束")) {
@@ -626,14 +671,15 @@ public class ScriptCompareSql {
             }
         }
         total += remarkError.size();
-        menuInfo.add("\n\n-- ************************************* 注释内容不存在开始结束标识 *************************************");
-        menuInfo.add("-- 待处理【" + remarkError.size() + "】\n\n");
-        menuInfo.addAll(remarkError);
+        if (CollectionUtils.isNotEmpty(remarkError)) {
+            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_NEW_MENU.getName() + STR_SPACE_2 + "注释内容不存在开始结束标识"));
+            menuInfo.add(String.format(MSG_WAIT_HANDLE_NUM, remarkError.size()));
+            menuInfo.addAll(remarkError);
+        }
 
-
-        menuInfo.add(0, "-- 待处理【" + total + "】\n\n");
-        menuInfo.add(0, "-- ************************************* 新版菜单合法性 *************************************");
-        FileUtils.writeFile(resultPath + FILE_SQL_NAME_LEGAL_NEW_MENU, menuInfo, false);
+        menuInfo.add(0, String.format(MSG_WAIT_HANDLE_NUM_0, total));
+        menuInfo.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_NEW_MENU.getName()));
+        FileUtils.writeFile(resultPath + LEGAL_NEW_MENU.getFileName(), menuInfo, false);
     }
 
     private void compareMenu(Set<String> menuMap, String fileName) throws Exception {
@@ -667,11 +713,13 @@ public class ScriptCompareSql {
     }
 
     private void writeFile(List<String> menuCodeList, String fileName) throws Exception {
-        menuCodeList.add(0, "-- 待处理【" + menuCodeList.size() + "】\n");
-        needAddUedMenu.add("\n\n-- ************************************* " + fileName.replace(".sql", " *************************************"));
+        if (CollectionUtils.isEmpty(menuCodeList)) {
+            return;
+        }
+        menuCodeList.add(0, String.format(MSG_WAIT_HANDLE_NUM_1, menuCodeList.size()));
+        needAddUedMenu.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, fileName.replace(".sql", STR_BLANK)));
         needAddUedMenu.addAll(menuCodeList);
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (!FILE_SQL_NAME_LACK_NEW_MENU_ALL.equals(fileName)) {
+        if (!LACK_NEW_MENU_ALL.getFileName().equals(fileName)) {
             return;
         }
         FileUtils.writeFile(resultPath + fileName, menuCodeList, false);
@@ -747,8 +795,9 @@ public class ScriptCompareSql {
                 }
                 String menuName = getMenuName(item);
                 String menuReserve = getMenuReserve(item);
+                String menuParentCode = getParentCode(item);
                 newMenuExistCache.put(menuCode, menuName);
-                newMenuReserveCache.put(menuCode, new String[]{menuName, menuReserve});
+                newMenuElementCache.put(menuCode, new String[]{menuName, menuReserve, menuParentCode});
                 if (newMenuBaseCache.containsKey(menuCode)) {
                     newMenuBaseCache.get(menuCode).put(newUedPage, getMenuDetail(18, item));
                 } else {
@@ -798,29 +847,28 @@ public class ScriptCompareSql {
     }
 
     private static String getMenuCode(String item) {
-        String menuCode = null;
-        item = handleMenu(item);
-        if (item != null) {
-            String[] menuCodeInfo = item.split(",");
-            menuCode = menuCodeInfo[0];
-            if (menuCode.contains("'")) {
-                menuCode = menuCode.split("'")[1];
-            }
-        }
-        return menuCode;
+        return getMenuElement(item, 0);
     }
 
     private static String getMenuName(String item) {
-        String menuName = null;
+        return getMenuElement(item, 4);
+    }
+
+    private static String getParentCode(String item) {
+        return getMenuElement(item, 10);
+    }
+
+    private static String getMenuElement(String item, int index) {
+        String menu = null;
         item = handleMenu(item);
         if (item != null) {
             String[] menuCodeInfo = item.split(",");
-            menuName = menuCodeInfo[4];
-            if (menuName.contains("'")) {
-                menuName = menuName.split("'")[1];
+            menu = menuCodeInfo[index];
+            if (menu.contains("'")) {
+                menu = menu.split("'")[1];
             }
         }
-        return menuName;
+        return menu;
     }
 
     private static String getMenuReserve(String item) {

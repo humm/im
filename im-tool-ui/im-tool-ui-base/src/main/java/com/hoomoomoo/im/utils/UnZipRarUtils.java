@@ -85,7 +85,9 @@ public class UnZipRarUtils {
         if (zipFile != null) {
             zipFile.close();
         }
-        LoggerUtils.info(String.format(BaseConst.MSG_CHECK, NAME_FILE_SAME));
+        if (CommonUtils.isSuperUser()) {
+            LoggerUtils.info(String.format(BaseConst.MSG_CHECK, NAME_FILE_SAME));
+        }
     }
 
     /**

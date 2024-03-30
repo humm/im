@@ -81,6 +81,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
     @FXML
     void executeSubmit(ActionEvent event) {
         try {
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             LoggerUtils.info(String.format(BaseConst.MSG_USE, SCRIPT_UPDATE.getName()));
             if (!TaCommonUtils.checkConfig(target, SCRIPT_UPDATE.getCode())) {
                 return;
@@ -91,7 +92,6 @@ public class ScriptUpdateController extends BaseController implements Initializa
             if (!onlyDelete.isSelected() && !all.isSelected() && !update.isSelected()) {
                 selectAll(null);
             }
-            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (onlyDelete.isSelected()) {
                 appConfigDto.setScriptUpdateGenerateType(STR_1);
             } else if (all.isSelected()) {

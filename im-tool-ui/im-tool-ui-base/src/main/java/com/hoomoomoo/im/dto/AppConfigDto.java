@@ -154,8 +154,6 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskTodoDetailSymbol;
 
-    private String hepTaskTodoEndDateVersion;
-
     private String systemToolShakeMouseTimer;
 
     private String systemToolShakeMouseStep;

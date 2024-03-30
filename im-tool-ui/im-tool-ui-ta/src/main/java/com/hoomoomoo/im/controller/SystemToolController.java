@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
@@ -171,49 +172,49 @@ public class SystemToolController implements Initializable {
 
     @FXML
     void skipNewMenu(ActionEvent event) throws Exception {
-        String title = getTitle(FILE_SQL_NAME_LACK_NEW_MENU_ALL);
+        String title = getTitle(LACK_NEW_MENU_ALL.getName());
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU, title);
         addLog(title);
     }
 
     @FXML
     void skipOldMenu(ActionEvent event) throws Exception {
-        String title = getTitle(FILE_SQL_NAME_LACK_OLD_NEW_ALL);
+        String title = getTitle(LACK_OLD_NEW_ALL.getName());
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU, title);
         addLog(title);
     }
 
     @FXML
     void skipNewDiff(ActionEvent event) throws Exception {
-        String title = getTitle(FILE_SQL_NAME_DIFF_NEW_ALL_EXT);
+        String title = getTitle(DIFF_NEW_ALL_EXT.getName());
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU, title);
         addLog(title);
     }
 
     @FXML
     void skipOldDiff(ActionEvent event) throws Exception {
-        String title = getTitle(FILE_SQL_NAME_DIFF_OLD_ALL_EXT);
+        String title = getTitle(DIFF_OLD_ALL_EXT.getName());
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU, title);
         addLog(title);
     }
 
     @FXML
     void skipRouter(ActionEvent event) throws Exception {
-        String title = getTitle(FILE_SQL_NAME_LACK_ROUTER);
+        String title = getTitle(LACK_ROUTER.getName());
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER, title);
         addLog(title);
     }
 
     @FXML
     void skipLog(ActionEvent event) throws Exception {
-        String title = getTitle(FILE_SQL_NAME_LACK_LOG);
+        String title = getTitle(LACK_LOG.getName());
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG, title);
         addLog(title);
     }
 
     @FXML
     void skipErrorLog(ActionEvent event) throws Exception {
-        String title = getTitle(FILE_SQL_NAME_ERROR_LOG);
+        String title = getTitle(ERROR_LOG.getName());
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG, title);
         addLog(title);
     }

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.NEW_MENU_UPDATE;
 
 
 /**
@@ -35,17 +36,15 @@ public class CheckResultController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String pageType = appConfigDto.getPageType();
         if (PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT.equals(pageType)) {
-            initTab(appConfigDto, FILE_SQL_NAME_LACK_NEW_MENU_ALL);
-            initTab(appConfigDto, FILE_SQL_NAME_DIFF_NEW_ALL_EXT);
-            initTab(appConfigDto, FILE_SQL_NAME_LEGAL_NEW_MENU);
-            initTab(appConfigDto, FILE_SQL_NAME_LACK_OLD_NEW_ALL);
-            initTab(appConfigDto, FILE_SQL_NAME_DIFF_OLD_ALL_EXT);
-            initTab(appConfigDto, FILE_SQL_NAME_LACK_ROUTER);
-            initTab(appConfigDto, FILE_SQL_NAME_LACK_LOG);
-            initTab(appConfigDto, FILE_SQL_NAME_ERROR_LOG);
-            initTab(appConfigDto, FILE_SQL_NAME_ALL_MENU);
+            SQL_CHECK_TYPE[] fileList = SQL_CHECK_TYPE.values();
+            for (SQL_CHECK_TYPE item : fileList) {
+                if (NEW_MENU_UPDATE.getName().equals(item.getName())) {
+                    continue;
+                }
+                initTab(appConfigDto, item.getFileName());
+            }
         } else if (PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT.equals(pageType)) {
-            initTab(appConfigDto, FILE_SQL_NAME_NEW_MENU_UPDATE);
+            initTab(appConfigDto, NEW_MENU_UPDATE.getFileName());
         }
     }
 
@@ -77,7 +76,7 @@ public class CheckResultController implements Initializable {
                     index = Integer.valueOf(item.split("【")[1].split("】")[0]);
                 }
             }
-            if (!FILE_SQL_NAME_NEW_MENU_UPDATE.equals(fileName)) {
+            if (!NEW_MENU_UPDATE.getFileName().equals(fileName)) {
                 item = item.replaceAll("--", "");
             }
             text.append(item).append(STR_NEXT_LINE);

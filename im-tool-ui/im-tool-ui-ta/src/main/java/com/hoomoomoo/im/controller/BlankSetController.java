@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.ERROR_LOG;
 
 /**
  * @author humm23693
@@ -58,7 +59,7 @@ public class BlankSetController implements Initializable {
                 confPath = FileUtils.getFilePath(PATH_SKIP_ERROR_LOG);
             } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
                 String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
-                confPath = resultPath + "\\" + FILE_SQL_NAME_ERROR_LOG;
+                confPath = resultPath + "\\" + ERROR_LOG.getFileName();
             }
             FileUtils.writeFile(confPath, content, false);
         }
@@ -128,7 +129,7 @@ public class BlankSetController implements Initializable {
                 confPath = FileUtils.getFilePath(PATH_SKIP_ERROR_LOG);
             } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
                 String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
-                confPath = resultPath + "\\" + FILE_SQL_NAME_ERROR_LOG;
+                confPath = resultPath + "\\" + ERROR_LOG.getFileName();
                 submit.setText("修复");
             }
             List<String> content = FileUtils.readNormalFile(confPath, false);
