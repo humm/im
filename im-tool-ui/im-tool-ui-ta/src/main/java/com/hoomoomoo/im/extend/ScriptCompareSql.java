@@ -163,17 +163,18 @@ public class ScriptCompareSql {
             if (StringUtils.isBlank(item)) {
                 continue;
             }
-            item = item.replaceAll("\\s+", " ");
-            String[] element = item.split(STR_SPACE);
+            String[] element = item.trim().replaceAll("\\s+", " ").split(STR_SPACE);
             if (element.length >= 2) {
                 String checkType = element[0];
-                String menuName = element[1];
-                if (skipCache.containsKey(checkType)) {
-                    skipCache.get(checkType).add(menuName);
-                } else {
-                    Set<String> ele = new HashSet<>();
-                    ele.add(menuName);
-                    skipCache.put(checkType, ele);
+                for (int i=1; i<element.length; i++) {
+                    String menuName = element[i];
+                    if (skipCache.containsKey(checkType)) {
+                        skipCache.get(checkType).add(menuName);
+                    } else {
+                        Set<String> ele = new HashSet<>();
+                        ele.add(menuName);
+                        skipCache.put(checkType, ele);
+                    }
                 }
             }
         }
