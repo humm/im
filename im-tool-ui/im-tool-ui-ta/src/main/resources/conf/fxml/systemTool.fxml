@@ -31,13 +31,13 @@
                                         </Button>
 
 
-                                        <Label layoutX="590.0" layoutY="50.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="同步发版时间" />
-                                        <Button fx:id="updateVersionBtn" layoutX="700.0" layoutY="45" mnemonicParsing="false" onAction="#updateVersion" prefWidth="100.0" text="同步">
+                                        <Label layoutX="620.0" layoutY="50.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="同步发版时间" />
+                                        <Button fx:id="updateVersionBtn" layoutX="730.0" layoutY="45" mnemonicParsing="false" onAction="#updateVersion" prefWidth="100.0" text="同步">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
                                         </Button>
-                                        <Button fx:id="clearVersionBtn" layoutX="830.0" layoutY="45" mnemonicParsing="false" onAction="#clearVersion" prefWidth="100.0" text="清除个性化">
+                                        <Button fx:id="clearVersionBtn" layoutX="860.0" layoutY="45" mnemonicParsing="false" onAction="#clearVersion" prefWidth="100.0" text="清除个性化">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
@@ -106,6 +106,12 @@
                                         </Button>
 
                                         <Button layoutX="180.0" layoutY="355" mnemonicParsing="false" onAction="#skipErrorLog" prefWidth="100.0" text="错误日志">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
+
+                                        <Button layoutX="300.0" layoutY="355" mnemonicParsing="false" onAction="#skipNewLegal" prefWidth="100.0" text="新版合法性">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>

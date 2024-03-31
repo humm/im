@@ -384,6 +384,10 @@ public class TaCommonUtils {
         return CommonUtils.getCurrentDateTime1() + STR_SPACE + msg;
     }
 
+    public static void openBlankChildStage(int pageType, String title) throws Exception {
+        openBlankChildStage(String.valueOf(pageType), title);
+    }
+
     public static void openBlankChildStage(String pageType, String title) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setPageType(pageType);

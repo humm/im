@@ -304,13 +304,6 @@ public class BaseConst {
     public static final String DEFAULT_FOLDER = "/extend";
     public static final String PATH_APP = "/conf/app.conf";
     public static final String PATH_APP_EXTEND = "/conf/extend/appExtend.conf";
-    public static final String PATH_SKIP_NEW_MENU = "/conf/extend/skipNewMenu.conf";
-    public static final String PATH_SKIP_OLD_MENU = "/conf/extend/skipOldMenu.conf";
-    public static final String PATH_SKIP_NEW_DIFF_MENU = "/conf/extend/skipNewDiffMenu.conf";
-    public static final String PATH_SKIP_OLD_DIFF_MENU = "/conf/extend/skipOldDiffMenu.conf";
-    public static final String PATH_SKIP_ROUTER = "/conf/extend/skipRouter.conf";
-    public static final String PATH_SKIP_LOG = "/conf/extend/skipLog.conf";
-    public static final String PATH_SKIP_ERROR_LOG = "/conf/extend/skipErrorLog.conf";
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
     public static final String PATH_VERSION = "/conf/init/version.init";
@@ -349,17 +342,9 @@ public class BaseConst {
     public static final String MENU_CODE_BUSIN = "busin";
 
     public static final String PAGE_TYPE_HEP_DETAIL = "detail";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU = "skipNewMenu";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU = "skipOldMenu";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU = "skipNewDiffMenu";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU = "skipOldDiffMenu";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER = "skipRouter";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG = "skipLog";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG = "skipErrorLog";
-    public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG = "repairErrorLog";
-
     public static final String PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT = "checkResult";
     public static final String PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT = "updateResult";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG = "repairErrorLog";
 
     public static final String MENU_TYPE_FUND_CODE = "1";
     public static final String MENU_TYPE_FUND_NAME = "自建业务";
@@ -393,23 +378,25 @@ public class BaseConst {
     public static final String CONF_FUNCTION_PREFIX = "####################";
 
     public enum SQL_CHECK_TYPE {
-        CHECK_RESULT_SUMMARY(10, "结果汇总", "10.结果汇总.sql"),
-        LACK_NEW_MENU_ALL(100, "缺少新版全量", "100.缺少新版全量.sql"),
-        DIFF_NEW_ALL_EXT(200, "新版全量开通不同", "200.新版全量开通不同.sql"),
-        LEGAL_NEW_MENU(300, "新版菜单合法性", "300.新版菜单合法性.sql"),
-        LACK_ROUTER(400, "缺少路由", "400.缺少路由.sql"),
-        LACK_LOG(500, "缺少日志", "500.缺少日志.sql"),
-        ERROR_LOG(600, "错误日志", "600.错误日志.sql"),
-        DIFF_OLD_ALL_EXT(700, "老版全量开通不同", "700.老版全量开通不同.sql"),
-        LACK_OLD_NEW_ALL(800, "缺少老版全量", "800.缺少老版全量.sql"),
-        ALL_MENU(10000, "所有菜单", "5.所有菜单.sql"),
-        NEW_MENU_UPDATE(20000, "全量新版升级", "1.全量新版升级.sql");
+        CHECK_RESULT_SUMMARY(10, "结果汇总", "10.结果汇总.sql", ""),
+        LACK_NEW_MENU_ALL(100, "缺少新版全量", "100.缺少新版全量.sql", "/conf/extend/skipNewMenu.conf"),
+        DIFF_NEW_ALL_EXT(200, "新版全量开通不同", "200.新版全量开通不同.sql", "/conf/extend/skipNewDiffMenu.conf"),
+        LEGAL_NEW_MENU(300, "新版菜单合法性", "300.新版菜单合法性.sql", "/conf/extend/legalNewMenu.conf"),
+        LACK_ROUTER(400, "缺少路由", "400.缺少路由.sql", "/conf/extend/skipRouter.conf"),
+        LACK_LOG(500, "缺少日志", "500.缺少日志.sql", "/conf/extend/skipLog.conf"),
+        ERROR_LOG(600, "错误日志", "600.错误日志.sql", "/conf/extend/skipErrorLog.conf"),
+        DIFF_OLD_ALL_EXT(700, "老版全量开通不同", "700.老版全量开通不同.sql", "/conf/extend/skipOldDiffMenu.conf"),
+        LACK_OLD_NEW_ALL(800, "缺少老版全量", "800.缺少老版全量.sql", "/conf/extend/skipOldMenu.conf"),
+        ALL_MENU(10000, "所有菜单", "5.所有菜单.sql", ""),
+        NEW_MENU_UPDATE(20000, "全量新版升级", "1.全量新版升级.sql", "");
 
         private int index;
 
         private String name;
 
         private String fileName;
+
+        private String pathConf;
 
         public int getIndex() {
             return index;
@@ -435,10 +422,19 @@ public class BaseConst {
             this.fileName = fileName;
         }
 
-        SQL_CHECK_TYPE(int index, String name, String fileName) {
+        public String getPathConf() {
+            return pathConf;
+        }
+
+        public void setPathConf(String pathConf) {
+            this.pathConf = pathConf;
+        }
+
+        SQL_CHECK_TYPE(int index, String name, String fileName, String pathConf) {
             this.index = index;
             this.name = name;
             this.fileName = fileName;
+            this.pathConf = pathConf;
         }
     }
 

@@ -15,7 +15,7 @@ public class MenuFunctionConfig {
         MENU_SCRIPT("menuScript", "脚本", 20, "sql"),
         MENU_CODE("menuCode", "代码", 30, "code"),
         MENU_HEP("menuHep", "效能", 40, "hep"),
-        MENU_SYSTEM("menuSystem", "系统", 50, "system"),
+        MENU_SYSTEM("menuSystem", "高级", 50, "system"),
 
         // 公共菜单
         MENU_SET("menuSet", "设置", 1000, "set"),

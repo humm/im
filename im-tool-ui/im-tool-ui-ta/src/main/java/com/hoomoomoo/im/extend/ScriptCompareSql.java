@@ -73,6 +73,8 @@ public class ScriptCompareSql {
     Set<String> skipLogCache = new HashSet<>();
     // 忽略日志信息
     Set<String> skipErrorLogCache = new HashSet<>();
+    // 忽略新版菜单合法性
+    Map<String, Set<String>> skipLegalNewMenu = new HashMap<>();
     // 路由缓存信息
     Set<String> menuRouterCache = new LinkedHashSet<>();
 
@@ -93,33 +95,37 @@ public class ScriptCompareSql {
             newUedPage = basePath + ScriptSqlUtils.newUedPage;
             resultPath = resPath + "\\";
 
-            String confPath = FileUtils.getFilePath(PATH_SKIP_NEW_MENU);
+            String confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LACK_NEW_MENU_ALL.getPathConf());
             List<String> content = FileUtils.readNormalFile(confPath, false);
             initSkipCache(content, skipNewMenuCache);
 
-            confPath = FileUtils.getFilePath(PATH_SKIP_OLD_MENU);
+            confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LACK_OLD_NEW_ALL.getPathConf());
             content = FileUtils.readNormalFile(confPath, false);
             initSkipCache(content, skipOldMenuCache);
 
-            confPath = FileUtils.getFilePath(PATH_SKIP_ROUTER);
+            confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LACK_ROUTER.getPathConf());
             content = FileUtils.readNormalFile(confPath, false);
             initSkipCache(content, skipRouterCache);
 
-            confPath = FileUtils.getFilePath(PATH_SKIP_NEW_DIFF_MENU);
+            confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.DIFF_NEW_ALL_EXT.getPathConf());
             content = FileUtils.readNormalFile(confPath, false);
             initSkipCache(content, skipNewDiffMenuCache);
 
-            confPath = FileUtils.getFilePath(PATH_SKIP_OLD_DIFF_MENU);
+            confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.DIFF_OLD_ALL_EXT.getPathConf());
             content = FileUtils.readNormalFile(confPath, false);
             initSkipCache(content, skipOldDiffMenuCache);
 
-            confPath = FileUtils.getFilePath(PATH_SKIP_LOG);
+            confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LACK_LOG.getPathConf());
             content = FileUtils.readNormalFile(confPath, false);
             initSkipTransCache(content, skipLogCache);
 
-            confPath = FileUtils.getFilePath(PATH_SKIP_ERROR_LOG);
+            confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.ERROR_LOG.getPathConf());
             content = FileUtils.readNormalFile(confPath, false);
             initSkipTransCache(content, skipErrorLogCache);
+
+            confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LEGAL_NEW_MENU.getPathConf());
+            content = FileUtils.readNormalFile(confPath, false);
+            initSkipMapCache(content, skipLegalNewMenu);
 
             initBaseAndExtMenuCache();
             initConfigUedMenuCache();
@@ -149,6 +155,27 @@ public class ScriptCompareSql {
                 }
             }
             skipCache.add(transCode + " - " + tranSubCode);
+        }
+    }
+
+    private void initSkipMapCache(List<String> content, Map<String, Set<String>> skipCache) {
+        for (String item : content) {
+            if (StringUtils.isBlank(item)) {
+                continue;
+            }
+            item = item.replaceAll("\\s+", " ");
+            String[] element = item.split(STR_SPACE);
+            if (element.length >= 2) {
+                String checkType = element[0];
+                String menuName = element[1];
+                if (skipCache.containsKey(checkType)) {
+                    skipCache.get(checkType).add(menuName);
+                } else {
+                    Set<String> ele = new HashSet<>();
+                    ele.add(menuName);
+                    skipCache.put(checkType, ele);
+                }
+            }
         }
     }
 
@@ -539,6 +566,7 @@ public class ScriptCompareSql {
         List<String> sameMenuName = new ArrayList<>();
         Set<String> addSameMenu = new HashSet<>();
         Map<String, String> menuNameCache = new HashMap<>();
+        Set<String> skipSameMenu = skipLegalNewMenu.get("存在相同菜单名称");
         while (menuUedExistIterator.hasNext()) {
             String menuCode = menuUedExistIterator.next();
             String menuName = newMenuExistCache.get(menuCode);
@@ -547,6 +575,9 @@ public class ScriptCompareSql {
                 menuInfo.add(menu);
             }
             if (newMenuTransExistCache.contains(menuCode)) {
+                continue;
+            }
+            if (CollectionUtils.isNotEmpty(skipSameMenu) && skipSameMenu.contains(menuName)) {
                 continue;
             }
             if (menuNameCache.containsKey(menuName)) {

@@ -173,49 +173,56 @@ public class SystemToolController implements Initializable {
     @FXML
     void skipNewMenu(ActionEvent event) throws Exception {
         String title = getTitle(LACK_NEW_MENU_ALL.getName());
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_MENU, title);
+        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.LACK_NEW_MENU_ALL.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipOldMenu(ActionEvent event) throws Exception {
         String title = getTitle(LACK_OLD_NEW_ALL.getName());
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_MENU, title);
+        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.LACK_OLD_NEW_ALL.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipNewDiff(ActionEvent event) throws Exception {
         String title = getTitle(DIFF_NEW_ALL_EXT.getName());
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_NEW_DIFF_MENU, title);
+        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.DIFF_NEW_ALL_EXT.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipOldDiff(ActionEvent event) throws Exception {
         String title = getTitle(DIFF_OLD_ALL_EXT.getName());
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_OLD_DIFF_MENU, title);
+        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.DIFF_OLD_ALL_EXT.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipRouter(ActionEvent event) throws Exception {
         String title = getTitle(LACK_ROUTER.getName());
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ROUTER, title);
+        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.LACK_ROUTER.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipLog(ActionEvent event) throws Exception {
         String title = getTitle(LACK_LOG.getName());
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_LOG, title);
+        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.LACK_LOG.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipErrorLog(ActionEvent event) throws Exception {
         String title = getTitle(ERROR_LOG.getName());
-        TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SKIP_ERROR_LOG, title);
+        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.ERROR_LOG.getIndex(), title);
+        addLog(title);
+    }
+
+    @FXML
+    void skipNewLegal(ActionEvent event) throws Exception {
+        String title = getTitle(LEGAL_NEW_MENU.getName());
+        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.LEGAL_NEW_MENU.getIndex(), title);
         addLog(title);
     }
 
@@ -584,6 +591,9 @@ public class SystemToolController implements Initializable {
     private String getTitle(String title) {
         int start = title.indexOf(".");
         int end = title.lastIndexOf(".");
-        return "忽略" + title.substring(start + 1, end);
+        if (end > start) {
+            title = title.substring(start + 1, end);
+        }
+        return "忽略" + title;
     }
 }
