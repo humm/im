@@ -16,8 +16,11 @@ import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.LACK_LOG;
 
 public class ScriptRepairSql {
 
-    private static String CONSOLE_FUND_TA_VUE_MENU_LINE_INDEX = "-- * * * * * * * * * * * * * * * * * * *";
+    private static String TSYS_SUBTRANS_EXT_END_LINE_INDEX = "-- * * * * * * * * * * * * * * * * * * *";
+    private static String BLOCK_LINE_INDEX = "-- ************************************************************************************************************************************************************************************";
     private static String EXT_LINE_INDEX = "commit";
+    private static String MENU_TIPS = "-- ************************************************************************* %s *************************************************************************";
+    private static String TRANS_TIPS = "-- ************************************ %s ************************************";
 
     private static Map<String, List<Map<String, String>>> totalLogCache = new LinkedHashMap<>();
     private static Set<String> totalSubTransExtCache = new LinkedHashSet<>();
@@ -155,7 +158,7 @@ public class ScriptRepairSql {
             }
         }
         if (path.endsWith("07console-fund-ta-vue-menu.sql")) {
-            lineIndex = CONSOLE_FUND_TA_VUE_MENU_LINE_INDEX;
+            lineIndex = TSYS_SUBTRANS_EXT_END_LINE_INDEX;
         }
         // 补充原则 如果存在同菜单其他操作类型则最加补充  否则补充在文件的最后
         String[] sql = content.toString().split(STR_SEMICOLON);
@@ -179,7 +182,7 @@ public class ScriptRepairSql {
             String ele = item.get(i);
             if (ele.contains(lineIndex)) {
                 String extInfo = buildSubTransExt(transCode, subTransCode, opDir);
-                if (lineIndex.toLowerCase().contains(EXT_LINE_INDEX) || CONSOLE_FUND_TA_VUE_MENU_LINE_INDEX.equals(lineIndex)) {
+                if (lineIndex.toLowerCase().contains(EXT_LINE_INDEX) || TSYS_SUBTRANS_EXT_END_LINE_INDEX.equals(lineIndex)) {
                     extInfo = STR_NEXT_LINE + extInfo + STR_NEXT_LINE_2;
                     ele = extInfo + ele;
                 } else {
@@ -281,6 +284,436 @@ public class ScriptRepairSql {
             item.set(i, ele);
         }
         FileUtils.writeFile(basePath, item, false);
+    }
+
+    public static void repairOldMenu() throws Exception {
+        List<String> res = new ArrayList<>();
+        res.add(BLOCK_LINE_INDEX);
+        res.add(BLOCK_LINE_INDEX);
+        res.add(BLOCK_LINE_INDEX);
+        res.add("-- 全量脚本配置 重要提示 禁止配置脚本无规律放置");
+        res.add("-- 配置数据放置对应区块内 tsys_menu tsys_trans tsys_subtrans tsys_subtrans_ext 分区块放置");
+        res.add(STR_BLANK);
+        res.add("delete from tsys_menu where menu_code = 'console-fund-ta-vue';");
+        res.add("delete from tsys_menu where menu_code like 'fund%';");
+        res.add("delete from tsys_trans where trans_code like 'fund%';");
+        res.add("delete from tsys_subtrans where trans_code like 'fund%';");
+        res.add("delete from tsys_subtrans_ext where trans_code like 'fund%';");
+        res.add(STR_NEXT_LINE);
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String basePath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu;
+        List<String> menuList = FileUtils.readNormalFile(basePath, false);
+        StringBuilder menu = new StringBuilder();
+        for (int i=7; i<menuList.size(); i++) {
+            String item = menuList.get(i).trim();
+            String itemLower = item.toLowerCase();
+            if (StringUtils.isBlank(item)) {
+                continue;
+            }
+            if (!itemLower.contains("insert") && !itemLower.contains("values")) {
+                continue;
+            }
+            menu.append(item);
+        }
+        Map<String, String> rootMenu =  new LinkedHashMap<>();
+        Map<String, String> firstMenu =  new LinkedHashMap<>();
+        Map<String, String> secondMenu =  new LinkedHashMap<>();
+        Map<String, String> thirdMenu =  new LinkedHashMap<>();
+        Map<String, String> otherMenu = new LinkedHashMap<>();
+        Map<String, String> menuTrans = new LinkedHashMap<>();
+        Map<String, List<String>> menuSubTrans = new LinkedHashMap<>();
+        Map<String, List<String>> menuSubTransExt = new LinkedHashMap<>();
+        String[] menuBase = menu.toString().split(STR_SEMICOLON);
+        Map<String, List<String>> menuExt = initMenuExt(appConfigDto);
+        List<String> menuInfo = mergeMenu(menuBase, menuExt);
+        boolean exist = false;
+        for (String item : menuInfo) {
+            String menuCode = ScriptSqlUtils.getMenuCode(item);
+            String subTransCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
+            String itemLower = item.toLowerCase().replace("--", "").replaceAll("\\s+", " ").trim();
+            if (itemLower.startsWith("insert into tsys_menu (")) {
+                String parentCode = ScriptSqlUtils.getParentCode(item);
+                if ("bizroot".equals(parentCode)) {
+                    if (!rootMenu.containsKey(menuCode)) {
+                        rootMenu.put(menuCode, item);
+                    }
+                } else if ("console-fund-ta-vue".equals(parentCode)){
+                    if (!firstMenu.containsKey(menuCode)) {
+                        firstMenu.put(menuCode, item);
+                    }
+                } else if (!otherMenu.containsKey(menuCode)){
+                    otherMenu.put(menuCode, item);
+                }
+            } else if (itemLower.startsWith("insert into tsys_trans (")) {
+                if (!menuTrans.containsKey(menuCode)) {
+                    menuTrans.put(menuCode, item);
+                }
+            } else if (itemLower.startsWith("insert into tsys_subtrans (")) {
+                exist = false;
+                List<String> ele = new ArrayList<>();
+                if (menuSubTrans.containsKey(menuCode)) {
+                    ele = menuSubTrans.get(menuCode);
+                    for (String single : ele) {
+                        String subTransCodeTmp = ScriptSqlUtils.getSubTransCodeByWhole(single);
+                        if (subTransCode.equals(subTransCodeTmp)) {
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if (!exist) {
+                        ele.add(item);
+                    }
+                } else {
+                    ele.add(item);
+                }
+                menuSubTrans.put(menuCode, ele);
+            } else if (itemLower.startsWith("insert into tsys_subtrans_ext (")) {
+                exist = false;
+                List<String> ele = new ArrayList<>();
+                if (menuSubTransExt.containsKey(menuCode)) {
+                    ele = menuSubTransExt.get(menuCode);
+                    for (String single : ele) {
+                        String subTransCodeTmp = ScriptSqlUtils.getSubTransCodeByWhole(single);
+                        if (subTransCode.equals(subTransCodeTmp)) {
+                            exist = true;
+                            break;
+                        }
+                    }
+                    if (!exist) {
+                        ele.add(item);
+                    }
+                } else {
+                    ele.add(item);
+                }
+                menuSubTransExt.put(menuCode, ele);
+            }
+        }
+        Iterator<String> firstMenuIterator = firstMenu.keySet().iterator();
+        while (firstMenuIterator.hasNext()) {
+            String firstMenuCode = firstMenuIterator.next();
+            Iterator<String> iterator = otherMenu.keySet().iterator();
+            while (iterator.hasNext()) {
+                String menuCode = iterator.next();
+                String menuDetail = otherMenu.get(menuCode);
+                String parentCode = ScriptSqlUtils.getParentCode(menuDetail);
+                if (firstMenuCode.equals(parentCode)) {
+                    if (!secondMenu.containsKey(menuCode)) {
+                        secondMenu.put(menuCode, menuDetail);
+                    }
+                    iterator.remove();
+                }
+            }
+        }
+        Iterator<String> secondMenuIterator = secondMenu.keySet().iterator();
+        while (secondMenuIterator.hasNext()) {
+            String secondMenuCode = secondMenuIterator.next();
+            Iterator<String> iterator = otherMenu.keySet().iterator();
+            while (iterator.hasNext()) {
+                String menuCode = iterator.next();
+                String menuDetail = otherMenu.get(menuCode);
+                String parentCode = ScriptSqlUtils.getParentCode(menuDetail);
+                if (secondMenuCode.equals(parentCode)) {
+                    if (!thirdMenu.containsKey(menuCode)) {
+                        thirdMenu.put(menuCode, menuDetail);
+                    }
+                    iterator.remove();
+                }
+            }
+        }
+
+        res.add(BLOCK_LINE_INDEX);
+        res.add(BLOCK_LINE_INDEX);
+        res.add(BLOCK_LINE_INDEX);
+        res.add(String.format(MENU_TIPS, "根目录 开始"));
+        int index = 0;
+        Iterator<String> rootIterator = rootMenu.keySet().iterator();
+        while (rootIterator.hasNext()) {
+            index++;
+            String menuCode = rootIterator.next();
+            String menuDetail = rootMenu.get(menuCode);
+            res.add(formatSql(menuDetail, true));
+        }
+        res.add(String.format(MENU_TIPS, "根目录 结束"));
+
+        res.add(STR_BLANK);
+        res.add(String.format(MENU_TIPS, "一级菜单 开始"));
+        firstMenuIterator = firstMenu.keySet().iterator();
+        index = 0;
+        List<String> second = new ArrayList<>();
+        List<String> third = new ArrayList<>();
+        List<String> transAndSubTrans = new ArrayList<>();
+        while (firstMenuIterator.hasNext()) {
+            index++;
+            String menuCode = firstMenuIterator.next();
+            String menuDetail = firstMenu.get(menuCode);
+            String menuName = ScriptSqlUtils.getMenuName(menuDetail);
+            res.add(formatSql(menuDetail, index == firstMenu.size()));
+            List<String> subSecond = new ArrayList<>();
+            Iterator<String> secondIterator = secondMenu.keySet().iterator();
+            while (secondIterator.hasNext()) {
+                String secondMenuCode = secondIterator.next();
+                String secondMenuDetail = secondMenu.get(secondMenuCode);
+                String secondMenuName = ScriptSqlUtils.getMenuName(secondMenuDetail);
+                String parentCode = ScriptSqlUtils.getParentCode(secondMenuDetail);
+                if (menuCode.equals(parentCode)) {
+                    subSecond.add(secondMenuDetail);
+                } else {
+                    continue;
+                }
+                List<String> subThird = new ArrayList<>();
+                Iterator<String> thirdIterator = thirdMenu.keySet().iterator();
+                while (thirdIterator.hasNext()) {
+                    String thirdMenuCode = thirdIterator.next();
+                    String thirdMenuDetail = thirdMenu.get(thirdMenuCode);
+                    String thirdParentCode = ScriptSqlUtils.getParentCode(thirdMenuDetail);
+                    if (secondMenuCode.equals(thirdParentCode)) {
+                        subThird.add(thirdMenuDetail);
+                    } else {
+                        continue;
+                    }
+                }
+                Collections.sort(subThird, new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        return Integer.valueOf(ScriptSqlUtils.getOrderNo(o1).trim()) - Integer.valueOf(ScriptSqlUtils.getOrderNo(o2).trim());
+                    }
+                });
+                transAndSubTrans.add(String.format(TRANS_TIPS, "三级菜单 " + menuCode + "|" + menuName + " " + secondMenuCode + "|" + secondMenuName + " 开始"));
+                third.add(String.format(MENU_TIPS, "三级菜单 " + menuCode + "|" + menuName + " " + secondMenuCode + "|" + secondMenuName + " 开始"));
+                for (int j=0; j<subThird.size(); j++) {
+                    StringBuilder subTransAndSubTrans = new StringBuilder();
+                    String subThirdInfo = subThird.get(j);
+                    String subThirdMenuCode = ScriptSqlUtils.getMenuCode(subThirdInfo);
+                    third.add(formatSql(subThirdInfo, j == subThird.size() - 1));
+                    getTransCodeAndSubTransCode(menuTrans, menuSubTrans, transAndSubTrans, subTransAndSubTrans, subThirdMenuCode);
+                }
+                deleteNextLine(transAndSubTrans);
+                third.add(String.format(MENU_TIPS, "三级菜单 " + menuCode + "|" + menuName + " " + secondMenuCode + "|" + secondMenuName + " 结束"));
+                third.add(STR_BLANK);
+                transAndSubTrans.add(String.format(TRANS_TIPS, "三级菜单 " + menuCode + "|" + menuName + " " + secondMenuCode + "|" + secondMenuName + " 结束"));
+                transAndSubTrans.add(STR_BLANK);
+            }
+            Collections.sort(subSecond, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                   return Integer.valueOf(ScriptSqlUtils.getOrderNo(o1).trim()) - Integer.valueOf(ScriptSqlUtils.getOrderNo(o2).trim());
+                }
+            });
+            second.add(String.format(MENU_TIPS, "二级菜单 " + menuCode + "|" + menuName + " 开始"));
+            for (int j=0; j<subSecond.size(); j++) {
+                second.add(formatSql(subSecond.get(j), j == subSecond.size() - 1));
+            }
+            second.add(String.format(MENU_TIPS, "二级菜单 " + menuCode + "|" + menuName +" 结束"));
+            second.add(STR_BLANK);
+        }
+        res.add(String.format(MENU_TIPS, "一级菜单 结束"));
+        res.add(STR_BLANK);
+        res.addAll(second);
+        res.add(STR_BLANK);
+        res.addAll(third);
+
+        List<String> account = new ArrayList<>();
+        res.add(STR_BLANK);
+        account.add(BLOCK_LINE_INDEX);
+        account.add(BLOCK_LINE_INDEX);
+        account.add(BLOCK_LINE_INDEX);
+        Map<String, String> accountParent = initAccountMenu(otherMenu);
+        Iterator<String> iterator = accountParent.keySet().iterator();
+        while (iterator.hasNext()) {
+            String accountParentCode = iterator.next();
+            String accountParentName = accountParent.get(accountParentCode);
+            Iterator<String>  otherIterator = otherMenu.keySet().iterator();
+            List<String> subAccount = new ArrayList<>();
+            while (otherIterator.hasNext()) {
+                String menuCode = otherIterator.next();
+                String menuDetail = otherMenu.get(menuCode);
+                String parentCode = ScriptSqlUtils.getParentCode(menuDetail);
+                if (accountParentCode.equals(parentCode)) {
+                    otherIterator.remove();
+                    subAccount.add(menuDetail);
+                }
+            }
+            Collections.sort(subAccount, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    return Integer.valueOf(ScriptSqlUtils.getOrderNo(o1).trim()) - Integer.valueOf(ScriptSqlUtils.getOrderNo(o2).trim());
+                }
+            });
+            String menuTitle = "三级菜单";
+            if ("ptaAccountManage".equals(accountParentCode)) {
+                menuTitle = "二级菜单";
+            }
+            transAndSubTrans.add(String.format(String.format(TRANS_TIPS, menuTitle + " " + "账户中心" + " " + accountParentCode + "|" + accountParentName + " 开始")));
+            account.add(String.format(MENU_TIPS, menuTitle + " " + "账户中心" + " " + accountParentCode + "|" + accountParentName + " 开始"));
+            for (int j=0; j<subAccount.size(); j++) {
+                StringBuilder subTransAndSubTrans = new StringBuilder();
+                String subThirdInfo = subAccount.get(j);
+                String subThirdMenuCode = ScriptSqlUtils.getMenuCode(subThirdInfo);
+                account.add(formatSql(subAccount.get(j), j == subAccount.size() - 1));
+                getTransCodeAndSubTransCode(menuTrans, menuSubTrans, transAndSubTrans, subTransAndSubTrans, subThirdMenuCode);
+            }
+            deleteNextLine(transAndSubTrans);
+            account.add(String.format(MENU_TIPS, menuTitle + " " + "账户中心" + " " + accountParentCode + "|" + accountParentName + " 结束"));
+            account.add(STR_BLANK);
+            transAndSubTrans.add(String.format(String.format(TRANS_TIPS, menuTitle + " " + "账户中心" + " " + accountParentCode + "|" + accountParentName + " 结束")));
+            transAndSubTrans.add(STR_BLANK);
+        }
+        res.addAll(account);
+
+        res.add(STR_BLANK);
+        res.add(BLOCK_LINE_INDEX);
+        res.add(BLOCK_LINE_INDEX);
+        res.add(BLOCK_LINE_INDEX);
+        res.addAll(transAndSubTrans);
+        System.out.println(otherMenu.size());
+        System.out.println(otherMenu);
+        FileUtils.writeFile(basePath.replace(".sql", ".bak.sql"), res, false);
+
+    }
+
+    private static void getTransCodeAndSubTransCode(Map<String, String> menuTrans, Map<String, List<String>> menuSubTrans,
+                                                    List<String> transAndSubTrans, StringBuilder subTransAndSubTrans, String subThirdMenuCode) {
+        String trans = menuTrans.get(subThirdMenuCode);
+        if (trans != null) {
+            subTransAndSubTrans.append(formatSql(trans, false));
+        }
+        List<String> subTrans = menuSubTrans.get(subThirdMenuCode);
+        if (CollectionUtils.isNotEmpty(subTrans)) {
+            for (int k=0; k<subTrans.size(); k++) {
+                subTransAndSubTrans.append(formatSql(subTrans.get(k), false));
+            }
+        }
+        if (StringUtils.isNotBlank(subTransAndSubTrans.toString())) {
+            transAndSubTrans.add(subTransAndSubTrans.toString());
+        }
+    }
+
+    private static void deleteNextLine(List<String> transAndSubTrans) {
+        String lastElement = transAndSubTrans.get(transAndSubTrans.size() - 1);
+        if (lastElement.endsWith(STR_NEXT_LINE)) {
+            transAndSubTrans.set(transAndSubTrans.size() - 1, lastElement.substring(0, lastElement.length() - 1));
+        }
+    }
+
+    private static List<String> mergeMenu(String[] base, Map<String, List<String>> menuExt) {
+        List<String> res = new ArrayList<>(Arrays.asList(base));
+        Iterator<String> iterator = menuExt.keySet().iterator();
+        while (iterator.hasNext()) {
+            String extType = iterator.next();
+            List<String> ext = menuExt.get(extType);
+            res.addAll(ext);
+        }
+        return res;
+    }
+
+    private static Map<String, String> initAccountMenu(Map<String, String> otherMenu) {
+        Map<String, String> menu = new LinkedHashMap<>();
+        menu.put("ptaAccountManage", getAccountParentMenuName("ptaAccountManage", otherMenu));
+        menu.put("ptaAccountManageFundAccount", getAccountParentMenuName("ptaAccountManageFundAccount", otherMenu));
+        menu.put("ptaAccountManageFundDaily", getAccountParentMenuName("ptaAccountManageFundDaily", otherMenu));
+        menu.put("ptaAccountManageFundOther", getAccountParentMenuName("ptaAccountManageFundOther", otherMenu));
+        menu.put("ptaPrdAccStd", getAccountParentMenuName("ptaPrdAccStd", otherMenu));
+        return menu;
+    }
+
+    private static String getAccountParentMenuName(String menuCode, Map<String, String> menu) {
+        if (menu.containsKey(menuCode)) {
+            return ScriptSqlUtils.getMenuName(menu.get(menuCode));
+        }
+        return menuCode;
+    }
+
+    private static Map<String, List<String>> initMenuExt(AppConfigDto appConfigDto) throws IOException {
+        Map<String, List<String>> res = new HashMap<>();
+        File fileExt = new File(appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.basePathExt);
+        initMenuByFile(res, fileExt);
+        return res;
+    }
+
+    private static void initMenuByFile(Map<String,List<String>> res, File file) throws IOException {
+        if (file.isDirectory()) {
+            for (File item : file.listFiles()) {
+                initMenuByFile(res, item);
+            }
+        } else {
+            String fileName = file.getName();
+            if (!fileName.endsWith(FILE_TYPE_SQL)) {
+                return;
+            }
+            List<String> content = FileUtils.readNormalFile(file.getPath(), false);
+            StringBuilder menu = new StringBuilder();
+            for (int i = 0; i < content.size(); i++) {
+                String item = content.get(i).trim();
+                String itemLower = item.toLowerCase();
+                if (StringUtils.isBlank(item)) {
+                    continue;
+                }
+                if (!itemLower.contains("insert") && !itemLower.contains("values")) {
+                    continue;
+                }
+                if (itemLower.startsWith("delete")) {
+                    continue;
+                }
+                menu.append(item);
+            }
+            String[] menuInfo = menu.toString().split(STR_SEMICOLON);
+            List<String> menuExtend = new ArrayList<>();
+            List<String> transExtend = new ArrayList<>();
+            List<String> subTransExtend = new ArrayList<>();
+            List<String> subTransExtExtend = new ArrayList<>();
+            for (String item : menuInfo) {
+                String itemLower = item.trim().toLowerCase().replaceAll("\\s+", " ");
+                if (!item.contains("--")) {
+                    item = "-- " + item;
+                    itemLower = "-- " + itemLower;
+                }
+                if (itemLower.startsWith("-- insert into tsys_menu (")) {
+                    menuExtend.add(item);
+                } else if (itemLower.startsWith("-- insert into tsys_trans (")) {
+                    transExtend.add(item);
+                } else if (itemLower.startsWith("-- insert into tsys_subtrans (")) {
+                    subTransExtend.add(item);
+                } else if (itemLower.startsWith("-- insert into tsys_subtrans_ext (")) {
+                    subTransExtExtend.add(item);
+                }
+            }
+            if (res.containsKey(KEY_MENU_EXTEND)) {
+                res.get(KEY_MENU_EXTEND).addAll(menuExtend);
+            } else {
+                res.put(KEY_MENU_EXTEND, menuExtend);
+            }
+            if (res.containsKey(KEY_TRANS_EXTEND)) {
+                res.get(KEY_TRANS_EXTEND).addAll(transExtend);
+            } else {
+                res.put(KEY_TRANS_EXTEND, transExtend);
+            }
+            if (res.containsKey(KEY_SUB_TRANS_EXTEND)) {
+                res.get(KEY_SUB_TRANS_EXTEND).addAll(subTransExtend);
+            } else {
+                res.put(KEY_SUB_TRANS_EXTEND, subTransExtend);
+            }
+            if (res.containsKey(KEY_SUB_TRANS_EXT_EXTEND)) {
+                res.get(KEY_SUB_TRANS_EXT_EXTEND).addAll(subTransExtExtend);
+            } else {
+                res.put(KEY_SUB_TRANS_EXT_EXTEND, subTransExtExtend);
+            }
+        }
+    }
+
+    private static String formatSql(String sql, boolean last) {
+        int index = sql.indexOf(")");
+        if (index != -1) {
+            String insert = sql.substring(0, index + 1).trim();
+            String value = sql.substring(index + 1).trim();
+            if (insert.startsWith("--") && !value.startsWith("--")) {
+                value = "-- " + value;
+            }
+            sql = insert + STR_NEXT_LINE + value + STR_SEMICOLON;
+        }
+        if (!last) {
+            sql += STR_NEXT_LINE;
+        }
+        return sql;
     }
 
     private static void repairByFile(AppConfigDto appConfigDto, File file) throws Exception {

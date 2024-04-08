@@ -145,6 +145,10 @@ public class BaseConst {
     public final static String KEY_CLOSE_DATE = "closeDate";
     public final static String KEY_PUBLISH_DATE = "publishDate";
     public final static String KEY_CUSTOMER = "customer";
+    public final static String KEY_MENU_EXTEND = "menuExtend";
+    public final static String KEY_TRANS_EXTEND = "transExtend";
+    public final static String KEY_SUB_TRANS_EXTEND = "subTransExtend";
+    public final static String KEY_SUB_TRANS_EXT_EXTEND = "subTransExtExtend";
 
     public static final String METHOD_QUERY_DATA = "queryData";
     public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
@@ -197,6 +201,7 @@ public class BaseConst {
     public static final String NAME_REPAIR_LACK_EXT = "修复缺少日志";
     public static final String NAME_REPAIR_ERROR_EXT = "修复错误日志";
     public static final String NAME_REPAIR_LOG_DIFF = "修正日志信息";
+    public static final String NAME_REPAIR_OLD_MENU = "修正老版全量";
 
     public static final String NAME_MENU_UPDATE = "更新";
     public static final String NAME_MENU_COPY = "复制";

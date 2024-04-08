@@ -134,6 +134,11 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                             </padding>
                                         </Button>
+                                        <Button layoutX="290.0" layoutY="495" mnemonicParsing="false" onAction="#repairOldMenu" prefWidth="100.0" text="修正老版全量">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                            </padding>
+                                        </Button>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="188.0" prefWidth="220.0">

@@ -6,7 +6,6 @@ import com.hoomoomoo.im.controller.SystemToolController;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
-import com.hoomoomoo.im.utils.TaCommonUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -259,7 +258,7 @@ public class ScriptCompareSql {
         Set<String> skipRouter = new HashSet<>();
         String systemToolCheckMenuSkipRouter = appConfigDto.getSystemToolCheckMenuSkipRouter();
         if (StringUtils.isNotBlank(systemToolCheckMenuSkipRouter)) {
-            System.out.println(SystemToolController.getCheckMenuMsg("忽略路由文件 " + systemToolCheckMenuSkipRouter));
+            LoggerUtils.info(SystemToolController.getCheckMenuMsg("忽略路由文件 " + systemToolCheckMenuSkipRouter));
             String[] skip = systemToolCheckMenuSkipRouter.split(",");
             for (String item : skip) {
                 skipRouter.add(item);
@@ -814,9 +813,9 @@ public class ScriptCompareSql {
             if (item.contains(appConfigDto.getSystemToolCheckMenuEndFlag())) {
                 break;
             }
-            String menuCode = getMenuCode(item);
+            String menuCode = ScriptSqlUtils.getMenuCode(item);
             if (menuCode != null) {
-                int menuLen = getMenuValueLen(item);
+                int menuLen = ScriptSqlUtils.getMenuValueLen(item);
                 // tsys_trans
                 if (menuLen == 8) {
                     newMenuTransExistCache.add(menuCode);
@@ -825,9 +824,9 @@ public class ScriptCompareSql {
                 if (menuLen < 18) {
                     continue;
                 }
-                String menuName = getMenuName(item);
-                String menuReserve = getMenuReserve(item);
-                String menuParentCode = getParentCode(item);
+                String menuName = ScriptSqlUtils.getMenuName(item);
+                String menuReserve = ScriptSqlUtils.getMenuReserve(item);
+                String menuParentCode = ScriptSqlUtils.getParentCode(item);
                 newMenuExistCache.put(menuCode, menuName);
                 newMenuElementCache.put(menuCode, new String[]{menuName, menuReserve, menuParentCode});
                 if (newMenuBaseCache.containsKey(menuCode)) {
@@ -850,10 +849,10 @@ public class ScriptCompareSql {
             if (item.contains(appConfigDto.getSystemToolCheckMenuEndFlag())) {
                 break;
             }
-            String menuCode = getMenuCode(item);
+            String menuCode = ScriptSqlUtils.getMenuCode(item);
             if (menuCode != null) {
                 menuBaseExistCache.add(menuCode);
-                if (getMenuValueLen(item) != 16) {
+                if (ScriptSqlUtils.getMenuValueLen(item) != 16) {
                     continue;
                 }
                 if (oldMenuBaseCache.containsKey(menuCode)) {
@@ -867,86 +866,11 @@ public class ScriptCompareSql {
         }
     }
 
-    private static String handleMenu(String item) {
-        if (item.contains("values") || item.contains("VALUES")) {
-            if (item.split("values").length > 1) {
-                return item.split("values")[1];
-            } else if (item.split("VALUES").length > 1) {
-                return item.split("VALUES")[1];
-            }
-        }
-        return null;
-    }
 
-    private static String getMenuCode(String item) {
-        return getMenuElement(item, 0);
-    }
-
-    private static String getMenuName(String item) {
-        return getMenuElement(item, 4);
-    }
-
-    private static String getParentCode(String item) {
-        return getMenuElement(item, 10);
-    }
-
-    private static String getMenuElement(String item, int index) {
-        String menu = null;
-        item = handleMenu(item);
-        if (item != null) {
-            String[] menuCodeInfo = item.split(",");
-            menu = menuCodeInfo[index];
-            if (menu.contains("'")) {
-                menu = menu.split("'")[1];
-            }
-        }
-        return menu;
-    }
-
-    private static String getMenuReserve(String item) {
-        String menuReserve = STR_BLANK;
-        item = handleMenu(item);
-        if (item != null) {
-            String[] menuCodeInfo = item.split(",");
-            if (menuCodeInfo.length >= 17) {
-                for (int i=17; i<menuCodeInfo.length; i++) {
-                    String ele =  menuCodeInfo[i];
-                    if (ele.contains("'")) {
-                        if (ele.trim().startsWith("'")) {
-                            ele = ele.split("'")[1];
-                        } else {
-                            ele = ele.split("'")[0];
-                        }
-                    }
-                    menuReserve += ele + STR_COMMA;
-                }
-            }
-        }
-        if (menuReserve.contains("'")) {
-            menuReserve = menuReserve.split("'")[0];
-        }
-        if (menuReserve.contains(STR_BRACKETS_RIGHT)) {
-            menuReserve = menuReserve.substring(0, menuReserve.lastIndexOf(STR_BRACKETS_RIGHT));
-        }
-        if (menuReserve.endsWith(STR_COMMA)) {
-            menuReserve = menuReserve.substring(0, menuReserve.lastIndexOf(STR_COMMA));
-        }
-        return menuReserve;
-    }
-
-    private static int getMenuValueLen(String item) {
-        if (!item.contains("(") || !item.contains(")")) {
-            return -1;
-        }
-        if (item.toLowerCase().contains("insert") && item.toLowerCase().contains("values")) {
-            return -1;
-        }
-        return item.substring(item.indexOf("(") + 1, item.lastIndexOf(")")).split(",").length;
-    }
 
     private static String getMenuDetail(int len, String item) throws Exception {
         String res = STR_BLANK;
-        item = handleMenu(item);
+        item = ScriptSqlUtils.handleMenu(item);
         if (item != null) {
             String[] value = ScriptUpdateSql.handleValue(len, item.substring(item.indexOf("(") + 1, item.lastIndexOf(")")).split(","));
             for (String ele : value) {
@@ -1015,8 +939,8 @@ public class ScriptCompareSql {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
-                    String menuCode = getMenuCode(item);
-                    String menuName = getMenuName(item);
+                    String menuCode = ScriptSqlUtils.getMenuCode(item);
+                    String menuName = ScriptSqlUtils.getMenuName(item);
                     if (menuCode != null && menuName != null) {
                         String filePath = file.getPath();
                         if (menuCache.containsKey(menuCode)) {
@@ -1051,7 +975,7 @@ public class ScriptCompareSql {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
-                    String menuCode = getMenuCode(item);
+                    String menuCode = ScriptSqlUtils.getMenuCode(item);
                     if (menuCode != null) {
                         String filePath = file.getPath();
                         if (addFilePath(filePath)) {
@@ -1082,8 +1006,8 @@ public class ScriptCompareSql {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
-                    String menuCode = getMenuCode(item);
-                    String menuName = getMenuName(item);
+                    String menuCode = ScriptSqlUtils.getMenuCode(item);
+                    String menuName = ScriptSqlUtils.getMenuName(item);
                     if (menuCode != null) {
                         String filePath = file.getPath();
                         if (addFilePath(filePath)) {
@@ -1137,7 +1061,7 @@ public class ScriptCompareSql {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
-                    String menuCode = getMenuCode(item);
+                    String menuCode = ScriptSqlUtils.getMenuCode(item);
                     if (menuCode != null) {
                         String filePath = file.getPath();
                         if (transCache.containsKey(menuCode)) {
@@ -1171,11 +1095,11 @@ public class ScriptCompareSql {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
-                    if (getMenuValueLen(item) != 11) {
+                    if (ScriptSqlUtils.getMenuValueLen(item) != 11) {
                         continue;
                     }
-                    String transCode = getSubTransCode(item);
-                    String transName = getSubTransName(item);
+                    String transCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
+                    String transName = ScriptSqlUtils.getSubTransNameByWhole(item);
                     if (transCode != null && transName != null) {
                         String filePath = file.getPath();
                         if (subTransCache.containsKey(transCode)) {
@@ -1209,11 +1133,11 @@ public class ScriptCompareSql {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
-                    if (getMenuValueLen(item) != 7) {
+                    if (ScriptSqlUtils.getMenuValueLen(item) != 7) {
                         continue;
                     }
-                    String transCode = getSubTransCode(item);
-                    String transOpDir = getSubTransOpDir(item);
+                    String transCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
+                    String transOpDir = ScriptSqlUtils.getSubTransOpDirByWhole(item);
                     if (transCode != null) {
                         String filePath = file.getPath();
                         if (subTransExtCache.containsKey(transCode)) {
@@ -1263,50 +1187,6 @@ public class ScriptCompareSql {
                 break;
         }
         return opDir;
-    }
-
-    private static String getSubTransCode(String item) {
-        String transCode = null;
-        item = handleMenu(item);
-        if (item != null) {
-            String[] menuCodeInfo = item.split(",");
-            transCode = menuCodeInfo[0];
-            if (transCode.contains("'")) {
-                transCode = transCode.split("'")[1];
-            }
-            String subTransCode = menuCodeInfo[1];
-            if (subTransCode.contains("'")) {
-                subTransCode = subTransCode.split("'")[1];
-            }
-            transCode += " - " + subTransCode;
-        }
-        return transCode;
-    }
-
-    private static String getSubTransName(String item) {
-        String transName = null;
-        item = handleMenu(item);
-        if (item != null) {
-            String[] menuCodeInfo = item.split(",");
-            transName = menuCodeInfo[2];
-            if (transName.contains("'")) {
-                transName = transName.split("'")[1];
-            }
-        }
-        return transName;
-    }
-
-    private static String getSubTransOpDir(String item) {
-        String transName = null;
-        item = handleMenu(item);
-        if (item != null) {
-            String[] menuCodeInfo = item.split(",");
-            transName = menuCodeInfo[2];
-            if (transName.contains("'")) {
-                transName = transName.split("'")[1];
-            }
-        }
-        return transName;
     }
 
     private String getMenuNameByCache(String menuCode) {
