@@ -396,7 +396,14 @@ public class CommonUtils {
     }
 
     public static boolean isSuperUser() {
-        return SUPER_MAC_ADDRESS.contains(getMacAddress());
+        String[] mac = SecurityUtils.getDecryptString(SUPER_MAC_ADDRESS).split(STR_COMMA);
+        String current = getMacAddress();
+        for (String item : mac) {
+            if (item.equals(current)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String initialUpper(String str) {

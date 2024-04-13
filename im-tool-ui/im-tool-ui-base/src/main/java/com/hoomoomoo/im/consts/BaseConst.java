@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  */
 public class BaseConst {
 
-    public static final String SUPER_MAC_ADDRESS = "9F:DE:06:A0:6D:0D 00:50:56:89:8B:E7";
+    public static final String SUPER_MAC_ADDRESS = "I4t5D856tNc1Yv4nEZFI9w9nPZUqIzS6GmAUeAETli3aF1kUPiF06g==";
 
     public static final String APP_CODE_BASE = "im-tool-ui-base";
     public static final String APP_CODE_TA = "im-tool-ui-ta";

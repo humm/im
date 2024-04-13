@@ -10,6 +10,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -45,7 +46,6 @@ public class StarterUtils {
             }
             String mac = CommonUtils.getMacAddress();
             appName += String.format(MSG_APP_TITLE, NAME_VERSION, CommonUtils.getVersion());
-            appName += String.format(MSG_APP_TITLE, NAME_MAC, mac);
             LoggerUtils.info(mac);
             // 校验证书是否过期
             if (!CommonUtils.checkLicense(null)) {
@@ -64,7 +64,16 @@ public class StarterUtils {
             scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
             primaryStage.setTitle(appName);
             primaryStage.setScene(scene);
-            primaryStage.setResizable(false);
+            primaryStage.setResizable(true);
+            DisplayMode displayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
+            int width = displayMode.getWidth();
+            int height = displayMode.getHeight();
+            if (width != 1920) {
+                primaryStage.setWidth(width);
+            }
+            if (height != 1080) {
+                primaryStage.setHeight(height - 50);
+            }
             primaryStage.show();
             LoggerUtils.info(String.format(MSG_COMPLETE, NAME_APP_START));
             primaryStage.setOnCloseRequest(event -> {

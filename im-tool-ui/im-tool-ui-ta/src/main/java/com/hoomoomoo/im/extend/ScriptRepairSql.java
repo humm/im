@@ -20,7 +20,7 @@ import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.LACK_LOG;
 public class ScriptRepairSql {
 
     private static String EXT_LINE_INDEX = "commit";
-    private static String TSYS_SUB_TRANS_EXT_END_LINE_INDEX = "-- * * * * * * * * * * * * * * * * * * *";
+    private static String TSYS_SUB_TRANS_EXT_END_LINE_INDEX = "-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *";
     private static String BLOCK_LINE_INDEX = "-- ************************************************************************************************************************************************************************************";
     private static String BLOCK_LINE_INDEX_TIPS = "-- ****************************************************************************** %s ******************************************************************************";
     private static String BLOCK_LINE_SUB_TRANS_EXT_INDEX_TIPS = "-- ***************************************************************** %s *****************************************************************";
@@ -296,7 +296,7 @@ public class ScriptRepairSql {
         res.add(BLOCK_LINE_INDEX);
         res.add(BLOCK_LINE_INDEX);
         res.add(BLOCK_LINE_INDEX);
-        res.add("-- 全量脚本配置 重要提示 禁止配置脚本无规律放置");
+        res.add("-- 禁止配置脚本无规律放置");
         res.add("-- 配置数据放置对应区块内 tsys_menu tsys_trans tsys_subtrans tsys_subtrans_ext 分区块放置");
         res.add(STR_BLANK);
         res.add("delete from tsys_menu where menu_code = 'console-fund-ta-vue';");
@@ -480,12 +480,7 @@ public class ScriptRepairSql {
                         continue;
                     }
                 }
-                Collections.sort(subThird, new Comparator<String>() {
-                    @Override
-                    public int compare(String o1, String o2) {
-                        return Integer.valueOf(ScriptSqlUtils.getOrderNo(o1).trim()) - Integer.valueOf(ScriptSqlUtils.getOrderNo(o2).trim());
-                    }
-                });
+                menuSort(subThird);
                 transAndSubTrans.add(String.format(TRANS_TIPS, "三级菜单 " + menuCode + "|" + menuName + " " + secondMenuCode + "|" + secondMenuName + " 开始"));
                 subTransExt.add(String.format(TRANS_TIPS, "三级菜单 " + menuCode + "|" + menuName + " " + secondMenuCode + "|" + secondMenuName + " 开始"));
                 third.add(String.format(MENU_TIPS, "三级菜单 " + menuCode + "|" + menuName + " " + secondMenuCode + "|" + secondMenuName + " 开始"));
@@ -512,12 +507,7 @@ public class ScriptRepairSql {
                 subTransExt.add(String.format(TRANS_TIPS, "三级菜单 " + menuCode + "|" + menuName + " " + secondMenuCode + "|" + secondMenuName + " 结束"));
                 subTransExt.add(STR_BLANK);
             }
-            Collections.sort(subSecond, new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                   return Integer.valueOf(ScriptSqlUtils.getOrderNo(o1).trim()) - Integer.valueOf(ScriptSqlUtils.getOrderNo(o2).trim());
-                }
-            });
+            menuSort(subSecond);
             second.add(String.format(MENU_TIPS, "二级菜单 " + menuCode + "|" + menuName + " 开始"));
             for (int j=0; j<subSecond.size(); j++) {
                 second.add(formatSql(subSecond.get(j), j == subSecond.size() - 1));
@@ -552,12 +542,7 @@ public class ScriptRepairSql {
                     subAccount.add(menuDetail);
                 }
             }
-            Collections.sort(subAccount, new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    return Integer.valueOf(ScriptSqlUtils.getOrderNo(o1).trim()) - Integer.valueOf(ScriptSqlUtils.getOrderNo(o2).trim());
-                }
-            });
+            menuSort(subAccount);
             String menuTitle = "三级菜单";
             if ("ptaAccountManage".equals(accountParentCode)) {
                 menuTitle = "二级菜单";
@@ -602,6 +587,9 @@ public class ScriptRepairSql {
         res.add(String.format(BLOCK_LINE_SUB_TRANS_EXT_INDEX_TIPS, "              日志 tsys_subtrans_ext            "));
         res.add(String.format(BLOCK_LINE_SUB_TRANS_EXT_INDEX_TIPS, "0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入"));
         res.add(BLOCK_LINE_INDEX);
+        if (CollectionUtils.isNotEmpty(subTransExt)) {
+            subTransExt = subTransExt.subList(0, subTransExt.size() - 1);
+        }
         res.addAll(subTransExt);
         res.add(TSYS_SUB_TRANS_EXT_END_LINE_INDEX);
         res.add(STR_BLANK);
@@ -682,6 +670,21 @@ public class ScriptRepairSql {
             }
             FileUtils.writeFile(basePath, res, false);
         }
+    }
+
+    private static void menuSort(List<String> menuList) {
+        Collections.sort(menuList, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                int orderNo1 = Integer.valueOf(ScriptSqlUtils.getOrderNo(o1).trim());
+                int orderNo2 = Integer.valueOf(ScriptSqlUtils.getOrderNo(o2).trim());
+                if (orderNo1 == orderNo2) {
+                    return ScriptSqlUtils.getMenuCode(o1).compareTo(ScriptSqlUtils.getMenuCode(o2));
+                } else {
+                    return orderNo1 - orderNo2;
+                }
+            }
+        });
     }
 
     private static Map<String, List<String>> initSkipCache() throws IOException {
