@@ -16,6 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -54,20 +55,20 @@ public class BlankTableViewController implements Initializable {
 
         TableColumn code = new TableColumn<>("版本编号");
         code.setCellValueFactory(new PropertyValueFactory<>("code"));
-        code.setPrefWidth(300);
+        code.setPrefWidth(320);
 
         TableColumn meomo = new TableColumn<>("版本说明");
         meomo.setCellValueFactory(new PropertyValueFactory<>("memo"));
-        meomo.setPrefWidth(370);
+        meomo.setPrefWidth(300);
 
         TableColumn clientName = new TableColumn<>("客户名称");
         clientName.setCellValueFactory(new PropertyValueFactory<>("clientName"));
         clientName.setEditable(false);
-        clientName.setPrefWidth(330);
+        clientName.setPrefWidth(320);
 
         TableColumn closeDate = new TableColumn<>("封版时间");
         closeDate.setCellValueFactory(new PropertyValueFactory<>("closeDate"));
-        closeDate.setPrefWidth(120);
+        closeDate.setPrefWidth(100);
         closeDate.setEditable(true);
         closeDate.setStyle(STYLE_CENTER);
         closeDate.setOnEditCommit(event -> {
@@ -75,12 +76,12 @@ public class BlankTableViewController implements Initializable {
             VersionDto item = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getTableView().getItems().get(index);
             String close = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getNewValue().toString();
             item.setCloseDate(close);
-            writeExtendFile(item, close, null);
+            writeExtendFile(item);
         });
 
         TableColumn publishDate = new TableColumn<>("发版时间");
         publishDate.setCellValueFactory(new PropertyValueFactory<>("publishDate"));
-        publishDate.setPrefWidth(120);
+        publishDate.setPrefWidth(100);
         publishDate.setEditable(true);
         publishDate.setStyle(STYLE_CENTER);
         publishDate.setOnEditCommit(event -> {
@@ -88,21 +89,33 @@ public class BlankTableViewController implements Initializable {
             VersionDto item = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getTableView().getItems().get(index);
             String publish = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getNewValue().toString();
             item.setPublishDate(publish);
-            writeExtendFile(item, null, publish);
+            writeExtendFile(item);
+        });
+        TableColumn orderNo = new TableColumn<>("指定排序");
+        orderNo.setCellValueFactory(new PropertyValueFactory<>("orderNo"));
+        orderNo.setPrefWidth(100);
+        orderNo.setEditable(true);
+        orderNo.setStyle(STYLE_CENTER);
+        orderNo.setOnEditCommit(event -> {
+            int index = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getTablePosition().getRow();
+            VersionDto item = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getTableView().getItems().get(index);
+            String order = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getNewValue().toString();
+            item.setOrderNo(order);
+            writeExtendFile(item);
         });
 
         TableColumn closeInterval = new TableColumn<>("封版截止");
         closeInterval.setCellValueFactory(new PropertyValueFactory<>("closeInterval"));
-        closeInterval.setPrefWidth(120);
+        closeInterval.setPrefWidth(100);
         closeInterval.setEditable(false);
         closeInterval.setStyle(STYLE_CENTER);
 
         TableColumn publishInterval = new TableColumn<>("发版截止");
         publishInterval.setCellValueFactory(new PropertyValueFactory<>("publishInterval"));
-        publishInterval.setPrefWidth(120);
+        publishInterval.setPrefWidth(100);
         publishInterval.setStyle(STYLE_CENTER);
 
-        table.getColumns().addAll(code, meomo, clientName, closeDate, publishDate, closeInterval, publishInterval);
+        table.getColumns().addAll(code, meomo, clientName, closeDate, publishDate, closeInterval, publishInterval, orderNo);
         showVersion(versionDtoList);
     }
 
@@ -138,7 +151,7 @@ public class BlankTableViewController implements Initializable {
         OutputUtils.infoList(table, versionDtoList, false);
     }
 
-    private void writeExtendFile(VersionDto versionDto, String closeDate, String publishDate) {
+    private void writeExtendFile(VersionDto versionDto) {
         List<String> versionList = new ArrayList<>();
         try {
             versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_EXTEND_STAT), false);
@@ -149,33 +162,29 @@ public class BlankTableViewController implements Initializable {
         String versionCode = versionDto.getCode();
         String close = versionDto.getCloseDate();
         String publish = versionDto.getPublishDate();
+        String order = versionDto.getOrderNo();
         if (CollectionUtils.isNotEmpty(versionList)) {
             for (int i=0; i<versionList.size(); i++) {
                 String item = versionList.get(i);
                 String[] elementList = item.split(STR_SEMICOLON);
                 String version = elementList[0];
-                close = elementList[1];
-                publish = elementList[2];
                 if (versionCode.equals(version)) {
                     hasRecord = true;
-                    if (closeDate != null) {
-                        close = closeDate;
+                    if (StringUtils.isBlank(close)) {
+                        close = elementList[1];
                     }
-                    if (publishDate != null) {
-                        publish = publishDate;
+                    if (StringUtils.isBlank(publish)) {
+                        publish = elementList[2];
                     }
-                    versionList.set(i, versionCode + STR_SEMICOLON +  close + STR_SEMICOLON + publish);
+                    if (StringUtils.isBlank(order)) {
+                        order = elementList[3];
+                    }
+                    versionList.set(i, versionCode + STR_SEMICOLON +  close + STR_SEMICOLON + publish + STR_SEMICOLON + order);
                 }
             }
         }
         if (!hasRecord) {
-            if (closeDate != null) {
-                close = closeDate;
-            }
-            if (publishDate != null) {
-                publish = publishDate;
-            }
-            versionList.add(versionCode + STR_SEMICOLON +  close + STR_SEMICOLON + publish);
+            versionList.add(versionCode + STR_SEMICOLON +  close + STR_SEMICOLON + publish + STR_SEMICOLON + order);
         }
         String statPath = FileUtils.getFilePath(PATH_VERSION_EXTEND_STAT);
         try {

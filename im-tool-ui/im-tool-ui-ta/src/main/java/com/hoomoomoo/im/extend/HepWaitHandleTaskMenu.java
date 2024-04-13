@@ -66,6 +66,19 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                 hepWaitHandleTaskController.completeTask(item);
             }
         });
+
+        MenuItem menuScript = new MenuItem(NAME_MENU_SCRIPT);
+        CommonUtils.setIcon(menuScript, SCRIPT_ICON, MENUITEM_ICON_SIZE);
+        menuScript.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                String info = getScriptContent(appConfigDto);
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info), null);
+            }
+        });
+
         MenuItem detailTask = new MenuItem(NAME_MENU_DETAIL);
         CommonUtils.setIcon(detailTask, DETAIL_ICON, MENUITEM_ICON_SIZE);
         detailTask.setOnAction(new EventHandler<ActionEvent>() {
@@ -99,6 +112,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         getItems().add(copyTask);
         getItems().add(copyTaskSimple);
         getItems().add(updateTask);
+        getItems().add(menuScript);
         getItems().add(detailTask);
     }
 
@@ -124,6 +138,15 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
             info.append(STR_NEXT_LINE).append("[需求描述]").append(STR_SPACE).append(name);
         }
+        return info.toString();
+    }
+
+    private String getScriptContent(AppConfigDto appConfigDto) {
+        HepTaskDto item = appConfigDto.getHepTaskDto();
+        StringBuilder info = new StringBuilder();
+        String tips = "--  " + item.getTaskNumber() + STR_SPACE_2 + CommonUtils.getCurrentDateTime3() + STR_SPACE_2 + appConfigDto.getSvnUsername();
+        info.append(tips).append(STR_SPACE_2).append("beg").append(STR_NEXT_LINE);
+        info.append(tips).append(STR_SPACE_2).append("end").append(STR_NEXT_LINE);
         return info.toString();
     }
 }

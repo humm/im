@@ -921,7 +921,11 @@ public class ScriptCompareSql {
             }
         } else {
             String fileName = file.getName();
+            String filePath = file.getPath();
             if (!fileName.endsWith(FILE_TYPE_SQL)) {
+                return;
+            }
+            if (filePath.contains("/extradata/special/") || filePath.contains("\\extradata\\special\\")) {
                 return;
             }
             List<String> content = FileUtils.readNormalFile(file.getPath(), false);
@@ -942,7 +946,6 @@ public class ScriptCompareSql {
                     String menuCode = ScriptSqlUtils.getMenuCode(item);
                     String menuName = ScriptSqlUtils.getMenuName(item);
                     if (menuCode != null && menuName != null) {
-                        String filePath = file.getPath();
                         if (menuCache.containsKey(menuCode)) {
                             if (addFilePath(filePath)) {
                                 menuCache.get(menuCode).add(filePath);
@@ -977,7 +980,6 @@ public class ScriptCompareSql {
                 if (!endFlag && item.trim().endsWith(";")) {
                     String menuCode = ScriptSqlUtils.getMenuCode(item);
                     if (menuCode != null) {
-                        String filePath = file.getPath();
                         if (addFilePath(filePath)) {
                             if (oldMenuExtCache.containsKey(menuCode)) {
                                 oldMenuExtCache.get(menuCode).put(filePath, getMenuDetail(16, item));
@@ -1009,7 +1011,6 @@ public class ScriptCompareSql {
                     String menuCode = ScriptSqlUtils.getMenuCode(item);
                     String menuName = ScriptSqlUtils.getMenuName(item);
                     if (menuCode != null) {
-                        String filePath = file.getPath();
                         if (addFilePath(filePath)) {
                             if (newMenuExtCache.containsKey(menuCode)) {
                                 newMenuExtCache.get(menuCode).put(filePath, getMenuDetail(18, item));
@@ -1063,7 +1064,6 @@ public class ScriptCompareSql {
                 if (!endFlag && item.trim().endsWith(";")) {
                     String menuCode = ScriptSqlUtils.getMenuCode(item);
                     if (menuCode != null) {
-                        String filePath = file.getPath();
                         if (transCache.containsKey(menuCode)) {
                             if (addFilePath(filePath)) {
                                 transCache.get(menuCode).add(filePath);
@@ -1101,7 +1101,6 @@ public class ScriptCompareSql {
                     String transCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
                     String transName = ScriptSqlUtils.getSubTransNameByWhole(item);
                     if (transCode != null && transName != null) {
-                        String filePath = file.getPath();
                         if (subTransCache.containsKey(transCode)) {
                             if (addFilePath(filePath)) {
                                 subTransCache.get(transCode).add(filePath);
@@ -1139,7 +1138,6 @@ public class ScriptCompareSql {
                     String transCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
                     String transOpDir = ScriptSqlUtils.getSubTransOpDirByWhole(item);
                     if (transCode != null) {
-                        String filePath = file.getPath();
                         if (subTransExtCache.containsKey(transCode)) {
                             if (addFilePath(filePath)) {
                                 subTransExtCache.get(transCode).add(filePath);

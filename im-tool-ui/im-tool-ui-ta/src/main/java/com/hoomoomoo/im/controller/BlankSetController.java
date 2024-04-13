@@ -56,6 +56,17 @@ public class BlankSetController implements Initializable {
                         break;
                     }
                 }
+                if (StringUtils.isBlank(confPath)) {
+                    SQL_CHECK_TYPE_EXTEND[] checkTypeExtend = SQL_CHECK_TYPE_EXTEND.values();
+                    for (SQL_CHECK_TYPE_EXTEND item : checkTypeExtend) {
+                        String index = String.valueOf(item.getIndex());
+                        if (appConfigDto.getPageType().equals(index)) {
+                            String pathConf = item.getPathConf();
+                            confPath = FileUtils.getFilePath(pathConf);
+                            break;
+                        }
+                    }
+                }
             }
             FileUtils.writeFile(confPath, content, false);
         }
@@ -114,13 +125,24 @@ public class BlankSetController implements Initializable {
                 String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
                 confPath = resultPath + "\\" + ERROR_LOG.getFileName();
                 submit.setText("修复");
-            } else {
+            } {
                 for (SQL_CHECK_TYPE item : checkType) {
                     String index = String.valueOf(item.getIndex());
                     if (appConfigDto.getPageType().equals(index)) {
                         String pathConf = item.getPathConf();
                         confPath = FileUtils.getFilePath(pathConf);
                         break;
+                    }
+                }
+                if (StringUtils.isBlank(confPath)) {
+                    SQL_CHECK_TYPE_EXTEND[] checkTypeExtend = SQL_CHECK_TYPE_EXTEND.values();
+                    for (SQL_CHECK_TYPE_EXTEND item : checkTypeExtend) {
+                        String index = String.valueOf(item.getIndex());
+                        if (appConfigDto.getPageType().equals(index)) {
+                            String pathConf = item.getPathConf();
+                            confPath = FileUtils.getFilePath(pathConf);
+                            break;
+                        }
                     }
                 }
             }

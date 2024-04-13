@@ -29,6 +29,7 @@ import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.*;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE_EXTEND.REPAIR_OLD_MENU;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
 /**
@@ -173,56 +174,63 @@ public class SystemToolController implements Initializable {
     @FXML
     void skipNewMenu(ActionEvent event) throws Exception {
         String title = getTitle(LACK_NEW_MENU_ALL.getName());
-        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.LACK_NEW_MENU_ALL.getIndex(), title);
+        TaCommonUtils.openBlankChildStage(LACK_NEW_MENU_ALL.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipOldMenu(ActionEvent event) throws Exception {
         String title = getTitle(LACK_OLD_NEW_ALL.getName());
-        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.LACK_OLD_NEW_ALL.getIndex(), title);
+        TaCommonUtils.openBlankChildStage(LACK_OLD_NEW_ALL.getIndex(), title);
+        addLog(title);
+    }
+
+    @FXML
+    void skipRepairOldMenu(ActionEvent event) throws Exception {
+        String title = getTitle(REPAIR_OLD_MENU.getName());
+        TaCommonUtils.openBlankChildStage(REPAIR_OLD_MENU.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipNewDiff(ActionEvent event) throws Exception {
         String title = getTitle(DIFF_NEW_ALL_EXT.getName());
-        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.DIFF_NEW_ALL_EXT.getIndex(), title);
+        TaCommonUtils.openBlankChildStage(DIFF_NEW_ALL_EXT.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipOldDiff(ActionEvent event) throws Exception {
         String title = getTitle(DIFF_OLD_ALL_EXT.getName());
-        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.DIFF_OLD_ALL_EXT.getIndex(), title);
+        TaCommonUtils.openBlankChildStage(DIFF_OLD_ALL_EXT.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipRouter(ActionEvent event) throws Exception {
         String title = getTitle(LACK_ROUTER.getName());
-        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.LACK_ROUTER.getIndex(), title);
+        TaCommonUtils.openBlankChildStage(LACK_ROUTER.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipLog(ActionEvent event) throws Exception {
         String title = getTitle(LACK_LOG.getName());
-        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.LACK_LOG.getIndex(), title);
+        TaCommonUtils.openBlankChildStage(LACK_LOG.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipErrorLog(ActionEvent event) throws Exception {
         String title = getTitle(ERROR_LOG.getName());
-        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.ERROR_LOG.getIndex(), title);
+        TaCommonUtils.openBlankChildStage(ERROR_LOG.getIndex(), title);
         addLog(title);
     }
 
     @FXML
     void skipNewLegal(ActionEvent event) throws Exception {
         String title = getTitle(LEGAL_NEW_MENU.getName());
-        TaCommonUtils.openBlankChildStage(SQL_CHECK_TYPE.LEGAL_NEW_MENU.getIndex(), title);
+        TaCommonUtils.openBlankChildStage(LEGAL_NEW_MENU.getIndex(), title);
         addLog(title);
     }
 

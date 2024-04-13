@@ -580,10 +580,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 Map<String, String> ele = new HashMap<>();
                 String oriCloseDate = getRealDate(elements[1]);
                 String oriPublishDate = getRealDate(elements[2]);
+                String oriOrderNo = STR_0;
                 String versionCode = elements[0];
                 if (versionExtend.containsKey(versionCode)) {
                     oriCloseDate = versionExtend.get(versionCode)[0];
                     oriPublishDate = versionExtend.get(versionCode)[1];
+                    oriOrderNo = versionExtend.get(versionCode)[2];
                 }
                 String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
                 String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
@@ -607,6 +609,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 ele.put(KEY_CLOSE_DATE, closeDate);
                 ele.put(KEY_PUBLISH_DATE, publishDate);
                 ele.put(KEY_CUSTOMER, customer);
+                ele.put(KEY_ORDER_NO, oriOrderNo);
                 if (currentDay.equals(oriCloseDate)) {
                     dayCloseVersion.append(versionCode).append(STR_SPACE);
                 }
@@ -662,6 +665,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 item.setCloseDate(versionInfo.get(KEY_CLOSE_DATE));
                 item.setPublishDate(versionInfo.get(KEY_PUBLISH_DATE));
                 item.setCustomer(versionInfo.get(KEY_CUSTOMER));
+                item.setOrderNo(versionInfo.get(KEY_ORDER_NO));
             }
             String endDate = item.getEstimateFinishTime().split(STR_SPACE)[0].replaceAll(STR_HYPHEN, STR_BLANK);
             item.setEndDate(CommonUtils.getIntervalDays(currentDay, endDate));
@@ -696,8 +700,8 @@ public class HepTaskTodoController extends BaseController implements Initializab
                     min = minCache;
                 }
                 String estimateFinishDate = item.getEstimateFinishDate();
-                if (estimateFinishDate.startsWith(STR_9)) {
-                    min = Integer.valueOf(estimateFinishDate.replaceAll(STR_HYPHEN, STR_BLANK)) * -1;
+                if (estimateFinishDate.startsWith(STR_99)) {
+                    min = Integer.valueOf(estimateFinishDate.replaceAll(STR_HYPHEN, STR_BLANK).substring(2, 4)) * -1;
                 }
                 item.setEndDate(String.valueOf(min));
             }
@@ -1037,6 +1041,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
             public int compare(HepTaskDto o1, HepTaskDto o2) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
+                    int orderNo1 = Integer.valueOf(o1.getOrderNo() == null ? STR_0 : o1.getOrderNo());
+                    int orderNo2 = Integer.valueOf(o2.getOrderNo() == null ? STR_0 : o2.getOrderNo());
+                    if (orderNo1 != orderNo2) {
+                        return orderNo1 - orderNo2;
+                    }
+
                     int endDate1 = Integer.valueOf(o1.getEndDate() == null ? STR_99999999 : o1.getEndDate());
                     int endDate2 = Integer.valueOf(o2.getEndDate() == null ? STR_99999999 : o2.getEndDate());
                     if (endDate1 != endDate2) {
@@ -1103,41 +1113,11 @@ public class HepTaskTodoController extends BaseController implements Initializab
     private String getValue(String value, String type) {
         if (StringUtils.isBlank(value)) {
             if (StringUtils.isBlank(type) || STR_1.equals(type)) {
-                return "9900-12-31 23:59:59";
+                return "9910-12-31 23:59:59";
             } else if (STR_2.equals(type)) {
                 return "9990-12-31 23:59:59";
             } else if (STR_9.equals(type)) {
                 return "9999-12-31 23:59:59";
-            }
-        }
-        return value;
-    }
-
-    private HepTaskDto getDivideTask(String type) {
-        int blankNumber = Integer.valueOf(type);
-        String blankType = STR_BLANK;
-        for (int i=0; i<blankNumber; i++) {
-            blankType += STR_SPACE;
-        }
-        HepTaskDto item = new HepTaskDto();
-        item.setEstimateFinishTime(getDivideValue(STR_BLANK, type));
-        item.setId(STR_BLANK);
-        item.setTaskNumber(blankType);
-        item.setName(blankType);
-        item.setOperateType(STR_BLANK);
-        item.setSprintVersion(STR_BLANK);
-        item.setProductName(STR_BLANK);
-        return item;
-    }
-
-    private String getDivideValue(String value, String type) {
-        if (StringUtils.isBlank(value)) {
-            if (StringUtils.isBlank(type) || STR_1.equals(type)) {
-                return "9900-12-30 23:59:59";
-            } else if (STR_2.equals(type)) {
-                return "9800-12-30 23:59:59";
-            } else if (STR_9.equals(type)) {
-                return "9999-12-30 23:59:59";
             }
         }
         return value;
@@ -1173,6 +1153,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 if (versionExtend.containsKey(versionCode)) {
                     oriCloseDate = versionExtend.get(versionCode)[0];
                     oriPublishDate = versionExtend.get(versionCode)[1];
+                    versionDto.setOrderNo(versionExtend.get(versionCode)[2]);
                 }
                 String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
                 String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
@@ -1200,7 +1181,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
         if (CollectionUtils.isNotEmpty(versionExtendList)) {
             for (String item : versionExtendList) {
                 String[] elementList = item.split(STR_SEMICOLON);
-                version.put(elementList[0], new String[]{elementList[1], elementList[2]});
+                version.put(elementList[0], new String[]{elementList[1], elementList[2], elementList[3]});
             }
         }
         return version;
@@ -1246,7 +1227,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
                 case 0: item.put("sprint_version", "TA6.0-FUND.V202304.10.000");break;
                 case 1: item.put("sprint_version", "TA6.0-FUND.V202304.00.009");break;
                 case 2: item.put("sprint_version", "TA6.0-FUND.V202304.00.002M9");break;
-                case 3: item.put("sprint_version", "TA6.0V202202.06.026");break;
+                case 3: item.put("sprint_version", "TA6.0V202202.06.028");break;
                 case 4: item.put("sprint_version", "TA6.0-FUND.V202304.07.002");
                         item.put(KEY_ESTIMATE_FINISH_TIME, "2023-11-24 22:59:59");
                     break;

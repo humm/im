@@ -113,8 +113,12 @@ public class ScriptSqlUtils {
         return getMenuElement(item, 10);
     }
 
-    public static String getTransName(String item) {
-        return getMenuElement(item, 1);
+    public static String getTransCodeByMenu(String item) {
+        return getMenuElement(item, 2);
+    }
+
+    public static String getTransCodeAndSubTransCodeByMenu(String item) {
+        return getMenuElement(item, 2) + " - " + getMenuElement(item, 3);
     }
 
     public static String getOrderNo(String item) {

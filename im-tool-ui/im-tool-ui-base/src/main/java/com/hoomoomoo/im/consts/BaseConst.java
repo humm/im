@@ -145,10 +145,14 @@ public class BaseConst {
     public final static String KEY_CLOSE_DATE = "closeDate";
     public final static String KEY_PUBLISH_DATE = "publishDate";
     public final static String KEY_CUSTOMER = "customer";
+    public final static String KEY_ORDER_NO = "orderNo";
     public final static String KEY_MENU_EXTEND = "menuExtend";
     public final static String KEY_TRANS_EXTEND = "transExtend";
     public final static String KEY_SUB_TRANS_EXTEND = "subTransExtend";
     public final static String KEY_SUB_TRANS_EXT_EXTEND = "subTransExtExtend";
+    public final static String KEY_MENU = "menu";
+    public final static String KEY_TRANS = "trans";
+    public final static String KEY_TRANS_EXT = "transExt";
 
     public static final String METHOD_QUERY_DATA = "queryData";
     public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
@@ -207,6 +211,7 @@ public class BaseConst {
     public static final String NAME_MENU_COPY = "复制";
     public static final String NAME_MENU_SIMPLE_COPY = "简复";
     public static final String NAME_MENU_DETAIL = "详情";
+    public static final String NAME_MENU_SCRIPT = "脚本";
 
 
     public static final String NAME_MENU_DCIT = "字典";
@@ -320,6 +325,7 @@ public class BaseConst {
     public static final String FACTORY_ICON = "/conf/image/factory.png";
     public static final String COPY_ICON = "/conf/image/copy.png";
     public static final String COPY_SIMPLE_ICON = "/conf/image/copySimple.png";
+    public static final String SCRIPT_ICON = "/conf/image/sql.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
     public static final String DETAIL_ICON = "/conf/image/detail.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
@@ -436,6 +442,57 @@ public class BaseConst {
         }
 
         SQL_CHECK_TYPE(int index, String name, String fileName, String pathConf) {
+            this.index = index;
+            this.name = name;
+            this.fileName = fileName;
+            this.pathConf = pathConf;
+        }
+    }
+
+    public enum SQL_CHECK_TYPE_EXTEND {
+        REPAIR_OLD_MENU(50, "修正老版全量", "50.修正老版全量.sql", "/conf/extend/skipRepairOldMenu.conf");
+
+        private int index;
+
+        private String name;
+
+        private String fileName;
+
+        private String pathConf;
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
+        }
+
+        public String getPathConf() {
+            return pathConf;
+        }
+
+        public void setPathConf(String pathConf) {
+            this.pathConf = pathConf;
+        }
+
+        SQL_CHECK_TYPE_EXTEND(int index, String name, String fileName, String pathConf) {
             this.index = index;
             this.name = name;
             this.fileName = fileName;

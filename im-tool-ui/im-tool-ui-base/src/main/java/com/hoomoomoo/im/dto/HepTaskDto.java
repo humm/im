@@ -38,4 +38,6 @@ public class HepTaskDto extends BaseDto{
 
     private String endDate;
 
+    private String orderNo;
+
 }
