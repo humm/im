@@ -1117,12 +1117,14 @@ public class ScriptCompareSql {
                     endFlag = true;
                 }
             }
-
             // 缓存日志信息
             endFlag = true;
             for (String item : content) {
-                String itemLower = item.toLowerCase();
-                if (itemLower.contains("delete")) {
+                String itemLower = item.toLowerCase().trim();
+                if (StringUtils.isBlank(itemLower)) {
+                    continue;
+                }
+                if (itemLower.startsWith("delete")) {
                     continue;
                 }
                 if (itemLower.contains("tbfundgranttablestmp") || itemLower.contains("tsys_subtrans ") || itemLower.contains("tsys_trans ")) {

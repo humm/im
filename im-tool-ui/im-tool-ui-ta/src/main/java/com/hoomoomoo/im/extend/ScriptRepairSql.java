@@ -333,6 +333,9 @@ public class ScriptRepairSql {
         List<String> menuInfo = mergeMenu(menuBase, menuExt);
         boolean exist = false;
         for (String item : menuInfo) {
+            if (item.contains("select") && item.contains("from")) {
+                item = item.substring(0, item.indexOf("from")).replace("select", "values (") + ")";
+            }
             String menuCode = ScriptSqlUtils.getMenuCode(item);
             String subTransCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
             String itemLower = item.toLowerCase().replace("--", "").replaceAll("\\s+", STR_SPACE).trim();
@@ -815,10 +818,7 @@ public class ScriptRepairSql {
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i).trim();
                 String itemLower = item.toLowerCase();
-                if (StringUtils.isBlank(item)) {
-                    continue;
-                }
-                if (!itemLower.contains("insert") && !itemLower.contains("values")) {
+                if (StringUtils.isBlank(item) || item.startsWith(ANNOTATION_TYPE_NORMAL)) {
                     continue;
                 }
                 if (itemLower.startsWith("delete")) {
