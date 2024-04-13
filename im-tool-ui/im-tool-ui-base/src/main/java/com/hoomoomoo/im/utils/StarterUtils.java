@@ -68,10 +68,10 @@ public class StarterUtils {
             DisplayMode displayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
             int width = displayMode.getWidth();
             int height = displayMode.getHeight();
-            if (width != 1920) {
+            if (width < 1720) {
                 primaryStage.setWidth(width);
             }
-            if (height != 1080) {
+            if (height < 800) {
                 primaryStage.setHeight(height - 50);
             }
             primaryStage.show();
