@@ -348,6 +348,40 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
+    void repairNewMenu(ActionEvent event) throws Exception {
+        if (executeFlag) {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "修复中 ··· 请稍后 ···"));
+            return;
+        }
+        executeFlag = true;
+        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
+        try {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "修复开始"));
+                        showScheduleInfo(NAME_REPAIR_NEW_MENU, "修复");
+                        ScriptRepairSql.repairNewMenu();
+                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "修复结束"));
+                        OutputUtils.info(logs, STR_NEXT_LINE);
+                        addLog(NAME_REPAIR_NEW_MENU);
+                    } catch (Exception e) {
+                        LoggerUtils.info(e);
+                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, e.getMessage()));
+                    } finally {
+                        executeFlag = false;
+                    }
+                }
+            }).start();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+    @FXML
      void repairErrorLog(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (appConfigDto.getExecute()) {

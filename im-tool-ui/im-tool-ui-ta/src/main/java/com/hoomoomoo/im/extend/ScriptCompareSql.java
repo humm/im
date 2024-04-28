@@ -708,6 +708,24 @@ public class ScriptCompareSql {
             menuInfo.addAll(remarkError);
         }
 
+        List<String> errorNextLine = new ArrayList<>();
+        List<String> menu = FileUtils.readNormalFile(newUedPage, false);
+        for (String item : menu) {
+            String lower = item.toLowerCase().trim();
+            if (StringUtils.isBlank(lower)) {
+                continue;
+            }
+            if (!lower.startsWith("--") && !lower.startsWith("delete") && !lower.startsWith("insert") && !lower.startsWith("values") && !lower.startsWith("commit")) {
+                errorNextLine.add(item);
+            }
+        }
+        total += errorNextLine.size();
+        if (CollectionUtils.isNotEmpty(errorNextLine)) {
+            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_NEW_MENU.getName() + STR_SPACE_2 + "存在错误换行"));
+            menuInfo.add(String.format(MSG_WAIT_HANDLE_NUM, errorNextLine.size()));
+            menuInfo.addAll(errorNextLine);
+        }
+
         menuInfo.add(0, String.format(MSG_WAIT_HANDLE_NUM_0, total));
         menuInfo.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_NEW_MENU.getName()));
         FileUtils.writeFile(resultPath + LEGAL_NEW_MENU.getFileName(), menuInfo, false);

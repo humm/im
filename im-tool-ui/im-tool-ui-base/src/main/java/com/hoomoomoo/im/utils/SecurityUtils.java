@@ -91,7 +91,4 @@ public class SecurityUtils {
         }
     }
 
-    public static void main(String[] args) {
-        System.out.println(getEncryptString(SUPER_MAC_ADDRESS));
-    }
 }

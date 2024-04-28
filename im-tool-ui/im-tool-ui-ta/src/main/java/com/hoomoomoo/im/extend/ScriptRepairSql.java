@@ -2,9 +2,8 @@ package com.hoomoomoo.im.extend;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.utils.ComponentUtils;
+import com.hoomoomoo.im.dto.MenuTransitionDto;
 import com.hoomoomoo.im.utils.FileUtils;
-import com.hoomoomoo.im.utils.LoggerUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +29,9 @@ public class ScriptRepairSql {
     private static Map<String, List<Map<String, String>>> totalLogCache = new LinkedHashMap<>();
     private static Set<String> totalSubTransExtCache = new LinkedHashSet<>();
     private static int repairFileNum = 0;
+
+    private static Set<String> excludeFundMenu = new HashSet<>(Arrays.asList("fundBlackListSet", "fundClerkList", "fundInterestInfoSet"));
+    private static Set<String> includePubMenu = new HashSet<>(Arrays.asList("bizBlackInfoSet", "bizClerkInfoSet", "bizInterestRateSet"));
 
     public static void repairLackLog() throws Exception {
         repairFileNum = 0;
@@ -291,12 +293,235 @@ public class ScriptRepairSql {
         FileUtils.writeFile(basePath, item, false);
     }
 
+    public static void repairNewMenu() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String basePath = appConfigDto.getSystemToolCheckMenuPubPath();
+        if (StringUtils.isBlank(basePath)) {
+            throw new Exception("请配置参数【system.tool.check.menu.pub.path】\n");
+        }
+        File baseFile = new File(basePath);
+        if (!baseFile.exists()) {
+            throw new Exception("请检查参数路径是否存在【system.tool.check.menu.pub.path】\n");
+        }
+
+        Map<String, String> newUedMenu = new LinkedHashMap<>();
+        Map<String, String> parentMenu = new LinkedHashMap<>();
+        Map<String, String> firstMenu =  new LinkedHashMap<>();
+        Map<String, String> secondMenu =  new LinkedHashMap<>();
+        Map<String, String> thirdMenu =  new LinkedHashMap<>();
+        Map<String, String> fourthMenu =  new LinkedHashMap<>();
+        Map<String, String> trans =  new LinkedHashMap<>();
+        File[] parentFile = baseFile.listFiles();
+        for (File file : parentFile) {
+            String fileName = file.getName();
+            if (!fileName.startsWith("00console-vue-menu-std-")) {
+                continue;
+            }
+            List<String> menuInfo = ScriptSqlUtils.getSqlByFile(file.getPath());
+            for (String item : menuInfo) {
+                String menuCode = ScriptSqlUtils.getMenuCode(item);
+                if (fileName.startsWith("00console-vue-menu-std-bizroot")) {
+                    if (!menuCode.equals("bizroot") && !menuCode.equals("frame")) {
+                        firstMenu.put(menuCode, item);
+                    }
+                } else {
+                    parentMenu.put(menuCode, item);
+                }
+            }
+        }
+        String newUedPage = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.newUedPage;
+        List<String> newUedMenuInfo = ScriptSqlUtils.getSqlByFile(newUedPage);
+        for (String item : newUedMenuInfo) {
+            String menuCode = ScriptSqlUtils.getMenuCode(item);
+            if (item.toLowerCase().contains("tsys_menu_std")) {
+                newUedMenu.put(menuCode, item);
+            } else {
+                trans.put(menuCode, item);
+            }
+        }
+        Iterator<String> firstIterator = firstMenu.keySet().iterator();
+        while (firstIterator.hasNext()) {
+            String menuCode = firstIterator.next();
+            Iterator<String> secondIterator = parentMenu.keySet().iterator();
+            while (secondIterator.hasNext()) {
+                String secondMenuCode = secondIterator.next();
+                String menuInfo = parentMenu.get(secondMenuCode);
+                String parentCode = ScriptSqlUtils.getParentCode(menuInfo);
+                if (menuCode.equals(parentCode)) {
+                    secondMenu.put(secondMenuCode, menuInfo);
+                    secondIterator.remove();
+                }
+            }
+            Iterator<String> newUedMenuIterator = newUedMenu.keySet().iterator();
+            while (newUedMenuIterator.hasNext()) {
+                String uedMenuCode = newUedMenuIterator.next();
+                String menuInfo = newUedMenu.get(uedMenuCode);
+                String parentCode = ScriptSqlUtils.getParentCode(menuInfo);
+                if (menuCode.equals(parentCode)) {
+                    secondMenu.put(uedMenuCode, menuInfo);
+                }
+            }
+        }
+        Iterator<String> secondIterator = secondMenu.keySet().iterator();
+        while (secondIterator.hasNext()) {
+            String menuCode = secondIterator.next();
+            Iterator<String> thirdIterator = parentMenu.keySet().iterator();
+            while (thirdIterator.hasNext()) {
+                String thirdMenuCode = thirdIterator.next();
+                String menuInfo = parentMenu.get(thirdMenuCode);
+                String parentCode = ScriptSqlUtils.getParentCode(menuInfo);
+                if (menuCode.equals(parentCode)) {
+                    thirdMenu.put(thirdMenuCode, menuInfo);
+                    thirdIterator.remove();
+                }
+            }
+            Iterator<String> newUedMenuIterator = newUedMenu.keySet().iterator();
+            while (newUedMenuIterator.hasNext()) {
+                String uedMenuCode = newUedMenuIterator.next();
+                String menuInfo = newUedMenu.get(uedMenuCode);
+                String parentCode = ScriptSqlUtils.getParentCode(menuInfo);
+                if (menuCode.equals(parentCode)) {
+                    thirdMenu.put(uedMenuCode, menuInfo);
+                }
+            }
+        }
+        Iterator<String> thirdIterator = thirdMenu.keySet().iterator();
+        while (thirdIterator.hasNext()) {
+            String menuCode = thirdIterator.next();
+            Iterator<String> fourthIterator = parentMenu.keySet().iterator();
+            while (fourthIterator.hasNext()) {
+                String fourthMenuCode = fourthIterator.next();
+                String menuInfo = parentMenu.get(fourthMenuCode);
+                String parentCode = ScriptSqlUtils.getParentCode(menuInfo);
+                if (menuCode.equals(parentCode)) {
+                    fourthMenu.put(fourthMenuCode, menuInfo);
+                    fourthIterator.remove();
+                }
+            }
+            Iterator<String> newUedMenuIterator = newUedMenu.keySet().iterator();
+            while (newUedMenuIterator.hasNext()) {
+                String uedMenuCode = newUedMenuIterator.next();
+                String menuInfo = newUedMenu.get(uedMenuCode);
+                String parentCode = ScriptSqlUtils.getParentCode(menuInfo);
+                if (menuCode.equals(parentCode)) {
+                    fourthMenu.put(uedMenuCode, menuInfo);
+                }
+            }
+        }
+        // 脚本脚本
+        List<String> res = new ArrayList<>();
+        res.add(BLOCK_LINE_INDEX);
+        res.add(BLOCK_LINE_INDEX);
+        res.add(BLOCK_LINE_INDEX);
+        res.add("-- 新版UED全量脚本");
+        res.add("-- 禁止配置脚本无规律放置 按菜单层级放置");
+        res.add(STR_BLANK);
+        Iterator<String> first = firstMenu.keySet().iterator();
+        while (first.hasNext()) {
+            String firstMenuCode = first.next();
+            String firstMenuInfo = firstMenu.get(firstMenuCode);
+            String firstMenuName = ScriptSqlUtils.getMenuName(firstMenuInfo);
+            List<String> subSecondMenu = getPartMenuInfo(secondMenu, firstMenuCode, false);
+            for (String second : subSecondMenu) {
+                String secondMenuCode = ScriptSqlUtils.getMenuCode(second);
+                String secondMenuName = ScriptSqlUtils.getMenuName(second);
+                List<String> subThirdMenu = getPartMenuInfo(thirdMenu, secondMenuCode, false);
+                List<String> realThirdMenu = getRealPartMenuInfo(subThirdMenu);
+                MenuTransitionDto menuTransitionDto = new MenuTransitionDto();
+                menuTransitionDto.setHasMerger(false);
+                List<String> partMenu = new ArrayList<>();
+                for (int i=0; i<realThirdMenu.size(); i++) {
+                    generateMenuInfo(i, realThirdMenu.get(i), realThirdMenu, newUedMenu, trans, partMenu, menuTransitionDto);
+                }
+                if (CollectionUtils.isNotEmpty(partMenu)) {
+                    res.add(String.format(MENU_TIPS, firstMenuCode + "|" + firstMenuName + " " + secondMenuCode + "|" + secondMenuName + " 开始"));
+                    res.addAll(partMenu);
+                    res.add(String.format(MENU_TIPS, firstMenuCode + "|" + firstMenuName + " " + secondMenuCode + "|" + secondMenuName + " 结束"));
+                    res.add(STR_BLANK);
+                }
+                for (String third : subThirdMenu) {
+                    String thirdMenuCode = ScriptSqlUtils.getMenuCode(third);
+                    String thirdMenuName = ScriptSqlUtils.getMenuName(third);
+                    List<String> subFourthMenu = getPartMenuInfo(fourthMenu, thirdMenuCode, true);
+                    partMenu = new ArrayList<>();
+                    menuTransitionDto = new MenuTransitionDto();
+                    menuTransitionDto.setHasMerger(false);
+                    for (int i=0; i<subFourthMenu.size(); i++) {
+                        generateMenuInfo(i, subFourthMenu.get(i), subFourthMenu, newUedMenu, trans, partMenu, menuTransitionDto);
+                    }
+                    if (CollectionUtils.isNotEmpty(partMenu)) {
+                        res.add(String.format(MENU_TIPS, firstMenuCode + "|" + firstMenuName + " " + secondMenuCode + "|" + secondMenuName + " " + thirdMenuCode + "|" + thirdMenuName + " 开始"));
+                        res.addAll(partMenu);
+                        res.add(String.format(MENU_TIPS, firstMenuCode + "|" + firstMenuName + " " + secondMenuCode + "|" + secondMenuName + " " + thirdMenuCode + "|" + thirdMenuName + " 结束"));
+                        res.add(STR_BLANK);
+                    }
+                }
+            }
+        }
+        List<String> error = new ArrayList<>();
+        if (MapUtils.isNotEmpty(newUedMenu)) {
+            Iterator<String> iterator = newUedMenu.keySet().iterator();
+            List<String> subError = new ArrayList<>();
+            while (iterator.hasNext()) {
+                String menuCode = iterator.next();
+                if (excludeFundMenu.contains(menuCode)) {
+                    continue;
+                }
+                subError.add(formatSql(newUedMenu.get(menuCode), true));
+                subError.add(STR_BLANK);
+            }
+            if (CollectionUtils.isNotEmpty(subError)) {
+                error.add(String.format(MENU_TIPS, "未匹配菜单: " + subError.size() / 2));
+                error.addAll(subError);
+            }
+        }
+        if (CollectionUtils.isNotEmpty(error)) {
+            error.add(STR_NEXT_LINE);
+        }
+
+        if (MapUtils.isNotEmpty(trans)) {
+            Iterator<String> iterator = trans.keySet().iterator();
+            List<String> subError = new ArrayList<>();
+            while (iterator.hasNext()) {
+                String menuCode = iterator.next();
+                subError.add(formatSql(trans.get(menuCode), true));
+                subError.add(STR_BLANK);
+            }
+            if (CollectionUtils.isNotEmpty(subError)) {
+                error.add(String.format(MENU_TIPS, "未匹配交易码: " + subError.size() / 2));
+                error.addAll(subError);
+            }
+        }
+
+        String checkFile = newUedPage.replace(".sql", ".check.sql");
+        if (CollectionUtils.isNotEmpty(error)) {
+            FileUtils.writeFile(checkFile, error, false);
+        } else {
+            File file = new File(checkFile);
+            if (file.exists()) {
+                file.delete();
+            }
+        }
+        String resFile = newUedPage.replace(".sql", ".res.sql");
+        if (CollectionUtils.isNotEmpty(error)) {
+            FileUtils.writeFile(resFile, res, false);
+            throw new Exception("检查存在未匹配项，请查看结果文件");
+        } else {
+            File file = new File(resFile);
+            if (file.exists()) {
+                file.delete();
+            }
+            FileUtils.writeFile(newUedPage, res, false);
+        }
+    }
+
     public static void repairOldMenu() throws Exception {
         List<String> res = new ArrayList<>();
         res.add(BLOCK_LINE_INDEX);
         res.add(BLOCK_LINE_INDEX);
         res.add(BLOCK_LINE_INDEX);
-        res.add("-- 禁止配置脚本无规律放置");
+        res.add("-- 老版UED全量脚本");
+        res.add("-- 禁止配置脚本无规律放置 按菜单层级放置");
         res.add("-- 配置数据放置对应区块内 tsys_menu tsys_trans tsys_subtrans tsys_subtrans_ext 分区块放置");
         res.add(STR_BLANK);
         res.add("delete from tsys_menu where menu_code = 'console-fund-ta-vue';");
@@ -331,7 +556,7 @@ public class ScriptRepairSql {
         String[] menuBase = menu.toString().split(STR_SEMICOLON);
         Map<String, List<String>> menuExt = initMenuExt(appConfigDto);
         List<String> menuInfo = mergeMenu(menuBase, menuExt);
-        boolean exist = false;
+        boolean exist;
         for (String item : menuInfo) {
             if (item.contains("select") && item.contains("from")) {
                 item = item.substring(0, item.indexOf("from")).replace("select", "values (") + ")";
@@ -458,6 +683,10 @@ public class ScriptRepairSql {
             String menuCode = firstMenuIterator.next();
             String menuDetail = firstMenu.get(menuCode);
             String menuName = ScriptSqlUtils.getMenuName(menuDetail);
+            String deleteMenu = addDeleteFundMenu(menuDetail, "menu");
+            if (StringUtils.isNotBlank(deleteMenu)) {
+                res.add(deleteMenu);
+            }
             res.add(formatSql(menuDetail, index == firstMenu.size()));
             List<String> subSecond = new ArrayList<>();
             Iterator<String> secondIterator = secondMenu.keySet().iterator();
@@ -490,6 +719,10 @@ public class ScriptRepairSql {
                 for (int j=0; j<subThird.size(); j++) {
                     StringBuilder subTransAndSubTrans = new StringBuilder();
                     String subThirdInfo = subThird.get(j);
+                    String deleteSubThirdMenu = addDeleteFundMenu(subThirdInfo, "menu");
+                    if (StringUtils.isNotBlank(deleteSubThirdMenu)) {
+                        third.add(deleteSubThirdMenu);
+                    }
                     third.add(formatSql(subThirdInfo, j == subThird.size() - 1));
                     boolean flag = getTransCodeAndSubTransCode(menuTrans, menuSubTrans, transAndSubTrans, subTransAndSubTrans, subThirdInfo);
                     if (!flag) {
@@ -513,6 +746,10 @@ public class ScriptRepairSql {
             menuSort(subSecond);
             second.add(String.format(MENU_TIPS, "二级菜单 " + menuCode + "|" + menuName + " 开始"));
             for (int j=0; j<subSecond.size(); j++) {
+                String deleteSecondMenu = addDeleteFundMenu(subSecond.get(j), "menu");
+                if (StringUtils.isNotBlank(deleteSecondMenu)) {
+                    second.add(deleteSecondMenu);
+                }
                 second.add(formatSql(subSecond.get(j), j == subSecond.size() - 1));
             }
             second.add(String.format(MENU_TIPS, "二级菜单 " + menuCode + "|" + menuName +" 结束"));
@@ -529,6 +766,8 @@ public class ScriptRepairSql {
         account.add(BLOCK_LINE_INDEX);
         account.add(String.format(BLOCK_LINE_INDEX_TIPS, "账户中心菜单 tsys_menu"));
         account.add(BLOCK_LINE_INDEX);
+        account.add("delete from tsys_menu where menu_code like 'ptaAccountManageFund%';");
+        account.add(STR_BLANK);
         Map<String, String> accountParent = initAccountMenu(otherMenu);
         Iterator<String> iterator = accountParent.keySet().iterator();
         while (iterator.hasNext()) {
@@ -690,6 +929,30 @@ public class ScriptRepairSql {
         });
     }
 
+    private static String addDeleteFundMenu(String menuInfo, String checkType) {
+        String menuCode = ScriptSqlUtils.getMenuCode(menuInfo);
+        boolean fundMenu = menuCode.startsWith("fund");
+        String delete = STR_BLANK;
+        String subDelete = STR_BLANK;
+        if (!fundMenu) {
+            if ("menu".equals(checkType)) {
+                delete = "delete from tsys_menu where menu_code = '" + menuCode + "';";
+
+            } else if ("trans".equals(checkType)) {
+                delete = "delete from tsys_trans where trans_code = '" + menuCode + "';\n";
+                subDelete = "delete from tsys_subtrans where trans_code = '" + menuCode + "';\n";
+            } else {
+                delete = "delete from tsys_subtrans_ext where trans_code = '" + menuCode + "';";
+            }
+            if (menuInfo.startsWith(ANNOTATION_TYPE_NORMAL)) {
+                delete = ANNOTATION_TYPE_NORMAL + STR_SPACE + delete;
+                if (StringUtils.isNotBlank(subDelete)) {
+                    subDelete = ANNOTATION_TYPE_NORMAL + STR_SPACE + subDelete;
+                }
+            }
+        }
+        return delete + subDelete;
+    }
     private static Map<String, List<String>> initSkipCache() throws IOException {
         Map<String, List<String>> cache = new HashMap<>(2);
         cache.put(KEY_MENU, new ArrayList<>());
@@ -725,10 +988,15 @@ public class ScriptRepairSql {
         String subThirdMenuCode = ScriptSqlUtils.getTransCodeByMenu(subThirdInfo);
         String trans = menuTrans.get(subThirdMenuCode);
         if (trans != null) {
+            String menu = addDeleteFundMenu(subThirdInfo, "trans");
+            if (StringUtils.isNotBlank(menu)) {
+                subTransAndSubTrans.append(menu);
+            }
             subTransAndSubTrans.append(formatSql(trans, false));
         }
         List<String> subTrans = menuSubTrans.get(subThirdMenuCode);
         if (CollectionUtils.isNotEmpty(subTrans)) {
+
             for (int k=0; k<subTrans.size(); k++) {
                 subTransAndSubTrans.append(formatSql(subTrans.get(k), false));
             }
@@ -755,6 +1023,10 @@ public class ScriptRepairSql {
         }
         if (StringUtils.isNotBlank(subTransExtTmp.toString())) {
             subTransExt.add("-- " + subThirdMenuName + " 开始");
+            String menu = addDeleteFundMenu(subThirdInfo, "transExt");
+            if (StringUtils.isNotBlank(menu)) {
+                subTransExt.add(menu);
+            }
             subTransExt.add(subTransExtTmp.substring(0, subTransExtTmp.length() - 1));
             subTransExt.add("-- " + subThirdMenuName + " 结束" + STR_NEXT_LINE);
         }
@@ -883,7 +1155,23 @@ public class ScriptRepairSql {
         if (!last) {
             sql += STR_NEXT_LINE;
         }
+
         return sql;
+    }
+
+    private static String formatSqlAddDelete(String sql, boolean last) {
+        String res = formatSql(sql, last);
+        String delete = STR_BLANK;
+        String menuCode = ScriptSqlUtils.getMenuCode(sql);
+        if (sql.toLowerCase().contains("tsys_menu_std")) {
+            delete = "delete from tsys_menu_std where menu_code = '" + menuCode + "';" + STR_NEXT_LINE;
+        } else if (sql.toLowerCase().contains("tsys_trans")) {
+            delete = "delete from tsys_trans where trans_code = '" + menuCode + "';" + STR_NEXT_LINE;
+        }
+        if (res.startsWith(ANNOTATION_TYPE_NORMAL)) {
+            delete = ANNOTATION_TYPE_NORMAL + STR_SPACE + delete;
+        }
+        return delete + res;
     }
 
     private static void repairByFile(AppConfigDto appConfigDto, File file) throws Exception {
@@ -993,4 +1281,113 @@ public class ScriptRepairSql {
         return total;
     }
 
+    private static List<String> getPartMenuInfo(Map<String, String> menu, String menuCode, boolean fundMenu) {
+        List<String> res = new ArrayList<>();
+        Iterator<String> iterator = menu.keySet().iterator();
+        while (iterator.hasNext()) {
+            String secondMenuCode = iterator.next();
+            String secondMenuInfo = menu.get(secondMenuCode);
+            String secondParentMenuCode = ScriptSqlUtils.getParentCode(secondMenuInfo);
+            if (fundMenu) {
+                String remark = ScriptSqlUtils.getMenuRemark(secondMenuInfo);
+                if (!"console-fund-ta-vue".equals(remark)) {
+                    continue;
+                }
+                if (excludeFundMenu.contains(secondMenuCode)) {
+                    continue;
+                }
+            }
+            if (secondParentMenuCode.equals(menuCode)) {
+                res.add(secondMenuInfo);
+                iterator.remove();
+            }
+        }
+        res = menuSortByNewUed(res);
+        return res;
+    }
+
+    private static List<String> getRealPartMenuInfo(List<String> menuList) {
+        List<String> res = new ArrayList<>();
+        for (String menu : menuList) {
+            String transCode = ScriptSqlUtils.getTransCodeByMenu(menu);
+            String remark = ScriptSqlUtils.getMenuRemark(menu);
+            if ("menu".equals(transCode)) {
+                continue;
+            }
+            if (!includePubMenu.contains(transCode) && !"console-fund-ta-vue".equals(remark)) {
+                continue;
+            }
+            res.add(menu);
+        }
+        menuSortByNewUed(res);
+        return res;
+    }
+
+    private static List<String> menuSortByNewUed(List<String> menuList) {
+        List<String> res = new ArrayList<>();
+        List<String> first = new ArrayList<>();
+        List<String> second = new ArrayList<>();
+        for (String menu : menuList) {
+            String reserve = ScriptSqlUtils.getMenuReserve(menu).trim();
+            if (STR_0.equals(reserve)) {
+                second.add(menu);
+            } else {
+                first.add(menu);
+            }
+        }
+        menuSort(first);
+        for (String menu : first) {
+            res.add(menu);
+            String reserve = ScriptSqlUtils.getMenuReserve(menu).trim();
+            if (!STR_0.equals(reserve)) {
+                List<String> subMenu = new ArrayList<>();
+                String[] subReserve = reserve.split(STR_COMMA);
+                for (int i=0; i<subReserve.length; i++) {
+                    String ele = subReserve[i];
+                    for (String secondMenu : second) {
+                        if (ScriptSqlUtils.getMenuCode(secondMenu).equals(ele)) {
+                            subMenu.add(secondMenu);
+                        }
+                    }
+                }
+                menuSort(subMenu);
+                res.addAll(subMenu);
+            }
+        }
+        return res;
+    }
+
+    private static void generateMenuInfo(int index, String menu, List<String> subFourthMenu, Map<String, String> newUedMenu,
+                                                      Map<String, String> trans, List<String> partMenu, MenuTransitionDto menuTransitionDto) {
+        boolean hasMerger = menuTransitionDto.getHasMerger();
+        String mergerMenuName = menuTransitionDto.getMergerMenuName();
+        String fourthMenuCode = ScriptSqlUtils.getMenuCode(menu);
+        String fourthMenuName = ScriptSqlUtils.getMenuName(menu);
+        String reserve = ScriptSqlUtils.getMenuReserve(menu).trim();
+        if (StringUtils.isNotBlank(menu) && !STR_0.equals(reserve) && hasMerger) {
+            String lastEle = partMenu.get(partMenu.size() - 1);
+            if (lastEle.endsWith(STR_NEXT_LINE)) {
+                partMenu.set(partMenu.size() - 1, lastEle.substring(0, lastEle.length() - 1));
+            }
+            partMenu.add("-- " + mergerMenuName + " 结束" + STR_NEXT_LINE);
+            hasMerger = false;
+        }
+        if (StringUtils.isNotBlank(reserve) && reserve.contains(STR_COMMA)) {
+            mergerMenuName = fourthMenuName;
+            partMenu.add("-- " + mergerMenuName + " 开始");
+            hasMerger = true;
+        }
+        if (trans.containsKey(fourthMenuCode)) {
+            partMenu.add(formatSqlAddDelete(menu, true));
+        } else {
+            partMenu.add(formatSqlAddDelete(menu, index == subFourthMenu.size() - 1));
+        }
+        if (trans.containsKey(fourthMenuCode)) {
+            partMenu.add(formatSqlAddDelete(trans.get(fourthMenuCode), false));
+            trans.remove(fourthMenuCode);
+        }
+        newUedMenu.remove(fourthMenuCode);
+        menuTransitionDto.setHasMerger(hasMerger);
+        menuTransitionDto.setMergerMenuName(mergerMenuName);
+    }
 }

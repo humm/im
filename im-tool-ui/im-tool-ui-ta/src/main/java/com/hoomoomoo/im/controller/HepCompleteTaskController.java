@@ -131,7 +131,16 @@ public class HepCompleteTaskController extends BaseController implements Initial
         }
         OutputUtils.repeatInfo(modifiedFile, modifiedFileValue.toString());
         OutputUtils.repeatInfo(editDescription, editDescriptionValue.toString());
-        OutputUtils.repeatInfo(suggestion, editDescriptionValue.toString());
+        StringBuilder suggestionMsg = new StringBuilder();
+        suggestionMsg.append("【功能入口】\n");
+        suggestionMsg.append("\t\n");
+        suggestionMsg.append("【测试准备】\n");
+        suggestionMsg.append("\t更新ta-web-manager-fund-core等前台相关包及console包，执行升级脚本\n");
+        suggestionMsg.append("【测试场景及预期结果】\n");
+        suggestionMsg.append("\t" + editDescriptionValue.toString()).append(STR_NEXT_LINE);
+        suggestionMsg.append("【影响范围】\n");
+        suggestionMsg.append("【其他】");
+        OutputUtils.repeatInfo(suggestion, suggestionMsg.toString());
         if (StringUtils.isBlank(modifiedFileValue)) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("未查询到修改记录信息,请检查"));
         } else {

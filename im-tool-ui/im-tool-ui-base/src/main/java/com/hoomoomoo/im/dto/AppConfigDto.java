@@ -218,6 +218,8 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolCheckMenuBasePath;
 
+    private String systemToolCheckMenuPubPath;
+
     private String systemToolCheckMenuResultPath;
 
     private String systemToolCheckMenuEndFlag;

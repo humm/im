@@ -1,6 +1,13 @@
 package com.hoomoomoo.im.extend;
 
+import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
+import org.apache.commons.lang3.StringUtils;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 
@@ -115,6 +122,10 @@ public class ScriptSqlUtils {
 
     public static String getTransCodeByMenu(String item) {
         return getMenuElement(item, 2);
+    }
+
+    public static String getMenuRemark(String item) {
+        return getMenuElement(item, 14);
     }
 
     public static String getTransCodeAndSubTransCodeByMenu(String item) {
@@ -240,4 +251,23 @@ public class ScriptSqlUtils {
         }
         return transName;
     }
+
+    public static List<String> getSqlByFile(String filePath) throws IOException {
+        List<String> menuList = FileUtils.readNormalFile(filePath, false);
+        StringBuilder menu = new StringBuilder();
+        for (int i=0; i<menuList.size(); i++) {
+            String item = menuList.get(i).trim();
+            String itemLower = item.toLowerCase();
+            if (StringUtils.isBlank(item)) {
+                continue;
+            }
+            if ((!itemLower.contains("insert") && !itemLower.contains("values")) || itemLower.contains(" delete ")) {
+                continue;
+            }
+            menu.append(item);
+        }
+        String[] menuBase = menu.toString().split(STR_SEMICOLON);
+        return new ArrayList<>(Arrays.asList(menuBase));
+    }
+
 }
