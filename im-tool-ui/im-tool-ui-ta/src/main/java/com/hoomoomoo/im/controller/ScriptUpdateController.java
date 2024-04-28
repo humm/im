@@ -64,11 +64,11 @@ public class ScriptUpdateController extends BaseController implements Initializa
     @FXML
     private RadioButton update;
 
-    @FXML
+   /* @FXML
     private RadioButton menuYes;
 
     @FXML
-    private RadioButton menuNo;
+    private RadioButton menuNo;*/
 
     @FXML
     private TextField param;
@@ -104,7 +104,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 appConfigDto.setScriptUpdateGenerateType(STR_3);
             }
             appConfigDto.setScriptUpdateGenerateMode(rewrite.isSelected() ? STR_2 : STR_1);
-            appConfigDto.setScriptUpdateGenerateUed(menuYes.isSelected() ? STR_1 : STR_2);
+            //appConfigDto.setScriptUpdateGenerateUed(menuYes.isSelected() ? STR_1 : STR_2);
             setProgress(0);
             updateProgress();
             generateScript(appConfigDto);
@@ -183,14 +183,14 @@ public class ScriptUpdateController extends BaseController implements Initializa
 
     @FXML
     void selectMenuYes(ActionEvent event) {
-        OutputUtils.selected(menuYes, true);
-        OutputUtils.selected(menuNo, false);
+       /*OutputUtils.selected(menuYes, true);
+       OutputUtils.selected(menuNo, false);*/
     }
 
     @FXML
     void selectMenuNo(ActionEvent event) {
-        OutputUtils.selected(menuYes, false);
-        OutputUtils.selected(menuNo, true);
+       /*OutputUtils.selected(menuYes, false);
+       OutputUtils.selected(menuNo, true);*/
     }
 
     @FXML

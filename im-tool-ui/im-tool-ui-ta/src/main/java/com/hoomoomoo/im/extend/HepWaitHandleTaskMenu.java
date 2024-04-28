@@ -79,6 +79,18 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
 
+        MenuItem menuTaskNo = new MenuItem(NAME_MENU_TASK_NO);
+        CommonUtils.setIcon(menuTaskNo, TASK_NO_ICON, MENUITEM_ICON_SIZE);
+        menuTaskNo.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                String info = appConfigDto.getHepTaskDto().getTaskNumber();
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(info), null);
+            }
+        });
+
         MenuItem detailTask = new MenuItem(NAME_MENU_DETAIL);
         CommonUtils.setIcon(detailTask, DETAIL_ICON, MENUITEM_ICON_SIZE);
         detailTask.setOnAction(new EventHandler<ActionEvent>() {
@@ -113,6 +125,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         getItems().add(copyTaskSimple);
         getItems().add(updateTask);
         getItems().add(menuScript);
+        getItems().add(menuTaskNo);
         getItems().add(detailTask);
     }
 

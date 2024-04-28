@@ -458,6 +458,9 @@ public class ScriptRepairSql {
                 }
             }
         }
+        res.add(STR_BLANK);
+        res.add("commit;");
+
         List<String> error = new ArrayList<>();
         if (MapUtils.isNotEmpty(newUedMenu)) {
             Iterator<String> iterator = newUedMenu.keySet().iterator();

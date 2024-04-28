@@ -213,6 +213,7 @@ public class BaseConst {
     public static final String NAME_MENU_SIMPLE_COPY = "简复";
     public static final String NAME_MENU_DETAIL = "详情";
     public static final String NAME_MENU_SCRIPT = "脚本";
+    public static final String NAME_MENU_TASK_NO = "单号";
 
 
     public static final String NAME_MENU_DCIT = "字典";
@@ -327,6 +328,7 @@ public class BaseConst {
     public static final String COPY_ICON = "/conf/image/copy.png";
     public static final String COPY_SIMPLE_ICON = "/conf/image/copySimple.png";
     public static final String SCRIPT_ICON = "/conf/image/sql.png";
+    public static final String TASK_NO_ICON = "/conf/image/code.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
     public static final String DETAIL_ICON = "/conf/image/detail.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
