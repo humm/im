@@ -22,7 +22,7 @@
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
-                                <SplitPane dividerPositions="0.2769172932330826" layoutX="68.0" layoutY="21.0"
+                                <SplitPane dividerPositions="0.3769172932330826" layoutX="68.0" layoutY="21.0"
                                            orientation="VERTICAL" prefHeight="242.0" prefWidth="598.0"
                                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -33,59 +33,63 @@
                                                 <RadioButton fx:id="onlyDelete" layoutX="95.0" layoutY="24.0"
                                                              mnemonicParsing="false" onAction="#selectOnlyDelete"
                                                              text="仅删除"/>
-                                                <RadioButton fx:id="all" layoutX="175.0" layoutY="24.0"
+                                                <RadioButton fx:id="all" layoutX="180.0" layoutY="24.0"
                                                              mnemonicParsing="false" onAction="#selectAll"
                                                              text="全部"/>
-                                                <RadioButton fx:id="update" layoutX="235.0" layoutY="24.0"
+                                                <RadioButton fx:id="update" layoutX="250.0" layoutY="24.0"
                                                              mnemonicParsing="false" onAction="#selectUpdate"
                                                              text="更新"/>
 
-                                                <Label layoutX="315.0" layoutY="24.0" text="文件模式"/>
-                                                <RadioButton fx:id="append" layoutX="380.0" layoutY="24.0"
+                                                <Label layoutX="15.0" layoutY="65.0" text="文件模式"/>
+                                                <RadioButton fx:id="append" layoutX="95.0" layoutY="65.0"
                                                              mnemonicParsing="false" onAction="#selectAppend"
                                                              text="追加"/>
-                                                <RadioButton fx:id="rewrite" layoutX="450.0" layoutY="24.0"
+                                                <RadioButton fx:id="rewrite" layoutX="180.0" layoutY="65.0"
                                                              mnemonicParsing="false" onAction="#selectRewrite"
                                                              text="重写"/>
 
-                                                <Label layoutX="600.0" layoutY="24.0" text="生成UED菜单"/>
-                                                <RadioButton fx:id="menuYes" layoutX="715.0" layoutY="24.0"
+                                                <!--<Label layoutX="15.0" layoutY="65.0" text="生成新版菜单"/>
+                                                <RadioButton fx:id="menuYes" layoutX="130.0" layoutY="65.0"
                                                              mnemonicParsing="false" onAction="#selectMenuYes"
                                                              text="是"/>
-                                                <RadioButton fx:id="menuNo" layoutX="770.0" layoutY="24.0"
+                                                <RadioButton fx:id="menuNo" layoutX="185.0" layoutY="65.0"
                                                              mnemonicParsing="false" onAction="#selectMenuNo"
-                                                             text="否"/>
+                                                             text="否"/>-->
 
-                                                <Label layoutX="15.0" layoutY="65.0" text="控制参数"/>
-                                                <TextField fx:id="param" layoutX="95.0" layoutY="60.0"
+                                                <Label layoutX="15.0" layoutY="105.0" text="控制参数"/>
+                                                <TextField fx:id="param" layoutX="95.0" layoutY="100.0"
                                                            prefHeight="25.0" prefWidth="415.0"/>
-                                                <Label layoutX="530.0" layoutY="65.0" text="支持tbparam tbdict(也可指定具体选项值)"/>
+                                                <Label layoutX="530.0" layoutY="105.0" text="支持tbparam tbdict(可指定具体选项值)"/>
 
-                                                <ProgressIndicator fx:id="schedule" layoutX="920.0" layoutY="50.0"
+                                                <Label layoutX="15.0" layoutY="145.0" text="任务单号"/>
+                                                <TextField fx:id="taskNo" layoutX="95.0" layoutY="140.0"
+                                                           prefHeight="25.0" prefWidth="415.0"/>
+
+                                                <ProgressIndicator fx:id="schedule" layoutX="920.0" layoutY="80.0"
                                                                    progress="0.0"/>
-                                                <Label fx:id="scheduleText" layoutX="960.0" layoutY="54.0" text="0%"/>
+                                                <Label fx:id="scheduleText" layoutX="960.0" layoutY="84.0" text="0%"/>
 
-                                                <Button fx:id="submit" layoutX="1050.0" layoutY="44.0"
+                                                <Button fx:id="submit" layoutX="1050.0" layoutY="74.0"
                                                         mnemonicParsing="false" onAction="#executeSubmit"
                                                         prefHeight="35.0" prefWidth="100.0" text="执行">
                                                     <padding>
-                                                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
+                                                        <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
                                                     </padding>
                                                 </Button>
 
-                                                <Button fx:id="copy" layoutX="1180.0" layoutY="44.0"
+                                                <Button fx:id="copy" layoutX="1180.0" layoutY="74.0"
                                                         mnemonicParsing="false" onAction="#executeCopy"
                                                         prefHeight="35.0" prefWidth="100.0" text="复制内容">
                                                     <padding>
-                                                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0"/>
+                                                        <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
                                                     </padding>
                                                 </Button>
 
-                                                <Button fx:id="updateUed" layoutX="1380.0" layoutY="44.0"
+                                                <Button fx:id="updateUed" layoutX="1380.0" layoutY="74.0"
                                                         mnemonicParsing="false" onAction="#updateUed"
-                                                        prefHeight="35.0" prefWidth="130.0" text="新版UED升级">
+                                                        prefHeight="35.0" prefWidth="130.0" text="新版菜单">
                                                     <padding>
-                                                        <Insets bottom="10.0" left="5.0" right="5.0" top="10.0"/>
+                                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                     </padding>
                                                 </Button>
 

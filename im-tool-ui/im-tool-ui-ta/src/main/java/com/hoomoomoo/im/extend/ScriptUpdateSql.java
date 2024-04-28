@@ -9,6 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
+import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
+
 public class ScriptUpdateSql {
 
     private String resultPath = "";
@@ -81,6 +83,13 @@ public class ScriptUpdateSql {
                         break;
                     }
                 } else {
+                    if (item.endsWith("结束")) {
+                        String lastEle = sql.get(sql.size() - 1);
+                        if (lastEle.endsWith(STR_NEXT_LINE)) {
+                            sql.set(sql.size() - 1, lastEle.substring(0, lastEle.length() - 1));
+                        }
+                        item += STR_NEXT_LINE;
+                    }
                     sql.add(item);
                 }
             }
@@ -131,7 +140,7 @@ public class ScriptUpdateSql {
             if (item.toLowerCase().contains("tbmenucondition")) {
                 updateSql.append("update tbmenuconditionuser set ");
             } else {
-                updateSql.append("update " + getTableName(item) + " set ");
+                updateSql.append("update " + ScriptSqlUtils.getTableName(item) + " set ");
             }
             updateSql.append("\n");
             item = item.replaceAll("\\s+", "");
@@ -197,9 +206,4 @@ public class ScriptUpdateSql {
         return res;
     }
 
-    private static String getTableName(String sql) {
-        int tableNameStartIndex = sql.toLowerCase().indexOf("into");
-        int tableNameStartEnd = sql.toLowerCase().indexOf("(");
-        return sql.substring(tableNameStartIndex + 4, tableNameStartEnd).toLowerCase().trim();
-    }
 }

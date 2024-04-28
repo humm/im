@@ -4,6 +4,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.MenuDto;
+import com.hoomoomoo.im.extend.ScriptSqlUtils;
 import com.hoomoomoo.im.extend.ScriptUpdateSql;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
@@ -71,6 +72,9 @@ public class ScriptUpdateController extends BaseController implements Initializa
 
     @FXML
     private TextField param;
+
+    @FXML
+    private TextField taskNo;
 
     @FXML
     void executeCopy(ActionEvent event) {
@@ -298,7 +302,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                     }
                 }
                 // 获取表名称
-                String tableName = getTableName(item);
+                String tableName = ScriptSqlUtils.getTableName(item);
                 // 生成delete语句
                 List<LinkedHashMap<String, List<String>>> tableConfig = appConfigDto.getScriptUpdateTable();
                 outer:
@@ -343,6 +347,8 @@ public class ScriptUpdateController extends BaseController implements Initializa
             }
             List<String> logList = new ArrayList<>(16);
             List<String> scriptList = new ArrayList<>(16);
+            String taskNoText = taskNo.getText();
+            String tips = "-- " + taskNoText + STR_SPACE_2 + CommonUtils.getCurrentDateTime3() + STR_SPACE_2 + appConfigDto.getSvnUsername();
             if (!MapUtils.isEmpty(deleteSqlMap)) {
                 String paramControl = STR_BLANK;
                 if (param != null) {
@@ -356,6 +362,10 @@ public class ScriptUpdateController extends BaseController implements Initializa
                     } else {
                         paramSql = "\n from (select count(1) param_exists from tbdict where hs_key = '" + paramControl + "') a where param_exists = 1";
                     }
+                }
+                if (StringUtils.isNotBlank(taskNoText)) {
+                    StringBuilder info = new StringBuilder();
+                    OutputUtils.info(target, info.append(tips).append(STR_SPACE_2).append("beg").append(STR_NEXT_LINE).toString());
                 }
                 // 组装sql语句
                 for (int i = 0; i < items.size(); i++) {
@@ -411,6 +421,10 @@ public class ScriptUpdateController extends BaseController implements Initializa
                         scriptList.add(deleteSqlMap.get(ele));
                     }
                 }
+                if (StringUtils.isNotBlank(taskNoText)) {
+                    StringBuilder info = new StringBuilder();
+                    OutputUtils.info(target, info.append(tips).append(STR_SPACE_2).append("end").append(STR_NEXT_LINE).toString());
+                }
                 if (STR_1.equals(appConfigDto.getScriptUpdateGenerateType())) {
                     logList.add(STR_BLANK);
                     scriptList.add(STR_BLANK);
@@ -422,7 +436,8 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 }
             }
 
-
+            // 废弃
+            appConfigDto.setScriptUpdateGenerateUed(STR_0);
             if (STR_1.equals(appConfigDto.getScriptUpdateGenerateUed())) {
                 if (CollectionUtils.isNotEmpty(logList)) {
                     String[] logsStr = StringUtils.join(logList, STR_BLANK).split(STR_SEMICOLON);
@@ -433,6 +448,10 @@ public class ScriptUpdateController extends BaseController implements Initializa
                         }
                     }
                     if (CollectionUtils.isNotEmpty(menuSql)) {
+                        if (StringUtils.isNotBlank(taskNoText)) {
+                            StringBuilder info = new StringBuilder();
+                            OutputUtils.info(target, info.append(tips).append(STR_SPACE_2).append("beg").append(STR_NEXT_LINE).toString());
+                        }
                         if (target != null) {
                             OutputUtils.info(target, STR_NEXT_LINE);
                         } else {
@@ -447,6 +466,10 @@ public class ScriptUpdateController extends BaseController implements Initializa
                             }
                             logList.add(menuStd);
                             scriptList.add(menuStd);
+                        }
+                        if (StringUtils.isNotBlank(taskNoText)) {
+                            StringBuilder info = new StringBuilder();
+                            OutputUtils.info(target, info.append(tips).append(STR_SPACE_2).append("end").append(STR_NEXT_LINE).toString());
                         }
                     }
                 }
@@ -672,7 +695,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
         if (item.toLowerCase().contains("tbmenucondition")) {
             updateSql.append("update tbmenuconditionuser set ");
         } else {
-            updateSql.append("update " + getTableName(item) + " set ");
+            updateSql.append("update " + ScriptSqlUtils.getTableName(item) + " set ");
         }
         updateSql.append(STR_NEXT_LINE);
         item = item.replaceAll("\\s+", STR_BLANK);
@@ -727,12 +750,6 @@ public class ScriptUpdateController extends BaseController implements Initializa
             }
         }
         return res;
-    }
-
-    private static String getTableName(String sql) {
-        int tableNameStartIndex = sql.toLowerCase().indexOf(BaseConst.KEY_INSERT_INTO);
-        int tableNameStartEnd = sql.toLowerCase().indexOf(BaseConst.STR_BRACKETS_LEFT);
-        return sql.substring(tableNameStartIndex + 4, tableNameStartEnd).toLowerCase().trim();
     }
 
     private static StringBuilder getConnect(StringBuilder sql) {

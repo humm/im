@@ -270,4 +270,12 @@ public class ScriptSqlUtils {
         return new ArrayList<>(Arrays.asList(menuBase));
     }
 
+    public static String getTableName(String sql) {
+        int tableNameStartIndex = sql.toLowerCase().indexOf("into");
+        int tableNameStartEnd = sql.toLowerCase().indexOf("(");
+        if (tableNameStartIndex >= 0 && tableNameStartEnd >=0) {
+            return sql.substring(tableNameStartIndex + 4, tableNameStartEnd).toLowerCase().trim();
+        }
+        return STR_BLANK;
+    }
 }
