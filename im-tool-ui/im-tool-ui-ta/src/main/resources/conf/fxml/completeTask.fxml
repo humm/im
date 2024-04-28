@@ -46,7 +46,7 @@
                                                 mnemonicParsing="false" onAction="#syncSvn" prefHeight="35.0"
                                                 prefWidth="150.0" text="同步修改记录">
                                             <padding>
-                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </padding>
                                         </Button>
 
@@ -72,7 +72,7 @@
                                                 mnemonicParsing="false" onAction="#execute" prefHeight="35.0"
                                                 prefWidth="100.0" text="提交">
                                             <padding>
-                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </padding>
                                         </Button>
 

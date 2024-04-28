@@ -47,7 +47,7 @@
                                                 mnemonicParsing="false" onAction="#svnResetSubmit" prefHeight="35.0"
                                                 prefWidth="70.0" text="重置">
                                             <padding>
-                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </padding>
                                         </Button>
 
@@ -55,7 +55,7 @@
                                                 mnemonicParsing="false" onAction="#executeDescribe" prefHeight="35.0"
                                                 prefWidth="70.0" text="描述">
                                             <padding>
-                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </padding>
                                         </Button>
 
@@ -63,7 +63,7 @@
                                                 mnemonicParsing="false" onAction="#executeSubmit" prefHeight="35.0"
                                                 prefWidth="70.0" text="文件">
                                             <padding>
-                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </padding>
                                         </Button>
 
@@ -71,7 +71,7 @@
                                                 mnemonicParsing="false" onAction="#executeCopy" prefHeight="35.0"
                                                 prefWidth="70.0" text="复制">
                                             <padding>
-                                                <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </padding>
                                         </Button>
 
