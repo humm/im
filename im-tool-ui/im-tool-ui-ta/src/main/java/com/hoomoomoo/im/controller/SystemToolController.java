@@ -3,15 +3,20 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.dto.VersionDto;
 import com.hoomoomoo.im.extend.ScriptCompareSql;
 import com.hoomoomoo.im.extend.ScriptRepairSql;
 import com.hoomoomoo.im.extend.ScriptUpdateSql;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -57,6 +62,9 @@ public class SystemToolController implements Initializable {
 
     @FXML
     private Button updateVersionBtn;
+
+    @FXML
+    private Button showVersionBtn;
 
     private Timer shakeMouseTimer;
 
@@ -134,6 +142,21 @@ public class SystemToolController implements Initializable {
             clearVersionBtn.setDisable(false);
         }
         addLog("同步发版时间");
+    }
+
+    @FXML
+    void showVersion(ActionEvent event) {
+        showVersionBtn.setDisable(true);
+        try {
+            new HepTaskTodoController().doShowVersion();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, e.getMessage());
+        } finally {
+            showVersionBtn.setDisable(false);
+        }
+        addLog("查看发版时间");
     }
 
     @FXML
@@ -621,7 +644,7 @@ public class SystemToolController implements Initializable {
                 while (true) {
                     String repairSchedule = ConfigCache.getAppConfigDtoCache().getRepairSchedule();
                     if (executeFlag) {
-                        String tips = msg + "中 ··· ··· ··· 耗时 " + getRunTime(start) + " ··· ";
+                        String tips = msg + "中 ··· ···  耗时 " + getRunTime(start) + " ··· ";
                         if (StringUtils.isNotBlank(repairSchedule)) {
                             tips += STR_SPACE_3 + repairSchedule;
                         }

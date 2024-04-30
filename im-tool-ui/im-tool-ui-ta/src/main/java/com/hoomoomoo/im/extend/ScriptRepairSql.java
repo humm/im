@@ -333,6 +333,9 @@ public class ScriptRepairSql {
         List<String> newUedMenuInfo = ScriptSqlUtils.getSqlByFile(newUedPage);
         for (String item : newUedMenuInfo) {
             String menuCode = ScriptSqlUtils.getMenuCode(item);
+            if (includePubMenu.contains(menuCode)) {
+                continue;
+            }
             if (item.toLowerCase().contains("tsys_menu_std")) {
                 newUedMenu.put(menuCode, item);
             } else {
@@ -1183,7 +1186,7 @@ public class ScriptRepairSql {
             return;
         }
         if (batchNum <= 0) {
-            batchNum = 999999;
+            batchNum = 99999;
         }
         if (file.isDirectory()) {
             for (File item : file.listFiles()) {
@@ -1293,7 +1296,7 @@ public class ScriptRepairSql {
             String secondParentMenuCode = ScriptSqlUtils.getParentCode(secondMenuInfo);
             if (fundMenu) {
                 String remark = ScriptSqlUtils.getMenuRemark(secondMenuInfo);
-                if (!"console-fund-ta-vue".equals(remark)) {
+                if (!"console-fund-ta-vue".equals(remark) && !includePubMenu.contains(secondMenuCode)) {
                     continue;
                 }
                 if (excludeFundMenu.contains(secondMenuCode)) {

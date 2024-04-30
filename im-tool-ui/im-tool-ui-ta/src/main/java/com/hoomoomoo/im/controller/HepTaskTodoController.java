@@ -252,30 +252,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
     void showVersion(ActionEvent event) throws Exception {
         showVersion.setDisable(true);
         try {
-            new SystemToolController().executeUpdateVersion();
-            List<VersionDto> versionDtoList = getVersionInfo();
-            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            appConfigDto.setVersionDtoList(versionDtoList);
-            Stage stage = appConfigDto.getChildStage();
-            // 每次页面都重新打开
-            if (stage != null) {
-                stage.close();
-                appConfigDto.setChildStage(null);
-            }
-            Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_TABLE_VIEW)));
-            Scene scene = new Scene(root);
-            scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
-            stage = new Stage();
-            stage.getIcons().add(new Image(PATH_ICON));
-            stage.setScene(scene);
-            stage.setTitle("发版日期");
-            stage.setResizable(false);
-            stage.show();
-            appConfigDto.setChildStage(stage);
-            stage.setOnCloseRequest(columnEvent -> {
-                appConfigDto.getChildStage().close();
-                appConfigDto.setChildStage(null);
-            });
+            doShowVersion();
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
@@ -283,6 +260,33 @@ public class HepTaskTodoController extends BaseController implements Initializab
             showVersion.setDisable(false);
         }
         OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(STR_BLANK));
+    }
+
+    void doShowVersion() throws Exception {
+        new SystemToolController().executeUpdateVersion();
+        List<VersionDto> versionDtoList = getVersionInfo();
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        appConfigDto.setVersionDtoList(versionDtoList);
+        Stage stage = appConfigDto.getChildStage();
+        // 每次页面都重新打开
+        if (stage != null) {
+            stage.close();
+            appConfigDto.setChildStage(null);
+        }
+        Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_TABLE_VIEW)));
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+        stage = new Stage();
+        stage.getIcons().add(new Image(PATH_ICON));
+        stage.setScene(scene);
+        stage.setTitle("发版日期");
+        stage.setResizable(false);
+        stage.show();
+        appConfigDto.setChildStage(stage);
+        stage.setOnCloseRequest(columnEvent -> {
+            appConfigDto.getChildStage().close();
+            appConfigDto.setChildStage(null);
+        });
     }
 
     @FXML

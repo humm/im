@@ -64,7 +64,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
     @FXML
     private RadioButton update;
 
-   /* @FXML
+   /*@FXML
     private RadioButton menuYes;
 
     @FXML
@@ -207,8 +207,22 @@ public class ScriptUpdateController extends BaseController implements Initializa
             content.add(item);
         }
         List<String> res = ScriptUpdateSql.getUpdateSql(appConfigDto, content);
-        for (String item : res) {
-            OutputUtils.info(target, item + STR_NEXT_LINE);
+        String taskNoText = taskNo.getText();
+        String tips = "-- " + taskNoText + STR_SPACE_2 + CommonUtils.getCurrentDateTime3() + STR_SPACE_2 + appConfigDto.getSvnUsername();
+        if (StringUtils.isNotBlank(taskNoText)) {
+            StringBuilder info = new StringBuilder();
+            OutputUtils.info(target, info.append(tips).append(STR_SPACE_2).append("beg").append(STR_NEXT_LINE).toString());
+        }
+        for (int i=0; i<res.size(); i++) {
+            String item = res.get(i);
+            if (i != res.size() - 1) {
+                item += STR_NEXT_LINE;
+            }
+            OutputUtils.info(target, item);
+        }
+        if (StringUtils.isNotBlank(taskNoText)) {
+            StringBuilder info = new StringBuilder();
+            OutputUtils.info(target, info.append(tips).append(STR_SPACE_2).append("end").append(STR_NEXT_LINE).toString());
         }
     }
 

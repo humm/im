@@ -851,7 +851,7 @@ public class ScriptCompareSql {
                     newMenuTransExistCache.add(menuCode);
                     continue;
                 }
-                if (menuLen < 18) {
+                if (menuLen < 16) {
                     continue;
                 }
                 String menuName = ScriptSqlUtils.getMenuName(item);
