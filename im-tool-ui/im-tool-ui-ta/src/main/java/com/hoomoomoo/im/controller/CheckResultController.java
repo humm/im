@@ -1,13 +1,16 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import lombok.SneakyThrows;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -45,7 +48,36 @@ public class CheckResultController implements Initializable {
             }
         } else if (PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT.equals(pageType)) {
             initTab(appConfigDto, NEW_MENU_UPDATE.getFileName());
+        } else if (PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG.equals(pageType)) {
+            initTab(appConfigDto, "appLog", "系统日志");
+            MenuFunctionConfig.FunctionConfig[] functionConfigs = MenuFunctionConfig.FunctionConfig.values();
+            for (MenuFunctionConfig.FunctionConfig functionConfig : functionConfigs) {
+                initTab(appConfigDto, functionConfig.getLogFolder(), functionConfig.getName());
+            }
         }
+    }
+
+    private void initTab(AppConfigDto appConfigDto, String logFolder, String tabName) throws IOException {
+        Tab tab = new Tab();
+        File logFile = new File(FileUtils.getFilePath(String.format(SUB_PATH_LOG, logFolder)));
+        File[] fileList = logFile.listFiles();
+        if (fileList == null || fileList.length == 0) {
+            return;
+        }
+        File lastModifiedFile = fileList[0];
+        for (File file : logFile.listFiles()) {
+            if (lastModifiedFile.lastModified() < file.lastModified()) {
+                lastModifiedFile = file;
+            }
+        }
+        List<String> content = FileUtils.readNormalFile(lastModifiedFile.getPath(), false);
+        StringBuilder text = new StringBuilder();
+        for (String item : content) {
+            text.append(item).append(STR_NEXT_LINE);
+        }
+        tab.setContent(new TextArea(text.toString()));
+        tab.setText(tabName);
+        functionTab.getTabs().add(tab);
     }
 
     private void initTab(AppConfigDto appConfigDto, String fileName) throws IOException {

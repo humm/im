@@ -322,6 +322,7 @@ public class BaseConst {
     public static final String PATH_FXML = "/conf/fxml";
     public static final String PATH_STYLE = "/conf/style";
     public static final String PATH_LOG = "/logs/%s/%s";
+    public static final String SUB_PATH_LOG = "/logs/%s";
     public static final String PATH_STAT = "/stats/%s";
     public static final String PATH_ICON = "/conf/image/icon.png";
     public static final String FACTORY_ICON = "/conf/image/factory.png";
@@ -359,6 +360,7 @@ public class BaseConst {
     public static final String PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT = "checkResult";
     public static final String PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT = "updateResult";
     public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG = "repairErrorLog";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG = "systemLog";
 
     public static final String MENU_TYPE_FUND_CODE = "1";
     public static final String MENU_TYPE_FUND_NAME = "自建业务";

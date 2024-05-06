@@ -269,6 +269,17 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
+    void showSystemLog(ActionEvent event) {
+        try {
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG, "系统日志");
+            addLog("系统日志");
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCheckMenuMsg("请检查结果文件是否不存在"));
+        }
+    }
+
+    @FXML
     void repairLackLog(ActionEvent event) throws Exception {
         if (executeFlag) {
             OutputUtils.info(logs, getRepairLackExt("修复中 ··· 请稍后 ···"));
