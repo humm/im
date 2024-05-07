@@ -3,9 +3,12 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.task.GenerateSqlTask;
+import com.hoomoomoo.im.task.GenerateSqlTaskParam;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import com.hoomoomoo.im.utils.TaCommonUtils;
+import com.hoomoomoo.im.utils.TaskUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -121,7 +124,7 @@ public class GenerateSqlController extends BaseController implements Initializab
                 return;
             }
             setProgress(0);
-            generateSql();
+            TaskUtils.execute(new GenerateSqlTask(new GenerateSqlTaskParam(this)));
             updateProgress();
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -129,73 +132,70 @@ public class GenerateSqlController extends BaseController implements Initializab
         }
     }
 
-    private void generateSql() throws Exception {
-
-        new Thread(() -> {
-            try {
-                execute.setDisable(true);
-                List<String> fileLog = new ArrayList<>();
-                Date currentDate = new Date();
-                int database = Integer.valueOf(databaseNum.getText().trim());
-                int table = Integer.valueOf(tableNum.getText().trim());
-                String databaseCodeCurrent = databaseCode.getText().trim();
-                String tableCodeCurrent = tableCode.getText().trim();
-                String columnCurrent = column.getText().trim().replaceAll("\\s+", STR_SPACE);
-                String queryCurrent = query.getText().trim().replaceAll("\\s+", STR_SPACE);
-                if (StringUtils.isBlank(databaseCodeCurrent)) {
-                    OutputUtils.info(sql, String.format(MSG_SET, "分库代码"));
-                    setProgress(-1);
-                    return;
-                }
-                if (StringUtils.isBlank(tableCodeCurrent)) {
-                    OutputUtils.info(sql, String.format(MSG_SET, "分表代码"));
-                    setProgress(-1);
-                    return;
-                }
-                List<String> contentList = new ArrayList<>();
-                String sqlType = getSqlType();
-                if (database > 0 && table > 0) {
-                    for (int i=1; i<=database; i++) {
-                        inner: for (int j=1; j<=table; j++) {
-                            StringBuilder content = new StringBuilder();
-                            if (STR_1.equals(sqlType)) {
-                                content.append("select '" + i + "' 分库号, '" + j + "' 分表号, " + columnCurrent + " t.* from " + databaseCodeCurrent + i + "." + tableCodeCurrent + j + " t " + queryCurrent);
-                                fileLog.add(content.toString());
-                                contentList.add(content.append(STR_NEXT_LINE).toString());
-                                if (j != table) {
-                                    fileLog.add("union all");
-                                    contentList.add("union all" + STR_NEXT_LINE);
-                                }
-                                continue inner;
-                            } else if (STR_2.equals(sqlType)) {
-                                content.append("update " + databaseCodeCurrent + i + "." + tableCodeCurrent + j + " t set " + columnCurrent + " " + queryCurrent + ";");
-                            } else if (STR_3.equals(sqlType)) {
-                                content.append("delete from " + databaseCodeCurrent + i + "." + tableCodeCurrent + j + " t " + queryCurrent + ";");
-                            } else if (STR_4.equals(sqlType)) {
-                                content.append("truncate table " + databaseCodeCurrent + i + "." + tableCodeCurrent + j + ";");
-                            }
+    public void generateSql() throws Exception {
+        try {
+            execute.setDisable(true);
+            List<String> fileLog = new ArrayList<>();
+            Date currentDate = new Date();
+            int database = Integer.valueOf(databaseNum.getText().trim());
+            int table = Integer.valueOf(tableNum.getText().trim());
+            String databaseCodeCurrent = databaseCode.getText().trim();
+            String tableCodeCurrent = tableCode.getText().trim();
+            String columnCurrent = column.getText().trim().replaceAll("\\s+", STR_SPACE);
+            String queryCurrent = query.getText().trim().replaceAll("\\s+", STR_SPACE);
+            if (StringUtils.isBlank(databaseCodeCurrent)) {
+                OutputUtils.info(sql, String.format(MSG_SET, "分库代码"));
+                setProgress(-1);
+                return;
+            }
+            if (StringUtils.isBlank(tableCodeCurrent)) {
+                OutputUtils.info(sql, String.format(MSG_SET, "分表代码"));
+                setProgress(-1);
+                return;
+            }
+            List<String> contentList = new ArrayList<>();
+            String sqlType = getSqlType();
+            if (database > 0 && table > 0) {
+                for (int i=1; i<=database; i++) {
+                    inner: for (int j=1; j<=table; j++) {
+                        StringBuilder content = new StringBuilder();
+                        if (STR_1.equals(sqlType)) {
+                            content.append("select '" + i + "' 分库号, '" + j + "' 分表号, " + columnCurrent + " t.* from " + databaseCodeCurrent + i + "." + tableCodeCurrent + j + " t " + queryCurrent);
                             fileLog.add(content.toString());
                             contentList.add(content.append(STR_NEXT_LINE).toString());
-                        }
-                        if (STR_1.equals(sqlType)) {
-                            if (i != database) {
+                            if (j != table) {
                                 fileLog.add("union all");
                                 contentList.add("union all" + STR_NEXT_LINE);
                             }
+                            continue inner;
+                        } else if (STR_2.equals(sqlType)) {
+                            content.append("update " + databaseCodeCurrent + i + "." + tableCodeCurrent + j + " t set " + columnCurrent + " " + queryCurrent + ";");
+                        } else if (STR_3.equals(sqlType)) {
+                            content.append("delete from " + databaseCodeCurrent + i + "." + tableCodeCurrent + j + " t " + queryCurrent + ";");
+                        } else if (STR_4.equals(sqlType)) {
+                            content.append("truncate table " + databaseCodeCurrent + i + "." + tableCodeCurrent + j + ";");
+                        }
+                        fileLog.add(content.toString());
+                        contentList.add(content.append(STR_NEXT_LINE).toString());
+                    }
+                    if (STR_1.equals(sqlType)) {
+                        if (i != database) {
+                            fileLog.add("union all");
+                            contentList.add("union all" + STR_NEXT_LINE);
                         }
                     }
                 }
-                OutputUtils.info(sql, contentList);
-                LoggerUtils.writeLogInfo(GENERATE_SQL.getCode(), currentDate, fileLog);
-                setProgress(1);
-            } catch (Exception e) {
-                setProgress(-1);
-                LoggerUtils.info(e);
-                OutputUtils.info(sql, e.getMessage());
-            } finally {
-                execute.setDisable(false);
             }
-        }).start();
+            OutputUtils.info(sql, contentList);
+            LoggerUtils.writeLogInfo(GENERATE_SQL.getCode(), currentDate, fileLog);
+            setProgress(1);
+        } catch (Exception e) {
+            setProgress(-1);
+            LoggerUtils.info(e);
+            OutputUtils.info(sql, e.getMessage());
+        } finally {
+            execute.setDisable(false);
+        }
     }
 
     private String getSqlType() {

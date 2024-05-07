@@ -1,7 +1,7 @@
 package com.hoomoomoo.im.extend;
 
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.controller.HepTaskTodoController;
+import com.hoomoomoo.im.controller.HepTodoController;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.utils.CommonUtils;
@@ -22,7 +22,7 @@ import java.awt.datatransfer.StringSelection;
 import java.io.FileInputStream;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.controller.HepTaskTodoController.OPERATE_TYPE_CUSTOM_UPDATE;
+import static com.hoomoomoo.im.controller.HepTodoController.OPERATE_TYPE_CUSTOM_UPDATE;
 
 
 public class HepWaitHandleTaskMenu extends ContextMenu {
@@ -62,7 +62,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                 AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 HepTaskDto item = appConfigDto.getHepTaskDto();
                 item.setOperateType(OPERATE_TYPE_CUSTOM_UPDATE);
-                HepTaskTodoController hepWaitHandleTaskController = new HepTaskTodoController();
+                HepTodoController hepWaitHandleTaskController = new HepTodoController();
                 hepWaitHandleTaskController.completeTask(item);
             }
         });

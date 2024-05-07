@@ -6,6 +6,8 @@ import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.MenuDto;
 import com.hoomoomoo.im.extend.ScriptSqlUtils;
 import com.hoomoomoo.im.extend.ScriptUpdateSql;
+import com.hoomoomoo.im.task.ScriptUpdateTask;
+import com.hoomoomoo.im.task.ScriptUpdateTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -104,10 +106,9 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 appConfigDto.setScriptUpdateGenerateType(STR_3);
             }
             appConfigDto.setScriptUpdateGenerateMode(rewrite.isSelected() ? STR_2 : STR_1);
-            //appConfigDto.setScriptUpdateGenerateUed(menuYes.isSelected() ? STR_1 : STR_2);
             setProgress(0);
             updateProgress();
-            generateScript(appConfigDto);
+            TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this)));
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -227,21 +228,19 @@ public class ScriptUpdateController extends BaseController implements Initializa
     }
 
     public void generateScript(AppConfigDto appConfigDto) {
-        new Thread(() -> {
-            try {
-                submit.setDisable(true);
-                OutputUtils.clearLog(target);
-                String sourceScript = source.getText();
-                generatesql(appConfigDto, sourceScript);
-            } catch (Exception e) {
-                LoggerUtils.info(e);
-                OutputUtils.clearLog(target);
-                OutputUtils.info(target, e.toString());
-            } finally {
-                submit.setDisable(false);
-                setProgress(1);
-            }
-        }).start();
+        try {
+            submit.setDisable(true);
+            OutputUtils.clearLog(target);
+            String sourceScript = source.getText();
+            generatesql(appConfigDto, sourceScript);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.clearLog(target);
+            OutputUtils.info(target, e.toString());
+        } finally {
+            submit.setDisable(false);
+            setProgress(1);
+        }
     }
 
     public List<String> generatesql (AppConfigDto appConfigDto, String sourceScript) throws Exception {

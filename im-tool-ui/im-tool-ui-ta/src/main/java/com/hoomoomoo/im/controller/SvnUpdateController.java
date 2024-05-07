@@ -4,6 +4,8 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
+import com.hoomoomoo.im.task.SvnUpdateTask;
+import com.hoomoomoo.im.task.SvnUpdateTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -61,73 +63,70 @@ public class SvnUpdateController extends BaseController implements Initializable
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             OutputUtils.info(workspaceNum, String.valueOf(appConfigDto.getSvnUpdatePath().size()));
             OutputUtils.info(failNum, STR_0);
-
             updateProgress(0.01);
-            getSvnUpdate();
+            TaskUtils.execute(new SvnUpdateTask(new SvnUpdateTaskParam(this)));
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + e.getMessage());
         }
     }
 
-    private void getSvnUpdate() {
-        new Thread(() -> {
-            try {
-                svnSubmit.setDisable(true);
-                Date date = new Date();
-                List<String> updatePath = new ArrayList<>();
-                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-                List<LinkedHashMap<String, String>> pathList = appConfigDto.getSvnUpdatePath();
-                Set<String> updateFlag = new HashSet<>();
-                int workspaceNumWaitUpdate = appConfigDto.getSvnUpdatePath().size();
-                if (CollectionUtils.isNotEmpty(pathList)) {
-                    for (LinkedHashMap<String, String> item : pathList) {
-                        Iterator<String> iterator = item.keySet().iterator();
-                        while (iterator.hasNext()) {
-                            workspaceNumWaitUpdate--;
-                            if (workspaceNumWaitUpdate < 0) {
-                                workspaceNumWaitUpdate = 0;
-                            }
-                            String name = iterator.next();
-                            String path = item.get(name);
-                            if (updateFlag.contains(name)) {
-                                Thread.sleep(500L);
-                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "重复路径【 " + name + " 】跳过更新...\n");
-                                OutputUtils.info(workspaceNum, String.valueOf(workspaceNumWaitUpdate));
-                                continue;
-                            }
-                            updateFlag.add(name);
-                            updatePath.add(path);
-                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】开始\n");
-                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE_4 + path + "\n");
-                            if (FileUtils.isSuffixDirectory(new File(path), BaseConst.FILE_TYPE_SVN)) {
-                                Long version = SvnUtils.updateSvn(path, fileLog);
-                                if (version == null) {
-                                    infoMsg(name, version, "更新异常");
-                                    OutputUtils.info(failNum, String.valueOf(Integer.valueOf(failNum.getText()) + 1));
-                                    OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】异常\n");
-                                } else {
-                                    infoMsg(name, version, "更新完成");
-                                    OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】完成\n");
-                                }
-                            } else {
-                                Thread.sleep(500L);
-                                infoMsg(name, -1L, "无需更新");
-                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "【 " + name + " 】非svn目录,无需更新\n");
-                            }
+    public void getSvnUpdate() {
+        try {
+            svnSubmit.setDisable(true);
+            Date date = new Date();
+            List<String> updatePath = new ArrayList<>();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            List<LinkedHashMap<String, String>> pathList = appConfigDto.getSvnUpdatePath();
+            Set<String> updateFlag = new HashSet<>();
+            int workspaceNumWaitUpdate = appConfigDto.getSvnUpdatePath().size();
+            if (CollectionUtils.isNotEmpty(pathList)) {
+                for (LinkedHashMap<String, String> item : pathList) {
+                    Iterator<String> iterator = item.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        workspaceNumWaitUpdate--;
+                        if (workspaceNumWaitUpdate < 0) {
+                            workspaceNumWaitUpdate = 0;
                         }
-                        OutputUtils.info(workspaceNum, String.valueOf(workspaceNumWaitUpdate));
+                        String name = iterator.next();
+                        String path = item.get(name);
+                        if (updateFlag.contains(name)) {
+                            Thread.sleep(500L);
+                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "重复路径【 " + name + " 】跳过更新...\n");
+                            OutputUtils.info(workspaceNum, String.valueOf(workspaceNumWaitUpdate));
+                            continue;
+                        }
+                        updateFlag.add(name);
+                        updatePath.add(path);
+                        OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】开始\n");
+                        OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE_4 + path + "\n");
+                        if (FileUtils.isSuffixDirectory(new File(path), BaseConst.FILE_TYPE_SVN)) {
+                            Long version = SvnUtils.updateSvn(path, fileLog);
+                            if (version == null) {
+                                infoMsg(name, version, "更新异常");
+                                OutputUtils.info(failNum, String.valueOf(Integer.valueOf(failNum.getText()) + 1));
+                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】异常\n");
+                            } else {
+                                infoMsg(name, version, "更新完成");
+                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】完成\n");
+                            }
+                        } else {
+                            Thread.sleep(500L);
+                            infoMsg(name, -1L, "无需更新");
+                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "【 " + name + " 】非svn目录,无需更新\n");
+                        }
                     }
+                    OutputUtils.info(workspaceNum, String.valueOf(workspaceNumWaitUpdate));
                 }
-                setProgress(1);
-                LoggerUtils.writeSvnUpdateInfo(date, updatePath);
-            } catch (Exception e) {
-                LoggerUtils.info(e);
-                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
-            } finally {
-                svnSubmit.setDisable(false);
             }
-        }).start();
+            setProgress(1);
+            LoggerUtils.writeSvnUpdateInfo(date, updatePath);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
+        } finally {
+            svnSubmit.setDisable(false);
+        }
     }
 
     @Override

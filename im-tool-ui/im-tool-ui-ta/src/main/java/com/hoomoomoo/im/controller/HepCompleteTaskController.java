@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.controller.HepTaskTodoController.*;
+import static com.hoomoomoo.im.controller.HepTodoController.*;
 
 /**
  * @author humm23693
@@ -233,7 +233,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         hepTaskDto.setModifiedFile(TaCommonUtils.formatText(modifiedFileValue, true));
         hepTaskDto.setEditDescription(TaCommonUtils.formatText(editDescriptionValue, true));
         hepTaskDto.setSuggestion(TaCommonUtils.formatText(suggestionValue, true));
-        HepTaskTodoController hep = new HepTaskTodoController();
+        HepTodoController hep = new HepTodoController();
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
         HepTaskComponentDto hepTaskComponentDto = appConfigDto.getHepTaskComponentDto();
         JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);

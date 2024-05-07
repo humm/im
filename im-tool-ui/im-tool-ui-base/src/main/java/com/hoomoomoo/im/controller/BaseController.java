@@ -1,11 +1,16 @@
 package com.hoomoomoo.im.controller;
 
+import com.hoomoomoo.im.task.BaseTask;
+import com.hoomoomoo.im.task.BaseTaskParam;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
+import com.hoomoomoo.im.utils.TaskUtils;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
+
+import java.util.concurrent.ExecutionException;
 
 import static com.hoomoomoo.im.consts.BaseConst.STR_PERCENT;
 import static com.hoomoomoo.im.consts.BaseConst.STR_POINT_SLASH;
@@ -27,23 +32,33 @@ public class BaseController {
     public double progress = 0;
 
     public void updateProgress(double step) {
-        new Thread(() -> {
-            while (true) {
-                if (progress >= 0.98 || progress == -1) {
-                    break;
-                }
-                if (progress <= 0.6) {
-                    setProgress(progress + step);
-                } else if (progress < 0.98) {
-                    setProgress(progress + 0.01);
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    LoggerUtils.info(e);
-                }
+        try {
+            BaseTaskParam baseTaskParam = new BaseTaskParam(this);
+            baseTaskParam.setStep(step);
+            TaskUtils.execute(new BaseTask(baseTaskParam));
+        } catch (ExecutionException e) {
+            LoggerUtils.info(e);
+        } catch (InterruptedException e) {
+            LoggerUtils.info(e);
+        }
+    }
+
+    public void doUpdateProgress(double step) {
+        while (true) {
+            if (progress >= 0.98 || progress == -1) {
+                break;
             }
-        }).start();
+            if (progress <= 0.6) {
+                setProgress(progress + step);
+            } else if (progress < 0.98) {
+                setProgress(progress + 0.01);
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                LoggerUtils.info(e);
+            }
+        }
     }
 
     public void updateProgress() {

@@ -5,9 +5,12 @@ import com.hoomoomoo.im.cache.TaskMemoryCache;
 import com.hoomoomoo.im.cache.TransMemoryCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.task.ProcessInfoTask;
+import com.hoomoomoo.im.task.ProcessInfoTaskParam;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
 import com.hoomoomoo.im.utils.TaCommonUtils;
+import com.hoomoomoo.im.utils.TaskUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -92,7 +95,7 @@ public class ProcessInfoController extends BaseController implements Initializab
             }
             setProgress(0);
             updateProgress();
-            generateScript();
+            TaskUtils.execute(new ProcessInfoTask(new ProcessInfoTaskParam(this)));
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(log, e.getMessage() + STR_NEXT_LINE);
@@ -118,144 +121,142 @@ public class ProcessInfoController extends BaseController implements Initializab
     }
 
     public void generateScript() {
-        new Thread(() -> {
-            try {
-                jobToGroup.clear();
-                taskToJob.clear();
-                submit.setDisable(true);
-                Date date = new Date();
-                OutputUtils.clearLog(log);
-                // 创建生成脚本目录
-                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-                String processSchedule = appConfigDto.getProcessGeneratePathSchedule();
-                String processPathTrans = appConfigDto.getProcessGeneratePathTrans();
-                File pathFolderSchedule = new File(processSchedule);
-                if (!pathFolderSchedule.exists()) {
-                    pathFolderSchedule.mkdirs();
-                }
-                File pathFolderTrans = new File(processPathTrans);
-                if (!pathFolderTrans.exists()) {
-                    pathFolderTrans.mkdirs();
-                }
-
-                // 打开workbook
-                Workbook workbook = Workbook.getWorkbook(new File(filePath.getText()));
-
-                // step 2.1 加载任务配置 到缓存
-                Sheet[] sheetList = workbook.getSheets();
-                Sheet taskSheet = workbook.getSheet("任务配置");
-                if (taskSheet == null) {
-                    OutputUtils.info(log, "【任务配置】sheet页面不存在" + STR_NEXT_LINE);
-                    return;
-                } else {
-                    OutputUtils.info(log, "任务缓存加载开始" + STR_NEXT_LINE);
-                    TaskMemoryCache.initCache(taskSheet);
-                    TaskMemoryCache.cleaExistMap();
-                    OutputUtils.info(log, "任务缓存加载结束" + STR_NEXT_LINE);
-                }
-                // 校验task配置合理性
-                Map<String, String> check = new HashMap<>(16);
-                Map<String, Map<String, Object>> taskMap = TaskMemoryCache.getCacheMap();
-                Iterator<String> iterator = taskMap.keySet().iterator();
-                while (iterator.hasNext()) {
-                    String taskCode = iterator.next();
-                    Map<String, Object> task = taskMap.get(taskCode);
-                    String checkKey = task.get(FUNCTION_ID) + "-" + task.get(PARENT_FUNCTION_ID) + "-" +  task.get(SCHE_TASK_RESERVE);
-                    if (check.containsKey(checkKey)) {
-                        String msg = String.format("任务配置中【%s】和【%s】的【功能号】【父功能号】【扩展参数】相同，请调整", check.get(checkKey),taskCode);
-                        OutputUtils.info(log, msg + STR_NEXT_LINE);
-                        LoggerUtils.info(msg);
-                        throw new Exception(msg);
-                    } else {
-                        check.put(checkKey, taskCode);
-                    }
-                }
-
-                // step 2.2 生成tbtrans数据
-                String transFileName = "tbtrans-fund.sql";
-                String transPath = processPathTrans + "/" + transFileName;
-                File transFile = new File(transPath);
-                BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(transFile), BaseConst.ENCODING_UTF8));
-                Sheet tranSheet = workbook.getSheet("交易配置");
-                TransMemoryCache.initCache(tranSheet);
-                writeTransInfo(bf);
-                bf.close();
-
-                // step 3 创建 输出文件
-                String fileName = "tbschedule-fund_000000.sql";
-                String schedulePath = processSchedule + "/" + fileName;
-                File file = new File(schedulePath);
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), BaseConst.ENCODING_UTF8));
-
-                // step 3 在输出文件内 写 组信息 和 页 信息
-                Sheet flowSheet = workbook.getSheet("基本流程信息");
-                if (flowSheet == null) {
-                    OutputUtils.info(log, "【基本流程信息】sheet页面不存在" + STR_NEXT_LINE);
-                    return;
-                }
-                writeFlowInfo(taCode, flowSheet, bufferedWriter);
-
-                Map<String, String> jobWithTaskMap;
-                bufferedWriter.write("delete from tbscheduletask WHERE substr(sche_task_code, 1, 5) = 'fund_' AND ta_code='" + taCode + "';\n");
-                for (Sheet sheet : sheetList) {
-                    if (sheet.getName().compareTo("首页") == 0 || sheet.getName().compareTo("基本流程信息") == 0 || sheet.getName().compareTo("任务配置") == 0
-                            || sheet.getName().compareTo("交易配置") == 0 || sheet.getName().compareTo("定时任务配置") == 0) {
-                        // 跳过其他页
-                        continue;
-                    }
-                    // step 3 读group流程，绑定task
-                    String[] sheetNames = sheet.getName().split("&");
-                    // step 3.1 命名检查
-                    String groupName = BaseConst.STR_SPACE;
-                    String groupCode = BaseConst.STR_SPACE;
-                    if (sheet.getName().compareTo("自由节点") != 0) {
-                        if (sheetNames.length != 2) {
-                            OutputUtils.info(log, sheet.getName() + "命名不规范,正常的格式为中文名&英文名,请检查" + STR_NEXT_LINE);
-                        } else {
-                            groupCode = sheetNames[1];
-                        }
-                    }
-                    groupName = sheetNames[0];
-                    OutputUtils.info(log, "开始生成【" + groupName + "】" + STR_NEXT_LINE);
-                    // step 3.2 开始写流程文件
-                    jobWithTaskMap = writeJobFile(groupCode, groupName, taCode, sheet, bufferedWriter);
-                    OutputUtils.info(log, "tbscheduletask生成开始" + STR_NEXT_LINE);
-                    // 通过 jobTaskMap 和  Cache  生成 sql
-                    writeTaskInfo(taCode, bufferedWriter, jobWithTaskMap);
-                    OutputUtils.info(log, "tbscheduletask生成结束" + STR_NEXT_LINE);
-                }
-
-                // step 3.2.5 开始写流程文件 tbscheduletrigger
-                OutputUtils.info(log, "tbscheduletrigger生成开始" + STR_NEXT_LINE);
-                Sheet triggerSheet = workbook.getSheet("定时任务配置");
-                if (triggerSheet == null) {
-                    OutputUtils.info(log, "【定时任务配置】sheet页面不存在" + STR_NEXT_LINE);
-                    return;
-                }
-                writeTriggerInfo(taCode, triggerSheet, bufferedWriter);
-                OutputUtils.info(log, "tbscheduletrigger生成结束" + STR_NEXT_LINE);
-
-                // step 3.3 开始写流程文件 tbscheduletaskregistry
-                OutputUtils.info(log, "tbscheduletaskregistry生成开始" + STR_NEXT_LINE);
-                writeTaskRegistry(bufferedWriter);
-                OutputUtils.info(log, "tbscheduletaskregistry生成结束" + STR_NEXT_LINE);
-
-                bufferedWriter.write(BaseConst.STR_BLANK);
-                bufferedWriter.close();
-                schedule.setProgress(1);
-                List<String> path = new ArrayList<>();
-                path.add(transPath);
-                path.add(schedulePath);
-                LoggerUtils.writeProcessInfo(date, path);
-                OutputUtils.info(log, "执行完成" + STR_NEXT_LINE);
-            } catch (Exception e) {
-                LoggerUtils.info(e);
-                OutputUtils.info(log, e.getMessage() + STR_NEXT_LINE);
-            } finally {
-                setProgress(1);
-                submit.setDisable(false);
+        try {
+            jobToGroup.clear();
+            taskToJob.clear();
+            submit.setDisable(true);
+            Date date = new Date();
+            OutputUtils.clearLog(log);
+            // 创建生成脚本目录
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            String processSchedule = appConfigDto.getProcessGeneratePathSchedule();
+            String processPathTrans = appConfigDto.getProcessGeneratePathTrans();
+            File pathFolderSchedule = new File(processSchedule);
+            if (!pathFolderSchedule.exists()) {
+                pathFolderSchedule.mkdirs();
             }
-        }).start();
+            File pathFolderTrans = new File(processPathTrans);
+            if (!pathFolderTrans.exists()) {
+                pathFolderTrans.mkdirs();
+            }
+
+            // 打开workbook
+            Workbook workbook = Workbook.getWorkbook(new File(filePath.getText()));
+
+            // step 2.1 加载任务配置 到缓存
+            Sheet[] sheetList = workbook.getSheets();
+            Sheet taskSheet = workbook.getSheet("任务配置");
+            if (taskSheet == null) {
+                OutputUtils.info(log, "【任务配置】sheet页面不存在" + STR_NEXT_LINE);
+                return;
+            } else {
+                OutputUtils.info(log, "任务缓存加载开始" + STR_NEXT_LINE);
+                TaskMemoryCache.initCache(taskSheet);
+                TaskMemoryCache.cleaExistMap();
+                OutputUtils.info(log, "任务缓存加载结束" + STR_NEXT_LINE);
+            }
+            // 校验task配置合理性
+            Map<String, String> check = new HashMap<>(16);
+            Map<String, Map<String, Object>> taskMap = TaskMemoryCache.getCacheMap();
+            Iterator<String> iterator = taskMap.keySet().iterator();
+            while (iterator.hasNext()) {
+                String taskCode = iterator.next();
+                Map<String, Object> task = taskMap.get(taskCode);
+                String checkKey = task.get(FUNCTION_ID) + "-" + task.get(PARENT_FUNCTION_ID) + "-" +  task.get(SCHE_TASK_RESERVE);
+                if (check.containsKey(checkKey)) {
+                    String msg = String.format("任务配置中【%s】和【%s】的【功能号】【父功能号】【扩展参数】相同，请调整", check.get(checkKey),taskCode);
+                    OutputUtils.info(log, msg + STR_NEXT_LINE);
+                    LoggerUtils.info(msg);
+                    throw new Exception(msg);
+                } else {
+                    check.put(checkKey, taskCode);
+                }
+            }
+
+            // step 2.2 生成tbtrans数据
+            String transFileName = "tbtrans-fund.sql";
+            String transPath = processPathTrans + "/" + transFileName;
+            File transFile = new File(transPath);
+            BufferedWriter bf = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(transFile), BaseConst.ENCODING_UTF8));
+            Sheet tranSheet = workbook.getSheet("交易配置");
+            TransMemoryCache.initCache(tranSheet);
+            writeTransInfo(bf);
+            bf.close();
+
+            // step 3 创建 输出文件
+            String fileName = "tbschedule-fund_000000.sql";
+            String schedulePath = processSchedule + "/" + fileName;
+            File file = new File(schedulePath);
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), BaseConst.ENCODING_UTF8));
+
+            // step 3 在输出文件内 写 组信息 和 页 信息
+            Sheet flowSheet = workbook.getSheet("基本流程信息");
+            if (flowSheet == null) {
+                OutputUtils.info(log, "【基本流程信息】sheet页面不存在" + STR_NEXT_LINE);
+                return;
+            }
+            writeFlowInfo(taCode, flowSheet, bufferedWriter);
+
+            Map<String, String> jobWithTaskMap;
+            bufferedWriter.write("delete from tbscheduletask WHERE substr(sche_task_code, 1, 5) = 'fund_' AND ta_code='" + taCode + "';\n");
+            for (Sheet sheet : sheetList) {
+                if (sheet.getName().compareTo("首页") == 0 || sheet.getName().compareTo("基本流程信息") == 0 || sheet.getName().compareTo("任务配置") == 0
+                        || sheet.getName().compareTo("交易配置") == 0 || sheet.getName().compareTo("定时任务配置") == 0) {
+                    // 跳过其他页
+                    continue;
+                }
+                // step 3 读group流程，绑定task
+                String[] sheetNames = sheet.getName().split("&");
+                // step 3.1 命名检查
+                String groupName = BaseConst.STR_SPACE;
+                String groupCode = BaseConst.STR_SPACE;
+                if (sheet.getName().compareTo("自由节点") != 0) {
+                    if (sheetNames.length != 2) {
+                        OutputUtils.info(log, sheet.getName() + "命名不规范,正常的格式为中文名&英文名,请检查" + STR_NEXT_LINE);
+                    } else {
+                        groupCode = sheetNames[1];
+                    }
+                }
+                groupName = sheetNames[0];
+                OutputUtils.info(log, "开始生成【" + groupName + "】" + STR_NEXT_LINE);
+                // step 3.2 开始写流程文件
+                jobWithTaskMap = writeJobFile(groupCode, groupName, taCode, sheet, bufferedWriter);
+                OutputUtils.info(log, "tbscheduletask生成开始" + STR_NEXT_LINE);
+                // 通过 jobTaskMap 和  Cache  生成 sql
+                writeTaskInfo(taCode, bufferedWriter, jobWithTaskMap);
+                OutputUtils.info(log, "tbscheduletask生成结束" + STR_NEXT_LINE);
+            }
+
+            // step 3.2.5 开始写流程文件 tbscheduletrigger
+            OutputUtils.info(log, "tbscheduletrigger生成开始" + STR_NEXT_LINE);
+            Sheet triggerSheet = workbook.getSheet("定时任务配置");
+            if (triggerSheet == null) {
+                OutputUtils.info(log, "【定时任务配置】sheet页面不存在" + STR_NEXT_LINE);
+                return;
+            }
+            writeTriggerInfo(taCode, triggerSheet, bufferedWriter);
+            OutputUtils.info(log, "tbscheduletrigger生成结束" + STR_NEXT_LINE);
+
+            // step 3.3 开始写流程文件 tbscheduletaskregistry
+            OutputUtils.info(log, "tbscheduletaskregistry生成开始" + STR_NEXT_LINE);
+            writeTaskRegistry(bufferedWriter);
+            OutputUtils.info(log, "tbscheduletaskregistry生成结束" + STR_NEXT_LINE);
+
+            bufferedWriter.write(BaseConst.STR_BLANK);
+            bufferedWriter.close();
+            schedule.setProgress(1);
+            List<String> path = new ArrayList<>();
+            path.add(transPath);
+            path.add(schedulePath);
+            LoggerUtils.writeProcessInfo(date, path);
+            OutputUtils.info(log, "执行完成" + STR_NEXT_LINE);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(log, e.getMessage() + STR_NEXT_LINE);
+        } finally {
+            setProgress(1);
+            submit.setDisable(false);
+        }
     }
 
     /**

@@ -2,10 +2,9 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.AppCache;
 import com.hoomoomoo.im.cache.ConfigCache;
-import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.FileUtils;
-import com.hoomoomoo.im.utils.LoggerUtils;
-import com.hoomoomoo.im.utils.OutputUtils;
+import com.hoomoomoo.im.task.ConfigSetTask;
+import com.hoomoomoo.im.task.ConfigSetTaskParam;
+import com.hoomoomoo.im.utils.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -52,27 +51,26 @@ public class ConfigSetController implements Initializable {
         OutputUtils.info(tips, NAME_SAVE_SUCCESS + CommonUtils.getCurrentDateTime8(new Date()));
         LoggerUtils.writeConfigSetInfo(CONFIG_SET.getCode());
         if (AppCache.FUNCTION_TAB_CACHE != null) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    ObservableList<Tab> tabs = AppCache.FUNCTION_TAB_CACHE.getTabs();
-                    Iterator<Tab> iterator = tabs.listIterator();
-                    while (iterator.hasNext()) {
-                        Tab tab = iterator.next();
-                        if (tab.getText().equals(CommonUtils.getMenuName(CONFIG_SET.getCode(), CONFIG_SET.getName()))) {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException e) {
-                                LoggerUtils.info(e);
-                            }
-                            iterator.remove();
-                            break;
-                        }
-                    }
-                }
-            }).start();
+            TaskUtils.execute(new ConfigSetTask(new ConfigSetTaskParam(this)));
         }
         submit.setDisable(false);
+    }
+
+    public void doClose() {
+        ObservableList<Tab> tabs = AppCache.FUNCTION_TAB_CACHE.getTabs();
+        Iterator<Tab> iterator = tabs.listIterator();
+        while (iterator.hasNext()) {
+            Tab tab = iterator.next();
+            if (tab.getText().equals(CommonUtils.getMenuName(CONFIG_SET.getCode(), CONFIG_SET.getName()))) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    LoggerUtils.info(e);
+                }
+                iterator.remove();
+                break;
+            }
+        }
     }
 
     @SneakyThrows

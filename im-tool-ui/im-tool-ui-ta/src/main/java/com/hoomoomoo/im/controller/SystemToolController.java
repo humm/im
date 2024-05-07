@@ -2,21 +2,19 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.VersionDto;
 import com.hoomoomoo.im.extend.ScriptCompareSql;
 import com.hoomoomoo.im.extend.ScriptRepairSql;
 import com.hoomoomoo.im.extend.ScriptUpdateSql;
+import com.hoomoomoo.im.task.SystemToolTask;
+import com.hoomoomoo.im.task.SystemToolTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
@@ -25,12 +23,14 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.awt.*;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.*;
@@ -148,7 +148,7 @@ public class SystemToolController implements Initializable {
     void showVersion(ActionEvent event) {
         showVersionBtn.setDisable(true);
         try {
-            new HepTaskTodoController().doShowVersion();
+            new HepTodoController().doShowVersion();
         } catch (Exception e) {
             LoggerUtils.info(e);
             LoggerUtils.info(e);
@@ -169,27 +169,26 @@ public class SystemToolController implements Initializable {
         executeFlag = true;
         ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        OutputUtils.info(logs, getCheckMenuMsg("检查开始"));
-                        showScheduleInfo(NAME_CHECK_MENU, "检查");
-                        new ScriptCompareSql().check();
-                        OutputUtils.info(logs, getCheckMenuMsg("检查结束"));
-                        OutputUtils.info(logs, STR_NEXT_LINE);
-                        addLog(NAME_CHECK_MENU);
-                    } catch (Exception e) {
-                        LoggerUtils.info(e);
-                        OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
-                    } finally {
-                        executeFlag = false;
-                    }
-                }
-            }).start();
+            TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_CHECK_MENU)));
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+    public void doCheckMenu() {
+        try {
+            OutputUtils.info(logs, getCheckMenuMsg("检查开始"));
+            showScheduleInfo(NAME_CHECK_MENU, "检查");
+            new ScriptCompareSql().check();
+            OutputUtils.info(logs, getCheckMenuMsg("检查结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_CHECK_MENU);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
+        } finally {
             executeFlag = false;
         }
     }
@@ -213,6 +212,28 @@ public class SystemToolController implements Initializable {
         String title = getTitle(REPAIR_OLD_MENU.getName());
         TaCommonUtils.openBlankChildStage(REPAIR_OLD_MENU.getIndex(), title);
         addLog(title);
+    }
+
+    @FXML
+    void showRepairOldMenuLog(ActionEvent event) throws Exception {
+        try {
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_OLD_MENU_LOG, "修正老版全量错误信息");
+            addLog("查看修正老版全量错误信息");
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCheckMenuMsg("查看修正老版全量错误信息"));
+        }
+    }
+
+    @FXML
+    void showRepairNewMenuLog(ActionEvent event) throws Exception {
+        try {
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_NEW_MENU_LOG, "修正新版全量错误信息");
+            addLog("查看修正新版全量错误信息");
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCheckMenuMsg("查看修正新版全量错误信息"));
+        }
     }
 
     @FXML
@@ -272,10 +293,25 @@ public class SystemToolController implements Initializable {
     void showSystemLog(ActionEvent event) {
         try {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG, "系统日志");
-            addLog("系统日志");
+            addLog("查看系统日志");
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCheckMenuMsg("请检查结果文件是否不存在"));
+            OutputUtils.info(logs, getCheckMenuMsg("查看系统日志错误"));
+        }
+    }
+
+    @FXML
+    void clearSystemLog(ActionEvent event) {
+        try {
+            FileUtils.deleteFile(new File(FileUtils.getFilePath(String.format(SUB_PATH_LOG, "appLog"))));
+            MenuFunctionConfig.FunctionConfig[] functionConfigs = MenuFunctionConfig.FunctionConfig.values();
+            for (MenuFunctionConfig.FunctionConfig functionConfig : functionConfigs) {
+                FileUtils.deleteFile(new File(FileUtils.getFilePath(String.format(SUB_PATH_LOG, functionConfig.getLogFolder()))));
+            }
+            addLog("清除系统日志");
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCheckMenuMsg("清除系统日志错误"));
         }
     }
 
@@ -288,27 +324,26 @@ public class SystemToolController implements Initializable {
         executeFlag = true;
         ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        OutputUtils.info(logs, getRepairLackExt("修复开始"));
-                        showScheduleInfo(NAME_REPAIR_LACK_EXT, "修复");
-                        ScriptRepairSql.repairLackLog();
-                        OutputUtils.info(logs, getRepairLackExt("修复结束"));
-                        OutputUtils.info(logs, STR_NEXT_LINE);
-                        addLog(NAME_REPAIR_LACK_EXT);
-                    } catch (Exception e) {
-                        LoggerUtils.info(e);
-                        OutputUtils.info(logs, getRepairLackExt(e.getMessage()));
-                    } finally {
-                        executeFlag = false;
-                    }
-                }
-            }).start();
+            TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_REPAIR_LACK_EXT)));
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(logs, getRepairLackExt(e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+    public void doRepairLackLog() {
+        try {
+            OutputUtils.info(logs, getRepairLackExt("修复开始"));
+            showScheduleInfo(NAME_REPAIR_LACK_EXT, "修复");
+            ScriptRepairSql.repairLackLog();
+            OutputUtils.info(logs, getRepairLackExt("修复结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_REPAIR_LACK_EXT);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getRepairLackExt(e.getMessage()));
+        } finally {
             executeFlag = false;
         }
     }
@@ -322,27 +357,26 @@ public class SystemToolController implements Initializable {
         executeFlag = true;
         ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复开始"));
-                        showScheduleInfo(NAME_REPAIR_LOG_DIFF, "修复");
-                        ScriptRepairSql.repairLogDiff();
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复结束"));
-                        OutputUtils.info(logs, STR_NEXT_LINE);
-                        addLog(NAME_REPAIR_LOG_DIFF);
-                    } catch (Exception e) {
-                        LoggerUtils.info(e);
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, e.getMessage()));
-                    } finally {
-                        executeFlag = false;
-                    }
-                }
-            }).start();
+            TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_REPAIR_LOG_DIFF)));
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+    public void doRepairLogDiff() {
+        try {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复开始"));
+            showScheduleInfo(NAME_REPAIR_LOG_DIFF, "修复");
+            ScriptRepairSql.repairLogDiff();
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_REPAIR_LOG_DIFF);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, e.getMessage()));
+        } finally {
             executeFlag = false;
         }
     }
@@ -356,27 +390,26 @@ public class SystemToolController implements Initializable {
         executeFlag = true;
         ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "修复开始"));
-                        showScheduleInfo(NAME_REPAIR_OLD_MENU, "修复");
-                        ScriptRepairSql.repairOldMenu();
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "修复结束"));
-                        OutputUtils.info(logs, STR_NEXT_LINE);
-                        addLog(NAME_REPAIR_OLD_MENU);
-                    } catch (Exception e) {
-                        LoggerUtils.info(e);
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, e.getMessage()));
-                    } finally {
-                        executeFlag = false;
-                    }
-                }
-            }).start();
+            TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_REPAIR_OLD_MENU)));
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+    public void doRepairOldMenu() {
+        try {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "修复开始"));
+            showScheduleInfo(NAME_REPAIR_OLD_MENU, "修复");
+            ScriptRepairSql.repairOldMenu();
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "修复结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_REPAIR_OLD_MENU);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, e.getMessage()));
+        } finally {
             executeFlag = false;
         }
     }
@@ -390,27 +423,26 @@ public class SystemToolController implements Initializable {
         executeFlag = true;
         ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "修复开始"));
-                        showScheduleInfo(NAME_REPAIR_NEW_MENU, "修复");
-                        ScriptRepairSql.repairNewMenu();
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "修复结束"));
-                        OutputUtils.info(logs, STR_NEXT_LINE);
-                        addLog(NAME_REPAIR_NEW_MENU);
-                    } catch (Exception e) {
-                        LoggerUtils.info(e);
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, e.getMessage()));
-                    } finally {
-                        executeFlag = false;
-                    }
-                }
-            }).start();
+            TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_REPAIR_NEW_MENU)));
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+    public void doRepairNewMenu() {
+        try {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "修复开始"));
+            showScheduleInfo(NAME_REPAIR_NEW_MENU, "修复");
+            ScriptRepairSql.repairNewMenu();
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "修复结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_REPAIR_NEW_MENU);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, e.getMessage()));
+        } finally {
             executeFlag = false;
         }
     }
@@ -425,43 +457,42 @@ public class SystemToolController implements Initializable {
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG, NAME_REPAIR_ERROR_EXT);
         ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        boolean startFlag = false;
-                        while (true) {
-                            boolean execute = ConfigCache.getAppConfigDtoCache().getExecute();
-                            if (execute && !startFlag) {
-                                startFlag = true;
-                            }
-                            if (!executeFlag && execute) {
-                                OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复开始"));
-                                showScheduleInfo(NAME_REPAIR_ERROR_EXT, "修复");
-                                executeFlag = true;
-                            }
-                            if (executeFlag && startFlag && !execute) {
-                                OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复结束"));
-                                OutputUtils.info(logs, STR_NEXT_LINE);
-                                addLog(NAME_REPAIR_ERROR_EXT);
-                                break;
-                            }
-                            try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                            }
-                        }
-                    } catch (Exception e) {
-                        LoggerUtils.info(e);
-                        OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, e.getMessage()));
-                    } finally {
-                        executeFlag = false;
-                    }
-                }
-            }).start();
+            TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_REPAIR_ERROR_EXT)));
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, e.getMessage()));
+        }
+    }
+
+    public void doRepairErrorLog() {
+        try {
+            boolean startFlag = false;
+            while (true) {
+                boolean execute = ConfigCache.getAppConfigDtoCache().getExecute();
+                if (execute && !startFlag) {
+                    startFlag = true;
+                }
+                if (!executeFlag && execute) {
+                    OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复开始"));
+                    showScheduleInfo(NAME_REPAIR_ERROR_EXT, "修复");
+                    executeFlag = true;
+                }
+                if (executeFlag && startFlag && !execute) {
+                    OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复结束"));
+                    OutputUtils.info(logs, STR_NEXT_LINE);
+                    addLog(NAME_REPAIR_ERROR_EXT);
+                    break;
+                }
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                }
+            }
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, e.getMessage()));
+        } finally {
+            executeFlag = false;
         }
     }
 
@@ -480,23 +511,22 @@ public class SystemToolController implements Initializable {
     void updateMenu(ActionEvent event) {
         closeCheckResultStage();
         try {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        // 设置颜色
-                        // logs.setStyle("-fx-text-fill: green;");
-                        OutputUtils.info(logs, getUpdateMenuMsg("执行开始"));
-                        new ScriptUpdateSql().generateSql();
-                        OutputUtils.info(logs, getUpdateMenuMsg("执行结束"));
-                        OutputUtils.info(logs, STR_NEXT_LINE);
-                        addLog("菜单升级脚本");
-                    } catch (Exception e) {
-                        LoggerUtils.info(e);
-                        OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
-                    }
-                }
-            }).start();
+            TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, "updateMenu")));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
+        }
+    }
+
+    public void doUpdateMenu() {
+        try {
+            // 设置颜色
+            // logs.setStyle("-fx-text-fill: green;");
+            OutputUtils.info(logs, getUpdateMenuMsg("执行开始"));
+            new ScriptUpdateSql().generateSql();
+            OutputUtils.info(logs, getUpdateMenuMsg("执行结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog("菜单升级脚本");
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
@@ -646,30 +676,32 @@ public class SystemToolController implements Initializable {
         }
     }
 
-    private void showScheduleInfo(String functionName, String msg) {
+    public void showScheduleInfo(String functionName, String msg) throws ExecutionException, InterruptedException {
         long start = System.currentTimeMillis();
-        new Thread(new Runnable() {
-            @SneakyThrows
-            @Override
-            public void run() {
-                while (true) {
-                    String repairSchedule = ConfigCache.getAppConfigDtoCache().getRepairSchedule();
-                    if (executeFlag) {
-                        String tips = msg + "中 ··· ···  耗时 " + getRunTime(start) + " ··· ";
-                        if (StringUtils.isNotBlank(repairSchedule)) {
-                            tips += STR_SPACE_3 + repairSchedule;
-                        }
-                        OutputUtils.info(logs, getCommonMsg(functionName, tips));
-                    } else {
-                       break;
-                    }
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                    }
+        SystemToolTaskParam systemToolTaskParam = new SystemToolTaskParam(this, "schedule");
+        systemToolTaskParam.setStart(start);
+        systemToolTaskParam.setFunctionName(functionName);
+        systemToolTaskParam.setMsg(msg);
+        TaskUtils.execute(new SystemToolTask(systemToolTaskParam));
+    }
+
+    public void doShowScheduleInfo(String functionName, String msg, long start) throws Exception {
+        while (true) {
+            String repairSchedule = ConfigCache.getAppConfigDtoCache().getRepairSchedule();
+            if (executeFlag) {
+                String tips = msg + "中 ··· ···  耗时 " + getRunTime(start) + " ··· ";
+                if (StringUtils.isNotBlank(repairSchedule)) {
+                    tips += STR_SPACE_3 + repairSchedule;
                 }
+                OutputUtils.info(logs, getCommonMsg(functionName, tips));
+            } else {
+                break;
             }
-        }).start();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+            }
+        }
     }
 
     private String getRunTime(long start) {

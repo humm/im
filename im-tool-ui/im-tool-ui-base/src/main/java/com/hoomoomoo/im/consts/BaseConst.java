@@ -361,6 +361,8 @@ public class BaseConst {
     public static final String PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT = "updateResult";
     public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG = "repairErrorLog";
     public static final String PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG = "systemLog";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_OLD_MENU_LOG = "repairOldMenuLog";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_NEW_MENU_LOG = "repairNewMenuLog";
 
     public static final String MENU_TYPE_FUND_CODE = "1";
     public static final String MENU_TYPE_FUND_NAME = "自建业务";

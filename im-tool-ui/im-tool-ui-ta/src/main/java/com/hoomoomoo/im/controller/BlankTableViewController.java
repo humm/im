@@ -191,7 +191,7 @@ public class BlankTableViewController implements Initializable {
 
         List<VersionDto> versionDtoList = new ArrayList<>();
         try {
-            versionDtoList = HepTaskTodoController.getVersionInfo();
+            versionDtoList = HepTodoController.getVersionInfo();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

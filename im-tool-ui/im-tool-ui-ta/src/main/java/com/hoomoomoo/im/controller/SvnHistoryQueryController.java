@@ -5,6 +5,8 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.SvnStatDto;
+import com.hoomoomoo.im.task.SvnHistoryQueryTask;
+import com.hoomoomoo.im.task.SvnHistoryQueryTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -48,41 +50,39 @@ public class SvnHistoryQueryController extends BaseController implements Initial
             }
             setProgress(0);
             updateProgress();
-            stat();
+            TaskUtils.execute(new SvnHistoryQueryTask(new SvnHistoryQueryTaskParam(this)));
             LoggerUtils.writeSvnHistoryStatInfo();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
     }
 
-    private void stat() {
-        new Thread(() -> {
+    public void stat() {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             try {
-                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-                try {
-                    setProgress(0);
-                    String startSelected = dateStart.getValue().toString();
-                    String endSelected = dateEnd.getValue().toString();
-                    Date start = CommonUtils.getCurrentDateTime7(startSelected + " 00:00:00");
-                    Date end = CommonUtils.getCurrentDateTime7(endSelected + " 23:59:59");
-                    OutputUtils.clearLog(stat);
-                    LinkedHashMap<String, SvnStatDto> svnStat = SvnUtils.getSvnLog(start, end, new LinkedHashMap<>(), false);
-                    List<SvnStatDto> svnStatDtoList = TaCommonUtils.sortSvnStatDtoList(appConfigDto, svnStat);
-                    for (SvnStatDto item : svnStatDtoList) {
-                        OutputUtils.info(stat, item);
-                    }
-                    OutputUtils.info(notice, getOrderInfo(svnStatDtoList, appConfigDto));
-                } catch (Exception e) {
-                    OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
-                    LoggerUtils.info(e);
-                } finally {
-                    setProgress(1);
+                setProgress(0);
+                String startSelected = dateStart.getValue().toString();
+                String endSelected = dateEnd.getValue().toString();
+                Date start = CommonUtils.getCurrentDateTime7(startSelected + " 00:00:00");
+                Date end = CommonUtils.getCurrentDateTime7(endSelected + " 23:59:59");
+                OutputUtils.clearLog(stat);
+                LinkedHashMap<String, SvnStatDto> svnStat = SvnUtils.getSvnLog(start, end, new LinkedHashMap<>(), false);
+                List<SvnStatDto> svnStatDtoList = TaCommonUtils.sortSvnStatDtoList(appConfigDto, svnStat);
+                for (SvnStatDto item : svnStatDtoList) {
+                    OutputUtils.info(stat, item);
                 }
+                OutputUtils.info(notice, getOrderInfo(svnStatDtoList, appConfigDto));
             } catch (Exception e) {
                 OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
                 LoggerUtils.info(e);
+            } finally {
+                setProgress(1);
             }
-        }).start();
+        } catch (Exception e) {
+            OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
+            LoggerUtils.info(e);
+        }
     }
 
     private String getOrderInfo(List<SvnStatDto> svnStatDtoList, AppConfigDto appConfigDto) {

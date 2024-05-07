@@ -5,6 +5,8 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.SvnStatDto;
+import com.hoomoomoo.im.task.SvnRealtimeStatTask;
+import com.hoomoomoo.im.task.SvnRealtimeStatTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -53,59 +55,57 @@ public class SvnRealtimeStatController extends BaseController implements Initial
             }
             setProgress(0);
             updateProgress();
-            stat();
+            TaskUtils.execute(new SvnRealtimeStatTask(new SvnRealtimeStatTaskParam(this)));
             LoggerUtils.writeSvnRealtimeStatInfo();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
     }
 
-    private void stat() {
-        new Thread(() -> {
-            try {
-                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-                while (true) {
-                    if (!initFlag && CommonUtils.isOpen(appConfigDto.getTabPane(), MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT) == null) {
-                        LoggerUtils.info(SVN_REALTIME_STAT.getName() + "已关闭，停止自动刷新");
-                        break;
-                    }
-                    initFlag = false;
-                    try {
-                        setProgress(0);
-                        if (startDate == null) {
-                            startDate = CommonUtils.getCurrentDateTime6("00:00:00");
-                        }
-                        Date date = new Date();
-                        if (appConfigDto.getSvnStatReset()) {
-                            if (!CommonUtils.getCurrentDateTime9(startDate).equals(CommonUtils.getCurrentDateTime9(date))) {
-                                svnStat.clear();
-                                LoggerUtils.writeSvnRealtimeStatInfo();
-                            }
-                        }
-                        OutputUtils.info(statTime, CommonUtils.getCurrentDateTime8(date));
-                        SvnUtils.getSvnLog(startDate, date, svnStat, false);
-                        OutputUtils.info(notice, BaseConst.STR_SPACE);
-                        OutputUtils.info(costTime, BaseConst.STR_SPACE);
-                        OutputUtils.clearLog(stat);
-                        List<SvnStatDto> svnStatDtoList = TaCommonUtils.sortSvnStatDtoList(appConfigDto, svnStat);
-                        for (SvnStatDto item : svnStatDtoList) {
-                            OutputUtils.info(stat, item);
-                        }
-                        startDate = date;
-                        OutputUtils.info(notice, svnStat.get(KEY_NOTICE).getNotice());
-                        OutputUtils.info(costTime, (System.currentTimeMillis() - date.getTime()) / 1000 + "秒");
-                    } catch (Exception e) {
-                        OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
-                        LoggerUtils.info(e);
-                    } finally {
-                        setProgress(1);
-                    }
-                    Thread.sleep(appConfigDto.getSvnStatInterval() * 1000);
+    public void stat() {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            while (true) {
+                if (!initFlag && CommonUtils.isOpen(appConfigDto.getTabPane(), MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT) == null) {
+                    LoggerUtils.info(SVN_REALTIME_STAT.getName() + "已关闭，停止自动刷新");
+                    break;
                 }
-            } catch (Exception e) {
-                OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
-                LoggerUtils.info(e);
+                initFlag = false;
+                try {
+                    setProgress(0);
+                    if (startDate == null) {
+                        startDate = CommonUtils.getCurrentDateTime6("00:00:00");
+                    }
+                    Date date = new Date();
+                    if (appConfigDto.getSvnStatReset()) {
+                        if (!CommonUtils.getCurrentDateTime9(startDate).equals(CommonUtils.getCurrentDateTime9(date))) {
+                            svnStat.clear();
+                            LoggerUtils.writeSvnRealtimeStatInfo();
+                        }
+                    }
+                    OutputUtils.info(statTime, CommonUtils.getCurrentDateTime8(date));
+                    SvnUtils.getSvnLog(startDate, date, svnStat, false);
+                    OutputUtils.info(notice, BaseConst.STR_SPACE);
+                    OutputUtils.info(costTime, BaseConst.STR_SPACE);
+                    OutputUtils.clearLog(stat);
+                    List<SvnStatDto> svnStatDtoList = TaCommonUtils.sortSvnStatDtoList(appConfigDto, svnStat);
+                    for (SvnStatDto item : svnStatDtoList) {
+                        OutputUtils.info(stat, item);
+                    }
+                    startDate = date;
+                    OutputUtils.info(notice, svnStat.get(KEY_NOTICE).getNotice());
+                    OutputUtils.info(costTime, (System.currentTimeMillis() - date.getTime()) / 1000 + "秒");
+                } catch (Exception e) {
+                    OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
+                    LoggerUtils.info(e);
+                } finally {
+                    setProgress(1);
+                }
+                Thread.sleep(appConfigDto.getSvnStatInterval() * 1000);
             }
-        }).start();
+        } catch (Exception e) {
+            OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
+            LoggerUtils.info(e);
+        }
     }
 }

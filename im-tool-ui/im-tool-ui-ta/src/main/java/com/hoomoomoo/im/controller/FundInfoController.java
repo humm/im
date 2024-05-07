@@ -3,6 +3,8 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.task.FundInfoTask;
+import com.hoomoomoo.im.task.FundInfoTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -85,7 +87,7 @@ public class FundInfoController extends BaseController implements Initializable 
             }
             setProgress(0);
             updateProgress();
-            generateScript();
+            TaskUtils.execute(new FundInfoTask(new FundInfoTaskParam(this)));
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(fundLog, e.getMessage());
@@ -100,170 +102,167 @@ public class FundInfoController extends BaseController implements Initializable 
             if (StringUtils.isNotBlank(appConfigDto.getFundExcelPath())) {
                 OutputUtils.info(filePath, appConfigDto.getFundExcelPath());
             }
-            String mode = appConfigDto.getFundGenerateMode();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
     }
 
-    private void generateScript() {
-        new Thread(() -> {
-            try {
-                scriptSubmit.setDisable(true);
-                Date date = new Date();
-                OutputUtils.clearLog(fundLog);
+    public void generateScript() {
+        try {
+            scriptSubmit.setDisable(true);
+            Date date = new Date();
+            OutputUtils.clearLog(fundLog);
 
-                // 创建生成脚本目录
-                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-                File pathFolder = new File(appConfigDto.getFundGeneratePath());
-                if (!pathFolder.exists()) {
-                    pathFolder.mkdirs();
-                }
-                // 打开workbook
-                Workbook workbook = Workbook.getWorkbook(new File(filePath.getText()));
-
-                Sheet tbSceneInfo = workbook.getSheet("场景信息tbsceneinfo");
-                if (tbSceneInfo != null) {
-                    STD = true;
-                }
-                // 生成基金配置数据
-                String fileName = "15fund-product-field.oracle.sql";
-                if (STD) {
-                    fileName = "15fund-product-field-std.oracle.sql";
-                }
-                String productPath = appConfigDto.getFundGeneratePath() + "/" + fileName;
-                File productFile = new File(productPath);
-                BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(productFile), BaseConst.ENCODING_UTF8));
-
-                // 1.1写入头部信息
-                bufferedWriter.write("-- ***************************************************\n");
-                bufferedWriter.write("-- TA6.0基金信息\n");
-                bufferedWriter.write("-- 版权所述：TA研发二部\n");
-                bufferedWriter.write("-- ***************************************************\n\n");
-
-                // 加载sheet页数据
-                Sheet[] sheetList = workbook.getSheets();
-
-                // 字段信息
-                Sheet dataElement = workbook.getSheet("基金tbdataelement");
-
-                // 2.1获取ComponentKind
-                if (dataElement != null) {
-                    initComponentKind(dataElement);
-                }
-
-                // 模板信息
-                Sheet prdTemplate = workbook.getSheet("基金模板tbprdtemplate");
-
-                // 2.2获取模板信息
-                if (prdTemplate != null) {
-                    initPrdTemplate(prdTemplate);
-                }
-
-                // 2.2.1写 tbdataelement 数据
-                if (dataElement != null) {
-                    writeDataelement(bufferedWriter, dataElement);
-                }
-
-                if (tbSceneInfo != null) {
-                    writeSceneInfo(bufferedWriter, tbSceneInfo);
-                }
-                Sheet tbScenTemplate = workbook.getSheet("场景模板tbscentemplate");
-                if (tbScenTemplate != null) {
-                    writeScenTemplate(bufferedWriter, tbScenTemplate);
-                }
-
-                Iterator<String> iterator = PRD_TEMPLATE.keySet().iterator();
-                while (iterator.hasNext()) {
-                    CURRENT_TEMPLATE_CODE = iterator.next();
-                    CURRENT_TEMPLATE_NAME = PRD_TEMPLATE.get(CURRENT_TEMPLATE_CODE).get("templateName");
-
-                    // 2.3写头部信息
-                    writeHeadInfo(bufferedWriter);
-
-                    // 2.4写 tbprdtemplate 数据
-                    if (prdTemplate != null) {
-                        writePrdTemplate(bufferedWriter, prdTemplate);
-                    }
-
-                    // 2.5写 tbelementgroup 数据
-                    Sheet elementGroup = workbook.getSheet("基金分组tbelementgroup");
-                    if (elementGroup != null) {
-                        writeElementGroup(bufferedWriter, elementGroup);
-                    }
-
-                    // 2.6写 tbtemplaterelgroup 数据
-                    Sheet templateRelGroup = workbook.getSheet("分组模板tbtemplaterelgroup");
-                    if (templateRelGroup != null) {
-                        writeTemplateRelGroup(bufferedWriter, templateRelGroup);
-                    }
-
-                    //2.8 写其他sheet页配置信息 列表 新增 修改
-                    for (Sheet sheet : sheetList) {
-                        if (sheet.getName().equals("基金列表tbpageelement") || sheet.getName().equals("基金新增tbpageelement") || sheet.getName().equals("基金修改tbpageelement")) {
-                            // 写tbpageelement数据
-                            writePageElement(bufferedWriter, sheet);
-                        }
-                        if (sheet.getName().equals("基金tbdataelement")) {
-                            continue;
-                        }
-                        if (sheet.getName().equals("基金分组tbelementgroup")) {
-                            continue;
-                        }
-                        if (sheet.getName().equals("分组模板tbtemplaterelgroup")) {
-                            continue;
-                        }
-                        if (sheet.getName().equals("基金模板tbprdtemplate")) {
-                            continue;
-                        }
-                    }
-                }
-                bufferedWriter.write("commit;\n");
-                bufferedWriter.close();
-
-                List<String> content = FileUtils.readNormalFile(productPath, false);
-
-                infoMsg("mysql版本生成 开始");
-                String fileNameMysql = "15fund-product-field.mysql.sql";
-                if (STD) {
-                    fileNameMysql = "15fund-product-field-std.mysql.sql";
-                }
-                String productPathMysql = appConfigDto.getFundGeneratePath() + "/" + fileNameMysql;
-                FileUtils.writeFile(productPathMysql, content, false);
-                infoMsg("mysql版本生成 结束");
-
-                infoMsg("pg版本生成 开始");
-                String fileNamePg = "15fund-product-field.pg.sql";
-                if (STD) {
-                    fileNamePg = "15fund-product-field-std.pg.sql";
-                }
-                String productPathPg = appConfigDto.getFundGeneratePath() + "/" + fileNamePg;
-                if (CollectionUtils.isNotEmpty(content)) {
-                    for (int j=0; j<content.size(); j++) {
-                        String item = content.get(j);
-                        item = item.replace("delete from tbpageelement where id like", "delete from tbpageelement where cast(id as varchar) like");
-                        item = item.replace("delete from tbelementgroup where id like", "delete from tbelementgroup where cast(id as varchar) like");
-                        item = item.replace("delete from tbdataelement where id like", "delete from tbdataelement where cast(id as varchar) like");
-                        content.set(j, item);
-                    }
-                }
-                FileUtils.writeFile(productPathPg, content, false);
-                infoMsg("pg版本生成 结束");
-                List<String> logList = new ArrayList(3);
-                logList.add(productPath);
-                logList.add(productPathPg);
-                logList.add(productPathMysql);
-                LoggerUtils.writeFundInfo(date, logList);
-                infoMsg("执行完成");
-                schedule.setProgress(1);
-            } catch (Exception e) {
-                LoggerUtils.info(e);
-                infoMsg(e.getMessage());
-            } finally {
-                setProgress(1);
-                scriptSubmit.setDisable(false);
+            // 创建生成脚本目录
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            File pathFolder = new File(appConfigDto.getFundGeneratePath());
+            if (!pathFolder.exists()) {
+                pathFolder.mkdirs();
             }
-        }).start();
+            // 打开workbook
+            Workbook workbook = Workbook.getWorkbook(new File(filePath.getText()));
+
+            Sheet tbSceneInfo = workbook.getSheet("场景信息tbsceneinfo");
+            if (tbSceneInfo != null) {
+                STD = true;
+            }
+            // 生成基金配置数据
+            String fileName = "15fund-product-field.oracle.sql";
+            if (STD) {
+                fileName = "15fund-product-field-std.oracle.sql";
+            }
+            String productPath = appConfigDto.getFundGeneratePath() + "/" + fileName;
+            File productFile = new File(productPath);
+            BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(productFile), BaseConst.ENCODING_UTF8));
+
+            // 1.1写入头部信息
+            bufferedWriter.write("-- ***************************************************\n");
+            bufferedWriter.write("-- TA6.0基金信息\n");
+            bufferedWriter.write("-- 版权所述：TA研发二部\n");
+            bufferedWriter.write("-- ***************************************************\n\n");
+
+            // 加载sheet页数据
+            Sheet[] sheetList = workbook.getSheets();
+
+            // 字段信息
+            Sheet dataElement = workbook.getSheet("基金tbdataelement");
+
+            // 2.1获取ComponentKind
+            if (dataElement != null) {
+                initComponentKind(dataElement);
+            }
+
+            // 模板信息
+            Sheet prdTemplate = workbook.getSheet("基金模板tbprdtemplate");
+
+            // 2.2获取模板信息
+            if (prdTemplate != null) {
+                initPrdTemplate(prdTemplate);
+            }
+
+            // 2.2.1写 tbdataelement 数据
+            if (dataElement != null) {
+                writeDataelement(bufferedWriter, dataElement);
+            }
+
+            if (tbSceneInfo != null) {
+                writeSceneInfo(bufferedWriter, tbSceneInfo);
+            }
+            Sheet tbScenTemplate = workbook.getSheet("场景模板tbscentemplate");
+            if (tbScenTemplate != null) {
+                writeScenTemplate(bufferedWriter, tbScenTemplate);
+            }
+
+            Iterator<String> iterator = PRD_TEMPLATE.keySet().iterator();
+            while (iterator.hasNext()) {
+                CURRENT_TEMPLATE_CODE = iterator.next();
+                CURRENT_TEMPLATE_NAME = PRD_TEMPLATE.get(CURRENT_TEMPLATE_CODE).get("templateName");
+
+                // 2.3写头部信息
+                writeHeadInfo(bufferedWriter);
+
+                // 2.4写 tbprdtemplate 数据
+                if (prdTemplate != null) {
+                    writePrdTemplate(bufferedWriter, prdTemplate);
+                }
+
+                // 2.5写 tbelementgroup 数据
+                Sheet elementGroup = workbook.getSheet("基金分组tbelementgroup");
+                if (elementGroup != null) {
+                    writeElementGroup(bufferedWriter, elementGroup);
+                }
+
+                // 2.6写 tbtemplaterelgroup 数据
+                Sheet templateRelGroup = workbook.getSheet("分组模板tbtemplaterelgroup");
+                if (templateRelGroup != null) {
+                    writeTemplateRelGroup(bufferedWriter, templateRelGroup);
+                }
+
+                //2.8 写其他sheet页配置信息 列表 新增 修改
+                for (Sheet sheet : sheetList) {
+                    if (sheet.getName().equals("基金列表tbpageelement") || sheet.getName().equals("基金新增tbpageelement") || sheet.getName().equals("基金修改tbpageelement")) {
+                        // 写tbpageelement数据
+                        writePageElement(bufferedWriter, sheet);
+                    }
+                    if (sheet.getName().equals("基金tbdataelement")) {
+                        continue;
+                    }
+                    if (sheet.getName().equals("基金分组tbelementgroup")) {
+                        continue;
+                    }
+                    if (sheet.getName().equals("分组模板tbtemplaterelgroup")) {
+                        continue;
+                    }
+                    if (sheet.getName().equals("基金模板tbprdtemplate")) {
+                        continue;
+                    }
+                }
+            }
+            bufferedWriter.write("commit;\n");
+            bufferedWriter.close();
+
+            List<String> content = FileUtils.readNormalFile(productPath, false);
+
+            infoMsg("mysql版本生成 开始");
+            String fileNameMysql = "15fund-product-field.mysql.sql";
+            if (STD) {
+                fileNameMysql = "15fund-product-field-std.mysql.sql";
+            }
+            String productPathMysql = appConfigDto.getFundGeneratePath() + "/" + fileNameMysql;
+            FileUtils.writeFile(productPathMysql, content, false);
+            infoMsg("mysql版本生成 结束");
+
+            infoMsg("pg版本生成 开始");
+            String fileNamePg = "15fund-product-field.pg.sql";
+            if (STD) {
+                fileNamePg = "15fund-product-field-std.pg.sql";
+            }
+            String productPathPg = appConfigDto.getFundGeneratePath() + "/" + fileNamePg;
+            if (CollectionUtils.isNotEmpty(content)) {
+                for (int j=0; j<content.size(); j++) {
+                    String item = content.get(j);
+                    item = item.replace("delete from tbpageelement where id like", "delete from tbpageelement where cast(id as varchar) like");
+                    item = item.replace("delete from tbelementgroup where id like", "delete from tbelementgroup where cast(id as varchar) like");
+                    item = item.replace("delete from tbdataelement where id like", "delete from tbdataelement where cast(id as varchar) like");
+                    content.set(j, item);
+                }
+            }
+            FileUtils.writeFile(productPathPg, content, false);
+            infoMsg("pg版本生成 结束");
+            List<String> logList = new ArrayList(3);
+            logList.add(productPath);
+            logList.add(productPathPg);
+            logList.add(productPathMysql);
+            LoggerUtils.writeFundInfo(date, logList);
+            infoMsg("执行完成");
+            schedule.setProgress(1);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            infoMsg(e.getMessage());
+        } finally {
+            setProgress(1);
+            scriptSubmit.setDisable(false);
+        }
     }
 
     /**

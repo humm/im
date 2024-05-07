@@ -4,9 +4,12 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.extend.ScriptRepairSql;
+import com.hoomoomoo.im.task.BlankSetTask;
+import com.hoomoomoo.im.task.BlankSetTaskParam;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import com.hoomoomoo.im.utils.OutputUtils;
+import com.hoomoomoo.im.utils.TaskUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -71,22 +74,22 @@ public class BlankSetController implements Initializable {
             FileUtils.writeFile(confPath, content, false);
         }
         if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        appConfigDto.setExecute(true);
-                        ScriptRepairSql.repairErrorLog();
-                    } catch (Exception e) {
-                        LoggerUtils.info(e);
-                    } finally {
-                        appConfigDto.setExecute(false);
-                    }
-                }
-            }).start();
+            TaskUtils.execute(new BlankSetTask(new BlankSetTaskParam(this)));
         }
         appConfigDto.getChildStage().close();
         appConfigDto.setChildStage(null);
+    }
+
+    public void repairErrorLog() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        try {
+            appConfigDto.setExecute(true);
+            ScriptRepairSql.repairErrorLog();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        } finally {
+            appConfigDto.setExecute(false);
+        }
     }
 
     @SneakyThrows

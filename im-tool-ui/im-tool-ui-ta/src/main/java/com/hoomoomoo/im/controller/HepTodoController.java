@@ -14,6 +14,8 @@ import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.dto.VersionDto;
 import com.hoomoomoo.im.extend.HepWaitHandleTaskMenu;
 import com.hoomoomoo.im.extend.ScriptCompareSql;
+import com.hoomoomoo.im.task.HepTodoTask;
+import com.hoomoomoo.im.task.HepTodoTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -52,7 +54,7 @@ import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_TOD
  * @package com.hoomoomoo.im.controller
  * @date 2022/07/30
  */
-public class HepTaskTodoController extends BaseController implements Initializable {
+public class HepTodoController extends BaseController implements Initializable {
     private static Set<String> field = new LinkedHashSet<>();
 
     private final static Integer STATUS_200 = 200;
@@ -291,25 +293,20 @@ public class HepTaskTodoController extends BaseController implements Initializab
 
     @FXML
     void scriptCheckBtn(ActionEvent event) throws Exception {
-        doScriptCheck();
+        TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "check")));
     }
 
-    private void doScriptCheck() {
+    public void doScriptCheck() {
         scriptCheck.setDisable(true);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    new ScriptCompareSql().check();
-                    OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("脚本检查完成，请查看检查结果"));
-                } catch (Exception e) {
-                    LoggerUtils.info(e);
-                    OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
-                } finally {
-                    scriptCheck.setDisable(false);
-                }
-            }
-        }).start();
+        try {
+            new ScriptCompareSql().check();
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("脚本检查完成，请查看检查结果"));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
+        } finally {
+            scriptCheck.setDisable(false);
+        }
     }
 
     @FXML
@@ -327,6 +324,12 @@ public class HepTaskTodoController extends BaseController implements Initializab
 
     @FXML
     void executeQuery(ActionEvent event) throws Exception {
+        HepTodoTaskParam hepTodoTaskParam = new HepTodoTaskParam(this, "query");
+        hepTodoTaskParam.setEvent(event);
+        TaskUtils.execute(new HepTodoTask(hepTodoTaskParam));
+    }
+
+    public void query(ActionEvent event) throws Exception {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         CURRENT_USER_ID = appConfigDto.getHepTaskUser();
@@ -334,19 +337,17 @@ public class HepTaskTodoController extends BaseController implements Initializab
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("请配置【 hep.task.user 】"));
             return;
         }
-        new Thread(() -> {
-            try {
-                setProgress(0);
-                updateProgress();
-                if (event != null) {
-                    minDateCache.clear();
-                }
-                executeQuery();
-            } catch (Exception e) {
-                LoggerUtils.info(e);
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
+        try {
+            setProgress(0);
+            updateProgress();
+            if (event != null) {
+                minDateCache.clear();
             }
-        }).start();
+            TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "doQuery")));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
+        }
     }
 
     @FXML
@@ -357,24 +358,22 @@ public class HepTaskTodoController extends BaseController implements Initializab
         executeQuery(null);
     }
 
-    private void executeQuery() {
-        new Thread(() -> {
-            try {
-                query.setDisable(true);
-                queryCondition.setDisable(true);
-                reset.setDisable(true);
-                execute(OPERATE_QUERY, null);
-                setProgress(1);
-                LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), logs);
-            } catch (Exception e) {
-                LoggerUtils.info(e);
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(ExceptionMsgUtils.getMsg(e)));
-            } finally {
-                query.setDisable(false);
-                queryCondition.setDisable(false);
-                reset.setDisable(false);
-            }
-        }).start();
+    public void doExecuteQuery() {
+        try {
+            query.setDisable(true);
+            queryCondition.setDisable(true);
+            reset.setDisable(true);
+            execute(OPERATE_QUERY, null);
+            setProgress(1);
+            LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), logs);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(ExceptionMsgUtils.getMsg(e)));
+        } finally {
+            query.setDisable(false);
+            queryCondition.setDisable(false);
+            reset.setDisable(false);
+        }
     }
 
     public JSONArray execute(String operateType, HepTaskDto hepTaskDto) throws Exception {
@@ -1136,7 +1135,7 @@ public class HepTaskTodoController extends BaseController implements Initializab
             addTaskMenu(appConfigDto);
             executeQuery(null);
             buildTestData();
-            doScriptCheck();
+            TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "check")));
         } catch (Exception e) {
             LoggerUtils.info(e);
         }

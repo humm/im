@@ -3,10 +3,9 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.FileUtils;
-import com.hoomoomoo.im.utils.LoggerUtils;
-import com.hoomoomoo.im.utils.OutputUtils;
+import com.hoomoomoo.im.task.CopyCodeTask;
+import com.hoomoomoo.im.task.CopyCodeTaskParam;
+import com.hoomoomoo.im.utils.*;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -133,7 +132,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                 return;
             }
             setProgress(0);
-            copyCode();
+            TaskUtils.execute(new CopyCodeTask(new CopyCodeTaskParam(this)));
             updateProgress();
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -141,130 +140,128 @@ public class CopyCodeController extends BaseController implements Initializable 
         }
     }
 
-    private void copyCode() throws Exception {
-        new Thread(() -> {
-            String fileLocation = STR_BLANK;
-            try {
-                execute.setDisable(true);
-                successNum = 0;
-                Date currentDate = new Date();
-                String filePathConfig = filePath.getText().trim();
-                int skipNum = 0;
-                if (StringUtils.isNotBlank(filePathConfig)) {
-                    AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-                    List<String> fileLog = new ArrayList<>(16);
-                    String[] fileList = filePathConfig.split(STR_NEXT_LINE);
-                    if (fileList != null && fileList.length != 0) {
-                        for (int i=0; i<fileList.length; i++) {
-                            String item = fileList[i].trim();
-                            if (StringUtils.isBlank(item) || item.startsWith(ANNOTATION_TYPE_NORMAL)) {
-                                skipNum++;
-                                continue;
-                            }
-                            if (yes.isSelected() && !item.trim().toLowerCase().endsWith(FILE_TYPE_JAVA)) {
-                                skipNum++;
-                                continue;
-                            }
-                            String copyCodePrefix = appConfigDto.getCopyCodePrefix();
-                            if (StringUtils.isNotBlank(copyCodePrefix)) {
-                                String[] items = copyCodePrefix.split(STR_COMMA);
-                                for (String prefix : items) {
-                                    int index = item.indexOf(prefix);
-                                    if (index != -1) {
-                                        item = item.substring(index + prefix.length());
-                                    }
+    public void copyCode() throws Exception {
+        String fileLocation = STR_BLANK;
+        try {
+            execute.setDisable(true);
+            successNum = 0;
+            Date currentDate = new Date();
+            String filePathConfig = filePath.getText().trim();
+            int skipNum = 0;
+            if (StringUtils.isNotBlank(filePathConfig)) {
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                List<String> fileLog = new ArrayList<>(16);
+                String[] fileList = filePathConfig.split(STR_NEXT_LINE);
+                if (fileList != null && fileList.length != 0) {
+                    for (int i=0; i<fileList.length; i++) {
+                        String item = fileList[i].trim();
+                        if (StringUtils.isBlank(item) || item.startsWith(ANNOTATION_TYPE_NORMAL)) {
+                            skipNum++;
+                            continue;
+                        }
+                        if (yes.isSelected() && !item.trim().toLowerCase().endsWith(FILE_TYPE_JAVA)) {
+                            skipNum++;
+                            continue;
+                        }
+                        String copyCodePrefix = appConfigDto.getCopyCodePrefix();
+                        if (StringUtils.isNotBlank(copyCodePrefix)) {
+                            String[] items = copyCodePrefix.split(STR_COMMA);
+                            for (String prefix : items) {
+                                int index = item.indexOf(prefix);
+                                if (index != -1) {
+                                    item = item.substring(index + prefix.length());
                                 }
                             }
-                            String source = sourcePath.getText();
-                            String target = targetPath.getText();
-                            if (item.endsWith(FILE_TYPE_RPX)) {
-                                infoMsg("RPX报表文件不能复制");
-                                continue;
-                            }
-                            item = item.replaceAll("\\\\", "/").replace(source, STR_BLANK);
-                            if (yes.isSelected()) {
-                                item = item.replace("src/main/java", "target/classes").replace(FILE_TYPE_JAVA, FILE_TYPE_CLASS);
-                            }
-                            fileLocation = source + STR_SLASH + item;
-                            String targetFileLocation = target + STR_SLASH + item;
-                            String targetVersionSelected = (String)targetVersion.getSelectionModel().getSelectedItem();
-                            String sourceVersionSelected = (String)sourceVersion.getSelectionModel().getSelectedItem();
-                            if (!appConfigDto.getCopyCodeLocationReplaceSkipVersion().contains(targetVersionSelected)) {
-                                Iterator<String> iterator = appConfigDto.getReplaceTargetUrl().keySet().iterator();
-                                while (iterator.hasNext()) {
-                                    String key = iterator.next();
-                                    if (targetFileLocation.contains("views/fundAccount")) {
-                                        if (appConfigDto.getCopyCodeLocationReplaceSkipAccountVersion().contains(targetVersionSelected)) {
-                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_$_SLASH)[1]);
-                                        } else {
-                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_$_SLASH)[0]);
-                                        }
-                                        break;
+                        }
+                        String source = sourcePath.getText();
+                        String target = targetPath.getText();
+                        if (item.endsWith(FILE_TYPE_RPX)) {
+                            infoMsg("RPX报表文件不能复制");
+                            continue;
+                        }
+                        item = item.replaceAll("\\\\", "/").replace(source, STR_BLANK);
+                        if (yes.isSelected()) {
+                            item = item.replace("src/main/java", "target/classes").replace(FILE_TYPE_JAVA, FILE_TYPE_CLASS);
+                        }
+                        fileLocation = source + STR_SLASH + item;
+                        String targetFileLocation = target + STR_SLASH + item;
+                        String targetVersionSelected = (String)targetVersion.getSelectionModel().getSelectedItem();
+                        String sourceVersionSelected = (String)sourceVersion.getSelectionModel().getSelectedItem();
+                        if (!appConfigDto.getCopyCodeLocationReplaceSkipVersion().contains(targetVersionSelected)) {
+                            Iterator<String> iterator = appConfigDto.getReplaceTargetUrl().keySet().iterator();
+                            while (iterator.hasNext()) {
+                                String key = iterator.next();
+                                if (targetFileLocation.contains("views/fundAccount")) {
+                                    if (appConfigDto.getCopyCodeLocationReplaceSkipAccountVersion().contains(targetVersionSelected)) {
+                                        targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_$_SLASH)[1]);
+                                    } else {
+                                        targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_$_SLASH)[0]);
                                     }
-                                    if (targetFileLocation.contains(key)) {
-                                        targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key));
-                                        break;
-                                    }
+                                    break;
+                                }
+                                if (targetFileLocation.contains(key)) {
+                                    targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key));
+                                    break;
                                 }
                             }
-                            if (KEY_TRUNK.equals(sourceVersionSelected)) {
-                                Iterator<String> iteratorSource = appConfigDto.getReplaceSourceUrl().keySet().iterator();
-                                while (iteratorSource.hasNext()) {
-                                    String key = iteratorSource.next();
-                                    if (fileLocation.contains(key)) {
-                                        fileLocation = fileLocation.replace(key, appConfigDto.getReplaceSourceUrl().get(key));
-                                        break;
-                                    }
+                        }
+                        if (KEY_TRUNK.equals(sourceVersionSelected)) {
+                            Iterator<String> iteratorSource = appConfigDto.getReplaceSourceUrl().keySet().iterator();
+                            while (iteratorSource.hasNext()) {
+                                String key = iteratorSource.next();
+                                if (fileLocation.contains(key)) {
+                                    fileLocation = fileLocation.replace(key, appConfigDto.getReplaceSourceUrl().get(key));
+                                    break;
                                 }
                             }
-                            if (fileLocation.equals(targetFileLocation)) {
-                                infoMsg(getFileName(targetFileLocation) + " 同路径同名文件不复制");
-                                skipNum++;
-                                continue;
-                            }
-                            List<String> sourceContent = FileUtils.readNormalFile(fileLocation, false);
-                            File file = new File(fileLocation);
-                            String encode = ENCODING_UTF8;
-                            if (file.exists()) {
-                                encode = FileUtils.getFileEncode(fileLocation);
-                            }
+                        }
+                        if (fileLocation.equals(targetFileLocation)) {
+                            infoMsg(getFileName(targetFileLocation) + " 同路径同名文件不复制");
+                            skipNum++;
+                            continue;
+                        }
+                        List<String> sourceContent = FileUtils.readNormalFile(fileLocation, false);
+                        File file = new File(fileLocation);
+                        String encode = ENCODING_UTF8;
+                        if (file.exists()) {
+                            encode = FileUtils.getFileEncode(fileLocation);
+                        }
 
-                            File targetFile = new File(targetFileLocation);
-                            if (targetFile.exists()) {
-                                targetFile.delete();
-                            }
-                            if (CollectionUtils.isNotEmpty(sourceContent)) {
-                                for (int j=0; j<sourceContent.size(); j++) {
-                                    FileUtils.writeFile(targetFileLocation, sourceContent.get(j) + STR_NEXT_LINE, encode, true);
-                                }
-                                fileLog.add(targetFileLocation);
-                                infoMsg(getFileName(targetFileLocation) + " 复制完成");
-                                successNum++;
-                            }
+                        File targetFile = new File(targetFileLocation);
+                        if (targetFile.exists()) {
+                            targetFile.delete();
                         }
-                        String msg = STR_NEXT_LINE;
-                        if (fileList.length - skipNum == successNum) {
-                            msg += "复制成功 总文件数【 " + successNum + " 】";
-                        } else {
-                            msg += "复制失败 总文件数【 " + successNum + " 】 失败文件数【 " + (fileList.length - successNum) + " 】";
+                        if (CollectionUtils.isNotEmpty(sourceContent)) {
+                            for (int j=0; j<sourceContent.size(); j++) {
+                                FileUtils.writeFile(targetFileLocation, sourceContent.get(j) + STR_NEXT_LINE, encode, true);
+                            }
+                            fileLog.add(targetFileLocation);
+                            infoMsg(getFileName(targetFileLocation) + " 复制完成");
+                            successNum++;
                         }
-                        infoMsg(msg);
                     }
-                    LoggerUtils.writeCopyCodeInfo(currentDate, fileLog);
+                    String msg = STR_NEXT_LINE;
+                    if (fileList.length - skipNum == successNum) {
+                        msg += "复制成功 总文件数【 " + successNum + " 】";
+                    } else {
+                        msg += "复制失败 总文件数【 " + successNum + " 】 失败文件数【 " + (fileList.length - successNum) + " 】";
+                    }
+                    infoMsg(msg);
                 }
-                setProgress(1);
-            } catch (Exception e) {
-                if (e instanceof FileNotFoundException) {
-                    OutputUtils.info(log, fileLocation.substring(fileLocation.lastIndexOf("/") + 1)+ " 不存在" + STR_NEXT_LINE);
-                } else {
-                    OutputUtils.info(log, e.getMessage());
-                }
-                LoggerUtils.info(e);
-            } finally {
-                setProgress(1);
-                execute.setDisable(false);
+                LoggerUtils.writeCopyCodeInfo(currentDate, fileLog);
             }
-        }).start();
+            setProgress(1);
+        } catch (Exception e) {
+            if (e instanceof FileNotFoundException) {
+                OutputUtils.info(log, fileLocation.substring(fileLocation.lastIndexOf("/") + 1)+ " 不存在" + STR_NEXT_LINE);
+            } else {
+                OutputUtils.info(log, e.getMessage());
+            }
+            LoggerUtils.info(e);
+        } finally {
+            setProgress(1);
+            execute.setDisable(false);
+        }
     }
 
     @Override

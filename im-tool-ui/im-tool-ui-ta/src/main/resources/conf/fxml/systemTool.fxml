@@ -132,23 +132,35 @@
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
-                                                 <Button layoutX="255.0" layoutY="15" mnemonicParsing="false" onAction="#repairOldMenu" prefWidth="100.0" text="修正老版全量">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
-                                                 <Button layoutX="380.0" layoutY="15" mnemonicParsing="false" onAction="#repairNewMenu" prefWidth="140.0" text="修正新版全量">
+                                                 <Button layoutX="130.0" layoutY="75" mnemonicParsing="false" onAction="#repairOldMenu" prefWidth="100.0" text="修正老版全量">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
 
-                                                 <Label layoutX="20.0" layoutY="80.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="设置忽略检查项" />
-                                                 <Button layoutX="150.0" layoutY="75" mnemonicParsing="false" onAction="#skipRepairOldMenu" prefWidth="100.0" text="修正老版全量">
+                                                 <Button layoutX="265.0" layoutY="75" mnemonicParsing="false" onAction="#showRepairOldMenuLog" prefWidth="100.0" text="查看错误信息">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
+
+                                                 <Button layoutX="400.0" layoutY="75" mnemonicParsing="false" onAction="#skipRepairOldMenu" prefWidth="100.0" text="忽略老版全量">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+
+                                                 <Button layoutX="130.0" layoutY="135" mnemonicParsing="false" onAction="#repairNewMenu" prefWidth="100.0" text="修正新版全量">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+                                                 <Button layoutX="265.0" layoutY="135" mnemonicParsing="false" onAction="#showRepairNewMenuLog" prefWidth="100.0" text="查看错误信息">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+
                                              </children>
                                           </AnchorPane>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
@@ -172,6 +184,11 @@
 
                                                  <Label layoutX="20.0" layoutY="80.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="系统日志" />
                                                  <Button layoutX="130.0" layoutY="75" mnemonicParsing="false" onAction="#showSystemLog" prefWidth="100.0" text="查看">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+                                                 <Button layoutX="260.0" layoutY="75" mnemonicParsing="false" onAction="#clearSystemLog" prefWidth="100.0" text="清除">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
