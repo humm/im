@@ -21,15 +21,15 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="164.0" prefWidth="599.0">
                     <children>
-                        <Label layoutX="20.0" layoutY="5.0" text="本周发版：" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="weekPublish" layoutX="100.0" layoutY="5.0"/>
-                        <Label layoutX="20.0" layoutY="30.0" text="今日发版：" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="dayPublish" layoutX="100.0" layoutY="30.0"/>
+                        <Label layoutX="20.0" layoutY="5.0" text="本周定版：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="weekClose" layoutX="100.0" layoutY="5.0"/>
+                        <Label layoutX="20.0" layoutY="30.0" text="本周发版：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="weekPublish" layoutX="100.0" layoutY="30.0"/>
 
-                        <Label layoutX="20.0" layoutY="55.0" text="本周定版：" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="weekClose" layoutX="100.0" layoutY="55.0"/>
-                        <Label layoutX="20.0" layoutY="80.0" text="今日定版：" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="dayClose" layoutX="100.0" layoutY="80.0"/>
+                        <Label layoutX="20.0" layoutY="55.0" text="今日定版：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="dayClose" layoutX="100.0" layoutY="55.0"/>
+                        <Label layoutX="20.0" layoutY="80.0" text="今日发版：" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="dayPublish" layoutX="100.0" layoutY="80.0"/>
 
                         <Label layoutX="20.0" layoutY="105.0" text="今日待提交：" style="-fx-font-weight: bold;"/>
                         <Label fx:id="dayTodo" layoutX="110.0" layoutY="105.0"/>

@@ -6,6 +6,7 @@ import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.extend.ScriptCompareSql;
 import com.hoomoomoo.im.extend.ScriptRepairSql;
+import com.hoomoomoo.im.extend.ScriptSqlUtils;
 import com.hoomoomoo.im.extend.ScriptUpdateSql;
 import com.hoomoomoo.im.task.SystemToolTask;
 import com.hoomoomoo.im.task.SystemToolTaskParam;
@@ -13,10 +14,12 @@ import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -217,6 +220,13 @@ public class SystemToolController implements Initializable {
     @FXML
     void showRepairOldMenuLog(ActionEvent event) throws Exception {
         try {
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            String check = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu.replace(".sql", ".check.sql");
+            File checkFile = new File(check);
+            if (!checkFile.exists()) {
+                OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "未找到错误日志文件"));
+                return;
+            }
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_OLD_MENU_LOG, "修正老版全量错误信息");
             addLog("查看修正老版全量错误信息");
         } catch (Exception e) {
@@ -228,6 +238,13 @@ public class SystemToolController implements Initializable {
     @FXML
     void showRepairNewMenuLog(ActionEvent event) throws Exception {
         try {
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            String check = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.newUedPage.replace(".sql", ".check.sql");
+            File checkFile = new File(check);
+            if (!checkFile.exists()) {
+                OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "未找到错误日志文件"));
+                return;
+            }
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_NEW_MENU_LOG, "修正新版全量错误信息");
             addLog("查看修正新版全量错误信息");
         } catch (Exception e) {
@@ -334,6 +351,13 @@ public class SystemToolController implements Initializable {
 
     public void doRepairLackLog() {
         try {
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
+            File errFile = new File(resultPath + "\\" + LACK_LOG.getFileName());
+            if (!errFile.exists()) {
+                OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, "未找到缺少日志文件"));
+                return;
+            }
             OutputUtils.info(logs, getRepairLackExt("修复开始"));
             showScheduleInfo(NAME_REPAIR_LACK_EXT, "修复");
             ScriptRepairSql.repairLackLog();
@@ -450,6 +474,12 @@ public class SystemToolController implements Initializable {
     @FXML
      void repairErrorLog(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
+        File errFile = new File(resultPath + "\\" + ERROR_LOG.getFileName());
+        if (!errFile.exists()) {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "未找到错误日志文件"));
+            return;
+        }
         if (appConfigDto.getExecute()) {
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复中 ··· 请稍后 ···"));
             return;

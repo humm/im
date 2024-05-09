@@ -552,6 +552,7 @@ public class HepTodoController extends BaseController implements Initializable {
     @SneakyThrows
     public void dealTaskList(JSONArray task, List<String> logsIn, Label dayTodoIn, Label weekTodoIn, Label waitHandleTaskNumIn, Label dayPublishIn, Label weekPublishIn,
                              Label dayCloseIn, Label weekCloseIn, TableView taskListIn, boolean tagFlag) {
+        taskListIn.setDisable(true);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
@@ -740,6 +741,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
         OutputUtils.clearLog(taskListIn);
         infoTaskList(taskListIn, res);
+        taskListIn.setDisable(false);
     }
 
     private static void initMinDate (Map<String, Integer> minDate, HepTaskDto item) {

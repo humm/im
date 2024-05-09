@@ -398,13 +398,13 @@ public class BaseConst {
     public enum SQL_CHECK_TYPE {
         CHECK_RESULT_SUMMARY(10, "结果汇总", "10.结果汇总.sql", ""),
         LACK_NEW_MENU_ALL(100, "缺少新版全量", "100.缺少新版全量.sql", "/conf/extend/skipNewMenu.conf"),
+        LACK_OLD_NEW_ALL(800, "缺少老版全量", "800.缺少老版全量.sql", "/conf/extend/skipOldMenu.conf"),
         DIFF_NEW_ALL_EXT(200, "新版全量开通不同", "200.新版全量开通不同.sql", "/conf/extend/skipNewDiffMenu.conf"),
+        DIFF_OLD_ALL_EXT(700, "老版全量开通不同", "700.老版全量开通不同.sql", "/conf/extend/skipOldDiffMenu.conf"),
         LEGAL_NEW_MENU(300, "新版菜单合法性", "300.新版菜单合法性.sql", "/conf/extend/legalNewMenu.conf"),
         LACK_ROUTER(400, "缺少路由", "400.缺少路由.sql", "/conf/extend/skipRouter.conf"),
         LACK_LOG(500, "缺少日志", "500.缺少日志.sql", "/conf/extend/skipLog.conf"),
         ERROR_LOG(600, "错误日志", "600.错误日志.sql", "/conf/extend/skipErrorLog.conf"),
-        DIFF_OLD_ALL_EXT(700, "老版全量开通不同", "700.老版全量开通不同.sql", "/conf/extend/skipOldDiffMenu.conf"),
-        LACK_OLD_NEW_ALL(800, "缺少老版全量", "800.缺少老版全量.sql", "/conf/extend/skipOldMenu.conf"),
         ALL_MENU(10000, "所有菜单", "5.所有菜单.sql", ""),
         NEW_MENU_UPDATE(20000, "全量新版升级", "1.全量新版升级.sql", "");
 
