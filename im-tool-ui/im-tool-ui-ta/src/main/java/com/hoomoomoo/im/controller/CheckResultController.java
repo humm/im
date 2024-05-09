@@ -138,7 +138,7 @@ public class CheckResultController implements Initializable {
                 }
             }
             if (!NEW_MENU_UPDATE.getFileName().equals(fileName)) {
-                item = item.replaceAll("--", "");
+                item = item.replaceFirst("--", "");
             }
             text.append(item).append(STR_NEXT_LINE);
         }

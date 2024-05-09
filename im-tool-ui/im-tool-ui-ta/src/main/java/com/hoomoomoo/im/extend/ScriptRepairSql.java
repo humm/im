@@ -30,8 +30,8 @@ public class ScriptRepairSql {
     private static Set<String> totalSubTransExtCache = new LinkedHashSet<>();
     private static int repairFileNum = 0;
 
-    private static Set<String> excludeFundMenu = new HashSet<>(Arrays.asList("fundBlackListSet", "fundClerkList", "fundInterestInfoSet"));
-    private static Set<String> includePubMenu = new HashSet<>(Arrays.asList("bizBlackInfoSet", "bizClerkInfoSet", "bizInterestRateSet"));
+    public static Set<String> excludeFundMenu = new HashSet<>(Arrays.asList("fundBlackListSet", "fundClerkList", "fundInterestInfoSet"));
+    public static Set<String> includePubMenu = new HashSet<>(Arrays.asList("bizBlackInfoSet", "bizClerkInfoSet", "bizInterestRateSet"));
 
     public static void repairLackLog() throws Exception {
         repairFileNum = 0;
