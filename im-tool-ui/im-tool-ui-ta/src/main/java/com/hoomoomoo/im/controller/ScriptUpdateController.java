@@ -255,14 +255,14 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 if (StringUtils.isBlank(item)  || item.toLowerCase().startsWith(BaseConst.KEY_DELETE)) {
                     continue;
                 }
-                if (item.startsWith(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+                if (item.startsWith(BaseConst.ANNOTATION_NORMAL)) {
                     boolean isContinue = true;
                     String scriptUpdateIgnoreSkip = appConfigDto.getScriptUpdateIgnoreSkip();
                     if (StringUtils.isNotBlank(scriptUpdateIgnoreSkip)) {
                         String[] items = scriptUpdateIgnoreSkip.split(BaseConst.STR_COMMA);
                         inner: for (String skip : items) {
                             if (item.toLowerCase().indexOf(skip.toLowerCase()) != -1) {
-                                item = item.replaceAll(BaseConst.ANNOTATION_TYPE_NORMAL, BaseConst.STR_BLANK);
+                                item = item.replaceAll(BaseConst.ANNOTATION_NORMAL, BaseConst.STR_BLANK);
                                 isContinue = false;
                                 break inner;
                             }
@@ -272,7 +272,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                         continue;
                     }
                 }
-                if (item.trim().toLowerCase().startsWith("insert") || item.toLowerCase().trim().startsWith("values") || item.trim().toLowerCase().startsWith(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+                if (item.trim().toLowerCase().startsWith("insert") || item.toLowerCase().trim().startsWith("values") || item.trim().toLowerCase().startsWith(BaseConst.ANNOTATION_NORMAL)) {
                     item = item.trim();
                 }
                 itemsTemp.append(item + STR_NEXT_LINE);

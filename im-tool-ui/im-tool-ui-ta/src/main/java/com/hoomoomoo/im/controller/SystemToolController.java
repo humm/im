@@ -14,12 +14,10 @@ import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -373,33 +371,51 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
-    void repairLogDiff(ActionEvent event) throws Exception {
+    void repairWorkFlow(ActionEvent event) throws Exception {
         if (executeFlag) {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复中 ··· 请稍后 ···"));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, "修复中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
         ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
-            TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_REPAIR_LOG_DIFF)));
+            TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_REPAIR_WORK_FLOW)));
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, e.getMessage()));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, e.getMessage()));
             executeFlag = false;
         }
     }
 
-    public void doRepairLogDiff() {
+    @FXML
+    void repairWorkFlowLog(ActionEvent event) throws Exception {
         try {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复开始"));
-            showScheduleInfo(NAME_REPAIR_LOG_DIFF, "修复");
-            ScriptRepairSql.repairLogDiff();
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, "修复结束"));
-            OutputUtils.info(logs, STR_NEXT_LINE);
-            addLog(NAME_REPAIR_LOG_DIFF);
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            String check = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.workFlow.replace(".sql", ".check.sql");
+            File checkFile = new File(check);
+            if (!checkFile.exists()) {
+                OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, "未找到错误日志文件"));
+                return;
+            }
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_WORK_FLOW_LOG, "修正复核信息错误信息");
+            addLog("查看修正复核信息错误信息");
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LOG_DIFF, e.getMessage()));
+            OutputUtils.info(logs, getCheckMenuMsg("查看修正新版全量错误信息"));
+        }
+    }
+
+    public void doRepairWorkFlow() {
+        try {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, "修复开始"));
+            showScheduleInfo(NAME_REPAIR_WORK_FLOW, "修复");
+            ScriptRepairSql.repairWorkFlow();
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, "修复结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_REPAIR_WORK_FLOW);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, e.getMessage()));
         } finally {
             executeFlag = false;
         }

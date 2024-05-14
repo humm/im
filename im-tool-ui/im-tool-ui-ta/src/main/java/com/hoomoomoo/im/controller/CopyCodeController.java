@@ -155,7 +155,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                 if (fileList != null && fileList.length != 0) {
                     for (int i=0; i<fileList.length; i++) {
                         String item = fileList[i].trim();
-                        if (StringUtils.isBlank(item) || item.startsWith(ANNOTATION_TYPE_NORMAL)) {
+                        if (StringUtils.isBlank(item) || item.startsWith(ANNOTATION_NORMAL)) {
                             skipNum++;
                             continue;
                         }

@@ -353,7 +353,7 @@ public class FundInfoController extends BaseController implements Initializable 
             }
             String sql = "insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, " +
                     "dict_key, rel_table, rel_field, rel_condition, reserve) \nvalues (";
-            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, dict_key, rel_table, rel_field, rel_condition, reserve) \n-- values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -403,7 +403,7 @@ public class FundInfoController extends BaseController implements Initializable 
         for (int i = 1; i < rows; i++) {
             bufferedWriter.write("delete from tbsceneinfo where scene_code = " + getCell(sheet, 1, i) + ";\n");
             String sql = "insert into tbsceneinfo (scene_code, scene_name, scene_type) \nvalues (";
-            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbsceneinfo (scene_code, scene_name, scene_type) \n-- values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -430,7 +430,7 @@ public class FundInfoController extends BaseController implements Initializable 
         for (int i = 1; i < rows; i++) {
             bufferedWriter.write("delete from tbscentemplate where template_code = " + getCell(sheet, 1, i) + ";\n");
             String sql = "insert into tbscentemplate (template_code, template_name, scene_code, rel_template_code) \nvalues (";
-            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbscentemplate (template_code, template_name, scene_code, rel_template_code) \n-- values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -463,7 +463,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 continue;
             }
             String sql = "insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) \nvalues (";
-            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbprdtemplate (bank_no, template_code, template_short_name, template_name, prd_type, life_cycle_url, remark, remark1, remark2, remark3) \n-- values (";
             }
             if (STD) {
@@ -508,7 +508,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 continue;
             }
             String sql = "insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) \nvalues (";
-            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) \n-- values (";
             }
             sql += getCell(sheet, 1, i) + ","
@@ -553,7 +553,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 continue;
             }
             String sql = "insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) \nvalues (";
-            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbtemplaterelgroup(id, menu_code, template_code, req_kind, group_id, group_order) \n-- values (";
             }
             if (STD) {
@@ -595,7 +595,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 continue;
             }
             String sql = "insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) \nvalues (";
-            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_TYPE_NORMAL)) {
+            if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbpageelement (id, data_id, group_id, element_order, element_code, element_name, component_kind, component_length, prefix_label, suffix_label, display_flag, readonly_flag, line_flag, required_flag, location_flag, sort_flag, default_value, show_format, check_format, on_init, on_change, on_submit, empty_text, visable, suffix_cls, prompt, max_length, min_length, max_value, min_value, reserve) \n-- values (";
             }
             if (STD) {

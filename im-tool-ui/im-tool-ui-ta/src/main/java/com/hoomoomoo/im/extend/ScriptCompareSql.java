@@ -700,7 +700,7 @@ public class ScriptCompareSql {
         List<String> remarkError = new ArrayList<>();
         for (int i=6; i<config.size(); i++) {
             String item = config.get(i).toLowerCase().trim();
-            if (!item.contains(ANNOTATION_TYPE_NORMAL)) {
+            if (!item.contains(ANNOTATION_NORMAL)) {
                 continue;
             }
             if (item.contains("delete") || item.contains("insert") || item.contains("values") || item.contains("废弃页面已抽取到平台")) {
@@ -735,8 +735,8 @@ public class ScriptCompareSql {
             if (StringUtils.isNotBlank(tableName) && !"tsys_menu_std".equals(tableName) && !"tsys_trans".equals(tableName)) {
                 errorTable.add(item);
             }
-            if (lower.startsWith(ANNOTATION_TYPE_NORMAL) && !lower.startsWith(ANNOTATION_TYPE_NORMAL + STR_SPACE)) {
-                errorAnnotation.add(ANNOTATION_TYPE_NORMAL + item);
+            if (lower.startsWith(ANNOTATION_NORMAL) && !lower.startsWith(ANNOTATION_NORMAL + STR_SPACE)) {
+                errorAnnotation.add(ANNOTATION_NORMAL + item);
             }
         }
         total += errorNextLine.size();

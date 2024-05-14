@@ -204,7 +204,7 @@ public class BaseConst {
     public static final String NAME_UPDATE_MENU = "新版全量升级";
     public static final String NAME_REPAIR_LACK_EXT = "修复缺少日志";
     public static final String NAME_REPAIR_ERROR_EXT = "修复错误日志";
-    public static final String NAME_REPAIR_LOG_DIFF = "修正日志信息";
+    public static final String NAME_REPAIR_WORK_FLOW = "修正复核信息";
     public static final String NAME_REPAIR_OLD_MENU = "修正老版全量";
     public static final String NAME_REPAIR_NEW_MENU = "修正新版全量";
 
@@ -260,8 +260,8 @@ public class BaseConst {
     public static final String STR_QUOTES_SINGLE = "'";
     public static final String STR_BR = "</br>";
 
-    public final static String ANNOTATION_TYPE_NORMAL = "--";
-    public final static String ANNOTATION_TYPE_CONFIG = "#";
+    public final static String ANNOTATION_NORMAL = "--";
+    public final static String ANNOTATION_CONFIG = "#";
 
     public final static Integer FUNCTION_CONFIG_SET = 9999;
 
@@ -363,6 +363,7 @@ public class BaseConst {
     public static final String PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG = "systemLog";
     public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_OLD_MENU_LOG = "repairOldMenuLog";
     public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_NEW_MENU_LOG = "repairNewMenuLog";
+    public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_WORK_FLOW_LOG = "repairWorkFlowLog";
 
     public static final String MENU_TYPE_FUND_CODE = "1";
     public static final String MENU_TYPE_FUND_NAME = "自建业务";

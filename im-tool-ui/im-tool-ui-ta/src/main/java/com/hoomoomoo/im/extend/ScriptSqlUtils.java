@@ -16,6 +16,7 @@ public class ScriptSqlUtils {
     public static String basePathExt = "\\sql\\pub\\001initdata\\extradata\\";
     public static String basePathRouter = "\\front\\HUI1.0\\console-fund-ta-vue\\router\\modules\\";
     public static String baseMenu = "\\sql\\pub\\001initdata\\basedata\\07console-fund-ta-vue-menu.sql";
+    public static String workFlow = "\\sql\\pub\\001initdata\\basedata\\workflow\\tbworkflowsubtrans-fund.sql";
     public static String newUedPage = "\\sql\\pub\\001initdata\\basedata\\07console-fund-ta-vue-menu-new-ued.sql";
 
     public static String getSubTransCodeOpDir(String subTransCode, String defaultValue) {
@@ -112,6 +113,32 @@ public class ScriptSqlUtils {
         return getMenuElement(item, 0);
     }
 
+    public static String getTransCodeByWorkFlow(String item) {
+        return getMenuElement(item, 0);
+    }
+
+    public static String getSubTransCodeByWorkFlow(String item) {
+            return getMenuElement(item, 1);
+        }
+
+    public static String getSubTransCodeByWhole(String item) {
+        String transCode = null;
+        item = handleMenu(item);
+        if (item != null) {
+            String[] menuCodeInfo = item.split(",");
+            transCode = menuCodeInfo[0];
+            if (transCode.contains("'")) {
+                transCode = transCode.split("'")[1];
+            }
+            String subTransCode = menuCodeInfo[1];
+            if (subTransCode.contains("'")) {
+                subTransCode = subTransCode.split("'")[1];
+            }
+            transCode += " - " + subTransCode;
+        }
+        return transCode;
+    }
+
     public static String getMenuName(String item) {
         return getMenuElement(item, 4);
     }
@@ -204,24 +231,6 @@ public class ScriptSqlUtils {
             if (transCode.contains("'")) {
                 transCode = transCode.split("'")[1];
             }
-        }
-        return transCode;
-    }
-
-    public static String getSubTransCodeByWhole(String item) {
-        String transCode = null;
-        item = handleMenu(item);
-        if (item != null) {
-            String[] menuCodeInfo = item.split(",");
-            transCode = menuCodeInfo[0];
-            if (transCode.contains("'")) {
-                transCode = transCode.split("'")[1];
-            }
-            String subTransCode = menuCodeInfo[1];
-            if (subTransCode.contains("'")) {
-                subTransCode = subTransCode.split("'")[1];
-            }
-            transCode += " - " + subTransCode;
         }
         return transCode;
     }

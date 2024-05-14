@@ -155,7 +155,7 @@ public class BlankSetController implements Initializable {
                     continue;
                 }
                 if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
-                    item = item.replace(ANNOTATION_TYPE_NORMAL, STR_BLANK);
+                    item = item.replace(ANNOTATION_NORMAL, STR_BLANK);
                 }
                 OutputUtils.info(config, item + STR_NEXT_LINE);
             }

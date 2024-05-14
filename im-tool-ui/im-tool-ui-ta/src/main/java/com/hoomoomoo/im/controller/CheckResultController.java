@@ -67,6 +67,12 @@ public class CheckResultController implements Initializable {
             String res = basePath + ScriptSqlUtils.newUedPage.replace(".sql", ".res.sql");
             initTabByFile(check, "错误信息");
             initTabByFile(res, "脚本详情");
+        } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_WORK_FLOW_LOG.equals(pageType)) {
+            String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
+            String check = basePath + ScriptSqlUtils.workFlow.replace(".sql", ".check.sql");
+            String res = basePath + ScriptSqlUtils.workFlow.replace(".sql", ".res.sql");
+            initTabByFile(check, "错误信息");
+            initTabByFile(res, "脚本详情");
         }
     }
 

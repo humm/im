@@ -273,15 +273,15 @@ public class InitConfigUtils {
                     }
                 }
                 Iterator<String> iterator = functionMap.keySet().iterator();
-                String content = STR_NEXT_LINE + ANNOTATION_TYPE_CONFIG + STR_SPACE;
-                String noAuthContent = STR_NEXT_LINE + ANNOTATION_TYPE_CONFIG + STR_SPACE;
+                String content = STR_NEXT_LINE + ANNOTATION_CONFIG + STR_SPACE;
+                String noAuthContent = STR_NEXT_LINE + ANNOTATION_CONFIG + STR_SPACE;
                 int index = 0;
                 while (iterator.hasNext()) {
                     String functionCode = iterator.next();
                     if (Integer.valueOf(functionCode) < FUNCTION_CONFIG_SET) {
                         index++;
                         if (index % 15 == 0) {
-                            content += STR_NEXT_LINE + ANNOTATION_TYPE_CONFIG + STR_SPACE;
+                            content += STR_NEXT_LINE + ANNOTATION_CONFIG + STR_SPACE;
                         }
                         content += functionCode + STR_COLON + functionMap.get(functionCode).getFunctionName() + STR_SPACE;
                     } else {

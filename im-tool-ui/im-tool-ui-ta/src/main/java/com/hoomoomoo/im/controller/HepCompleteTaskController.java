@@ -235,11 +235,13 @@ public class HepCompleteTaskController extends BaseController implements Initial
         hepTaskDto.setSuggestion(TaCommonUtils.formatText(suggestionValue, true));
         HepTodoController hep = new HepTodoController();
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
-        HepTaskComponentDto hepTaskComponentDto = appConfigDto.getHepTaskComponentDto();
-        JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);
-        hep.dealTaskList(res, hepTaskComponentDto.getLogs(), hepTaskComponentDto.getDayTodo(), hepTaskComponentDto.getWeekTodo(),
-                hepTaskComponentDto.getWaitHandleTaskNum(), hepTaskComponentDto.getDayPublish(), hepTaskComponentDto.getWeekPublish(),
-                hepTaskComponentDto.getDayClose(), hepTaskComponentDto.getWeekClose(), hepTaskComponentDto.getTaskList(), true);
+        if (!OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
+            HepTaskComponentDto hepTaskComponentDto = appConfigDto.getHepTaskComponentDto();
+            JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);
+            hep.dealTaskList(res, hepTaskComponentDto.getLogs(), hepTaskComponentDto.getDayTodo(), hepTaskComponentDto.getWeekTodo(),
+                    hepTaskComponentDto.getWaitHandleTaskNum(), hepTaskComponentDto.getDayPublish(), hepTaskComponentDto.getWeekPublish(),
+                    hepTaskComponentDto.getDayClose(), hepTaskComponentDto.getWeekClose(), hepTaskComponentDto.getTaskList(), true);
+        }
         appConfigDto.getChildStage().close();
         appConfigDto.setChildStage(null);
     }

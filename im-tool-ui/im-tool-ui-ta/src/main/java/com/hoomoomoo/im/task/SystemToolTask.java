@@ -21,8 +21,8 @@ public class SystemToolTask implements Callable<SystemToolTaskParam> {
             case NAME_REPAIR_LACK_EXT:
                 systemToolTaskParam.getSystemToolController().doRepairLackLog();
                 break;
-            case NAME_REPAIR_LOG_DIFF:
-                systemToolTaskParam.getSystemToolController().doRepairLogDiff();
+            case NAME_REPAIR_WORK_FLOW:
+                systemToolTaskParam.getSystemToolController().doRepairWorkFlow();
                 break;
             case NAME_REPAIR_OLD_MENU:
                 systemToolTaskParam.getSystemToolController().doRepairOldMenu();

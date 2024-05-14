@@ -198,7 +198,7 @@ public class FileUtils {
      * @return:
      */
     public static void buildFileContent(List<String> fileContent, String content, boolean skipAnnotation) {
-        if (skipAnnotation && content.startsWith(ANNOTATION_TYPE_NORMAL)) {
+        if (skipAnnotation && content.startsWith(ANNOTATION_NORMAL)) {
             return;
         }
         fileContent.add(content);
@@ -217,7 +217,7 @@ public class FileUtils {
         if (StringUtils.isBlank(content) && StringUtils.isBlank(content.trim())) {
             return;
         }
-        if (content.startsWith(ANNOTATION_TYPE_CONFIG)) {
+        if (content.startsWith(ANNOTATION_CONFIG)) {
             return;
         }
         if (!content.contains(STR_EQUALS)) {
@@ -591,7 +591,7 @@ public class FileUtils {
         List<String> content = FileUtils.readNormalFile(confPath, true);
         if (CollectionUtils.isNotEmpty(content)) {
             for (String item : content) {
-                if (item.startsWith(ANNOTATION_TYPE_CONFIG)) {
+                if (item.startsWith(ANNOTATION_CONFIG)) {
                     continue;
                 }
                 updateContent.add(item);

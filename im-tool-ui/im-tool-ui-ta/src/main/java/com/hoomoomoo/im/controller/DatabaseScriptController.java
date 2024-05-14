@@ -126,7 +126,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                                     sql = sql.substring(0, index + 1);
                                 }
                                 String checkSql = sql.toLowerCase().trim();
-                                if (StringUtils.isBlank(checkSql) || checkSql.startsWith(ANNOTATION_TYPE_NORMAL)) {
+                                if (StringUtils.isBlank(checkSql) || checkSql.startsWith(ANNOTATION_NORMAL)) {
                                     continue;
                                 }
                                 boolean isProcedure = checkSql.startsWith("declare") || (checkSql.toLowerCase().contains("procedure") && checkSql.toLowerCase().contains("create"));
@@ -230,7 +230,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
     private String addAnnotation() {
         StringBuilder content = new StringBuilder();
         for (int i=0; i<100; i++) {
-            content.append(ANNOTATION_TYPE_NORMAL);
+            content.append(ANNOTATION_NORMAL);
         }
         return content.toString();
     }
