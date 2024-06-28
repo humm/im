@@ -298,7 +298,12 @@ public class CommonUtils {
         if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
             return new ArrayList<>();
         }
-        return licenseDto.getFunction();
+        List<FunctionDto> functionDtoList = licenseDto.getFunction();
+        if (isSuperUser()) {
+            String appCode = ConfigCache.getAppCodeCache();
+            functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+        }
+        return functionDtoList;
     }
 
     public static void showAuthFunction(MenuBar menuBar, TabPane functionTab) throws Exception {
@@ -777,5 +782,13 @@ public class CommonUtils {
             }
         }
         return functionDtoList;
+    }
+
+    public static String trimStrToBlank(String str) {
+        return str.trim().replaceAll(STR_S_SLASH, STR_BLANK);
+    }
+
+    public static String trimStrToSpace(String str) {
+        return str.trim().replaceAll(STR_S_SLASH, STR_SPACE);
     }
 }

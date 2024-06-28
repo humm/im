@@ -3,6 +3,7 @@ package com.hoomoomoo.im.extend;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -143,7 +144,7 @@ public class ScriptUpdateSql {
                 updateSql.append("update " + ScriptSqlUtils.getTableName(item) + " set ");
             }
             updateSql.append("\n");
-            item = item.replaceAll("\\s+", "");
+            item = CommonUtils.trimStrToBlank(item);
             sql = item.split("values");
             if (sql.length != 2) {
                 sql = item.split("values".toUpperCase());

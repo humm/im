@@ -33,6 +33,9 @@ public class SystemToolTask implements Callable<SystemToolTaskParam> {
             case NAME_REPAIR_ERROR_EXT:
                 systemToolTaskParam.getSystemToolController().doRepairErrorLog();
                 break;
+            case NAME_REPAIR_EXT:
+                systemToolTaskParam.getSystemToolController().doRepairExt();
+                break;
             case "updateMenu":
                 systemToolTaskParam.getSystemToolController().doUpdateMenu();
                 break;

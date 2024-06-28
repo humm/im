@@ -5,10 +5,7 @@ import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.task.GenerateSqlTask;
 import com.hoomoomoo.im.task.GenerateSqlTaskParam;
-import com.hoomoomoo.im.utils.LoggerUtils;
-import com.hoomoomoo.im.utils.OutputUtils;
-import com.hoomoomoo.im.utils.TaCommonUtils;
-import com.hoomoomoo.im.utils.TaskUtils;
+import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -141,8 +138,8 @@ public class GenerateSqlController extends BaseController implements Initializab
             int table = Integer.valueOf(tableNum.getText().trim());
             String databaseCodeCurrent = databaseCode.getText().trim();
             String tableCodeCurrent = tableCode.getText().trim();
-            String columnCurrent = column.getText().trim().replaceAll("\\s+", STR_SPACE);
-            String queryCurrent = query.getText().trim().replaceAll("\\s+", STR_SPACE);
+            String columnCurrent = CommonUtils.trimStrToSpace(column.getText());
+            String queryCurrent = CommonUtils.trimStrToSpace(query.getText());
             if (StringUtils.isBlank(databaseCodeCurrent)) {
                 OutputUtils.info(sql, String.format(MSG_SET, "分库代码"));
                 setProgress(-1);

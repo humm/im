@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.controller.SystemToolController;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -24,6 +25,7 @@ public class ScriptCompareSql {
     private String basePathRouter = "";
     private String baseMenu = "";
     private String newUedPage = "";
+    private String menuCondition = "";
 
     // 扫描文件数量
     private int extFileNum = 0;
@@ -92,6 +94,7 @@ public class ScriptCompareSql {
             basePathRouter = basePath + ScriptSqlUtils.basePathRouter;
             baseMenu = basePath + ScriptSqlUtils.baseMenu;
             newUedPage = basePath + ScriptSqlUtils.newUedPage;
+            menuCondition = basePath + ScriptSqlUtils.menuCondition;
             resultPath = resPath + "\\";
 
             String confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LACK_NEW_MENU_ALL.getPathConf());
@@ -162,7 +165,7 @@ public class ScriptCompareSql {
             if (StringUtils.isBlank(item)) {
                 continue;
             }
-            String[] element = item.trim().replaceAll("\\s+", " ").split(STR_SPACE);
+            String[] element = CommonUtils.trimStrToSpace(item).split(STR_SPACE);
             if (element.length >= 2) {
                 String checkType = element[0];
                 for (int i=1; i<element.length; i++) {
@@ -215,6 +218,8 @@ public class ScriptCompareSql {
         allMenuStat(appConfigDto);
         // 新版菜单合法性
         newMenuLegalCheck(appConfigDto);
+        // 开通脚本合法性
+        extLegalCheck(appConfigDto);
         // 检查结果汇总
         fileSummary(appConfigDto);
     }
@@ -551,6 +556,85 @@ public class ScriptCompareSql {
         menu.add(0, String.format(MSG_WAIT_HANDLE_NUM, existMenu.size()).replace("待处理", "菜单总数"));
         menu.add(0, String.format(MSG_WAIT_HANDLE_EVENT, ALL_MENU.getName()));
         FileUtils.writeFile(resultPath + ALL_MENU.getFileName(), menu, false);
+    }
+
+    /**
+     * 开通脚本合法性
+     */
+    private void extLegalCheck(AppConfigDto appConfigDto) throws IOException {
+        Map<String, Set<String>> resMap = new LinkedHashMap<>();
+        resMap.put("tsys_trans", new LinkedHashSet<>());
+        resMap.put("tsys_subtrans", new LinkedHashSet<>());
+        resMap.put("tsys_subtrans_ext", new LinkedHashSet<>());
+        resMap.put("tbworkflowsubtrans", new LinkedHashSet<>());
+        resMap.put("tbworkflowsubtransext", new LinkedHashSet<>());
+        File fileExt = new File(basePathExt);
+        for (File file : fileExt.listFiles()) {
+            checkMenuByFile(file, resMap);
+        }
+
+        checkMenuByFile(new File(menuCondition), resMap);
+
+        int total = 0;
+        List<String> res = new ArrayList<>();
+        Iterator<String> iterator = resMap.keySet().iterator();
+        while (iterator.hasNext()) {
+            String checkType = iterator.next();
+            Set<String> checkRes = resMap.get(checkType);
+            if (CollectionUtils.isEmpty(checkRes)) {
+                continue;
+            }
+            total += checkRes.size();
+            res.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, "存在错误表配置信息 " + checkType));
+            res.add(String.format(MSG_WAIT_HANDLE_NUM, checkRes.size()));
+            res.addAll(checkRes);
+
+        }
+        res.add(0, String.format(MSG_WAIT_HANDLE_NUM_0, total));
+        res.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_EXT_MENU.getName()));
+        FileUtils.writeFile(resultPath + LEGAL_EXT_MENU.getFileName(), res, false);
+    }
+
+    private void checkMenuByFile(File file, Map<String, Set<String>> res) throws IOException {
+        if (file.isDirectory()) {
+            for (File item : file.listFiles()) {
+                checkMenuByFile(item, res);
+            }
+        } else {
+            String fileName = file.getName();
+            String filePath = file.getPath();
+            if (!fileName.endsWith(FILE_TYPE_SQL)) {
+                return;
+            }
+            List<String> content = FileUtils.readNormalFile(filePath, false);
+            for (String ele : content) {
+                ele = CommonUtils.trimStrToSpace(ele).toLowerCase();
+                if (!ele.contains("insert into")) {
+                    continue;
+                }
+                if (ele.contains("tsys_trans ") || ele.contains("tsys_trans(") ) {
+                    res.get("tsys_trans").add(filePath);
+                    continue;
+                }
+                if (ele.contains("tsys_subtrans ") || ele.contains("tsys_subtrans(") ) {
+                    res.get("tsys_subtrans").add(filePath);
+                    continue;
+                }
+                if (ele.contains("tsys_subtrans_ext ") || ele.contains("tsys_subtrans_ext(") ) {
+                    res.get("tsys_subtrans_ext").add(filePath);
+                    continue;
+                }
+                if (ele.contains("tbworkflowsubtrans ") || ele.contains("tbworkflowsubtrans(") ) {
+                    res.get("tbworkflowsubtrans").add(filePath);
+                    continue;
+                }
+                if (ele.contains("tbworkflowsubtransext ") || ele.contains("tbworkflowsubtransext(") ) {
+                    res.get("tbworkflowsubtrans").add(filePath);
+                    continue;
+                }
+            }
+        }
+
     }
 
     /**

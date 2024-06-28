@@ -711,7 +711,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             updateSql.append("update " + ScriptSqlUtils.getTableName(item) + " set ");
         }
         updateSql.append(STR_NEXT_LINE);
-        item = item.replaceAll("\\s+", STR_BLANK);
+        item = CommonUtils.trimStrToBlank(item);
         String[] sql = item.split(BaseConst.KEY_VALUES);
         if (sql.length != 2) {
             sql = item.split(BaseConst.KEY_VALUES.toUpperCase());
@@ -778,7 +778,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 "values('fundRequestConfirmQuery', 'A', '0', 'dataSource', '数据源', '{\"dict\":\"F_C30022\"," +
                 "\"clearable\":\"0\"}', ' ', '0', '0', '0', '1', '0', '0', '1', '1' );\n";
         if (item.toLowerCase().contains("tbmenucondition")) {
-            item = item.replaceAll("\\s+", "");
+            item = CommonUtils.trimStrToBlank(item);
             String[] sql = item.split(BaseConst.KEY_VALUES);
             if (sql.length != 2) {
                 sql = item.split(BaseConst.KEY_VALUES.toUpperCase());

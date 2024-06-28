@@ -140,7 +140,7 @@
                                                      </padding>
                                                  </Button>
 
-                                                 <Button layoutX="400.0" layoutY="75" mnemonicParsing="false" onAction="#skipRepairOldMenu" prefWidth="100.0" text="忽略老版全量">
+                                                 <Button layoutX="400.0" layoutY="15" mnemonicParsing="false" onAction="#skipRepairOldMenu" prefWidth="100.0" text="忽略老版全量">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
@@ -163,6 +163,17 @@
                                                      </padding>
                                                  </Button>
                                                  <Button layoutX="265.0" layoutY="135" mnemonicParsing="false" onAction="#repairWorkFlowLog" prefWidth="100.0" text="查看错误信息">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+
+                                                 <Button layoutX="130.0" layoutY="195" mnemonicParsing="false" onAction="#repairExt" prefWidth="100.0" text="修正开通脚本">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+                                                 <Button layoutX="265.0" layoutY="195" mnemonicParsing="false" onAction="#skipRepairExt" prefWidth="100.0" text="忽略开通脚本">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>

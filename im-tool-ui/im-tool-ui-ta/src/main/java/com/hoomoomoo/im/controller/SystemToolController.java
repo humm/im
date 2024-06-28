@@ -35,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.*;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE_EXTEND.REPAIR_EXT;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE_EXTEND.REPAIR_OLD_MENU;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
 
@@ -416,6 +417,46 @@ public class SystemToolController implements Initializable {
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, e.getMessage()));
+        } finally {
+            executeFlag = false;
+        }
+    }
+
+    @FXML
+    void skipRepairExt(ActionEvent event) throws Exception {
+        String title = getTitle(REPAIR_EXT.getName());
+        TaCommonUtils.openBlankChildStage(REPAIR_EXT.getIndex(), title);
+        addLog(title);
+    }
+
+    @FXML
+    void repairExt(ActionEvent event) throws Exception {
+        if (executeFlag) {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, "修复中 ··· 请稍后 ···"));
+            return;
+        }
+        executeFlag = true;
+        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
+        try {
+            TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_REPAIR_EXT)));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+    public void doRepairExt() {
+        try {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, "修复开始"));
+            showScheduleInfo(NAME_REPAIR_EXT, "修复");
+            ScriptRepairSql.repairExt();
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, "修复结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_REPAIR_EXT);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, e.getMessage()));
         } finally {
             executeFlag = false;
         }

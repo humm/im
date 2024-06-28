@@ -3,6 +3,7 @@ package com.hoomoomoo.im.extend;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.MenuTransitionDto;
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
@@ -67,8 +68,8 @@ public class ScriptRepairSql {
                     subTransCode = STR_BLANK;
                 }
             } else {
-                // 实际路径 无需处理
-                addSubTransExt(transCode, subTransCode, null, item);
+                // 实际路径 开通脚本无需处理
+                // addSubTransExt(transCode, subTransCode, null, item);
             }
         }
     }
@@ -99,7 +100,7 @@ public class ScriptRepairSql {
                     repair++;
                     appConfigDto.setRepairSchedule(repair + " / " + total);
                     transCode = trans[0];
-                    String[] other = trans[1].trim().replaceAll("\\s+", STR_SPACE).split(STR_SPACE);
+                    String[] other = CommonUtils.trimStrToSpace(trans[1]).split(STR_SPACE);
                     if (other.length < 3) {
                         continue;
                     }
@@ -112,7 +113,7 @@ public class ScriptRepairSql {
                     subTransCode = STR_BLANK;
                 }
             } else {
-                // 实际路径 无需处理
+                // 实际路径 开通脚本无需处理
                 // updateSubTransExt(transCode, subTransCode, opDir, item);
             }
         }
@@ -220,6 +221,131 @@ public class ScriptRepairSql {
         return ext.toString();
     }
 
+    public static Set<String> initRepairExtSkip() throws Exception {
+        List<String> skipContent = FileUtils.readNormalFile(FileUtils.getFilePath(SQL_CHECK_TYPE_EXTEND.REPAIR_EXT.getPathConf()), false);
+        Set<String> skip = new HashSet<>();
+        if (CollectionUtils.isNotEmpty(skipContent)) {
+            for (String item : skipContent) {
+                if (StringUtils.isBlank(item)) {
+                    continue;
+                }
+                String[] ele = CommonUtils.trimStrToSpace(item).split(STR_SPACE);
+                if (ele.length > 0) {
+                    String sub = STR_HYPHEN_1;
+                    if (item.contains(FILE_TYPE_SQL)) {
+                        sub = STR_BLANK;
+                    } else if (ele.length > 1) {
+                        sub += ele[1];
+                    }
+                    skip.add(ele[0] + sub);
+                }
+            }
+        }
+        return skip;
+    }
+
+    public static void repairExt() throws Exception {
+        repairFileNum = 0;
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        File fileExt = new File(appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.basePathExt);
+        for (File file : fileExt.listFiles()) {
+            repairExtByFile(appConfigDto, file, initRepairExtSkip());
+        }
+    }
+
+    private static void repairExtByFile(AppConfigDto appConfigDto, File file, Set<String> skip) throws Exception {
+        int batchNum = Integer.valueOf(appConfigDto.getSystemToolScriptRepairBatchNum());
+        if (batchNum > 0 && repairFileNum > batchNum) {
+            return;
+        }
+        if (file.isDirectory()) {
+            for (File item : file.listFiles()) {
+                repairExtByFile(appConfigDto, item, skip);
+            }
+        } else {
+            String fileName = file.getName();
+            if (!fileName.endsWith(FILE_TYPE_SQL)) {
+                return;
+            }
+            if (skip.contains(fileName)) {
+                return;
+            }
+            List<String> item = FileUtils.readNormalFile(file.getPath(), false);
+            boolean modifyTrans = deleteSql(item, "tsys_trans", skip);
+            boolean modifySubtrans = deleteSql(item, "tsys_subtrans", skip);
+            boolean modifySubtransExt = deleteSql(item, "tsys_subtrans_ext", skip);
+            boolean modifyWorkFlow = deleteSql(item, "tbworkflowsubtrans", skip);
+            boolean modifyWorkFlowExt = deleteSql(item, "tbworkflowsubtransext", skip);
+            if (modifyTrans || modifySubtrans || modifySubtransExt || modifyWorkFlow || modifyWorkFlowExt) {
+                FileUtils.writeFile(file.getPath(), item, false);
+                repairFileNum++;
+            }
+        }
+    }
+
+    private static boolean deleteSql(List<String> item, String tableName, Set<String> skip) {
+        Iterator<String> iterator = item.listIterator();
+        boolean modify = false;
+        boolean endFlag = true;
+        boolean subTrans = "tsys_subtrans".equals(tableName);
+        while (iterator.hasNext()) {
+            String element = iterator.next();
+            String ele = element.toLowerCase().trim();
+            if (ele.contains(" " + tableName + " ")) {
+                if (ele.contains("delete ")) {
+                    endFlag = true;
+                } else if (ele.contains("insert into")) {
+                    endFlag = false;
+                }
+                modify = true;
+                iterator.remove();
+            } else {
+                if (!endFlag && (ele.contains("values ") || ele.contains("values("))) {
+                    modify = true;
+                    endFlag = true;
+                    if (subTrans) {
+                        String subTransCode = ScriptSqlUtils.getSubTransCodeByWhole(element);
+                        if (skip.contains(subTransCode)) {
+                            continue;
+                        }
+                    }
+                    iterator.remove();
+                }
+            }
+        }
+        if (!modify) {
+            return false;
+        }
+        iterator = item.listIterator();
+        boolean hasBlank = false;
+        while (iterator.hasNext()) {
+            String ele = iterator.next().toLowerCase().trim();
+            if (hasBlank && StringUtils.isBlank(ele)) {
+                iterator.remove();
+                continue;
+            }
+            if (StringUtils.isBlank(ele)) {
+                hasBlank = true;
+            } else {
+                hasBlank = false;
+            }
+        }
+        for (int i=0; i<item.size(); i++) {
+            String ele = item.get(i).trim();
+            String eleLower = CommonUtils.trimStrToBlank(ele);
+            if (eleLower.startsWith("values(") && eleLower.split(STR_COMMA).length == 11) {
+                String prevEle = CommonUtils.trimStrToSpace(item.get(i - 1)).trim();
+                String transCode = ScriptSqlUtils.getTransCode(ele);
+                String subTransCode = ScriptSqlUtils.getSubTransCode(ele);
+                if (!prevEle.startsWith("insert into")) {
+                    String delete = "delete from tsys_subtrans where trans_code = '" + transCode + "' and sub_trans_code = '" + subTransCode + "';" + STR_NEXT_LINE;
+                    delete += "insert into tsys_subtrans (trans_code, sub_trans_code, sub_trans_name, rel_serv, rel_url, ctrl_flag, login_flag, remark, ext_field_1, ext_field_2, ext_field_3)" + STR_NEXT_LINE;
+                    item.set(i, delete + ele);
+                }
+            }
+        }
+        return true;
+    }
     public static void repairWorkFlow() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String workFlowPath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.workFlow;
@@ -230,7 +356,7 @@ public class ScriptRepairSql {
             if (!lowerEle.contains("insert") && !lowerEle.contains("values")) {
                 continue;
             }
-            if (lowerEle.contains(" delete ")) {
+            if (lowerEle.contains("delete ")) {
                 continue;
             }
             content.append(ele);
@@ -262,18 +388,36 @@ public class ScriptRepairSql {
             getWorkFlowByFile(appConfigDto, file);
         }
 
-        Iterator<String> iterator = totalWorkFlow.keySet().iterator();
+        Iterator<String> iterator = workFlowCache.keySet().iterator();
         while (iterator.hasNext()) {
             String transCode = iterator.next();
-            if (workFlowCache.containsKey(transCode)) {
-                totalWorkFlow.get(transCode).putAll(workFlowCache.get(transCode));
+            Map<String, String> flow = workFlowCache.get(transCode);
+            if (totalWorkFlow.containsKey(transCode)) {
+                Iterator<String> flowIterator = flow.keySet().iterator();
+                while (flowIterator.hasNext()) {
+                    String flowSubTransCode = flowIterator.next();
+                    if (!totalWorkFlow.get(transCode).containsKey(flowSubTransCode)) {
+                        totalWorkFlow.get(transCode).put(flowSubTransCode, flow.get(flowSubTransCode));
+                    }
+                }
+            } else {
+                totalWorkFlow.put(transCode, flow);
             }
         }
-        Iterator<String> extIterator = totalWorkExtFlow.keySet().iterator();
+        Iterator<String> extIterator = workFlowExtCache.keySet().iterator();
         while (extIterator.hasNext()) {
             String transCode = extIterator.next();
-            if (workFlowExtCache.containsKey(transCode)) {
-                totalWorkExtFlow.get(transCode).putAll(workFlowExtCache.get(transCode));
+            Map<String, String> flow = workFlowExtCache.get(transCode);
+            if (totalWorkExtFlow.containsKey(transCode)) {
+                Iterator<String> flowIterator = flow.keySet().iterator();
+                while (flowIterator.hasNext()) {
+                    String flowSubTransCode = flowIterator.next();
+                    if (!totalWorkExtFlow.get(transCode).containsKey(flowSubTransCode)) {
+                        totalWorkExtFlow.get(transCode).put(flowSubTransCode, flow.get(flowSubTransCode));
+                    }
+                }
+            } else {
+                totalWorkExtFlow.put(transCode, workFlowExtCache.get(transCode));
             }
         }
 
@@ -288,7 +432,7 @@ public class ScriptRepairSql {
                 continue;
             }
             if (itemLower.startsWith(MENU_TIPS_PART) && itemLower.contains("三级菜单")) {
-                String[] element = item.trim().replaceAll("\\s+", " ").split(STR_SPACE);
+                String[] element = CommonUtils.trimStrToSpace(item).split(STR_SPACE);
                 if (element.length == 7) {
                     String groupCode = element[4].split("\\|")[0];
                     menuGroupTitle.put(groupCode, item);
@@ -316,6 +460,7 @@ public class ScriptRepairSql {
         res.add("-- 禁止配置脚本无规律放置 按菜单层级放置");
         res.add(STR_BLANK);
         res.add("delete from tbworkflowsubtrans where trans_code like 'fund%';");
+        res.add("delete from tbworkflowsubtransext where trans_code like 'fund%';");
         res.add(STR_BLANK);
         res.add(STR_BLANK);
 
@@ -423,7 +568,7 @@ public class ScriptRepairSql {
                 if (!lowerEle.contains("insert") && !lowerEle.contains("values")) {
                     continue;
                 }
-                if (lowerEle.contains(" delete ")) {
+                if (lowerEle.contains("delete ")) {
                     continue;
                 }
                 content.append(ele);
@@ -727,8 +872,8 @@ public class ScriptRepairSql {
             }
             String menuCode = ScriptSqlUtils.getMenuCode(item);
             String subTransCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
-            String itemLower = item.toLowerCase().replace("--", "").replaceAll("\\s+", STR_SPACE).trim();
-            if (itemLower.startsWith("insert into tsys_menu (")) {
+            String itemLower = CommonUtils.trimStrToSpace(item.toLowerCase().replace("--", ""));
+            if (itemLower.startsWith("insert into tsys_menu (") || itemLower.startsWith("insert into tsys_menu(")) {
                 String parentCode = ScriptSqlUtils.getParentCode(item);
                 if ("bizroot".equals(parentCode)) {
                     if (!rootMenu.containsKey(menuCode)) {
@@ -741,11 +886,11 @@ public class ScriptRepairSql {
                 } else if (!otherMenu.containsKey(menuCode)){
                     otherMenu.put(menuCode, item);
                 }
-            } else if (itemLower.startsWith("insert into tsys_trans (")) {
+            } else if (itemLower.startsWith("insert into tsys_trans (") || itemLower.startsWith("insert into tsys_trans(")) {
                 if (!menuTrans.containsKey(menuCode)) {
                     menuTrans.put(menuCode, item);
                 }
-            } else if (itemLower.startsWith("insert into tsys_subtrans (")) {
+            } else if (itemLower.startsWith("insert into tsys_subtrans (") || itemLower.startsWith("insert into tsys_subtrans(")) {
                 exist = false;
                 List<String> ele = new ArrayList<>();
                 if (menuSubTrans.containsKey(menuCode)) {
@@ -764,7 +909,7 @@ public class ScriptRepairSql {
                     ele.add(item);
                 }
                 menuSubTrans.put(menuCode, ele);
-            } else if (itemLower.startsWith("insert into tsys_subtrans_ext (")) {
+            } else if (itemLower.startsWith("insert into tsys_subtrans_ext (") || itemLower.startsWith("insert into tsys_subtrans_ext(")) {
                 exist = false;
                 List<String> ele = new ArrayList<>();
                 if (menuSubTransExt.containsKey(menuCode)) {
@@ -785,6 +930,45 @@ public class ScriptRepairSql {
                 menuSubTransExt.put(menuCode, ele);
             }
         }
+
+        String menuConditionPath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.menuCondition;
+        List<String> menuConditionList = FileUtils.readNormalFile(menuConditionPath, false);
+        StringBuilder menuCondition = new StringBuilder();
+        for (int i=0; i<menuConditionList.size(); i++) {
+            String item = menuConditionList.get(i).trim();
+            String itemLower = item.toLowerCase();
+            if (StringUtils.isBlank(item)) {
+                continue;
+            }
+            if (!itemLower.contains("insert") && !itemLower.contains("values")) {
+                continue;
+            }
+            menuCondition.append(item);
+        }
+        String[] menuConditionBase = menuCondition.toString().split(STR_SEMICOLON);
+        for (String ele : menuConditionBase) {
+            if (!ele.toLowerCase().contains("tsys_subtrans")) {
+                continue;
+            }
+            String transCode = ScriptSqlUtils.getTransCodeByWhole(ele);
+            String subTransCode = ScriptSqlUtils.getSubTransCodeByWhole(ele);
+            boolean has = false;
+            List<String> subList = menuSubTrans.get(transCode);
+            if (CollectionUtils.isEmpty(subList)) {
+                continue;
+            }
+            inner: for (String sub : subList) {
+                String subTransCodeTmp = ScriptSqlUtils.getSubTransCodeByWhole(sub);
+                if (subTransCode.equals(subTransCodeTmp)) {
+                    has = true;
+                    break inner;
+                }
+            }
+            if (!has) {
+                subList.add(ele);
+            }
+        }
+
         Iterator<String> firstMenuIterator = firstMenu.keySet().iterator();
         while (firstMenuIterator.hasNext()) {
             String firstMenuCode = firstMenuIterator.next();
@@ -986,6 +1170,43 @@ public class ScriptRepairSql {
         res.add(String.format(BLOCK_LINE_INDEX_TIPS, "  交易码  tsys_trans  "));
         res.add(String.format(BLOCK_LINE_INDEX_TIPS, "子交易码 tsys_subtrans"));
         res.add(BLOCK_LINE_INDEX);
+
+        Set<String> skip = initRepairExtSkip();
+        boolean update;
+        boolean nextLine = false;
+        for (int i=0; i<transAndSubTrans.size(); i++) {
+            update = false;
+            nextLine = transAndSubTrans.get(i).endsWith(STR_NEXT_LINE);
+            String[] ele = transAndSubTrans.get(i).trim().split(STR_SEMICOLON);
+            for (int j=0; j<ele.length; j++) {
+                String item = ele[j];
+                String subTransCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
+                if (skip.contains(subTransCode)) {
+                    update = true;
+                    item = item.replace("insert into", "-- insert into");
+                    item = item.replace("INSERT INTO", "-- INSERT INTO");
+                    item = item.replace("values(", "-- values(");
+                    item = item.replace("VALUES(", "-- VALUES(");
+                    item = item.replace("values (", "-- values (");
+                    item = item.replace("VALUES (", "-- VALUES (");
+                    ele[j] = item;
+                }
+            }
+            if (update) {
+                StringBuilder after = new StringBuilder();
+                for (String item : ele) {
+                    String itemLower = CommonUtils.trimStrToSpace(item.toLowerCase());
+                    after.append(item);
+                    if (itemLower.contains(" insert into") || itemLower.contains(" values") || itemLower.contains(" delete")) {
+                        after.append(STR_SEMICOLON);
+                    }
+                }
+                if (nextLine) {
+                    after.append(STR_NEXT_LINE);
+                }
+                transAndSubTrans.set(i, after.toString());
+            }
+        }
         res.addAll(transAndSubTrans);
 
         res.add(STR_BLANK);
@@ -1128,7 +1349,7 @@ public class ScriptRepairSql {
                 if (StringUtils.isBlank(item)) {
                     continue;
                 }
-                String[] element = item.trim().replaceAll("\\s+", STR_SPACE).split(STR_SPACE);
+                String[] element = CommonUtils.trimStrToSpace(item).split(STR_SPACE);
                 if (element.length >= 2) {
                     String type = element[0];
                     if (!cache.containsKey(type)) {
@@ -1267,7 +1488,7 @@ public class ScriptRepairSql {
             List<String> subTransExtend = new ArrayList<>();
             List<String> subTransExtExtend = new ArrayList<>();
             for (String item : menuInfo) {
-                String itemLower = item.trim().toLowerCase().replaceAll("\\s+", STR_SPACE);
+                String itemLower = CommonUtils.trimStrToSpace(item.trim().toLowerCase());
                 if (!item.contains("--")) {
                     item = "-- " + item;
                     itemLower = "-- " + itemLower;
