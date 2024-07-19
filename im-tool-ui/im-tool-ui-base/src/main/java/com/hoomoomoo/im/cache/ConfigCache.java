@@ -247,6 +247,7 @@ public class ConfigCache {
                 }
             }
         }
+
         LoggerUtils.appStartInfo(String.format(MSG_ENCRYPT, NAME_CONFIG_USER));
 
         String scriptUpdateKey = SCRIPT_UPDATE.getCode() + STR_COLON + SCRIPT_UPDATE.getName();
@@ -256,8 +257,8 @@ public class ConfigCache {
         if (CommonUtils.isSuperUser()) {
             functionDtoList = CommonUtils.functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
         }
+
         // 配置文件参数参数项控制
-        content = FileUtils.readNormalFile(confPath, false);
         Set<String> authConf = new HashSet<>();
         for (FunctionDto functionDto : functionDtoList) {
             MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());

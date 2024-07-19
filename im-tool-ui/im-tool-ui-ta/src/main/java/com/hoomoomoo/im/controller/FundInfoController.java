@@ -127,9 +127,9 @@ public class FundInfoController extends BaseController implements Initializable 
                 STD = true;
             }
             // 生成基金配置数据
-            String fileName = "15fund-product-field.oracle.sql";
+            String fileName = "15fund-product-field.sql";
             if (STD) {
-                fileName = "15fund-product-field-std.oracle.sql";
+                fileName = "15fund-product-field-std.sql";
             }
             String productPath = appConfigDto.getFundGeneratePath() + "/" + fileName;
             File productFile = new File(productPath);
@@ -220,7 +220,12 @@ public class FundInfoController extends BaseController implements Initializable 
             }
             bufferedWriter.write("commit;\n");
             bufferedWriter.close();
-
+            List<String> logList = new ArrayList(3);
+            LoggerUtils.writeFundInfo(date, logList);
+            infoMsg("执行完成");
+            if (true) {
+                return;
+            }
             List<String> content = FileUtils.readNormalFile(productPath, false);
 
             infoMsg("mysql版本生成 开始");
@@ -249,7 +254,6 @@ public class FundInfoController extends BaseController implements Initializable 
             }
             FileUtils.writeFile(productPathPg, content, false);
             infoMsg("pg版本生成 结束");
-            List<String> logList = new ArrayList(3);
             logList.add(productPath);
             logList.add(productPathPg);
             logList.add(productPathMysql);
@@ -317,6 +321,24 @@ public class FundInfoController extends BaseController implements Initializable 
     }
 
     /**
+     * 获取表格实际值
+     *
+     * @param sheet
+     * @param i
+     * @param j
+     * @author: humm23693
+     * @date: 2021/04/17
+     * @return:
+     */
+    private String getCellRealToNumber(Sheet sheet, int i, int j) {
+        if (sheet.getCell(i, j).getContents().equals("")) {
+            return STR_0;
+        } else {
+            return sheet.getCell(i, j).getContents();
+        }
+    }
+
+    /**
      * @param sheet
      * @author: 初始化模板信息
      * @date: 2021/04/21
@@ -356,7 +378,7 @@ public class FundInfoController extends BaseController implements Initializable 
             if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbdataelement (id, table_name, table_kind, field_code, persistence_flag, dict_key, rel_table, rel_field, rel_condition, reserve) \n-- values (";
             }
-            sql += getCell(sheet, 1, i) + ","
+            sql += getCellRealToNumber(sheet, 1, i) + ","
                     + getCell(sheet, 2, i) + ","
                     + getCell(sheet, 3, i) + ","
                     + getCell(sheet, 4, i) + ","
@@ -385,8 +407,8 @@ public class FundInfoController extends BaseController implements Initializable 
         bufferedWriter.write("-- " + CURRENT_TEMPLATE_NAME + " 头部信息 开始 \n");
         bufferedWriter.write("delete from tbprdtemplate where prd_type = '5' and template_code = '" + CURRENT_TEMPLATE_CODE + "';\n");
         bufferedWriter.write("delete from tbtemplaterelgroup where template_code = '" + CURRENT_TEMPLATE_CODE + "';\n");
-        bufferedWriter.write("delete from tbpageelement where id like '" + CURRENT_TEMPLATE_CODE + "%';\n");
-        bufferedWriter.write("delete from tbelementgroup where id like '" + CURRENT_TEMPLATE_CODE + "%';\n");
+        bufferedWriter.write("delete from tbpageelement where cast(id as char(30)) like '" + CURRENT_TEMPLATE_CODE + "%';\n");
+        bufferedWriter.write("delete from tbelementgroup where cast(id as char(30)) like '" + CURRENT_TEMPLATE_CODE + "%';\n");
         bufferedWriter.write("-- " + CURRENT_TEMPLATE_NAME + " 头部信息 结束 \n\n");
         infoMsg(CURRENT_TEMPLATE_NAME + " 头部信息生成 结束");
     }
@@ -511,8 +533,8 @@ public class FundInfoController extends BaseController implements Initializable 
             if (getCellReal(sheet, 0, i).contains(BaseConst.ANNOTATION_NORMAL)) {
                 sql = "-- insert into tbelementgroup (id,parent_id,group_code,group_name,group_kind,group_label ,control_kind ,true_value,control_table,control_order,on_show,on_hide,on_init,on_submit,reserve) \n-- values (";
             }
-            sql += getCell(sheet, 1, i) + ","
-                    + getCell(sheet, 2, i) + ","
+            sql += getCellRealToNumber(sheet, 1, i) + ","
+                    + getCellRealToNumber(sheet, 2, i) + ","
                     + getCell(sheet, 3, i) + ","
                     + getCell(sheet, 4, i) + ","
                     + getCell(sheet, 5, i) + ","
@@ -520,7 +542,7 @@ public class FundInfoController extends BaseController implements Initializable 
                     + getCell(sheet, 7, i) + ","
                     + getCell(sheet, 8, i) + ","
                     + getCell(sheet, 9, i) + ","
-                    + getCell(sheet, 10, i) + ","
+                    + getCellRealToNumber(sheet, 10, i) + ","
                     + getCell(sheet, 11, i) + ","
                     + getCell(sheet, 12, i) + ","
                     + getCell(sheet, 13, i) + ","
@@ -559,12 +581,12 @@ public class FundInfoController extends BaseController implements Initializable 
             if (STD) {
                 sql = sql.replace(")", ", flag, reserve, app_group)");
             }
-            sql += getCell(sheet, 1, i) + ","
+            sql += getCellRealToNumber(sheet, 1, i) + ","
                     + getCell(sheet, 2, i) + ","
                     + getCell(sheet, 3, i) + ","
                     + getCell(sheet, 4, i) + ","
-                    + getCell(sheet, 5, i) + ","
-                    + getCell(sheet, 6, i);
+                    + getCellRealToNumber(sheet, 5, i) + ","
+                    + getCellRealToNumber(sheet, 6, i);
             if (STD) {
                 sql += "," + getCell(sheet, 7, i) + "," + getCell(sheet, 8, i) + "," + getCell(sheet, 9, i);
             }
@@ -604,10 +626,10 @@ public class FundInfoController extends BaseController implements Initializable 
             // 获取component_kind
             String componentKind = getComponentKind(sheet.getName(), getCellReal(sheet, 5, i));
 
-            sql += getCell(sheet, 1, i) + ","
-                    + getCell(sheet, 2, i) + ","
-                    + getCell(sheet, 3, i) + ","
-                    + getCell(sheet, 4, i) + ","
+            sql += getCellRealToNumber(sheet, 1, i) + ","
+                    + getCellRealToNumber(sheet, 2, i) + ","
+                    + getCellRealToNumber(sheet, 3, i) + ","
+                    + getCellRealToNumber(sheet, 4, i) + ","
                     + getCell(sheet, 5, i) + ","
                     + getCell(sheet, 6, i) + ","
                     + componentKind + ","
@@ -630,10 +652,10 @@ public class FundInfoController extends BaseController implements Initializable 
                     + getCell(sheet, 24, i) + ","
                     + getCell(sheet, 25, i) + ","
                     + getCell(sheet, 26, i) + ","
-                    + getCell(sheet, 27, i) + ","
-                    + getCell(sheet, 28, i) + ","
-                    + getCell(sheet, 29, i) + ","
-                    + getCell(sheet, 30, i) + ","
+                    + getCellRealToNumber(sheet, 27, i) + ","
+                    + getCellRealToNumber(sheet, 28, i) + ","
+                    + getCellRealToNumber(sheet, 29, i) + ","
+                    + getCellRealToNumber(sheet, 30, i) + ","
                     + getCell(sheet, 31, i);
             if (STD) {
                 sql += "," + getCell(sheet, 32, i);
