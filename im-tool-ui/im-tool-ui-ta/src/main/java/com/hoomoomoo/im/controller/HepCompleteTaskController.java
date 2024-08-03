@@ -52,6 +52,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
     private TextArea editDescription;
 
     @FXML
+    private TextArea selfTestDesc;
+
+    @FXML
     private TextArea suggestion;
 
     @FXML
@@ -124,23 +127,36 @@ public class HepCompleteTaskController extends BaseController implements Initial
             if (editDescriptionValue.indexOf(msg) != -1) {
                 continue;
             }
-            editDescriptionValue.append(msg);
-            if (i != logDtoList.size() - 1) {
+            editDescriptionValue.append(STR_SLASH_T + msg);
+            if (i != logDtoList.size() - 1 || logDtoList.size() == 1) {
                 editDescriptionValue.append(STR_NEXT_LINE);
             }
         }
         OutputUtils.repeatInfo(modifiedFile, modifiedFileValue.toString());
-        OutputUtils.repeatInfo(editDescription, editDescriptionValue.toString());
+        OutputUtils.repeatInfo(editDescription, editDescriptionValue.toString().replaceAll(STR_SLASH_T, STR_BLANK));
+        if (StringUtils.isBlank(editDescriptionValue)) {
+            editDescriptionValue.append(STR_NEXT_LINE);
+        }
         StringBuilder suggestionMsg = new StringBuilder();
         suggestionMsg.append("【功能入口】\n");
         suggestionMsg.append("\t\n");
         suggestionMsg.append("【测试准备】\n");
         suggestionMsg.append("\t更新ta-web-manager-fund-core等前台相关包及console包，执行升级脚本\n");
         suggestionMsg.append("【测试场景及预期结果】\n");
-        suggestionMsg.append("\t" + editDescriptionValue).append(STR_NEXT_LINE);
+        suggestionMsg.append(editDescriptionValue);
         suggestionMsg.append("【影响范围】\n");
+        suggestionMsg.append("\t\n");
         suggestionMsg.append("【其他】");
         OutputUtils.repeatInfo(suggestion, suggestionMsg.toString());
+        StringBuilder selfTestDescMsg = new StringBuilder();
+        selfTestDescMsg.append("【是否已自测(必填)】\n");
+        selfTestDescMsg.append("\t已自测\n");
+        selfTestDescMsg.append("【自测场景说明(必填)】\n");
+        selfTestDescMsg.append("\t\n");
+        selfTestDescMsg.append("【自测未覆盖范围(必填)】\n");
+        selfTestDescMsg.append("\t无\n");
+        selfTestDescMsg.append("【其他】");
+        OutputUtils.repeatInfo(selfTestDesc, selfTestDescMsg.toString());
         if (StringUtils.isBlank(modifiedFileValue)) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("未查询到修改记录信息,请检查"));
         } else {
@@ -201,6 +217,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         String modifiedFileValue = modifiedFile.getText();
         String editDescriptionValue = editDescription.getText();
         String suggestionValue = suggestion.getText();
+        String selfTestDescValue = selfTestDesc.getText();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
         if (StringUtils.isBlank(realRorkloadValue)) {
@@ -219,12 +236,15 @@ public class HepCompleteTaskController extends BaseController implements Initial
             if (StringUtils.isBlank(suggestionValue)) {
                 tips.append("【测试建议】").append(STR_NEXT_LINE);
             }
+            if (StringUtils.isBlank(selfTestDescValue)) {
+                tips.append("【自测说明】").append(STR_NEXT_LINE);
+            }
         }
         if (StringUtils.isNotBlank(tips)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("校验失败，如下信息不能为空");
             alert.setHeaderText(tips.toString());
-            Optional<ButtonType> res = alert.showAndWait();
+            alert.showAndWait();
             return;
         }
 
@@ -233,6 +253,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         hepTaskDto.setModifiedFile(TaCommonUtils.formatText(modifiedFileValue, true));
         hepTaskDto.setEditDescription(TaCommonUtils.formatText(editDescriptionValue, true));
         hepTaskDto.setSuggestion(TaCommonUtils.formatText(suggestionValue, true));
+        hepTaskDto.setSelfTestDesc(TaCommonUtils.formatTextOnlyBr(selfTestDescValue));
         HepTodoController hep = new HepTodoController();
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
         if (!OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {

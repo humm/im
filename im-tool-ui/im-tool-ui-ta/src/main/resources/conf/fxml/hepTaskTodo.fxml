@@ -96,14 +96,14 @@
                                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                    AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="taskNumber" editable="false" prefWidth="145"
-                                                             sortable="false" text="任务单编号">
+                                                <!--<TableColumn id="taskNumber" editable="false" prefWidth="145"
+                                                             sortable="false" text="单号">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="taskNumber"/>
                                                     </cellValueFactory>
-                                                </TableColumn>
+                                                </TableColumn>-->
                                                 <TableColumn id="name" editable="false" prefWidth="680"
-                                                             sortable="false" text="任务单名称">
+                                                             sortable="false" text="名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>
                                                     </cellValueFactory>
@@ -138,12 +138,12 @@
                                                         <PropertyValueFactory property="publishDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="customer" editable="false" prefWidth="150"
+                                                <!--<TableColumn id="customer" editable="false" prefWidth="150"
                                                              sortable="false" text="客户名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="customer"/>
                                                     </cellValueFactory>
-                                                </TableColumn>
+                                                </TableColumn>-->
                                                 <TableColumn id="estimateFinishDate" editable="false"
                                                              prefWidth="120" style="-fx-alignment: center;"
                                                              sortable="false" text="完成日期">
@@ -151,11 +151,18 @@
                                                         <PropertyValueFactory property="estimateFinishDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="estimateFinishTime" editable="false"
+                                                <!--<TableColumn id="estimateFinishTime" editable="false"
                                                              prefWidth="90" style="-fx-alignment: center;"
                                                              sortable="false" text="完成时间">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="estimateFinishTime"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>-->
+                                                <TableColumn id="oriCloseDate" editable="false"
+                                                             prefWidth="120" style="-fx-alignment: center;"
+                                                             sortable="false" text="封版日期">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="oriCloseDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
                                                 <TableColumn id="productName" editable="false" prefWidth="290"
@@ -179,7 +186,7 @@
                                                             prefHeight="100.0" prefWidth="160.0">
                                                     <Label layoutX="15.0" layoutY="10.0" text="查询条件"
                                                            style="-fx-font-weight: bold; -fx-font-size: 15;"/>
-                                                    <Label layoutX="15.0" layoutY="55.0" text="编号"/>
+                                                    <Label layoutX="15.0" layoutY="55.0" text="单号"/>
                                                     <TextField fx:id="taskNumberQuery" layoutX="60.0" layoutY="47.0"
                                                                prefWidth="240"/>
                                                     <Label layoutX="15.0" layoutY="95.0" text="名称"/>
@@ -213,7 +220,7 @@
                                                             prefWidth="287.0">
                                                     <Label layoutX="15.0" layoutY="10.0" text="任务单信息"
                                                            style="-fx-font-weight: bold; -fx-font-size: 15;"/>
-                                                    <Label layoutX="15.0" layoutY="55.0" text="编号"/>
+                                                    <Label layoutX="15.0" layoutY="55.0" text="单号"/>
                                                     <TextField fx:id="taskNumber" layoutX="60.0" layoutY="47.0"
                                                                prefWidth="240"/>
                                                     <Label layoutX="15.0" layoutY="95.0" text="名称"/>
@@ -224,9 +231,6 @@
                                                                prefWidth="240"/>
                                                     <Label layoutX="15.0" layoutY="175.0" text="状态"/>
                                                     <TextField fx:id="statusName" layoutX="60.0" layoutY="170.0"
-                                                               prefWidth="240"/>
-                                                    <Label layoutX="15.0" layoutY="215.0" text="单号"/>
-                                                    <TextField fx:id="id" layoutX="60.0" layoutY="210.0"
                                                                prefWidth="240"/>
                                                 </AnchorPane>
                                             </items>

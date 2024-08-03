@@ -27,10 +27,12 @@ public class HepTaskDto extends BaseDto{
     private String modifiedFile;
     private String editDescription;
     private String suggestion;
+    private String selfTestDesc;
 
     private String operateType;
 
     private String closeDate;
+    private String oriCloseDate;
     private String publishDate;
     private String customer;
 

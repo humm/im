@@ -368,10 +368,17 @@ public class TaCommonUtils {
             return STR_BLANK;
         }
         if (toBr) {
-            return text.replaceAll("\\n", "\r<br>").trim();
+            return text.replaceAll("\\n", "\r<br>").replaceAll("\\t", STR_SPACE_8).trim();
         } else {
             return text.replaceAll("\r", STR_BLANK).replaceAll("<br>", STR_BLANK).trim();
         }
+    }
+
+    public static String formatTextOnlyBr(String text){
+        if (StringUtils.isBlank(text)) {
+            return STR_BLANK;
+        }
+        return text.replaceAll("\\n", "<br>").replaceAll("\\t", STR_SPACE_8).trim();
     }
 
     public static String formatTextBrToNextLine(String text){

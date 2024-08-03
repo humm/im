@@ -43,7 +43,7 @@ public class SystemToolTask implements Callable<SystemToolTaskParam> {
                 systemToolTaskParam.getSystemToolController().doShowScheduleInfo(systemToolTaskParam.getFunctionName(), systemToolTaskParam.getMsg(), systemToolTaskParam.getStart());
                 break;
             default:
-                new Exception("未匹配执行方法，清检查");
+                new Exception("未匹配执行方法，请检查");
         }
         return null;
     }

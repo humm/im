@@ -18,7 +18,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -29,9 +33,11 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.*;
@@ -621,10 +627,7 @@ public class SystemToolController implements Initializable {
     }
 
     private String formatDate(String date) {
-        if (StringUtils.isNotBlank(date) && (date.contains("E") || date.contains("e"))) {
-            date = new BigDecimal(date).toPlainString();
-        }
-        return date;
+        return StringUtils.isBlank(date) ? STR_0 : date.replaceAll(STR_HYPHEN, STR_BLANK);
     }
 
     private String getShakeMouseMsg (String msg) {
@@ -696,29 +699,46 @@ public class SystemToolController implements Initializable {
             }
         } else {
             try {
+
+
+                File file = new File(filePath);
+                if (file.isDirectory()) {
+                    List<File> files = Arrays.asList(file.listFiles());
+                    if (CollectionUtils.isNotEmpty(files)) {
+                        files = files.stream().filter(ele -> ele.getName().contains("版本列表")).collect(Collectors.toList());
+                        Collections.sort(files, new Comparator<File>() {
+                            @Override
+                            public int compare(File o1, File o2) {
+                                return o1.lastModified() - o2.lastModified() >= 0 ? -1 : 1;
+                            }
+                        });
+                    }
+                    if (CollectionUtils.isNotEmpty(files)) {
+                        filePath = files.get(0).getPath();
+                    }
+                }
                 fileInputStream = new FileInputStream(filePath);
-                XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
-                XSSFSheet sheet = workbook.getSheetAt(0);
+                HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
+                HSSFSheet sheet = workbook.getSheetAt(0);
                 int rows = sheet.getLastRowNum();
-                for (int i = 2; i <= rows; i++) {
+                for (int i = 1; i <= rows; i++) {
                     StringBuilder item = new StringBuilder();
-                    XSSFRow row = sheet.getRow(i);
+                    HSSFRow row = sheet.getRow(i);
                     if (row == null) {
                         continue;
                     }
-                    String version = row.getCell(2).toString();
+                    String version = row.getCell(1).toString();
                     if (StringUtils.isBlank(version)) {
                         continue;
                     }
-                    String closeDate = formatDate(row.getCell(4).toString());
-                    String publishDate = formatDate(row.getCell(5).toString());
+                    String closeDate = formatDate(row.getCell(2).toString());
+                    String publishDate = formatDate(row.getCell(3).toString());
                     if (StringUtils.isBlank(closeDate)) {
                         closeDate = publishDate;
                     }
-                    String customer = row.getCell(6).toString();
-                    String memo = row.getCell(3).toString();
+                    String customer = STR_SPACE;
                     item.append(version).append(STR_SEMICOLON).append(closeDate).append(STR_SEMICOLON).append(publishDate)
-                            .append(STR_SEMICOLON).append(customer).append(STR_SEMICOLON).append(memo);
+                            .append(STR_SEMICOLON).append(customer).append(STR_SEMICOLON);
                     list.add(item.toString());
                 }
                 String statPath = FileUtils.getFilePath(PATH_VERSION_STAT);

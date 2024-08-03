@@ -23,7 +23,7 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
                 hepTodoTaskParam.getHepTodoController().doExecuteQuery();
                 break;
             default:
-                new Exception("未匹配执行方法，清检查");
+                new Exception("未匹配执行方法，请检查");
         }
         return null;
     }

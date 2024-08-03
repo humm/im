@@ -38,50 +38,50 @@
                                                      </padding>
                                                  </Button>
 
-                                                 <Label layoutX="20.0" layoutY="80.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="设置忽略检查项" />
-                                                 <Button layoutX="150.0" layoutY="75" mnemonicParsing="false" onAction="#skipNewMenu" prefWidth="100.0" text="缺少新版全量">
+                                                 <Label layoutX="20.0" layoutY="80.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="设置忽略检查" />
+                                                 <Button layoutX="130.0" layoutY="75" mnemonicParsing="false" onAction="#skipNewMenu" prefWidth="120.0" text="缺少新版全量">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
 
-                                                 <Button layoutX="280.0" layoutY="75" mnemonicParsing="false" onAction="#skipOldMenu" prefWidth="100.0" text="缺少老版全量">
+                                                 <Button layoutX="280.0" layoutY="75" mnemonicParsing="false" onAction="#skipOldMenu" prefWidth="120.0" text="缺少老版全量">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
 
-                                                 <Button layoutX="150.0" layoutY="135" mnemonicParsing="false" onAction="#skipNewDiff" prefWidth="140.0" text="新版全量开通不同">
+                                                 <Button layoutX="130.0" layoutY="135" mnemonicParsing="false" onAction="#skipNewDiff" prefWidth="120.0" text="新版全量开通不同">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="0.0" right="0.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+
+                                                 <Button layoutX="280.0" layoutY="135" mnemonicParsing="false" onAction="#skipOldDiff" prefWidth="120.0" text="老版全量开通不同">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
 
-                                                 <Button layoutX="320.0" layoutY="135" mnemonicParsing="false" onAction="#skipOldDiff" prefWidth="140.0" text="老版全量开通不同">
+                                                 <Button layoutX="130.0" layoutY="195" mnemonicParsing="false" onAction="#skipLog" prefWidth="120.0" text="缺少日志">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
 
-                                                 <Button layoutX="150.0" layoutY="195" mnemonicParsing="false" onAction="#skipLog" prefWidth="100.0" text="缺少日志">
+                                                 <Button layoutX="280.0" layoutY="195" mnemonicParsing="false" onAction="#skipErrorLog" prefWidth="120.0" text="错误日志">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
 
-                                                 <Button layoutX="280.0" layoutY="195" mnemonicParsing="false" onAction="#skipErrorLog" prefWidth="100.0" text="错误日志">
+                                                 <Button layoutX="130.0" layoutY="255" mnemonicParsing="false" onAction="#skipRouter" prefWidth="120.0" text="缺少路由">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
 
-                                                 <Button layoutX="410.0" layoutY="195" mnemonicParsing="false" onAction="#skipRouter" prefWidth="100.0" text="缺少路由">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
-
-                                                 <Button layoutX="150.0" layoutY="255" mnemonicParsing="false" onAction="#skipNewLegal" prefWidth="100.0" text="新版合法性">
+                                                 <Button layoutX="280.0" layoutY="255" mnemonicParsing="false" onAction="#skipNewLegal" prefWidth="120.0" text="新版合法性">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>

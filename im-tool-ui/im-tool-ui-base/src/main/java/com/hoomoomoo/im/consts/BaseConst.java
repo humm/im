@@ -125,6 +125,7 @@ public class BaseConst {
     public final static String KEY_SIGN = "sign";
     public final static String KEY_REAL_FINISH_TIME = "real_finish_time";
     public final static String KEY_SUGGESTION = "suggestion";
+    public final static String KEY_SELF_TEST_DESC = "self_test_desc";
     public final static String KEY_REAL_WORKLOAD = "real_workload";
     public final static String KEY_FINISH_PERCENTAGE = "finish_percentage";
     public final static String KEY_INTEGRATE_ATTENTION = "integrate_attention";
@@ -143,6 +144,7 @@ public class BaseConst {
     public final static String KEY_DATA_DEFAULT = "data_default";
     public final static String KEY_PRIMARY = "primary";
     public final static String KEY_CLOSE_DATE = "closeDate";
+    public final static String KEY_ORI_CLOSE_DATE = "oriCloseDate";
     public final static String KEY_PUBLISH_DATE = "publishDate";
     public final static String KEY_CUSTOMER = "customer";
     public final static String KEY_ORDER_NO = "orderNo";
@@ -230,6 +232,7 @@ public class BaseConst {
     public final static String STR_SPACE_2 = "  ";
     public final static String STR_SPACE_3 = "   ";
     public final static String STR_SPACE_4 = "    ";
+    public final static String STR_SPACE_8 = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     public final static String STR_EQUALS = "=";
     public static final String STR_COMMA = ",";
     public static final String STR_COMMA_1 = "，";

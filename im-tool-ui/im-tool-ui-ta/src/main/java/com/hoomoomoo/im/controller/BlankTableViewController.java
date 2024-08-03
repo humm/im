@@ -53,15 +53,6 @@ public class BlankTableViewController implements Initializable {
         code.setCellValueFactory(new PropertyValueFactory<>("code"));
         code.setPrefWidth(320);
 
-        TableColumn meomo = new TableColumn<>("版本说明");
-        meomo.setCellValueFactory(new PropertyValueFactory<>("memo"));
-        meomo.setPrefWidth(300);
-
-        TableColumn clientName = new TableColumn<>("客户名称");
-        clientName.setCellValueFactory(new PropertyValueFactory<>("clientName"));
-        clientName.setEditable(false);
-        clientName.setPrefWidth(320);
-
         TableColumn closeDate = new TableColumn<>("封版时间");
         closeDate.setCellValueFactory(new PropertyValueFactory<>("closeDate"));
         closeDate.setPrefWidth(100);
@@ -111,7 +102,7 @@ public class BlankTableViewController implements Initializable {
         publishInterval.setPrefWidth(100);
         publishInterval.setStyle(STYLE_CENTER);
 
-        table.getColumns().addAll(code, meomo, clientName, closeDate, publishDate, closeInterval, publishInterval, orderNo);
+        table.getColumns().addAll(code, closeDate, publishDate, closeInterval, publishInterval, orderNo);
         showVersion(versionDtoList);
     }
 

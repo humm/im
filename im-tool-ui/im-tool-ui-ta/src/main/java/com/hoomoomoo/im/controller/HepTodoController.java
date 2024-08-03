@@ -67,12 +67,13 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static String METHOD_FETCH_TASK_BY_ID = "devtool/fetchTaskById";
     private final static String METHOD_UPDATE_TASK_STATUS = "devtool/updateTaskStatus";
     private final static String METHOD_FETCH_TASK_LIST = "devtool/fetchTaskList";
-    /** 0:待启动,4:开发中,5,8:待集成,14,16,17:待审核,18,6 */
+    /** 0:待启动,4:开发中,5,8:待集成,14,16,17:待审核,18:审核不通过,6 */
     private final static String STATUS_LIST = "0,4,5,8,14,16,17,18,6";
     private final static String OPERATE_TYPE_START = "1";
     private final static String OPERATE_TYPE_UPDATE = "2";
     private final static String OPERATE_TYPE_COMPLETE = "3";
     private final static String STATUS_WAIT_START = "0";
+    private final static String STATUS_AUDIT_FAIL = "18";
     private final static String STATUS_DEV = "4";
     private final static String STATUS_WAIT_INTEGRATE = "8";
     private final static String STATUS_WAIT_CHECK = "17";
@@ -104,6 +105,7 @@ public class HepTodoController extends BaseController implements Initializable {
         field.add(KEY_APP_ID);
         field.add(KEY_EDIT_DESCRIPTION);
         field.add(KEY_TIMESTAMP);
+        field.add(KEY_SELF_TEST_DESC);
     }
 
     @FXML
@@ -223,7 +225,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     OutputUtils.info(notice, TaCommonUtils.getMsgContainDate(e.getMessage()));
                 }
             }
-        } else if (STATUS_DEV.equals(status)) {
+        } else if (STATUS_DEV.equals(status) || STATUS_AUDIT_FAIL.equals(status)) {
             try {
                 completeTask(item);
             } catch (Exception e) {
@@ -515,6 +517,8 @@ public class HepTodoController extends BaseController implements Initializable {
         request.put(KEY_EDIT_DESCRIPTION, hepTaskDto.getEditDescription());
         // 测试建议
         request.put(KEY_SUGGESTION, hepTaskDto.getSuggestion());
+        // 自测说明
+        request.put(KEY_SELF_TEST_DESC, hepTaskDto.getSelfTestDesc());
         return request;
     }
 
@@ -560,9 +564,19 @@ public class HepTodoController extends BaseController implements Initializable {
         if (tagFlag) {
             initTag(res);
         }
+        Map<String, String> taskMinCompleteDate = new HashMap<>();
         for (int i=0; i<task.size(); i++) {
             Map<String, Object> item = (Map)task.get(i);
             logsIn.add(item.toString());
+            String name = String.valueOf(item.get(KEY_NAME));
+            String estimateFinishTime = String.valueOf(item.get(KEY_ESTIMATE_FINISH_TIME)).split(STR_SPACE)[0];
+            if (taskMinCompleteDate.containsKey(name)) {
+                if (estimateFinishTime.compareTo(taskMinCompleteDate.get(name)) < 0) {
+                    taskMinCompleteDate.put(name, estimateFinishTime);
+                }
+            } else {
+                taskMinCompleteDate.put(name, estimateFinishTime);
+            }
         }
         Iterator<HepTaskDto> iterator = res.listIterator();
         boolean hasBlank = false;
@@ -610,6 +624,7 @@ public class HepTodoController extends BaseController implements Initializable {
                         customer += element.substring(0, 4) + STR_SPACE;
                     }
                 }
+                ele.put(KEY_ORI_CLOSE_DATE, oriCloseDate);
                 ele.put(KEY_CLOSE_DATE, closeDate);
                 ele.put(KEY_PUBLISH_DATE, publishDate);
                 ele.put(KEY_CUSTOMER, customer);
@@ -667,6 +682,7 @@ public class HepTodoController extends BaseController implements Initializable {
             if (version.containsKey(sprintVersion)) {
                 Map<String, String> versionInfo = version.get(sprintVersion);
                 item.setCloseDate(versionInfo.get(KEY_CLOSE_DATE));
+                item.setOriCloseDate(CommonUtils.getCurrentDateTime5(versionInfo.get(KEY_ORI_CLOSE_DATE)));
                 item.setPublishDate(versionInfo.get(KEY_PUBLISH_DATE));
                 item.setCustomer(versionInfo.get(KEY_CUSTOMER));
                 item.setOrderNo(versionInfo.get(KEY_ORDER_NO));
@@ -709,8 +725,14 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 item.setEndDate(String.valueOf(min));
             }
+            if (taskMinCompleteDate.containsKey(taskName)) {
+                if (!StringUtils.equals(taskMinCompleteDate.get(taskName), item.getEstimateFinishDate())) {
+                    item.setEstimateFinishDate(STR_BLANK);
+                }
+            }
         }
         res = sortTask(res);
+
         if (StringUtils.isBlank(dayVersion)) {
             dayVersion.append(". . . 今日喝茶 . . .");
         }
@@ -841,37 +863,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 };
                 return row;
             }
-        });
-    }
-
-    private void initCellColor(TableView taskListIn) {
-        ((TableColumn)taskListIn.getColumns().get(0)).setCellFactory(column -> {
-            return new TableCell<HepTaskDto, String>() {
-                @Override
-                protected void updateItem(String item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (StringUtils.isNotBlank(item)) {
-                        String taskName =item;
-                        String taskNameTag = getTaskNameTag(item);
-                        setText(item);
-                        if(getIndex() > -1){
-                            if (taskNameTag.contains("缺陷")) {
-                                setStyle("-fx-text-fill: #ff6200;");
-                            } else if (taskNameTag.contains("问题")) {
-                                setStyle("-fx-text-fill: #510080;");
-                            } else if (taskNameTag.contains("任务")) {
-                                setStyle("-fx-text-fill: #800062;");
-                            } else if (taskName.contains("已修改")) {
-                                setStyle("-fx-text-fill: #5c8000;");
-                            } else if (taskName.contains("已提交")) {
-                                setStyle("-fx-text-fill: #00805e;");
-                            } else {
-                                setStyle("-fx-text-fill: #804000;");
-                            }
-                        }
-                    }
-                }
-            };
         });
     }
 
@@ -1011,9 +1002,10 @@ public class HepTodoController extends BaseController implements Initializable {
         if (testScene()) {
             return null;
         }
+        LoggerUtils.info("请求入参: " + jsonObject);
         HttpResponse response = HttpRequest.post(REQUEST_URL).timeout(10 * 1000).form(jsonObject).execute();
         Map result = (Map)JSONObject.parse(response.body());
-        LoggerUtils.info(result.toString());
+        LoggerUtils.info("返回结果: " + result.toString());
         Object data = result.get("data");
         if (data instanceof JSONArray) {
             JSONArray ele = (JSONArray)data;
@@ -1070,10 +1062,12 @@ public class HepTodoController extends BaseController implements Initializable {
                         return publishDate1 - publishDate2;
                     }
 
-                    Date finishTime1 = simpleDateFormat.parse(getValue(o1.getEstimateFinishDate() +  STR_SPACE + o1.getEstimateFinishTime(), STR_BLANK));
-                    Date finishTime2 = simpleDateFormat.parse(getValue(o2.getEstimateFinishDate() +  STR_SPACE + o2.getEstimateFinishTime(), STR_BLANK));
-                    if (finishTime1.getTime() != finishTime2.getTime()) {
-                        return finishTime1.compareTo(finishTime2);
+                    if (StringUtils.isNotBlank(o1.getEstimateFinishDate()) && StringUtils.isNotBlank(o2.getEstimateFinishDate())) {
+                        Date finishTime1 = simpleDateFormat.parse(getValue(o1.getEstimateFinishDate() +  STR_SPACE + o1.getEstimateFinishTime(), STR_BLANK));
+                        Date finishTime2 = simpleDateFormat.parse(getValue(o2.getEstimateFinishDate() +  STR_SPACE + o2.getEstimateFinishTime(), STR_BLANK));
+                        if (finishTime1.getTime() != finishTime2.getTime()) {
+                            return finishTime1.compareTo(finishTime2);
+                        }
                     }
                     String taskName1 = o1.getName();
                     String taskName2 = o2.getName();
@@ -1137,7 +1131,7 @@ public class HepTodoController extends BaseController implements Initializable {
             addTaskMenu(appConfigDto);
             executeQuery(null);
             buildTestData();
-            TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "check")));
+            //TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "check")));
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -1168,7 +1162,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 versionDto.setClientName(elements[3]);
                 versionDto.setCloseInterval(closeDate);
                 versionDto.setPublishInterval(publishDate);
-                versionDto.setMemo(elements[4]);
                 versionDtoList.add(versionDto);
             }
         }

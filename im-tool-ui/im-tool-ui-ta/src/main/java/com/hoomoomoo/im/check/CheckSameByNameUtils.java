@@ -1,51 +1,26 @@
-package com.hoomoomoo.im;
+package com.hoomoomoo.im.check;
 
+import com.hoomoomoo.im.utils.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.util.*;
 
-public class Ui {
+public class CheckSameByNameUtils {
 
-    private static Set<String> exist = new HashSet<>();
-    private static Set<File> repeat = new HashSet<>();
+    private static Map<String, File> exist = new HashMap<>();
+    private static Map<String, File> repeat = new LinkedHashMap();
     private static Set<File> blankFileType = new HashSet<>();
     private static int num = 0;
-    private static String[] skipConfig = new String[]{"婚纱"};
 
-    public static void main(String[] args) {
-        String location = "F:\\";
-        check(new File(location));
 
-        Iterator<File> blankIterator = blankFileType.iterator();
-        int blankFileNum = 0;
-        while (blankIterator.hasNext()) {
-            File file = blankIterator.next();
-            String absolutePath = file.getAbsolutePath();
-            if (absolutePath.contains("$RECYCLE.BIN")) {
-                continue;
-            }
-            blankFileNum++;
-            System.out.println("空白文件类型: " + absolutePath);
-        }
-        if (blankFileNum > 0) {
-            System.out.println("空白文件类型总数: " + blankFileNum);
-        }
-
-        int repeatNum = repeat.size();
-        Iterator<File> iterator = repeat.iterator();
-        while (iterator.hasNext()) {
-            File file = iterator.next();
-            //FileUtils.deleteFile(file);
-            System.out.println(file.getAbsolutePath());
-        }
-        if (repeatNum > 0) {
-            System.out.println("照片重复: " + repeatNum);
-        }
-        System.out.println("照片总数: " + num);
+    public static void checkSameByName(String location, String[] skipConfig, boolean deleteSame) {
+        checkSameName(new File(location), skipConfig);
+        Ui.showCheckResult(exist, repeat, blankFileType, num, deleteSame);
     }
 
-    public static void check(File file) {
+    private static void checkSameName(File file, String[] skipConfig) {
+        System.out.println(file.getAbsolutePath() + " 检查中...");
         File[] list = file.listFiles();
         if (list != null) {
             List<File> fileList = Arrays.asList(list);
@@ -66,7 +41,7 @@ public class Ui {
                         }
                     }
                     if (!skip) {
-                        check(item);
+                        checkSameName(item, skipConfig);
                     }
                 } else {
                     String fileName = item.getName();
@@ -81,14 +56,15 @@ public class Ui {
                         continue;
                     }
                     String mark = fileName.split("\\(")[0] + fileType;
-                    if (exist.contains(mark)) {
-                        repeat.add(item);
+                    if (exist.containsKey(mark)) {
+                        repeat.put(mark, item);
                         continue;
                     }
-                    exist.add(mark);
+                    exist.put(mark, item);
                     num++;
                 }
             }
         }
     }
+
 }
