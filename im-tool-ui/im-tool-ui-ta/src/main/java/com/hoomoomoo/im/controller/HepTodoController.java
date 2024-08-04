@@ -499,7 +499,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
             request.put(KEY_OPERATE_TYPE, OPERATE_TYPE_UPDATE);
             // 完成百分比
-            request.put(KEY_FINISH_PERCENTAGE, STR_0);
+            request.put(KEY_FINISH_PERCENTAGE, STR_1);
         } else {
             // 实际完成时间
             request.put(KEY_REAL_FINISH_TIME, hepTaskDto.getRealFinishTime());

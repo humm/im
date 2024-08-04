@@ -488,18 +488,6 @@ public class CommonUtils {
         return functionConfig;
     }
 
-    public static boolean isNumber(String val) {
-        if (StringUtils.isBlank(val)) {
-            return true;
-        }
-        try {
-            Integer.valueOf(val);
-        } catch (NumberFormatException e) {
-            return false;
-        }
-        return true;
-    }
-
     public static void sortFunctionDtoList(List<FunctionDto> functionDtoList) {
         Collections.sort(functionDtoList, (o1, o2) -> {
             String submitTimes1 = StringUtils.isBlank(o1.getSubmitTimes()) ? STR_0 : o1.getSubmitTimes().trim();
@@ -790,5 +778,11 @@ public class CommonUtils {
 
     public static String trimStrToSpace(String str) {
         return str.trim().replaceAll(STR_S_SLASH, STR_SPACE);
+    }
+
+    public static boolean isNumber(String str) {
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(str);
+        return matcher.matches();
     }
 }

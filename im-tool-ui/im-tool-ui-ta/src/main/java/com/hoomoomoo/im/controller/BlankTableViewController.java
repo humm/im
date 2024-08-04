@@ -108,31 +108,21 @@ public class BlankTableViewController implements Initializable {
 
     private void showVersion(List<VersionDto> versionDtoList) {
         OutputUtils.clearLog(table);
-        int currentDate = Integer.valueOf(CommonUtils.getCurrentDateTime3());
+        for (VersionDto versionDto : versionDtoList) {
+            String code = versionDto.getCode();
+            StringBuilder customCode = new StringBuilder();
+            for (int i=0; i<code.length(); i++) {
+                String ele = String.valueOf(code.charAt(i));
+                if (CommonUtils.isNumber(ele)) {
+                    customCode.append(ele);
+                }
+            }
+            versionDto.setCustomOrderNo(customCode.toString());
+        }
         versionDtoList.sort(new Comparator<VersionDto>() {
             @Override
             public int compare(VersionDto o1, VersionDto o2) {
-                int closeDate1 = Integer.valueOf(o1.getCloseDate());
-                int closeDate2 = Integer.valueOf(o2.getCloseDate());
-                int publishDate1 = Integer.valueOf(o1.getPublishDate());
-                int publishDate2 = Integer.valueOf(o2.getPublishDate());
-                if (closeDate1 < currentDate) {
-                    closeDate1 = 20991231;
-                }
-                if (closeDate2 < currentDate) {
-                    closeDate2 = 20991231;
-                }
-                if (publishDate1 < currentDate) {
-                    publishDate1 = 20991231;
-                }
-                if (publishDate2 < currentDate) {
-                    publishDate2 = 20991231;
-                }
-                int num = closeDate1 - closeDate2;
-                if (num == 0) {
-                    num = publishDate1 - publishDate2;
-                }
-                return num;
+                return o1.getCustomOrderNo().compareTo(o2.getCustomOrderNo());
             }
         });
         OutputUtils.infoList(table, versionDtoList, false);

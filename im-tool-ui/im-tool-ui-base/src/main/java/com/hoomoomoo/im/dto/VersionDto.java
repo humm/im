@@ -13,4 +13,5 @@ public class VersionDto extends BaseDto{
     private String publishInterval;
     private String memo;
     private String orderNo;
+    private String customOrderNo;
 }
