@@ -68,11 +68,11 @@ public class StarterUtils {
             DisplayMode displayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
             int width = displayMode.getWidth();
             int height = displayMode.getHeight();
-            if (width < 1720) {
+            if (width < 1700) {
                 primaryStage.setWidth(width);
             }
-            if (height < 800) {
-                primaryStage.setHeight(height - 50);
+            if (height < 900) {
+                primaryStage.setHeight(height - 100);
             }
             primaryStage.show();
             LoggerUtils.info(String.format(MSG_COMPLETE, NAME_APP_START));
