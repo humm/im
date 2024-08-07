@@ -104,6 +104,8 @@ public class BlankTableViewController implements Initializable {
 
         table.getColumns().addAll(code, closeDate, publishDate, closeInterval, publishInterval, orderNo);
         showVersion(versionDtoList);
+
+        close.setLayoutX(400);
     }
 
     private void showVersion(List<VersionDto> versionDtoList) {

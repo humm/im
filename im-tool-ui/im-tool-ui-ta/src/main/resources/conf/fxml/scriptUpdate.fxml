@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.hoomoomoo.im.controller.ScriptUpdateController">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.ScriptUpdateController">
     <children>
         <SplitPane layoutX="170.0" layoutY="63.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0"
                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                    AnchorPane.topAnchor="0.0">
             <items>
-                <SplitPane dividerPositions="0.31909547738693467" orientation="VERTICAL" prefHeight="200.0"
-                           prefWidth="160.0">
+                <SplitPane dividerPositions="0.4" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                     <items>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="138.0" prefWidth="598.0">
                             <children>
@@ -22,10 +29,10 @@
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
-                                <SplitPane dividerPositions="0.3769172932330826" layoutX="68.0" layoutY="21.0"
-                                           orientation="VERTICAL" prefHeight="242.0" prefWidth="598.0"
-                                           AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <SplitPane dividerPositions="0.36" layoutX="68.0" layoutY="21.0" orientation="VERTICAL"
+                                           prefHeight="242.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
+                                           AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                           AnchorPane.topAnchor="0.0">
                                     <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="39.0" prefWidth="596.0">
                                             <children>
@@ -34,8 +41,7 @@
                                                              mnemonicParsing="false" onAction="#selectOnlyDelete"
                                                              text="仅删除"/>
                                                 <RadioButton fx:id="all" layoutX="180.0" layoutY="24.0"
-                                                             mnemonicParsing="false" onAction="#selectAll"
-                                                             text="全部"/>
+                                                             mnemonicParsing="false" onAction="#selectAll" text="全部"/>
                                                 <RadioButton fx:id="update" layoutX="250.0" layoutY="24.0"
                                                              mnemonicParsing="false" onAction="#selectUpdate"
                                                              text="更新"/>
@@ -49,29 +55,30 @@
                                                              text="重写"/>
 
                                                 <!--<Label layoutX="15.0" layoutY="65.0" text="生成新版菜单"/>
-                                                <RadioButton fx:id="menuYes" layoutX="130.0" layoutY="65.0"
+                                                    <RadioButton fx:id="menuYes" layoutX="130.0" layoutY="65.0"
                                                              mnemonicParsing="false" onAction="#selectMenuYes"
                                                              text="是"/>
-                                                <RadioButton fx:id="menuNo" layoutX="185.0" layoutY="65.0"
+                                                    <RadioButton fx:id="menuNo" layoutX="185.0" layoutY="65.0"
                                                              mnemonicParsing="false" onAction="#selectMenuNo"
                                                              text="否"/>-->
 
                                                 <Label layoutX="15.0" layoutY="105.0" text="控制参数"/>
                                                 <TextField fx:id="param" layoutX="95.0" layoutY="100.0"
                                                            prefHeight="25.0" prefWidth="415.0"/>
-                                                <Label layoutX="530.0" layoutY="105.0" text="支持tbparam tbdict(可指定具体选项值)"/>
+                                                <Label layoutX="530.0" layoutY="105.0"
+                                                       text="支持tbparam tbdict(可指定具体选项值)"/>
 
                                                 <Label layoutX="15.0" layoutY="145.0" text="任务单号"/>
                                                 <TextField fx:id="taskNo" layoutX="95.0" layoutY="140.0"
                                                            prefHeight="25.0" prefWidth="415.0"/>
 
-                                                <ProgressIndicator fx:id="schedule" layoutX="920.0" layoutY="80.0"
+                                                <ProgressIndicator fx:id="schedule" layoutX="920.0" layoutY="78.0"
                                                                    progress="0.0"/>
-                                                <Label fx:id="scheduleText" layoutX="960.0" layoutY="84.0" text="0%"/>
+                                                <Label fx:id="scheduleText" layoutX="960.0" layoutY="82.0" text="0%"/>
 
                                                 <Button fx:id="submit" layoutX="1050.0" layoutY="74.0"
                                                         mnemonicParsing="false" onAction="#executeSubmit"
-                                                        prefHeight="35.0" prefWidth="100.0" text="执行">
+                                                        prefHeight="30.0" prefWidth="100.0" text="执行">
                                                     <padding>
                                                         <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
                                                     </padding>
@@ -79,15 +86,15 @@
 
                                                 <Button fx:id="copy" layoutX="1180.0" layoutY="74.0"
                                                         mnemonicParsing="false" onAction="#executeCopy"
-                                                        prefHeight="35.0" prefWidth="100.0" text="复制内容">
+                                                        prefHeight="30.0" prefWidth="100.0" text="复制内容">
                                                     <padding>
                                                         <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
                                                     </padding>
                                                 </Button>
 
                                                 <Button fx:id="updateUed" layoutX="1380.0" layoutY="74.0"
-                                                        mnemonicParsing="false" onAction="#updateUed"
-                                                        prefHeight="35.0" prefWidth="130.0" text="新版菜单">
+                                                        mnemonicParsing="false" onAction="#updateUed" prefHeight="30.0"
+                                                        prefWidth="130.0" text="新版菜单">
                                                     <padding>
                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                                     </padding>

@@ -388,8 +388,12 @@ public class TaCommonUtils {
         return text.replaceAll("\r", STR_BLANK).replaceAll("<br>", STR_NEXT_LINE).trim();
     }
 
-    public static String getMsgContainDate (String msg) {
+    public static String getMsgContainDate(String msg) {
         return CommonUtils.getCurrentDateTime1() + STR_SPACE + msg;
+    }
+
+    public static String getMsgContainDateContainBr(String msg) {
+        return getMsgContainDate(msg) + STR_NEXT_LINE;
     }
 
     public static void openBlankChildStage(int pageType, String title) throws Exception {

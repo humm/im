@@ -43,7 +43,7 @@
                                                     onAction="#changeRealFinishTime"/>
 
                                         <Button fx:id="sync" layoutX="750.0" layoutY="35.0"
-                                                mnemonicParsing="false" onAction="#syncSvn" prefHeight="35.0"
+                                                mnemonicParsing="false" onAction="#syncSvn" prefHeight="30.0"
                                                 prefWidth="150.0" text="同步修改记录">
                                             <padding>
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
@@ -74,7 +74,7 @@
                                         <Label fx:id="notice" layoutX="14.0" layoutY="9999.0" prefHeight="15.0" prefWidth="600.0"/>
 
                                         <Button fx:id="execute" layoutX="410.0" layoutY="865.0"
-                                                mnemonicParsing="false" onAction="#execute" prefHeight="35.0"
+                                                mnemonicParsing="false" onAction="#execute" prefHeight="30.0"
                                                 prefWidth="100.0" text="提交">
                                             <padding>
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />

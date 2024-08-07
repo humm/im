@@ -8,72 +8,85 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.SvnRealtimeStatController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.hoomoomoo.im.controller.SvnRealtimeStatController">
     <children>
-        <SplitPane dividerPositions="0.08542713567839195" layoutX="116.0" layoutY="42.0" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <SplitPane dividerPositions="0.0552713567839195" layoutX="116.0" layoutY="42.0" orientation="VERTICAL"
+                   prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="24.0" prefWidth="598.0">
                     <children>
-                        <Label layoutX="15.0" layoutY="13.0" text="统计时间" />
-                        <Label fx:id="statTime" layoutX="85.0" layoutY="13.0" />
-                        <Label layoutX="160.0" layoutY="13.0" text="统计耗时" />
-                        <Label fx:id="costTime" layoutX="230.0" layoutY="13.0" />
-                        <ProgressIndicator fx:id="schedule" layoutX="273.0" layoutY="10.0" progress="0.0" />
-                        <Label fx:id="scheduleText" layoutX="313.0" layoutY="13.0" text="0%" />
+                        <Label layoutX="15.0" layoutY="13.0" text="统计时间"/>
+                        <Label fx:id="statTime" layoutX="85.0" layoutY="13.0"/>
+                        <Label layoutX="160.0" layoutY="13.0" text="统计耗时"/>
+                        <Label fx:id="costTime" layoutX="230.0" layoutY="13.0"/>
+                        <ProgressIndicator fx:id="schedule" layoutX="273.0" layoutY="10.0" progress="0.0"/>
+                        <Label fx:id="scheduleText" layoutX="313.0" layoutY="13.0" text="0%"/>
                     </children>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="598.0">
                     <children>
-                        <SplitPane dividerPositions="0.91" layoutX="71.0" layoutY="145.0" orientation="VERTICAL" prefHeight="359.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <SplitPane dividerPositions="0.95" layoutX="71.0" layoutY="145.0" orientation="VERTICAL"
+                                   prefHeight="359.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
+                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                           <children>
-                               <TableView fx:id="stat" layoutX="105.0" layoutY="61.0"
-                                          prefHeight="321.8823426228261" prefWidth="597.7814934423914" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                   <columns>
-                                       <TableColumn id="userName" editable="false" prefWidth="280" sortable="false"
-                                                    text="用户名称">
-                                           <cellValueFactory>
-                                               <PropertyValueFactory property="userName"/>
-                                           </cellValueFactory>
-                                       </TableColumn>
-                                       <TableColumn id="firstTime" editable="false" prefWidth="280" sortable="false"
-                                                    text="首次提交时间">
-                                           <cellValueFactory>
-                                               <PropertyValueFactory property="firstTime"/>
-                                           </cellValueFactory>
-                                       </TableColumn>
-                                       <TableColumn id="lastTime" editable="false" prefWidth="280" sortable="false"
-                                                    text="末次提交时间">
-                                           <cellValueFactory>
-                                               <PropertyValueFactory property="lastTime"/>
-                                           </cellValueFactory>
-                                       </TableColumn>
-                                       <TableColumn id="submitTimes" editable="false" prefWidth="280" sortable="false"
-                                                    text="提交代码次数">
-                                           <cellValueFactory>
-                                               <PropertyValueFactory property="submitTimes"/>
-                                           </cellValueFactory>
-                                       </TableColumn>
-                                       <TableColumn id="fileNum" editable="false" prefWidth="285" sortable="false"
-                                                    text="修改文件个数">
-                                           <cellValueFactory>
-                                               <PropertyValueFactory property="fileNum"/>
-                                           </cellValueFactory>
-                                       </TableColumn>
-                                       <TableColumn id="fileTimes" editable="false" prefWidth="295" sortable="false"
-                                                    text="修改文件次数">
-                                           <cellValueFactory>
-                                               <PropertyValueFactory property="fileTimes"/>
-                                           </cellValueFactory>
-                                       </TableColumn>
-                                   </columns>
-                               </TableView>
-                           </children>
+                                    <children>
+                                        <TableView fx:id="stat" layoutX="105.0" layoutY="61.0"
+                                                   prefHeight="321.8823426228261" prefWidth="597.7814934423914"
+                                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <columns>
+                                                <TableColumn id="userName" editable="false" prefWidth="280"
+                                                             sortable="false"
+                                                             text="用户名称">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="userName"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="firstTime" editable="false" prefWidth="280"
+                                                             sortable="false"
+                                                             text="首次提交时间">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="firstTime"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="lastTime" editable="false" prefWidth="280"
+                                                             sortable="false"
+                                                             text="末次提交时间">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="lastTime"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="submitTimes" editable="false" prefWidth="280"
+                                                             sortable="false"
+                                                             text="提交代码次数">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="submitTimes"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="fileNum" editable="false" prefWidth="285"
+                                                             sortable="false"
+                                                             text="修改文件个数">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="fileNum"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="fileTimes" editable="false" prefWidth="295"
+                                                             sortable="false"
+                                                             text="修改文件次数">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="fileTimes"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                            </columns>
+                                        </TableView>
+                                    </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                     <children>
-                                        <Label fx:id="notice" layoutX="15.0" layoutY="10.0" />
+                                        <Label fx:id="notice" layoutX="15.0" layoutY="10.0"/>
                                     </children>
                                 </AnchorPane>
                             </items>
