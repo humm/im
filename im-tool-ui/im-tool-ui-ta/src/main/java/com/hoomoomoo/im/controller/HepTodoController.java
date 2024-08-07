@@ -1243,16 +1243,6 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         dealTaskList(req, logs, dayTodo, weekTodo, waitHandleTaskNum, dayPublish, weekPublish, dayClose, weekClose, taskList, true);
         OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
     }
 
     private boolean requestStatus(HttpResponse response) {

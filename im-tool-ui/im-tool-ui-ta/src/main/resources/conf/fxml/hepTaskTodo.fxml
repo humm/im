@@ -41,7 +41,7 @@
                         <ProgressIndicator fx:id="schedule" layoutX="800.0" layoutY="102.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="845" layoutY="105.0" text="0%"/>
 
-                        <Button fx:id="query" layoutX="950.0" layoutY="98.0" mnemonicParsing="false"
+                        <Button fx:id="query" layoutX="950.0" layoutY="100.0" mnemonicParsing="false"
                                 onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
@@ -172,7 +172,7 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="342.0">
                                     <children>
-                                        <SplitPane dividerPositions="0.4070175438596491, 0.7207017543859649"
+                                        <SplitPane dividerPositions="0.3570175438596491, 0.7207017543859649"
                                                    layoutX="68.0" layoutY="59.0" orientation="VERTICAL"
                                                    prefHeight="318.4" prefWidth="191.0" AnchorPane.bottomAnchor="0.0"
                                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
@@ -180,7 +180,7 @@
                                             <items>
                                                 <AnchorPane fx:id="condition" minHeight="0.0" minWidth="0.0"
                                                             prefHeight="100.0" prefWidth="160.0">
-                                                    <Label layoutX="15.0" layoutY="10.0"
+                                                    <Label layoutX="15.0" layoutY="15.0"
                                                            style="-fx-font-weight: bold; -fx-font-size: 15;"
                                                            text="查询条件"/>
                                                     <Button fx:id="queryCondition" layoutX="100.0" layoutY="8.0"
