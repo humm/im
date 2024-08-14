@@ -141,7 +141,7 @@ public class BlankTableViewController implements Initializable {
         String versionCode = versionDto.getCode();
         String close = versionDto.getCloseDate();
         String publish = versionDto.getPublishDate();
-        String order = versionDto.getOrderNo();
+        String order = StringUtils.isBlank(versionDto.getOrderNo()) ? STR_SPACE : versionDto.getOrderNo();
         if (CollectionUtils.isNotEmpty(versionList)) {
             for (int i=0; i<versionList.size(); i++) {
                 String item = versionList.get(i);

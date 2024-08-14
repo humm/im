@@ -604,7 +604,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 if (versionExtend.containsKey(versionCode)) {
                     oriCloseDate = versionExtend.get(versionCode)[0];
                     oriPublishDate = versionExtend.get(versionCode)[1];
-                    oriOrderNo = versionExtend.get(versionCode)[2];
+                    oriOrderNo = StringUtils.isBlank(versionExtend.get(versionCode)[2]) ? STR_0 : versionExtend.get(versionCode)[2];
                 }
                 String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
                 String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
