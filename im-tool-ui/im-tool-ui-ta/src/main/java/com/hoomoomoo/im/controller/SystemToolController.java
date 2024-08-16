@@ -30,6 +30,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -717,7 +718,13 @@ public class SystemToolController implements Initializable {
                         filePath = files.get(0).getPath();
                     }
                 }
-                fileInputStream = new FileInputStream(filePath);
+                try {
+                    fileInputStream = new FileInputStream(filePath);
+                } catch (FileNotFoundException e) {
+                   if (e.getMessage().contains("拒绝访问")) {
+                       fileInputStream = new FileInputStream(filePath);
+                   }
+                }
                 HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
                 HSSFSheet sheet = workbook.getSheetAt(0);
                 int rows = sheet.getLastRowNum();

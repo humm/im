@@ -11,7 +11,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.hoomoomoo.im.controller.SvnRealtimeStatController">
     <children>
-        <SplitPane dividerPositions="0.0552713567839195" layoutX="116.0" layoutY="42.0" orientation="VERTICAL"
+        <SplitPane dividerPositions="0.0752713567839195" layoutX="116.0" layoutY="42.0" orientation="VERTICAL"
                    prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -23,11 +23,14 @@
                         <Label fx:id="costTime" layoutX="230.0" layoutY="13.0"/>
                         <ProgressIndicator fx:id="schedule" layoutX="273.0" layoutY="10.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="313.0" layoutY="13.0" text="0%"/>
+
+                        <Label fx:id="notice" layoutX="390.0" layoutY="13.0"/>
+
                     </children>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="350.0" prefWidth="598.0">
                     <children>
-                        <SplitPane dividerPositions="0.95" layoutX="71.0" layoutY="145.0" orientation="VERTICAL"
+                        <SplitPane dividerPositions="1" layoutX="71.0" layoutY="145.0" orientation="VERTICAL"
                                    prefHeight="359.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
@@ -86,7 +89,6 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                     <children>
-                                        <Label fx:id="notice" layoutX="15.0" layoutY="10.0"/>
                                     </children>
                                 </AnchorPane>
                             </items>

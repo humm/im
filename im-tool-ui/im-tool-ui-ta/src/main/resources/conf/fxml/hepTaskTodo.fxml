@@ -15,7 +15,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.HepTodoController">
     <children>
-        <SplitPane dividerPositions="0.1642713567839195" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
+        <SplitPane dividerPositions="0.1842713567839195" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
                    prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>

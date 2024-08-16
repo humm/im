@@ -20,8 +20,8 @@
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="48.0" prefWidth="599.0">
                             <children>
-                                <Label fx:id="tips" layoutX="30" layoutY="15.0"/>
-                                <Button fx:id="submit" layoutX="800.0" layoutY="11.0" mnemonicParsing="false"
+                                <Label fx:id="tips" layoutX="30" layoutY="12.0"/>
+                                <Button fx:id="submit" layoutX="800.0" layoutY="8.0" mnemonicParsing="false"
                                         onAction="#onSave" prefHeight="35.0" prefWidth="100.0" text="保存"/>
                             </children>
                         </AnchorPane>

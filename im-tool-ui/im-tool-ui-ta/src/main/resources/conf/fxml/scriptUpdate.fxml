@@ -29,7 +29,7 @@
                         </AnchorPane>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                             <children>
-                                <SplitPane dividerPositions="0.36" layoutX="68.0" layoutY="21.0" orientation="VERTICAL"
+                                <SplitPane dividerPositions="0.41" layoutX="68.0" layoutY="21.0" orientation="VERTICAL"
                                            prefHeight="242.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
                                            AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                            AnchorPane.topAnchor="0.0">
@@ -66,7 +66,7 @@
                                                 <TextField fx:id="param" layoutX="95.0" layoutY="100.0"
                                                            prefHeight="25.0" prefWidth="415.0"/>
                                                 <Label layoutX="530.0" layoutY="105.0"
-                                                       text="支持tbparam tbdict(可指定具体选项值)"/>
+                                                       text="支持tbparam或者tbdict(可指定具体选项值)"/>
 
                                                 <Label layoutX="15.0" layoutY="145.0" text="任务单号"/>
                                                 <TextField fx:id="taskNo" layoutX="95.0" layoutY="140.0"
