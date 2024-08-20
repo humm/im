@@ -369,6 +369,7 @@ public class HepTodoController extends BaseController implements Initializable {
             execute(OPERATE_QUERY, null);
             setProgress(1);
             LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), logs);
+            logs.clear();
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(ExceptionMsgUtils.getMsg(e)));
@@ -589,8 +590,6 @@ public class HepTodoController extends BaseController implements Initializable {
         StringBuilder dayCloseVersion = new StringBuilder();
         String currentDay = CommonUtils.getCurrentDateTime3();
         String weekDay = getLastDayByWeek();
-        int weekNum = 0;
-        int weekCloseNum = 0;
         try {
             List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
             Map<String, String[]> versionExtend = getVersionExtendInfo();
@@ -642,12 +641,10 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
 
                 if (weekDay.compareTo(oriCloseDate) >= 0 && currentDay.compareTo(oriCloseDate) <= 0) {
-                    weekCloseNum++;
                     weekCloseVersion.append(versionCode).append(STR_SPACE);
                 }
 
                 if (weekDay.compareTo(oriPublishDate) >= 0 && currentDay.compareTo(oriPublishDate) <= 0) {
-                    weekNum++;
                     weekVersion.append(versionCode).append(STR_SPACE);
                 }
                 version.put(versionCode, ele);
@@ -1007,7 +1004,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 for (int i=0; i<ele.size(); i++) {
                     msg.append(STR_SPACE_3 + ele.get(i).toString()).append(STR_NEXT_LINE);
                 }
-                LoggerUtils.info(msg.toString());
+                // LoggerUtils.info(msg.toString());
             }
         }
         return response;
