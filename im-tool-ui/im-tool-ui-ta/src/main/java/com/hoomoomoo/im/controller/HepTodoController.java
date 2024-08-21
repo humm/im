@@ -67,7 +67,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static String METHOD_FETCH_TASK_BY_ID = "devtool/fetchTaskById";
     private final static String METHOD_UPDATE_TASK_STATUS = "devtool/updateTaskStatus";
     private final static String METHOD_FETCH_TASK_LIST = "devtool/fetchTaskList";
-    /** 0:待启动,4:开发中,5,8:待集成,14,16,17:待审核,18:审核不通过,6 */
+    /**
+     * 0:待启动,4:开发中,5,8:待集成,14,16,17:待审核,18:审核不通过,6
+     */
     private final static String STATUS_LIST = "0,4,5,8,14,16,17,18,6";
     private final static String OPERATE_TYPE_START = "1";
     private final static String OPERATE_TYPE_UPDATE = "2";
@@ -187,7 +189,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
-        HepTaskDto item = (HepTaskDto)taskList.getSelectionModel().getSelectedItem();
+        HepTaskDto item = (HepTaskDto) taskList.getSelectionModel().getSelectedItem();
         item.setOperateType(STR_BLANK);
         OutputUtils.repeatInfo(taskNumber, item.getTaskNumber());
         OutputUtils.repeatInfo(name, item.getName());
@@ -222,7 +224,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     execute(OPERATE_START, item);
                 } catch (Exception e) {
                     LoggerUtils.info(e);
-                    OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(e.getMessage()));
+                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
                 }
             }
         } else if (STATUS_DEV.equals(status) || STATUS_AUDIT_FAIL.equals(status)) {
@@ -230,11 +232,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 completeTask(item);
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(e.getMessage()));
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
             }
         } else {
             LoggerUtils.info("不支持的操作类型");
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("不支持的操作类型"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("不支持的操作类型"));
         }
     }
 
@@ -243,10 +245,10 @@ public class HepTodoController extends BaseController implements Initializable {
         updateVersion.setDisable(true);
         try {
             new SystemToolController().executeUpdateVersion();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("同步成功"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("同步成功"));
             executeQuery(null);
         } catch (Exception e) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
         } finally {
             updateVersion.setDisable(false);
         }
@@ -259,11 +261,11 @@ public class HepTodoController extends BaseController implements Initializable {
             doShowVersion();
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
         } finally {
             showVersion.setDisable(false);
         }
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(STR_BLANK));
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(STR_BLANK));
     }
 
     void doShowVersion() throws Exception {
@@ -303,10 +305,10 @@ public class HepTodoController extends BaseController implements Initializable {
         scriptCheck.setDisable(true);
         try {
             new ScriptCompareSql().check();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("脚本检查完成，请查看检查结果"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("脚本检查完成，请查看检查结果"));
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
         } finally {
             scriptCheck.setDisable(false);
         }
@@ -319,7 +321,7 @@ public class HepTodoController extends BaseController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT, "检查结果");
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
         } finally {
             scriptShow.setDisable(false);
         }
@@ -333,11 +335,10 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     public void query(ActionEvent event) throws Exception {
-        LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         CURRENT_USER_ID = appConfigDto.getHepTaskUser();
         if (StringUtils.isBlank(CURRENT_USER_ID)) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("请配置【 hep.task.user 】"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请配置【 hep.task.user 】"));
             return;
         }
         try {
@@ -349,7 +350,7 @@ public class HepTodoController extends BaseController implements Initializable {
             TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "doQuery")));
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
         }
     }
 
@@ -372,7 +373,7 @@ public class HepTodoController extends BaseController implements Initializable {
             logs.clear();
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(ExceptionMsgUtils.getMsg(e)));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ExceptionMsgUtils.getMsg(e)));
         } finally {
             query.setDisable(false);
             queryCondition.setDisable(false);
@@ -389,7 +390,7 @@ public class HepTodoController extends BaseController implements Initializable {
         } else if (OPERATE_COMPLETE.equals(operateType)) {
             response = sendPost(executeCompletTask(hepTaskDto));
         } else {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("不支持的操作类型"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("不支持的操作类型"));
             throw new Exception("不支持的操作类型");
         }
         JSONArray items = new JSONArray();
@@ -397,24 +398,25 @@ public class HepTodoController extends BaseController implements Initializable {
             Map<String, Object> responseInfo;
             String message = response.body();
             if (requestStatus(response)) {
-                responseInfo = (Map)JSONObject.parse(response.body());
+                responseInfo = (Map) JSONObject.parse(response.body());
                 message = String.valueOf(responseInfo.get(KEY_MESSAGE));
                 String code = String.valueOf(responseInfo.get(KEY_CODE));
                 if (STR_STATUS_200.equals(code)) {
+                    message = "执行成功";
                     Object data = responseInfo.get(KEY_DATA);
                     if (data instanceof Map) {
                         items.add(data);
                     } else if (data instanceof List) {
-                        items = (JSONArray)data;
+                        items = (JSONArray) data;
                     }
                     if (OPERATE_QUERY.equals(operateType)) {
-                        dealTaskList(items,  logs, dayTodo, weekTodo, waitHandleTaskNum, dayPublish, weekPublish, dayClose, weekClose, taskList, true);
+                        dealTaskList(items, logs, dayTodo, weekTodo, waitHandleTaskNum, dayPublish, weekPublish, dayClose, weekClose, taskList, true);
                     } else if (OPERATE_START.equals(operateType)) {
                         executeQuery(null);
                     }
                 }
             }
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(message));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(message));
         }
         return items;
     }
@@ -440,14 +442,14 @@ public class HepTodoController extends BaseController implements Initializable {
                 Stage stage = appConfigDto.getChildStage();
                 setTaskComponent(appConfigDto);
                 if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
-                    Map responseInfo = (Map)JSONObject.parse(response.body());
+                    Map responseInfo = (Map) JSONObject.parse(response.body());
                     String code = String.valueOf(responseInfo.get(KEY_CODE));
                     if (STR_STATUS_200.equals(code)) {
-                        Map data = (Map)responseInfo.get(KEY_DATA);
+                        Map data = (Map) responseInfo.get(KEY_DATA);
                         hepTaskDto.setRealWorkload(STR_1);
-                        hepTaskDto.setModifiedFile(TaCommonUtils.formatTextBrToNextLine((String)data.get(KEY_MODIFIED_FILE)));
-                        hepTaskDto.setEditDescription(TaCommonUtils.formatTextBrToNextLine((String)data.get(KEY_EDIT_DESCRIPTION)));
-                        hepTaskDto.setSuggestion(TaCommonUtils.formatTextBrToNextLine((String)data.get(KEY_SUGGESTION)));
+                        hepTaskDto.setModifiedFile(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_MODIFIED_FILE)));
+                        hepTaskDto.setEditDescription(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_EDIT_DESCRIPTION)));
+                        hepTaskDto.setSuggestion(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_SUGGESTION)));
                     }
                 }
                 // 每次页面都重新打开
@@ -474,7 +476,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 });
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr(e.getMessage()));
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
             }
         }
     }
@@ -567,8 +569,8 @@ public class HepTodoController extends BaseController implements Initializable {
             initTag(res);
         }
         Map<String, String> taskMinCompleteDate = new HashMap<>();
-        for (int i=0; i<task.size(); i++) {
-            Map<String, Object> item = (Map)task.get(i);
+        for (int i = 0; i < task.size(); i++) {
+            Map<String, Object> item = (Map) task.get(i);
             logsIn.add(item.toString());
             String name = String.valueOf(item.get(KEY_NAME));
             String estimateFinishTime = String.valueOf(item.get(KEY_ESTIMATE_FINISH_TIME)).split(STR_SPACE)[0];
@@ -636,7 +638,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     dayVersion.append(versionCode).append(STR_SPACE);
                 }
 
-                if (currentDay.equals(oriCloseDate) ||currentDay.equals(oriPublishDate)) {
+                if (currentDay.equals(oriCloseDate) || currentDay.equals(oriPublishDate)) {
                     dayPublishVersion.add(versionCode);
                 }
 
@@ -756,7 +758,7 @@ public class HepTodoController extends BaseController implements Initializable {
         taskListIn.setDisable(false);
     }
 
-    private static void initMinDate (Map<String, Integer> minDate, HepTaskDto item) {
+    private static void initMinDate(Map<String, Integer> minDate, HepTaskDto item) {
         String closeDate = item.getCloseDate();
         if (StringUtils.isBlank(closeDate)) {
             closeDate = STR_99999999;
@@ -790,7 +792,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private static String getRealDate(String oriDate) {
         StringBuilder date = new StringBuilder();
         if (StringUtils.isNotBlank(oriDate)) {
-            for (int i=0; i<oriDate.length(); i++) {
+            for (int i = 0; i < oriDate.length(); i++) {
                 char item = oriDate.charAt(i);
                 if (Character.isDigit(item)) {
                     date.append(item);
@@ -829,14 +831,14 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initRowColor(TableView taskListIn) {
-        taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>(){
+        taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
             @Override
             public TableRow<HepTaskDto> call(TableView<HepTaskDto> param) {
                 final TableRow<HepTaskDto> row = new TableRow<HepTaskDto>() {
                     @Override
                     protected void updateItem(HepTaskDto item, boolean empty) {
                         super.updateItem(item, empty);
-                        if(item != null && getIndex() > -1){
+                        if (item != null && getIndex() > -1) {
                             String taskName = item.getName();
                             String taskNameTag = getTaskNameTag(taskName);
                             if (taskNameTag.contains("缺陷")) {
@@ -864,7 +866,7 @@ public class HepTodoController extends BaseController implements Initializable {
         for (HepTaskDto item : task) {
             String taskName = item.getName();
             if (taskName.contains(STR_BRACKETS_3_RIGHT)) {
-                String taskNameTmp = taskName.substring( taskName.indexOf(STR_BRACKETS_3_LEFT) + 1, taskName.indexOf(STR_BRACKETS_3_RIGHT));
+                String taskNameTmp = taskName.substring(taskName.indexOf(STR_BRACKETS_3_LEFT) + 1, taskName.indexOf(STR_BRACKETS_3_RIGHT));
                 if (taskNameTmp.contains("缺陷") || taskName.startsWith(STR_BRACKETS_3_LEFT)) {
                     if (taskNameTmp.contains(STR_COLON)) {
                         taskNameTmp = taskNameTmp.split(STR_COLON)[0];
@@ -916,7 +918,7 @@ public class HepTodoController extends BaseController implements Initializable {
             label.setOnMouseClicked(new EventHandler<MouseEvent>() {
                 @Override
                 public void handle(MouseEvent event) {
-                    String tag = ((Label)event.getSource()).getText();
+                    String tag = ((Label) event.getSource()).getText();
                     nameQuery.setText(tag);
                     JSONArray res = null;
                     try {
@@ -959,7 +961,7 @@ public class HepTodoController extends BaseController implements Initializable {
             if (taskNameTag.contains("缺陷")) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
                 taskType.put(STR_2, STR_2);
-            } else if (taskNameTag.contains("问题") || taskNameTag.contains("任务") ) {
+            } else if (taskNameTag.contains("问题") || taskNameTag.contains("任务")) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
                 taskType.put(STR_1, STR_1);
             } else if (taskName.contains("已提交") || taskName.contains("已修改")) {
@@ -992,19 +994,22 @@ public class HepTodoController extends BaseController implements Initializable {
         if (testScene()) {
             return null;
         }
-        LoggerUtils.info("请求入参: " + jsonObject);
+        LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<String>() {{
+            add("请求入参: " + jsonObject);
+        }});
         HttpResponse response = HttpRequest.post(REQUEST_URL).timeout(10 * 1000).form(jsonObject).execute();
-        Map result = (Map)JSONObject.parse(response.body());
-        LoggerUtils.info("返回结果: " + result.toString());
+        Map result = (Map) JSONObject.parse(response.body());
+        LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<String>() {{
+            add("返回结果: " + result.toString());
+        }});
         Object data = result.get("data");
         if (data instanceof JSONArray) {
-            JSONArray ele = (JSONArray)data;
+            JSONArray ele = (JSONArray) data;
             if (ele.size() > 1) {
                 StringBuilder msg = new StringBuilder(STR_NEXT_LINE);
-                for (int i=0; i<ele.size(); i++) {
+                for (int i = 0; i < ele.size(); i++) {
                     msg.append(STR_SPACE_3 + ele.get(i).toString()).append(STR_NEXT_LINE);
                 }
-                // LoggerUtils.info(msg.toString());
             }
         }
         return response;
@@ -1053,8 +1058,8 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
 
                     if (StringUtils.isNotBlank(o1.getEstimateFinishDate()) && StringUtils.isNotBlank(o2.getEstimateFinishDate())) {
-                        Date finishTime1 = simpleDateFormat.parse(getValue(o1.getEstimateFinishDate() +  STR_SPACE + o1.getEstimateFinishTime(), STR_BLANK));
-                        Date finishTime2 = simpleDateFormat.parse(getValue(o2.getEstimateFinishDate() +  STR_SPACE + o2.getEstimateFinishTime(), STR_BLANK));
+                        Date finishTime1 = simpleDateFormat.parse(getValue(o1.getEstimateFinishDate() + STR_SPACE + o1.getEstimateFinishTime(), STR_BLANK));
+                        Date finishTime2 = simpleDateFormat.parse(getValue(o2.getEstimateFinishDate() + STR_SPACE + o2.getEstimateFinishTime(), STR_BLANK));
                         if (finishTime1.getTime() != finishTime2.getTime()) {
                             return finishTime1.compareTo(finishTime2);
                         }
@@ -1074,7 +1079,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 return 1;
             }
         });
-        for (int i=0; i<task.size(); i++) {
+        for (int i = 0; i < task.size(); i++) {
             HepTaskDto item = task.get(i);
             String taskNumber = item.getTaskNumber();
             String taskName = item.getName();
@@ -1083,7 +1088,7 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             existkey.add(taskNumber);
             res.add(item);
-            for (int j=0; j<task.size(); j++) {
+            for (int j = 0; j < task.size(); j++) {
                 HepTaskDto itemTmp = task.get(j);
                 String taskNumberTmp = itemTmp.getTaskNumber();
                 String taskNameTmp = itemTmp.getName();
@@ -1205,41 +1210,70 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         JSONArray req = new JSONArray();
-        for (int i=0; i<10; i++) {
+        for (int i = 0; i < 10; i++) {
             Map<String, Object> item = new HashMap<>(16);
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
             item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
             item.put(KEY_ESTIMATE_FINISH_TIME, "2023-12-24 22:59:59");
             switch (i % 7) {
-                case 0: item.put("sprint_version", "TA6.0-FUND.V202304.10.000");break;
-                case 1: item.put("sprint_version", "TA6.0-FUND.V202304.00.009");break;
-                case 2: item.put("sprint_version", "TA6.0-FUND.V202304.00.002M9");break;
-                case 3: item.put("sprint_version", "TA6.0V202202.06.028");break;
-                case 4: item.put("sprint_version", "TA6.0-FUND.V202304.07.002");
-                        item.put(KEY_ESTIMATE_FINISH_TIME, "2023-11-24 22:59:59");
+                case 0:
+                    item.put("sprint_version", "TA6.0-FUND.V202304.10.000");
                     break;
-                case 5: item.put("sprint_version", "TA6.0-FUND.V202304.06.001");break;
-                case 6: item.put("sprint_version", "TA6.0-FUND.V202304.04.002");break;
-                default:break;
+                case 1:
+                    item.put("sprint_version", "TA6.0-FUND.V202304.00.009");
+                    break;
+                case 2:
+                    item.put("sprint_version", "TA6.0-FUND.V202304.00.002M9");
+                    break;
+                case 3:
+                    item.put("sprint_version", "TA6.0V202202.06.028");
+                    break;
+                case 4:
+                    item.put("sprint_version", "TA6.0-FUND.V202304.07.002");
+                    item.put(KEY_ESTIMATE_FINISH_TIME, "2023-11-24 22:59:59");
+                    break;
+                case 5:
+                    item.put("sprint_version", "TA6.0-FUND.V202304.06.001");
+                    break;
+                case 6:
+                    item.put("sprint_version", "TA6.0-FUND.V202304.04.002");
+                    break;
+                default:
+                    break;
             }
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put("description", i % 2 == 0 ? "洛洛洛</p>洛洛洛" : "开发中");
             switch (i % 7) {
-                case 0: item.put(KEY_NAME, "「开发」问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题" + i);break;
-                case 1: item.put(KEY_NAME, "「开发」【缺陷:45454】问题" + i);break;
-                case 2: item.put(KEY_NAME, "「自测问题」问题" + i);break;
-                case 6: item.put(KEY_NAME, "「自建任务」问题" + i);break;
-                case 3: item.put(KEY_NAME, "「开发」已修改 问题" + i);break;
-                case 4: item.put(KEY_NAME, "「开发」 问题" + i);break;
-                case 5: item.put(KEY_NAME, "「修复问题」问题" + i);break;
-                default:break;
+                case 0:
+                    item.put(KEY_NAME, "「开发」问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题" + i);
+                    break;
+                case 1:
+                    item.put(KEY_NAME, "「开发」【缺陷:45454】问题" + i);
+                    break;
+                case 2:
+                    item.put(KEY_NAME, "「自测问题」问题" + i);
+                    break;
+                case 6:
+                    item.put(KEY_NAME, "「自建任务」问题" + i);
+                    break;
+                case 3:
+                    item.put(KEY_NAME, "「开发」已修改 问题" + i);
+                    break;
+                case 4:
+                    item.put(KEY_NAME, "「开发」 问题" + i);
+                    break;
+                case 5:
+                    item.put(KEY_NAME, "「修复问题」问题" + i);
+                    break;
+                default:
+                    break;
             }
             req.add(item);
         }
         dealTaskList(req, logs, dayTodo, weekTodo, waitHandleTaskNum, dayPublish, weekPublish, dayClose, weekClose, taskList, true);
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainDateContainBr("查询成功"));
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("查询成功"));
     }
 
     private boolean requestStatus(HttpResponse response) {

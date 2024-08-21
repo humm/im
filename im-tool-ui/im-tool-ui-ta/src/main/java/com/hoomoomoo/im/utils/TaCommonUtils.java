@@ -396,6 +396,10 @@ public class TaCommonUtils {
         return getMsgContainDate(msg) + STR_NEXT_LINE;
     }
 
+    public static String getMsgContainTimeContainBr(String msg) {
+        return CommonUtils.getCurrentDateTime14() + STR_SPACE + msg + STR_NEXT_LINE;
+    }
+
     public static void openBlankChildStage(int pageType, String title) throws Exception {
         openBlankChildStage(String.valueOf(pageType), title);
     }

@@ -718,13 +718,7 @@ public class SystemToolController implements Initializable {
                         filePath = files.get(0).getPath();
                     }
                 }
-                try {
-                    fileInputStream = new FileInputStream(filePath);
-                } catch (FileNotFoundException e) {
-                   if (e.getMessage().contains("拒绝访问")) {
-                       fileInputStream = new FileInputStream(filePath);
-                   }
-                }
+                fileInputStream = getVersionFile(null, filePath, 0);
                 HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
                 HSSFSheet sheet = workbook.getSheetAt(0);
                 int rows = sheet.getLastRowNum();
@@ -767,6 +761,21 @@ public class SystemToolController implements Initializable {
                 }
             }
         }
+    }
+
+    private static FileInputStream getVersionFile(FileInputStream fileInputStream, String filePath, int times) throws FileNotFoundException {
+        try {
+            fileInputStream = new FileInputStream(filePath);
+        } catch (FileNotFoundException e) {
+            if (e.getMessage().contains("拒绝访问")) {
+                times++;
+                if (times <= 3) {
+                    getVersionFile(fileInputStream, filePath, times);
+                }
+
+            }
+        }
+        return fileInputStream;
     }
 
     public static void addLog(String msg) {

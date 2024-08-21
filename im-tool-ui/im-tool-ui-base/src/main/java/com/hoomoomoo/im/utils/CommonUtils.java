@@ -240,6 +240,18 @@ public class CommonUtils {
         return new SimpleDateFormat(PATTERN10).format(new Date());
     }
 
+    /**
+     * 获取当前时间
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
+    public static String getCurrentDateTime14() {
+        return new SimpleDateFormat(PATTERN5).format(new Date());
+    }
+
     public static String checkLicenseDate(AppConfigDto appConfigDto) {
         String tips = STR_BLANK;
         LicenseDto licenseDto = appConfigDto.getLicense();
