@@ -382,13 +382,20 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     public JSONArray execute(String operateType, HepTaskDto hepTaskDto) throws Exception {
+        String tipMsg;
         HttpResponse response;
         if (OPERATE_QUERY.equals(operateType) || OPERATE_COMPLETE_QUERY.equals(operateType)) {
             response = sendPost(getTaskList());
+            tipMsg = "查询成功";
         } else if (OPERATE_START.equals(operateType)) {
             response = sendPost(startTask(hepTaskDto));
+            tipMsg = "启动任务成功";
         } else if (OPERATE_COMPLETE.equals(operateType)) {
             response = sendPost(executeCompletTask(hepTaskDto));
+            tipMsg = "完成任务成功";
+            if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
+                tipMsg = "更新任务成功";
+            }
         } else {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("不支持的操作类型"));
             throw new Exception("不支持的操作类型");
@@ -402,7 +409,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 message = String.valueOf(responseInfo.get(KEY_MESSAGE));
                 String code = String.valueOf(responseInfo.get(KEY_CODE));
                 if (STR_STATUS_200.equals(code)) {
-                    message = "执行成功";
+                    message = tipMsg;
                     Object data = responseInfo.get(KEY_DATA);
                     if (data instanceof Map) {
                         items.add(data);
@@ -415,6 +422,9 @@ public class HepTodoController extends BaseController implements Initializable {
                         executeQuery(null);
                     }
                 }
+            }
+            if (notice == null) {
+                notice = JvmCache.getHepTodoController().notice;
             }
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(message));
         }
@@ -1120,6 +1130,7 @@ public class HepTodoController extends BaseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
+            JvmCache.setHepTodoController(this);
             LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             CURRENT_USER_ID = appConfigDto.getHepTaskUser();

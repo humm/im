@@ -6,6 +6,7 @@ import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
+import com.hoomoomoo.im.utils.JvmCache;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -62,7 +63,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                 AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 HepTaskDto item = appConfigDto.getHepTaskDto();
                 item.setOperateType(OPERATE_TYPE_CUSTOM_UPDATE);
-                HepTodoController hepWaitHandleTaskController = new HepTodoController();
+                HepTodoController hepWaitHandleTaskController = JvmCache.getHepTodoController();
                 hepWaitHandleTaskController.completeTask(item);
             }
         });

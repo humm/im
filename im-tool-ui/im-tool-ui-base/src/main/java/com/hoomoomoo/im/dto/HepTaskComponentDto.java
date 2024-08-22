@@ -2,6 +2,7 @@ package com.hoomoomoo.im.dto;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import lombok.Data;
 
 import java.util.List;
@@ -35,5 +36,7 @@ public class HepTaskComponentDto extends BaseDto{
     private Label todoNum;
 
     private TableView taskList;
+
+    private TextArea notice;
 
 }
