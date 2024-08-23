@@ -386,15 +386,15 @@ public class HepTodoController extends BaseController implements Initializable {
         HttpResponse response;
         if (OPERATE_QUERY.equals(operateType) || OPERATE_COMPLETE_QUERY.equals(operateType)) {
             response = sendPost(getTaskList());
-            tipMsg = "查询成功";
+            tipMsg = "查询成功......";
         } else if (OPERATE_START.equals(operateType)) {
             response = sendPost(startTask(hepTaskDto));
-            tipMsg = "启动任务成功";
+            tipMsg = "启动成功.";
         } else if (OPERATE_COMPLETE.equals(operateType)) {
             response = sendPost(executeCompletTask(hepTaskDto));
-            tipMsg = "完成任务成功";
+            tipMsg = "提交成功..";
             if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
-                tipMsg = "更新任务成功";
+                tipMsg = "更新成功...";
             }
         } else {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("不支持的操作类型"));
@@ -853,7 +853,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             String taskNameTag = getTaskNameTag(taskName);
                             if (taskNameTag.contains("缺陷")) {
                                 setStyle("-fx-text-background-color: blue;");
-                            } else if (taskNameTag.contains("问题") || taskNameTag.contains("任务")) {
+                            } else if (taskNameTag.contains("自测问题") || taskNameTag.contains("自建任务")) {
                                 setStyle("-fx-text-background-color: #804000;");
                             } else if (taskName.contains("已修改") || taskName.contains("已提交")) {
                                 setStyle("-fx-text-background-color: #550080;");
@@ -971,7 +971,7 @@ public class HepTodoController extends BaseController implements Initializable {
             if (taskNameTag.contains("缺陷")) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
                 taskType.put(STR_2, STR_2);
-            } else if (taskNameTag.contains("问题") || taskNameTag.contains("任务")) {
+            } else if (taskNameTag.contains("自测问题") || taskNameTag.contains("自建任务")) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
                 taskType.put(STR_1, STR_1);
             } else if (taskName.contains("已提交") || taskName.contains("已修改")) {

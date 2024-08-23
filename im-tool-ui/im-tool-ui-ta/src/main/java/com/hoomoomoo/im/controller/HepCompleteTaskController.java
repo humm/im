@@ -178,6 +178,10 @@ public class HepCompleteTaskController extends BaseController implements Initial
                     if (KEY_DESKTOP.equals(verTmp) || KEY_TRUNK.equals(verTmp) || !verTmp.contains(KEY_FUND)) {
                         continue;
                     }
+                    if (!ver.endsWith("000")) {
+                        isTrunk = false;
+                        break;
+                    }
                     if (ver.compareTo(verTmp) <= 0) {
                         isTrunk = false;
                         break;

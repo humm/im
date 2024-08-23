@@ -1,4 +1,4 @@
-package com.hoomoomoo.im.controller;
+package com.hoomoomoo.im.test;
 
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.DigestAlgorithm;
@@ -21,7 +21,7 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
  * @package com.hoomoomoo.im.controller
  * @date 2023/7/30
  */
-public class HepController {
+public class HepTest {
     private static Set<String> field = new LinkedHashSet<>();
 
     private final static Integer STATUS_200 = 200;
