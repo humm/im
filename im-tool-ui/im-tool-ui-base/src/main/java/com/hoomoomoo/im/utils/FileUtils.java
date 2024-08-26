@@ -83,6 +83,18 @@ public class FileUtils {
     }
 
     /**
+     * 读取正常文件 忽略注释
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
+    public static String readNormalFileToString(String filePath) throws IOException {
+        return readNormalFileToString(filePath, true);
+    }
+
+    /**
      * 读取正常文件
      *
      * @param

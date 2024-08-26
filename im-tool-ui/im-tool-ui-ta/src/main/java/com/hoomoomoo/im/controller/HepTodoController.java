@@ -265,7 +265,7 @@ public class HepTodoController extends BaseController implements Initializable {
         } finally {
             showVersion.setDisable(false);
         }
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(STR_BLANK));
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("查看成功"));
     }
 
     void doShowVersion() throws Exception {

@@ -772,7 +772,9 @@ public class SystemToolController implements Initializable {
                 if (times <= 3) {
                     getVersionFile(fileInputStream, filePath, times);
                 }
-
+                throw new FileNotFoundException("权限不够,请重试");
+            } else {
+                throw new FileNotFoundException("文件不存在,请检查");
             }
         }
         return fileInputStream;
