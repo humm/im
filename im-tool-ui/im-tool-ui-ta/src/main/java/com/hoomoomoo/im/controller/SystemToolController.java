@@ -750,7 +750,7 @@ public class SystemToolController implements Initializable {
                 }
                 addLog("同步发版时间");
             } catch (Exception e) {
-                LoggerUtils.info(e);
+                LoggerUtils.info(e.getMessage());
                 throw new Exception(e);
             } finally {
                 if (fileInputStream != null) {
