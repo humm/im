@@ -146,9 +146,9 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         if (hasDescribe) {
             String name = item.getName();
             if (name.contains(STR_BRACKETS_2_RIGHT)) {
-                name = name.substring(name.lastIndexOf(STR_BRACKETS_2_RIGHT) + 1);
+                name = name.substring(name.indexOf(STR_BRACKETS_2_RIGHT) + 1);
             } else if (name.contains(STR_BRACKETS_3_RIGHT)) {
-                name = name.substring(name.lastIndexOf(STR_BRACKETS_3_RIGHT) + 1);
+                name = name.substring(name.indexOf(STR_BRACKETS_3_RIGHT) + 1);
             }
             info.append(STR_NEXT_LINE).append("[需求描述]").append(STR_SPACE).append(name);
         }

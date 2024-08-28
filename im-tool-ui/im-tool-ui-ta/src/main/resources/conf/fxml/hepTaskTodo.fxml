@@ -27,16 +27,16 @@
                         <Label fx:id="weekPublish" layoutX="100.0" layoutY="30.0"/>
 
                         <Label layoutX="20.0" layoutY="55.0" style="-fx-font-weight: bold;" text="今日定版："/>
-                        <Label fx:id="dayClose" layoutX="100.0" layoutY="55.0"/>
+                        <Label fx:id="dayClose" layoutX="100.0" layoutY="55.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label layoutX="20.0" layoutY="80.0" style="-fx-font-weight: bold;" text="今日发版："/>
-                        <Label fx:id="dayPublish" layoutX="100.0" layoutY="80.0"/>
+                        <Label fx:id="dayPublish" layoutX="100.0" layoutY="80.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                         <Label layoutX="20.0" layoutY="105.0" style="-fx-font-weight: bold;" text="今日待提交："/>
                         <Label fx:id="dayTodo" layoutX="110.0" layoutY="105.0"/>
                         <Label layoutX="220.0" layoutY="105.0" style="-fx-font-weight: bold;" text="本周待提交："/>
                         <Label fx:id="weekTodo" layoutX="310.0" layoutY="105.0"/>
                         <Label layoutX="420.0" layoutY="105.0" style="-fx-font-weight: bold;" text="待提交："/>
-                        <Label fx:id="waitHandleTaskNum" layoutX="480.0" layoutY="105.0"/>
+                        <Label fx:id="waitHandleTaskNum" layoutX="480.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
 
                         <ProgressIndicator fx:id="schedule" layoutX="800.0" layoutY="102.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="845" layoutY="105.0" text="0%"/>

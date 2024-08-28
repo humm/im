@@ -701,7 +701,6 @@ public class SystemToolController implements Initializable {
         } else {
             try {
 
-
                 File file = new File(filePath);
                 if (file.isDirectory()) {
                     List<File> files = Arrays.asList(file.listFiles());
@@ -750,8 +749,8 @@ public class SystemToolController implements Initializable {
                 }
                 addLog("同步发版时间");
             } catch (Exception e) {
-                LoggerUtils.info(e.getMessage());
-                throw new Exception(e);
+                LoggerUtils.info(e);
+                throw new Exception(e.getMessage());
             } finally {
                 if (fileInputStream != null) {
                     try {
