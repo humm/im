@@ -280,9 +280,9 @@ public class InitConfigUtils {
                     String functionCode = iterator.next();
                     if (Integer.valueOf(functionCode) < FUNCTION_CONFIG_SET) {
                         index++;
-                        if (index % 15 == 0) {
+                        /*if (index % 15 == 0) {
                             content += STR_NEXT_LINE + ANNOTATION_CONFIG + STR_SPACE;
-                        }
+                        }*/
                         content += functionCode + STR_COLON + functionMap.get(functionCode).getFunctionName() + STR_SPACE;
                     } else {
                         noAuthContent += functionCode + STR_COLON + functionMap.get(functionCode).getFunctionName() + STR_SPACE;
