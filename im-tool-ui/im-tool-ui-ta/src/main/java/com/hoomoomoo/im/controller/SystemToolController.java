@@ -90,8 +90,8 @@ public class SystemToolController implements Initializable {
         moveStep = Integer.valueOf(appConfigDto.getSystemToolShakeMouseStep());
         if (Boolean.valueOf(appConfigDto.getSystemToolShakeMouseAuto())) {
             shakeMouse(null);
+            addLog(NAME_SHAKE_MOUSE);
         }
-        addLog(NAME_SHAKE_MOUSE);
     }
 
     @FXML

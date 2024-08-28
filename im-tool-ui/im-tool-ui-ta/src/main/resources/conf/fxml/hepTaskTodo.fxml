@@ -121,18 +121,6 @@
                                                         <PropertyValueFactory property="endDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="closeDate" editable="false" prefWidth="45"
-                                                             sortable="false" text="封版">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="closeDate"/>
-                                                    </cellValueFactory>
-                                                </TableColumn>
-                                                <TableColumn id="publishDate" editable="false" prefWidth="45"
-                                                             sortable="false" text="发版">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="publishDate"/>
-                                                    </cellValueFactory>
-                                                </TableColumn>
                                                 <!--<TableColumn id="customer" editable="false" prefWidth="150"
                                                              sortable="false" text="客户名称">
                                                     <cellValueFactory>
@@ -160,12 +148,24 @@
                                                         <PropertyValueFactory property="oriCloseDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="productName" editable="false" prefWidth="290"
+                                                <TableColumn id="closeDate" editable="false" prefWidth="45"
+                                                             sortable="false" text="封版">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="closeDate"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="publishDate" editable="false" prefWidth="45"
+                                                             sortable="false" text="发版">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="publishDate"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <!--<TableColumn id="productName" editable="false" prefWidth="290"
                                                              sortable="false" text="产品名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="productName"/>
                                                     </cellValueFactory>
-                                                </TableColumn>
+                                                </TableColumn>-->
                                             </columns>
                                         </TableView>
                                     </children>

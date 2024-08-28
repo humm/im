@@ -78,7 +78,8 @@ public class BlankTableViewController implements Initializable {
             item.setPublishDate(publish);
             writeExtendFile(item);
         });
-        TableColumn orderNo = new TableColumn<>("指定排序");
+
+        /*TableColumn orderNo = new TableColumn<>("指定排序");
         orderNo.setCellValueFactory(new PropertyValueFactory<>("orderNo"));
         orderNo.setPrefWidth(100);
         orderNo.setEditable(true);
@@ -89,7 +90,7 @@ public class BlankTableViewController implements Initializable {
             String order = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getNewValue().toString();
             item.setOrderNo(order);
             writeExtendFile(item);
-        });
+        });*/
 
         TableColumn closeInterval = new TableColumn<>("封版截止");
         closeInterval.setCellValueFactory(new PropertyValueFactory<>("closeInterval"));
@@ -102,7 +103,7 @@ public class BlankTableViewController implements Initializable {
         publishInterval.setPrefWidth(100);
         publishInterval.setStyle(STYLE_CENTER);
 
-        table.getColumns().addAll(code, closeDate, publishDate, closeInterval, publishInterval, orderNo);
+        table.getColumns().addAll(code, closeDate, publishDate, closeInterval, publishInterval);
         showVersion(versionDtoList);
 
         close.setLayoutX(400);

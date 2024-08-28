@@ -252,6 +252,32 @@ public class CommonUtils {
         return new SimpleDateFormat(PATTERN5).format(new Date());
     }
 
+    /**
+     * 获取本周最后一天
+     *
+     * @return
+     */
+    public static String getLastDayByWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMaximum(Calendar.DAY_OF_WEEK));
+        Date lastDayOfWeek = calendar.getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(PATTERN4);
+        return simpleDateFormat.format(lastDayOfWeek);
+    }
+
+    /**
+     * 获取本周最后一天
+     *
+     * @return
+     */
+    public static String getLastDayByWeek2() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMaximum(Calendar.DAY_OF_WEEK));
+        Date lastDayOfWeek = calendar.getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(PATTERN3);
+        return simpleDateFormat.format(lastDayOfWeek);
+    }
+
     public static String checkLicenseDate(AppConfigDto appConfigDto) {
         String tips = STR_BLANK;
         LicenseDto licenseDto = appConfigDto.getLicense();

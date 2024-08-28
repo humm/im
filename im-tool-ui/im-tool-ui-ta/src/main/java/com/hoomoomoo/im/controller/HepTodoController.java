@@ -592,7 +592,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 taskMinCompleteDate.put(name, estimateFinishTime);
             }
         }
-        Iterator<HepTaskDto> iterator = res.listIterator();
         boolean hasBlank = false;
         int taskTotal = 0;
         Map<String, Map<String, String>> version = new HashMap<>();
@@ -601,7 +600,9 @@ public class HepTodoController extends BaseController implements Initializable {
         StringBuilder dayVersion = new StringBuilder();
         StringBuilder dayCloseVersion = new StringBuilder();
         String currentDay = CommonUtils.getCurrentDateTime3();
-        String weekDay = getLastDayByWeek();
+        String currentDate = CommonUtils.getCurrentDateTime4();
+        String lastDayByWeek = CommonUtils.getLastDayByWeek();
+        String weekDay = CommonUtils.getLastDayByWeek2();
         try {
             List<String> versionList = new ArrayList<>();
             Map<String, String[]> versionExtend = new HashMap<>();
@@ -623,7 +624,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
                 String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
-                String customer = elements[3];
+                /* String customer = elements[3];
                 String[] customerList;
                 if (customer.contains("无人使用")) {
                     customerList = new String[]{STR_BLANK};
@@ -639,11 +640,11 @@ public class HepTodoController extends BaseController implements Initializable {
                     if (element.length() > 4) {
                         customer += element.substring(0, 4) + STR_SPACE;
                     }
-                }
+                }*/
                 ele.put(KEY_ORI_CLOSE_DATE, oriCloseDate);
                 ele.put(KEY_CLOSE_DATE, closeDate);
                 ele.put(KEY_PUBLISH_DATE, publishDate);
-                ele.put(KEY_CUSTOMER, customer);
+                // ele.put(KEY_CUSTOMER, customer);
                 ele.put(KEY_ORDER_NO, oriOrderNo);
                 if (currentDay.equals(oriCloseDate)) {
                     dayCloseVersion.append(versionCode).append(STR_SPACE);
@@ -673,6 +674,7 @@ public class HepTodoController extends BaseController implements Initializable {
         int dayVersionNum = 0;
         int weekVersionNum = 0;
         Map<String, Integer> minDate = new HashMap<>();
+        Iterator<HepTaskDto> iterator = res.listIterator();
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String status = item.getStatus();
@@ -695,10 +697,12 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             String endDate = item.getEstimateFinishTime().split(STR_SPACE)[0].replaceAll(STR_HYPHEN, STR_BLANK);
             item.setEndDate(CommonUtils.getIntervalDays(currentDay, endDate));
-            if (dayVersion.toString().contains(sprintVersion + STR_SPACE) || dayCloseVersion.toString().contains(sprintVersion + STR_SPACE)) {
+            String estimateFinishDate = item.getEstimateFinishTime().split(STR_SPACE)[0];
+            String estimateFinishTime = item.getEstimateFinishTime().split(STR_SPACE)[1];
+            if (dayVersion.toString().contains(sprintVersion + STR_SPACE) || dayCloseVersion.toString().contains(sprintVersion + STR_SPACE) || StringUtils.equals(currentDate, estimateFinishDate)) {
                 dayVersionNum++;
             }
-            if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE)) {
+            if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || StringUtils.compare(lastDayByWeek, estimateFinishDate) >= 0) {
                 weekVersionNum++;
             }
 
@@ -712,8 +716,8 @@ public class HepTodoController extends BaseController implements Initializable {
                 item.setEstimateFinishDate(STR_BLANK);
                 item.setEstimateFinishTime(STR_BLANK);
             } else {
-                item.setEstimateFinishDate(item.getEstimateFinishTime().split(STR_SPACE)[0]);
-                item.setEstimateFinishTime(item.getEstimateFinishTime().split(STR_SPACE)[1]);
+                item.setEstimateFinishDate(estimateFinishDate);
+                item.setEstimateFinishTime(estimateFinishTime);
             }
             initMinDate(minDate, item);
         }
@@ -738,13 +742,6 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         }
         res = sortTask(res);
-
-        /*if (StringUtils.isBlank(dayVersion)) {
-            dayVersion.append(". . . 今日喝茶 . . .");
-        }
-        if (StringUtils.isBlank(weekVersion)) {
-            weekVersion.append(". . . 本周喝茶 . . .");
-        }*/
 
         OutputUtils.clearLog(dayTodoIn);
         OutputUtils.info(dayTodoIn, String.valueOf(dayVersionNum));
@@ -773,7 +770,7 @@ public class HepTodoController extends BaseController implements Initializable {
             dayTodo.setStyle("-fx-text-background-color: black;");
         }
         if (weekVersionNum > 0) {
-            weekTodo.setStyle("-fx-font-weight: bold; -fx-text-background-color: #ff00dd;");
+            weekTodo.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
         } else {
             weekTodo.setStyle("-fx-text-background-color: black;");
         }
@@ -828,14 +825,6 @@ public class HepTodoController extends BaseController implements Initializable {
             return date.substring(8);
         }
         return date.toString();
-    }
-
-    private String getLastDayByWeek() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMaximum(Calendar.DAY_OF_WEEK));
-        calendar.add(Calendar.DAY_OF_WEEK, 1);
-        Date date = calendar.getTime();
-        return CommonUtils.getCurrentDateTime9(date);
     }
 
     private void infoTaskList(TableView taskListIn, List<HepTaskDto> res) {
@@ -1163,7 +1152,7 @@ public class HepTodoController extends BaseController implements Initializable {
             addTaskMenu(appConfigDto);
             executeQuery(null);
             buildTestData();
-            //TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "check")));
+            // TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "check")));
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -1262,7 +1251,7 @@ public class HepTodoController extends BaseController implements Initializable {
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
             item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
-            item.put(KEY_ESTIMATE_FINISH_TIME, "2023-12-24 22:59:59");
+            item.put(KEY_ESTIMATE_FINISH_TIME, "2024-08-28 22:59:59");
             switch (i % 7) {
                 case 0:
                     item.put("sprint_version", "TA6.0-FUND.V202304.10.000");
@@ -1275,10 +1264,11 @@ public class HepTodoController extends BaseController implements Initializable {
                     break;
                 case 3:
                     item.put("sprint_version", "TA6.0V202202.06.028");
+                    item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-28 22:59:59");
                     break;
                 case 4:
                     item.put("sprint_version", "TA6.0-FUND.V202304.07.002");
-                    item.put(KEY_ESTIMATE_FINISH_TIME, "2023-11-24 22:59:59");
+                    item.put(KEY_ESTIMATE_FINISH_TIME, "2024-08-28 22:59:59");
                     break;
                 case 5:
                     item.put("sprint_version", "TA6.0-FUND.V202304.06.001");
@@ -1294,16 +1284,13 @@ public class HepTodoController extends BaseController implements Initializable {
             item.put("description", i % 2 == 0 ? "洛洛洛</p>洛洛洛" : "开发中");
             switch (i % 7) {
                 case 0:
-                    item.put(KEY_NAME, "「开发」问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题问题" + i);
+                    item.put(KEY_NAME, "「需求」" + i);
                     break;
                 case 1:
-                    item.put(KEY_NAME, "「开发」【缺陷:45454】问题" + i);
+                    item.put(KEY_NAME, "「开发」【缺陷:45454】" + i);
                     break;
                 case 2:
-                    item.put(KEY_NAME, "「自测问题」问题" + i);
-                    break;
-                case 6:
-                    item.put(KEY_NAME, "「自建任务」问题" + i);
+                    item.put(KEY_NAME, "「开发任务」" + i);
                     break;
                 case 3:
                     item.put(KEY_NAME, "「开发」已修改 问题" + i);
@@ -1312,7 +1299,10 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.put(KEY_NAME, "「开发」已提交 问题" + i);
                     break;
                 case 5:
-                    item.put(KEY_NAME, "「修复问题」问题" + i);
+                    item.put(KEY_NAME, "「自测问题」问题" + i);
+                    break;
+                case 6:
+                    item.put(KEY_NAME, "「自建任务」问题" + i);
                     break;
                 default:
                     break;
