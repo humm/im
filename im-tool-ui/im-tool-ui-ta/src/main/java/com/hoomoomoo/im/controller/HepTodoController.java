@@ -32,6 +32,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.SneakyThrows;
@@ -835,13 +837,13 @@ public class HepTodoController extends BaseController implements Initializable {
             for (HepTaskDto hepTaskDto : res) {
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
-                initRowColor(taskListIn);
+                initRowColor(taskListIn, hepTaskDto);
             }
             OutputUtils.setEnabled(taskListIn);
         });
     }
 
-    private void initRowColor(TableView taskListIn) {
+    private void initRowColor(TableView taskListIn, HepTaskDto hepTaskDto) {
         taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
             @Override
             public TableRow<HepTaskDto> call(TableView<HepTaskDto> param) {
@@ -852,7 +854,13 @@ public class HepTodoController extends BaseController implements Initializable {
                         if (item != null && getIndex() > -1) {
                             String taskName = item.getName();
                             String taskNameTag = getTaskNameTag(taskName);
-                            if (taskNameTag.contains("缺陷")) {
+                            int endDate = 999;
+                            if (StringUtils.isNotBlank(item.getEndDate())) {
+                                endDate = Integer.parseInt(item.getEndDate());
+                            }
+                            if (endDate <= 1 && endDate > -50) {
+                                setStyle("-fx-font-weight: bold; -fx-text-background-color: #ff0000;");
+                            } else if (taskNameTag.contains("缺陷")) {
                                 setStyle("-fx-font-weight: bold; -fx-text-background-color: #0015ff;");
                             } else if (taskNameTag.contains("自测问题")) {
                                 setStyle("-fx-font-weight: bold; -fx-text-background-color: #804000;");
@@ -861,7 +869,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             } else if (taskName.contains("已修改")) {
                                 setStyle("-fx-font-weight: bold; -fx-text-background-color: #a100ff;");
                             } else if (taskName.contains("已提交")) {
-                                setStyle("-fx-font-weight: bold; -fx-text-background-color: #ff9100;");
+                                setStyle("-fx-font-weight: bold; -fx-text-background-color: #ff00cc;");
                             } else {
                                 setStyle("-fx-text-background-color: black;");
                             }

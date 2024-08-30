@@ -258,7 +258,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         hepTaskDto.setEditDescription(TaCommonUtils.formatText(editDescriptionValue, true));
         hepTaskDto.setSuggestion(TaCommonUtils.formatText(suggestionValue, true));
         hepTaskDto.setSelfTestDesc(TaCommonUtils.formatTextOnlyBr(selfTestDescValue));
-        HepTodoController hep = new HepTodoController();
+        HepTodoController hep = JvmCache.getHepTodoController();
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
         if (!OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
             HepTaskComponentDto hepTaskComponentDto = appConfigDto.getHepTaskComponentDto();

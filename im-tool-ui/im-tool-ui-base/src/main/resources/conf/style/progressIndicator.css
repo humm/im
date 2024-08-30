@@ -5,3 +5,7 @@
 .tabClass {
     -fx-font-weight: bold;
 }
+
+.table-row-cell:filled:selected {
+    -fx-background-color: rgb(118, 185, 185);
+}
