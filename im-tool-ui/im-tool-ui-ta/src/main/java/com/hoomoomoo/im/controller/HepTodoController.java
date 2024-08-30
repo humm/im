@@ -701,10 +701,12 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setEndDate(CommonUtils.getIntervalDays(currentDay, endDate));
             String estimateFinishDate = item.getEstimateFinishTime().split(STR_SPACE)[0];
             String estimateFinishTime = item.getEstimateFinishTime().split(STR_SPACE)[1];
-            if (dayVersion.toString().contains(sprintVersion + STR_SPACE) || dayCloseVersion.toString().contains(sprintVersion + STR_SPACE) || StringUtils.equals(currentDate, estimateFinishDate)) {
+            boolean today = todayMustComplete(item, currentDate, estimateFinishDate);
+            if (dayVersion.toString().contains(sprintVersion + STR_SPACE) || dayCloseVersion.toString().contains(sprintVersion + STR_SPACE) || today) {
                 dayVersionNum++;
             }
-            if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || StringUtils.compare(lastDayByWeek, estimateFinishDate) >= 0) {
+            boolean week = today || StringUtils.compare(lastDayByWeek, estimateFinishDate) >= 0;
+            if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || week) {
                 weekVersionNum++;
             }
 
@@ -780,6 +782,30 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.clearLog(taskListIn);
         infoTaskList(taskListIn, res);
         taskListIn.setDisable(false);
+    }
+
+    private static boolean todayMustComplete(HepTaskDto item, String currentDate, String estimateFinishDate) {
+        if( StringUtils.equals(currentDate, estimateFinishDate)) {
+            return true;
+        }
+        if (StringUtils.isNotBlank(item.getCloseDate())) {
+            if (Integer.parseInt(item.getCloseDate()) <= 1) {
+                return true;
+            }
+        }
+        if (StringUtils.isNotBlank(item.getPublishDate())) {
+            if (Integer.parseInt(item.getPublishDate()) <= 1) {
+                return true;
+            }
+        }
+        String endDate = item.getEndDate();
+        if (StringUtils.isNotBlank(endDate)) {
+            int date = Integer.parseInt(endDate);
+            if (date <= 1 && date > -50) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static void initMinDate(Map<String, Integer> minDate, HepTaskDto item) {
