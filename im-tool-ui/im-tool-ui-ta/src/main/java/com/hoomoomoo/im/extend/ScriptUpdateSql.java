@@ -17,6 +17,7 @@ public class ScriptUpdateSql {
     private String resultPath = "";
     private String newUedPage = "";
 
+    private static final String endLine = "结束 *************************************************************************";
     public ScriptUpdateSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
@@ -88,6 +89,13 @@ public class ScriptUpdateSql {
                         String lastEle = sql.get(sql.size() - 1);
                         if (lastEle.endsWith(STR_NEXT_LINE)) {
                             sql.set(sql.size() - 1, lastEle.substring(0, lastEle.length() - 1));
+                        }
+                        item += STR_NEXT_LINE;
+                    }
+                    if (item.endsWith(endLine)) {
+                        String prevEle = sql.get(sql.size() - 1);
+                        if (prevEle.endsWith(STR_NEXT_LINE)) {
+                            sql.set(sql.size() - 1, prevEle.substring(0, prevEle.length() - 1));
                         }
                         item += STR_NEXT_LINE;
                     }
