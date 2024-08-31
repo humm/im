@@ -1429,6 +1429,7 @@ public class ScriptRepairSql {
         menu.put("ptaAccountManageFundDaily", getAccountParentMenuName("ptaAccountManageFundDaily", otherMenu));
         menu.put("ptaAccountManageFundOther", getAccountParentMenuName("ptaAccountManageFundOther", otherMenu));
         menu.put("ptaPrdAccStd", getAccountParentMenuName("ptaPrdAccStd", otherMenu));
+        menu.put("bizAidManager", getAccountParentMenuName("bizAidManager", otherMenu));
         return menu;
     }
 

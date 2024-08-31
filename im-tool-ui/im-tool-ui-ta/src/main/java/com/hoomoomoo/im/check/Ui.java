@@ -14,8 +14,8 @@ public class Ui {
     private static final String location = "F:\\归档";
 
     public static void main(String[] args) {
-        CheckSameByNameUtils.checkSameByName(location, skipConfig, false);
-        //CheckSameByMD5Utils.checkSameByMD5(location, skipConfig, false);
+        // CheckSameByNameUtils.checkSameByName(location, skipConfig, false);
+        CheckSameByMD5Utils.checkSameByMD5(location, skipConfig, false);
     }
 
 
