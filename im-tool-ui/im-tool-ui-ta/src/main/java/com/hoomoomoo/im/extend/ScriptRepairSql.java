@@ -33,7 +33,8 @@ public class ScriptRepairSql {
     private static int repairFileNum = 0;
 
     public static Set<String> excludeFundMenu = new HashSet<>(Arrays.asList("fundBlackListSet", "fundClerkList", "fundInterestInfoSet"));
-    public static Set<String> includePubMenu = new HashSet<>(Arrays.asList("bizBlackInfoSet", "bizClerkInfoSet", "bizInterestRateSet"));
+    public static Set<String> includePubMenu = new HashSet<>(Arrays.asList("bizBlackInfoSet", "bizClerkInfoSet", "bizInterestRateSet", "taUnitAreaAudit"));
+    public static Set<String> specialFundMenu = new HashSet<>(Arrays.asList("specialBlackInfoSet", "specialInvalidBlackInfoQuery"));
 
     public static void repairLackLog() throws Exception {
         repairFileNum = 0;
@@ -221,35 +222,15 @@ public class ScriptRepairSql {
         return ext.toString();
     }
 
-    public static Set<String> initRepairExtSkip() throws Exception {
-        List<String> skipContent = FileUtils.readNormalFile(FileUtils.getFilePath(SQL_CHECK_TYPE_EXTEND.REPAIR_EXT.getPathConf()), false);
-        Set<String> skip = new HashSet<>();
-        if (CollectionUtils.isNotEmpty(skipContent)) {
-            for (String item : skipContent) {
-                if (StringUtils.isBlank(item)) {
-                    continue;
-                }
-                String[] ele = CommonUtils.trimStrToSpace(item).split(STR_SPACE);
-                if (ele.length > 0) {
-                    String sub = STR_HYPHEN_1;
-                    if (item.contains(FILE_TYPE_SQL)) {
-                        sub = STR_BLANK;
-                    } else if (ele.length > 1) {
-                        sub += ele[1];
-                    }
-                    skip.add(ele[0] + sub);
-                }
-            }
-        }
-        return skip;
-    }
+
 
     public static void repairExt() throws Exception {
         repairFileNum = 0;
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         File fileExt = new File(appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.basePathExt);
+        Set<String> skip = ScriptSqlUtils.initRepairExtSkip();
         for (File file : fileExt.listFiles()) {
-            repairExtByFile(appConfigDto, file, initRepairExtSkip());
+            repairExtByFile(appConfigDto, file, skip);
         }
     }
 
@@ -477,7 +458,9 @@ public class ScriptRepairSql {
             String menuName = ScriptSqlUtils.getMenuName(menuEle);
             if (StringUtils.isBlank(groupCode)) {
                 groupCode = parentCode;
-                res.add(menuGroupTitle.get(parentCode).replace("结束", "开始"));
+                if (menuGroupTitle.containsKey(parentCode)) {
+                    res.add(menuGroupTitle.get(parentCode).replace("结束", "开始"));
+                }
             }
             res.add(ANNOTATION_NORMAL + STR_SPACE + menuName);
             buildWorkFlow(res, totalWorkFlow.get(transCode));
@@ -623,6 +606,10 @@ public class ScriptRepairSql {
             List<String> menuInfo = ScriptSqlUtils.getSqlByFile(file.getPath());
             for (String item : menuInfo) {
                 String menuCode = ScriptSqlUtils.getMenuCode(item);
+                if ("bizInterestRateSet".equals(menuCode)) {
+                    item = formatSql(item, true, false);
+                    item = item.substring(0, item.length() - 1);
+                }
                 if (fileName.startsWith("00console-vue-menu-std-bizroot")) {
                     if (!menuCode.equals("bizroot") && !menuCode.equals("frame")) {
                         firstMenu.put(menuCode, item);
@@ -1171,7 +1158,7 @@ public class ScriptRepairSql {
         res.add(String.format(BLOCK_LINE_INDEX_TIPS, "子交易码 tsys_subtrans"));
         res.add(BLOCK_LINE_INDEX);
 
-        Set<String> skip = initRepairExtSkip();
+        Set<String> skip = ScriptSqlUtils.initRepairExtSkip();
         boolean update;
         boolean nextLine = false;
         for (int i=0; i<transAndSubTrans.size(); i++) {
@@ -1590,7 +1577,7 @@ public class ScriptRepairSql {
             String secondParentMenuCode = ScriptSqlUtils.getParentCode(secondMenuInfo);
             if (fundMenu) {
                 String remark = ScriptSqlUtils.getMenuRemark(secondMenuInfo);
-                if (!"console-fund-ta-vue".equals(remark) && !includePubMenu.contains(secondMenuCode)) {
+                if (!isNeedMenu(secondMenuCode, remark)) {
                     continue;
                 }
                 if (excludeFundMenu.contains(secondMenuCode)) {
@@ -1614,13 +1601,23 @@ public class ScriptRepairSql {
             if ("menu".equals(transCode)) {
                 continue;
             }
-            if (!includePubMenu.contains(transCode) && !"console-fund-ta-vue".equals(remark)) {
+            if (!isNeedMenu(transCode, remark)) {
                 continue;
             }
             res.add(menu);
         }
         menuSortByNewUed(res);
         return res;
+    }
+
+    private static boolean isNeedMenu(String menuCode, String remark) {
+        if (menuCode.startsWith("fund") || specialFundMenu.contains(menuCode)) {
+            return true;
+        }
+        if (includePubMenu.contains(menuCode)) {
+            return true;
+        }
+        return false;
     }
 
     private static List<String> menuSortByNewUed(List<String> menuList) {

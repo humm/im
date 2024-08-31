@@ -561,7 +561,7 @@ public class ScriptCompareSql {
     /**
      * 开通脚本合法性
      */
-    private void extLegalCheck(AppConfigDto appConfigDto) throws IOException {
+    private void extLegalCheck(AppConfigDto appConfigDto) throws Exception {
         Map<String, Set<String>> resMap = new LinkedHashMap<>();
         resMap.put("tsys_trans", new LinkedHashSet<>());
         resMap.put("tsys_subtrans", new LinkedHashSet<>());
@@ -569,11 +569,12 @@ public class ScriptCompareSql {
         resMap.put("tbworkflowsubtrans", new LinkedHashSet<>());
         resMap.put("tbworkflowsubtransext", new LinkedHashSet<>());
         File fileExt = new File(basePathExt);
+        Set<String> skip = ScriptSqlUtils.initExtLegalSkip();
         for (File file : fileExt.listFiles()) {
-            checkMenuByFile(file, resMap);
+            checkMenuByFile(file, resMap, skip);
         }
 
-        checkMenuByFile(new File(menuCondition), resMap);
+        checkMenuByFile(new File(menuCondition), resMap, skip);
 
         int total = 0;
         List<String> res = new ArrayList<>();
@@ -595,10 +596,10 @@ public class ScriptCompareSql {
         FileUtils.writeFile(resultPath + LEGAL_EXT_MENU.getFileName(), res, false);
     }
 
-    private void checkMenuByFile(File file, Map<String, Set<String>> res) throws IOException {
+    private void checkMenuByFile(File file, Map<String, Set<String>> res, Set<String> skip) throws IOException {
         if (file.isDirectory()) {
             for (File item : file.listFiles()) {
-                checkMenuByFile(item, res);
+                checkMenuByFile(item, res, skip);
             }
         } else {
             String fileName = file.getName();
@@ -606,31 +607,24 @@ public class ScriptCompareSql {
             if (!fileName.endsWith(FILE_TYPE_SQL)) {
                 return;
             }
+            if (skip.contains(fileName)) {
+                return;
+            }
             List<String> content = FileUtils.readNormalFile(filePath, false);
             for (String ele : content) {
                 ele = CommonUtils.trimStrToSpace(ele).toLowerCase();
                 if (!ele.contains("insert into")) {
                     continue;
-                }
-                if (ele.contains("tsys_trans ") || ele.contains("tsys_trans(") ) {
+                } else if (ele.contains("tsys_trans ") || ele.contains("tsys_trans(") ) {
                     res.get("tsys_trans").add(filePath);
-                    continue;
-                }
-                if (ele.contains("tsys_subtrans ") || ele.contains("tsys_subtrans(") ) {
+                } else if (ele.contains("tsys_subtrans ") || ele.contains("tsys_subtrans(") ) {
                     res.get("tsys_subtrans").add(filePath);
-                    continue;
-                }
-                if (ele.contains("tsys_subtrans_ext ") || ele.contains("tsys_subtrans_ext(") ) {
+                } else if (ele.contains("tsys_subtrans_ext ") || ele.contains("tsys_subtrans_ext(") ) {
                     res.get("tsys_subtrans_ext").add(filePath);
-                    continue;
-                }
-                if (ele.contains("tbworkflowsubtrans ") || ele.contains("tbworkflowsubtrans(") ) {
+                } else if (ele.contains("tbworkflowsubtrans ") || ele.contains("tbworkflowsubtrans(") ) {
                     res.get("tbworkflowsubtrans").add(filePath);
-                    continue;
-                }
-                if (ele.contains("tbworkflowsubtransext ") || ele.contains("tbworkflowsubtransext(") ) {
+                } else if (ele.contains("tbworkflowsubtransext ") || ele.contains("tbworkflowsubtransext(") ) {
                     res.get("tbworkflowsubtrans").add(filePath);
-                    continue;
                 }
             }
         }

@@ -1,15 +1,16 @@
 package com.hoomoomoo.im.extend;
 
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.LEGAL_EXT_MENU;
 
 public class ScriptSqlUtils {
 
@@ -287,5 +288,53 @@ public class ScriptSqlUtils {
             return sql.substring(tableNameStartIndex + 4, tableNameStartEnd).toLowerCase().trim();
         }
         return STR_BLANK;
+    }
+
+    public static Set<String> initRepairExtSkip() throws Exception {
+        List<String> skipContent = FileUtils.readNormalFile(FileUtils.getFilePath(SQL_CHECK_TYPE_EXTEND.REPAIR_EXT.getPathConf()), false);
+        Set<String> skip = new HashSet<>();
+        if (CollectionUtils.isNotEmpty(skipContent)) {
+            for (String item : skipContent) {
+                if (StringUtils.isBlank(item)) {
+                    continue;
+                }
+                String[] ele = CommonUtils.trimStrToSpace(item).split(STR_SPACE);
+                if (ele.length > 0) {
+                    String sub = STR_HYPHEN_1;
+                    if (item.contains(FILE_TYPE_SQL)) {
+                        sub = STR_BLANK;
+                    } else if (ele.length > 1) {
+                        sub += ele[1];
+                    }
+                    skip.add(ele[0] + sub);
+                    skip.add(ele[0]);
+                }
+            }
+        }
+        return skip;
+    }
+
+    public static Set<String> initExtLegalSkip() throws Exception {
+        List<String> skipContent = FileUtils.readNormalFile(FileUtils.getFilePath(LEGAL_EXT_MENU.getPathConf()), false);
+        Set<String> skip = new HashSet<>();
+        if (CollectionUtils.isNotEmpty(skipContent)) {
+            for (String item : skipContent) {
+                if (StringUtils.isBlank(item)) {
+                    continue;
+                }
+                String[] ele = CommonUtils.trimStrToSpace(item).split(STR_SPACE);
+                if (ele.length > 0) {
+                    String sub = STR_HYPHEN_1;
+                    if (item.contains(FILE_TYPE_SQL)) {
+                        sub = STR_BLANK;
+                    } else if (ele.length > 1) {
+                        sub += ele[1];
+                    }
+                    skip.add(ele[0] + sub);
+                    skip.add(ele[0]);
+                }
+            }
+        }
+        return skip;
     }
 }

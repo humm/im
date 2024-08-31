@@ -127,10 +127,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
             if (editDescriptionValue.indexOf(msg) != -1) {
                 continue;
             }
-            editDescriptionValue.append(STR_SLASH_T + msg);
-            if (i != logDtoList.size() - 1 || logDtoList.size() == 1) {
-                editDescriptionValue.append(STR_NEXT_LINE);
-            }
+            editDescriptionValue.append(STR_SLASH_T + msg).append(STR_NEXT_LINE);
         }
         OutputUtils.repeatInfo(modifiedFile, modifiedFileValue.toString());
         OutputUtils.repeatInfo(editDescription, editDescriptionValue.toString().replaceAll(STR_SLASH_T, STR_BLANK));

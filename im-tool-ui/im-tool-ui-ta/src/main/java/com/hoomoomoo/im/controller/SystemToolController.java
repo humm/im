@@ -302,6 +302,13 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
+    void skipExtLegal(ActionEvent event) throws Exception {
+        String title = getTitle(LEGAL_EXT_MENU.getName());
+        TaCommonUtils.openBlankChildStage(LEGAL_EXT_MENU.getIndex(), title);
+        addLog(title);
+    }
+
+    @FXML
     void showCheckResult(ActionEvent event) {
         try {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT, "检查结果");

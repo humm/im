@@ -211,12 +211,12 @@ public class BaseConst {
     public static final String NAME_REPAIR_NEW_MENU = "修正新版全量";
     public static final String NAME_REPAIR_EXT = "修正开通脚本";
 
-    public static final String NAME_MENU_UPDATE = "更新";
-    public static final String NAME_MENU_COPY = "复制";
-    public static final String NAME_MENU_SIMPLE_COPY = "简复";
-    public static final String NAME_MENU_DETAIL = "详情";
-    public static final String NAME_MENU_SCRIPT = "脚本";
-    public static final String NAME_MENU_TASK_NO = "单号";
+    public static final String NAME_MENU_UPDATE = "任务更新";
+    public static final String NAME_MENU_COPY = "全部复制";
+    public static final String NAME_MENU_SIMPLE_COPY = "简单复制";
+    public static final String NAME_MENU_DETAIL = "任务详情";
+    public static final String NAME_MENU_SCRIPT = "任务摘要";
+    public static final String NAME_MENU_TASK_NO = "复制单号";
 
 
     public static final String NAME_MENU_DCIT = "字典";

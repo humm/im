@@ -87,6 +87,12 @@
                                                      </padding>
                                                  </Button>
 
+                                                 <Button layoutX="130.0" layoutY="315" mnemonicParsing="false" onAction="#skipExtLegal" prefWidth="130.0" text="开通脚本合法性">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+
                                                  <Label layoutX="20.0" layoutY="385.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="检查结果修复" />
                                                  <Button layoutX="130.0" layoutY="380" mnemonicParsing="false" onAction="#repairLackLog" prefWidth="100.0" text="修复缺少日志">
                                                      <padding>
