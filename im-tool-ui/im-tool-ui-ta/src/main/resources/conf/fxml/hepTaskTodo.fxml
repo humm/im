@@ -19,7 +19,7 @@
                    prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="164.0" prefWidth="599.0">
+                <AnchorPane fx:id="todoTitle" minHeight="0.0" minWidth="0.0" prefHeight="164.0" prefWidth="599.0">
                     <children>
                         <Label layoutX="20.0" layoutY="5.0" style="-fx-font-weight: bold;" text="本周定版："/>
                         <Label fx:id="weekClose" layoutX="100.0" layoutY="5.0"/>

@@ -32,8 +32,6 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.SneakyThrows;
@@ -90,6 +88,17 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private List<String> logs = new ArrayList<>();
 
+    private Map<String, String> color = new LinkedHashMap<String, String>(){{
+        put("今日待提交", "-fx-font-weight: bold; -fx-text-background-color: #ff0000;");
+        put("本周待提交", "-fx-font-weight: bold; -fx-text-background-color: #9900ff;");
+        put("缺陷", "-fx-font-weight: bold; -fx-text-background-color: #0015ff;");
+        put("自测问题", "-fx-font-weight: bold; -fx-text-background-color: #804000;");
+        put("自建任务", "-fx-font-weight: bold; -fx-text-background-color: #008071;");
+        put("已修改", "-fx-font-weight: bold; -fx-text-background-color: #a100ff;");
+        put("已提交", "-fx-font-weight: bold; -fx-text-background-color: #ff00cc;");
+        put("默认", "-fx-text-background-color: black;");
+    }};
+
     static {
         field.add(KEY_CHARSET);
         field.add(KEY_REAL_FINISH_TIME);
@@ -111,6 +120,9 @@ public class HepTodoController extends BaseController implements Initializable {
         field.add(KEY_TIMESTAMP);
         field.add(KEY_SELF_TEST_DESC);
     }
+
+    @FXML
+    private AnchorPane todoTitle;
 
     @FXML
     private Label weekPublish;
@@ -774,14 +786,14 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.info(waitHandleTaskNumIn, String.valueOf(res.size() - taskTotal));
 
         if (dayVersionNum > 0) {
-            dayTodo.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
+            dayTodo.setStyle(color.get("今日待提交"));
         } else {
-            dayTodo.setStyle("-fx-text-background-color: black;");
+            dayTodo.setStyle(color.get("默认"));
         }
         if (weekVersionNum > 0) {
-            weekTodo.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
+            weekTodo.setStyle(color.get("本周待提交"));
         } else {
-            weekTodo.setStyle("-fx-text-background-color: black;");
+            weekTodo.setStyle(color.get("默认"));
         }
 
         OutputUtils.clearLog(taskListIn);
@@ -886,28 +898,22 @@ public class HepTodoController extends BaseController implements Initializable {
                             String taskName = item.getName();
                             String taskNumber = item.getTaskNumber();
                             String taskNameTag = getTaskNameTag(taskName);
-                            int endDate = 999;
-                            if (StringUtils.isNotBlank(item.getEndDate())) {
-                                endDate = Integer.parseInt(item.getEndDate());
-                            }
                             if (dayTodoTask.contains(taskNumber)) {
-                                setStyle("-fx-font-weight: bold; -fx-text-background-color: #ff0000;");
+                                setStyle(color.get("今日待提交"));
                             } else if (weekTodoTask.contains(taskNumber)) {
-                                setStyle("-fx-font-weight: bold; -fx-text-background-color: rgb(132,0,255)");
-                            } else if (endDate <= 1 && endDate > -50) {
-                                setStyle("-fx-font-weight: bold; -fx-text-background-color: rgba(255,0,0,0.25);");
+                                setStyle(color.get("本周待提交"));
                             } else if (taskNameTag.contains("缺陷")) {
-                                setStyle("-fx-font-weight: bold; -fx-text-background-color: #0015ff;");
+                                setStyle(color.get("缺陷"));
                             } else if (taskNameTag.contains("自测问题")) {
-                                setStyle("-fx-font-weight: bold; -fx-text-background-color: #804000;");
+                                setStyle(color.get("自测问题"));
                             } else if (taskNameTag.contains("自建任务")) {
-                                setStyle("-fx-font-weight: bold; -fx-text-background-color: #008071;");
+                                setStyle(color.get("自建任务"));
                             } else if (taskName.contains("已修改")) {
-                                setStyle("-fx-font-weight: bold; -fx-text-background-color: #a100ff;");
+                                setStyle(color.get("已修改"));
                             } else if (taskName.contains("已提交")) {
-                                setStyle("-fx-font-weight: bold; -fx-text-background-color: #ff00cc;");
+                                setStyle(color.get("已提交"));
                             } else {
-                                setStyle("-fx-text-background-color: black;");
+                                setStyle(color.get("默认"));
                             }
                         }
                     }
@@ -1195,10 +1201,42 @@ public class HepTodoController extends BaseController implements Initializable {
             CURRENT_USER_ID = appConfigDto.getHepTaskUser();
             addTaskMenu(appConfigDto);
             executeQuery(null);
+            initColorDesc();
             buildTestData();
             // TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "check")));
         } catch (Exception e) {
             LoggerUtils.info(e);
+        }
+    }
+
+    private void initColorDesc() {
+        double step = 10;
+        double x = 1220;
+        double y = 130;
+        Label label = new Label("颜色说明: ");
+        label.setStyle("-fx-font-weight: bold;");
+        label.setLayoutX(x);
+        label.setLayoutY(y);
+        todoTitle.getChildren().add(label);
+        x += 10;
+        int prevLen = 4;
+        int diff = 0;
+        for (Map.Entry<String, String> entry : color.entrySet()) {
+            String key = entry.getKey();
+            Label ele = new Label(key);
+            int len = key.length();
+            if (len < prevLen) {
+                diff = prevLen - len;
+                len = prevLen;
+            }
+            x += step * len;
+            ele.setStyle(color.get(key));
+            ele.setLayoutX(x);
+            ele.setLayoutY(y);
+            todoTitle.getChildren().add(ele);
+            prevLen = len;
+            x -= step * diff;
+            x += 20;
         }
     }
 
