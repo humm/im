@@ -89,13 +89,13 @@ public class HepTodoController extends BaseController implements Initializable {
     private List<String> logs = new ArrayList<>();
 
     private Map<String, String> color = new LinkedHashMap<String, String>(){{
-        put("今日待提交", "-fx-font-weight: bold; -fx-text-background-color: #ff0000;");
-        put("本周待提交", "-fx-font-weight: bold; -fx-text-background-color: #9900ff;");
-        put("缺陷", "-fx-font-weight: bold; -fx-text-background-color: #0015ff;");
-        put("自测问题", "-fx-font-weight: bold; -fx-text-background-color: #804000;");
-        put("自建任务", "-fx-font-weight: bold; -fx-text-background-color: #008071;");
-        put("已修改", "-fx-font-weight: bold; -fx-text-background-color: #a100ff;");
-        put("已提交", "-fx-font-weight: bold; -fx-text-background-color: #ff00cc;");
+        put("今日待提交", "-fx-text-background-color: #ff0000;");
+        put("本周待提交", "-fx-text-background-color: #ff0073;");
+        put("缺陷", "-fx-text-background-color: #0015ff;");
+        put("自测问题", "-fx-text-background-color: #804000;");
+        put("自建任务", "-fx-text-background-color: #008071;");
+        put("已修改", "-fx-text-background-color: #a100ff;");
+        put("已提交", "-fx-text-background-color: #ee00ff;");
         put("默认", "-fx-text-background-color: black;");
     }};
 
@@ -916,6 +916,25 @@ public class HepTodoController extends BaseController implements Initializable {
                                 setStyle(color.get("默认"));
                             }
                         }
+                        // 颜色展示
+                        if (false) {
+                            // 今日待提交
+                            setStyle("-fx-text-background-color: #ff0000;");
+                            // 本周待提交
+                            setStyle("-fx-text-background-color: #ff0073;");
+                            // 缺陷
+                            setStyle("-fx-text-background-color: #0015ff;");
+                            // 自测问题
+                            setStyle("-fx-text-background-color: #804000;");
+                            // 自建任务
+                            setStyle("-fx-text-background-color: #008071;");
+                            // 已修改
+                            setStyle("-fx-text-background-color: #a100ff;");
+                            // 已提交
+                            setStyle("-fx-text-background-color: #ee00ff;");
+                            // 默认
+                            setStyle("-fx-text-background-color: black;");
+                        }
                     }
                 };
                 return row;
@@ -1210,15 +1229,14 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initColorDesc() {
-        double step = 10;
-        double x = 1220;
-        double y = 130;
-        Label label = new Label("颜色说明: ");
+        double step = 15;
+        double x = 1070;
+        double y = 120;
+        Label label = new Label("颜色说明:");
         label.setStyle("-fx-font-weight: bold;");
         label.setLayoutX(x);
         label.setLayoutY(y);
         todoTitle.getChildren().add(label);
-        x += 10;
         int prevLen = 4;
         int diff = 0;
         for (Map.Entry<String, String> entry : color.entrySet()) {
