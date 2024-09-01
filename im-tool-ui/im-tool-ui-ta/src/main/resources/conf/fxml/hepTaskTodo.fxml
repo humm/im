@@ -47,13 +47,16 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
+
+                        <!-- 获取焦点 -->
+                        <TextField layoutX="60.0" layoutY="1000.0" prefWidth="240" text=""/>
+
                         <Button fx:id="extendUser" layoutX="1200.0" layoutY="100.0" mnemonicParsing="false"
                                 onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联任务">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
-                        <TextField layoutX="60.0" layoutY="2000.0" prefWidth="240" text="默认光标聚焦点"/>
 
                         <Label layoutX="1520.0" layoutY="32.0" text="发版计划"/>
                         <Button fx:id="updateVersion" layoutX="1590.0" layoutY="25.0" mnemonicParsing="false"
