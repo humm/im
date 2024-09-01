@@ -27,6 +27,8 @@ import java.net.SocketException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -258,11 +260,12 @@ public class CommonUtils {
      * @return
      */
     public static String getLastDayByWeek() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMaximum(Calendar.DAY_OF_WEEK));
-        Date lastDayOfWeek = calendar.getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(PATTERN4);
-        return simpleDateFormat.format(lastDayOfWeek);
+        LocalDate now = LocalDate.now();
+        LocalDate lastDayOfWeek = now.with(DayOfWeek.SUNDAY);
+        int year = lastDayOfWeek.getYear();
+        int month = lastDayOfWeek.getMonthValue();
+        int day = lastDayOfWeek.getDayOfMonth();
+        return year + STR_HYPHEN + (month < 10 ? STR_0 + month : month) + STR_HYPHEN + (day < 10 ? STR_0 + day : day);
     }
 
     /**
@@ -271,11 +274,7 @@ public class CommonUtils {
      * @return
      */
     public static String getLastDayByWeek2() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, calendar.getActualMaximum(Calendar.DAY_OF_WEEK));
-        Date lastDayOfWeek = calendar.getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat(PATTERN3);
-        return simpleDateFormat.format(lastDayOfWeek);
+        return getLastDayByWeek().replaceAll(STR_HYPHEN, STR_BLANK);
     }
 
     public static String checkLicenseDate(AppConfigDto appConfigDto) {

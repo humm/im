@@ -116,6 +116,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        JvmCache.setScriptUpdateController(this);
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String mode = appConfigDto.getScriptUpdateGenerateMode();

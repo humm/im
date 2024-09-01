@@ -86,6 +86,7 @@ public class SystemToolController implements Initializable {
     @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        JvmCache.setSystemToolController(this);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         moveStep = Integer.valueOf(appConfigDto.getSystemToolShakeMouseStep());
         if (Boolean.valueOf(appConfigDto.getSystemToolShakeMouseAuto())) {
@@ -157,7 +158,7 @@ public class SystemToolController implements Initializable {
     void showVersion(ActionEvent event) {
         showVersionBtn.setDisable(true);
         try {
-            new HepTodoController().doShowVersion();
+            JvmCache.getHepTodoController().doShowVersion();
         } catch (Exception e) {
             LoggerUtils.info(e);
             LoggerUtils.info(e);

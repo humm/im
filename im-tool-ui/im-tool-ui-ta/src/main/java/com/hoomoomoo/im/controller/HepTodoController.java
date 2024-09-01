@@ -189,6 +189,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private static Map<String, Integer> minDateCache = new HashMap<>();
 
+    private static Set<String> dayTodoTask = new HashSet<>();
+    private static Set<String> weekTodoTask = new HashSet<>();
+
     @FXML
     void showTaskInfo(MouseEvent event) throws Exception {
         HepTaskDto item = (HepTaskDto) taskList.getSelectionModel().getSelectedItem();
@@ -246,7 +249,7 @@ public class HepTodoController extends BaseController implements Initializable {
     void executeUpdateVersion(ActionEvent event) throws Exception {
         updateVersion.setDisable(true);
         try {
-            new SystemToolController().executeUpdateVersion();
+            JvmCache.getSystemToolController().executeUpdateVersion();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("同步成功"));
             executeQuery(null);
         } catch (Exception e) {
@@ -271,7 +274,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     void doShowVersion() throws Exception {
-        new SystemToolController().executeUpdateVersion();
+        JvmCache.getSystemToolController().executeUpdateVersion();
         List<VersionDto> versionDtoList = getVersionInfo();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setVersionDtoList(versionDtoList);
@@ -704,10 +707,12 @@ public class HepTodoController extends BaseController implements Initializable {
             boolean today = todayMustComplete(item, currentDate, estimateFinishDate);
             if (dayVersion.toString().contains(sprintVersion + STR_SPACE) || dayCloseVersion.toString().contains(sprintVersion + STR_SPACE) || today) {
                 dayVersionNum++;
+                dayTodoTask.add(item.getTaskNumber());
             }
             boolean week = today || StringUtils.compare(lastDayByWeek, estimateFinishDate) >= 0;
             if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || week) {
                 weekVersionNum++;
+                weekTodoTask.add(item.getTaskNumber());
             }
 
             if (StringUtils.isBlank(status)) {
@@ -879,13 +884,18 @@ public class HepTodoController extends BaseController implements Initializable {
                         super.updateItem(item, empty);
                         if (item != null && getIndex() > -1) {
                             String taskName = item.getName();
+                            String taskNumber = item.getTaskNumber();
                             String taskNameTag = getTaskNameTag(taskName);
                             int endDate = 999;
                             if (StringUtils.isNotBlank(item.getEndDate())) {
                                 endDate = Integer.parseInt(item.getEndDate());
                             }
-                            if (endDate <= 1 && endDate > -50) {
+                            if (dayTodoTask.contains(taskNumber)) {
                                 setStyle("-fx-font-weight: bold; -fx-text-background-color: #ff0000;");
+                            } else if (weekTodoTask.contains(taskNumber)) {
+                                setStyle("-fx-font-weight: bold; -fx-text-background-color: rgb(132,0,255)");
+                            } else if (endDate <= 1 && endDate > -50) {
+                                setStyle("-fx-font-weight: bold; -fx-text-background-color: rgba(255,0,0,0.25);");
                             } else if (taskNameTag.contains("缺陷")) {
                                 setStyle("-fx-font-weight: bold; -fx-text-background-color: #0015ff;");
                             } else if (taskNameTag.contains("自测问题")) {
@@ -1285,7 +1295,7 @@ public class HepTodoController extends BaseController implements Initializable {
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
             item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
-            item.put(KEY_ESTIMATE_FINISH_TIME, "2024-08-28 22:59:59");
+            item.put(KEY_ESTIMATE_FINISH_TIME, "2024-09-02 22:59:59");
             switch (i % 7) {
                 case 0:
                     item.put("sprint_version", "TA6.0-FUND.V202304.10.000");

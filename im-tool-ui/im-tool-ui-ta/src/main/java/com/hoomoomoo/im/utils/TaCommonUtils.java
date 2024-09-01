@@ -327,7 +327,7 @@ public class TaCommonUtils {
                 addSql.add(part);
             }
         }
-        ScriptUpdateController scriptUpdateController = new ScriptUpdateController();
+        ScriptUpdateController scriptUpdateController = JvmCache.getScriptUpdateController();
         appConfigDto.setScriptUpdateGenerateType(STR_1);
         List<String> delete = scriptUpdateController.generatesql(appConfigDto, String.join(STR_BLANK, deleteSql));
         appConfigDto.setScriptUpdateGenerateType(STR_2);
