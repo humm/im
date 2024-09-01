@@ -51,40 +51,41 @@
                         <!-- 获取焦点 -->
                         <TextField layoutX="60.0" layoutY="1000.0" prefWidth="240" text=""/>
 
-                        <Button fx:id="extendUser" layoutX="1200.0" layoutY="100.0" mnemonicParsing="false"
-                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联任务">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-
-                        <Label layoutX="1520.0" layoutY="32.0" text="发版计划"/>
-                        <Button fx:id="updateVersion" layoutX="1590.0" layoutY="25.0" mnemonicParsing="false"
+                        <Label layoutX="1520.0" layoutY="22.0" text="发版计划"/>
+                        <Button fx:id="updateVersion" layoutX="1590.0" layoutY="15.0" mnemonicParsing="false"
                                 onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="55.0" text="同步">
                             <padding>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </padding>
                         </Button>
-                        <Button fx:id="showVersion" layoutX="1650.0" layoutY="25.0" mnemonicParsing="false"
+                        <Button fx:id="showVersion" layoutX="1650.0" layoutY="15.0" mnemonicParsing="false"
                                 onAction="#showVersion" prefHeight="30.0" prefWidth="55.0" text="查看">
                             <padding>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Label layoutX="1520.0" layoutY="80.0" text="脚本检查"/>
-                        <Button fx:id="scriptCheck" layoutX="1590.0" layoutY="75.0" mnemonicParsing="false"
+                        <Label layoutX="1520.0" layoutY="60.0" text="脚本检查"/>
+                        <Button fx:id="scriptCheck" layoutX="1590.0" layoutY="55.0" mnemonicParsing="false"
                                 onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="55.0" text="检查">
                             <padding>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </padding>
                         </Button>
-                        <Button fx:id="scriptShow" layoutX="1650.0" layoutY="75.0" mnemonicParsing="false"
+                        <Button fx:id="scriptShow" layoutX="1650.0" layoutY="55.0" mnemonicParsing="false"
                                 onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="55.0" text="查看">
                             <padding>
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </padding>
                         </Button>
+
+                        <Button fx:id="extendUser" layoutX="1590.0" layoutY="100.0" mnemonicParsing="false"
+                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="115.0" text="关联任务">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
                     </children>
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

@@ -225,6 +225,10 @@ public class HepTodoController extends BaseController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setHepTaskDto(item);
         if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
+            if (isExtendUser()) {
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户不支持此操作"));
+                return;
+            }
             operateTask(item);
         }
     }
@@ -358,8 +362,14 @@ public class HepTodoController extends BaseController implements Initializable {
         if (StringUtils.isBlank(appConfigDto.getHepTaskUserExtend())) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请设置关联用户信息【hep.task.user.extend】"));
         }
-        showExtendTask();
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("查看关联任务成功. . ."));
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联任务加载开始. . ."));
+        try {
+            extendUser.setDisable(true);
+            showExtendTask();
+        } finally {
+            extendUser.setDisable(false);
+        }
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联任务加载完成. . ."));
     }
 
     @FXML
@@ -1274,6 +1284,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private boolean isExtendUser() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        initUserInfo(appConfigDto);
         return !CURRENT_USER_ID.equals(appConfigDto.getHepTaskUser());
     }
 
@@ -1282,7 +1293,7 @@ public class HepTodoController extends BaseController implements Initializable {
         String userExtend = appConfigDto.getHepTaskUserExtend();
         if (StringUtils.isNotBlank(userExtend)) {
             String[] user = userExtend.split(STR_COMMA);
-            int index = 0;
+            Tab defaultTab = null;
             for (String extend : user) {
                 MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.TASK_TODO;
                 String tabCode = extend;
@@ -1294,12 +1305,14 @@ public class HepTodoController extends BaseController implements Initializable {
                     CommonUtils.setTabStyle(openTab, functionConfig);
                     CommonUtils.bindTabEvent(openTab);
                     AppCache.FUNCTION_TAB_CACHE.getTabs().add(openTab);
+                    Thread.sleep(300);
                 }
-                if (index == 0) {
-                    AppCache.FUNCTION_TAB_CACHE.getSelectionModel().select(openTab);
+                if (defaultTab == null) {
+                    defaultTab = openTab;
                 }
-                index++;
             }
+            appConfigDto.setActivateFunction(defaultTab.getText());
+            AppCache.FUNCTION_TAB_CACHE.getSelectionModel().select(defaultTab);
         }
     }
 
@@ -1392,6 +1405,14 @@ public class HepTodoController extends BaseController implements Initializable {
                     HepTaskDto hepTaskDto = (HepTaskDto) taskList.getSelectionModel().getSelectedItem();
                     hepWaitHandleTaskMenu.getItems().forEach((item) -> {
                         if (NAME_MENU_UPDATE.equals(item.getText())) {
+                            try {
+                                if (isExtendUser()) {
+                                    item.setVisible(false);
+                                    return;
+                                }
+                            } catch (Exception e) {
+                                // 无需处理异常
+                            }
                             if (STATUS_DEV.equals(hepTaskDto.getStatus())) {
                                 item.setVisible(true);
                             } else {
