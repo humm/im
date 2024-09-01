@@ -3,12 +3,17 @@ package com.hoomoomoo.im.utils;
 import com.hoomoomoo.im.controller.HepTodoController;
 import com.hoomoomoo.im.controller.ScriptUpdateController;
 import com.hoomoomoo.im.controller.SystemToolController;
+import com.hoomoomoo.im.controller.TaStarterController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class JvmCache {
 
     private static HepTodoController hepTodoController;
     private static SystemToolController systemToolController;
     private static ScriptUpdateController scriptUpdateController;
+    private static TaStarterController taStarterController;
 
     public static HepTodoController getHepTodoController() {
         if (hepTodoController == null) {
@@ -43,4 +48,14 @@ public class JvmCache {
         scriptUpdateController = updateController;
     }
 
+    public static TaStarterController getTaStarterController() {
+        if (taStarterController == null) {
+            taStarterController = new TaStarterController();
+        }
+        return taStarterController;
+    }
+
+    public static void setTaStarterController(TaStarterController starterController) {
+        taStarterController = starterController;
+    }
 }

@@ -150,6 +150,10 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskUser;
 
+    private String hepTaskUserExtend;
+
+    private String activateFunction;
+
     private String systemToolShakeMouseAuto;
 
     private String hepTaskTodoDetailSymbol;
@@ -229,6 +233,7 @@ public class AppConfigDto extends BaseDto {
     private int systemToolScriptRepairBatchNum;
 
     private Boolean execute;
+
     private String repairSchedule;
 
     public AppConfigDto() {

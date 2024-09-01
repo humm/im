@@ -12,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -584,11 +585,30 @@ public class CommonUtils {
      * @date: 2021/04/18
      * @return:
      */
-    public static Tab isOpen(TabPane functionTab, MenuFunctionConfig.FunctionConfig functionConfig) {
+    public static Tab getOpenTab(TabPane functionTab, MenuFunctionConfig.FunctionConfig functionConfig) {
         ObservableList<Tab> tabList = functionTab.getTabs();
         if (tabList != null) {
             for (Tab item : tabList) {
                 if (item.getText().equals(getMenuName(functionConfig.getCode(), functionConfig.getName()))) {
+                    return item;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * TAB是否已打开
+     *
+     * @author: humm23693
+     * @date: 2021/04/18
+     * @return:
+     */
+    public static Tab getOpenTab(TabPane functionTab, String tabCode, String tabName) {
+        ObservableList<Tab> tabList = functionTab.getTabs();
+        if (tabList != null) {
+            for (Tab item : tabList) {
+                if (item.getText().equals(CommonUtils.getMenuName(tabCode, tabName))) {
                     return item;
                 }
             }
@@ -621,11 +641,9 @@ public class CommonUtils {
             }
 
             LoggerUtils.info(String.format(BaseConst.MSG_OPEN, functionConfig.getName()));
-            Tab tab = CommonUtils.isOpen(functionTab, functionConfig);
+            Tab tab = CommonUtils.getOpenTab(functionTab, functionConfig);
             if (tab == null) {
-                tab = CommonUtils.getFunctionTab(functionConfig.getPath(), functionConfig.getName(),
-                        functionConfig.getCode(), functionConfig.getName());
-
+                tab = CommonUtils.getFunctionTab(functionConfig.getPath(), functionConfig.getName(), functionConfig.getCode(), functionConfig.getName());
                 setTabStyle(tab, functionConfig);
                 bindTabEvent(tab);
                 functionTab.getTabs().add(tab);
@@ -636,7 +654,7 @@ public class CommonUtils {
         }
     }
 
-    private static void setTabStyle(Tab tab, MenuFunctionConfig.FunctionConfig functionConfig) {
+    public static void setTabStyle(Tab tab, MenuFunctionConfig.FunctionConfig functionConfig) {
         tab.getStyleClass().add("tabClass");
         if (functionConfig == null) {
             return;
@@ -671,7 +689,7 @@ public class CommonUtils {
         }
     }
 
-    private static void bindTabEvent (Tab tab) {
+    public static void bindTabEvent (Tab tab) {
         if (tab == null) {
             return;
         }
@@ -699,14 +717,14 @@ public class CommonUtils {
      * @date: 2022-09-24
      * @return: void
      */
-    public static void initialize(URL location, ResourceBundle resources, TabPane tabPane, MenuBar menuBar) {
+    public static void initialize(URL location, ResourceBundle resources, TabPane functionTab, MenuBar menuBar) {
         try {
-            AppCache.FUNCTION_TAB_CACHE = tabPane;
+            AppCache.FUNCTION_TAB_CACHE = functionTab;
             // 加载已授权功能
-            CommonUtils.showAuthFunction(menuBar, tabPane);
+            CommonUtils.showAuthFunction(menuBar, functionTab);
 
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            appConfigDto.setTabPane(tabPane);
+            appConfigDto.setTabPane(functionTab);
 
             String showTab = appConfigDto.getAppTabShow();
             if (StringUtils.isNotBlank(showTab)) {
@@ -721,11 +739,10 @@ public class CommonUtils {
                         continue;
                     }
                     MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(tab);
-                    Tab openTab = CommonUtils.getFunctionTab(getPath(tab),
-                            getName(tab), functionConfig.getCode(), functionConfig.getName());
+                    Tab openTab = CommonUtils.getFunctionTab(getPath(tab), getName(tab), functionConfig.getCode(), functionConfig.getName());
                     setTabStyle(openTab, functionConfig);
                     bindTabEvent(openTab);
-                    tabPane.getTabs().add(openTab);
+                    functionTab.getTabs().add(openTab);
                 }
             } else {
                 // 默认打开有权限的第一个功能
@@ -736,9 +753,16 @@ public class CommonUtils {
                     MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
                     setTabStyle(tab, functionConfig);
                     bindTabEvent(tab);
-                    tabPane.getTabs().add(tab);
+                    functionTab.getTabs().add(tab);
                 }
             }
+            // 监听获取当前正在打开的功能
+            functionTab.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
+                if (newTab != null) {
+                    String tab = newTab.getText();
+                    appConfigDto.setActivateFunction(tab);
+                }
+            });
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_INIT, NAME_CONFIG_VIEW));
         } catch (Exception e) {
             LoggerUtils.info(e);

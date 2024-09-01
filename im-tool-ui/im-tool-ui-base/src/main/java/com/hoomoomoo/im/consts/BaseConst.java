@@ -145,6 +145,7 @@ public class BaseConst {
     public final static String KEY_PRIMARY = "primary";
     public final static String KEY_CLOSE_DATE = "closeDate";
     public final static String KEY_ORI_CLOSE_DATE = "oriCloseDate";
+    public final static String KEY_ORI_PUBLISH_DATE = "oriPublishDate";
     public final static String KEY_PUBLISH_DATE = "publishDate";
     public final static String KEY_CUSTOMER = "customer";
     public final static String KEY_ORDER_NO = "orderNo";

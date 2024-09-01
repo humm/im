@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.utils.CommonUtils;
+import com.hoomoomoo.im.utils.JvmCache;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -19,14 +20,15 @@ import java.util.ResourceBundle;
 public class TaStarterController implements Initializable {
 
     @FXML
-    private MenuBar ta;
+    private MenuBar menuBar;
 
     @FXML
     private TabPane functionTab;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        CommonUtils.initialize(location, resources, functionTab, ta);
+        JvmCache.setTaStarterController(this);
+        CommonUtils.initialize(location, resources, functionTab, menuBar);
     }
 
 }
