@@ -8,6 +8,8 @@ import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -845,5 +847,32 @@ public class CommonUtils {
         Pattern pattern = Pattern.compile("\\d+");
         Matcher matcher = pattern.matcher(str);
         return matcher.matches();
+    }
+
+    public static Service<Void> getCloseInfoService() {
+        Service<Void> service = new Service<Void>() {
+            @Override
+            protected Task<Void> createTask() {
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        Thread.sleep(1000);
+                        return null;
+                    }
+                };
+            }
+        };
+        return service;
+    }
+
+    public static void showTips(String msg) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("提示");
+        alert.setHeaderText(String.format(". . . . . . 玩命%s中 . . . . . .", msg));
+        alert.setContentText(". . . 春风十里不如你 . . . 风里雨里我在这里等你 . . . ");
+        Service<Void> service = getCloseInfoService();
+        service.setOnSucceeded(e -> alert.hide());
+        service.start();
+        alert.show();
     }
 }

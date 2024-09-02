@@ -339,6 +339,7 @@ public class SystemToolController implements Initializable {
             for (MenuFunctionConfig.FunctionConfig functionConfig : functionConfigs) {
                 FileUtils.deleteFile(new File(FileUtils.getFilePath(String.format(SUB_PATH_LOG, functionConfig.getLogFolder()))));
             }
+            OutputUtils.info(logs, getCommonMsg(NAME_CLEAR_LOG, "日志清除成功"));
             addLog("清除系统日志");
         } catch (Exception e) {
             LoggerUtils.info(e);

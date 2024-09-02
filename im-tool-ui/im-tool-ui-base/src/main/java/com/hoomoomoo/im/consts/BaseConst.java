@@ -211,6 +211,7 @@ public class BaseConst {
     public static final String NAME_REPAIR_OLD_MENU = "修正老版全量";
     public static final String NAME_REPAIR_NEW_MENU = "修正新版全量";
     public static final String NAME_REPAIR_EXT = "修正开通脚本";
+    public static final String NAME_CLEAR_LOG = "系统日志";
 
     public static final String NAME_MENU_UPDATE = "任务更新";
     public static final String NAME_MENU_COPY = "全部复制";

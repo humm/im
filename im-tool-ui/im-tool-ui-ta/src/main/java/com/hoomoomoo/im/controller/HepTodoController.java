@@ -21,6 +21,8 @@ import com.hoomoomoo.im.task.HepTodoTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -223,6 +225,7 @@ public class HepTodoController extends BaseController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setHepTaskDto(item);
         if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
+            CommonUtils.showTips("加载");
             if (isExtendUser()) {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户不支持此操作"));
                 return;
@@ -412,7 +415,7 @@ public class HepTodoController extends BaseController implements Initializable {
             reset.setDisable(true);
             execute(OPERATE_QUERY, null);
             setProgress(1);
-            LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), logs);
+            // LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), logs);
             logs.clear();
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -1429,7 +1432,6 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         });
     }
-
 
     private boolean requestStatus(HttpResponse response) {
         return !proScene() || STATUS_200 == response.getStatus();
