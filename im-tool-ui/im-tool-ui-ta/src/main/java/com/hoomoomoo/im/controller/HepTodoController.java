@@ -613,6 +613,9 @@ public class HepTodoController extends BaseController implements Initializable {
     @SneakyThrows
     public void dealTaskList(JSONArray task, List<String> logsIn, Label dayTodoIn, Label weekTodoIn, Label waitHandleTaskNumIn, Label dayPublishIn, Label weekPublishIn,
                              Label dayCloseIn, Label weekCloseIn, TableView taskListIn, boolean tagFlag) {
+        dayTodoTask.clear();
+        weekTodoTask.clear();
+        finishDateError.clear();
         taskListIn.setDisable(true);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
