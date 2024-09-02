@@ -99,29 +99,27 @@ public class HepTodoController extends BaseController implements Initializable {
         put("默认", "-fx-text-background-color: #000000;");
     }};
 
-    private static Set<String> field = new LinkedHashSet<>();
-
-    static {
-        field.add(KEY_CHARSET);
-        field.add(KEY_REAL_FINISH_TIME);
-        field.add(KEY_OPERATE_TYPE);
-        field.add(KEY_METHOD);
-        field.add(KEY_SUGGESTION);
-        field.add(KEY_FORMAT);
-        field.add(KEY_CURRENT_USER_ID);
-        field.add(KEY_SIGN);
-        field.add(KEY_REAL_WORKLOAD);
-        field.add(KEY_APP_KEY);
-        field.add(KEY_FINISH_PERCENTAGE);
-        field.add(KEY_INTEGRATE_ATTENTION);
-        field.add(KEY_MODIFIED_FILE);
-        field.add(KEY_STATUS_LIST);
-        field.add(KEY_ID);
-        field.add(KEY_APP_ID);
-        field.add(KEY_EDIT_DESCRIPTION);
-        field.add(KEY_TIMESTAMP);
-        field.add(KEY_SELF_TEST_DESC);
-    }
+    private static Set<String> field = new LinkedHashSet<String>(){{
+        add(KEY_CHARSET);
+        add(KEY_REAL_FINISH_TIME);
+        add(KEY_OPERATE_TYPE);
+        add(KEY_METHOD);
+        add(KEY_SUGGESTION);
+        add(KEY_FORMAT);
+        add(KEY_CURRENT_USER_ID);
+        add(KEY_SIGN);
+        add(KEY_REAL_WORKLOAD);
+        add(KEY_APP_KEY);
+        add(KEY_FINISH_PERCENTAGE);
+        add(KEY_INTEGRATE_ATTENTION);
+        add(KEY_MODIFIED_FILE);
+        add(KEY_STATUS_LIST);
+        add(KEY_ID);
+        add(KEY_APP_ID);
+        add(KEY_EDIT_DESCRIPTION);
+        add(KEY_TIMESTAMP);
+        add(KEY_SELF_TEST_DESC);
+    }};
 
     private List<String> logs = new ArrayList<>();
 
@@ -756,8 +754,10 @@ public class HepTodoController extends BaseController implements Initializable {
                 weekVersionNum++;
                 weekTodoTask.add(item.getTaskNumber());
             }
-            if (!estimateFinishDate.startsWith(STR_99) && StringUtils.compare(estimateFinishDate, item.getOriCloseDate()) > 0) {
-                finishDateError.add(item.getTaskNumber());
+            if (!estimateFinishDate.startsWith(STR_99) && StringUtils.isNotBlank(estimateFinishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
+                if (StringUtils.compare(estimateFinishDate, item.getOriCloseDate()) > 0) {
+                    finishDateError.add(item.getTaskNumber());
+                }
             }
             if (StringUtils.isBlank(status)) {
                 hasBlank = true;
@@ -1271,7 +1271,7 @@ public class HepTodoController extends BaseController implements Initializable {
         String activateFunction = appConfigDto.getActivateFunction();
         if (StringUtils.isNotBlank(activateFunction)) {
             String tabCode = activateFunction.split(STR_COLON)[0];
-            if (!MenuFunctionConfig.FunctionConfig.TASK_TODO.getCode().equals(tabCode)) {
+            if (!MenuFunctionConfig.FunctionConfig.TASK_TODO.getCode().equals(tabCode) && appConfigDto.getHepTaskUserExtend().contains(tabCode)) {
                 CURRENT_USER_ID = tabCode;
             } else {
                 CURRENT_USER_ID = appConfigDto.getHepTaskUser();
