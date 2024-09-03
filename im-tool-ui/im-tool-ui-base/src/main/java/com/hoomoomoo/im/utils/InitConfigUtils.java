@@ -427,6 +427,7 @@ public class InitConfigUtils {
 
         keys.put("hep.task.user", null);
         keys.put("hep.task.user.extend", null);
+        keys.put("hep.task.error.finish.date.skip.version", null);
 
         keys.put("system.tool.update.version.path", null);
         keys.put("hep.task.todo.end.date.version", null);

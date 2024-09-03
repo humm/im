@@ -152,6 +152,8 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskUserExtend;
 
+    private String hepTaskErrorFinishDateSkipVersion;
+
     private String activateFunction;
 
     private String systemToolShakeMouseAuto;

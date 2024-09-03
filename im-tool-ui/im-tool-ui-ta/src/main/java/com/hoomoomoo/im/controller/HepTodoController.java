@@ -21,8 +21,6 @@ import com.hoomoomoo.im.task.HepTodoTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -35,6 +33,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -50,7 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_TODO;
 
 /**
  * @author humm23693
@@ -124,6 +123,9 @@ public class HepTodoController extends BaseController implements Initializable {
     }};
 
     private List<String> logs = new ArrayList<>();
+
+    @FXML
+    private AnchorPane hep;
 
     @FXML
     private AnchorPane todoTitle;
@@ -704,10 +706,16 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         int dayVersionNum = 0;
         int weekVersionNum = 0;
+        Set<String> skipVersion = new HashSet<>();
+        if (StringUtils.isNotBlank(appConfigDto.getHepTaskErrorFinishDateSkipVersion())) {
+            skipVersion.addAll(Arrays.asList(appConfigDto.getHepTaskErrorFinishDateSkipVersion().split(STR_COMMA)));
+        }
         Map<String, Integer> minDate = new HashMap<>();
         Iterator<HepTaskDto> iterator = res.listIterator();
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
+            item.setName(item.getName().replaceAll(STR_NEXT_LINE, STR_BLANK));
+
             String status = item.getStatus();
             if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
                 iterator.remove();
@@ -743,7 +751,9 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             if (!estimateFinishDate.startsWith(STR_99) && StringUtils.isNotBlank(estimateFinishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
                 if (StringUtils.compare(estimateFinishDate, item.getOriCloseDate()) > 0) {
-                    finishDateError.add(item.getTaskNumber());
+                    if (!skipVersion.contains(item.getSprintVersion())) {
+                        finishDateError.add(item.getTaskNumber());
+                    }
                 }
             }
             if (StringUtils.isBlank(status)) {
@@ -1246,6 +1256,13 @@ public class HepTodoController extends BaseController implements Initializable {
             executeQuery(null);
             initColorDesc();
             buildTestData();
+
+            /* // 遮罩层
+            Pane mask = new Pane();
+            mask.setStyle("-fx-background-color: rgba(0,0,0,0.1)");
+            mask.setPrefSize(2000, 2000);
+            hep.getChildren().add(mask);
+            mask.setVisible(true);*/
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -1277,6 +1294,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void showExtendTask() throws Exception {
+        CommonUtils.showTips("加载");
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String userExtend = appConfigDto.getHepTaskUserExtend();
         if (StringUtils.isNotBlank(userExtend)) {
@@ -1293,7 +1311,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     CommonUtils.setTabStyle(openTab, functionConfig);
                     CommonUtils.bindTabEvent(openTab);
                     AppCache.FUNCTION_TAB_CACHE.getTabs().add(openTab);
-                    Thread.sleep(300);
+                    Thread.sleep(500);
                 }
                 if (defaultTab == null) {
                     defaultTab = openTab;
@@ -1472,7 +1490,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.put(KEY_NAME, "「需求」" + i);
                     break;
                 case 1:
-                    item.put(KEY_NAME, "「开发」【缺陷:45454】" + i);
+                    item.put(KEY_NAME, "「开发」【缺陷:454\n54】" + i);
                     break;
                 case 2:
                     item.put(KEY_NAME, "「开发任务」" + i);
