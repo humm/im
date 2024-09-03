@@ -225,7 +225,7 @@ public class HepTodoController extends BaseController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setHepTaskDto(item);
         if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
-            CommonUtils.showTips("加载");
+            // CommonUtils.showTips("加载");
             if (isExtendUser()) {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户不支持此操作"));
                 return;
@@ -363,14 +363,14 @@ public class HepTodoController extends BaseController implements Initializable {
         if (StringUtils.isBlank(appConfigDto.getHepTaskUserExtend())) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请设置关联用户信息【hep.task.user.extend】"));
         }
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联任务加载开始. . ."));
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联任务加载开始 . . ."));
         try {
             extendUser.setDisable(true);
             showExtendTask();
         } finally {
             extendUser.setDisable(false);
         }
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联任务加载完成. . ."));
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联任务加载完成 . . ."));
     }
 
     @FXML
@@ -414,9 +414,9 @@ public class HepTodoController extends BaseController implements Initializable {
             queryCondition.setDisable(true);
             reset.setDisable(true);
             execute(OPERATE_QUERY, null);
-            setProgress(1);
-            // LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), logs);
+            LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<>(logs));
             logs.clear();
+            setProgress(1);
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ExceptionMsgUtils.getMsg(e)));
@@ -630,7 +630,6 @@ public class HepTodoController extends BaseController implements Initializable {
         Map<String, String> taskMinCompleteDate = new HashMap<>();
         for (int i = 0; i < task.size(); i++) {
             Map<String, Object> item = (Map) task.get(i);
-            logsIn.add(item.toString());
             String name = String.valueOf(item.get(KEY_NAME));
             String estimateFinishTime = String.valueOf(item.get(KEY_ESTIMATE_FINISH_TIME)).split(STR_SPACE)[0];
             if (taskMinCompleteDate.containsKey(name)) {
@@ -673,28 +672,10 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
                 String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
-                /* String customer = elements[3];
-                String[] customerList;
-                if (customer.contains("无人使用")) {
-                    customerList = new String[]{STR_BLANK};
-                } else if (customer.contains(STR_COMMA_1)) {
-                    customerList = customer.split(STR_COMMA_1);
-                } else if (customer.contains(STR_CAESURA)) {
-                    customerList = customer.split(STR_CAESURA);
-                } else {
-                    customerList = new String[]{customer};
-                }
-                customer = STR_BLANK;
-                for (String element : customerList) {
-                    if (element.length() > 4) {
-                        customer += element.substring(0, 4) + STR_SPACE;
-                    }
-                }*/
                 ele.put(KEY_ORI_CLOSE_DATE, oriCloseDate);
                 ele.put(KEY_ORI_PUBLISH_DATE, oriPublishDate);
                 ele.put(KEY_CLOSE_DATE, closeDate);
                 ele.put(KEY_PUBLISH_DATE, publishDate);
-                // ele.put(KEY_CUSTOMER, customer);
                 ele.put(KEY_ORDER_NO, oriOrderNo);
                 if (currentDay.equals(oriCloseDate)) {
                     dayCloseVersion.append(versionCode).append(STR_SPACE);
@@ -1126,14 +1107,11 @@ public class HepTodoController extends BaseController implements Initializable {
         if (!proScene()) {
             return null;
         }
-        LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<String>() {{
-            add("请求入参: " + jsonObject);
-        }});
+        logs.add("请求入参: " + jsonObject);
         HttpResponse response = HttpRequest.post(REQUEST_URL).timeout(10 * 1000).form(jsonObject).execute();
         Map result = (Map) JSONObject.parse(response.body());
-        LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<String>() {{
-            add("返回结果: " + result.toString());
-        }});
+        logs.add("返回结果: " + result.toString());
+
         Object data = result.get("data");
         if (data instanceof JSONArray) {
             JSONArray ele = (JSONArray) data;
@@ -1285,7 +1263,11 @@ public class HepTodoController extends BaseController implements Initializable {
         } else {
             CURRENT_USER_ID = appConfigDto.getHepTaskUser();
         }
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(String.format("当前用户【%s】", CURRENT_USER_ID)));
+        String user = String.format("当前用户【%s】", CURRENT_USER_ID);
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(user));
+        if (!logs.contains(user)) {
+            logs.add(user);
+        }
     }
 
     private boolean isExtendUser() throws Exception {
