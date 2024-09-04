@@ -12,6 +12,7 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<?import javafx.scene.control.RadioButton?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.HepTodoController">
     <children>
@@ -38,10 +39,13 @@
                         <Label layoutX="420.0" layoutY="105.0" style="-fx-font-weight: bold;" text="待提交："/>
                         <Label fx:id="waitHandleTaskNum" layoutX="480.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
 
-                        <ProgressIndicator fx:id="schedule" layoutX="800.0" layoutY="102.0" progress="0.0"/>
-                        <Label fx:id="scheduleText" layoutX="845" layoutY="105.0" text="0%"/>
+                        <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="102.0" progress="0.0"/>
+                        <Label fx:id="scheduleText" layoutX="635" layoutY="105.0" text="0%"/>
 
-                        <Button fx:id="query" layoutX="930.0" layoutY="100.0" mnemonicParsing="false"
+                        <RadioButton fx:id="all" layoutX="800.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectAll" text="全部"/>
+                        <RadioButton fx:id="only" layoutX="870.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectOnly" text="去重"/>
+
+                        <Button fx:id="query" layoutX="1000.0" layoutY="95.0" mnemonicParsing="false"
                                 onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
@@ -80,7 +84,7 @@
                         </Button>
 
                         <Button fx:id="extendUser" layoutX="1590.0" layoutY="100.0" mnemonicParsing="false"
-                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="115.0" text="关联任务">
+                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="115.0" text="关联用户任务">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>

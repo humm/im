@@ -19,6 +19,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -853,13 +854,13 @@ public class CommonUtils {
         Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
-                return new Task<Void>() {
-                    @Override
-                    protected Void call() throws Exception {
-                        Thread.sleep(1000);
-                        return null;
-                    }
-                };
+            return new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    Thread.sleep(1000);
+                    return null;
+                }
+            };
             }
         };
         return service;
