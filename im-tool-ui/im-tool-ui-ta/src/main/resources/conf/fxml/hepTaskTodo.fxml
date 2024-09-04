@@ -193,12 +193,24 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="342.0">
                                     <children>
-                                        <SplitPane dividerPositions="0.3570175438596491, 0.7207017543859649"
+                                        <SplitPane dividerPositions="0.2670175438596491, 0.6507017543859649"
                                                    layoutX="68.0" layoutY="59.0" orientation="VERTICAL"
                                                    prefHeight="318.4" prefWidth="191.0" AnchorPane.bottomAnchor="0.0"
                                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                    AnchorPane.topAnchor="0.0">
                                             <items>
+                                                <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
+                                                            prefHeight="114.0" prefWidth="108.0">
+                                                    <children>
+                                                        <TextArea fx:id="notice" editable="false"
+                                                                  layoutX="-62.0" layoutY="-41.0"
+                                                                  prefHeight="139.0" prefWidth="108.0"
+                                                                  AnchorPane.bottomAnchor="0.0"
+                                                                  AnchorPane.leftAnchor="0.0"
+                                                                  AnchorPane.rightAnchor="0.0"
+                                                                  AnchorPane.topAnchor="0.0"/>
+                                                    </children>
+                                                </AnchorPane>
                                                 <AnchorPane fx:id="condition" minHeight="0.0" minWidth="0.0"
                                                             prefHeight="100.0" prefWidth="160.0">
                                                     <Label layoutX="15.0" layoutY="15.0"
@@ -250,18 +262,6 @@
                                                     <Label layoutX="15.0" layoutY="175.0" text="状态"/>
                                                     <TextField fx:id="statusName" layoutX="60.0" layoutY="170.0"
                                                                prefWidth="240"/>
-                                                </AnchorPane>
-                                                <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
-                                                            prefHeight="114.0" prefWidth="108.0">
-                                                    <children>
-                                                        <TextArea fx:id="notice" editable="false"
-                                                                  layoutX="-62.0" layoutY="-41.0"
-                                                                  prefHeight="139.0" prefWidth="108.0"
-                                                                  AnchorPane.bottomAnchor="0.0"
-                                                                  AnchorPane.leftAnchor="0.0"
-                                                                  AnchorPane.rightAnchor="0.0"
-                                                                  AnchorPane.topAnchor="0.0"/>
-                                                    </children>
                                                 </AnchorPane>
                                             </items>
                                         </SplitPane>
