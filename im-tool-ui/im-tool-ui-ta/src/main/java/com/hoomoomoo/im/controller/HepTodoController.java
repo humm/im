@@ -59,12 +59,12 @@ import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_TOD
  */
 public class HepTodoController extends BaseController implements Initializable {
 
+    private String CURRENT_USER_ID = STR_BLANK;
     private final static Integer STATUS_200 = 200;
     private final static String STR_STATUS_200 = "200";
     private final static String REQUEST_URL = "http://cloudin.proxy.in.hundsun.com/openapi/invoke/defaultFormData";
     private final static String APP_ID = "dqwhyanulhrmrrnk";
     private final static String APP_KEY = "fbbbee8e31a646d3a3a45f5c0e5b3e9";
-    private static String CURRENT_USER_ID = "";
     private final static String METHOD_GET_FIELD_INFO = "devtool/getFieldInfo";
     private final static String METHOD_FETCH_TASK_BY_ID = "devtool/fetchTaskById";
     private final static String METHOD_UPDATE_TASK_STATUS = "devtool/updateTaskStatus";
@@ -1312,16 +1312,18 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initUserInfo(AppConfigDto appConfigDto) {
-        String activateFunction = appConfigDto.getActivateFunction();
-        if (StringUtils.isNotBlank(activateFunction)) {
-            String tabCode = activateFunction.split(STR_COLON)[0];
-            if (!MenuFunctionConfig.FunctionConfig.TASK_TODO.getCode().equals(tabCode) && appConfigDto.getHepTaskUserExtend().contains(tabCode)) {
-                CURRENT_USER_ID = tabCode;
+        if (StringUtils.isBlank(CURRENT_USER_ID)) {
+            String activateFunction = appConfigDto.getActivateFunction();
+            if (StringUtils.isNotBlank(activateFunction)) {
+                String tabCode = activateFunction.split(STR_COLON)[0];
+                if (!MenuFunctionConfig.FunctionConfig.TASK_TODO.getCode().equals(tabCode) && appConfigDto.getHepTaskUserExtend().contains(tabCode)) {
+                    CURRENT_USER_ID = tabCode;
+                } else {
+                    CURRENT_USER_ID = appConfigDto.getHepTaskUser();
+                }
             } else {
                 CURRENT_USER_ID = appConfigDto.getHepTaskUser();
             }
-        } else {
-            CURRENT_USER_ID = appConfigDto.getHepTaskUser();
         }
         String user = String.format("当前用户【%s】", CURRENT_USER_ID);
         OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(user));

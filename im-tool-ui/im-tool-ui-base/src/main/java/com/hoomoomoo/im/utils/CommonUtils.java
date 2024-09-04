@@ -763,7 +763,7 @@ public class CommonUtils {
             functionTab.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
                 if (newTab != null) {
                     String tab = newTab.getText();
-                    appConfigDto.setActivateFunction(tab);
+                    // appConfigDto.setActivateFunction(tab);
                 }
             });
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_INIT, NAME_CONFIG_VIEW));
