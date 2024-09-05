@@ -91,12 +91,12 @@ public class HepTodoController extends BaseController implements Initializable {
     private Map<String, String> color = new LinkedHashMap<String, String>(){{
         put("完成日期错误", "-fx-text-background-color: #ff8800;");
         put("今日待提交", "-fx-text-background-color: #ff0000;");
-        put("本周待提交", "-fx-text-background-color: #ff0073;");
-        put("缺陷", "-fx-text-background-color: #0015ff;");
+        put("本周待提交", "-fx-text-background-color: #0015ff;");
+        put("缺陷", "-fx-text-background-color: #ff00c3;");
         put("自测问题", "-fx-text-background-color: #804000;");
         put("自建任务", "-fx-text-background-color: #008071;");
-        put("已修改", "-fx-text-background-color: #a100ff;");
-        put("已提交", "-fx-text-background-color: #ee00ff;");
+        put("已修改", "-fx-text-background-color: #7b00ff;");
+        put("已提交", "-fx-text-background-color: #b700ff;");
         put("默认", "-fx-text-background-color: #000000;");
     }};
 
@@ -865,19 +865,19 @@ public class HepTodoController extends BaseController implements Initializable {
             return true;
         }
         if (StringUtils.isNotBlank(item.getCloseDate())) {
-            if (Integer.parseInt(item.getCloseDate()) <= 1) {
+            if (Integer.parseInt(item.getCloseDate()) <= 0) {
                 return true;
             }
         }
         if (StringUtils.isNotBlank(item.getPublishDate())) {
-            if (Integer.parseInt(item.getPublishDate()) <= 1) {
+            if (Integer.parseInt(item.getPublishDate()) <= 0) {
                 return true;
             }
         }
         String endDate = item.getEndDate();
         if (StringUtils.isNotBlank(endDate)) {
             int date = Integer.parseInt(endDate);
-            if (date <= 1 && date > -50) {
+            if (date <= 0 && date > -50) {
                 return true;
             }
         }
@@ -984,17 +984,17 @@ public class HepTodoController extends BaseController implements Initializable {
                             // 今日待提交
                             setStyle("-fx-text-background-color: #ff0000;");
                             // 本周待提交
-                            setStyle("-fx-text-background-color: #ff0073;");
-                            // 缺陷
                             setStyle("-fx-text-background-color: #0015ff;");
+                            // 缺陷
+                            setStyle("-fx-text-background-color: #ff00c3;");
                             // 自测问题
                             setStyle("-fx-text-background-color: #804000;");
                             // 自建任务
                             setStyle("-fx-text-background-color: #008071;");
                             // 已修改
-                            setStyle("-fx-text-background-color: #a100ff;");
+                            setStyle("-fx-text-background-color: #7b00ff;");
                             // 已提交
-                            setStyle("-fx-text-background-color: #ee00ff;");
+                            setStyle("-fx-text-background-color: #b700ff;");
                             // 默认
                             setStyle("-fx-text-background-color: #000000;");
                         }
