@@ -1158,6 +1158,18 @@ public class ScriptRepairSql {
         res.add(String.format(BLOCK_LINE_INDEX_TIPS, "子交易码 tsys_subtrans"));
         res.add(BLOCK_LINE_INDEX);
 
+        if (menuTrans.containsKey("ifmCQsglAutoClearLog")) {
+            String clearLog = menuTrans.get("ifmCQsglAutoClearLog");
+            res.add(addDeleteFundMenu(clearLog, "trans"));
+            res.add(formatSql(clearLog, false, false));
+        }
+        if (menuSubTrans.containsKey("ifmCQsglAutoClearLog")) {
+            List<String> clearLog = menuSubTrans.get("ifmCQsglAutoClearLog");
+            for (String item : clearLog) {
+                res.add(formatSql(item, false, false));
+            }
+        }
+
         Set<String> skip = ScriptSqlUtils.initRepairExtSkip();
         boolean update;
         boolean nextLine = false;
@@ -1170,12 +1182,12 @@ public class ScriptRepairSql {
                 String subTransCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
                 if (skip.contains(subTransCode)) {
                     update = true;
-                    item = item.replace("insert into", "-- insert into");
-                    item = item.replace("INSERT INTO", "-- INSERT INTO");
-                    item = item.replace("values(", "-- values(");
-                    item = item.replace("VALUES(", "-- VALUES(");
-                    item = item.replace("values (", "-- values (");
-                    item = item.replace("VALUES (", "-- VALUES (");
+                    // item = item.replace("insert into", "insert into");
+                    item = item.replace("INSERT INTO", "insert into");
+                    // item = item.replace("values(", "values(");
+                    item = item.replace("VALUES(", "values(");
+                    // item = item.replace("values (", "values (");
+                    item = item.replace("VALUES (", "values (");
                     ele[j] = item;
                 }
             }
@@ -1363,13 +1375,13 @@ public class ScriptRepairSql {
             if (StringUtils.isNotBlank(menu)) {
                 subTransAndSubTrans.append(menu);
             }
-            subTransAndSubTrans.append(formatSql(trans, false, false));
+            subTransAndSubTrans.append(formatSql(trans, false, true));
         }
         List<String> subTrans = menuSubTrans.get(subThirdMenuCode);
         if (CollectionUtils.isNotEmpty(subTrans)) {
 
             for (int k=0; k<subTrans.size(); k++) {
-                subTransAndSubTrans.append(formatSql(subTrans.get(k), false, false));
+                subTransAndSubTrans.append(formatSql(subTrans.get(k), false, true));
             }
         } else {
             flag = false;

@@ -70,7 +70,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static String METHOD_UPDATE_TASK_STATUS = "devtool/updateTaskStatus";
     private final static String METHOD_FETCH_TASK_LIST = "devtool/fetchTaskList";
     /**
-     * 0:待启动,4:开发中,5,8:待集成,14,16,17:待审核,18:审核不通过,6
+     * 0:待启动,4:开发中,5:开发待集成,8:待集成,14:集成失败,16:开发集成失败,17:待审核,18:审核不通过,6:开发集成成功
      */
     private final static String STATUS_LIST = "0,4,5,8,14,16,17,18,6";
     private final static String OPERATE_TYPE_START = "1";
@@ -865,12 +865,12 @@ public class HepTodoController extends BaseController implements Initializable {
             return true;
         }
         if (StringUtils.isNotBlank(item.getCloseDate())) {
-            if (Integer.parseInt(item.getCloseDate()) <= 0) {
+            if (Integer.parseInt(item.getCloseDate()) == 0) {
                 return true;
             }
         }
         if (StringUtils.isNotBlank(item.getPublishDate())) {
-            if (Integer.parseInt(item.getPublishDate()) <= 0) {
+            if (Integer.parseInt(item.getPublishDate()) == 0) {
                 return true;
             }
         }
@@ -899,6 +899,9 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         String taskName = item.getName();
         int min = Math.min(Math.min(Integer.valueOf(closeDate), Integer.valueOf(publishDate)), Integer.valueOf(endDate));
+        if (min < 0) {
+            min = Integer.valueOf(endDate);
+        }
         if (minDate.containsKey(taskName)) {
             if (minDate.get(taskName) > min) {
                 minDate.put(taskName, min);
@@ -1263,9 +1266,9 @@ public class HepTodoController extends BaseController implements Initializable {
             } else if (STR_3.equals(type)) {
                 return "9970-12-31 23:59:59";
             } else if (STR_4.equals(type)) {
-                return "9960-12-31 23:59:59";
+                return "1160-12-31 23:59:59";
             } else if (STR_5.equals(type)) {
-                return "9950-12-31 23:59:59";
+                return "1150-12-31 23:59:59";
             }
         }
         return value;

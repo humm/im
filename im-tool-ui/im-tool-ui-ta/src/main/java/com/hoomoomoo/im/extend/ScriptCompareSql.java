@@ -646,6 +646,7 @@ public class ScriptCompareSql {
         Set<String> menuNameNotStartByFund = new HashSet<>();
         Map<String, String> menuNameCache = new HashMap<>();
         Set<String> skipSameMenu = skipLegalNewMenu.get("存在相同菜单名称");
+        Set<String> skipNotStartByFund = skipLegalNewMenu.get("菜单代码不是以fund开始");
         while (menuUedExistIterator.hasNext()) {
             String menuCode = menuUedExistIterator.next();
             String menuName = newMenuExistCache.get(menuCode);
@@ -654,7 +655,9 @@ public class ScriptCompareSql {
                 menuInfo.add(menu);
             }
             if (!menuCode.startsWith("fund") && !ScriptRepairSql.includePubMenu.contains(menuCode)) {
-                menuNameNotStartByFund.add(menu);
+                if (CollectionUtils.isEmpty(skipNotStartByFund) || !skipNotStartByFund.contains(menuCode)) {
+                    menuNameNotStartByFund.add(menu);
+                }
             }
             if (newMenuTransExistCache.contains(menuCode)) {
                 continue;
