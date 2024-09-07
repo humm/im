@@ -869,7 +869,7 @@ public class CommonUtils {
     public static void showTips(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("提示");
-        alert.setHeaderText(String.format(". . . . . . 玩命%s中 . . . . . .", msg));
+        alert.setHeaderText(String.format(". . . . . . %s . . . . . .", msg));
         alert.setContentText(". . . 春风十里不如你 ... 风里雨里我在这里等你 . . . ");
         Service<Void> service = getCloseInfoService();
         service.setOnSucceeded(e -> alert.hide());

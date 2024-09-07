@@ -236,10 +236,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
         changeOldMenu.setDisable(true);
         menuResult.setDisable(true);
         OutputUtils.clearLog(target);
-        OutputUtils.infoContainBr(target, "执行中... 请稍后...");
-        if (!newUd) {
-            OutputUtils.infoContainBr(target, "...我只是慢... 请耐心等候...");
-        }
+        OutputUtils.infoContainBr(target, "执行中...");
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String base = ScriptSqlUtils.baseMenu;
         String paramValue = STR_0;
@@ -252,8 +249,13 @@ public class ScriptUpdateController extends BaseController implements Initializa
         res.add("-- 更新系统参数 是否使用新版菜单编排");
         res.add("update tbparam set param_value = '" + paramValue + "' where param_id = 'IsNewMenuIndex';\n");
         List<String> sqlList = FileUtils.readNormalFile(basePath, false);
+        int times = 0;
         if (CollectionUtils.isNotEmpty(sqlList)) {
-            for (String sql : sqlList) {
+            for (int i=0; i<sqlList.size(); i++) {
+                String sql = sqlList.get(i);
+                if (i % 500 == 0) {
+                    OutputUtils.infoContainBr(target, getExecuteSchedule(++times));
+                }
                 String sqlLower = sql.toLowerCase();
                 boolean validSql = sqlLower.contains("delete") || sqlLower.contains("insert") || sqlLower.contains("values");
                 if (sql.startsWith(ANNOTATION_NORMAL) && validSql) {
@@ -264,10 +266,18 @@ public class ScriptUpdateController extends BaseController implements Initializa
         }
         String resFilePath = FileUtils.getFilePath(FILE_CHANGE_MENU);
         FileUtils.writeFile(resFilePath, res, false);
-        OutputUtils.infoContainBr(target, "执行成功......");
+        OutputUtils.infoContainBr(target, "执行成功...");
         changeNewMenu.setDisable(false);
         changeOldMenu.setDisable(false);
         menuResult.setDisable(false);
+    }
+
+    private String getExecuteSchedule(int times) {
+        String schedule = STR_BLANK;
+        for (int i=0; i<times; i++) {
+            schedule += STR_POINT;
+        }
+        return schedule;
     }
 
     @FXML
