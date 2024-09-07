@@ -44,6 +44,8 @@ public class BaseConst {
     public static final String STR_20 = "20";
     public static final String STR_69 = "69";
     public static final String STR_99 = "99";
+    public static final String STR_9950 = "9950";
+    public static final String STR_9960 = "9960";
     public static final String STR_145 = "145";
     public static final String STR_549656 = "549656";
     public static final String STR_9900 = "9900";

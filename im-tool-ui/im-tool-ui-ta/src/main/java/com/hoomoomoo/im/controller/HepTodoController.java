@@ -810,7 +810,9 @@ public class HepTodoController extends BaseController implements Initializable {
                     min = minCache;
                 }
                 String estimateFinishDate = item.getEstimateFinishDate();
-                if (estimateFinishDate.startsWith(STR_99)) {
+                if (estimateFinishDate.startsWith(STR_9950) || estimateFinishDate.startsWith(STR_9960)) {
+                    min = 999;
+                } else if (estimateFinishDate.startsWith(STR_99)) {
                     min = Integer.valueOf(estimateFinishDate.replaceAll(STR_HYPHEN, STR_BLANK).substring(2, 4)) * -1;
                 }
                 item.setEndDate(String.valueOf(min));
@@ -1266,9 +1268,9 @@ public class HepTodoController extends BaseController implements Initializable {
             } else if (STR_3.equals(type)) {
                 return "9970-12-31 23:59:59";
             } else if (STR_4.equals(type)) {
-                return "1160-12-31 23:59:59";
+                return "9960-12-31 23:59:59";
             } else if (STR_5.equals(type)) {
-                return "1150-12-31 23:59:59";
+                return "9950-12-31 23:59:59";
             }
         }
         return value;
@@ -1538,7 +1540,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.put(KEY_NAME, "「需求」" + i);
                     break;
                 case 1:
-                    item.put(KEY_NAME, "「开发」【缺陷:454\n54】" + i);
+                    item.put(KEY_NAME, "「开发」【缺陷:123\n678】" + i);
                     break;
                 case 2:
                     item.put(KEY_NAME, "「开发任务」" + i);
@@ -1547,7 +1549,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.put(KEY_NAME, "「开发」已修改 问题" + i);
                     break;
                 case 4:
-                    item.put(KEY_NAME, "「开发」已提交 问题" + i);
+                    item.put(KEY_NAME, "「开发」【分支已提交】 问题" + i);
                     break;
                 case 5:
                     item.put(KEY_NAME, "「自测问题」问题" + i);
