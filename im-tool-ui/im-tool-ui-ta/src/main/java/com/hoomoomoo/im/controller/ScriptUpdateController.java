@@ -259,14 +259,13 @@ public class ScriptUpdateController extends BaseController implements Initializa
         res.add("-- 更新系统参数 是否使用新版菜单编排");
         res.add("update tbparam set param_value = '" + paramValue + "' where param_id = 'IsNewMenuIndex';\n");
         List<String> sqlList = FileUtils.readNormalFile(basePath, false);
-        int times = 0;
         String resFilePath = FileUtils.getFilePath(FILE_CHANGE_MENU);
         FileUtils.writeFile(resFilePath, res, false);
         if (CollectionUtils.isNotEmpty(sqlList)) {
             for (int i=0; i<sqlList.size(); i++) {
                 String sql = sqlList.get(i);
                 if (i % 1000 == 0) {
-                    OutputUtils.infoContainBr(target, getExecuteSchedule(++times));
+                    OutputUtils.info(target, STR_POINT);
                     FileUtils.writeFile(resFilePath, res, true);
                     res.clear();
                 }
@@ -285,19 +284,11 @@ public class ScriptUpdateController extends BaseController implements Initializa
         if (CollectionUtils.isNotEmpty(res)) {
             FileUtils.writeFile(resFilePath, res, true);
         }
-        OutputUtils.infoContainBr(target, "执行成功...");
+        OutputUtils.infoContainBr(target, STR_NEXT_LINE + "执行成功...");
         changeNewMenu.setDisable(false);
         changeOldAllMenu.setDisable(false);
         changeOldMenu.setDisable(false);
         menuResult.setDisable(false);
-    }
-
-    private String getExecuteSchedule(int times) {
-        String schedule = STR_BLANK;
-        for (int i=0; i<times; i++) {
-            schedule += STR_POINT;
-        }
-        return schedule;
     }
 
     @FXML
