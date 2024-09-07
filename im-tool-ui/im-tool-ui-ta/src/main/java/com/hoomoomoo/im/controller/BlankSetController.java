@@ -18,6 +18,8 @@ import javafx.scene.control.TextArea;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;

@@ -8,7 +8,9 @@ public class ScriptUpdateTaskParam {
 
     private ScriptUpdateController scriptUpdateController;
 
-    public ScriptUpdateTaskParam(ScriptUpdateController scriptUpdateController) {
+    private String taskType;
+    public ScriptUpdateTaskParam(ScriptUpdateController scriptUpdateController, String taskType) {
         this.scriptUpdateController = scriptUpdateController;
+        this.taskType = taskType;
     }
 }

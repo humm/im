@@ -22,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -29,6 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.LACK_NEW_MENU_ALL;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SCRIPT_UPDATE;
 
 /**
@@ -44,6 +46,18 @@ public class ScriptUpdateController extends BaseController implements Initializa
 
     @FXML
     private Button submit;
+
+    @FXML
+    private Button updateUed;
+
+    @FXML
+    private Button changeNewMenu;
+
+    @FXML
+    private Button changeOldMenu;
+
+    @FXML
+    private Button menuResult;
 
     @FXML
     private Button copy;
@@ -108,7 +122,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             appConfigDto.setScriptUpdateGenerateMode(rewrite.isSelected() ? STR_2 : STR_1);
             setProgress(0);
             updateProgress();
-            TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this)));
+            TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this, "execute")));
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -117,6 +131,12 @@ public class ScriptUpdateController extends BaseController implements Initializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         JvmCache.setScriptUpdateController(this);
+        if (!CommonUtils.isSuperUser()) {
+            updateUed.setVisible(false);
+            changeNewMenu.setVisible(false);
+            changeOldMenu.setVisible(false);
+            menuResult.setVisible(false);
+        }
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String mode = appConfigDto.getScriptUpdateGenerateMode();
@@ -193,6 +213,61 @@ public class ScriptUpdateController extends BaseController implements Initializa
     void selectMenuNo(ActionEvent event) {
        /*OutputUtils.selected(menuYes, false);
        OutputUtils.selected(menuNo, true);*/
+    }
+
+    @FXML
+    void showMenuResult(ActionEvent event) throws Exception {
+        Runtime.getRuntime().exec("explorer /e,/select," + new File(FileUtils.getFilePath(FILE_CHANGE_MENU)).getAbsolutePath());
+    }
+
+    @FXML
+    void executeChangeNewMenu(ActionEvent event) throws Exception {
+        TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this, "changeNewMenu")));
+    }
+
+
+    @FXML
+    void executeChangeOldMenu(ActionEvent event) throws Exception {
+        TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this, "changeOldMenu")));
+    }
+
+    public void buildSql(boolean newUd) throws Exception {
+        changeNewMenu.setDisable(true);
+        changeOldMenu.setDisable(true);
+        menuResult.setDisable(true);
+        OutputUtils.clearLog(target);
+        OutputUtils.infoContainBr(target, "执行中... 请稍后...");
+        if (!newUd) {
+            OutputUtils.infoContainBr(target, "...我只是慢... 请耐心等候...");
+        }
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String base = ScriptSqlUtils.baseMenu;
+        String paramValue = STR_0;
+        if (newUd) {
+            base = ScriptSqlUtils.newUedPage;
+            paramValue = STR_1;
+        }
+        String basePath = appConfigDto.getSystemToolCheckMenuBasePath() + base;
+        List<String> res = new ArrayList<>();
+        res.add("-- 更新系统参数 是否使用新版菜单编排");
+        res.add("update tbparam set param_value = '" + paramValue + "' where param_id = 'IsNewMenuIndex';\n");
+        List<String> sqlList = FileUtils.readNormalFile(basePath, false);
+        if (CollectionUtils.isNotEmpty(sqlList)) {
+            for (String sql : sqlList) {
+                String sqlLower = sql.toLowerCase();
+                boolean validSql = sqlLower.contains("delete") || sqlLower.contains("insert") || sqlLower.contains("values");
+                if (sql.startsWith(ANNOTATION_NORMAL) && validSql) {
+                    sql = sql.replace(ANNOTATION_NORMAL + STR_SPACE, STR_BLANK);
+                }
+                res.add(sql);
+            }
+        }
+        String resFilePath = FileUtils.getFilePath(FILE_CHANGE_MENU);
+        FileUtils.writeFile(resFilePath, res, false);
+        OutputUtils.infoContainBr(target, "执行成功......");
+        changeNewMenu.setDisable(false);
+        changeOldMenu.setDisable(false);
+        menuResult.setDisable(false);
     }
 
     @FXML
@@ -771,41 +846,6 @@ public class ScriptUpdateController extends BaseController implements Initializa
             return sql.append(" ");
         } else {
             return sql.append(" and ");
-        }
-    }
-
-    public static void main(String[] args) throws Exception{
-        String item = "insert into tbmenucondition (menu_code,component_kind,condition_kind,element_code,element_name,data_dict,check_format,default_value,required_flag,readonly_flag,visable,data_width,order_no,exp_flag,sort_no)\n" +
-                "values('fundRequestConfirmQuery', 'A', '0', 'dataSource', '数据源', '{\"dict\":\"F_C30022\"," +
-                "\"clearable\":\"0\"}', ' ', '0', '0', '0', '1', '0', '0', '1', '1' );\n";
-        if (item.toLowerCase().contains("tbmenucondition")) {
-            item = CommonUtils.trimStrToBlank(item);
-            String[] sql = item.split(BaseConst.KEY_VALUES);
-            if (sql.length != 2) {
-                sql = item.split(BaseConst.KEY_VALUES.toUpperCase());
-                if (sql.length != 2) {
-                    throw new Exception("sql语句未包含或者包含多个" + BaseConst.KEY_VALUES + STR_NEXT_LINE + item);
-                }
-            }
-            String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
-            String[] value = sql[1].substring(sql[1].indexOf("(") + 1, sql[1].indexOf(")")).split("',");
-            StringBuilder updateSql = new StringBuilder("update tbmenuconditionuser set ");
-            for (int i=0; i<column.length; i++) {
-                if (i == 0 || i == 2 || i == 3) {
-                    continue;
-                }
-                if (i != 1) {
-                    updateSql.append(", ");
-                }
-                updateSql.append(column[i] + " = " + (StringUtils.isEmpty(value[i]) ? STR_SPACE : value[i]));
-                if (i != column.length - 1) {
-                    updateSql.append(STR_QUOTES_SINGLE);
-                }
-            }
-            updateSql.append(" where " + column[0] + " = " + value[0] + STR_QUOTES_SINGLE);
-            updateSql.append(" and " + column[2] + " = " + value[2] + STR_QUOTES_SINGLE);
-            updateSql.append(" and " + column[3] + " = " + value[3] + STR_QUOTES_SINGLE);
-            updateSql.append(";");
         }
     }
 }
