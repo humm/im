@@ -21,10 +21,13 @@ public class ScriptUpdateTask implements Callable<ScriptUpdateTaskParam> {
                 scriptUpdateTaskParam.getScriptUpdateController().generateScript(appConfigDto);
                 break;
             case "changeNewMenu":
-                scriptUpdateTaskParam.getScriptUpdateController().buildSql(true);
+                scriptUpdateTaskParam.getScriptUpdateController().buildSql(true, false);
+                break;
+            case "changeOldAllMenu":
+                scriptUpdateTaskParam.getScriptUpdateController().buildSql(false, true);
                 break;
             case "changeOldMenu":
-                scriptUpdateTaskParam.getScriptUpdateController().buildSql(false);
+                scriptUpdateTaskParam.getScriptUpdateController().buildSql(false, false);
                 break;
             default:
                 new Exception("未匹配执行方法，请检查");

@@ -152,6 +152,9 @@ public class ScriptSqlUtils {
     public static String getTransCodeByMenu(String item) {
         return getMenuElement(item, 2);
     }
+    public static String getSubTransCodeBySubTrans(String item) {
+        return getMenuElement(item, 1);
+    }
 
     public static String getMenuRemark(String item) {
         return getMenuElement(item, 14);

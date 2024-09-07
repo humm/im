@@ -852,12 +852,14 @@ public class ScriptRepairSql {
         String[] menuBase = menu.toString().split(STR_SEMICOLON);
         Map<String, List<String>> menuExt = initMenuExt(appConfigDto);
         List<String> menuInfo = mergeMenu(menuBase, menuExt);
+        List<String> allMenu = new ArrayList<>();
         boolean exist;
         for (String item : menuInfo) {
             if (item.contains("select") && item.contains("from")) {
                 item = item.substring(0, item.indexOf("from")).replace("select", "values (") + ")";
             }
             String menuCode = ScriptSqlUtils.getMenuCode(item);
+            allMenu.add(menuCode);
             String subTransCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
             String itemLower = CommonUtils.trimStrToSpace(item.toLowerCase().replace("--", ""));
             if (itemLower.startsWith("insert into tsys_menu (") || itemLower.startsWith("insert into tsys_menu(")) {
@@ -1013,6 +1015,7 @@ public class ScriptRepairSql {
         List<String> notTransExist = new ArrayList<>();
         List<String> subTransExt = new ArrayList<>();
         List<String> noSubTransExt = new ArrayList<>();
+        Map<String, List<String>> skipCache = initSkipCache();
         while (firstMenuIterator.hasNext()) {
             index++;
             String menuCode = firstMenuIterator.next();
@@ -1059,12 +1062,12 @@ public class ScriptRepairSql {
                         third.add(deleteSubThirdMenu);
                     }
                     third.add(formatSql(subThirdInfo, j == subThird.size() - 1));
-                    boolean flag = getTransCodeAndSubTransCode(menuTrans, menuSubTrans, transAndSubTrans, subTransAndSubTrans, subThirdInfo);
+                    boolean flag = getTransCodeAndSubTransCode(menuTrans, menuSubTrans, transAndSubTrans, subTransAndSubTrans, subThirdInfo, allMenu, skipCache.get(KEY_TRANS));
                     if (!flag) {
                         notTransExist.add(subThirdInfo);
                     }
                     StringBuilder subTransExtTmp = new StringBuilder();
-                    flag = getSubTransCodeExt(menuSubTransExt, subTransExt, subTransExtTmp, subThirdInfo);
+                    flag = getSubTransCodeExt(menuSubTransExt, subTransExt, subTransExtTmp, subThirdInfo, allMenu, skipCache.get(KEY_TRANS));
                     if (!flag) {
                         noSubTransExt.add(subThirdInfo);
                     }
@@ -1131,12 +1134,12 @@ public class ScriptRepairSql {
                 StringBuilder subTransAndSubTrans = new StringBuilder();
                 String subThirdInfo = subAccount.get(j);
                 account.add(formatSql(subAccount.get(j), j == subAccount.size() - 1));
-                boolean flag = getTransCodeAndSubTransCode(menuTrans, menuSubTrans, transAndSubTrans, subTransAndSubTrans, subThirdInfo);
+                boolean flag = getTransCodeAndSubTransCode(menuTrans, menuSubTrans, transAndSubTrans, subTransAndSubTrans, subThirdInfo, allMenu, skipCache.get(KEY_TRANS));
                 if (!flag) {
                     notTransExist.add(subThirdInfo);
                 }
                 StringBuilder subTransExtTmp = new StringBuilder();
-                flag = getSubTransCodeExt(menuSubTransExt, subTransExt, subTransExtTmp, subThirdInfo);
+                flag = getSubTransCodeExt(menuSubTransExt, subTransExt, subTransExtTmp, subThirdInfo, allMenu, skipCache.get(KEY_TRANS));
                 if (!flag) {
                     noSubTransExt.add(subThirdInfo);
                 }
@@ -1221,7 +1224,6 @@ public class ScriptRepairSql {
         res.add(STR_BLANK);
         res.add("commit;");
 
-        Map<String, List<String>> skipCache = initSkipCache();
         List<String> error = new ArrayList<>();
         if (MapUtils.isNotEmpty(otherMenu)) {
             List<String> skipMenu = skipCache.get(KEY_MENU);
@@ -1366,22 +1368,40 @@ public class ScriptRepairSql {
     }
 
     private static boolean getTransCodeAndSubTransCode(Map<String, String> menuTrans, Map<String, List<String>> menuSubTrans,
-                                                    List<String> transAndSubTrans, StringBuilder subTransAndSubTrans, String subThirdInfo) {
+                                                    List<String> transAndSubTrans, StringBuilder subTransAndSubTrans, String subThirdInfo,
+                                                    List<String> allMenu, List<String> skipTrans) {
         boolean flag = true;
-        String subThirdMenuCode = ScriptSqlUtils.getTransCodeByMenu(subThirdInfo);
-        String trans = menuTrans.get(subThirdMenuCode);
+        String subThirdTransCode = ScriptSqlUtils.getTransCodeByMenu(subThirdInfo);
+        String menuCode = ScriptSqlUtils.getMenuCode(subThirdInfo);
+        String trans = menuTrans.get(subThirdTransCode);
         if (trans != null) {
             String menu = addDeleteFundMenu(subThirdInfo, "trans");
             if (StringUtils.isNotBlank(menu)) {
                 subTransAndSubTrans.append(menu);
             }
-            subTransAndSubTrans.append(formatSql(trans, false, true));
+            if (menuCode.contains(subThirdTransCode)) {
+                subTransAndSubTrans.append(formatSql(trans, false, true));
+            }
         }
-        List<String> subTrans = menuSubTrans.get(subThirdMenuCode);
+        List<String> subTrans = menuSubTrans.get(subThirdTransCode);
         if (CollectionUtils.isNotEmpty(subTrans)) {
-
             for (int k=0; k<subTrans.size(); k++) {
-                subTransAndSubTrans.append(formatSql(subTrans.get(k), false, true));
+                String subTransElement = subTrans.get(k);
+                String subTransKey = ScriptSqlUtils.getSubTransCodeBySubTrans(subTransElement);
+                if (!menuCode.contains(subThirdTransCode)) {
+                    if (subTransKey.contains(menuCode)) {
+                        subTransAndSubTrans.append(formatSql(subTransElement, false, true));
+                    }
+                } else {
+                    int lastCapitalIndex = CommonUtils.findLastCapital(subTransKey);
+                    if (lastCapitalIndex != -1) {
+                        subTransKey = subTransKey.substring(0, lastCapitalIndex);
+                    }
+                    if (!menuCode.contains(subTransKey) && allMenu.contains(subTransKey) && !skipTrans.contains(subTransKey)) {
+                        continue;
+                    }
+                    subTransAndSubTrans.append(formatSql(subTransElement, false, true));
+                }
             }
         } else {
             flag = false;
@@ -1392,14 +1412,31 @@ public class ScriptRepairSql {
         return flag;
     }
 
-    private static boolean getSubTransCodeExt(Map<String, List<String>> menuSubTransExt, List<String> subTransExt, StringBuilder subTransExtTmp, String subThirdInfo) {
+    private static boolean getSubTransCodeExt(Map<String, List<String>> menuSubTransExt, List<String> subTransExt, StringBuilder subTransExtTmp, String subThirdInfo,
+                                              List<String> allMenu, List<String> skipTransExt) {
         boolean flag = true;
-        String subThirdMenuCode = ScriptSqlUtils.getTransCodeByMenu(subThirdInfo);
+        String subThirdTransCode = ScriptSqlUtils.getTransCodeByMenu(subThirdInfo);
+        String menuCode = ScriptSqlUtils.getMenuCode(subThirdInfo);
         String subThirdMenuName = ScriptSqlUtils.getMenuName(subThirdInfo);
-        List<String> subTrans = menuSubTransExt.get(subThirdMenuCode);
+        List<String> subTrans = menuSubTransExt.get(subThirdTransCode);
         if (CollectionUtils.isNotEmpty(subTrans)) {
             for (int k=0; k<subTrans.size(); k++) {
-                subTransExtTmp.append(formatSql(subTrans.get(k), false, false));
+                String subTransElement = subTrans.get(k);
+                String subTransKey = ScriptSqlUtils.getSubTransCodeBySubTrans(subTransElement);
+                if (!menuCode.contains(subThirdTransCode)) {
+                    if (subTransKey.contains(menuCode)) {
+                        subTransExtTmp.append(formatSql(subTransElement, false, true));
+                    }
+                } else {
+                    int lastCapitalIndex = CommonUtils.findLastCapital(subTransKey);
+                    if (lastCapitalIndex != -1) {
+                        subTransKey = subTransKey.substring(0, lastCapitalIndex);
+                    }
+                    if (!menuCode.contains(subTransKey) && allMenu.contains(subTransKey) && !skipTransExt.contains(subTransKey)) {
+                        continue;
+                    }
+                    subTransExtTmp.append(formatSql(subTransElement, false, true));
+                }
             }
         } else {
             flag = false;

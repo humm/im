@@ -54,6 +54,9 @@ public class ScriptUpdateController extends BaseController implements Initializa
     private Button changeNewMenu;
 
     @FXML
+    private Button changeOldAllMenu;
+
+    @FXML
     private Button changeOldMenu;
 
     @FXML
@@ -134,6 +137,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
         if (!CommonUtils.isSuperUser()) {
             updateUed.setVisible(false);
             changeNewMenu.setVisible(false);
+            changeOldAllMenu.setVisible(false);
             changeOldMenu.setVisible(false);
             menuResult.setVisible(false);
         }
@@ -225,14 +229,20 @@ public class ScriptUpdateController extends BaseController implements Initializa
         TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this, "changeNewMenu")));
     }
 
+    @FXML
+    void executeChangeOldAllMenu(ActionEvent event) throws Exception {
+        TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this, "changeOldAllMenu")));
+    }
+
 
     @FXML
     void executeChangeOldMenu(ActionEvent event) throws Exception {
         TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this, "changeOldMenu")));
     }
 
-    public void buildSql(boolean newUd) throws Exception {
+    public void buildSql(boolean newUd, boolean all) throws Exception {
         changeNewMenu.setDisable(true);
+        changeOldAllMenu.setDisable(true);
         changeOldMenu.setDisable(true);
         menuResult.setDisable(true);
         OutputUtils.clearLog(target);
@@ -250,13 +260,21 @@ public class ScriptUpdateController extends BaseController implements Initializa
         res.add("update tbparam set param_value = '" + paramValue + "' where param_id = 'IsNewMenuIndex';\n");
         List<String> sqlList = FileUtils.readNormalFile(basePath, false);
         int times = 0;
+        String resFilePath = FileUtils.getFilePath(FILE_CHANGE_MENU);
+        FileUtils.writeFile(resFilePath, res, false);
         if (CollectionUtils.isNotEmpty(sqlList)) {
             for (int i=0; i<sqlList.size(); i++) {
                 String sql = sqlList.get(i);
-                if (i % 500 == 0) {
+                if (i % 1000 == 0) {
                     OutputUtils.infoContainBr(target, getExecuteSchedule(++times));
+                    FileUtils.writeFile(resFilePath, res, true);
+                    res.clear();
                 }
                 String sqlLower = sql.toLowerCase();
+                if (!all && sqlLower.contains("交易码  tsys_trans")) {
+                    res.add("commit;");
+                    break;
+                }
                 boolean validSql = sqlLower.contains("delete") || sqlLower.contains("insert") || sqlLower.contains("values");
                 if (sql.startsWith(ANNOTATION_NORMAL) && validSql) {
                     sql = sql.replace(ANNOTATION_NORMAL + STR_SPACE, STR_BLANK);
@@ -264,10 +282,12 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 res.add(sql);
             }
         }
-        String resFilePath = FileUtils.getFilePath(FILE_CHANGE_MENU);
-        FileUtils.writeFile(resFilePath, res, false);
+        if (CollectionUtils.isNotEmpty(res)) {
+            FileUtils.writeFile(resFilePath, res, true);
+        }
         OutputUtils.infoContainBr(target, "执行成功...");
         changeNewMenu.setDisable(false);
+        changeOldAllMenu.setDisable(false);
         changeOldMenu.setDisable(false);
         menuResult.setDisable(false);
     }
