@@ -1344,7 +1344,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void showExtendTask() throws Exception {
-        CommonUtils.showTips("加载");
+        // CommonUtils.showTips("加载");
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String userExtend = appConfigDto.getHepTaskUserExtend();
         if (StringUtils.isNotBlank(userExtend)) {
@@ -1361,7 +1361,6 @@ public class HepTodoController extends BaseController implements Initializable {
                     CommonUtils.setTabStyle(openTab, functionConfig);
                     CommonUtils.bindTabEvent(openTab);
                     AppCache.FUNCTION_TAB_CACHE.getTabs().add(openTab);
-                    Thread.sleep(500);
                 }
                 if (defaultTab == null) {
                     defaultTab = openTab;
