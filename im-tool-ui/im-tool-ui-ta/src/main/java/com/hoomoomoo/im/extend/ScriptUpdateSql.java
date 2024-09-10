@@ -36,6 +36,8 @@ public class ScriptUpdateSql {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> config = FileUtils.readNormalFile(newUedPage, false);
         List<String> sql = getUpdateSql(appConfigDto, config);
+        sql.add(STR_NEXT_LINE);
+        sql.add("commit;");
         FileUtils.writeFile(resultPath + BaseConst.SQL_CHECK_TYPE.NEW_MENU_UPDATE.getFileName(), sql, false);
     }
 

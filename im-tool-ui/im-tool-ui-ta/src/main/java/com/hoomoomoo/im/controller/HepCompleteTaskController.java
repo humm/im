@@ -123,7 +123,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
                 }
                 modifiedFileValue.append(file);
             }
-            String msg = TaCommonUtils.formatText(item.getMsg(), false);
+            String msg = TaCommonUtils.formatText(item.getMsg().trim(), false);
             if (editDescriptionValue.indexOf(msg) != -1) {
                 continue;
             }

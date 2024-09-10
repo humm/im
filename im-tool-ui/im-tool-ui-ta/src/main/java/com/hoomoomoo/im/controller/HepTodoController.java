@@ -89,10 +89,10 @@ public class HepTodoController extends BaseController implements Initializable {
     public final static String OPERATE_TYPE_CUSTOM_UPDATE = "update";
 
     private Map<String, String> color = new LinkedHashMap<String, String>(){{
-        put("完成日期错误", "-fx-text-background-color: #ff8800;");
+        put("完成日期错误", "-fx-text-background-color: #ff0073;");
         put("今日待提交", "-fx-text-background-color: #ff0000;");
         put("本周待提交", "-fx-text-background-color: #0015ff;");
-        put("缺陷", "-fx-text-background-color: #ff00c3;");
+        put("缺陷", "-fx-text-background-color: #ff00dd;");
         put("自测问题", "-fx-text-background-color: #804000;");
         put("自建任务", "-fx-text-background-color: #008071;");
         put("已修改", "-fx-text-background-color: #7b00ff;");
@@ -774,12 +774,14 @@ public class HepTodoController extends BaseController implements Initializable {
                 dayVersionNum++;
                 dayTodoTask.add(item.getTaskNumber());
             }
-            boolean week = today || StringUtils.compare(lastDayByWeek, estimateFinishDate) >= 0;
-            if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || week) {
-                weekVersionNum++;
-                weekTodoTask.add(item.getTaskNumber());
+            if (!endDate.startsWith(STR_99)) {
+                boolean week = today || (StringUtils.compare(lastDayByWeek, estimateFinishDate) >= 0);
+                if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || week) {
+                    weekVersionNum++;
+                    weekTodoTask.add(item.getTaskNumber());
+                }
             }
-            if (!estimateFinishDate.startsWith(STR_99) && StringUtils.isNotBlank(estimateFinishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
+            if (!endDate.startsWith(STR_99) && StringUtils.isNotBlank(estimateFinishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
                 if (StringUtils.compare(estimateFinishDate, item.getOriCloseDate()) > 0) {
                     if (!skipVersion.contains(item.getSprintVersion())) {
                         finishDateError.add(item.getTaskNumber());
@@ -985,13 +987,13 @@ public class HepTodoController extends BaseController implements Initializable {
                         // 颜色展示
                         if (false) {
                             // 完成时间错误
-                            setStyle("-fx-text-background-color: #ff8800;");
+                            setStyle("-fx-text-background-color: #ff0073;");
                             // 今日待提交
                             setStyle("-fx-text-background-color: #ff0000;");
                             // 本周待提交
                             setStyle("-fx-text-background-color: #0015ff;");
                             // 缺陷
-                            setStyle("-fx-text-background-color: #ff00c3;");
+                            setStyle("-fx-text-background-color: #ff00dd;");
                             // 自测问题
                             setStyle("-fx-text-background-color: #804000;");
                             // 自建任务
