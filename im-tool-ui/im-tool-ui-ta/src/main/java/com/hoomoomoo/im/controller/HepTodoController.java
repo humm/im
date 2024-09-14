@@ -39,6 +39,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
@@ -158,7 +159,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private TextField sprintVersion;
 
     @FXML
-    private TextField sprintVersionQuery;
+    private ComboBox sprintVersionQuery;
 
     @FXML
     private TextField statusName;
@@ -394,6 +395,10 @@ public class HepTodoController extends BaseController implements Initializable {
             extendUser.setDisable(false);
         }
         OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户任务加载完成 . . ."));
+    }
+
+    @FXML
+    void selectSprintVersion(ActionEvent event) throws Exception {
     }
 
     @FXML
@@ -864,6 +869,30 @@ public class HepTodoController extends BaseController implements Initializable {
         taskListIn.setDisable(false);
     }
 
+    private void initVersion(Set<String> currentTaskVersion, String sprintVersionQ) {
+        List<String> taskVersion = new ArrayList<>(currentTaskVersion);
+        Collections.sort(taskVersion, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                String ver1 = o1.substring(o1.indexOf("V"));
+                String ver2 = o2.substring(o2.indexOf("V"));
+                return ver1.compareTo(ver2);
+            }
+        });
+        ObservableList version = sprintVersionQuery.getItems();
+        version.clear();
+        if (CollectionUtils.isNotEmpty(taskVersion)) {
+            Iterator<String> ver = taskVersion.iterator();
+            while (ver.hasNext()) {
+                version.add(ver.next());
+            }
+        }
+        version.add(STR_SPACE);
+        if (StringUtils.isNotBlank(sprintVersionQ)) {
+            sprintVersionQuery.getSelectionModel().select(sprintVersionQ);
+        }
+    }
+
     private static boolean todayMustComplete(HepTaskDto item, String currentDate, String estimateFinishDate) {
         if( StringUtils.equals(currentDate, estimateFinishDate)) {
             return true;
@@ -1094,11 +1123,13 @@ public class HepTodoController extends BaseController implements Initializable {
         String nameQ = CommonUtils.getComponentValue(nameQuery);
         String sprintVersionQ = CommonUtils.getComponentValue(sprintVersionQuery);
         Map<String, String> taskType = new HashMap<>();
+        Set<String> currentTaskVersion = new HashSet<>();
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String taskNumber = item.getTaskNumber();
             String taskName = item.getName();
             String sprintVersion = item.getSprintVersion();
+            currentTaskVersion.add(sprintVersion);
             String taskNameTag = getTaskNameTag(taskName);
             if (StringUtils.isNotBlank(taskNumberQ) && !taskNumber.contains(taskNumberQ)) {
                 iterator.remove();
@@ -1129,6 +1160,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 taskType.put(STR_5, STR_5);
             }
         }
+        initVersion(currentTaskVersion, sprintVersionQ);
     }
 
     private static String getTaskNameTag(String taskName) {
@@ -1521,7 +1553,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.put(KEY_ESTIMATE_FINISH_TIME, "2024-07-28 22:59:59");
                     break;
                 case 4:
-                    item.put("sprint_version", "TA6.0-FUND.V202304.07.002");
+                    item.put("sprint_version", "TA6.0V202202.06.022");
                     item.put(KEY_ESTIMATE_FINISH_TIME, "2024-08-28 22:59:59");
                     break;
                 case 5:

@@ -781,6 +781,8 @@ public class CommonUtils {
             ((TextArea) obj).getText().trim();
         } else if (obj instanceof TextField) {
             return ((TextField)obj).getText().trim();
+        } else if (obj instanceof ComboBox) {
+            return (String)((ComboBox)obj).getSelectionModel().getSelectedItem();
         }
         return STR_BLANK;
     }

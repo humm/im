@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.ComboBox?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.HepTodoController">
     <children>
@@ -238,8 +239,8 @@
                                                     <TextField fx:id="nameQuery" layoutX="60.0" layoutY="90.0"
                                                                prefWidth="240"/>
                                                     <Label layoutX="15.0" layoutY="135.0" text="版本"/>
-                                                    <TextField fx:id="sprintVersionQuery" layoutX="60.0" layoutY="130.0"
-                                                               prefWidth="240"/>
+                                                    <ComboBox fx:id="sprintVersionQuery" layoutX="60.0" layoutY="130.0"
+                                                              prefWidth="240" onAction="#selectSprintVersion" />
                                                     <Label layoutX="15.0" layoutY="175.0" text="标签"/>
 
                                                     <TextField layoutX="60.0" layoutY="500.0" prefWidth="240"

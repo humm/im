@@ -156,6 +156,8 @@ public class OutputUtils {
                 ((TextField) obj).clear();
             } else if (obj instanceof Label) {
                 ((Label) obj).setText(STR_BLANK);
+            } else if (obj instanceof ComboBox) {
+                ((ComboBox) obj).getSelectionModel().select(STR_SPACE);
             }
         });
     }

@@ -545,7 +545,7 @@ public class SystemToolController implements Initializable {
     }
 
     @FXML
-     void repairErrorLog(ActionEvent event) throws Exception {
+    void repairErrorLog(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
         File errFile = new File(resultPath + "\\" + ERROR_LOG.getFileName());

@@ -90,6 +90,8 @@ public class MenuFunctionConfig {
 
         SYSTEM_TOOL("500", "便捷工具", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuSystem", "便捷工具"),
 
+        CHANGE_FUNCTION_TOOL("600", "功能切换", "/conf/fxml/changeFunctionTool.fxml", "changeFunctionTool", "changeFunctionTool", "menuSystem", "功能切换"),
+
         // 公共组件 3000-9999
         FUNCTION_STAT_INFO("3000", "使用统计", "/conf/fxml/functionStatInfo.fxml", "functionStatInfo", "functionStatInfo", "menuHelp", ""),
 

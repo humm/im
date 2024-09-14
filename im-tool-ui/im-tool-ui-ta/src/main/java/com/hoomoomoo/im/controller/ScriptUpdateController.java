@@ -51,18 +51,6 @@ public class ScriptUpdateController extends BaseController implements Initializa
     private Button updateUed;
 
     @FXML
-    private Button changeNewMenu;
-
-    @FXML
-    private Button changeOldAllMenu;
-
-    @FXML
-    private Button changeOldMenu;
-
-    @FXML
-    private Button menuResult;
-
-    @FXML
     private Button copy;
 
     @FXML
@@ -136,16 +124,11 @@ public class ScriptUpdateController extends BaseController implements Initializa
         JvmCache.setScriptUpdateController(this);
         if (!CommonUtils.isSuperUser()) {
             updateUed.setVisible(false);
-            changeNewMenu.setVisible(false);
-            changeOldAllMenu.setVisible(false);
-            changeOldMenu.setVisible(false);
-            menuResult.setVisible(false);
         }
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String mode = appConfigDto.getScriptUpdateGenerateMode();
             String type = appConfigDto.getScriptUpdateGenerateType();
-            String ued = appConfigDto.getScriptUpdateGenerateUed();
             if (!appConfigDto.getScriptUpdateGenerateFile()) {
                 rewrite.setDisable(true);
                 append.setDisable(true);
@@ -164,11 +147,6 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 selectUpdate(null);
             }
 
-            if (StringUtils.isBlank(ued) || STR_1.equals(ued)) {
-                selectMenuYes(null);
-            } else if (STR_2.equals(ued)) {
-                selectMenuNo(null);
-            }
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -205,90 +183,6 @@ public class ScriptUpdateController extends BaseController implements Initializa
         OutputUtils.selected(update, true);
         OutputUtils.selected(all, false);
         OutputUtils.selected(onlyDelete, false);
-    }
-
-    @FXML
-    void selectMenuYes(ActionEvent event) {
-       /*OutputUtils.selected(menuYes, true);
-       OutputUtils.selected(menuNo, false);*/
-    }
-
-    @FXML
-    void selectMenuNo(ActionEvent event) {
-       /*OutputUtils.selected(menuYes, false);
-       OutputUtils.selected(menuNo, true);*/
-    }
-
-    @FXML
-    void showMenuResult(ActionEvent event) throws Exception {
-        Runtime.getRuntime().exec("explorer /e,/select," + new File(FileUtils.getFilePath(FILE_CHANGE_MENU)).getAbsolutePath());
-    }
-
-    @FXML
-    void executeChangeNewMenu(ActionEvent event) throws Exception {
-        TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this, "changeNewMenu")));
-    }
-
-    @FXML
-    void executeChangeOldAllMenu(ActionEvent event) throws Exception {
-        TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this, "changeOldAllMenu")));
-    }
-
-
-    @FXML
-    void executeChangeOldMenu(ActionEvent event) throws Exception {
-        TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this, "changeOldMenu")));
-    }
-
-    public void buildSql(boolean newUd, boolean all) throws Exception {
-        changeNewMenu.setDisable(true);
-        changeOldAllMenu.setDisable(true);
-        changeOldMenu.setDisable(true);
-        menuResult.setDisable(true);
-        OutputUtils.clearLog(target);
-        OutputUtils.infoContainBr(target, "执行中...");
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        String base = ScriptSqlUtils.baseMenu;
-        String paramValue = STR_0;
-        if (newUd) {
-            base = ScriptSqlUtils.newUedPage;
-            paramValue = STR_1;
-        }
-        String basePath = appConfigDto.getSystemToolCheckMenuBasePath() + base;
-        List<String> res = new ArrayList<>();
-        res.add("-- 更新系统参数 是否使用新版菜单编排");
-        res.add("update tbparam set param_value = '" + paramValue + "' where param_id = 'IsNewMenuIndex';\n");
-        List<String> sqlList = FileUtils.readNormalFile(basePath, false);
-        String resFilePath = FileUtils.getFilePath(FILE_CHANGE_MENU);
-        FileUtils.writeFile(resFilePath, res, false);
-        if (CollectionUtils.isNotEmpty(sqlList)) {
-            for (int i=0; i<sqlList.size(); i++) {
-                String sql = sqlList.get(i);
-                if (i % 1000 == 0) {
-                    OutputUtils.info(target, STR_POINT);
-                    FileUtils.writeFile(resFilePath, res, true);
-                    res.clear();
-                }
-                String sqlLower = sql.toLowerCase();
-                if (!all && sqlLower.contains("交易码  tsys_trans")) {
-                    res.add("commit;");
-                    break;
-                }
-                boolean validSql = sqlLower.contains("delete") || sqlLower.contains("insert") || sqlLower.contains("values");
-                if (sql.startsWith(ANNOTATION_NORMAL) && validSql) {
-                    sql = sql.replace(ANNOTATION_NORMAL + STR_SPACE, STR_BLANK);
-                }
-                res.add(sql);
-            }
-        }
-        if (CollectionUtils.isNotEmpty(res)) {
-            FileUtils.writeFile(resFilePath, res, true);
-        }
-        OutputUtils.infoContainBr(target, STR_NEXT_LINE + "执行成功...");
-        changeNewMenu.setDisable(false);
-        changeOldAllMenu.setDisable(false);
-        changeOldMenu.setDisable(false);
-        menuResult.setDisable(false);
     }
 
     @FXML
