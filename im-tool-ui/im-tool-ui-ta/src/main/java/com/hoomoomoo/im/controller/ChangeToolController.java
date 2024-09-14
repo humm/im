@@ -88,6 +88,7 @@ public class ChangeToolController implements Initializable {
     @FXML
     void executeAutoMode(ActionEvent event) {
         try {
+            OutputUtils.clearLog(logs);
             String mode = CommonUtils.getComponentValue(autoMode);
             if (StringUtils.isBlank(mode)) {
                 OutputUtils.info(logs,"请选择 自动化清算模式");
@@ -105,6 +106,7 @@ public class ChangeToolController implements Initializable {
     @FXML
     void executeMenuMode(ActionEvent event) {
         try {
+            OutputUtils.clearLog(logs);
             String menu = CommonUtils.getComponentValue(menuMode);
             if (StringUtils.isBlank(menu)) {
                 OutputUtils.info(logs,"请选择 菜单模式");
