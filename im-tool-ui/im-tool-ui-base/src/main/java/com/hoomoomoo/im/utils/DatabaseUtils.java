@@ -28,8 +28,7 @@ public class DatabaseUtils {
             return connection;
         }
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        connection = DriverManager.getConnection(appConfigDto.getDatabaseScriptUrl(), appConfigDto.getDatabaseScriptUsername(),
-            appConfigDto.getDatabaseScriptPassword());
+        connection = DriverManager.getConnection(appConfigDto.getDatabaseScriptUrl(), appConfigDto.getDatabaseScriptUsername(), appConfigDto.getDatabaseScriptPassword());
         return connection;
     }
 

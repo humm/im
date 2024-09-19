@@ -216,7 +216,7 @@ public class BaseConst {
     public static final String NAME_CLEAR_LOG = "系统日志";
 
     public static final String NAME_MENU_UPDATE = "任务更新";
-    public static final String NAME_MENU_COPY = "全部复制";
+    public static final String NAME_MENU_COPY = "提交复制";
     public static final String NAME_MENU_SIMPLE_COPY = "简单复制";
     public static final String NAME_MENU_DETAIL = "任务详情";
     public static final String NAME_MENU_SCRIPT = "任务摘要";

@@ -43,4 +43,7 @@ public class HepTaskDto extends BaseDto{
 
     private String orderNo;
 
+    private String assigneeId;
+    private String assigneeName;
+
 }

@@ -178,7 +178,7 @@ public class ChangeToolController implements Initializable {
                 DatabaseUtils.closeConnection();
                 enableBtn();
             }
-            OutputUtils.infoContainBr(logs, "执行脚本 完成...");
+            OutputUtils.infoContainBr(logs, "\n执行脚本 完成...");
             OutputUtils.infoContainBr(logs, "请刷新系统缓存...");
         }
     }
@@ -219,9 +219,10 @@ public class ChangeToolController implements Initializable {
         FileUtils.deleteFile(new File(resFilePath));
         FileUtils.writeFile(resFilePath, res, false);
         if (CollectionUtils.isNotEmpty(sqlList)) {
-            for (int i=0; i<sqlList.size(); i++) {
+            int size = sqlList.size();
+            for (int i=0; i<size; i++) {
                 String sql = sqlList.get(i);
-                if (i % 1000 == 0) {
+                if (size > 1000 && i % 1000 == 0) {
                     OutputUtils.info(logs, STR_POINT);
                     FileUtils.writeFile(resFilePath, res, true);
                     res.clear();
@@ -278,28 +279,29 @@ public class ChangeToolController implements Initializable {
      * @param zj 中金
      */
     public void buildAutoModeSql(String taskType, String gm, String zx, String xy, String zj, String gjdf, String gj) throws Exception {
+        boolean xyMode =  STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gjdf);
         executeStart("自动化清算模式 ... " + taskType);
         List<String> res = new ArrayList<>();
         res.add("-- 更新系统参数 ... " + taskType);
-        res.add("update tbparam set param_value = 'fund_MultiProcessesLiqDeal' where param_id = '" + gm + "';\n");
-        if (STR_1.equals(zx) || STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gjdf)) {
-            res.add("update tbparam set param_value = 'fund_T1MultiProcessesLiqDeal' where param_id = '1';\n");
+        res.add("update tbparam set param_value = '" + gm + "' where param_id = 'fund_MultiProcessesLiqDeal';\n");
+        if (STR_1.equals(zx) || xyMode) {
+            res.add("update tbparam set param_value = '1' where param_id = 'fund_T1MultiProcessesLiqDeal';\n");
         } else {
-            res.add("update tbparam set param_value = 'fund_T1MultiProcessesLiqDeal' where param_id = '0';\n");
+            res.add("update tbparam set param_value = '0' where param_id = 'fund_T1MultiProcessesLiqDeal';\n");
         }
         if (STR_1.equals(zx)) {
-            res.add("update tbparam set param_value = 'fund_ParamProcessesLiqDeal' where param_id = '1';\n");
+            res.add("update tbparam set param_value = '1' where param_id = 'fund_ParamProcessesLiqDeal';\n");
         } else {
-            res.add("update tbparam set param_value = 'fund_ParamProcessesLiqDeal' where param_id = '0';\n");
+            res.add("update tbparam set param_value = '0' where param_id = 'fund_ParamProcessesLiqDeal';\n");
         }
-        res.add("update tbparam set param_value = 'fund_XyMultiProcessesPrivate' where param_id = '" + xy + "';\n");
-        if (STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gjdf)) {
-            res.add("update tbparam set param_value = 'fund_XyMultiProcessesLiqDeal' where param_id = '1';\n");
+        res.add("update tbparam set param_value = '" + xy + "' where param_id = 'fund_XyMultiProcessesPrivate';\n");
+        if (xyMode) {
+            res.add("update tbparam set param_value = '1' where param_id = 'fund_XyMultiProcessesLiqDeal';\n");
         } else {
-            res.add("update tbparam set param_value = 'fund_XyMultiProcessesLiqDeal' where param_id = '0';\n");
+            res.add("update tbparam set param_value = '0' where param_id = 'fund_XyMultiProcessesLiqDeal';\n");
         }
-        res.add("update tbparam set param_value = 'fund_AutoLiqByPrd' where param_id = '" + gj + "';\n");
-        res.add("update tbparam set param_value = 'fund_ZjMultiProcessesPrivate' where param_id = '" + zj + "';\n");
+        res.add("update tbparam set param_value = '" + gj + "' where param_id = 'fund_AutoLiqByPrd';\n");
+        res.add("update tbparam set param_value = '" + zj + "' where param_id = 'fund_ZjMultiProcessesPrivate';\n");
 
         res.add(STR_SPACE);
         String groupCode = STR_BLANK;
@@ -307,7 +309,7 @@ public class ChangeToolController implements Initializable {
             groupCode = "fund_daily_virtual_multi";
         } else if (STR_1.equals(zx)) {
             groupCode = "fund_daily_t1_multi";
-        } else if (STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gjdf)) {
+        } else if (xyMode) {
             groupCode = "fund_daily_xyt1_multi";
         } else if (STR_1.equals(gj)) {
             groupCode = "fund_daily_auto_liq_byprd";

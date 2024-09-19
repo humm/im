@@ -98,7 +98,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
         try {
             int executeSqlNum = 0;
             int executeFailSqlNum = 0;
-            int filelNum = 0;
+            int fileNums = 0;
             List<String> failSql = new ArrayList<>();
             databaseExecute.setDisable(true);
             databaseExecuteDetail.setDisable(true);
@@ -111,7 +111,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                     boolean nextFlag = false;
                     for (File item : fileList) {
                         nextFlag = true;
-                        OutputUtils.info(fileNum, String.valueOf(++filelNum));
+                        OutputUtils.info(fileNum, String.valueOf(++fileNums));
                         OutputUtils.info(log, String.format("执行【 %s 】开始\n", item));
                         executeSql.clear();
                         content = FileUtils.readNormalFile(item.getAbsolutePath(), false);

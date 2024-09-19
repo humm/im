@@ -158,7 +158,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
     public static String getScriptContent(AppConfigDto appConfigDto) {
         HepTaskDto item = appConfigDto.getHepTaskDto();
         StringBuilder info = new StringBuilder();
-        String tips = "-- " + item.getTaskNumber() + STR_SPACE_2 + CommonUtils.getCurrentDateTime3() + STR_SPACE_2 + appConfigDto.getSvnUsername();
+        String tips = "-- " + item.getTaskNumber() + STR_SPACE_2 + CommonUtils.getCurrentDateTime3() + STR_SPACE_2 + item.getAssigneeName();
         info.append(tips).append(STR_SPACE_2).append("beg").append(STR_NEXT_LINE);
         info.append(STR_NEXT_LINE);
         info.append(tips).append(STR_SPACE_2).append("end").append(STR_NEXT_LINE);
