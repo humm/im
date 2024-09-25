@@ -173,7 +173,7 @@ public class ChangeToolController implements Initializable {
                 OutputUtils.info(logs, e.getMessage());
             } catch (Exception e) {
                 LoggerUtils.info(e);
-                OutputUtils.info(logs, e.getMessage());
+                OutputUtils.info(logs, STR_NEXT_LINE_2 + e.getMessage());
                 OutputUtils.info(logs, "\n执行异常sql\n" + sql);
                 return;
             } finally {
@@ -288,30 +288,46 @@ public class ChangeToolController implements Initializable {
         boolean xyMode =  STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gjdf);
         executeStart("自动化清算模式 ... " + taskType);
         List<String> res = new ArrayList<>();
-        res.add("-- 更新系统参数 ... " + taskType);
+        res.add("-- 自动化模式【" + taskType + "】\n");
+
+        res.add("-- 开通实时并发清算功能 (公募自动化清算模式)");
         res.add("update tbparam set param_value = '" + gm + "' where param_id = 'fund_MultiProcessesLiqDeal';\n");
+
+        res.add("-- 按照产品日切清算 (中信自动化清算模式)");
         if (STR_1.equals(zx) || xyMode) {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_T1MultiProcessesLiqDeal';\n");
         } else {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_T1MultiProcessesLiqDeal';\n");
         }
+
+        res.add("-- 开通参数日期管理功能 (中信特有功能)");
         if (STR_1.equals(zx)) {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_ParamProcessesLiqDeal';\n");
         } else {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_ParamProcessesLiqDeal';\n");
         }
+
+        res.add("-- 是否兴业自动化清算特有功能 (兴业特有功能)");
         res.add("update tbparam set param_value = '" + xy + "' where param_id = 'fund_XyMultiProcessesPrivate';\n");
+
+        res.add("-- 清算列表外部发起 (兴业自动化清算模式)");
         if (xyMode) {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_XyMultiProcessesLiqDeal';\n");
         } else {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_XyMultiProcessesLiqDeal';\n");
         }
+
+        res.add("-- 开通分产品自动化清算功能 (国君自动化清算模式)");
         res.add("update tbparam set param_value = '" + gj + "' where param_id = 'fund_AutoLiqByPrd';\n");
+
+        res.add("-- 国泰君安特殊处理功能  (国君特有功能)");
         if (STR_1.equals(gj)) {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_JaSpecialDeal';\n");
         } else {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_JaSpecialDeal';\n");
         }
+
+        res.add("-- 开通中金模式自动化清算功能 (中金特有功能)");
         res.add("update tbparam set param_value = '" + zj + "' where param_id = 'fund_ZjMultiProcessesPrivate';\n");
 
         res.add(STR_SPACE);
@@ -326,6 +342,7 @@ public class ChangeToolController implements Initializable {
             groupCode = "fund_daily_auto_liq_byprd";
         }
         StringBuilder group = new StringBuilder();
+        res.add("-- 流程信息");
         group.append("delete from tbschedulegroup where sche_group_type = '1';\n");
         group.append("insert into tbschedulegroup (sche_page_code, sche_group_code, sche_group_name, sche_group_isuse, sche_group_type)\n");
         group.append("values ('fund_schedule' , '" + groupCode + "' , '1主流程' , '1' , '1');\n");
