@@ -246,6 +246,7 @@ public class BaseConst {
     public static final String STR_HYPHEN = "-";
     public static final String STR_HYPHEN_1 = " - ";
     public final static String STR_POINT = ".";
+    public final static String STR_POINT_3 = "...";
     public final static String STR_$_SLASH = "\\$";
     public final static String STR_S_SLASH = "\\s+";
     public final static String STR_POINT_SLASH = "\\.";

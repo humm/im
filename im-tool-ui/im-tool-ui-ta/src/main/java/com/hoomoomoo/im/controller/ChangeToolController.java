@@ -158,9 +158,11 @@ public class ChangeToolController implements Initializable {
             try {
                 sqlList = FileUtils.readNormalFileToString(resFilePath, true).split(STR_SEMICOLON);
                 if (sqlList != null) {
-                    for (int i=0; i<sqlList.length; i++) {
+                    int size = sqlList.length;
+                    OutputUtils.info(logs, "执行中...");
+                    for (int i=0; i<size; i++) {
                         if (i % 1000 == 0) {
-                            OutputUtils.info(logs, STR_POINT);
+                            OutputUtils.info(logs, STR_POINT_3);
                         }
                         sql = sqlList[i];
                         DatabaseUtils.executeSql(sql, null);
@@ -220,10 +222,14 @@ public class ChangeToolController implements Initializable {
         FileUtils.writeFile(resFilePath, res, false);
         if (CollectionUtils.isNotEmpty(sqlList)) {
             int size = sqlList.size();
+            OutputUtils.info(logs, "执行中...");
             for (int i=0; i<size; i++) {
                 String sql = sqlList.get(i);
-                if (size > 1000 && i % 1000 == 0) {
-                    OutputUtils.info(logs, STR_POINT);
+                if (!all && !newUd && (sql.contains("tsys_trans") || sql.contains("tsys_subtrans"))) {
+                    continue;
+                }
+                if (i % 1000 == 0) {
+                    OutputUtils.info(logs, STR_POINT_3);
                     FileUtils.writeFile(resFilePath, res, true);
                     res.clear();
                 }
@@ -301,6 +307,11 @@ public class ChangeToolController implements Initializable {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_XyMultiProcessesLiqDeal';\n");
         }
         res.add("update tbparam set param_value = '" + gj + "' where param_id = 'fund_AutoLiqByPrd';\n");
+        if (STR_1.equals(gj)) {
+            res.add("update tbparam set param_value = '1' where param_id = 'fund_JaSpecialDeal';\n");
+        } else {
+            res.add("update tbparam set param_value = '0' where param_id = 'fund_JaSpecialDeal';\n");
+        }
         res.add("update tbparam set param_value = '" + zj + "' where param_id = 'fund_ZjMultiProcessesPrivate';\n");
 
         res.add(STR_SPACE);

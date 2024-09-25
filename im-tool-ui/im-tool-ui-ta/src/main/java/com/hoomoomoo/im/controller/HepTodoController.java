@@ -93,7 +93,7 @@ public class HepTodoController extends BaseController implements Initializable {
         put("完成日期错误", "-fx-text-background-color: #ff0073;");
         put("今日待提交", "-fx-text-background-color: #ff0000;");
         put("本周待提交", "-fx-text-background-color: #0015ff;");
-        put("缺陷", "-fx-text-background-color: #ff00dd;");
+        put("缺陷", "-fx-text-background-color: #ff00a6;");
         put("自测问题", "-fx-text-background-color: #804000;");
         put("自建任务", "-fx-text-background-color: #008071;");
         put("已修改", "-fx-text-background-color: #7b00ff;");
@@ -1022,7 +1022,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             // 本周待提交
                             setStyle("-fx-text-background-color: #0015ff;");
                             // 缺陷
-                            setStyle("-fx-text-background-color: #ff00dd;");
+                            setStyle("-fx-text-background-color: #ff00a6;");
                             // 自测问题
                             setStyle("-fx-text-background-color: #804000;");
                             // 自建任务
