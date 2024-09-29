@@ -75,7 +75,7 @@ public class ChangeToolController implements Initializable {
                 auto.add(ver.next());
             }
         }
-
+        autoMode.getSelectionModel().select(0);
         ObservableList menu = menuMode.getItems();
         if (CollectionUtils.isNotEmpty(menuModeSet)) {
             Iterator<String> ver = menuModeSet.iterator();
@@ -83,6 +83,7 @@ public class ChangeToolController implements Initializable {
                 menu.add(ver.next());
             }
         }
+        menuMode.getSelectionModel().select(0);
     }
 
     @FXML

@@ -19,6 +19,9 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -452,5 +455,46 @@ public class TaCommonUtils {
             appConfigDto.getCheckResultStage().close();
             appConfigDto.setCheckResultStage(null);
         });
+    }
+
+    public static boolean restPlan() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        if (STR_1.equals(appConfigDto.getHepTaskRestPlan())) {
+            String currentTime = CommonUtils.getCurrentDateTime13();
+            String planDate = appConfigDto.getHepTaskRestPlanDate();
+            String planTime = appConfigDto.getHepTaskRestPlanTime();
+            if (StringUtils.isNotBlank(planTime)) {
+                if (currentTime.compareTo(planTime) >= 0) {
+                    return true;
+                }
+            }
+            if (StringUtils.isNotBlank(planDate)) {
+                LocalDate currentDate = LocalDate.now();
+                DayOfWeek dayOfWeek = currentDate.getDayOfWeek();
+                String today = String.valueOf(dayOfWeek.getValue());
+                if (today.equals(planDate)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public static void startRestPlan() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        if (STR_1.equals(appConfigDto.getHepTaskRestPlan())) {
+            return;
+        }
+        String confPath =  FileUtils.getFilePath(PATH_APP);
+        List<String> content = FileUtils.readNormalFile(confPath, false);
+        // 强制启动休息计划
+        for (int i = 0; i < content.size(); i++) {
+            String item = content.get(i);
+            if (item.startsWith(KEY_HEP_TASK_REST_PLAN + STR_EQUALS)) {
+                content.set(i, KEY_HEP_TASK_REST_PLAN + STR_EQUALS + STR_1);
+                appConfigDto.setHepTaskRestPlan(STR_1);
+            }
+        }
+        FileUtils.writeFile(confPath, content, false);
     }
 }

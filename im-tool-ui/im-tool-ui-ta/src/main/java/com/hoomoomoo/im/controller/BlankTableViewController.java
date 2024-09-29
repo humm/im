@@ -55,7 +55,7 @@ public class BlankTableViewController implements Initializable {
 
         TableColumn closeDate = new TableColumn<>("封版时间");
         closeDate.setCellValueFactory(new PropertyValueFactory<>("closeDate"));
-        closeDate.setPrefWidth(100);
+        closeDate.setPrefWidth(150);
         closeDate.setEditable(true);
         closeDate.setStyle(STYLE_CENTER);
         closeDate.setOnEditCommit(event -> {
@@ -68,7 +68,7 @@ public class BlankTableViewController implements Initializable {
 
         TableColumn publishDate = new TableColumn<>("发版时间");
         publishDate.setCellValueFactory(new PropertyValueFactory<>("publishDate"));
-        publishDate.setPrefWidth(100);
+        publishDate.setPrefWidth(150);
         publishDate.setEditable(true);
         publishDate.setStyle(STYLE_CENTER);
         publishDate.setOnEditCommit(event -> {

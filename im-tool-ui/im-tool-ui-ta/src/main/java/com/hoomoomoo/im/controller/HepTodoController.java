@@ -258,7 +258,11 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    void operateTask(HepTaskDto item) {
+    void operateTask(HepTaskDto item) throws Exception {
+        if (TaCommonUtils.restPlan()) {
+            CommonUtils.showTipsByRest();
+            return;
+        }
         String status = item.getStatus();
         if (STATUS_WAIT_START.equals(status)) {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -300,9 +304,12 @@ public class HepTodoController extends BaseController implements Initializable {
         try {
             JvmCache.getSystemToolController().executeUpdateVersion();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("同步成功"));
+            CommonUtils.showTipsByInfo("同步成功，请查看版本信息");
             executeQuery(null);
         } catch (Exception e) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            String msg = e.getMessage();
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            CommonUtils.showTipsByError(msg);
         } finally {
             updateVersion.setDisable(false);
         }
@@ -315,8 +322,9 @@ public class HepTodoController extends BaseController implements Initializable {
             doShowVersion();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("查看成功"));
         } catch (Exception e) {
-            LoggerUtils.info(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            String msg = e.getMessage();
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            CommonUtils.showTipsByError(msg);
         } finally {
             showVersion.setDisable(false);
         }
@@ -360,9 +368,11 @@ public class HepTodoController extends BaseController implements Initializable {
         try {
             new ScriptCompareSql().check();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("脚本检查完成，请查看检查结果"));
+            CommonUtils.showTipsByInfo("脚本检查完成，请查看检查结果");
         } catch (Exception e) {
-            LoggerUtils.info(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            String msg = e.getMessage();
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            CommonUtils.showTipsByError(msg);
         } finally {
             scriptCheck.setDisable(false);
         }
@@ -374,8 +384,9 @@ public class HepTodoController extends BaseController implements Initializable {
         try {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT, "检查结果");
         } catch (Exception e) {
-            LoggerUtils.info(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            String msg = e.getMessage();
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            CommonUtils.showTipsByError(msg);
         } finally {
             scriptShow.setDisable(false);
         }
@@ -1378,7 +1389,6 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void showExtendTask() throws Exception {
-        // CommonUtils.showTips("加载");
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String userExtend = appConfigDto.getHepTaskUserExtend();
         if (StringUtils.isNotBlank(userExtend)) {
@@ -1483,10 +1493,15 @@ public class HepTodoController extends BaseController implements Initializable {
         return version;
     }
 
-    private void addTaskMenu(AppConfigDto appConfigDto) {
+    private void addTaskMenu(AppConfigDto appConfigDto) throws Exception {
         taskList.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
+            @SneakyThrows
             @Override
             public void handle(MouseEvent event) {
+                if (TaCommonUtils.restPlan()) {
+                    CommonUtils.showTipsByRest();
+                    return;
+                }
                 String clickType = event.getButton().toString();
                 if (RIGHT_CLICKED.equals(clickType)) {
                     Node node = event.getPickResult().getIntersectedNode();

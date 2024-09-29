@@ -859,7 +859,7 @@ public class CommonUtils {
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                     return null;
                 }
             };
@@ -868,7 +868,7 @@ public class CommonUtils {
         return service;
     }
 
-    public static void showTips(String msg) {
+    public static void showTipsByInfo(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("提示");
         alert.setHeaderText(String.format(". . . . . . %s . . . . . .", msg));
@@ -876,6 +876,25 @@ public class CommonUtils {
         Service<Void> service = getCloseInfoService();
         service.setOnSucceeded(e -> alert.hide());
         service.start();
+        alert.show();
+    }
+
+    public static void showTipsByError(String msg) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("提示");
+        alert.setHeaderText(String.format(". . . . . . %s . . . . . .", msg));
+        alert.setContentText(". . . 好久不见 ... 甚是想念 . . . ");
+        Service<Void> service = getCloseInfoService();
+        service.setOnSucceeded(e -> alert.hide());
+        service.start();
+        alert.show();
+    }
+
+    public static void showTipsByRest() {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("强制休息提醒");
+        alert.setHeaderText(". . . . . . 已启动强制休息计划 . . . . . .");
+        alert.setContentText(". . . 你已超负荷工作 ... 请注意休息 . . . ");
         alert.show();
     }
 

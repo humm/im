@@ -144,7 +144,7 @@ public class LoggerUtils {
     }
 
     public static void writeGenerateCodeInfo(Date startDate, List<String> fileName) {
-        writeLogInfo(GENERATE_CODE.getCode(), startDate, fileName);
+        //writeLogInfo(GENERATE_CODE.getCode(), startDate, fileName);
     }
 
     public static void writeCopyCodeInfo(Date startDate, List<String> fileName) {

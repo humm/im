@@ -238,6 +238,12 @@ public class AppConfigDto extends BaseDto {
 
     private String repairSchedule;
 
+    private String hepTaskRestPlan;
+
+    private String hepTaskRestPlanDate;
+
+    private String hepTaskRestPlanTime;
+
     public AppConfigDto() {
         this.execute = false;
         this.appLogEnable = false;

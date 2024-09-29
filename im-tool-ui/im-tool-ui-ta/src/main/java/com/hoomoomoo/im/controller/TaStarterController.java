@@ -6,9 +6,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import lombok.SneakyThrows;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static com.hoomoomoo.im.utils.TaCommonUtils.startRestPlan;
 
 
 /**
@@ -25,10 +28,12 @@ public class TaStarterController implements Initializable {
     @FXML
     private TabPane functionTab;
 
+    @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         JvmCache.setTaStarterController(this);
         CommonUtils.initialize(location, resources, functionTab, menuBar);
+        startRestPlan();
     }
 
 }

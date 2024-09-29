@@ -84,7 +84,7 @@ public class MenuFunctionConfig {
 
         COPY_CODE("300", "复制代码", "/conf/fxml/copyCode.fxml", "copyCode", "copyCode", "menuCode", "复制代码"),
 
-        GENERATE_CODE("310", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuCode", "生成代码"),
+        //GENERATE_CODE("310", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuCode", "生成代码"),
 
         TASK_TODO("400", "待开发任务", "/conf/fxml/hepTaskTodo.fxml", "hepTaskTodo", "hepTaskTodo", "menuHep", "待开发任务"),
 
