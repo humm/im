@@ -1498,12 +1498,12 @@ public class HepTodoController extends BaseController implements Initializable {
             @SneakyThrows
             @Override
             public void handle(MouseEvent event) {
-                if (TaCommonUtils.restPlan()) {
-                    CommonUtils.showTipsByRest();
-                    return;
-                }
                 String clickType = event.getButton().toString();
                 if (RIGHT_CLICKED.equals(clickType)) {
+                    if (TaCommonUtils.restPlan()) {
+                        CommonUtils.showTipsByRest();
+                        return;
+                    }
                     Node node = event.getPickResult().getIntersectedNode();
                     HepWaitHandleTaskMenu hepWaitHandleTaskMenu = HepWaitHandleTaskMenu.getInstance();
                     HepTaskDto hepTaskDto = (HepTaskDto) taskList.getSelectionModel().getSelectedItem();
