@@ -338,7 +338,7 @@ public class BaseConst {
     public static final String FACTORY_ICON = "/conf/image/factory.png";
     public static final String COPY_ICON = "/conf/image/copy.png";
     public static final String COPY_SIMPLE_ICON = "/conf/image/copySimple.png";
-    public static final String SCRIPT_ICON = "/conf/image/sql.png";
+    public static final String ABSTRACT_ICON = "/conf/image/abstract.png";
     public static final String TASK_NO_ICON = "/conf/image/code.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
     public static final String DETAIL_ICON = "/conf/image/detail.png";

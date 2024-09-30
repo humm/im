@@ -89,6 +89,8 @@ public class HepTodoController extends BaseController implements Initializable {
 
     public final static String OPERATE_TYPE_CUSTOM_UPDATE = "update";
 
+    public final static String DEFAULT_TAG = "分支已提交";
+
     private Map<String, String> color = new LinkedHashMap<String, String>(){{
         put("完成日期错误", "-fx-text-background-color: #ff0073;");
         put("今日待提交", "-fx-text-background-color: #ff0000;");
@@ -215,6 +217,9 @@ public class HepTodoController extends BaseController implements Initializable {
     @FXML
     private RadioButton only;
 
+    @FXML
+    private RadioButton devComplete;
+
     private Pane mask;
 
     private static Map<String, Integer> minDateCache = new HashMap<>();
@@ -223,6 +228,7 @@ public class HepTodoController extends BaseController implements Initializable {
     void selectAll(ActionEvent event) throws Exception {
         OutputUtils.selected(all, true);
         OutputUtils.selected(only, false);
+        OutputUtils.selected(devComplete, false);
         if (event != null) {
             executeQuery(null);
         }
@@ -231,6 +237,17 @@ public class HepTodoController extends BaseController implements Initializable {
     @FXML
     void selectOnly(ActionEvent event) throws Exception {
         OutputUtils.selected(only, true);
+        OutputUtils.selected(all, false);
+        OutputUtils.selected(devComplete, false);
+        if (event != null) {
+            executeQuery(null);
+        }
+    }
+
+    @FXML
+    void selectDevComplete(ActionEvent event) throws Exception {
+        OutputUtils.selected(devComplete, true);
+        OutputUtils.selected(only, false);
         OutputUtils.selected(all, false);
         if (event != null) {
             executeQuery(null);
@@ -760,6 +777,11 @@ public class HepTodoController extends BaseController implements Initializable {
                     continue;
                 }
                 existTask.add(taskName);
+            } else if (devComplete.isSelected()) {
+                if (taskName.contains(DEFAULT_TAG) && !taskName.contains("【缺陷:")) {
+                    iterator.remove();
+                    continue;
+                }
             }
 
             String status = item.getStatus();
@@ -1061,6 +1083,11 @@ public class HepTodoController extends BaseController implements Initializable {
             String taskName = item.getName();
             if (taskName.contains(STR_BRACKETS_3_RIGHT)) {
                 String taskNameTmp = taskName.substring(taskName.indexOf(STR_BRACKETS_3_LEFT) + 1, taskName.indexOf(STR_BRACKETS_3_RIGHT));
+                if (taskNameTmp.contains(DEFAULT_TAG)) {
+                    if (!tags.containsKey(DEFAULT_TAG)) {
+                        tags.put(DEFAULT_TAG, DEFAULT_TAG);
+                    }
+                }
                 if (taskNameTmp.contains("缺陷") || taskName.startsWith(STR_BRACKETS_3_LEFT)) {
                     if (taskNameTmp.contains(STR_COLON)) {
                         taskNameTmp = taskNameTmp.split(STR_COLON)[0];
@@ -1332,7 +1359,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 only.setSelected(true);
             } else {
                 JvmCache.setHepTodoController(this);
-                all.setSelected(true);
+                devComplete.setSelected(true);
             }
             addTaskMenu(appConfigDto);
             executeQuery(null);

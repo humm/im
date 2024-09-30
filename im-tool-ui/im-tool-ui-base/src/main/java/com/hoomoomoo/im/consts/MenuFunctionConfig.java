@@ -12,14 +12,11 @@ public class MenuFunctionConfig {
 
         // TA菜单
         MENU_SVN("menuSvn", "SVN", 10, "svn"),
-        MENU_SCRIPT("menuScript", "脚本", 20, "sql"),
-        MENU_CODE("menuCode", "代码", 30, "code"),
-        MENU_HEP("menuHep", "效能", 40, "hep"),
-        MENU_SYSTEM("menuSystem", "高级", 50, "system"),
+        MENU_SCRIPT("menuCommon", "通用", 20, "common"),
+        MENU_SYSTEM("menuSystem", "定制", 50, "system"),
 
         // 公共菜单
-        MENU_SET("menuSet", "设置", 1000, "set"),
-        MENU_HELP("menuHelp", "帮助", 1100, "help");
+        MENU_SET("menuSet", "设置", 1000, "set");
 
         private String menuId;
 
@@ -72,32 +69,33 @@ public class MenuFunctionConfig {
 
         SVN_HISTORY_STAT("130", "历史统计", "/conf/fxml/svnHistoryStat.fxml", "svnHistoryStat", "svnHistoryStat", "menuSvn", "用户信息,统计用户,历史统计"),
 
-        SCRIPT_UPDATE("200", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "scriptUpdate", "scriptUpdate", "menuScript", "升级脚本"),
+        SCRIPT_UPDATE("200", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "scriptUpdate", "scriptUpdate", "menuCommon", "升级脚本"),
 
-        PROCESS_INFO("210", "流程信息", "/conf/fxml/processInfo.fxml", "processInfo", "processInfo", "menuScript", "流程信息"),
+        PROCESS_INFO("210", "流程信息", "/conf/fxml/processInfo.fxml", "processInfo", "processInfo", "menuCommon", "流程信息"),
 
-        FUND_INFO("220", "基金信息", "/conf/fxml/fundInfo.fxml", "fundInfo", "fundInfo", "menuScript", "基金信息"),
+        FUND_INFO("220", "基金信息", "/conf/fxml/fundInfo.fxml", "fundInfo", "fundInfo", "menuCommon", "基金信息"),
 
-        DATABASE_SCRIPT("230", "执行脚本", "/conf/fxml/databaseScript.fxml", "databaseScript", "databaseScript", "menuScript", "执行脚本"),
+        DATABASE_SCRIPT("230", "执行脚本", "/conf/fxml/databaseScript.fxml", "databaseScript", "databaseScript", "menuCommon", "执行脚本"),
 
-        GENERATE_SQL("240", "分库分表", "/conf/fxml/generateSql.fxml", "generateSql", "generateSql", "menuScript", "分库分表"),
+        GENERATE_SQL("240", "分库分表", "/conf/fxml/generateSql.fxml", "generateSql", "generateSql", "menuCommon", "分库分表"),
 
-        COPY_CODE("300", "复制代码", "/conf/fxml/copyCode.fxml", "copyCode", "copyCode", "menuCode", "复制代码"),
+        COPY_CODE("300", "复制代码", "/conf/fxml/copyCode.fxml", "copyCode", "copyCode", "menuCommon", "复制代码"),
 
-        //GENERATE_CODE("310", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuCode", "生成代码"),
+        //GENERATE_CODE("310", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuCommon", "生成代码"),
 
-        TASK_TODO("400", "待开发任务", "/conf/fxml/hepTaskTodo.fxml", "hepTaskTodo", "hepTaskTodo", "menuHep", "待开发任务"),
+        TASK_TODO("400", "待开发任务", "/conf/fxml/hepTaskTodo.fxml", "hepTaskTodo", "hepTaskTodo", "menuSystem", "待开发任务"),
 
-        SYSTEM_TOOL("500", "便捷工具", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuSystem", "便捷工具"),
+        SYSTEM_TOOL("500", "高级工具", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuSystem", "高级工具"),
 
-        CHANGE_FUNCTION_TOOL("600", "功能切换", "/conf/fxml/changeFunctionTool.fxml", "changeFunctionTool", "changeFunctionTool", "menuSystem", "功能切换"),
+        CHANGE_FUNCTION_TOOL("600", "版本切换", "/conf/fxml/changeFunctionTool.fxml", "changeFunctionTool", "changeFunctionTool", "menuSystem", "版本切换"),
 
         // 公共组件 3000-9999
-        FUNCTION_STAT_INFO("3000", "使用统计", "/conf/fxml/functionStatInfo.fxml", "functionStatInfo", "functionStatInfo", "menuHelp", ""),
+        CONFIG_SET("9999", "参数设置", "/conf/fxml/configSet.fxml", "configSet", "configSet", "menuSet", "应用信息"),
 
-        ABOUT_INFO("3100", "关于", "/conf/fxml/aboutInfo.fxml", "aboutInfo", "aboutInfo", "menuHelp", ""),
+        FUNCTION_STAT_INFO("3000", "使用统计", "/conf/fxml/functionStatInfo.fxml", "functionStatInfo", "functionStatInfo", "menuSet", ""),
 
-        CONFIG_SET("9999", "参数设置", "/conf/fxml/configSet.fxml", "configSet", "configSet", "menuSet", "应用信息");
+        ABOUT_INFO("3100", "关于", "/conf/fxml/aboutInfo.fxml", "aboutInfo", "aboutInfo", "menuSet", "");
+
 
         private String code;
 

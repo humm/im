@@ -69,7 +69,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem menuScript = new MenuItem(NAME_MENU_SCRIPT);
-        CommonUtils.setIcon(menuScript, SCRIPT_ICON, MENUITEM_ICON_SIZE);
+        CommonUtils.setIcon(menuScript, ABSTRACT_ICON, MENUITEM_ICON_SIZE);
         menuScript.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
