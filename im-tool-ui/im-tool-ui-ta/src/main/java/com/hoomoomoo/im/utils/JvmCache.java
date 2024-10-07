@@ -1,12 +1,7 @@
 package com.hoomoomoo.im.utils;
 
-import com.hoomoomoo.im.controller.HepTodoController;
-import com.hoomoomoo.im.controller.ScriptUpdateController;
-import com.hoomoomoo.im.controller.SystemToolController;
-import com.hoomoomoo.im.controller.TaStarterController;
+import com.hoomoomoo.im.controller.*;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class JvmCache {
 
@@ -14,6 +9,18 @@ public class JvmCache {
     private static SystemToolController systemToolController;
     private static ScriptUpdateController scriptUpdateController;
     private static TaStarterController taStarterController;
+    private static ScriptCheckController scriptCheckController;
+
+    public static ScriptCheckController getScriptCheckController() {
+        if (scriptCheckController == null) {
+            scriptCheckController = new ScriptCheckController();
+        }
+        return scriptCheckController;
+    }
+
+    public static void setScriptCheckController(ScriptCheckController checkController) {
+        scriptCheckController = checkController;
+    }
 
     public static HepTodoController getHepTodoController() {
         if (hepTodoController == null) {

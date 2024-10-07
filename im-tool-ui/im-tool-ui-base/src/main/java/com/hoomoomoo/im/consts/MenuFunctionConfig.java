@@ -85,9 +85,11 @@ public class MenuFunctionConfig {
 
         TASK_TODO("400", "待开发任务", "/conf/fxml/hepTaskTodo.fxml", "hepTaskTodo", "hepTaskTodo", "menuSystem", "待开发任务"),
 
-        SYSTEM_TOOL("500", "高级工具", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuSystem", "高级工具"),
+        SCRIPT_CHECK("500", "脚本检查", "/conf/fxml/scriptCheck.fxml", "scriptCheck", "scriptCheck", "menuSystem", "脚本检查"),
 
         CHANGE_FUNCTION_TOOL("600", "版本切换", "/conf/fxml/changeFunctionTool.fxml", "changeFunctionTool", "changeFunctionTool", "menuSystem", "版本切换"),
+
+        SYSTEM_TOOL("700", "高级工具", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuSystem", "高级工具"),
 
         // 公共组件 3000-9999
         CONFIG_SET("9999", "参数设置", "/conf/fxml/configSet.fxml", "configSet", "configSet", "menuSet", "应用信息"),

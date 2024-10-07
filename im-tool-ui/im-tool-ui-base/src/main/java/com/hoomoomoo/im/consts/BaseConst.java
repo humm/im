@@ -78,22 +78,11 @@ public class BaseConst {
     public static final String KEY_CLASSES = "classes";
     public static final String KEY_NOTICE = "notice";
     public static final String KEY_VALUES = "values";
-    public static final String KEY_INSERT_INTO = "into";
     public static final String KEY_CONF = "conf";
     public static final String KEY_FILE_SLASH = "file:/";
     public static final String KEY_FILE = "file:";
     public static final String KEY_APP_LOG = "appLog";
     public static final String KEY_DELETE = "delete";
-    public static final String KEY_HREF = "href";
-    public static final String KEY_ORDER_ID = "orderId";
-    public static final String KEY_PRODUCT_ID = "productId";
-    public static final String KEY_SORT = "sort";
-    public static final String KEY_SCORE = "score";
-    public static final String KEY_SAVE_STATUS = "saveStatus";
-    public static final String KEY_ANONYMOUS_FLAG = "anonymousFlag";
-    public static final String KEY_CONTENT = "content";
-    public static final String KEY_IMGS = "imgs";
-    public static final String KEY_UNICK = "unick";
     public static final String KEY_LIB = "/lib";
     public static final String KEY_VERSION = "version";
     public static final String KEY_TRUNK = "trunk";
@@ -159,9 +148,8 @@ public class BaseConst {
     public final static String KEY_MENU = "menu";
     public final static String KEY_TRANS = "trans";
     public final static String KEY_TRANS_EXT = "transExt";
-
-    public static final String METHOD_QUERY_DATA = "queryData";
-    public static final String METHOD_GOODS_APPRAISE = "goodsAppraise";
+    public final static String KEY_UPDATE_MENU = "updateMenu";
+    public final static String KEY_SCHEDULE = "schedule";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
@@ -175,9 +163,7 @@ public class BaseConst {
     public static final String FILE_TYPE_JAVA = ".java";
     public static final String FILE_TYPE_CLASS = ".class";
     public static final String FILE_TYPE_SQL = ".sql";
-    public static final String FILE_TYPE_ROUTE = ".js";
     public static final String FILE_TYPE_CONF = ".conf";
-    public static final String FILE_TYPE_RECORD = ".record";
     public static final String FILE_TYPE_RPX = ".rpx";
 
     public static final String NAME_DELETE = " 删除";
@@ -198,10 +184,6 @@ public class BaseConst {
     public static final String NAME_MAC = "MAC地址";
     public static final String NAME_APP_TAB_SHOW = "# 默认展示tab页";
     public static final String NAME_APP_TAB_SHOW_CODE = "app.tab.show";
-    public static final String NAME_SVN_STAT = "#################### svn统计";
-    public static final String NAME_SVN_STAT_REALTIME = "#################### 实时统计";
-    public static final String NAME_SVN_STAT_HISTORY = "#################### 历史统计";
-    public static final String NAME_MENU_HEP_TASK_TODO = "#################### 效能";
     public static final String NAME_CONFIG_COLUMN = "字段参数";
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
@@ -223,11 +205,6 @@ public class BaseConst {
     public static final String NAME_MENU_SCRIPT = "任务摘要";
     public static final String NAME_MENU_TASK_NO = "复制单号";
 
-
-    public static final String NAME_MENU_DCIT = "字典";
-    public static final String NAME_MENU_DATE = "日期";
-    public static final String NAME_MENU_DECIMAL = "小数";
-
     public final static String SECURITY_FLAG = "+++";
 
     public final static String STR_BLANK = "";
@@ -240,8 +217,6 @@ public class BaseConst {
     public final static String STR_SPACE_8 = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     public final static String STR_EQUALS = "=";
     public static final String STR_COMMA = ",";
-    public static final String STR_COMMA_1 = "，";
-    public static final String STR_CAESURA  = "、";
     public static final String STR_SEMICOLON = ";";
     public static final String STR_COLON = ":";
     public static final String STR_HYPHEN = "-";
@@ -252,7 +227,6 @@ public class BaseConst {
     public final static String STR_S_SLASH = "\\s+";
     public final static String STR_POINT_SLASH = "\\.";
     public static final String STR_SLASH = "/";
-    public static final String STR_SLASH_1 = "\\";
     public static final String STR_BRACKETS_LEFT = "(";
     public static final String STR_BRACKETS_RIGHT = ")";
     public static final String STR_BRACKETS_1_LEFT = "[";
@@ -266,7 +240,6 @@ public class BaseConst {
     public static final String STR_NEXT_LINE_2 = "\n\n";
     public static final String STR_NEXT_LINE_3 = "\n\n\n";
     public static final String STR_PERCENT = "%";
-    public static final String STR_QUOTES = "\"";
     public static final String STR_QUOTES_SINGLE = "'";
     public static final String STR_BR = "</br>";
 
