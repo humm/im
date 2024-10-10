@@ -778,7 +778,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 existTask.add(taskName);
             } else if (devComplete.isSelected()) {
-                if (taskName.contains(DEFAULT_TAG) && !taskName.contains("【缺陷:")) {
+                if (taskName.contains(DEFAULT_TAG)) {
                     iterator.remove();
                     continue;
                 }

@@ -872,7 +872,6 @@ public class CommonUtils {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("提示");
         alert.setHeaderText(String.format(". . . . . . %s . . . . . .", msg));
-        alert.setContentText(". . . 春风十里不如你 ... 风里雨里我在这里等你 . . . ");
         Service<Void> service = getCloseInfoService();
         service.setOnSucceeded(e -> alert.hide());
         service.start();
@@ -883,7 +882,6 @@ public class CommonUtils {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("提示");
         alert.setHeaderText(String.format(". . . . . . %s . . . . . .", msg));
-        alert.setContentText(". . . 好久不见 ... 甚是想念 . . . ");
         Service<Void> service = getCloseInfoService();
         service.setOnSucceeded(e -> alert.hide());
         service.start();
