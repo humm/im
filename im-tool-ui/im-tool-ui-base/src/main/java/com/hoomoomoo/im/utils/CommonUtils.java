@@ -859,7 +859,7 @@ public class CommonUtils {
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    Thread.sleep(2000);
+                    Thread.sleep(1000);
                     return null;
                 }
             };

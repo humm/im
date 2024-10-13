@@ -101,7 +101,7 @@ public class LoggerUtils {
             Date endDate = new Date();
             StringBuilder log = new StringBuilder();
             log.append(CommonUtils.getCurrentDateTime1(startDate)).append(STR_SPACE);
-            log.append(SVN_LOG.getCode()).append(STR_SPACE).append(START).append(STR_NEXT_LINE);
+            log.append(SVN_LOG.getName()).append(STR_SPACE).append(START).append(STR_NEXT_LINE);
             int fileNum = 0;
             if (CollectionUtils.isNotEmpty(svnLogDtoList)) {
                 for (LogDto item : svnLogDtoList) {
@@ -113,7 +113,7 @@ public class LoggerUtils {
                 }
             }
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
-            log.append(SVN_LOG.getCode()).append(STR_SPACE).append(END).append(STR_NEXT_LINE);
+            log.append(SVN_LOG.getName()).append(STR_SPACE).append(END).append(STR_NEXT_LINE);
             long costTime = (endDate.getTime() - startDate.getTime()) / 1000;
             log.append(CommonUtils.getCurrentDateTime1(endDate)).append(STR_SPACE);
             log.append(SVN_LOG.getCode()).append(STR_SPACE);

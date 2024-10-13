@@ -55,6 +55,10 @@ public class BaseConst {
     public static final String STR_999999999 = "999999999";
     public static final String STR_999999999999 = "999999999999";
 
+    public static final String STR_TRUE = "1";
+    public static final String STR_SUCCESS_CODE = "200";
+    public static final String STR_FALSE = "0";
+
     public final static String ENCODING_UTF8 = "UTF-8";
     public final static String ENCODING_GBK = "GBK";
     public final static String ENCODING_GB = "GB";
@@ -172,6 +176,7 @@ public class BaseConst {
     public static final String NAME_SVN_MODIFY_NO = "[修改单编号]";
     public static final String NAME_CURRENT_VERSION = "当前版本:";
     public static final String NAME_SAVE_SUCCESS = "修改成功 ";
+    public static final String NAME_DEAL_SUCCESS = "处理成功";
     public static final String NAME_APP_START = "应用";
     public static final String NAME_CONFIG_INFO = "配置信息";
     public static final String NAME_CONFIG_USER = "用户信息";

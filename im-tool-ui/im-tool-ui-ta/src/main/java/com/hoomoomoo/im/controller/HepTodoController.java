@@ -103,6 +103,7 @@ public class HepTodoController extends BaseController implements Initializable {
         put("默认", "-fx-text-background-color: #000000;");
     }};
 
+    // 字段顺序不可调整 与约定接口保持顺序一致
     private static Set<String> field = new LinkedHashSet<String>(){{
         add(KEY_CHARSET);
         add(KEY_REAL_FINISH_TIME);
@@ -533,7 +534,7 @@ public class HepTodoController extends BaseController implements Initializable {
         return items;
     }
 
-    public void completeTask(HepTaskDto hepTaskDto) {
+    public void completeTask(HepTaskDto hepTaskDto) throws Exception {
         // 获取列表数据
         Map<String, Object> request = new HashMap<>(16);
         request.put(KEY_METHOD, METHOD_GET_FIELD_INFO);
@@ -1210,7 +1211,7 @@ public class HepTodoController extends BaseController implements Initializable {
         return taskName;
     }
 
-    private HttpResponse sendPost(Map<String, Object> param) {
+    private HttpResponse sendPost(Map<String, Object> param) throws Exception {
         param.put(KEY_APP_ID, APP_ID);
         param.put(KEY_APP_KEY, APP_KEY);
         param.put(KEY_CHARSET, "utf-8");
@@ -1224,10 +1225,32 @@ public class HepTodoController extends BaseController implements Initializable {
         if (!proScene()) {
             return null;
         }
-        logs.add("请求入参: " + jsonObject);
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        if (STR_TRUE.equals(appConfigDto.getHepTaskPrintParam())) {
+            logs.add("请求入参: " + jsonObject);
+        } else {
+            cn.hutool.json.JSONObject print = initJSONObject();
+            print.set(KEY_METHOD, param.get(KEY_METHOD));
+            if (param.get(KEY_OPERATE_TYPE) != null) {
+                print.set(KEY_OPERATE_TYPE, param.get(KEY_OPERATE_TYPE));
+            }
+            logs.add("请求入参: " + print);
+        }
+
         HttpResponse response = HttpRequest.post(REQUEST_URL).timeout(10 * 1000).form(jsonObject).execute();
-        Map result = (Map) JSONObject.parse(response.body());
-        logs.add("返回结果: " + result.toString());
+        Map<String, String> result = (Map) JSONObject.parse(response.body());
+        if (StringUtils.equals(STR_SUCCESS_CODE, result.get(KEY_CODE))) {
+            if (STR_TRUE.equals(appConfigDto.getHepTaskPrintParam())) {
+                logs.add("返回结果: " + result);
+            } else {
+                cn.hutool.json.JSONObject print = initJSONObject();
+                print.set(KEY_MESSAGE, NAME_DEAL_SUCCESS);
+                logs.add("返回结果: " +print);
+            }
+        } else {
+            logs.add("返回结果: " + result);
+        }
+
 
         Object data = result.get("data");
         if (data instanceof JSONArray) {
@@ -1240,6 +1263,10 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         }
         return response;
+    }
+
+    private cn.hutool.json.JSONObject initJSONObject() {
+        return new cn.hutool.json.JSONObject(new LinkedHashMap<>());
     }
 
     private void initRequest(Map<String, Object> param, cn.hutool.json.JSONObject jsonObject) {

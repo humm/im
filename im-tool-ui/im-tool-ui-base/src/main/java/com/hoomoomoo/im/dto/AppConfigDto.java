@@ -244,6 +244,8 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskRestPlanTime;
 
+    private String hepTaskPrintParam;
+
     public AppConfigDto() {
         this.execute = false;
         this.appLogEnable = false;
