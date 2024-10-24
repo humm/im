@@ -196,6 +196,11 @@ public class SystemToolController implements Initializable {
         }
     }
 
+    @FXML
+    void showExplain(ActionEvent event) {
+
+    }
+
     private String formatDate(String date) {
         return StringUtils.isBlank(date) ? STR_0 : date.replaceAll(STR_HYPHEN, STR_BLANK);
     }

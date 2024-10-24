@@ -50,29 +50,29 @@ public class CheckResultController implements Initializable {
         } else if (PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT.equals(pageType)) {
             initTab(appConfigDto, NEW_MENU_UPDATE.getFileName());
         } else if (PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG.equals(pageType)) {
-            initTab("appLog", "系统日志");
+            initTab("appLog", NAME_SYSTEM_LOG);
             MenuFunctionConfig.FunctionConfig[] functionConfigs = MenuFunctionConfig.FunctionConfig.values();
             for (MenuFunctionConfig.FunctionConfig functionConfig : functionConfigs) {
                 initTab(functionConfig.getLogFolder(), functionConfig.getName());
             }
         } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_OLD_MENU_LOG.equals(pageType)) {
             String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
-            String check = basePath + ScriptSqlUtils.baseMenu.replace(".sql", ".check.sql");
-            String res = basePath + ScriptSqlUtils.baseMenu.replace(".sql", ".res.sql");
-            initTabByFile(check, "错误信息");
-            initTabByFile(res, "脚本详情");
+            String check = basePath + ScriptSqlUtils.baseMenu.replace(FILE_TYPE_SQL, FILE_TYPE_CHECK_SQL);
+            String res = basePath + ScriptSqlUtils.baseMenu.replace(FILE_TYPE_SQL, FILE_TYPE_RES_SQL);
+            initTabByFile(check, NAME_ERROR_INFO);
+            initTabByFile(res, NAME_SCRIPT_DETAIL);
         } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_NEW_MENU_LOG.equals(pageType)) {
             String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
-            String check = basePath + ScriptSqlUtils.newUedPage.replace(".sql", ".check.sql");
-            String res = basePath + ScriptSqlUtils.newUedPage.replace(".sql", ".res.sql");
-            initTabByFile(check, "错误信息");
-            initTabByFile(res, "脚本详情");
+            String check = basePath + ScriptSqlUtils.newUedPage.replace(FILE_TYPE_SQL, FILE_TYPE_CHECK_SQL);
+            String res = basePath + ScriptSqlUtils.newUedPage.replace(FILE_TYPE_SQL, FILE_TYPE_RES_SQL);
+            initTabByFile(check, NAME_ERROR_INFO);
+            initTabByFile(res, NAME_SCRIPT_DETAIL);
         } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_WORK_FLOW_LOG.equals(pageType)) {
             String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
-            String check = basePath + ScriptSqlUtils.workFlow.replace(".sql", ".check.sql");
-            String res = basePath + ScriptSqlUtils.workFlow.replace(".sql", ".res.sql");
-            initTabByFile(check, "错误信息");
-            initTabByFile(res, "脚本详情");
+            String check = basePath + ScriptSqlUtils.workFlow.replace(FILE_TYPE_SQL, FILE_TYPE_CHECK_SQL);
+            String res = basePath + ScriptSqlUtils.workFlow.replace(FILE_TYPE_SQL, FILE_TYPE_RES_SQL);
+            initTabByFile(check, NAME_ERROR_INFO);
+            initTabByFile(res, NAME_SCRIPT_DETAIL);
         }
     }
 

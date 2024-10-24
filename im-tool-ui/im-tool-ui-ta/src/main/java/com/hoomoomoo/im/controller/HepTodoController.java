@@ -786,9 +786,11 @@ public class HepTodoController extends BaseController implements Initializable {
             }
 
             String status = item.getStatus();
-            if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
-                iterator.remove();
-                continue;
+            if (!isExtendUser()) {
+                if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
+                    iterator.remove();
+                    continue;
+                }
             }
             if (hasBlank && StringUtils.isBlank(status)) {
                 iterator.remove();

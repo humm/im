@@ -183,23 +183,25 @@ public class ChangeToolController implements Initializable {
             }
             OutputUtils.infoContainBr(logs, "\n执行脚本 完成...");
             OutputUtils.infoContainBr(logs, "请刷新系统缓存...");
+        } else {
+            enableBtn();
         }
     }
 
     public void buildMenuModeSql(String taskType) throws Exception {
-       switch (taskType) {
-           case "新版":
-               buildMenuSql(taskType,true, false);
-               break;
-           case "老版":
-               buildMenuSql(taskType,false, false);
-               break;
-           case "老版(全部)":
-               buildMenuSql(taskType,false, true);
-               break;
-           default:
-             new Exception("未匹配执行方法，请检查");
-       }
+        switch (taskType) {
+            case "新版":
+                buildMenuSql(taskType,true, false);
+                break;
+            case "老版":
+                buildMenuSql(taskType,false, false);
+                break;
+            case "老版(全部)":
+                buildMenuSql(taskType,false, true);
+                break;
+            default:
+                new Exception("未匹配执行方法，请检查");
+        }
 
     }
 
@@ -226,6 +228,10 @@ public class ChangeToolController implements Initializable {
             OutputUtils.info(logs, "执行中...");
             for (int i=0; i<size; i++) {
                 String sql = sqlList.get(i);
+                if (!all && sql.contains("交易码  tsys_trans")) {
+                    res.add("commit;");
+                    break;
+                }
                 if (!all && !newUd && (sql.contains("tsys_trans") || sql.contains("tsys_subtrans"))) {
                     continue;
                 }
@@ -235,10 +241,6 @@ public class ChangeToolController implements Initializable {
                     res.clear();
                 }
                 String sqlLower = sql.toLowerCase();
-                if (!all && sqlLower.contains("交易码  tsys_trans")) {
-                    res.add("commit;");
-                    break;
-                }
                 boolean validSql = sqlLower.contains("delete") || sqlLower.contains("insert") || sqlLower.contains("values");
                 if (sql.startsWith(ANNOTATION_NORMAL) && validSql) {
                     sql = sql.replace(ANNOTATION_NORMAL + STR_SPACE, STR_BLANK);

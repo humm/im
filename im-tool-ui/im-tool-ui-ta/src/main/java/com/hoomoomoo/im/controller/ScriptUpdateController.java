@@ -364,7 +364,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                     if (param.length == 2) {
                         paramSql = "\n from (select count(1) param_exists from tbdict where hs_key = '" + param[0] + "' and val = '" + param[1] + "') a where param_exists = 1";
                     } else {
-                        paramSql = "\n from (select count(1) param_exists from tbdict where hs_key = '" + paramControl + "') a where param_exists = 1";
+                        paramSql = "\n from (select count(1) param_exists from tbdict where hs_key = '" + paramControl + "') a where param_exists > 0";
                     }
                 }
                 if (StringUtils.isNotBlank(taskNoText)) {

@@ -170,6 +170,9 @@ public class BaseConst {
     public static final String FILE_TYPE_CONF = ".conf";
     public static final String FILE_TYPE_RPX = ".rpx";
 
+    public static final String FILE_TYPE_CHECK_SQL = ".check.sql";
+    public static final String FILE_TYPE_RES_SQL = ".res.sql";
+
     public static final String NAME_DELETE = " 删除";
     public static final String NAME_END = "结束";
     public static final String NAME_SVN_DESCRIBE = "[需求描述]";
@@ -190,6 +193,9 @@ public class BaseConst {
     public static final String NAME_APP_TAB_SHOW = "# 默认展示tab页";
     public static final String NAME_APP_TAB_SHOW_CODE = "app.tab.show";
     public static final String NAME_CONFIG_COLUMN = "字段参数";
+    public static final String NAME_ERROR_INFO = "错误信息";
+    public static final String NAME_SCRIPT_DETAIL = "脚本详情";
+    public static final String NAME_SYSTEM_LOG = "系统日志";
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
     public static final String NAME_UPDATE_VERSION = "同步发版时间";
