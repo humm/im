@@ -192,6 +192,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private AnchorPane condition;
 
     @FXML
+    private Button syncTask;
+
+    @FXML
     private Button updateVersion;
 
     @FXML
@@ -468,6 +471,22 @@ public class HepTodoController extends BaseController implements Initializable {
         executeQuery(null);
     }
 
+    @FXML
+    void syncTaskInfo (ActionEvent event) throws Exception {
+        syncTask.setDisable(true);
+        try {
+            JvmCache.getSystemToolController().executeSyncTaskInfo();
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("同步客户名称成功"));
+            executeQuery(null);
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            CommonUtils.showTipsByError(msg);
+        } finally {
+            syncTask.setDisable(false);
+        }
+    }
+
     public void doExecuteQuery() {
         try {
             query.setDisable(true);
@@ -712,12 +731,14 @@ public class HepTodoController extends BaseController implements Initializable {
         String currentDate = CommonUtils.getCurrentDateTime4();
         String lastDayByWeek = CommonUtils.getLastDayByWeek();
         String weekDay = CommonUtils.getLastDayByWeek2();
+        Map<String, String> taskCustomerName = new HashMap<>();
         try {
             List<String> versionList = new ArrayList<>();
             Map<String, String[]> versionExtend = new HashMap<>();
             if (proScene()) {
                 versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
                 versionExtend = getVersionExtendInfo();
+                taskCustomerName = getTaskInfo();
             }
             for (String item : versionList) {
                 String[] elements = item.split(STR_SEMICOLON);
@@ -854,6 +875,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         for (HepTaskDto item : res) {
             String taskName = item.getName();
+            String taskNumber = item.getTaskNumber();
             if (minDate.containsKey(taskName)) {
                 int min = minDate.get(taskName);
                 int minCache = minDateCache.get(taskName);
@@ -874,6 +896,9 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
             item.setSprintVersion(formatVersion(item.getSprintVersion()));
+            if (taskCustomerName.containsKey(taskNumber)) {
+                item.setCustomer(taskCustomerName.get(taskNumber));
+            }
         }
         res = sortTask(res);
 
@@ -1563,6 +1588,22 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         }
         return version;
+    }
+
+    private static Map<String, String> getTaskInfo() {
+        Map<String, String> task = new HashMap<>();
+        try {
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_STAT), false);
+            if (CollectionUtils.isNotEmpty(taskList)) {
+                for (String item : taskList) {
+                    String[] elementList = item.split(STR_SEMICOLON);
+                    task.put(elementList[0], elementList[1]);
+                }
+            }
+        } catch (IOException e) {
+            LoggerUtils.info(e);
+        }
+        return task;
     }
 
     private void addTaskMenu(AppConfigDto appConfigDto) throws Exception {

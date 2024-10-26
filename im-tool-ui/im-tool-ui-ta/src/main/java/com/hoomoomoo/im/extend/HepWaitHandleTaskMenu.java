@@ -144,7 +144,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         info.append("[修改单版本]").append(STR_SPACE).append(CommonUtils.getComplexVer(item.getSprintVersion())).append(STR_NEXT_LINE);
         info.append("[需求引入行]").append(STR_SPACE);
         if (hasDescribe) {
-            String name = item.getName();
+            String name = item.getName().replace("【分支已提交】", STR_BLANK);
             if (name.contains(STR_BRACKETS_2_RIGHT)) {
                 name = name.substring(name.indexOf(STR_BRACKETS_2_RIGHT) + 1);
             } else if (name.contains(STR_BRACKETS_3_RIGHT)) {

@@ -261,15 +261,23 @@ public class SystemToolController implements Initializable {
     }
 
     public void executeUpdateVersion() throws Exception {
-        List<String> list = new ArrayList<>();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        String filePath = appConfigDto.getSystemToolUpdateVersionPath();
+        syncExcel(appConfigDto.getSystemToolUpdateVersionPath(), "system.tool.update.version.path", "版本列表", PATH_VERSION_STAT, "同步发版时间", "version");
+    }
+
+    public void executeSyncTaskInfo() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        syncExcel(appConfigDto.getHepTaskCustomerPath(),"hep.task.customer.path", "任务列表", PATH_TASK_STAT, "同步客户名称", "task");
+    }
+
+    private void syncExcel(String filePath, String configParam, String sheetName, String statFile, String logName, String excelType) throws Exception {
+        List<String> list = new ArrayList<>();
         FileInputStream fileInputStream = null;
         if (StringUtils.isBlank(filePath)) {
             if (logs != null) {
-                OutputUtils.info(logs, getUpdateVersionMsg("请配置【system.tool.update.version.path】"));
+                OutputUtils.info(logs, getUpdateVersionMsg("请配置【" + configParam + "】"));
             } else {
-                throw new Exception("请配置【system.tool.update.version.path】");
+                throw new Exception("请配置【" + configParam + "】");
             }
         } else {
             try {
@@ -277,7 +285,7 @@ public class SystemToolController implements Initializable {
                 if (file.isDirectory()) {
                     List<File> files = Arrays.asList(file.listFiles());
                     if (CollectionUtils.isNotEmpty(files)) {
-                        files = files.stream().filter(ele -> ele.getName().contains("版本列表")).collect(Collectors.toList());
+                        files = files.stream().filter(ele -> ele.getName().contains(sheetName)).collect(Collectors.toList());
                         Collections.sort(files, new Comparator<File>() {
                             @Override
                             public int compare(File o1, File o2) {
@@ -289,37 +297,52 @@ public class SystemToolController implements Initializable {
                         filePath = files.get(0).getPath();
                     }
                 }
-                fileInputStream = getVersionFile(null, filePath, 0);
-                HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
-                HSSFSheet sheet = workbook.getSheetAt(0);
+                fileInputStream = getSyncFile(null, filePath, 0);
+                XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+                XSSFSheet sheet = workbook.getSheetAt(0);
                 int rows = sheet.getLastRowNum();
                 for (int i = 1; i <= rows; i++) {
                     StringBuilder item = new StringBuilder();
-                    HSSFRow row = sheet.getRow(i);
+                    XSSFRow row = sheet.getRow(i);
                     if (row == null) {
                         continue;
                     }
-                    String version = row.getCell(1).toString();
-                    if (StringUtils.isBlank(version)) {
-                        continue;
+                    if ("version".equals(excelType)) {
+                        String version = row.getCell(1).toString();
+                        if (StringUtils.isBlank(version)) {
+                            continue;
+                        }
+                        String closeDate = formatDate(row.getCell(2).toString());
+                        String publishDate = formatDate(row.getCell(3).toString());
+                        if (StringUtils.isBlank(closeDate)) {
+                            closeDate = publishDate;
+                        }
+                        String customer = STR_SPACE;
+                        item.append(version).append(STR_SEMICOLON).append(closeDate).append(STR_SEMICOLON).append(publishDate).append(STR_SEMICOLON).append(customer).append(STR_SEMICOLON);
+                        list.add(item.toString());
+                    } else if ("task".equals(excelType)) {
+                        if (i == 1) {
+                            continue;
+                        }
+                        String taskNumber = row.getCell(0).toString();
+                        if (StringUtils.isBlank(taskNumber)) {
+                            continue;
+                        }
+                        String customerName = row.getCell(1).toString().split("（")[0];
+                        if (StringUtils.isBlank(customerName)) {
+                            customerName = "内部客户";
+                        }
+                        item.append(taskNumber).append(STR_SEMICOLON).append(customerName);
+                        list.add(item.toString());
                     }
-                    String closeDate = formatDate(row.getCell(2).toString());
-                    String publishDate = formatDate(row.getCell(3).toString());
-                    if (StringUtils.isBlank(closeDate)) {
-                        closeDate = publishDate;
-                    }
-                    String customer = STR_SPACE;
-                    item.append(version).append(STR_SEMICOLON).append(closeDate).append(STR_SEMICOLON).append(publishDate)
-                            .append(STR_SEMICOLON).append(customer).append(STR_SEMICOLON);
-                    list.add(item.toString());
                 }
-                String statPath = FileUtils.getFilePath(PATH_VERSION_STAT);
+                String statPath = FileUtils.getFilePath(statFile);
                 FileUtils.writeFile(statPath, list, false);
                 if (logs != null) {
                     OutputUtils.info(logs, getUpdateVersionMsg("同步成功"));
                     OutputUtils.info(logs, STR_NEXT_LINE);
                 }
-                addLog("同步发版时间");
+                addLog(logName);
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 throw new Exception(e.getMessage());
@@ -334,14 +357,14 @@ public class SystemToolController implements Initializable {
         }
     }
 
-    private static FileInputStream getVersionFile(FileInputStream fileInputStream, String filePath, int times) throws FileNotFoundException {
+    private static FileInputStream getSyncFile(FileInputStream fileInputStream, String filePath, int times) throws FileNotFoundException {
         try {
             fileInputStream = new FileInputStream(filePath);
         } catch (FileNotFoundException e) {
             if (e.getMessage().contains("拒绝访问")) {
                 times++;
                 if (times <= 3) {
-                    getVersionFile(fileInputStream, filePath, times);
+                    getSyncFile(fileInputStream, filePath, times);
                 }
                 throw new FileNotFoundException("权限不够,请重试");
             } else {

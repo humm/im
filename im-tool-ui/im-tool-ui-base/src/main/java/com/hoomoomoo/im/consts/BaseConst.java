@@ -334,6 +334,7 @@ public class BaseConst {
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/stats/version.stat";
+    public static final String PATH_TASK_STAT = "/stats/task.stat";
     public static final String PATH_VERSION_EXTEND_STAT = "/stats/versionExtend.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";
