@@ -47,9 +47,10 @@
 
                         <RadioButton fx:id="all" layoutX="800.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectAll" text="全部"/>
                         <RadioButton fx:id="only" layoutX="870.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectOnly" text="去重"/>
-                        <RadioButton fx:id="devComplete" layoutX="940.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectDevComplete" text="隐藏已提交"/>
+                        <RadioButton fx:id="devCompleteShow" layoutX="940.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectDevCompleteShow" text="显示分支已提交"/>
+                        <RadioButton fx:id="devCompleteHide" layoutX="1080.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectDevCompleteHide" text="隐藏分支已提交"/>
 
-                        <Button fx:id="query" layoutX="1100.0" layoutY="95.0" mnemonicParsing="false"
+                        <Button fx:id="query" layoutX="1300.0" layoutY="95.0" mnemonicParsing="false"
                                 onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

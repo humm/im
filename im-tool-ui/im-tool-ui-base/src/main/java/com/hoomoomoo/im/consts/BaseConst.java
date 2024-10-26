@@ -46,14 +46,8 @@ public class BaseConst {
     public static final String STR_99 = "99";
     public static final String STR_9950 = "9950";
     public static final String STR_9960 = "9960";
-    public static final String STR_145 = "145";
-    public static final String STR_549656 = "549656";
-    public static final String STR_9900 = "9900";
-    public static final String STR_9990 = "9990";
-    public static final String STR_9999 = "9999";
     public static final String STR_99999999 = "99999999";
-    public static final String STR_999999999 = "999999999";
-    public static final String STR_999999999999 = "999999999999";
+    public static final String STR_20991231 = "20991231";
 
     public static final String STR_TRUE = "1";
     public static final String STR_SUCCESS_CODE = "200";
@@ -169,6 +163,7 @@ public class BaseConst {
     public static final String FILE_TYPE_SQL = ".sql";
     public static final String FILE_TYPE_CONF = ".conf";
     public static final String FILE_TYPE_RPX = ".rpx";
+    public static final String FILE_TYPE_XLS = ".xls";
 
     public static final String FILE_TYPE_CHECK_SQL = ".check.sql";
     public static final String FILE_TYPE_RES_SQL = ".res.sql";
@@ -197,6 +192,8 @@ public class BaseConst {
     public static final String NAME_SCRIPT_DETAIL = "脚本详情";
     public static final String NAME_SYSTEM_LOG = "系统日志";
     public static final String NAME_INNER_CUSTOMER = "内部客户";
+    public static final String NAME_J_S_J_J = "嘉实基金";
+    public static final String NAME_A_D_B_L = "爱答不理";
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
     public static final String NAME_UPDATE_VERSION = "同步发版时间";

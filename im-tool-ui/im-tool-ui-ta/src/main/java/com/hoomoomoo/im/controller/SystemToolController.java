@@ -211,7 +211,7 @@ public class SystemToolController implements Initializable {
     }
 
     private String formatDate(String date) {
-        return StringUtils.isBlank(date) ? STR_0 : date.replaceAll(STR_HYPHEN, STR_BLANK);
+        return StringUtils.isBlank(date) ? STR_20991231 : date.replaceAll(STR_HYPHEN, STR_BLANK);
     }
 
     private String getShakeMouseMsg (String msg) {
@@ -301,7 +301,7 @@ public class SystemToolController implements Initializable {
                 }
                 fileInputStream = getSyncFile(null, filePath, 0);
                 Sheet sheet;
-                if ("version".equals(excelType)) {
+                if (filePath.endsWith(FILE_TYPE_XLS)) {
                     HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
                     sheet = workbook.getSheetAt(0);
                 } else {
@@ -316,12 +316,12 @@ public class SystemToolController implements Initializable {
                         continue;
                     }
                     if ("version".equals(excelType)) {
-                        String version = row.getCell(1).toString();
+                        String version = row.getCell(0).toString();
                         if (StringUtils.isBlank(version)) {
                             continue;
                         }
-                        String closeDate = formatDate(row.getCell(2).toString());
-                        String publishDate = formatDate(row.getCell(3).toString());
+                        String closeDate = formatDate(row.getCell(1).toString());
+                        String publishDate = formatDate(row.getCell(2).toString());
                         if (StringUtils.isBlank(closeDate)) {
                             closeDate = publishDate;
                         }
@@ -338,7 +338,11 @@ public class SystemToolController implements Initializable {
                         }
                         String customerName = row.getCell(1).toString().split("（")[0];
                         if (StringUtils.isNotBlank(customerName)) {
-                            customerName = customerName.replaceAll(NAME_INNER_CUSTOMER, STR_BLANK).replaceAll(STR_COMMA, STR_BLANK);
+                            String[] customer = customerName.split(STR_COMMA);
+                            customerName = customer[0];
+                            if (customer.length > 1 && NAME_INNER_CUSTOMER.equals(customerName)) {
+                                customerName = customer[1];
+                            }
                         }
                         if (StringUtils.isBlank(customerName)) {
                             customerName = NAME_INNER_CUSTOMER;

@@ -225,7 +225,10 @@ public class HepTodoController extends BaseController implements Initializable {
     private RadioButton only;
 
     @FXML
-    private RadioButton devComplete;
+    private RadioButton devCompleteHide;
+    
+    @FXML
+    private RadioButton devCompleteShow;
 
     private Pane mask;
 
@@ -235,7 +238,8 @@ public class HepTodoController extends BaseController implements Initializable {
     void selectAll(ActionEvent event) throws Exception {
         OutputUtils.selected(all, true);
         OutputUtils.selected(only, false);
-        OutputUtils.selected(devComplete, false);
+        OutputUtils.selected(devCompleteHide, false);
+        OutputUtils.selected(devCompleteShow, false);
         if (event != null) {
             executeQuery(null);
         }
@@ -245,15 +249,28 @@ public class HepTodoController extends BaseController implements Initializable {
     void selectOnly(ActionEvent event) throws Exception {
         OutputUtils.selected(only, true);
         OutputUtils.selected(all, false);
-        OutputUtils.selected(devComplete, false);
+        OutputUtils.selected(devCompleteHide, false);
+        OutputUtils.selected(devCompleteShow, false);
         if (event != null) {
             executeQuery(null);
         }
     }
 
     @FXML
-    void selectDevComplete(ActionEvent event) throws Exception {
-        OutputUtils.selected(devComplete, true);
+    void selectDevCompleteHide(ActionEvent event) throws Exception {
+        OutputUtils.selected(devCompleteHide, true);
+        OutputUtils.selected(devCompleteShow, false);
+        OutputUtils.selected(only, false);
+        OutputUtils.selected(all, false);
+        if (event != null) {
+            executeQuery(null);
+        }
+    }
+
+    @FXML
+    void selectDevCompleteShow(ActionEvent event) throws Exception {
+        OutputUtils.selected(devCompleteShow, true);
+        OutputUtils.selected(devCompleteHide, false);
         OutputUtils.selected(only, false);
         OutputUtils.selected(all, false);
         if (event != null) {
@@ -327,8 +344,8 @@ public class HepTodoController extends BaseController implements Initializable {
         updateVersion.setDisable(true);
         try {
             JvmCache.getSystemToolController().executeUpdateVersion();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("同步成功"));
-            CommonUtils.showTipsByInfo("同步成功，请查看版本信息");
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("版本同步成功"));
+            CommonUtils.showTipsByInfo("版本同步成功");
             executeQuery(null);
         } catch (Exception e) {
             String msg = e.getMessage();
@@ -477,6 +494,7 @@ public class HepTodoController extends BaseController implements Initializable {
         try {
             JvmCache.getSystemToolController().executeSyncTaskInfo();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("同步客户名称成功"));
+            CommonUtils.showTipsByInfo("同步客户名称成功");
             executeQuery(null);
         } catch (Exception e) {
             String msg = e.getMessage();
@@ -807,8 +825,13 @@ public class HepTodoController extends BaseController implements Initializable {
                     continue;
                 }
                 existTask.add(taskName);
-            } else if (devComplete.isSelected()) {
+            } else if (devCompleteHide.isSelected()) {
                 if (taskName.contains(DEFAULT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            } else if (devCompleteShow.isSelected()) {
+                if (!taskName.contains(DEFAULT_TAG)) {
                     iterator.remove();
                     continue;
                 }
@@ -1325,11 +1348,17 @@ public class HepTodoController extends BaseController implements Initializable {
     private List<HepTaskDto> sortTask(List<HepTaskDto> task) {
         List<HepTaskDto> res = new ArrayList<>();
         Set<String> existkey = new HashSet<>();
+        boolean completeShow = devCompleteShow.isSelected();
         task.sort(new Comparator<HepTaskDto>() {
             @Override
             public int compare(HepTaskDto o1, HepTaskDto o2) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
+                    if (completeShow) {
+                        String customer1 = getSortCustomerName(o1.getCustomer());
+                        String customer2 = getSortCustomerName(o2.getCustomer());
+                        return customer1.compareTo(customer2);
+                    }
                     int orderNo1 = Integer.valueOf(o1.getOrderNo() == null ? STR_0 : o1.getOrderNo());
                     int orderNo2 = Integer.valueOf(o2.getOrderNo() == null ? STR_0 : o2.getOrderNo());
                     if (orderNo1 != orderNo2) {
@@ -1401,6 +1430,10 @@ public class HepTodoController extends BaseController implements Initializable {
         return res;
     }
 
+    private String getSortCustomerName(String customerName) {
+        return NAME_J_S_J_J.equals(customerName) ? NAME_A_D_B_L : customerName;
+    }
+
     private String getValue(String value, String type) {
         if (StringUtils.isBlank(value)) {
             if (StringUtils.isBlank(type) || STR_1.equals(type)) {
@@ -1429,7 +1462,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 only.setSelected(true);
             } else {
                 JvmCache.setHepTodoController(this);
-                devComplete.setSelected(true);
+                devCompleteHide.setSelected(true);
             }
             addTaskMenu(appConfigDto);
             executeQuery(null);

@@ -871,7 +871,8 @@ public class CommonUtils {
     public static void showTipsByInfo(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("提示");
-        alert.setHeaderText(String.format(". . . . . . %s . . . . . .", msg));
+        alert.setHeaderText(String.format("%s", msg));
+        alert.setContentText("弹窗将自动关闭");
         Service<Void> service = getCloseInfoService();
         service.setOnSucceeded(e -> alert.hide());
         service.start();
