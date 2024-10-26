@@ -141,7 +141,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         StringBuilder info = new StringBuilder();
         info.append("[需求编号]").append(STR_SPACE).append(STR_NEXT_LINE);
         info.append("[修改单编号]").append(STR_SPACE).append(item.getTaskNumber()).append(STR_NEXT_LINE);
-        info.append("[修改单版本]").append(STR_SPACE).append(item.getSprintVersion()).append(STR_NEXT_LINE);
+        info.append("[修改单版本]").append(STR_SPACE).append(CommonUtils.getComplexVer(item.getSprintVersion())).append(STR_NEXT_LINE);
         info.append("[需求引入行]").append(STR_SPACE);
         if (hasDescribe) {
             String name = item.getName();

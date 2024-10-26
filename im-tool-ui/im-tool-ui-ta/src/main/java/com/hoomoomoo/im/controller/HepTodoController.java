@@ -213,6 +213,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label waitHandleTaskNum;
 
     @FXML
+    private Label waitMergerNum;
+
+    @FXML
     private RadioButton all;
 
     @FXML
@@ -673,6 +676,7 @@ public class HepTodoController extends BaseController implements Initializable {
     @SneakyThrows
     public void dealTaskList(JSONArray task, List<String> logsIn, Label dayTodoIn, Label weekTodoIn, Label waitHandleTaskNumIn, Label dayPublishIn, Label weekPublishIn,
                              Label dayCloseIn, Label weekCloseIn, TableView taskListIn, boolean tagFlag) {
+        HepTodoController hepTodoController = JvmCache.getHepTodoController();
         Set<String> dayTodoTask = new HashSet<>();
         Set<String> weekTodoTask = new HashSet<>();
         Set<String> finishDateError = new HashSet<>();
@@ -761,6 +765,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         int dayVersionNum = 0;
         int weekVersionNum = 0;
+        int mergerNum = 0;
         Set<String> skipVersion = new HashSet<>();
         if (StringUtils.isNotBlank(appConfigDto.getHepTaskErrorFinishDateSkipVersion())) {
             skipVersion.addAll(Arrays.asList(appConfigDto.getHepTaskErrorFinishDateSkipVersion().split(STR_COMMA)));
@@ -772,6 +777,9 @@ public class HepTodoController extends BaseController implements Initializable {
             HepTaskDto item = iterator.next();
             String taskName = item.getName().replaceAll(STR_NEXT_LINE, STR_BLANK);
             item.setName(taskName);
+            if (taskName.contains(DEFAULT_TAG)) {
+                mergerNum++;
+            }
             if (only.isSelected()) {
                 if (existTask.contains(taskName)) {
                     iterator.remove();
@@ -865,6 +873,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.setEstimateFinishDate(STR_BLANK);
                 }
             }
+            item.setSprintVersion(formatVersion(item.getSprintVersion()));
         }
         res = sortTask(res);
 
@@ -875,19 +884,22 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.info(weekTodoIn, String.valueOf(weekVersionNum));
 
         OutputUtils.clearLog(dayPublishIn);
-        OutputUtils.info(dayPublishIn, dayVersion.toString());
+        OutputUtils.info(dayPublishIn, formatVersion(dayVersion.toString()));
 
         OutputUtils.clearLog(weekPublishIn);
-        OutputUtils.info(weekPublishIn, weekVersion.toString());
+        OutputUtils.info(weekPublishIn, formatVersion(weekVersion.toString()));
 
         OutputUtils.clearLog(dayCloseIn);
-        OutputUtils.info(dayCloseIn, dayCloseVersion.toString());
+        OutputUtils.info(dayCloseIn, formatVersion(dayCloseVersion.toString()));
 
         OutputUtils.clearLog(weekCloseIn);
-        OutputUtils.info(weekCloseIn, weekCloseVersion.toString());
+        OutputUtils.info(weekCloseIn, formatVersion(weekCloseVersion.toString()));
 
         OutputUtils.clearLog(waitHandleTaskNumIn);
         OutputUtils.info(waitHandleTaskNumIn, String.valueOf(res.size() - taskTotal));
+
+        OutputUtils.clearLog(hepTodoController.waitMergerNum);
+        OutputUtils.info(hepTodoController.waitMergerNum, String.valueOf(mergerNum));
 
         if (dayVersionNum > 0) {
             dayTodo.setStyle(color.get("今日待提交"));
@@ -905,6 +917,10 @@ public class HepTodoController extends BaseController implements Initializable {
         taskListIn.setDisable(false);
     }
 
+    private String formatVersion(String ver) {
+        return CommonUtils.getSimpleVer(ver);
+    }
+
     private void initVersion(Set<String> currentTaskVersion, String sprintVersionQ) {
         List<String> taskVersion = new ArrayList<>(currentTaskVersion);
         Collections.sort(taskVersion, new Comparator<String>() {
@@ -920,7 +936,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (CollectionUtils.isNotEmpty(taskVersion)) {
             Iterator<String> ver = taskVersion.iterator();
             while (ver.hasNext()) {
-                version.add(ver.next());
+                version.add(formatVersion(ver.next()));
             }
         }
         version.add(STR_SPACE);
@@ -1440,7 +1456,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private boolean isExtendUser() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        initUserInfo(appConfigDto);
+        // initUserInfo(appConfigDto);
         return !CURRENT_USER_ID.equals(appConfigDto.getHepTaskUser());
     }
 
@@ -1614,7 +1630,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.put("sprint_version", "TA6.0-FUND.V202304.10.000");
                     break;
                 case 1:
-                    item.put("sprint_version", "TA6.0-FUND.V202304.00.009");
+                    item.put("sprint_version", "TA6.0-FUND.V202304.00.009M12");
                     break;
                 case 2:
                     item.put("sprint_version", "TA6.0-FUND.V202304.00.002M9");

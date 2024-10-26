@@ -198,7 +198,14 @@ public class SystemToolController implements Initializable {
 
     @FXML
     void showExplain(ActionEvent event) {
-
+        OutputUtils.clearLog(logs);
+        OutputUtils.info(logs, "public static final String HUNDSUN_VERSION = @system 理财登记过户平台 @version 6.0.0.1 @lastModiDate "+ CommonUtils.getCurrentDateTime3() +" @describe humm23693;");
+        OutputUtils.info(logs, STR_NEXT_LINE_2);
+        StringBuilder serialVersion = new StringBuilder();
+        for (int i=0; i<=18; i++) {
+            serialVersion.append((int) (Math.random() * 9));
+        }
+        OutputUtils.info(logs, "private static final long  serialVersionUID = " + serialVersion.toString() + "L;");
     }
 
     private String formatDate(String date) {

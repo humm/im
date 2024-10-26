@@ -859,7 +859,7 @@ public class CommonUtils {
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    Thread.sleep(1000);
+                    Thread.sleep(500);
                     return null;
                 }
             };
@@ -903,5 +903,18 @@ public class CommonUtils {
             }
         }
         return -1;
+    }
+
+    public static String getSimpleVer(String ver) {
+        return ver.replaceAll("TA6.0V", STR_BLANK).replaceAll("TA6.0-FUND.V", STR_BLANK);
+    }
+
+    public static String getComplexVer(String ver) {
+        if (ver.startsWith("2022")) {
+            ver = "TA6.0V" + ver;
+        } else {
+            ver ="TA6.0-FUND.V" + ver;
+        }
+        return ver;
     }
 }

@@ -164,6 +164,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
     }
 
     private String getVersion(AppConfigDto appConfigDto, String ver) {
+       ver = CommonUtils.getComplexVer(ver);
         String resVer;
         boolean isTrunk = true;
         if (ver.contains(KEY_FUND)) {

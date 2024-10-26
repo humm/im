@@ -34,14 +34,16 @@
                         <Label fx:id="dayPublish" layoutX="100.0" layoutY="80.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                         <Label layoutX="20.0" layoutY="105.0" style="-fx-font-weight: bold;" text="今日待提交："/>
-                        <Label fx:id="dayTodo" layoutX="110.0" layoutY="105.0"/>
-                        <Label layoutX="220.0" layoutY="105.0" style="-fx-font-weight: bold;" text="本周待提交："/>
-                        <Label fx:id="weekTodo" layoutX="310.0" layoutY="105.0"/>
-                        <Label layoutX="420.0" layoutY="105.0" style="-fx-font-weight: bold;" text="待提交："/>
-                        <Label fx:id="waitHandleTaskNum" layoutX="480.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="dayTodo" layoutX="105.0" layoutY="105.0"/>
+                        <Label layoutX="150.0" layoutY="105.0" style="-fx-font-weight: bold;" text="本周待提交："/>
+                        <Label fx:id="weekTodo" layoutX="235.0" layoutY="105.0"/>
+                        <Label layoutX="280.0" layoutY="105.0" style="-fx-font-weight: bold;" text="待提交："/>
+                        <Label fx:id="waitHandleTaskNum" layoutX="335.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
+                        <Label layoutX="410.0" layoutY="105.0" style="-fx-font-weight: bold;" text="待合并："/>
+                        <Label fx:id="waitMergerNum" layoutX="465.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
 
-                        <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="102.0" progress="0.0"/>
-                        <Label fx:id="scheduleText" layoutX="635" layoutY="105.0" text="0%"/>
+                        <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="99.0" progress="0.0"/>
+                        <Label fx:id="scheduleText" layoutX="635" layoutY="102.0" text="0%"/>
 
                         <RadioButton fx:id="all" layoutX="800.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectAll" text="全部"/>
                         <RadioButton fx:id="only" layoutX="870.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectOnly" text="去重"/>
@@ -113,7 +115,7 @@
                                                         <PropertyValueFactory property="taskNumber"/>
                                                     </cellValueFactory>
                                                 </TableColumn>-->
-                                                <TableColumn id="name" editable="false" prefWidth="680" sortable="false"
+                                                <TableColumn id="name" editable="false" prefWidth="675" sortable="false"
                                                              text="名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>
@@ -125,7 +127,7 @@
                                                         <PropertyValueFactory property="statusName"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="sprintVersion" editable="false" prefWidth="250"
+                                                <TableColumn id="sprintVersion" editable="false" prefWidth="150"
                                                              sortable="false" text="版本">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="sprintVersion"/>
@@ -155,7 +157,7 @@
                                                         <PropertyValueFactory property="customer"/>
                                                     </cellValueFactory>
                                                 </TableColumn>-->
-                                                <TableColumn id="estimateFinishDate" editable="false" prefWidth="120"
+                                                <TableColumn id="estimateFinishDate" editable="false" prefWidth="115"
                                                              sortable="false" style="-fx-alignment: center;"
                                                              text="完成日期">
                                                     <cellValueFactory>
@@ -169,14 +171,14 @@
                                                         <PropertyValueFactory property="estimateFinishTime"/>
                                                     </cellValueFactory>
                                                 </TableColumn>-->
-                                                <TableColumn id="oriCloseDate" editable="false" prefWidth="120"
+                                                <TableColumn id="oriCloseDate" editable="false" prefWidth="115"
                                                              sortable="false" style="-fx-alignment: center;"
                                                              text="封版日期">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="oriCloseDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="oriPublishDate" editable="false" prefWidth="120"
+                                                <TableColumn id="oriPublishDate" editable="false" prefWidth="115"
                                                              sortable="false" style="-fx-alignment: center;"
                                                              text="发版日期">
                                                     <cellValueFactory>
