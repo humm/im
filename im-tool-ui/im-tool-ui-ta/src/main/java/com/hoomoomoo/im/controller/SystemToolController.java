@@ -23,6 +23,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -298,12 +300,18 @@ public class SystemToolController implements Initializable {
                     }
                 }
                 fileInputStream = getSyncFile(null, filePath, 0);
-                XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
-                XSSFSheet sheet = workbook.getSheetAt(0);
+                Sheet sheet;
+                if ("version".equals(excelType)) {
+                    HSSFWorkbook workbook = new HSSFWorkbook(fileInputStream);
+                    sheet = workbook.getSheetAt(0);
+                } else {
+                    XSSFWorkbook workbook = new XSSFWorkbook(fileInputStream);
+                    sheet = workbook.getSheetAt(0);
+                }
                 int rows = sheet.getLastRowNum();
                 for (int i = 1; i <= rows; i++) {
                     StringBuilder item = new StringBuilder();
-                    XSSFRow row = sheet.getRow(i);
+                    Row row = sheet.getRow(i);
                     if (row == null) {
                         continue;
                     }
@@ -329,8 +337,11 @@ public class SystemToolController implements Initializable {
                             continue;
                         }
                         String customerName = row.getCell(1).toString().split("（")[0];
+                        if (StringUtils.isNotBlank(customerName)) {
+                            customerName = customerName.replaceAll(NAME_INNER_CUSTOMER, STR_BLANK).replaceAll(STR_COMMA, STR_BLANK);
+                        }
                         if (StringUtils.isBlank(customerName)) {
-                            customerName = "内部客户";
+                            customerName = NAME_INNER_CUSTOMER;
                         }
                         item.append(taskNumber).append(STR_SEMICOLON).append(customerName);
                         list.add(item.toString());

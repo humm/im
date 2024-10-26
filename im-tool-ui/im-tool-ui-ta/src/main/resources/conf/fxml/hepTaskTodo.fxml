@@ -49,17 +49,22 @@
                         <RadioButton fx:id="only" layoutX="870.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectOnly" text="去重"/>
                         <RadioButton fx:id="devComplete" layoutX="940.0" layoutY="102.0" mnemonicParsing="false" onAction="#selectDevComplete" text="隐藏已提交"/>
 
+                        <Button fx:id="query" layoutX="1100.0" layoutY="95.0" mnemonicParsing="false"
+                                onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
 
-
-                        <Button fx:id="syncTask" layoutX="1100.0" layoutY="95.0" mnemonicParsing="false"
+                        <Button fx:id="syncTask" layoutX="1480.0" layoutY="100.0" mnemonicParsing="false"
                                 onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步客户名称">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="query" layoutX="1250.0" layoutY="95.0" mnemonicParsing="false"
-                                onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
+                        <Button fx:id="extendUser" layoutX="1590.0" layoutY="100.0" mnemonicParsing="false"
+                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="115.0" text="关联用户任务">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
@@ -96,13 +101,6 @@
                             </padding>
                         </Button>
 
-                        <Button fx:id="extendUser" layoutX="1590.0" layoutY="100.0" mnemonicParsing="false"
-                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="115.0" text="关联用户任务">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-
                     </children>
                 </AnchorPane>
                 <AnchorPane fx:id="hep" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
@@ -124,10 +122,16 @@
                                                         <PropertyValueFactory property="taskNumber"/>
                                                     </cellValueFactory>
                                                 </TableColumn>-->
-                                                <TableColumn id="name" editable="false" prefWidth="675" sortable="false"
+                                                <TableColumn id="name" editable="false" prefWidth="570" sortable="false"
                                                              text="名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="customer" editable="false" prefWidth="105"
+                                                             sortable="false" text="客户名称">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="customer"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
                                                 <TableColumn id="statusName" editable="false" prefWidth="70"
@@ -179,12 +183,6 @@
                                                              text="发版日期">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="oriPublishDate"/>
-                                                    </cellValueFactory>
-                                                </TableColumn>
-                                                <TableColumn id="customer" editable="false" prefWidth="150"
-                                                             sortable="false" text="客户名称">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="customer"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
                                                 <!--<TableColumn id="productName" editable="false" prefWidth="290"

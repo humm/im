@@ -859,7 +859,7 @@ public class CommonUtils {
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    Thread.sleep(500);
+                    Thread.sleep(1000);
                     return null;
                 }
             };
@@ -882,9 +882,9 @@ public class CommonUtils {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("提示");
         alert.setHeaderText(String.format(". . . . . . %s . . . . . .", msg));
-        Service<Void> service = getCloseInfoService();
+        /*Service<Void> service = getCloseInfoService();
         service.setOnSucceeded(e -> alert.hide());
-        service.start();
+        service.start();*/
         alert.show();
     }
 

@@ -196,6 +196,7 @@ public class BaseConst {
     public static final String NAME_ERROR_INFO = "错误信息";
     public static final String NAME_SCRIPT_DETAIL = "脚本详情";
     public static final String NAME_SYSTEM_LOG = "系统日志";
+    public static final String NAME_INNER_CUSTOMER = "内部客户";
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
     public static final String NAME_UPDATE_VERSION = "同步发版时间";
