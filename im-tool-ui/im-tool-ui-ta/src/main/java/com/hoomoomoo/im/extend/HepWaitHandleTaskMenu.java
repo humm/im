@@ -17,6 +17,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -139,7 +140,11 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
 
     private String getCopyContent(HepTaskDto item, boolean hasDescribe) {
         StringBuilder info = new StringBuilder();
-        info.append("[需求编号]").append(STR_SPACE).append(STR_NEXT_LINE);
+        String taskDemandNo = item.getDemandNo();
+        if (StringUtils.isBlank(taskDemandNo)) {
+            taskDemandNo = STR_SPACE;
+        }
+        info.append("[需求编号]").append(STR_SPACE).append(taskDemandNo).append(STR_NEXT_LINE);
         info.append("[修改单编号]").append(STR_SPACE).append(item.getTaskNumber()).append(STR_NEXT_LINE);
         info.append("[修改单版本]").append(STR_SPACE).append(CommonUtils.getComplexVer(item.getSprintVersion())).append(STR_NEXT_LINE);
         info.append("[需求引入行]").append(STR_SPACE);

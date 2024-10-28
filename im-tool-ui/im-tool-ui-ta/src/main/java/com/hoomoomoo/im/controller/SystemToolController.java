@@ -269,7 +269,7 @@ public class SystemToolController implements Initializable {
 
     public void executeSyncTaskInfo() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        syncExcel(appConfigDto.getHepTaskCustomerPath(),"hep.task.customer.path", "任务列表", PATH_TASK_STAT, "同步客户名称", "task");
+        syncExcel(appConfigDto.getHepTaskCustomerPath(),"hep.task.customer.path", "任务列表", PATH_TASK_STAT, "同步任务信息", "task");
     }
 
     private void syncExcel(String filePath, String configParam, String sheetName, String statFile, String logName, String excelType) throws Exception {
@@ -347,7 +347,11 @@ public class SystemToolController implements Initializable {
                         if (StringUtils.isBlank(customerName)) {
                             customerName = NAME_INNER_CUSTOMER;
                         }
-                        item.append(taskNumber).append(STR_SEMICOLON).append(customerName);
+                        String demandNo = row.getCell(2).toString();
+                        if (StringUtils.isBlank(demandNo)) {
+                            demandNo = STR_SPACE;
+                        }
+                        item.append(taskNumber).append(STR_SEMICOLON).append(customerName).append(STR_SEMICOLON).append(demandNo);
                         list.add(item.toString());
                     }
                 }

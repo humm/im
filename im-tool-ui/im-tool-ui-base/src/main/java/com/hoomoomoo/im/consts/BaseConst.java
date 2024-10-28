@@ -148,6 +148,7 @@ public class BaseConst {
     public final static String KEY_TRANS_EXT = "transExt";
     public final static String KEY_UPDATE_MENU = "updateMenu";
     public final static String KEY_SCHEDULE = "schedule";
+    public final static String KEY_TASK = "task";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 

@@ -42,6 +42,8 @@
                         <Label layoutX="410.0" layoutY="105.0" style="-fx-font-weight: bold;" text="待合并："/>
                         <Label fx:id="waitMergerNum" layoutX="465.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
 
+                        <Label fx:id="taskTips" layoutX="20.0" layoutY="130.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+
                         <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="99.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="635" layoutY="102.0" text="0%"/>
 
@@ -58,7 +60,7 @@
                         </Button>
 
                         <Button fx:id="syncTask" layoutX="1480.0" layoutY="100.0" mnemonicParsing="false"
-                                onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步客户名称">
+                                onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务信息">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>

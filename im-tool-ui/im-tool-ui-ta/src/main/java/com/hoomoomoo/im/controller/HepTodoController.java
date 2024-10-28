@@ -219,6 +219,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label waitMergerNum;
 
     @FXML
+    private Label taskTips;
+
+    @FXML
     private RadioButton all;
 
     @FXML
@@ -493,8 +496,8 @@ public class HepTodoController extends BaseController implements Initializable {
         syncTask.setDisable(true);
         try {
             JvmCache.getSystemToolController().executeSyncTaskInfo();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("同步客户名称成功"));
-            CommonUtils.showTipsByInfo("同步客户名称成功");
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("同步任务信息成功"));
+            CommonUtils.showTipsByInfo("同步任务信息成功");
             executeQuery(null);
         } catch (Exception e) {
             String msg = e.getMessage();
@@ -750,13 +753,16 @@ public class HepTodoController extends BaseController implements Initializable {
         String lastDayByWeek = CommonUtils.getLastDayByWeek();
         String weekDay = CommonUtils.getLastDayByWeek2();
         Map<String, String> taskCustomerName = new HashMap<>();
+        Map<String, String> taskDemandNo = new HashMap<>();
+        boolean waitTaskSync = false;
         try {
             List<String> versionList = new ArrayList<>();
             Map<String, String[]> versionExtend = new HashMap<>();
             if (proScene()) {
                 versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
                 versionExtend = getVersionExtendInfo();
-                taskCustomerName = getTaskInfo();
+                taskCustomerName = getTaskInfo().get(KEY_CUSTOMER);
+                taskDemandNo = getTaskInfo().get(KEY_TASK);
             }
             for (String item : versionList) {
                 String[] elements = item.split(STR_SEMICOLON);
@@ -921,6 +927,11 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setSprintVersion(formatVersion(item.getSprintVersion()));
             if (taskCustomerName.containsKey(taskNumber)) {
                 item.setCustomer(taskCustomerName.get(taskNumber));
+            } else {
+                waitTaskSync = true;
+            }
+            if (taskDemandNo.containsKey(taskNumber)) {
+                item.setDemandNo(taskDemandNo.get(taskNumber));
             }
         }
         res = sortTask(res);
@@ -948,6 +959,11 @@ public class HepTodoController extends BaseController implements Initializable {
 
         OutputUtils.clearLog(hepTodoController.waitMergerNum);
         OutputUtils.info(hepTodoController.waitMergerNum, String.valueOf(mergerNum));
+
+        OutputUtils.clearLog(hepTodoController.taskTips);
+        if (waitTaskSync) {
+            OutputUtils.info(hepTodoController.taskTips, "请同步任务信息");
+        }
 
         if (dayVersionNum > 0) {
             dayTodo.setStyle(color.get("今日待提交"));
@@ -1623,19 +1639,24 @@ public class HepTodoController extends BaseController implements Initializable {
         return version;
     }
 
-    private static Map<String, String> getTaskInfo() {
-        Map<String, String> task = new HashMap<>();
+    private static Map<String, Map<String, String>> getTaskInfo() {
+        Map<String, Map<String, String>> task = new HashMap<>();
+        Map<String, String> customerName = new HashMap<>();
+        Map<String, String> demandNo = new HashMap<>();
         try {
             List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_STAT), false);
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
-                    task.put(elementList[0], elementList[1]);
+                    customerName.put(elementList[0], elementList[1]);
+                    demandNo.put(elementList[0], elementList[2]);
                 }
             }
         } catch (IOException e) {
             LoggerUtils.info(e);
         }
+        task.put(KEY_CUSTOMER, customerName);
+        task.put(KEY_TASK, demandNo);
         return task;
     }
 
