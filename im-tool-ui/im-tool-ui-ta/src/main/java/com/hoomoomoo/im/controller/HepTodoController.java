@@ -1475,6 +1475,7 @@ public class HepTodoController extends BaseController implements Initializable {
             initUserInfo(appConfigDto);
             if (isExtendUser()) {
                 extendUser.setVisible(false);
+                syncTask.setVisible(false);
                 only.setSelected(true);
             } else {
                 JvmCache.setHepTodoController(this);

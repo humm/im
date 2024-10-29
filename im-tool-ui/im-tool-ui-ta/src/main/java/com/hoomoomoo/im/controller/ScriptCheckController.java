@@ -516,6 +516,29 @@ public class ScriptCheckController implements Initializable {
         }
     }
 
+    @FXML
+    void updateChangeMenu(ActionEvent event) {
+        try {
+            TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, KEY_UPDATE_CHANGE_MENU)));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
+        }
+    }
+
+    public void doUpdateChangeMenu() {
+        try {
+            OutputUtils.info(logs, getCommonMsg(NAME_OLD_TO_NEW_MENU,"执行开始"));
+            new ScriptUpdateSql().generateChangeMenuSql();
+            OutputUtils.info(logs, getCommonMsg(NAME_OLD_TO_NEW_MENU,"执行结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_OLD_TO_NEW_MENU);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_OLD_TO_NEW_MENU, e.getMessage()));
+        }
+    }
+
     public void doUpdateMenu() {
         try {
             // 设置颜色

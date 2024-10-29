@@ -147,6 +147,7 @@ public class BaseConst {
     public final static String KEY_TRANS = "trans";
     public final static String KEY_TRANS_EXT = "transExt";
     public final static String KEY_UPDATE_MENU = "updateMenu";
+    public final static String KEY_UPDATE_CHANGE_MENU = "updateChangeMenu";
     public final static String KEY_SCHEDULE = "schedule";
     public final static String KEY_TASK = "task";
 
@@ -200,6 +201,7 @@ public class BaseConst {
     public static final String NAME_UPDATE_VERSION = "同步发版时间";
     public static final String NAME_CHECK_MENU = "配置脚本检查";
     public static final String NAME_UPDATE_MENU = "新版全量升级";
+    public static final String NAME_OLD_TO_NEW_MENU = "老版切换新版";
     public static final String NAME_REPAIR_LACK_EXT = "修复缺少日志";
     public static final String NAME_REPAIR_ERROR_EXT = "修复错误日志";
     public static final String NAME_REPAIR_WORK_FLOW = "修正复核信息";
@@ -404,7 +406,8 @@ public class BaseConst {
         LACK_LOG(900, "缺少日志", "900.缺少日志.sql", "/conf/extend/skipLog.conf"),
         ERROR_LOG(1000, "错误日志", "1000.错误日志.sql", "/conf/extend/skipErrorLog.conf"),
         ALL_MENU(1100, "所有菜单", "1100.所有菜单.sql", ""),
-        NEW_MENU_UPDATE(9999, "全量新版升级", "9999.全量新版升级.sql", "");
+        NEW_MENU_UPDATE(9999, "全量新版升级", "9999.全量新版升级.sql", ""),
+        UPDATE_CHANGE_MENU(9998, "老版切换新版", "oldChangeToNewUed.sql", "");
 
         private int index;
 

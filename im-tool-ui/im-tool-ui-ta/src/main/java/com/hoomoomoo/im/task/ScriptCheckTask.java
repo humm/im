@@ -39,6 +39,9 @@ public class ScriptCheckTask implements Callable<ScriptCheckTaskParam> {
             case KEY_UPDATE_MENU:
                 scriptCheckTaskParam.getScriptCheckController().doUpdateMenu();
                 break;
+            case KEY_UPDATE_CHANGE_MENU:
+                scriptCheckTaskParam.getScriptCheckController().doUpdateChangeMenu();
+                break;
             case KEY_SCHEDULE:
                 scriptCheckTaskParam.getScriptCheckController().doShowScheduleInfo(scriptCheckTaskParam.getFunctionName(), scriptCheckTaskParam.getMsg(), scriptCheckTaskParam.getStart());
                 break;

@@ -118,6 +118,13 @@
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
+
+                                                 <Label layoutX="20.0" layoutY="80.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="老版切换新版" />
+                                                 <Button layoutX="130.0" layoutY="75" mnemonicParsing="false" onAction="#updateChangeMenu" prefWidth="100.0" text="执行">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
                                              </children>
                                           </AnchorPane>
                                       </items>

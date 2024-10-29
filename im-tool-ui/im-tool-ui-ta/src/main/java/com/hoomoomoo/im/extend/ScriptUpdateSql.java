@@ -41,6 +41,45 @@ public class ScriptUpdateSql {
         FileUtils.writeFile(resultPath + BaseConst.SQL_CHECK_TYPE.NEW_MENU_UPDATE.getFileName(), sql, false);
     }
 
+    public void generateChangeMenuSql() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String resPath = appConfigDto.getSystemToolScriptChangeMenuPath();
+        if (StringUtils.isBlank(resPath)) {
+            throw new Exception("请配置参数【system.tool.script.change.menu.path】\n");
+        }
+        resPath += "\\";
+        String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
+        if (StringUtils.isBlank(basePath)) {
+            throw new Exception("请配置参数【system.tool.check.menu.base.path】\n");
+        }
+        newUedPage = basePath + ScriptSqlUtils.newUedPage;
+        List<String> sqlList = FileUtils.readNormalFile(newUedPage, false);
+        List<String> res = new ArrayList<>();
+        for (String ele : sqlList) {
+            if (ele.startsWith("-- ") && (ele.contains("delete") || ele.contains("insert") || ele.contains("values"))) {
+                ele = ele.replace("-- ", "");
+            }
+            if (ele.startsWith("values (")) {
+                String reserve = ScriptSqlUtils.getMenuReserve(ele);
+                if (StringUtils.isNotBlank(reserve) && !StringUtils.equals(reserve, "0") && !StringUtils.equals(reserve, " ")) {
+                    res.add(ele);
+                    continue;
+                }
+                boolean isMenu = ele.split(",").length > 10;
+                if (!isMenu) {
+                    res.add(ele);
+                    continue;
+                }
+                String menuCode = ScriptSqlUtils.getMenuCode(ele);
+                ele = ele.replace("values (", "select ").replace(");", " from (select count(1) param_exists from tsys_menu t where t.menu_code = '" + menuCode + "') a where a.param_exists = 1;");
+                res.add(ele);
+                continue;
+            }
+            res.add(ele);
+        }
+        FileUtils.writeFile(resPath + BaseConst.SQL_CHECK_TYPE.UPDATE_CHANGE_MENU.getFileName(), res, false);
+    }
+
     public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {
         List<String> sql = new ArrayList<>();
         Set<String> deleteMenuCode = getNeedDeleteMenuCode(config);

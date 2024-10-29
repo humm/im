@@ -440,6 +440,7 @@ public class InitConfigUtils {
         keys.put("system.tool.check.menu.base.path", null);
         keys.put("system.tool.check.menu.result.path", null);
         keys.put("system.tool.check.menu.pub.path", null);
+        keys.put("system.tool.script.change.menu.path", null);
 
     }
 

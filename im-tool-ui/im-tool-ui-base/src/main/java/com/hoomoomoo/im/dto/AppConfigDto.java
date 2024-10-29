@@ -248,6 +248,8 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskPrintParam;
 
+    private String systemToolScriptChangeMenuPath;
+
     public AppConfigDto() {
         this.execute = false;
         this.appLogEnable = false;
