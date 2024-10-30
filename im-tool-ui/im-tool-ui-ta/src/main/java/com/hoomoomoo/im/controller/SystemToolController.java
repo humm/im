@@ -298,6 +298,12 @@ public class SystemToolController implements Initializable {
                     if (CollectionUtils.isNotEmpty(files)) {
                         filePath = files.get(0).getPath();
                     }
+                    File[] fileList = file.listFiles();
+                    for (File ele : fileList) {
+                        if (!filePath.equals(ele.getPath())) {
+                            FileUtils.deleteFile(ele);
+                        }
+                    }
                 }
                 fileInputStream = getSyncFile(null, filePath, 0);
                 Sheet sheet;

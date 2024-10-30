@@ -98,8 +98,8 @@ public class HepTodoController extends BaseController implements Initializable {
         put("缺陷", "-fx-text-background-color: #ff00a6;");
         put("自测问题", "-fx-text-background-color: #804000;");
         put("自建任务", "-fx-text-background-color: #008071;");
-        put("已修改", "-fx-text-background-color: #7b00ff;");
-        put("已提交", "-fx-text-background-color: #b700ff;");
+        put("已修改", "-fx-text-background-color: #000000;");
+        put("已提交", "-fx-text-background-color: #000000;");
         put("默认", "-fx-text-background-color: #000000;");
     }};
 
@@ -724,6 +724,7 @@ public class HepTodoController extends BaseController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
+        res = sortTask(res, true);
         filterTask(res);
         if (tagFlag) {
             initTag(res);
@@ -934,7 +935,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 item.setDemandNo(taskDemandNo.get(taskNumber));
             }
         }
-        res = sortTask(res);
+        res = sortTask(res, false);
 
         OutputUtils.clearLog(dayTodoIn);
         OutputUtils.info(dayTodoIn, String.valueOf(dayVersionNum));
@@ -1179,8 +1180,7 @@ public class HepTodoController extends BaseController implements Initializable {
                         tags.put(taskNameTmp, taskNameTmp);
                     }
                 }
-            }
-            if (taskName.contains(STR_BRACKETS_2_RIGHT)) {
+            } else if (taskName.contains(STR_BRACKETS_2_RIGHT)) {
                 taskName = taskName.substring(1, taskName.indexOf(STR_BRACKETS_2_RIGHT));
                 if (!tags.containsKey(taskName)) {
                     tags.put(taskName, taskName);
@@ -1361,7 +1361,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    private List<HepTaskDto> sortTask(List<HepTaskDto> task) {
+    private List<HepTaskDto> sortTask(List<HepTaskDto> task, boolean prevOrder) {
         List<HepTaskDto> res = new ArrayList<>();
         Set<String> existkey = new HashSet<>();
         boolean completeShow = devCompleteShow.isSelected();
@@ -1370,6 +1370,11 @@ public class HepTodoController extends BaseController implements Initializable {
             public int compare(HepTaskDto o1, HepTaskDto o2) {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
+                    if (prevOrder) {
+                        String finishTime1 = getValue(o1.getEstimateFinishTime(), STR_BLANK);
+                        String finishTime2 =getValue(o2.getEstimateFinishTime(), STR_BLANK);
+                        return finishTime1.compareTo(finishTime2);
+                    }
                     if (completeShow) {
                         String customer1 = getSortCustomerName(o1.getCustomer());
                         String customer2 = getSortCustomerName(o2.getCustomer());
@@ -1447,6 +1452,9 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private String getSortCustomerName(String customerName) {
+        if (StringUtils.isBlank(customerName)) {
+            customerName = STR_BLANK;
+        }
         return NAME_J_S_J_J.equals(customerName) ? NAME_A_D_B_L : customerName;
     }
 
