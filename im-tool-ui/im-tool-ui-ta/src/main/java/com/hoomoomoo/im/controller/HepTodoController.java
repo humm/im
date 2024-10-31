@@ -755,6 +755,7 @@ public class HepTodoController extends BaseController implements Initializable {
         String weekDay = CommonUtils.getLastDayByWeek2();
         Map<String, String> taskCustomerName = new HashMap<>();
         Map<String, String> taskDemandNo = new HashMap<>();
+        Map<String, String> taskDemandStatus = new HashMap<>();
         boolean waitTaskSync = false;
         try {
             List<String> versionList = new ArrayList<>();
@@ -762,8 +763,10 @@ public class HepTodoController extends BaseController implements Initializable {
             if (proScene()) {
                 versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
                 versionExtend = getVersionExtendInfo();
-                taskCustomerName = getTaskInfo().get(KEY_CUSTOMER);
-                taskDemandNo = getTaskInfo().get(KEY_TASK);
+                Map<String, Map<String, String>> taskInfo = getTaskInfo();
+                taskCustomerName = taskInfo.get(KEY_CUSTOMER);
+                taskDemandNo = taskInfo.get(KEY_TASK);
+                taskDemandStatus = getDemandInfo();
             }
             for (String item : versionList) {
                 String[] elements = item.split(STR_SEMICOLON);
@@ -823,26 +826,6 @@ public class HepTodoController extends BaseController implements Initializable {
             HepTaskDto item = iterator.next();
             String taskName = item.getName().replaceAll(STR_NEXT_LINE, STR_BLANK);
             item.setName(taskName);
-            if (taskName.contains(DEFAULT_TAG)) {
-                mergerNum++;
-            }
-            if (only.isSelected()) {
-                if (existTask.contains(taskName)) {
-                    iterator.remove();
-                    continue;
-                }
-                existTask.add(taskName);
-            } else if (devCompleteHide.isSelected()) {
-                if (taskName.contains(DEFAULT_TAG)) {
-                    iterator.remove();
-                    continue;
-                }
-            } else if (devCompleteShow.isSelected()) {
-                if (!taskName.contains(DEFAULT_TAG)) {
-                    iterator.remove();
-                    continue;
-                }
-            }
 
             String status = item.getStatus();
             if (!isExtendUser()) {
@@ -903,7 +886,9 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             initMinDate(minDate, item);
         }
-        for (HepTaskDto item : res) {
+        iterator = res.listIterator();
+        while (iterator.hasNext()) {
+            HepTaskDto item = iterator.next();
             String taskName = item.getName();
             String taskNumber = item.getTaskNumber();
             if (minDate.containsKey(taskName)) {
@@ -934,7 +919,31 @@ public class HepTodoController extends BaseController implements Initializable {
             if (taskDemandNo.containsKey(taskNumber)) {
                 item.setDemandNo(taskDemandNo.get(taskNumber));
             }
+            if (StringUtils.equals(STR_1, taskDemandStatus.get(item.getDemandNo())) && !item.getName().contains(DEFAULT_TAG)) {
+                item.setName(DEFAULT_TAG + item.getName());
+            }
+            if (taskName.contains(DEFAULT_TAG)) {
+                mergerNum++;
+            }
+            if (only.isSelected()) {
+                if (existTask.contains(taskName)) {
+                    iterator.remove();
+                    continue;
+                }
+                existTask.add(taskName);
+            } else if (devCompleteHide.isSelected()) {
+                if (taskName.contains(DEFAULT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            } else if (devCompleteShow.isSelected()) {
+                if (!taskName.contains(DEFAULT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            }
         }
+
         res = sortTask(res, false);
 
         OutputUtils.clearLog(dayTodoIn);
@@ -1648,7 +1657,7 @@ public class HepTodoController extends BaseController implements Initializable {
         return version;
     }
 
-    private static Map<String, Map<String, String>> getTaskInfo() {
+    public Map<String, Map<String, String>> getTaskInfo() {
         Map<String, Map<String, String>> task = new HashMap<>();
         Map<String, String> customerName = new HashMap<>();
         Map<String, String> demandNo = new HashMap<>();
@@ -1667,6 +1676,22 @@ public class HepTodoController extends BaseController implements Initializable {
         task.put(KEY_CUSTOMER, customerName);
         task.put(KEY_TASK, demandNo);
         return task;
+    }
+
+    public Map<String,String> getDemandInfo() {
+        Map<String, String> demand = new HashMap<>();
+        try {
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEMAND_STAT), false);
+            if (CollectionUtils.isNotEmpty(taskList)) {
+                for (String item : taskList) {
+                    String[] elementList = item.split(STR_SEMICOLON);
+                    demand.put(elementList[0], elementList[1]);
+                }
+            }
+        } catch (IOException e) {
+            LoggerUtils.info(e);
+        }
+        return demand;
     }
 
     private void addTaskMenu(AppConfigDto appConfigDto) throws Exception {

@@ -103,6 +103,11 @@ public class BaseConst {
     public final static String KEY_METHOD = "method";
     public final static String KEY_OPERATE_TYPE = "operate_type";
     public final static String KEY_ID = "id";
+    public final static String KEY_ITEMS = "items";
+    public final static String KEY_NUMBER = "number";
+    public final static String KEY_STATUS = "status";
+    public final static String KEY_CREATE_TIME = "create_time";
+    public final static String KEY_STORY_VERSION_LIST = "story_version_list";
     public final static String KEY_ESTIMATE_FINISH_TIME = "estimate_finish_time";
     public final static String KEY_NAME = "name";
     public final static String KEY_SPRINT_VERSION = "sprint_version";
@@ -336,6 +341,7 @@ public class BaseConst {
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/stats/version.stat";
     public static final String PATH_TASK_STAT = "/stats/task.stat";
+    public static final String PATH_DEMAND_STAT = "/stats/demand.stat";
     public static final String PATH_VERSION_EXTEND_STAT = "/stats/versionExtend.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";

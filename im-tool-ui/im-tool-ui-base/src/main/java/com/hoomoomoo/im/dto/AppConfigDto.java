@@ -250,6 +250,10 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolScriptChangeMenuPath;
 
+    private String hepSyncOnly;
+
+    private String hepTaskSyncPath;
+
     public AppConfigDto() {
         this.execute = false;
         this.appLogEnable = false;

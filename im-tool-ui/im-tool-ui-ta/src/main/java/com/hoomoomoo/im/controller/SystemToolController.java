@@ -272,6 +272,11 @@ public class SystemToolController implements Initializable {
         syncExcel(appConfigDto.getHepTaskCustomerPath(),"hep.task.customer.path", "任务列表", PATH_TASK_STAT, "同步任务信息", "task");
     }
 
+    public void executeSyncTaskInfoBySyncTask() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        syncExcel(appConfigDto.getHepTaskSyncPath(),"hep.task.sync.path", "任务列表", PATH_TASK_STAT, "同步任务信息", "task");
+    }
+
     private void syncExcel(String filePath, String configParam, String sheetName, String statFile, String logName, String excelType) throws Exception {
         List<String> list = new ArrayList<>();
         FileInputStream fileInputStream = null;
@@ -300,7 +305,7 @@ public class SystemToolController implements Initializable {
                     }
                     File[] fileList = file.listFiles();
                     for (File ele : fileList) {
-                        if (!filePath.equals(ele.getPath())) {
+                        if (!filePath.equals(ele.getPath()) && filePath.contains(sheetName)) {
                             FileUtils.deleteFile(ele);
                         }
                     }
@@ -362,7 +367,9 @@ public class SystemToolController implements Initializable {
                     }
                 }
                 String statPath = FileUtils.getFilePath(statFile);
-                FileUtils.writeFile(statPath, list, false);
+                if (CollectionUtils.isNotEmpty(list)) {
+                    FileUtils.writeFile(statPath, list, false);
+                }
                 if (logs != null) {
                     OutputUtils.info(logs, getUpdateVersionMsg("同步成功"));
                     OutputUtils.info(logs, STR_NEXT_LINE);
