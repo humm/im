@@ -716,7 +716,6 @@ public class HepTodoController extends BaseController implements Initializable {
     @SneakyThrows
     public void dealTaskList(JSONArray task, List<String> logsIn, Label dayTodoIn, Label weekTodoIn, Label waitHandleTaskNumIn, Label dayPublishIn, Label weekPublishIn,
                              Label dayCloseIn, Label weekCloseIn, TableView taskListIn, boolean tagFlag) {
-        HepTodoController hepTodoController = JvmCache.getHepTodoController();
         Set<String> dayTodoTask = new HashSet<>();
         Set<String> weekTodoTask = new HashSet<>();
         Set<String> finishDateError = new HashSet<>();
@@ -830,8 +829,8 @@ public class HepTodoController extends BaseController implements Initializable {
             if (taskDemandNo.containsKey(taskNumberIn)) {
                 item.setDemandNo(taskDemandNo.get(taskNumberIn));
             }
-            if (StringUtils.equals(STR_1, taskDemandStatus.get(item.getDemandNo())) && !item.getName().contains(DEFAULT_TAG)) {
-                taskName = DEFAULT_TAG + item.getName();
+            if (StringUtils.equals(STR_1, taskDemandStatus.get(item.getDemandNo())) && !taskName.contains(DEFAULT_TAG)) {
+                taskName = DEFAULT_TAG + taskName;
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
             if (taskName.contains(DEFAULT_TAG)) {
@@ -970,12 +969,12 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.clearLog(waitHandleTaskNumIn);
         OutputUtils.info(waitHandleTaskNumIn, String.valueOf(res.size() - taskTotal));
 
-        OutputUtils.clearLog(hepTodoController.waitMergerNum);
-        OutputUtils.info(hepTodoController.waitMergerNum, String.valueOf(mergerNum));
+        OutputUtils.clearLog(waitMergerNum);
+        OutputUtils.info(waitMergerNum, String.valueOf(mergerNum));
 
-        OutputUtils.clearLog(hepTodoController.taskTips);
+        OutputUtils.clearLog(taskTips);
         if (waitTaskSync) {
-            OutputUtils.info(hepTodoController.taskTips, "请同步任务信息");
+            OutputUtils.info(taskTips, "请同步任务信息");
         }
 
         if (dayVersionNum > 0) {
@@ -1279,16 +1278,16 @@ public class HepTodoController extends BaseController implements Initializable {
             if (taskNameTag.contains("缺陷")) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
                 taskType.put(STR_1, STR_1);
-            } else if (taskNameTag.contains("自测问题")) {
+            } else if (taskNameTag.contains("【自测问题】")) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
                 taskType.put(STR_2, STR_2);
-            } else if (taskNameTag.contains("自建任务")) {
+            } else if (taskNameTag.contains("【自建任务】")) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_3));
                 taskType.put(STR_3, STR_3);
-            } else if (taskName.contains("已提交")) {
+            } else if (taskName.contains("【已提交】")) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
                 taskType.put(STR_4, STR_4);
-            } else if (taskName.contains("已修改")) {
+            } else if (taskName.contains("【已修改】") || taskName.contains(DEFAULT_TAG)) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_5));
                 taskType.put(STR_5, STR_5);
             }
@@ -1297,12 +1296,17 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private static String getTaskNameTag(String taskName) {
+        int start = 0;
+        int end = taskName.length();
         if (taskName.contains(STR_BRACKETS_3_LEFT) && taskName.contains(STR_BRACKETS_3_RIGHT)) {
-            return taskName.substring(taskName.indexOf(STR_BRACKETS_3_LEFT) + 1, taskName.indexOf(STR_BRACKETS_3_RIGHT));
+            start = taskName.indexOf(STR_BRACKETS_3_LEFT);
+            end = taskName.indexOf(STR_BRACKETS_3_RIGHT) + 1;
+            return taskName.substring(taskName.indexOf(STR_BRACKETS_3_LEFT) , taskName.indexOf(STR_BRACKETS_3_RIGHT) + 1);
         } else if (taskName.startsWith(STR_BRACKETS_2_LEFT) && taskName.contains(STR_BRACKETS_2_RIGHT)) {
-            return taskName.substring(1, taskName.indexOf(STR_BRACKETS_2_RIGHT));
+            start = taskName.indexOf(STR_BRACKETS_2_LEFT);
+            end = taskName.indexOf(STR_BRACKETS_2_RIGHT) + 1;
         }
-        return taskName;
+        return taskName.substring(start, end);
     }
 
     private HttpResponse sendPost(Map<String, Object> param) throws Exception {
