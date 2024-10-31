@@ -36,6 +36,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
@@ -325,6 +326,9 @@ public class CommonUtils {
             String appCode = ConfigCache.getAppCodeCache();
             functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
         }
+        if (isSyncOnlyMode()) {
+            functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode()) || item.getFunctionCode().equals(TASK_SYNC.getCode())).collect(Collectors.toList());
+        }
         for (FunctionDto functionDto : functionDtoList) {
             if (functionCode.equals(functionDto.getFunctionCode())) {
                 return true;
@@ -352,6 +356,9 @@ public class CommonUtils {
         List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
         if (isSuperUser()) {
             functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+        }
+        if (isSyncOnlyMode()) {
+            functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode()) || item.getFunctionCode().equals(TASK_SYNC.getCode())).collect(Collectors.toList());
         }
         if (CollectionUtils.isEmpty(functionDtoList)) {
             return;
@@ -450,6 +457,11 @@ public class CommonUtils {
             }
         }
         return false;
+    }
+
+    public static boolean isSyncOnlyMode() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        return StringUtils.equals(STR_1, appConfigDto.getHepSyncOnly());
     }
 
     public static String initialUpper(String str) {
@@ -723,11 +735,12 @@ public class CommonUtils {
     public static void initialize(URL location, ResourceBundle resources, TabPane functionTab, MenuBar menuBar) {
         try {
             AppCache.FUNCTION_TAB_CACHE = functionTab;
-            // 加载已授权功能
-            CommonUtils.showAuthFunction(menuBar, functionTab);
 
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             appConfigDto.setTabPane(functionTab);
+
+            // 加载已授权功能
+            CommonUtils.showAuthFunction(menuBar, functionTab);
 
             String showTab = appConfigDto.getAppTabShow();
             if (StringUtils.isNotBlank(showTab)) {

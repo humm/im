@@ -98,8 +98,8 @@ public class HepTodoController extends BaseController implements Initializable {
         put("缺陷", "-fx-text-background-color: #ff00a6;");
         put("自测问题", "-fx-text-background-color: #804000;");
         put("自建任务", "-fx-text-background-color: #008071;");
-        put("已修改", "-fx-text-background-color: #000000;");
-        put("已提交", "-fx-text-background-color: #000000;");
+        put("已修改", "-fx-text-background-color: #7b00ff;");
+        put("已提交", "-fx-text-background-color: #7b00ff;");
         put("默认", "-fx-text-background-color: #000000;");
     }};
 
@@ -825,8 +825,37 @@ public class HepTodoController extends BaseController implements Initializable {
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String taskName = item.getName().replaceAll(STR_NEXT_LINE, STR_BLANK);
+
+            String taskNumberIn = item.getTaskNumber();
+            if (taskDemandNo.containsKey(taskNumberIn)) {
+                item.setDemandNo(taskDemandNo.get(taskNumberIn));
+            }
+            if (StringUtils.equals(STR_1, taskDemandStatus.get(item.getDemandNo())) && !item.getName().contains(DEFAULT_TAG)) {
+                taskName = DEFAULT_TAG + item.getName();
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
+            }
+            if (taskName.contains(DEFAULT_TAG)) {
+                mergerNum++;
+            }
             item.setName(taskName);
 
+            if (only.isSelected()) {
+                if (existTask.contains(taskName)) {
+                    iterator.remove();
+                    continue;
+                }
+                existTask.add(taskName);
+            } else if (devCompleteHide.isSelected()) {
+                if (taskName.contains(DEFAULT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            } else if (devCompleteShow.isSelected()) {
+                if (!taskName.contains(DEFAULT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            }
             String status = item.getStatus();
             if (!isExtendUser()) {
                 if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
@@ -890,7 +919,7 @@ public class HepTodoController extends BaseController implements Initializable {
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String taskName = item.getName();
-            String taskNumber = item.getTaskNumber();
+            String taskNumberIn = item.getTaskNumber();
             if (minDate.containsKey(taskName)) {
                 int min = minDate.get(taskName);
                 int minCache = minDateCache.get(taskName);
@@ -911,36 +940,10 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
             item.setSprintVersion(formatVersion(item.getSprintVersion()));
-            if (taskCustomerName.containsKey(taskNumber)) {
-                item.setCustomer(taskCustomerName.get(taskNumber));
+            if (taskCustomerName.containsKey(taskNumberIn)) {
+                item.setCustomer(taskCustomerName.get(taskNumberIn));
             } else {
                 waitTaskSync = true;
-            }
-            if (taskDemandNo.containsKey(taskNumber)) {
-                item.setDemandNo(taskDemandNo.get(taskNumber));
-            }
-            if (StringUtils.equals(STR_1, taskDemandStatus.get(item.getDemandNo())) && !item.getName().contains(DEFAULT_TAG)) {
-                item.setName(DEFAULT_TAG + item.getName());
-            }
-            if (taskName.contains(DEFAULT_TAG)) {
-                mergerNum++;
-            }
-            if (only.isSelected()) {
-                if (existTask.contains(taskName)) {
-                    iterator.remove();
-                    continue;
-                }
-                existTask.add(taskName);
-            } else if (devCompleteHide.isSelected()) {
-                if (taskName.contains(DEFAULT_TAG)) {
-                    iterator.remove();
-                    continue;
-                }
-            } else if (devCompleteShow.isSelected()) {
-                if (!taskName.contains(DEFAULT_TAG)) {
-                    iterator.remove();
-                    continue;
-                }
             }
         }
 
@@ -1127,13 +1130,13 @@ public class HepTodoController extends BaseController implements Initializable {
                                 setStyle(color.get("本周待提交"));
                             } else if (taskNameTag.contains("缺陷")) {
                                 setStyle(color.get("缺陷"));
-                            } else if (taskNameTag.contains("自测问题")) {
+                            } else if (taskNameTag.contains("【自测问题】")) {
                                 setStyle(color.get("自测问题"));
-                            } else if (taskNameTag.contains("自建任务")) {
+                            } else if (taskNameTag.contains("【自建任务】")) {
                                 setStyle(color.get("自建任务"));
-                            } else if (taskName.contains("已修改")) {
+                            } else if (taskName.contains("【已修改】") || taskName.contains(DEFAULT_TAG)) {
                                 setStyle(color.get("已修改"));
-                            } else if (taskName.contains("已提交")) {
+                            } else if (taskName.contains("【已提交】")) {
                                 setStyle(color.get("已提交"));
                             } else {
                                 setStyle(color.get("默认"));
@@ -1156,7 +1159,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             // 已修改
                             setStyle("-fx-text-background-color: #7b00ff;");
                             // 已提交
-                            setStyle("-fx-text-background-color: #b700ff;");
+                            setStyle("-fx-text-background-color: #7b00ff;");
                             // 默认
                             setStyle("-fx-text-background-color: #000000;");
                         }
@@ -1681,7 +1684,8 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getDemandInfo() {
         Map<String, String> demand = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEMAND_STAT), false);
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            List<String> taskList = FileUtils.readNormalFile(appConfigDto.getHepTaskSyncPath() + PATH_DEMAND_STAT, false);
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
@@ -1689,6 +1693,8 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
         } catch (IOException e) {
+            LoggerUtils.info(e);
+        } catch (Exception e) {
             LoggerUtils.info(e);
         }
         return demand;

@@ -325,6 +325,7 @@ public class BaseConst {
     public static final String SUB_PATH_LOG = "/logs/%s";
     public static final String PATH_STAT = "/stats/%s";
     public static final String PATH_ICON = "/conf/image/icon.png";
+    public static final String PATH_SYNC_ICON = "/conf/image/syncIcon.png";
     public static final String FACTORY_ICON = "/conf/image/factory.png";
     public static final String COPY_ICON = "/conf/image/copy.png";
     public static final String COPY_SIMPLE_ICON = "/conf/image/copySimple.png";
@@ -341,7 +342,7 @@ public class BaseConst {
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/stats/version.stat";
     public static final String PATH_TASK_STAT = "/stats/task.stat";
-    public static final String PATH_DEMAND_STAT = "/stats/demand.stat";
+    public static final String PATH_DEMAND_STAT = "/demand.stat";
     public static final String PATH_VERSION_EXTEND_STAT = "/stats/versionExtend.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";

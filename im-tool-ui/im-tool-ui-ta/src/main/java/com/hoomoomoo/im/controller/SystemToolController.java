@@ -305,7 +305,7 @@ public class SystemToolController implements Initializable {
                     }
                     File[] fileList = file.listFiles();
                     for (File ele : fileList) {
-                        if (!filePath.equals(ele.getPath()) && filePath.contains(sheetName)) {
+                        if (!filePath.equals(ele.getPath()) && ele.getPath().contains(sheetName)) {
                             FileUtils.deleteFile(ele);
                         }
                     }

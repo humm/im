@@ -42,7 +42,13 @@ public class StarterUtils {
                 FileUtils.addWatermark(new File(sourceIcon), new File(factoryIcon));
                 primaryStage.getIcons().add(new Image(FACTORY_ICON));
             } else {
-                primaryStage.getIcons().add(new Image(PATH_ICON));
+                Image icon;
+                if (CommonUtils.isSyncOnlyMode()) {
+                    icon = new Image(PATH_SYNC_ICON);
+                } else {
+                    icon = new Image(PATH_ICON);
+                }
+                primaryStage.getIcons().add(icon);
             }
             String mac = CommonUtils.getMacAddress();
             appName += String.format(MSG_APP_TITLE, NAME_VERSION, CommonUtils.getVersion());

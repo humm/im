@@ -112,7 +112,8 @@ public class HepTaskSyncController implements Initializable {
             List<String> res = getDemandStatus(demand1);
             res.addAll(getDemandStatus(demand2));
             if (CollectionUtils.isNotEmpty(res)) {
-                String statPath = FileUtils.getFilePath(PATH_DEMAND_STAT);
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                String statPath = appConfigDto.getHepTaskSyncPath() + PATH_DEMAND_STAT;
                 FileUtils.writeFile(statPath, res, false);
                 OutputUtils.infoContainBr(logs, "同步需求成功");
             } else {
