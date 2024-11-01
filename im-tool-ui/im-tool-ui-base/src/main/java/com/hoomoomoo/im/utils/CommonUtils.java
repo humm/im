@@ -759,6 +759,7 @@ public class CommonUtils {
                     setTabStyle(openTab, functionConfig);
                     bindTabEvent(openTab);
                     functionTab.getTabs().add(openTab);
+                    appConfigDto.setActivateFunction(openTab.getText());
                 }
             } else {
                 // 默认打开有权限的第一个功能
@@ -770,13 +771,24 @@ public class CommonUtils {
                     setTabStyle(tab, functionConfig);
                     bindTabEvent(tab);
                     functionTab.getTabs().add(tab);
+                    appConfigDto.setActivateFunction(tab.getText());
                 }
             }
             // 监听获取当前正在打开的功能
             functionTab.getSelectionModel().selectedItemProperty().addListener((obs, oldTab, newTab) -> {
                 if (newTab != null) {
-                    String tab = newTab.getText();
-                    // appConfigDto.setActivateFunction(tab);
+                    String tabName = newTab.getText();
+                    try {
+                        AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
+                        String activatePrevFunction = appConfig.getActivateFunction();
+                        appConfig.setActivatePrevFunction(activatePrevFunction);
+                        appConfig.setActivateFunction(tabName);
+                        LoggerUtils.info("上次激活页签: " + activatePrevFunction);
+                        LoggerUtils.info("当前激活页签: " + tabName);
+                    } catch (Exception e) {
+                        LoggerUtils.info(e);
+                    }
+
                 }
             });
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_INIT, NAME_CONFIG_VIEW));

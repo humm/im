@@ -39,7 +39,6 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
@@ -89,7 +88,12 @@ public class HepTodoController extends BaseController implements Initializable {
 
     public final static String OPERATE_TYPE_CUSTOM_UPDATE = "update";
 
-    public final static String DEFAULT_TAG = "分支已提交";
+    public final static String DEV_COMMIT_TAG = "【分支已提交】";
+    public final static String COMMIT_TAG = "【已提交】";
+    public final static String UPDATE_TAG = "【已修改】";
+    public final static String SELF_BUILD_TAG = "【自建任务】";
+    public final static String SELF_TEST_TAG = "【自测问题】";
+    public final static String DEFECT_TAG = "【缺陷:";
 
     private Map<String, String> color = new LinkedHashMap<String, String>(){{
         put("完成日期错误", "-fx-text-background-color: #ff0073;");
@@ -829,11 +833,11 @@ public class HepTodoController extends BaseController implements Initializable {
             if (taskDemandNo.containsKey(taskNumberIn)) {
                 item.setDemandNo(taskDemandNo.get(taskNumberIn));
             }
-            if (StringUtils.equals(STR_1, taskDemandStatus.get(item.getDemandNo())) && !taskName.contains(DEFAULT_TAG)) {
-                taskName = DEFAULT_TAG + taskName;
+            if (StringUtils.equals(STR_1, taskDemandStatus.get(item.getDemandNo())) && !taskName.contains(DEV_COMMIT_TAG)) {
+                taskName = DEV_COMMIT_TAG + taskName;
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
-            if (taskName.contains(DEFAULT_TAG)) {
+            if (taskName.contains(DEV_COMMIT_TAG)) {
                 mergerNum++;
             }
             item.setName(taskName);
@@ -845,12 +849,12 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 existTask.add(taskName);
             } else if (devCompleteHide.isSelected()) {
-                if (taskName.contains(DEFAULT_TAG)) {
+                if (taskName.contains(DEV_COMMIT_TAG)) {
                     iterator.remove();
                     continue;
                 }
             } else if (devCompleteShow.isSelected()) {
-                if (!taskName.contains(DEFAULT_TAG)) {
+                if (!taskName.contains(DEV_COMMIT_TAG)) {
                     iterator.remove();
                     continue;
                 }
@@ -1127,15 +1131,15 @@ public class HepTodoController extends BaseController implements Initializable {
                                 setStyle(color.get("今日待提交"));
                             } else if (weekTodoTask.contains(taskNumber)) {
                                 setStyle(color.get("本周待提交"));
-                            } else if (taskNameTag.contains("缺陷")) {
+                            } else if (taskNameTag.contains(DEFECT_TAG)) {
                                 setStyle(color.get("缺陷"));
-                            } else if (taskNameTag.contains("【自测问题】")) {
+                            } else if (taskNameTag.contains(SELF_TEST_TAG)) {
                                 setStyle(color.get("自测问题"));
-                            } else if (taskNameTag.contains("【自建任务】")) {
+                            } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
                                 setStyle(color.get("自建任务"));
-                            } else if (taskName.contains("【已修改】") || taskName.contains(DEFAULT_TAG)) {
+                            } else if (taskName.contains(UPDATE_TAG) || taskName.contains(DEV_COMMIT_TAG)) {
                                 setStyle(color.get("已修改"));
-                            } else if (taskName.contains("【已提交】")) {
+                            } else if (taskName.contains(COMMIT_TAG)) {
                                 setStyle(color.get("已提交"));
                             } else {
                                 setStyle(color.get("默认"));
@@ -1178,12 +1182,12 @@ public class HepTodoController extends BaseController implements Initializable {
             String taskName = item.getName();
             if (taskName.contains(STR_BRACKETS_3_RIGHT)) {
                 String taskNameTmp = taskName.substring(taskName.indexOf(STR_BRACKETS_3_LEFT) + 1, taskName.indexOf(STR_BRACKETS_3_RIGHT));
-                if (taskNameTmp.contains(DEFAULT_TAG)) {
-                    if (!tags.containsKey(DEFAULT_TAG)) {
-                        tags.put(DEFAULT_TAG, DEFAULT_TAG);
+                if (taskNameTmp.contains(DEV_COMMIT_TAG)) {
+                    if (!tags.containsKey(DEV_COMMIT_TAG)) {
+                        tags.put(DEV_COMMIT_TAG, DEV_COMMIT_TAG);
                     }
                 }
-                if (taskNameTmp.contains("缺陷") || taskName.startsWith(STR_BRACKETS_3_LEFT)) {
+                if (taskNameTmp.contains(DEFECT_TAG) || taskName.startsWith(STR_BRACKETS_3_LEFT)) {
                     if (taskNameTmp.contains(STR_COLON)) {
                         taskNameTmp = taskNameTmp.split(STR_COLON)[0];
                     }
@@ -1275,19 +1279,19 @@ public class HepTodoController extends BaseController implements Initializable {
                 iterator.remove();
                 continue;
             }
-            if (taskNameTag.contains("缺陷")) {
+            if (taskNameTag.contains(DEFECT_TAG)) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
                 taskType.put(STR_1, STR_1);
-            } else if (taskNameTag.contains("【自测问题】")) {
+            } else if (taskNameTag.contains(SELF_TEST_TAG)) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
                 taskType.put(STR_2, STR_2);
-            } else if (taskNameTag.contains("【自建任务】")) {
+            } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_3));
                 taskType.put(STR_3, STR_3);
-            } else if (taskName.contains("【已提交】")) {
+            } else if (taskName.contains(COMMIT_TAG)) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
                 taskType.put(STR_4, STR_4);
-            } else if (taskName.contains("【已修改】") || taskName.contains(DEFAULT_TAG)) {
+            } else if (taskName.contains(UPDATE_TAG) || taskName.contains(DEV_COMMIT_TAG)) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_5));
                 taskType.put(STR_5, STR_5);
             }

@@ -71,10 +71,18 @@ public class HepTaskSyncController implements Initializable {
             StringBuilder demandNo = new StringBuilder();
             for (String item : task.values()) {
                 if (StringUtils.isNotBlank(item)) {
-                    demandNo.append(item).append(STR_COMMA);
+                    String[] element = item.split(STR_COMMA);
+                    for (String ele : element) {
+                        ele += STR_COMMA;
+                        if (demandNo.indexOf(ele) == -1) {
+                            demandNo.append(ele);
+                        }
+                    }
                 }
             }
-            OutputUtils.infoContainBr(logs, demandNo.substring(0, demandNo.length() - 1));
+            String res = demandNo.substring(0, demandNo.length() - 1);
+            OutputUtils.infoContainBr(logs, res);
+            OutputUtils.infoContainBr(logs, "获取任务信息成功，任务记录" + task.size() + "条，需求记录" + res.split(STR_COMMA).length + "条");
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.infoContainBr(logs, e.getMessage());
@@ -115,7 +123,7 @@ public class HepTaskSyncController implements Initializable {
                 AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 String statPath = appConfigDto.getHepTaskSyncPath() + PATH_DEMAND_STAT;
                 FileUtils.writeFile(statPath, res, false);
-                OutputUtils.infoContainBr(logs, "同步需求成功");
+                OutputUtils.infoContainBr(logs, "同步需求成功，需求记录" + res.size() + "条");
             } else {
                 OutputUtils.infoContainBr(logs, "未获取到需求信息");
             }

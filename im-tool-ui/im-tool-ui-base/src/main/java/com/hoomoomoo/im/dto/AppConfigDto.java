@@ -158,6 +158,8 @@ public class AppConfigDto extends BaseDto {
 
     private String activateFunction;
 
+    private String activatePrevFunction;
+
     private String systemToolShakeMouseAuto;
 
     private String hepTaskTodoDetailSymbol;

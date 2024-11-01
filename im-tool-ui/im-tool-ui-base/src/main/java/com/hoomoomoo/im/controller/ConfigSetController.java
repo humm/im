@@ -2,6 +2,7 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.AppCache;
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.task.ConfigSetTask;
 import com.hoomoomoo.im.task.ConfigSetTaskParam;
 import com.hoomoomoo.im.utils.*;
@@ -44,19 +45,23 @@ public class ConfigSetController implements Initializable {
     void onSave(ActionEvent event) throws Exception {
         LoggerUtils.info(String.format(MSG_USE, CONFIG_SET.getName()));
         submit.setDisable(true);
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String activatePrevFunction = appConfigDto.getActivatePrevFunction();
         String content = config.getText();
         String confPath = FileUtils.getFilePath(PATH_APP);
         FileUtils.writeFile(confPath, content, false);
         ConfigCache.initConfigCache();
-        OutputUtils.info(tips, NAME_SAVE_SUCCESS + CommonUtils.getCurrentDateTime8(new Date()));
         LoggerUtils.writeConfigSetInfo(CONFIG_SET.getCode());
+        ConfigCache.getAppConfigDtoCache().setActivateFunction(activatePrevFunction);
+        CommonUtils.showTipsByInfo(NAME_SAVE_SUCCESS);
         if (AppCache.FUNCTION_TAB_CACHE != null) {
-            TaskUtils.execute(new ConfigSetTask(new ConfigSetTaskParam(this)));
+            // TaskUtils.execute(new ConfigSetTask(new ConfigSetTaskParam(this)));
+            doClose();
         }
         submit.setDisable(false);
     }
 
-    public void doClose() {
+    public void doClose() throws Exception {
         ObservableList<Tab> tabs = AppCache.FUNCTION_TAB_CACHE.getTabs();
         Iterator<Tab> iterator = tabs.listIterator();
         while (iterator.hasNext()) {
@@ -69,6 +74,13 @@ public class ConfigSetController implements Initializable {
                 }
                 iterator.remove();
                 break;
+            }
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            String activateFunction = appConfigDto.getActivateFunction();
+            if (StringUtils.isNotBlank(activateFunction)) {
+                String tabCode = activateFunction.split(STR_COLON)[0];
+                String tabName = activateFunction.split(STR_COLON)[1];
+                AppCache.FUNCTION_TAB_CACHE.getSelectionModel().select(CommonUtils.getOpenTab(AppCache.FUNCTION_TAB_CACHE, tabCode, tabName));
             }
         }
     }
