@@ -138,9 +138,9 @@ public class HepTaskSyncController implements Initializable {
         if (StringUtils.isNotBlank(demand)) {
             Map<String, Object> resMap = JSON.parseObject(demand, Map.class);
             JSONObject data = (JSONObject)resMap.get(KEY_DATA);
-            if (data.size() != 0) {
+            if (data != null) {
                 JSONArray items = data.getJSONArray(KEY_ITEMS);
-                if (items.size() != 0) {
+                if (items != null) {
                     for (int i=0; i<items.size(); i++) {
                         StringBuilder demandInfo = new StringBuilder();
                         JSONObject ele = items.getJSONObject(i);
@@ -152,7 +152,7 @@ public class HepTaskSyncController implements Initializable {
                             status = STR_0;
                         }
                         JSONArray version = (JSONArray)ele.get(KEY_STORY_VERSION_LIST);
-                        if (version.size() != 0) {
+                        if (version != null) {
                             Set<String> createDate = new HashSet<>();
                             if (StringUtils.equals(status, STR_1) && version.size() > 2) {
                                 for (int j=0; j<version.size(); j++) {
