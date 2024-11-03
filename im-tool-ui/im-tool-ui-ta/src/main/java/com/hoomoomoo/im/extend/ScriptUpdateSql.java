@@ -38,7 +38,7 @@ public class ScriptUpdateSql {
         List<String> sql = getUpdateSql(appConfigDto, config);
         sql.add(STR_NEXT_LINE);
         sql.add("commit;");
-        FileUtils.writeFile(resultPath + BaseConst.SQL_CHECK_TYPE.NEW_MENU_UPDATE.getFileName(), sql, false);
+        FileUtils.writeFile(resultPath + BaseConst.SQL_FilE_TYPE.NEW_MENU_UPDATE.getFileName(), sql, false);
     }
 
     public void generateChangeMenuSql() throws Exception {
@@ -77,7 +77,7 @@ public class ScriptUpdateSql {
             }
             res.add(ele);
         }
-        FileUtils.writeFile(resPath + BaseConst.SQL_CHECK_TYPE.UPDATE_CHANGE_MENU.getFileName(), res, false);
+        FileUtils.writeFile(resPath + BaseConst.SQL_FilE_TYPE.UPDATE_CHANGE_MENU.getFileName(), res, false);
     }
 
     public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {

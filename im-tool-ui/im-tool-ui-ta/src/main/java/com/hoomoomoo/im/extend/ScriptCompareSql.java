@@ -230,7 +230,8 @@ public class ScriptCompareSql {
         int summary = -1;
         int total = 0;
         for (SQL_CHECK_TYPE item : fileList) {
-            if (NEW_MENU_UPDATE.getName().equals(item.getName()) || CHECK_RESULT_SUMMARY.getName().equals(item.getName())) {
+            String name = item.getName();
+            if (CHECK_RESULT_SUMMARY.getName().equals(name)) {
                 continue;
             }
             summary = -1;

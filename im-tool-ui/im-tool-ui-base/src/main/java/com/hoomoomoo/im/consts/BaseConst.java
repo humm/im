@@ -412,7 +412,57 @@ public class BaseConst {
         LACK_ROUTER(800, "缺少路由", "800.缺少路由.sql", "/conf/extend/skipRouter.conf"),
         LACK_LOG(900, "缺少日志", "900.缺少日志.sql", "/conf/extend/skipLog.conf"),
         ERROR_LOG(1000, "错误日志", "1000.错误日志.sql", "/conf/extend/skipErrorLog.conf"),
-        ALL_MENU(1100, "所有菜单", "1100.所有菜单.sql", ""),
+        ALL_MENU(1100, "所有菜单", "1100.所有菜单.sql", "");
+
+        private int index;
+
+        private String name;
+
+        private String fileName;
+
+        private String pathConf;
+
+        public int getIndex() {
+            return index;
+        }
+
+        public void setIndex(int index) {
+            this.index = index;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getFileName() {
+            return fileName;
+        }
+
+        public void setFileName(String fileName) {
+            this.fileName = fileName;
+        }
+
+        public String getPathConf() {
+            return pathConf;
+        }
+
+        public void setPathConf(String pathConf) {
+            this.pathConf = pathConf;
+        }
+
+        SQL_CHECK_TYPE(int index, String name, String fileName, String pathConf) {
+            this.index = index;
+            this.name = name;
+            this.fileName = fileName;
+            this.pathConf = pathConf;
+        }
+    }
+
+    public enum SQL_FilE_TYPE {
         NEW_MENU_UPDATE(9999, "全量新版升级", "9999.全量新版升级.sql", ""),
         UPDATE_CHANGE_MENU(9998, "老版切换新版", "oldChangeToNewUed.sql", "");
 
@@ -456,7 +506,7 @@ public class BaseConst {
             this.pathConf = pathConf;
         }
 
-        SQL_CHECK_TYPE(int index, String name, String fileName, String pathConf) {
+        SQL_FilE_TYPE(int index, String name, String fileName, String pathConf) {
             this.index = index;
             this.name = name;
             this.fileName = fileName;

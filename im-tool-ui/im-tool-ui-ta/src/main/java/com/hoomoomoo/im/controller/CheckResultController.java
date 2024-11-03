@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.NEW_MENU_UPDATE;
+import static com.hoomoomoo.im.consts.BaseConst.SQL_FilE_TYPE.NEW_MENU_UPDATE;
 
 
 /**
