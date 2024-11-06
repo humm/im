@@ -180,23 +180,24 @@ public class FileUtils {
      * @return:
      */
     public static Object readFile(String filePath, String fileType, boolean skipAnnotation) throws IOException {
-        File file = new File(filePath);
-        if (!file.exists()) {
-            throw new IOException("文件不存在，请检查");
-        }
         List<String> fileContent = new LinkedList();
         LinkedHashMap<String, String> fileContentMap = new LinkedHashMap<>(16);
-        BufferedReader bufferedReader;
-        bufferedReader = getBufferedReader(filePath);
-        String content;
-        while ((content = bufferedReader.readLine()) != null) {
-            if (FILE_TYPE_NORMAL.equals(fileType)) {
-                buildFileContent(fileContent, content, skipAnnotation);
-            } else if (FILE_TYPE_CONFIG.equals(fileType)) {
-                buildFileContentMap(fileContentMap, content);
+        File file = new File(filePath);
+        if (!file.exists()) {
+            // throw new IOException("文件不存在，请检查");
+            LoggerUtils.info("文件不存在，请检查");
+        } else {
+            BufferedReader bufferedReader = getBufferedReader(filePath);
+            String content;
+            while ((content = bufferedReader.readLine()) != null) {
+                if (FILE_TYPE_NORMAL.equals(fileType)) {
+                    buildFileContent(fileContent, content, skipAnnotation);
+                } else if (FILE_TYPE_CONFIG.equals(fileType)) {
+                    buildFileContentMap(fileContentMap, content);
+                }
             }
+            bufferedReader.close();
         }
-        bufferedReader.close();
         return FILE_TYPE_NORMAL.equals(fileType) ? fileContent : fileContentMap;
     }
 

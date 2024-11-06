@@ -238,7 +238,7 @@ public class ScriptCheckController implements Initializable {
             addLog("检查结果");
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCheckMenuMsg("请检查结果文件是否不存在"));
+            OutputUtils.info(logs, getCheckMenuMsg("请检查结果文件是否存在"));
         }
     }
 

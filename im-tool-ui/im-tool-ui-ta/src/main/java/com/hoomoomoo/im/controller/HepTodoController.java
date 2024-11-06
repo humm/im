@@ -175,7 +175,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private TextField id;
 
     @FXML
-    private TextArea notice;
+    public TextArea notice;
 
     @FXML
     private TableView taskList;
@@ -248,7 +248,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(devCompleteHide, false);
         OutputUtils.selected(devCompleteShow, false);
         if (event != null) {
-            executeQuery(null);
+            doExecuteQuery();
         }
     }
 
@@ -259,7 +259,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(devCompleteHide, false);
         OutputUtils.selected(devCompleteShow, false);
         if (event != null) {
-            executeQuery(null);
+            doExecuteQuery();
         }
     }
 
@@ -270,7 +270,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(only, false);
         OutputUtils.selected(all, false);
         if (event != null) {
-            executeQuery(null);
+            doExecuteQuery();
         }
     }
 
@@ -281,7 +281,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(only, false);
         OutputUtils.selected(all, false);
         if (event != null) {
-            executeQuery(null);
+            doExecuteQuery();
         }
     }
 
@@ -833,7 +833,7 @@ public class HepTodoController extends BaseController implements Initializable {
             if (taskDemandNo.containsKey(taskNumberIn)) {
                 item.setDemandNo(taskDemandNo.get(taskNumberIn));
             }
-            if (StringUtils.equals(STR_1, taskDemandStatus.get(item.getDemandNo())) && !taskName.contains(DEV_COMMIT_TAG)) {
+            if (StringUtils.equals(STR_1, taskDemandStatus.get(item.getDemandNo())) && !taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG)) {
                 taskName = DEV_COMMIT_TAG + taskName;
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
@@ -947,6 +947,9 @@ public class HepTodoController extends BaseController implements Initializable {
                 item.setCustomer(taskCustomerName.get(taskNumberIn));
             } else {
                 waitTaskSync = true;
+            }
+            if (StringUtils.isBlank(item.getCustomer()) && item.getName().contains(DEFECT_TAG)) {
+                item.setCustomer(NAME_INNER_CUSTOMER);
             }
         }
 
@@ -1509,7 +1512,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 JvmCache.setHepTodoController(this);
                 devCompleteHide.setSelected(true);
             }
-            addTaskMenu(appConfigDto);
+            addTaskMenu(appConfigDto, this);
             executeQuery(null);
             initColorDesc();
             // addMask();
@@ -1694,6 +1697,7 @@ public class HepTodoController extends BaseController implements Initializable {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             List<String> taskList = FileUtils.readNormalFile(appConfigDto.getHepTaskSyncPath() + PATH_DEMAND_STAT, false);
+            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT), false));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
@@ -1708,7 +1712,7 @@ public class HepTodoController extends BaseController implements Initializable {
         return demand;
     }
 
-    private void addTaskMenu(AppConfigDto appConfigDto) throws Exception {
+    private void addTaskMenu(AppConfigDto appConfigDto, HepTodoController hepTodoController) throws Exception {
         taskList.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @SneakyThrows
             @Override
@@ -1741,6 +1745,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     });
                     hepWaitHandleTaskMenu.show(node, event.getScreenX(), event.getScreenY());
                     appConfigDto.setHepTaskDto(hepTaskDto);
+                    JvmCache.setActiveHepTodoController(hepTodoController);
                 }
             }
         });

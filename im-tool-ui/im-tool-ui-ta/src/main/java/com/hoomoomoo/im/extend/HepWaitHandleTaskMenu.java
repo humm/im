@@ -4,9 +4,7 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.controller.HepTodoController;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
-import com.hoomoomoo.im.utils.CommonUtils;
-import com.hoomoomoo.im.utils.FileUtils;
-import com.hoomoomoo.im.utils.JvmCache;
+import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
@@ -17,11 +15,15 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.controller.HepTodoController.OPERATE_TYPE_CUSTOM_UPDATE;
@@ -93,6 +95,27 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
 
+        MenuItem menuMarkDev = new MenuItem(NAME_MENU_MARK_DEV);
+        CommonUtils.setIcon(menuMarkDev, COMPLETE_ICON, MENUITEM_ICON_SIZE);
+        menuMarkDev.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                HepTaskDto item = appConfigDto.getHepTaskDto();
+                String demandNo = item.getDemandNo();
+                String path = FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT);
+                List<String> demandNoList = FileUtils.readNormalFile(path, false);
+                if (!demandNoList.contains(demandNo + STR_SEMICOLON)) {
+                    demandNoList.add(demandNo + STR_SEMICOLON + STR_1);
+                }
+                FileUtils.writeFile(path, demandNoList, false);
+                HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
+                OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr("标记分支成功"));
+                activeHepTodoController.doExecuteQuery();
+            }
+        });
+
         MenuItem detailTask = new MenuItem(NAME_MENU_DETAIL);
         CommonUtils.setIcon(detailTask, DETAIL_ICON, MENUITEM_ICON_SIZE);
         detailTask.setOnAction(new EventHandler<ActionEvent>() {
@@ -123,11 +146,13 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                 });
             }
         });
+
+        getItems().add(updateTask);
         getItems().add(copyTask);
         getItems().add(copyTaskSimple);
-        getItems().add(updateTask);
         getItems().add(menuScript);
         getItems().add(menuTaskNo);
+        getItems().add(menuMarkDev);
         getItems().add(detailTask);
     }
 

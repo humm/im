@@ -6,6 +6,7 @@ import com.hoomoomoo.im.controller.*;
 public class JvmCache {
 
     private static HepTodoController hepTodoController;
+    private static HepTodoController activeHepTodoController;
     private static SystemToolController systemToolController;
     private static ScriptUpdateController scriptUpdateController;
     private static TaStarterController taStarterController;
@@ -31,6 +32,17 @@ public class JvmCache {
 
     public static void setHepTodoController(HepTodoController todoController) {
         hepTodoController = todoController;
+    }
+
+    public static HepTodoController getActiveHepTodoController() {
+            if (activeHepTodoController == null) {
+                activeHepTodoController = new HepTodoController();
+            }
+            return activeHepTodoController;
+        }
+
+    public static void setActiveHepTodoController(HepTodoController todoController) {
+        activeHepTodoController = todoController;
     }
 
     public static SystemToolController getSystemToolController() {

@@ -21,6 +21,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.text.html.parser.Entity;
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.io.File;
@@ -153,19 +154,30 @@ public class HepTaskSyncController implements Initializable {
                         }
                         JSONArray version = (JSONArray)ele.get(KEY_STORY_VERSION_LIST);
                         if (version != null) {
-                            Set<String> createDate = new HashSet<>();
                             if (StringUtils.equals(status, STR_1) && version.size() > 2) {
+                                Map<String, String> versionList = new HashMap<>();
                                 for (int j=0; j<version.size(); j++) {
                                     JSONObject ver = version.getJSONObject(j);
-                                    createDate.add(String.valueOf(ver.get(KEY_CREATE_TIME)).split(STR_SPACE)[0]);
+                                    versionList.put(String.valueOf(ver.get(KEY_SPRINT_VERSION)), String.valueOf(ver.get(KEY_STORY_STATUS)));
                                 }
-                                if (createDate.size() == version.size()) {
-                                    status = STR_0;
+                                for(Map.Entry<String, String> entry : versionList.entrySet()) {
+                                    String code = entry.getKey();
+                                    String value = entry.getValue();
+                                    if (STR_1.equals(status) && demandStatus.contains(value)) {
+                                        int ver = Integer.valueOf(code.substring(code.length() - 1)) + 1;
+                                        String nextVer = code.substring(0, code.length() - 1) + ver;
+                                        if (versionList.containsKey(nextVer) && !demandStatus.contains(versionList.get(nextVer))) {
+                                            status = STR_0;
+                                        }
+                                    }
                                 }
                             }
                         }
                         demandInfo.setLength(0);
-                        res.add(demandInfo.append(demandNo).append(STR_SEMICOLON).append(status).toString());
+                        String[] demandNoList = demandNo.split(STR_COMMA);
+                        for (String single : demandNoList) {
+                            res.add(demandInfo.append(single).append(STR_SEMICOLON).append(status).toString());
+                        }
                     }
                 }
             }

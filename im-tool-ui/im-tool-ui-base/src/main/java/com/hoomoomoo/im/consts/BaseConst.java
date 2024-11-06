@@ -111,6 +111,7 @@ public class BaseConst {
     public final static String KEY_ESTIMATE_FINISH_TIME = "estimate_finish_time";
     public final static String KEY_NAME = "name";
     public final static String KEY_SPRINT_VERSION = "sprint_version";
+    public final static String KEY_STORY_STATUS = "story_status";
     public final static String KEY_TASK_NUMBER = "task_number";
     public final static String KEY_CURRENT_USER_ID = "current_user_id";
     public final static String KEY_CHARSET = "charset";
@@ -216,11 +217,12 @@ public class BaseConst {
     public static final String NAME_CLEAR_LOG = "系统日志";
 
     public static final String NAME_MENU_UPDATE = "任务更新";
-    public static final String NAME_MENU_COPY = "提交复制";
-    public static final String NAME_MENU_SIMPLE_COPY = "简单复制";
+    public static final String NAME_MENU_COPY = "复制详细";
+    public static final String NAME_MENU_SIMPLE_COPY = "复制简单";
     public static final String NAME_MENU_DETAIL = "任务详情";
-    public static final String NAME_MENU_SCRIPT = "任务摘要";
+    public static final String NAME_MENU_SCRIPT = "复制摘要";
     public static final String NAME_MENU_TASK_NO = "复制单号";
+    public static final String NAME_MENU_MARK_DEV = "标记分支";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -331,6 +333,7 @@ public class BaseConst {
     public static final String COPY_SIMPLE_ICON = "/conf/image/copySimple.png";
     public static final String ABSTRACT_ICON = "/conf/image/abstract.png";
     public static final String TASK_NO_ICON = "/conf/image/code.png";
+    public static final String COMPLETE_ICON = "/conf/image/complete.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
     public static final String DETAIL_ICON = "/conf/image/detail.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
@@ -343,6 +346,7 @@ public class BaseConst {
     public static final String PATH_VERSION_STAT = "/stats/version.stat";
     public static final String PATH_TASK_STAT = "/stats/task.stat";
     public static final String PATH_DEMAND_STAT = "/demand.stat";
+    public static final String PATH_DEFINE_DEMAND_STAT = "/stats/demand.stat";
     public static final String PATH_VERSION_EXTEND_STAT = "/stats/versionExtend.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";

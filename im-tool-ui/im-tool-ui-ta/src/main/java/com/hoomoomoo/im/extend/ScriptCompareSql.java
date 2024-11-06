@@ -1059,7 +1059,7 @@ public class ScriptCompareSql {
             if (!fileName.endsWith(FILE_TYPE_SQL)) {
                 return;
             }
-            if (filePath.contains("/extradata/special/") || filePath.contains("\\extradata\\special\\")) {
+            if (filePath.contains("/extradata/special/") || filePath.contains("\\extradata\\special\\") || filePath.contains("\\extradata\\UED\\")) {
                 return;
             }
             List<String> content = FileUtils.readNormalFile(file.getPath(), false);

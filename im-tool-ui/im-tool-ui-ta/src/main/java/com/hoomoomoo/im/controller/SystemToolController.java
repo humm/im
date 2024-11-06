@@ -201,7 +201,7 @@ public class SystemToolController implements Initializable {
     @FXML
     void showExplain(ActionEvent event) {
         OutputUtils.clearLog(logs);
-        OutputUtils.info(logs, "public static final String HUNDSUN_VERSION = @system 理财登记过户平台 @version 6.0.0.1 @lastModiDate "+ CommonUtils.getCurrentDateTime3() +" @describe humm23693;");
+        OutputUtils.info(logs, "public static final String HUNDSUN_VERSION = \"@system 理财登记过户平台 @version 6.0.0.1 @lastModiDate "+ CommonUtils.getCurrentDateTime3() +" @describe humm23693;\"");
         OutputUtils.info(logs, STR_NEXT_LINE_2);
         StringBuilder serialVersion = new StringBuilder();
         for (int i=0; i<=18; i++) {
@@ -362,8 +362,12 @@ public class SystemToolController implements Initializable {
                         if (StringUtils.isBlank(demandNo)) {
                             demandNo = STR_SPACE;
                         }
-                        item.append(taskNumber).append(STR_SEMICOLON).append(customerName).append(STR_SEMICOLON).append(demandNo);
-                        list.add(item.toString());
+                        String[] demandNoList = demandNo.split(STR_COMMA);
+                        for (String single : demandNoList) {
+                            item.setLength(0);
+                            item.append(taskNumber).append(STR_SEMICOLON).append(customerName).append(STR_SEMICOLON).append(single);
+                            list.add(item.toString());
+                        }
                     }
                 }
                 String statPath = FileUtils.getFilePath(statFile);
