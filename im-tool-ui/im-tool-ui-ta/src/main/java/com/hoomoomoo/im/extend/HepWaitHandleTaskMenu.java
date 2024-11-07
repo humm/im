@@ -101,18 +101,17 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-                HepTaskDto item = appConfigDto.getHepTaskDto();
-                String demandNo = item.getDemandNo();
-                String path = FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT);
-                List<String> demandNoList = FileUtils.readNormalFile(path, false);
-                if (!demandNoList.contains(demandNo + STR_SEMICOLON)) {
-                    demandNoList.add(demandNo + STR_SEMICOLON + STR_1);
-                }
-                FileUtils.writeFile(path, demandNoList, false);
-                HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
-                OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr("标记分支成功"));
-                activeHepTodoController.doExecuteQuery();
+                handleDev(STR_1);
+            }
+        });
+
+        MenuItem menuCancelDev = new MenuItem(NAME_MENU_CANCEL_DEV);
+        CommonUtils.setIcon(menuCancelDev, CANCEL_ICON, MENUITEM_ICON_SIZE);
+        menuCancelDev.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                handleDev(STR_0);
             }
         });
 
@@ -153,6 +152,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         getItems().add(menuScript);
         getItems().add(menuTaskNo);
         getItems().add(menuMarkDev);
+        getItems().add(menuCancelDev);
         getItems().add(detailTask);
     }
 
@@ -161,6 +161,35 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             instance = new HepWaitHandleTaskMenu();
         }
         return instance;
+    }
+
+    private void handleDev(String type) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        HepTaskDto item = appConfigDto.getHepTaskDto();
+        String demandNo = item.getDemandNo();
+        if (StringUtils.isBlank(demandNo)) {
+            demandNo = item.getTaskNumber();
+        }
+        String eleValue = demandNo + STR_SEMICOLON + type;
+        String eleIndex = demandNo + STR_SEMICOLON;
+        String path = FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT);
+        List<String> demandNoList = FileUtils.readNormalFile(path, false);
+        if (!demandNoList.contains(eleIndex + STR_0) && !demandNoList.contains(eleIndex + STR_1)) {
+            demandNoList.add(eleValue);
+        } else {
+            for (int i=0; i<demandNoList.size(); i++) {
+                String ele = demandNoList.get(i);
+                if (ele.contains(eleIndex)) {
+                    demandNoList.set(i, eleValue);
+                    break;
+                }
+            }
+        }
+        FileUtils.writeFile(path, demandNoList, false);
+        String msg = STR_1.equals(type) ? "标记分支成功" : "取消标记成功";
+        HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
+        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+        activeHepTodoController.doExecuteQuery();
     }
 
     private String getCopyContent(HepTaskDto item, boolean hasDescribe) {

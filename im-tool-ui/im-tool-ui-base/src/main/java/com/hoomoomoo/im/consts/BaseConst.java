@@ -223,6 +223,7 @@ public class BaseConst {
     public static final String NAME_MENU_SCRIPT = "复制摘要";
     public static final String NAME_MENU_TASK_NO = "复制单号";
     public static final String NAME_MENU_MARK_DEV = "标记分支";
+    public static final String NAME_MENU_CANCEL_DEV = "取消标记";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -334,6 +335,7 @@ public class BaseConst {
     public static final String ABSTRACT_ICON = "/conf/image/abstract.png";
     public static final String TASK_NO_ICON = "/conf/image/code.png";
     public static final String COMPLETE_ICON = "/conf/image/complete.png";
+    public static final String CANCEL_ICON = "/conf/image/cancel.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
     public static final String DETAIL_ICON = "/conf/image/detail.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";

@@ -248,7 +248,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(devCompleteHide, false);
         OutputUtils.selected(devCompleteShow, false);
         if (event != null) {
-            doExecuteQuery();
+            executeQuery(null);
         }
     }
 
@@ -259,7 +259,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(devCompleteHide, false);
         OutputUtils.selected(devCompleteShow, false);
         if (event != null) {
-            doExecuteQuery();
+            executeQuery(null);
         }
     }
 
@@ -270,7 +270,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(only, false);
         OutputUtils.selected(all, false);
         if (event != null) {
-            doExecuteQuery();
+            executeQuery(null);
         }
     }
 
@@ -281,7 +281,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(only, false);
         OutputUtils.selected(all, false);
         if (event != null) {
-            doExecuteQuery();
+            executeQuery(null);
         }
     }
 
@@ -833,7 +833,11 @@ public class HepTodoController extends BaseController implements Initializable {
             if (taskDemandNo.containsKey(taskNumberIn)) {
                 item.setDemandNo(taskDemandNo.get(taskNumberIn));
             }
-            if (StringUtils.equals(STR_1, taskDemandStatus.get(item.getDemandNo())) && !taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG)) {
+            String demandNo = item.getDemandNo();
+            if (StringUtils.isBlank(demandNo)) {
+                demandNo = taskNumberIn;
+            }
+            if (StringUtils.equals(STR_1, taskDemandStatus.get(demandNo)) && !taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG)) {
                 taskName = DEV_COMMIT_TAG + taskName;
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
