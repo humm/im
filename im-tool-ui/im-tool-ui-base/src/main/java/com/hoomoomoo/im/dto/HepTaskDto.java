@@ -48,4 +48,6 @@ public class HepTaskDto extends BaseDto{
 
     private String demandNo;
 
+    private String taskMark;
+
 }

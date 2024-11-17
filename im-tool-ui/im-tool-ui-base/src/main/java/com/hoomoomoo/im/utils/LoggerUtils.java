@@ -31,7 +31,6 @@ public class LoggerUtils {
 
     public static void appStartInfo(String msg) {
         try {
-            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache(false);
             if (CommonUtils.isSuperUser()) {
                 info(msg, true);
             }
@@ -49,7 +48,6 @@ public class LoggerUtils {
             log.append(CommonUtils.getCurrentDateTime1(new Date()) + STR_SPACE);
         }
         log.append(msg).append(STR_NEXT_LINE);
-        System.out.println(log);
         writeAppLog(msg, includeDate);
     }
 
@@ -67,6 +65,15 @@ public class LoggerUtils {
             }
             log.append(mgs).append(STR_NEXT_LINE_2);
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void writeFunctionLog(String logFolder, String mgs) {
+        try {
+            String logFilePath = String.format(PATH_LOG, logFolder, CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
+            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), mgs + STR_NEXT_LINE_2, true);
         } catch (Exception e) {
             e.printStackTrace();
         }

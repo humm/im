@@ -16,10 +16,10 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
             case "check":
                 hepTodoTaskParam.getHepTodoController().doScriptCheck();
                 break;
-            case "query":
-                hepTodoTaskParam.getHepTodoController().query(hepTodoTaskParam.getEvent());
-                break;
             case "doQuery":
+                hepTodoTaskParam.getHepTodoController().doQuery(hepTodoTaskParam.getEvent());
+                break;
+            case "doExecuteQuery":
                 hepTodoTaskParam.getHepTodoController().doExecuteQuery();
                 break;
             default:

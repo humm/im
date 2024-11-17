@@ -11,7 +11,6 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.HepTaskComponentDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.dto.VersionDto;
 import com.hoomoomoo.im.extend.HepWaitHandleTaskMenu;
@@ -95,16 +94,16 @@ public class HepTodoController extends BaseController implements Initializable {
     public final static String SELF_TEST_TAG = "【自测问题】";
     public final static String DEFECT_TAG = "【缺陷:";
 
-    private Map<String, String> color = new LinkedHashMap<String, String>(){{
-        put("完成日期错误", "-fx-text-background-color: #ff0073;");
-        put("今日待提交", "-fx-text-background-color: #ff0000;");
-        put("本周待提交", "-fx-text-background-color: #0015ff;");
-        put("缺陷", "-fx-text-background-color: #ff00a6;");
-        put("自测问题", "-fx-text-background-color: #804000;");
-        put("自建任务", "-fx-text-background-color: #008071;");
-        put("已修改", "-fx-text-background-color: #7b00ff;");
-        put("已提交", "-fx-text-background-color: #7b00ff;");
-        put("默认", "-fx-text-background-color: #000000;");
+    private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
+        put("完成日期错误", new String[] {"-fx-text-background-color: #ff0073;", "1", "错误"});
+        put("今日待提交", new String[] {"-fx-text-background-color: #ff0000;", "1", "今日"});
+        put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;", "1", "本周"});
+        put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "1", "缺陷"});
+        put("自测问题", new String[] {"-fx-text-background-color: #804000;", "0", "自测"});
+        put("自建任务", new String[] {"-fx-text-background-color: #008071;", "0", "自建"});
+        put("已修改", new String[] {"-fx-text-background-color: #7b00ff;", "0", "已修改"});
+        put("已提交", new String[] {"-fx-text-background-color: #7b00ff;", "0", "已提交"});
+        put("默认", new String[] {"-fx-text-background-color: #000000;", "0", " "});
     }};
 
     // 字段顺序不可调整 与约定接口保持顺序一致
@@ -461,33 +460,6 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     @FXML
-    void executeQuery(ActionEvent event) throws Exception {
-        HepTodoTaskParam hepTodoTaskParam = new HepTodoTaskParam(this, "query");
-        hepTodoTaskParam.setEvent(event);
-        TaskUtils.execute(new HepTodoTask(hepTodoTaskParam));
-    }
-
-    public void query(ActionEvent event) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        initUserInfo(appConfigDto);
-        if (StringUtils.isBlank(CURRENT_USER_ID)) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请配置【 hep.task.user 】"));
-            return;
-        }
-        try {
-            setProgress(0);
-            updateProgress();
-            if (event != null) {
-                minDateCache.clear();
-            }
-            TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "doQuery")));
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
-        }
-    }
-
-    @FXML
     void executeReset(ActionEvent event) throws Exception {
         OutputUtils.clearLog(taskNumberQuery);
         OutputUtils.clearLog(nameQuery);
@@ -509,6 +481,33 @@ public class HepTodoController extends BaseController implements Initializable {
             CommonUtils.showTipsByError(msg);
         } finally {
             syncTask.setDisable(false);
+        }
+    }
+
+    @FXML
+    void executeQuery(ActionEvent event) throws Exception {
+        HepTodoTaskParam hepTodoTaskParam = new HepTodoTaskParam(this, "doQuery");
+        hepTodoTaskParam.setEvent(event);
+        TaskUtils.execute(new HepTodoTask(hepTodoTaskParam));
+    }
+
+    public void doQuery(ActionEvent event) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        initUserInfo(appConfigDto);
+        if (StringUtils.isBlank(CURRENT_USER_ID)) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请配置【 hep.task.user 】"));
+            return;
+        }
+        try {
+            setProgress(0);
+            updateProgress();
+            if (event != null) {
+                minDateCache.clear();
+            }
+            TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "doExecuteQuery")));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
         }
     }
 
@@ -567,7 +566,7 @@ public class HepTodoController extends BaseController implements Initializable {
                         items = (JSONArray) data;
                     }
                     if (OPERATE_QUERY.equals(operateType)) {
-                        dealTaskList(items, logs, dayTodo, weekTodo, waitHandleTaskNum, dayPublish, weekPublish, dayClose, weekClose, taskList, true);
+                        dealTaskList(items, true);
                     } else if (OPERATE_START.equals(operateType)) {
                         executeQuery(null);
                     }
@@ -600,7 +599,6 @@ public class HepTodoController extends BaseController implements Initializable {
             try {
                 AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 Stage stage = appConfigDto.getChildStage();
-                setTaskComponent(appConfigDto);
                 if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
                     Map responseInfo = (Map) JSONObject.parse(response.body());
                     String code = String.valueOf(responseInfo.get(KEY_CODE));
@@ -639,20 +637,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
             }
         }
-    }
-
-    private void setTaskComponent(AppConfigDto appConfigDto) {
-        HepTaskComponentDto hepTaskComponentDto = new HepTaskComponentDto();
-        hepTaskComponentDto.setLogs(logs);
-        hepTaskComponentDto.setDayTodo(dayTodo);
-        hepTaskComponentDto.setWeekTodo(weekTodo);
-        hepTaskComponentDto.setWaitHandleTaskNum(waitHandleTaskNum);
-        hepTaskComponentDto.setTaskList(taskList);
-        hepTaskComponentDto.setDayPublish(dayPublish);
-        hepTaskComponentDto.setWeekPublish(weekPublish);
-        hepTaskComponentDto.setDayClose(dayClose);
-        hepTaskComponentDto.setWeekClose(weekClose);
-        appConfigDto.setHepTaskComponentDto(hepTaskComponentDto);
     }
 
     private Map<String, Object> executeCompletTask(HepTaskDto hepTaskDto) throws Exception {
@@ -718,12 +702,11 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     @SneakyThrows
-    public void dealTaskList(JSONArray task, List<String> logsIn, Label dayTodoIn, Label weekTodoIn, Label waitHandleTaskNumIn, Label dayPublishIn, Label weekPublishIn,
-                             Label dayCloseIn, Label weekCloseIn, TableView taskListIn, boolean tagFlag) {
+    public synchronized void dealTaskList(JSONArray task, boolean tagFlag) {
         Set<String> dayTodoTask = new HashSet<>();
         Set<String> weekTodoTask = new HashSet<>();
         Set<String> finishDateError = new HashSet<>();
-        taskListIn.setDisable(true);
+        taskList.setDisable(true);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
@@ -822,6 +805,17 @@ public class HepTodoController extends BaseController implements Initializable {
         if (StringUtils.isNotBlank(appConfigDto.getHepTaskErrorFinishDateSkipVersion())) {
             skipVersion.addAll(Arrays.asList(appConfigDto.getHepTaskErrorFinishDateSkipVersion().split(STR_COMMA)));
         }
+
+        // 获取需求状态偶现少数据 补充获取一次
+        if (taskDemandStatus.size() <= 10) {
+            taskDemandStatus = getDemandInfo();
+            StringBuilder taskDemand = new StringBuilder();
+            for (Map.Entry<String, String> item : taskDemandStatus.entrySet()) {
+                taskDemand.append(item.getKey()).append(STR_COLON).append(item.getValue()).append(STR_SPACE);
+            }
+            logs.add("需求状态: " + taskDemand);
+        }
+
         Map<String, Integer> minDate = new HashMap<>();
         Iterator<HepTaskDto> iterator = res.listIterator();
         Set<String> existTask = new HashSet<>();
@@ -959,26 +953,26 @@ public class HepTodoController extends BaseController implements Initializable {
 
         res = sortTask(res, false);
 
-        OutputUtils.clearLog(dayTodoIn);
-        OutputUtils.info(dayTodoIn, String.valueOf(dayVersionNum));
+        OutputUtils.clearLog(dayTodo);
+        OutputUtils.info(dayTodo, String.valueOf(dayVersionNum));
 
-        OutputUtils.clearLog(weekTodoIn);
-        OutputUtils.info(weekTodoIn, String.valueOf(weekVersionNum));
+        OutputUtils.clearLog(weekTodo);
+        OutputUtils.info(weekTodo, String.valueOf(weekVersionNum));
 
-        OutputUtils.clearLog(dayPublishIn);
-        OutputUtils.info(dayPublishIn, formatVersion(dayVersion.toString()));
+        OutputUtils.clearLog(dayPublish);
+        OutputUtils.info(dayPublish, formatVersion(dayVersion.toString()));
 
-        OutputUtils.clearLog(weekPublishIn);
-        OutputUtils.info(weekPublishIn, formatVersion(weekVersion.toString()));
+        OutputUtils.clearLog(weekPublish);
+        OutputUtils.info(weekPublish, formatVersion(weekVersion.toString()));
 
-        OutputUtils.clearLog(dayCloseIn);
-        OutputUtils.info(dayCloseIn, formatVersion(dayCloseVersion.toString()));
+        OutputUtils.clearLog(dayClose);
+        OutputUtils.info(dayClose, formatVersion(dayCloseVersion.toString()));
 
-        OutputUtils.clearLog(weekCloseIn);
-        OutputUtils.info(weekCloseIn, formatVersion(weekCloseVersion.toString()));
+        OutputUtils.clearLog(weekClose);
+        OutputUtils.info(weekClose, formatVersion(weekCloseVersion.toString()));
 
-        OutputUtils.clearLog(waitHandleTaskNumIn);
-        OutputUtils.info(waitHandleTaskNumIn, String.valueOf(res.size() - taskTotal));
+        OutputUtils.clearLog(waitHandleTaskNum);
+        OutputUtils.info(waitHandleTaskNum, String.valueOf(res.size() - taskTotal));
 
         OutputUtils.clearLog(waitMergerNum);
         OutputUtils.info(waitMergerNum, String.valueOf(mergerNum));
@@ -989,19 +983,19 @@ public class HepTodoController extends BaseController implements Initializable {
         }
 
         if (dayVersionNum > 0) {
-            dayTodo.setStyle(color.get("今日待提交"));
+            dayTodo.setStyle(color.get("今日待提交")[0]);
         } else {
-            dayTodo.setStyle(color.get("默认"));
+            dayTodo.setStyle(color.get("默认")[0]);
         }
         if (weekVersionNum > 0) {
-            weekTodo.setStyle(color.get("本周待提交"));
+            weekTodo.setStyle(color.get("本周待提交")[0]);
         } else {
-            weekTodo.setStyle(color.get("默认"));
+            weekTodo.setStyle(color.get("默认")[0]);
         }
 
-        OutputUtils.clearLog(taskListIn);
-        infoTaskList(taskListIn, res, dayTodoTask, weekTodoTask, finishDateError);
-        taskListIn.setDisable(false);
+        OutputUtils.clearLog(taskList);
+        infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError);
+        taskList.setDisable(false);
     }
 
     private String formatVersion(String ver) {
@@ -1132,24 +1126,28 @@ public class HepTodoController extends BaseController implements Initializable {
                             String taskName = item.getName();
                             String taskNumber = item.getTaskNumber();
                             String taskNameTag = getTaskNameTag(taskName);
+                            String[] taskColor;
                             if (finishDateError.contains(taskNumber)) {
-                                setStyle(color.get("完成日期错误"));
+                                taskColor = color.get("完成日期错误");
                             } else if (dayTodoTask.contains(taskNumber)) {
-                                setStyle(color.get("今日待提交"));
+                                taskColor = color.get("今日待提交");
                             } else if (weekTodoTask.contains(taskNumber)) {
-                                setStyle(color.get("本周待提交"));
+                                taskColor = color.get("本周待提交");
                             } else if (taskNameTag.contains(DEFECT_TAG)) {
-                                setStyle(color.get("缺陷"));
+                                taskColor = color.get("缺陷");
                             } else if (taskNameTag.contains(SELF_TEST_TAG)) {
-                                setStyle(color.get("自测问题"));
+                                taskColor = color.get("自测问题");
                             } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
-                                setStyle(color.get("自建任务"));
+                                taskColor = color.get("自建任务");
                             } else if (taskName.contains(UPDATE_TAG) || taskName.contains(DEV_COMMIT_TAG)) {
-                                setStyle(color.get("已修改"));
+                                taskColor = color.get("已修改");
                             } else if (taskName.contains(COMMIT_TAG)) {
-                                setStyle(color.get("已提交"));
+                                taskColor = color.get("已提交");
                             } else {
-                                setStyle(color.get("默认"));
+                                taskColor = color.get("默认");
+                            }
+                            if (StringUtils.equals(STR_1, taskColor[1])) {
+                                setStyle(taskColor[2]);
                             }
                         }
                         // 颜色展示
@@ -1252,7 +1250,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     } catch (Exception e) {
 
                     }
-                    dealTaskList(res, logs, dayTodo, weekTodo, waitHandleTaskNum, dayPublish, weekPublish, dayClose, weekClose, taskList, false);
+                    dealTaskList(res, false);
                 }
             });
         });
@@ -1359,7 +1357,6 @@ public class HepTodoController extends BaseController implements Initializable {
         } else {
             logs.add("返回结果: " + result);
         }
-
 
         Object data = result.get("data");
         if (data instanceof JSONArray) {
@@ -1608,7 +1605,7 @@ public class HepTodoController extends BaseController implements Initializable {
         todoTitle.getChildren().add(label);
         int prevLen = 4;
         int diff = 0;
-        for (Map.Entry<String, String> entry : color.entrySet()) {
+        for (Map.Entry<String, String[]> entry : color.entrySet()) {
             String key = entry.getKey();
             Label ele = new Label(key);
             int len = key.length();
@@ -1617,7 +1614,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 len = prevLen;
             }
             x += step * len;
-            ele.setStyle(color.get(key));
+            ele.setStyle(color.get(key)[0]);
             ele.setLayoutX(x);
             ele.setLayoutY(y);
             todoTitle.getChildren().add(ele);
@@ -1834,7 +1831,7 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             req.add(item);
         }
-        dealTaskList(req, logs, dayTodo, weekTodo, waitHandleTaskNum, dayPublish, weekPublish, dayClose, weekClose, taskList, true);
+        dealTaskList(req, true);
         OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("查询成功"));
     }
 
