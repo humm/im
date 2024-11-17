@@ -125,7 +125,7 @@
                                                         <PropertyValueFactory property="taskNumber"/>
                                                     </cellValueFactory>
                                                 </TableColumn>-->
-                                                <TableColumn id="name" editable="false" prefWidth="510" sortable="false"
+                                                <TableColumn id="name" editable="false" prefWidth="520" sortable="false"
                                                              text="名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>
@@ -137,7 +137,7 @@
                                                         <PropertyValueFactory property="customer"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="taskMark" editable="false" prefWidth="60"
+                                                <TableColumn id="taskMark" editable="false" prefWidth="50"
                                                              sortable="false" style="-fx-alignment: center;" text="标记">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="taskMark"/>
