@@ -2,7 +2,6 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
-import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.extend.ScriptCompareSql;
 import com.hoomoomoo.im.extend.ScriptRepairSql;
@@ -10,43 +9,29 @@ import com.hoomoomoo.im.extend.ScriptSqlUtils;
 import com.hoomoomoo.im.extend.ScriptUpdateSql;
 import com.hoomoomoo.im.task.ScriptCheckTask;
 import com.hoomoomoo.im.task.ScriptCheckTaskParam;
-import com.hoomoomoo.im.task.SystemToolTask;
-import com.hoomoomoo.im.task.SystemToolTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.*;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE_EXTEND.REPAIR_EXT;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE_EXTEND.REPAIR_OLD_MENU;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SCRIPT_CHECK;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SYSTEM_TOOL;
 
 /**
  * @author humm23693
@@ -59,36 +44,17 @@ public class ScriptCheckController implements Initializable {
     @FXML
     private TextArea logs;
 
-    @FXML
-    private TextArea baseLogs;
-
-    @FXML
-    private Button shakeMouseBtn;
-
-    @FXML
-    private Button cancelShakeMouseBtn;
-
-    @FXML
-    private Button clearVersionBtn;
-
-    @FXML
-    private Button updateVersionBtn;
-
-    @FXML
-    private Button showVersionBtn;
-
-    private Timer shakeMouseTimer;
-
-    private Robot robot;
-
-    private int moveStep = 1;
-
     private boolean executeFlag = false;
 
     @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         JvmCache.setScriptCheckController(this);
+        String msg = String.format(BaseConst.MSG_USE, SCRIPT_CHECK.getName());
+        LoggerUtils.info(msg);
+        LoggerUtils.writeLogInfo(SCRIPT_CHECK.getCode(), new Date(), new ArrayList<String>(){{
+            add(msg);
+        }});
     }
 
     @FXML

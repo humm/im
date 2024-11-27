@@ -103,6 +103,7 @@ public class SvnUpdateController extends BaseController implements Initializable
                         if (FileUtils.isSuffixDirectory(new File(path), BaseConst.FILE_TYPE_SVN)) {
                             Long version = SvnUtils.updateSvn(path, fileLog);
                             if (version == null) {
+                                LoggerUtils.info("更新异常: " + name);
                                 infoMsg(name, version, "更新异常");
                                 OutputUtils.info(failNum, String.valueOf(Integer.valueOf(failNum.getText()) + 1));
                                 OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】异常\n");

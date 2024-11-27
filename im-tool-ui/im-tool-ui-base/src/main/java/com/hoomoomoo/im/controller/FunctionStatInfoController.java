@@ -54,7 +54,7 @@ public class FunctionStatInfoController implements Initializable {
             Iterator<FunctionDto> iterator = functionDtoList.iterator();
             while (iterator.hasNext()) {
                 FunctionDto item = iterator.next();
-                if (item.getFunctionCode().equals(CONFIG_SET.getCode())) {
+                if (item.getFunctionCode().equals(FUNCTION_STAT_INFO.getCode()) || item.getFunctionCode().equals(ABOUT_INFO.getCode())) {
                     iterator.remove();
                 }
             }

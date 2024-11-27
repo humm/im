@@ -316,7 +316,7 @@ public class BaseConst {
 
     public static final String CMD_KILL_APP = "taskill /f /t /im %s";
 
-    public static final String DEFAULT_FOLDER = "/extend";
+    public static final String DEFAULT_FOLDER = "/extend/scriptUpdate";
     public static final String PATH_APP = "/conf/app.conf";
     public static final String PATH_APP_EXTEND = "/conf/extend/appExtend.conf";
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
@@ -345,11 +345,12 @@ public class BaseConst {
     public static final String PATH_BLANK_TABLE_VIEW = "/conf/fxml/blankTableView.fxml";
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
-    public static final String PATH_VERSION_STAT = "/stats/version.stat";
-    public static final String PATH_TASK_STAT = "/stats/task.stat";
+    public static final String PATH_VERSION_STAT = "/extend/version/version.stat";
+    public static final String PATH_VERSION_EXTEND_STAT = "/extend/version/versionExtend.stat";
+    public static final String PATH_TASK_STAT = "/extend/task/task.stat";
     public static final String PATH_DEMAND_STAT = "/demand.stat";
-    public static final String PATH_DEFINE_DEMAND_STAT = "/stats/demand.stat";
-    public static final String PATH_VERSION_EXTEND_STAT = "/stats/versionExtend.stat";
+    public static final String PATH_DEFINE_DEMAND_EXTEND_STAT = "/extend/task/demandExtend.stat";
+    public static final String PATH_DEFINE_DEMAND_SYNC_STAT = "/extend/task/demandSync.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";
 

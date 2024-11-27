@@ -4,29 +4,18 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.extend.ScriptCompareSql;
-import com.hoomoomoo.im.extend.ScriptRepairSql;
-import com.hoomoomoo.im.extend.ScriptSqlUtils;
-import com.hoomoomoo.im.extend.ScriptUpdateSql;
-import com.hoomoomoo.im.task.SystemToolTask;
-import com.hoomoomoo.im.task.SystemToolTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.awt.*;
@@ -34,19 +23,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.*;
-import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE_EXTEND.REPAIR_EXT;
-import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE_EXTEND.REPAIR_OLD_MENU;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SYSTEM_TOOL;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_SYNC;
 
 /**
  * @author humm23693
@@ -270,6 +254,12 @@ public class SystemToolController implements Initializable {
     public void executeSyncTaskInfo() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         syncExcel(appConfigDto.getHepTaskCustomerPath(),"hep.task.customer.path", "任务列表", PATH_TASK_STAT, "同步任务信息", "task");
+        FileUtils.copyFile(new File(appConfigDto.getHepTaskSyncPath() + PATH_DEMAND_STAT), new File(FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT)));
+        String msg = String.format(BaseConst.MSG_USE, TASK_SYNC.getName());
+        LoggerUtils.info(msg);
+        LoggerUtils.writeLogInfo(TASK_SYNC.getCode(), new Date(), new ArrayList<String>(){{
+            add(msg);
+        }});
     }
 
     public void executeSyncTaskInfoBySyncTask() throws Exception {

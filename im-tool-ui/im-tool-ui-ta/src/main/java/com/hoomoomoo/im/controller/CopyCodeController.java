@@ -235,7 +235,8 @@ public class CopyCodeController extends BaseController implements Initializable 
                             for (int j=0; j<sourceContent.size(); j++) {
                                 FileUtils.writeFile(targetFileLocation, sourceContent.get(j) + STR_NEXT_LINE, encode, true);
                             }
-                            fileLog.add(targetFileLocation);
+                            fileLog.add("原始文件: " + fileLocation);
+                            fileLog.add("目标文件: " + targetFileLocation);
                             infoMsg(getFileName(targetFileLocation) + " 复制完成");
                             successNum++;
                         }

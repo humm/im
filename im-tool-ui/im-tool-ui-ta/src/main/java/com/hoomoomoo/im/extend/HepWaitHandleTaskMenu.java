@@ -15,14 +15,12 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -172,7 +170,11 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         }
         String eleValue = demandNo + STR_SEMICOLON + type;
         String eleIndex = demandNo + STR_SEMICOLON;
-        String path = FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT);
+        String path = FileUtils.getFilePath(PATH_DEFINE_DEMAND_EXTEND_STAT);
+        File demandExtendStat = new File(path);
+        if (!demandExtendStat.exists()) {
+            demandExtendStat.createNewFile();
+        }
         List<String> demandNoList = FileUtils.readNormalFile(path, false);
         if (!demandNoList.contains(eleIndex + STR_0) && !demandNoList.contains(eleIndex + STR_1)) {
             demandNoList.add(eleValue);

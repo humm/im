@@ -184,8 +184,8 @@ public class FileUtils {
         LinkedHashMap<String, String> fileContentMap = new LinkedHashMap<>(16);
         File file = new File(filePath);
         if (!file.exists()) {
-            // throw new IOException("文件不存在，请检查");
-            LoggerUtils.info("文件不存在，请检查");
+            LoggerUtils.info("文件不存在,请检查: " + filePath);
+            throw new IOException("文件不存在,请检查: " + filePath);
         } else {
             BufferedReader bufferedReader = getBufferedReader(filePath);
             String content;

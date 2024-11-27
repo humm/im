@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CHANGE_FUNCTION_TOOL;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SCRIPT_CHECK;
 
 /**
  * @author humm23693
@@ -67,7 +68,11 @@ public class ChangeToolController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        LoggerUtils.info(String.format(BaseConst.MSG_USE, CHANGE_FUNCTION_TOOL.getName()));
+        String msg = String.format(BaseConst.MSG_USE, CHANGE_FUNCTION_TOOL.getName());
+        LoggerUtils.info(msg);
+        LoggerUtils.writeLogInfo(CHANGE_FUNCTION_TOOL.getCode(), new Date(), new ArrayList<String>(){{
+            add(msg);
+        }});
         ObservableList auto = autoMode.getItems();
         if (CollectionUtils.isNotEmpty(autoModeSet)) {
             Iterator<String> ver = autoModeSet.iterator();

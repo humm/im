@@ -106,6 +106,7 @@ public class HepTodoController extends BaseController implements Initializable {
         put("默认", new String[] {"-fx-text-background-color: #000000;", "0", " "});
     }};
 
+
     // 字段顺序不可调整 与约定接口保持顺序一致
     private static Set<String> field = new LinkedHashSet<String>(){{
         add(KEY_CHARSET);
@@ -806,16 +807,6 @@ public class HepTodoController extends BaseController implements Initializable {
             skipVersion.addAll(Arrays.asList(appConfigDto.getHepTaskErrorFinishDateSkipVersion().split(STR_COMMA)));
         }
 
-        // 获取需求状态偶现少数据 补充获取一次
-        if (taskDemandStatus.size() <= 10) {
-            taskDemandStatus = getDemandInfo();
-            StringBuilder taskDemand = new StringBuilder();
-            for (Map.Entry<String, String> item : taskDemandStatus.entrySet()) {
-                taskDemand.append(item.getKey()).append(STR_COLON).append(item.getValue()).append(STR_SPACE);
-            }
-            logs.add("需求状态: " + taskDemand);
-        }
-
         Map<String, Integer> minDate = new HashMap<>();
         Iterator<HepTaskDto> iterator = res.listIterator();
         Set<String> existTask = new HashSet<>();
@@ -1146,8 +1137,9 @@ public class HepTodoController extends BaseController implements Initializable {
                             } else {
                                 taskColor = color.get("默认");
                             }
+                            setStyle(taskColor[0]);
                             if (StringUtils.equals(STR_1, taskColor[1])) {
-                                setStyle(taskColor[2]);
+                               item.setTaskMark(taskColor[2]);
                             }
                         }
                         // 颜色展示
@@ -1696,9 +1688,8 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getDemandInfo() {
         Map<String, String> demand = new HashMap<>();
         try {
-            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            List<String> taskList = FileUtils.readNormalFile(appConfigDto.getHepTaskSyncPath() + PATH_DEMAND_STAT, false);
-            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT), false));
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT), false);
+            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_EXTEND_STAT), false));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
@@ -1706,6 +1697,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
         } catch (IOException e) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
             LoggerUtils.info(e);
         } catch (Exception e) {
             LoggerUtils.info(e);
