@@ -371,7 +371,7 @@ public class TaCommonUtils {
             return STR_BLANK;
         }
         if (toBr) {
-            return text.replaceAll("\\n", "\r<br>").replaceAll("\\t", STR_SPACE_8).trim();
+            return text.replaceAll("\\n", "\r<br>").replaceAll("\\t", STR_SPACE_8).replaceAll("        ", STR_SPACE_8).trim();
         } else {
             return text.replaceAll("\r", STR_BLANK).replaceAll("<br>", STR_BLANK).trim();
         }

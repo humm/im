@@ -894,23 +894,26 @@ public class CommonUtils {
     }
 
     public static void showTipsByInfo(String msg) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        showTips(STR_1, msg);
+    }
+
+    public static void showTipsByError(String msg) {
+        showTips(STR_0, msg);
+    }
+
+    public static void showTips(String tipsType, String msg) {
+        Alert alert;
+        if (STR_0.equals(tipsType)) {
+            alert = new Alert(Alert.AlertType.ERROR);
+        } else {
+            alert = new Alert(Alert.AlertType.INFORMATION);
+        }
         alert.setTitle("提示");
         alert.setHeaderText(String.format("%s", msg));
         alert.setContentText("弹窗将自动关闭");
         Service<Void> service = getCloseInfoService();
         service.setOnSucceeded(e -> alert.hide());
         service.start();
-        alert.show();
-    }
-
-    public static void showTipsByError(String msg) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("提示");
-        alert.setHeaderText(String.format(". . . . . . %s . . . . . .", msg));
-        /*Service<Void> service = getCloseInfoService();
-        service.setOnSucceeded(e -> alert.hide());
-        service.start();*/
         alert.show();
     }
 
