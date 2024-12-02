@@ -824,12 +824,12 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             if (StringUtils.equals(STR_1, taskDemandStatus.get(demandNo)) && !taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG)) {
                 taskName = DEV_COMMIT_TAG + taskName;
+                item.setName(taskName);
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
             if (taskName.contains(DEV_COMMIT_TAG)) {
                 mergerNum++;
             }
-            item.setName(taskName);
 
             if (only.isSelected()) {
                 if (existTask.contains(taskName)) {
@@ -851,6 +851,9 @@ public class HepTodoController extends BaseController implements Initializable {
             String status = item.getStatus();
             if (!isExtendUser()) {
                 if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
+                    if (taskName.contains(DEV_COMMIT_TAG)) {
+                        mergerNum--;
+                    }
                     iterator.remove();
                     continue;
                 }
