@@ -824,11 +824,27 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             if (StringUtils.equals(STR_1, taskDemandStatus.get(demandNo)) && !taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG)) {
                 taskName = DEV_COMMIT_TAG + taskName;
-                item.setName(taskName);
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
+            item.setName(taskName);
             if (taskName.contains(DEV_COMMIT_TAG)) {
                 mergerNum++;
+            }
+
+            String status = item.getStatus();
+            if (!isExtendUser()) {
+                if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
+                    if (taskName.contains(DEV_COMMIT_TAG)) {
+                        mergerNum--;
+                    }
+                    iterator.remove();
+                    continue;
+                }
+            }
+            if (hasBlank && StringUtils.isBlank(status)) {
+                mergerNum--;
+                iterator.remove();
+                continue;
             }
 
             if (only.isSelected()) {
@@ -848,20 +864,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     continue;
                 }
             }
-            String status = item.getStatus();
-            if (!isExtendUser()) {
-                if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
-                    if (taskName.contains(DEV_COMMIT_TAG)) {
-                        mergerNum--;
-                    }
-                    iterator.remove();
-                    continue;
-                }
-            }
-            if (hasBlank && StringUtils.isBlank(status)) {
-                iterator.remove();
-                continue;
-            }
+
             String sprintVersion = item.getSprintVersion();
             if (version.containsKey(sprintVersion)) {
                 Map<String, String> versionInfo = version.get(sprintVersion);
