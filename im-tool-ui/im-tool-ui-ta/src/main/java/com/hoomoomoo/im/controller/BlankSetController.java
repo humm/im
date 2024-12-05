@@ -104,6 +104,9 @@ public class BlankSetController implements Initializable {
         if (PAGE_TYPE_HEP_DETAIL.equals(pageType)) {
             if (hepTaskDto != null) {
                 info = hepTaskDto.getDescription();
+                if ("缺陷".equals(hepTaskDto.getTaskMark())) {
+                    info = hepTaskDto.getName();
+                }
                 String hepTaskTodoDetailSymbol = appConfigDto.getHepTaskTodoDetailSymbol();
                 if (StringUtils.isNotBlank(hepTaskTodoDetailSymbol)) {
                     String[] symbol = hepTaskTodoDetailSymbol.split(STR_$_SLASH);

@@ -20,13 +20,10 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CHANGE_FUNCTION_TOOL;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SCRIPT_CHECK;
 
 /**
  * @author humm23693
@@ -51,12 +48,17 @@ public class ChangeToolController implements Initializable {
     @FXML
     private ComboBox menuMode;
 
+    private static String executeType;
+    private static final String executeMenu = "1";
+    private static final String executeMode = "2";
+
     private Set<String> autoModeSet = new LinkedHashSet<String>(){{
         add("公募自动化");
         add("中信自动化");
         add("兴业自动化");
         add("中金自动化");
-        add("国君自动化");
+        add("分产品自动化");
+        add("国泰君安自动化");
         add("国金道富自动化");
     }};
 
@@ -100,6 +102,7 @@ public class ChangeToolController implements Initializable {
                 OutputUtils.info(logs,"请选择 自动化清算模式");
                 return;
             }
+            executeType = executeMode;
             TaskUtils.execute(new ChangeFunctionTask(new ChangeFunctionTaskParam(this, STR_1, mode)));
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -118,6 +121,7 @@ public class ChangeToolController implements Initializable {
                 OutputUtils.info(logs,"请选择 菜单模式");
                 return;
             }
+            executeType = executeMenu;
             TaskUtils.execute(new ChangeFunctionTask(new ChangeFunctionTaskParam(this, STR_2, menu)));
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -155,22 +159,27 @@ public class ChangeToolController implements Initializable {
     }
 
     private void executeEnd(String resFilePath) throws Exception {
-        OutputUtils.infoContainBr(logs, "生成脚本 完成...");
+        OutputUtils.infoContainBr(logs, "\n生成脚本 完成...");
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (StringUtils.isNotBlank(appConfigDto.getDatabaseScriptUrl())) {
             OutputUtils.infoContainBr(logs, "执行脚本 开始...");
-            String[] sqlList = new String[0];
             String sql = STR_BLANK;
             try {
-                sqlList = FileUtils.readNormalFileToString(resFilePath, true).split(STR_SEMICOLON);
+                String[] sqlList = FileUtils.readNormalFileToString(resFilePath, true).split(STR_SEMICOLON);
                 if (sqlList != null) {
                     int size = sqlList.length;
-                    OutputUtils.info(logs, "执行中...");
+                    if (executeType.equals(executeMenu)) {
+                        OutputUtils.info(logs, "执行中...");
+                    }
                     for (int i=0; i<size; i++) {
-                        if (i % 1000 == 0) {
-                            OutputUtils.info(logs, STR_POINT_3);
+                        sql = sqlList[i].trim();
+                        if (executeType.equals(executeMode)) {
+                            OutputUtils.info(logs, (i == 0 ? STR_BLANK : STR_NEXT_LINE) + "执行sql: " + sql);
+                        } else {
+                            if (i % 1000 == 0) {
+                                OutputUtils.info(logs, STR_POINT_3);
+                            }
                         }
-                        sql = sqlList[i];
                         DatabaseUtils.executeSql(sql, null);
                     }
                 }
@@ -180,7 +189,7 @@ public class ChangeToolController implements Initializable {
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 OutputUtils.info(logs, STR_NEXT_LINE_2 + e.getMessage());
-                OutputUtils.info(logs, "\n执行异常sql\n" + sql);
+                OutputUtils.info(logs, "\n执行异常sql: " + sql);
                 return;
             } finally {
                 DatabaseUtils.closeConnection();
@@ -262,22 +271,25 @@ public class ChangeToolController implements Initializable {
     public void buildAutoModeSql(String taskType) throws Exception {
         switch (taskType) {
             case "公募自动化":
-                buildAutoModeSql(taskType, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0);
+                buildAutoModeSql(taskType, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0);
                 break;
             case "中信自动化":
-                buildAutoModeSql(taskType, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0);
+                buildAutoModeSql(taskType, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0);
                 break;
             case "兴业自动化":
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0);
+                buildAutoModeSql(taskType, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0);
                 break;
             case "中金自动化":
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0);
+                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0);
+                break;
+            case "分产品自动化":
+                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1);
+                break;
+            case "国泰君安自动化":
+                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1);
                 break;
             case "国金道富自动化":
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0);
-                break;
-            case "国君自动化":
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1);
+                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0);
                 break;
             default:
                 new Exception("未匹配执行方法，请检查");
@@ -289,71 +301,83 @@ public class ChangeToolController implements Initializable {
      * @param gm 公募
      * @param zx 中信
      * @param xy 兴业
-     * @param gj 国君
      * @param zj 中金
+     * @param gjdf 国金道富
+     * @param gtja 国泰君安
+     * @param fcp 分产品自动化
      */
-    public void buildAutoModeSql(String taskType, String gm, String zx, String xy, String zj, String gjdf, String gj) throws Exception {
+    public void buildAutoModeSql(String taskType, String gm, String zx, String xy, String zj, String gjdf, String gtja, String fcp) throws Exception {
         boolean xyMode =  STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gjdf);
-        executeStart("自动化清算模式 ... " + taskType);
+        executeStart(taskType);
+        OutputUtils.info(logs, "执行中...");
         List<String> res = new ArrayList<>();
-        res.add("-- 自动化模式【" + taskType + "】\n");
+        res.add("-- " + taskType + "\n");
 
-        res.add("-- 开通实时并发清算功能 (公募自动化清算模式)");
+        res.add("-- 开通实时并发清算功能(公募自动化清算模式)");
         res.add("update tbparam set param_value = '" + gm + "' where param_id = 'fund_MultiProcessesLiqDeal';\n");
 
-        res.add("-- 按照产品日切清算 (中信自动化清算模式)");
+        res.add("-- 按照产品日切清算(中信自动化清算模式)");
         if (STR_1.equals(zx) || xyMode) {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_T1MultiProcessesLiqDeal';\n");
         } else {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_T1MultiProcessesLiqDeal';\n");
         }
 
-        res.add("-- 开通参数日期管理功能 (中信特有功能)");
+        res.add("-- 开通参数日期管理功能(中信特有功能)");
         if (STR_1.equals(zx)) {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_ParamProcessesLiqDeal';\n");
         } else {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_ParamProcessesLiqDeal';\n");
         }
 
-        res.add("-- 是否兴业自动化清算特有功能 (兴业特有功能)");
+        res.add("-- 是否兴业自动化清算特有功能(兴业特有功能)");
         res.add("update tbparam set param_value = '" + xy + "' where param_id = 'fund_XyMultiProcessesPrivate';\n");
 
-        res.add("-- 清算列表外部发起 (兴业自动化清算模式)");
+        res.add("-- 清算列表外部发起(兴业自动化清算模式)");
         if (xyMode) {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_XyMultiProcessesLiqDeal';\n");
         } else {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_XyMultiProcessesLiqDeal';\n");
         }
 
-        res.add("-- 开通分产品自动化清算功能 (国君自动化清算模式)");
-        res.add("update tbparam set param_value = '" + gj + "' where param_id = 'fund_AutoLiqByPrd';\n");
+        res.add("-- 开通分产品自动化清算功能");
+        res.add("update tbparam set param_value = '" + fcp + "' where param_id = 'fund_AutoLiqByPrd';\n");
 
-        res.add("-- 国泰君安特殊处理功能  (国君特有功能)");
-        if (STR_1.equals(gj)) {
+        res.add("-- 分产品自动化清算行情导入方式");
+        if (STR_1.equals(gtja) || STR_0.equals(fcp)) {
+            res.add("update tbparam set param_value = '0' where param_id = 'fund_autoLiqImpNavType';\n");
+        } else {
+            res.add("update tbparam set param_value = '1' where param_id = 'fund_autoLiqImpNavType';\n");
+        }
+
+        res.add("-- 国泰君安特殊处理功能(国君特有功能)");
+        if (STR_1.equals(gtja)) {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_JaSpecialDeal';\n");
         } else {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_JaSpecialDeal';\n");
         }
 
-        res.add("-- 开通中金模式自动化清算功能 (中金特有功能)");
+        res.add("-- 开通中金模式自动化清算功能(中金特有功能)");
         res.add("update tbparam set param_value = '" + zj + "' where param_id = 'fund_ZjMultiProcessesPrivate';\n");
 
         res.add(STR_SPACE);
         String groupCode = STR_BLANK;
+        String groupName = "1主流程";
         if (STR_1.equals(gm)) {
             groupCode = "fund_daily_virtual_multi";
         } else if (STR_1.equals(zx)) {
             groupCode = "fund_daily_t1_multi";
         } else if (xyMode) {
             groupCode = "fund_daily_xyt1_multi";
-        } else if (STR_1.equals(gj)) {
+            groupName = "1自动化清算";
+        } else if (STR_1.equals(fcp)) {
             groupCode = "fund_daily_auto_liq_byprd";
         }
         StringBuilder group = new StringBuilder();
         res.add("-- 流程信息");
         group.append("delete from tbschedulegroup where sche_group_type = '1';\n");
-        group.append("insert into tbschedulegroup (sche_page_code, sche_group_code, sche_group_name, sche_group_isuse, sche_group_type)\n");
-        group.append("values ('fund_schedule' , '" + groupCode + "' , '1主流程' , '1' , '1');\n");
+        group.append("insert into tbschedulegroup (sche_page_code, sche_group_code, sche_group_name, sche_group_isuse, sche_group_type) \n");
+        group.append("values ('fund_schedule' , '" + groupCode + "' , '" + groupName + "' , '1' , '1');\n");
         res.add(group.toString());
         res.add(STR_SPACE);
         res.add("commit;");

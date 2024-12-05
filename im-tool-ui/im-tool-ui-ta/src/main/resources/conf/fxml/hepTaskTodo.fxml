@@ -149,24 +149,6 @@
                                                         <PropertyValueFactory property="sprintVersion"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="endDate" editable="false" prefWidth="45"
-                                                             sortable="false" text="截止">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="endDate"/>
-                                                    </cellValueFactory>
-                                                </TableColumn>
-                                                <TableColumn id="closeDate" editable="false" prefWidth="45"
-                                                             sortable="false" text="封版">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="closeDate"/>
-                                                    </cellValueFactory>
-                                                </TableColumn>
-                                                <TableColumn id="publishDate" editable="false" prefWidth="45"
-                                                             sortable="false" text="发版">
-                                                    <cellValueFactory>
-                                                        <PropertyValueFactory property="publishDate"/>
-                                                    </cellValueFactory>
-                                                </TableColumn>
                                                 <TableColumn id="estimateFinishDate" editable="false" prefWidth="115"
                                                              sortable="false" style="-fx-alignment: center;"
                                                              text="完成日期">
@@ -188,12 +170,24 @@
                                                         <PropertyValueFactory property="oriPublishDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <!--<TableColumn id="productName" editable="false" prefWidth="290"
-                                                             sortable="false" text="产品名称">
+                                                <TableColumn id="endDate" editable="false" prefWidth="45"
+                                                             sortable="false" text="截止">
                                                     <cellValueFactory>
-                                                        <PropertyValueFactory property="productName"/>
+                                                        <PropertyValueFactory property="endDate"/>
                                                     </cellValueFactory>
-                                                </TableColumn>-->
+                                                </TableColumn>
+                                                <TableColumn id="closeDate" editable="false" prefWidth="45"
+                                                             sortable="false" text="封版">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="closeDate"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
+                                                <TableColumn id="publishDate" editable="false" prefWidth="45"
+                                                             sortable="false" text="发版">
+                                                    <cellValueFactory>
+                                                        <PropertyValueFactory property="publishDate"/>
+                                                    </cellValueFactory>
+                                                </TableColumn>
                                             </columns>
                                         </TableView>
                                     </children>
