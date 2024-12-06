@@ -113,6 +113,26 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
 
+        MenuItem menuMarkSubmit = new MenuItem(NAME_MENU_MARK_SUBMIT);
+        CommonUtils.setIcon(menuMarkSubmit, SUBMIT_ICON, MENUITEM_ICON_SIZE);
+        menuMarkSubmit.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                handleSubmit(STR_1);
+            }
+        });
+
+        MenuItem menuCancelSubmit = new MenuItem(NAME_MENU_CANCEL_SUBMIT);
+        CommonUtils.setIcon(menuCancelSubmit, CANCEL_SUBMIT_ICON, MENUITEM_ICON_SIZE);
+        menuCancelSubmit.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                handleSubmit(STR_0);
+            }
+        });
+
         MenuItem detailTask = new MenuItem(NAME_MENU_DETAIL);
         CommonUtils.setIcon(detailTask, DETAIL_ICON, MENUITEM_ICON_SIZE);
         detailTask.setOnAction(new EventHandler<ActionEvent>() {
@@ -151,6 +171,8 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         getItems().add(updateTask);
         getItems().add(menuMarkDev);
         getItems().add(menuCancelDev);
+        getItems().add(menuMarkSubmit);
+        getItems().add(menuCancelSubmit);
         getItems().add(detailTask);
     }
 
@@ -188,7 +210,37 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         }
         FileUtils.writeFile(path, demandNoList, false);
-        String msg = STR_1.equals(type) ? "标记分支成功" : "取消标记成功";
+        String msg = STR_1.equals(type) ? "标记分支成功" : "取标分支成功";
+        HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
+        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+        activeHepTodoController.doExecuteQuery();
+    }
+
+    private void handleSubmit(String type) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        HepTaskDto item = appConfigDto.getHepTaskDto();
+        String taskNumber = item.getTaskNumber();
+        String eleValue = taskNumber + STR_SEMICOLON + type;
+        String eleIndex = taskNumber + STR_SEMICOLON;
+        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT);
+        File taskExtendStat = new File(path);
+        if (!taskExtendStat.exists()) {
+            taskExtendStat.createNewFile();
+        }
+        List<String> taskNumberList = FileUtils.readNormalFile(path, false);
+        if (!taskNumberList.contains(eleIndex + STR_0) && !taskNumberList.contains(eleIndex + STR_1)) {
+            taskNumberList.add(eleValue);
+        } else {
+            for (int i=0; i<taskNumberList.size(); i++) {
+                String ele = taskNumberList.get(i);
+                if (ele.contains(eleIndex)) {
+                    taskNumberList.set(i, eleValue);
+                    break;
+                }
+            }
+        }
+        FileUtils.writeFile(path, taskNumberList, false);
+        String msg = STR_1.equals(type) ? "标记提交成功" : "取标提交成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
         OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
         activeHepTodoController.doExecuteQuery();

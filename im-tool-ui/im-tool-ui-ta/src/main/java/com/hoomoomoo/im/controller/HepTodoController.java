@@ -743,6 +743,7 @@ public class HepTodoController extends BaseController implements Initializable {
         Map<String, String> taskCustomerName = new HashMap<>();
         Map<String, String> taskDemandNo = new HashMap<>();
         Map<String, String> taskDemandStatus = new HashMap<>();
+        Map<String, String> taskSubmitStatus = new HashMap<>();
         boolean waitTaskSync = false;
         try {
             List<String> versionList = new ArrayList<>();
@@ -754,6 +755,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 taskCustomerName = taskInfo.get(KEY_CUSTOMER);
                 taskDemandNo = taskInfo.get(KEY_TASK);
                 taskDemandStatus = getDemandInfo();
+                taskSubmitStatus = getTaskStatusInfo();
             }
             for (String item : versionList) {
                 String[] elements = item.split(STR_SEMICOLON);
@@ -822,7 +824,10 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.isBlank(demandNo)) {
                 demandNo = taskNumberIn;
             }
-            if (StringUtils.equals(STR_1, taskDemandStatus.get(demandNo)) && !taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG)) {
+            if (!taskName.contains(COMMIT_TAG) && StringUtils.equals(STR_1, taskSubmitStatus.get(taskNumberIn))) {
+                taskName = COMMIT_TAG + taskName;
+            }
+            if (!taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG) && StringUtils.equals(STR_1, taskDemandStatus.get(demandNo))) {
                 taskName = DEV_COMMIT_TAG + taskName;
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
@@ -832,14 +837,12 @@ public class HepTodoController extends BaseController implements Initializable {
             }
 
             String status = item.getStatus();
-            if (!isExtendUser()) {
-                if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
-                    if (taskName.contains(DEV_COMMIT_TAG)) {
-                        mergerNum--;
-                    }
-                    iterator.remove();
-                    continue;
+            if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
+                if (taskName.contains(DEV_COMMIT_TAG)) {
+                    mergerNum--;
                 }
+                iterator.remove();
+                continue;
             }
             if (hasBlank && StringUtils.isBlank(status)) {
                 mergerNum--;
@@ -1709,6 +1712,25 @@ public class HepTodoController extends BaseController implements Initializable {
             LoggerUtils.info(e);
         }
         return demand;
+    }
+
+    public Map<String,String> getTaskStatusInfo() {
+        Map<String, String> task = new HashMap<>();
+        try {
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT), false);
+            if (CollectionUtils.isNotEmpty(taskList)) {
+                for (String item : taskList) {
+                    String[] elementList = item.split(STR_SEMICOLON);
+                    task.put(elementList[0], elementList[1]);
+                }
+            }
+        } catch (IOException e) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            LoggerUtils.info(e);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+        return task;
     }
 
     private void addTaskMenu(AppConfigDto appConfigDto, HepTodoController hepTodoController) throws Exception {
