@@ -826,6 +826,7 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             if (!taskName.contains(COMMIT_TAG) && StringUtils.equals(STR_1, taskSubmitStatus.get(taskNumberIn))) {
                 taskName = COMMIT_TAG + taskName;
+                item.setTaskMark(COMMIT_TAG.replace(STR_BRACKETS_3_LEFT, STR_BLANK).replace(STR_BRACKETS_3_RIGHT, STR_BLANK));
             }
             if (!taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG) && (StringUtils.equals(STR_1, taskDemandStatus.get(demandNo)) || StringUtils.equals(STR_1, taskDemandStatus.get(taskNumberIn)))) {
                 taskName = DEV_COMMIT_TAG + taskName;
@@ -1401,6 +1402,11 @@ public class HepTodoController extends BaseController implements Initializable {
                         return finishTime1.compareTo(finishTime2);
                     }
                     if (completeShow) {
+                        String taskMark1 = StringUtils.isBlank(o1.getTaskMark()) ? STR_BLANK : o1.getTaskMark();
+                        String taskMark2 = StringUtils.isBlank(o2.getTaskMark()) ? STR_BLANK : o2.getTaskMark();
+                        if (!StringUtils.equals(taskMark1, taskMark2)) {
+                            return taskMark2.compareTo(taskMark1);
+                        }
                         String customer1 = getSortCustomerName(o1.getCustomer());
                         String customer2 = getSortCustomerName(o2.getCustomer());
                         return customer1.compareTo(customer2);
@@ -1824,6 +1830,7 @@ public class HepTodoController extends BaseController implements Initializable {
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put("description", i % 2 == 0 ? "洛洛洛</p>洛洛洛" : "开发中");
+            item.put("taskMark", i % 2 == 0 ? "已提交" : "");
             switch (i % 7) {
                 case 0:
                     item.put(KEY_NAME, "「需求」" + i);

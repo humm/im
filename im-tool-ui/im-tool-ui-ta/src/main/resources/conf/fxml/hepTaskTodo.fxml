@@ -119,19 +119,19 @@
                                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                    AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="name" editable="false" prefWidth="520" sortable="false"
+                                                <TableColumn id="name" editable="false" prefWidth="570" sortable="false"
                                                              text="任务名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="customer" editable="false" prefWidth="105"
+                                                <TableColumn id="customer" editable="false" prefWidth="90"
                                                              sortable="false" text="客户名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="customer"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="taskMark" editable="false" prefWidth="50"
+                                                <TableColumn id="taskMark" editable="false" prefWidth="65"
                                                              sortable="false" style="-fx-alignment: center;" text="标记">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="taskMark"/>
@@ -149,21 +149,21 @@
                                                         <PropertyValueFactory property="sprintVersion"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="estimateFinishDate" editable="false" prefWidth="115"
+                                                <TableColumn id="estimateFinishDate" editable="false" prefWidth="100"
                                                              sortable="false" style="-fx-alignment: center;"
                                                              text="完成日期">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="estimateFinishDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="oriCloseDate" editable="false" prefWidth="115"
+                                                <TableColumn id="oriCloseDate" editable="false" prefWidth="100"
                                                              sortable="false" style="-fx-alignment: center;"
                                                              text="封版日期">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="oriCloseDate"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="oriPublishDate" editable="false" prefWidth="115"
+                                                <TableColumn id="oriPublishDate" editable="false" prefWidth="100"
                                                              sortable="false" style="-fx-alignment: center;"
                                                              text="发版日期">
                                                     <cellValueFactory>
