@@ -186,30 +186,27 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
     private void handleDev(String type) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto item = appConfigDto.getHepTaskDto();
-        String demandNo = item.getDemandNo();
-        if (StringUtils.isBlank(demandNo)) {
-            demandNo = item.getTaskNumber();
-        }
-        String eleValue = demandNo + STR_SEMICOLON + type;
-        String eleIndex = demandNo + STR_SEMICOLON;
-        String path = FileUtils.getFilePath(PATH_DEFINE_DEMAND_EXTEND_STAT);
+        String taskNumber = item.getTaskNumber();
+        String eleValue = taskNumber + STR_SEMICOLON + type;
+        String eleIndex = taskNumber + STR_SEMICOLON;
+        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT);
         File demandExtendStat = new File(path);
         if (!demandExtendStat.exists()) {
             demandExtendStat.createNewFile();
         }
-        List<String> demandNoList = FileUtils.readNormalFile(path, false);
-        if (!demandNoList.contains(eleIndex + STR_0) && !demandNoList.contains(eleIndex + STR_1)) {
-            demandNoList.add(eleValue);
+        List<String> taskNumberList = FileUtils.readNormalFile(path, false);
+        if (!taskNumberList.contains(eleIndex + STR_0) && !taskNumberList.contains(eleIndex + STR_1)) {
+            taskNumberList.add(eleValue);
         } else {
-            for (int i=0; i<demandNoList.size(); i++) {
-                String ele = demandNoList.get(i);
+            for (int i=0; i<taskNumberList.size(); i++) {
+                String ele = taskNumberList.get(i);
                 if (ele.contains(eleIndex)) {
-                    demandNoList.set(i, eleValue);
+                    taskNumberList.set(i, eleValue);
                     break;
                 }
             }
         }
-        FileUtils.writeFile(path, demandNoList, false);
+        FileUtils.writeFile(path, taskNumberList, false);
         String msg = STR_1.equals(type) ? "标记分支成功" : "取标分支成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
         OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));

@@ -353,7 +353,7 @@ public class BaseConst {
     public static final String PATH_VERSION_EXTEND_STAT = "/extend/version/versionExtend.stat";
     public static final String PATH_TASK_STAT = "/extend/task/task.stat";
     public static final String PATH_DEMAND_STAT = "/demand.stat";
-    public static final String PATH_DEFINE_DEMAND_EXTEND_STAT = "/extend/task/demandExtend.stat";
+    public static final String PATH_DEFINE_TASK_DEV_EXTEND_STAT = "/extend/task/taskDevExtend.stat";
     public static final String PATH_DEFINE_TASK_EXTEND_STAT = "/extend/task/taskExtend.stat";
     public static final String PATH_DEFINE_DEMAND_SYNC_STAT = "/extend/task/demandSync.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";

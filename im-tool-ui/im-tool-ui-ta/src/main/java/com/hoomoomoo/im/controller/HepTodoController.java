@@ -827,7 +827,7 @@ public class HepTodoController extends BaseController implements Initializable {
             if (!taskName.contains(COMMIT_TAG) && StringUtils.equals(STR_1, taskSubmitStatus.get(taskNumberIn))) {
                 taskName = COMMIT_TAG + taskName;
             }
-            if (!taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG) && StringUtils.equals(STR_1, taskDemandStatus.get(demandNo))) {
+            if (!taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG) && (StringUtils.equals(STR_1, taskDemandStatus.get(demandNo)) || StringUtils.equals(STR_1, taskDemandStatus.get(taskNumberIn)))) {
                 taskName = DEV_COMMIT_TAG + taskName;
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
@@ -1698,7 +1698,7 @@ public class HepTodoController extends BaseController implements Initializable {
         Map<String, String> demand = new HashMap<>();
         try {
             List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT), false);
-            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_EXTEND_STAT), false));
+            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT), false));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
