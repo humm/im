@@ -824,11 +824,11 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.isBlank(demandNo)) {
                 demandNo = taskNumberIn;
             }
-            if (!taskName.contains(COMMIT_TAG) && StringUtils.equals(STR_1, taskSubmitStatus.get(taskNumberIn))) {
+            if (!taskName.contains(COMMIT_TAG) && taskSubmitStatus.containsKey(taskNumberIn)) {
                 taskName = COMMIT_TAG + taskName;
                 item.setTaskMark(COMMIT_TAG.replace(STR_BRACKETS_3_LEFT, STR_BLANK).replace(STR_BRACKETS_3_RIGHT, STR_BLANK));
             }
-            if (!taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG) && (StringUtils.equals(STR_1, taskDemandStatus.get(demandNo)) || StringUtils.equals(STR_1, taskDemandStatus.get(taskNumberIn)))) {
+            if (!taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG) && (taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn))) {
                 taskName = DEV_COMMIT_TAG + taskName;
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
@@ -1707,7 +1707,9 @@ public class HepTodoController extends BaseController implements Initializable {
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
-                    demand.put(elementList[0], elementList[1]);
+                    if (STR_TRUE.equals(elementList[1])) {
+                        demand.put(elementList[0], elementList[1]);
+                    }
                 }
             }
         } catch (IOException e) {
@@ -1726,7 +1728,9 @@ public class HepTodoController extends BaseController implements Initializable {
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
-                    task.put(elementList[0], elementList[1]);
+                    if (STR_TRUE.equals(elementList[1])) {
+                        task.put(elementList[0], elementList[1]);
+                    }
                 }
             }
         } catch (IOException e) {

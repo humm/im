@@ -70,11 +70,11 @@
                                                      mnemonicParsing="false" onAction="#selectTruncate" text="truncate"
                                                      userData="4"/>
 
-                                        <ProgressIndicator fx:id="schedule" layoutX="85.0" layoutY="510.0"
+                                        <ProgressIndicator fx:id="schedule" layoutX="100.0" layoutY="505.0"
                                                            progress="0.0"/>
-                                        <Label fx:id="scheduleText" layoutX="120.0" layoutY="515.0" text="0%"/>
+                                        <Label fx:id="scheduleText" layoutX="135.0" layoutY="510.0" text="0%"/>
 
-                                        <Button fx:id="execute" layoutX="180.0" layoutY="505.0"
+                                        <Button fx:id="execute" layoutX="200.0" layoutY="505.0"
                                                 mnemonicParsing="false" onAction="#execute" prefHeight="30.0"
                                                 prefWidth="90.0" text="执行">
                                             <padding>
