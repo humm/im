@@ -119,13 +119,13 @@
                                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                    AnchorPane.topAnchor="0.0">
                                             <columns>
-                                                <TableColumn id="name" editable="false" prefWidth="570" sortable="false"
+                                                <TableColumn id="name" editable="false" prefWidth="545" sortable="false"
                                                              text="任务名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="name"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="customer" editable="false" prefWidth="90"
+                                                <TableColumn id="customer" editable="false" prefWidth="105"
                                                              sortable="false" text="客户名称">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="customer"/>
