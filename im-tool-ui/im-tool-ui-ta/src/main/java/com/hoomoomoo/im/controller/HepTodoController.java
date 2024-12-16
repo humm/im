@@ -87,7 +87,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     public final static String OPERATE_TYPE_CUSTOM_UPDATE = "update";
 
-    public final static String DEV_COMMIT_TAG = "【分支已提交】";
+    public final static String DEV_COMMIT_TAG = "【分支已完成】";
     public final static String COMMIT_TAG = "【已提交】";
     public final static String UPDATE_TAG = "【已修改】";
     public final static String SELF_BUILD_TAG = "【自建任务】";
@@ -379,7 +379,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     void doShowVersion() throws Exception {
-        JvmCache.getSystemToolController().executeUpdateVersion();
+        //JvmCache.getSystemToolController().executeUpdateVersion();
         List<VersionDto> versionDtoList = getVersionInfo();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setVersionDtoList(versionDtoList);
@@ -826,6 +826,9 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             if (!taskName.contains(COMMIT_TAG) && taskSubmitStatus.containsKey(taskNumberIn)) {
                 taskName = COMMIT_TAG + taskName;
+                if (!taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG) ) {
+                    taskName = DEV_COMMIT_TAG + taskName;
+                }
                 item.setTaskMark(COMMIT_TAG.replace(STR_BRACKETS_3_LEFT, STR_BLANK).replace(STR_BRACKETS_3_RIGHT, STR_BLANK));
             }
             if (!taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG) && (taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn))) {
@@ -1848,7 +1851,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.put(KEY_NAME, "「开发」已修改 问题" + i);
                     break;
                 case 4:
-                    item.put(KEY_NAME, "「开发」【分支已提交】 问题" + i);
+                    item.put(KEY_NAME, "「开发」【分支已完成】 问题" + i);
                     break;
                 case 5:
                     item.put(KEY_NAME, "「自测问题」问题" + i);

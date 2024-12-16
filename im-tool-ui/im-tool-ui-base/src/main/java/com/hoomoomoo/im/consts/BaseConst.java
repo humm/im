@@ -350,6 +350,7 @@ public class BaseConst {
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/extend/version/version.stat";
+    public static final String PATH_VERSION_SYNC_STAT = "/extend/version/versionSync.stat";
     public static final String PATH_VERSION_EXTEND_STAT = "/extend/version/versionExtend.stat";
     public static final String PATH_TASK_STAT = "/extend/task/task.stat";
     public static final String PATH_DEMAND_STAT = "/demand.stat";
