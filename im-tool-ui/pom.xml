@@ -132,10 +132,5 @@
             <artifactId>ojdbc6</artifactId>
             <version>${ojdbc6.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.jsqlparser</groupId>
-            <artifactId>jsqlparser</artifactId>
-            <version>${jsqlparser.version}</version>
-        </dependency>
     </dependencies>
 </project>
