@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.main;
 
 
+import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -10,12 +11,12 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
+import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
 
 
-public class WebFundCoreCallParameterCore {
+public class CheckWebFundCoreCallParameterCore {
 
     private static int index;
-    private static int num;
     private static List<String> special = new ArrayList<>();
     private static Map<String, Set<String>> methodAll = new LinkedHashMap<>();
     private static String[] trimRightMark = new String[]{
@@ -212,7 +213,7 @@ public class WebFundCoreCallParameterCore {
 
     public static void main(String[] args) throws IOException {
         String checkPath = "E:\\workspace\\ta6\\server\\ta-web-manager-fund-core\\src";
-        String resPath = "C:\\Users\\hspcadmin\\Desktop\\webFundCoreCallParameterCore.sql";
+        String resPath = "C:\\Users\\hspcadmin\\Desktop\\checkWebFundCoreCallParameterCore.sql";
         System.out.println();
         System.out.println("开始检查 ...");
         System.out.println("检查路径 ... " + checkPath);
@@ -225,6 +226,8 @@ public class WebFundCoreCallParameterCore {
 
     private static void doCheck(String checkPath, String resPath) throws IOException {
         check(new File(checkPath));
+        int totalNum = 0;
+        int descNum = 0;
         List<String> res = new ArrayList<>();
         res.add("-- 前台代码直接调用后台代码方法(待确认影响范围) ");
         StringBuilder desc = new StringBuilder("    private static Map<String, Map<String, String>> methodDesc = new LinkedHashMap<String, Map<String, String>>(){{\n");
@@ -246,11 +249,12 @@ public class WebFundCoreCallParameterCore {
                 Map<String, String> methodDescEle = methodDesc.get(key);
                 desc.append("        put(\"" + key + "\", new HashMap<String, String>(){{\n");
                 for (String ele : method) {
-                    num++;
+                    totalNum++;
                     desc.append("            put(\"" + ele + "\", \"\");\n");
                     if (methodDescEle.containsKey(ele)) {
                         res.add("     -- " + methodDescEle.get(ele));
                     } else {
+                        descNum++;
                         res.add("-- 请补充方法说明");
                     }
                     res.add("     " + ele);
@@ -267,6 +271,7 @@ public class WebFundCoreCallParameterCore {
         }
         res.add(STR_BLANK);
         res.addAll(special);
+        res.add(0, "-- 方法总数:" + totalNum + "  补充方法说明:" + descNum + "  特殊场景:" + special.size() + STR_NEXT_LINE);
         FileUtils.writeFile(resPath, res, false);
     }
 
@@ -289,7 +294,7 @@ public class WebFundCoreCallParameterCore {
                     Set<String> markService = new HashSet<>();
                     Set<String> method = new LinkedHashSet<>();
                     for (String ele : contents) {
-                        ele = ele.replaceAll("\\s+", " ").trim();
+                        ele = CommonUtils.formatStrToSingleSpace(ele);
                         if (ele.contains("import") && ele.contains("com.hundsun.ta.pub.fund.services.")) {
                             String serviceName = ele.substring(ele.lastIndexOf(".") + 1);
                             markService.add(serviceName);

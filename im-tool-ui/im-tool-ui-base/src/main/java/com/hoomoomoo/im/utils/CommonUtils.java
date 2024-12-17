@@ -946,4 +946,11 @@ public class CommonUtils {
         }
         return ver;
     }
+
+    public static String formatStrToSingleSpace(String str) {
+        if (StringUtils.isBlank(str)) {
+            return STR_BLANK;
+        }
+        return str.replaceAll("\\s+", " ").trim();
+    }
 }
