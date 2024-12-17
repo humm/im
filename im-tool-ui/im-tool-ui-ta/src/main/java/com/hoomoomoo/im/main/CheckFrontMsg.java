@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
+import static com.hoomoomoo.im.main.MainConst.CHECK_FRONT_PATH;
+import static com.hoomoomoo.im.main.MainConst.CHECK_RESULT_PATH;
 
 public class CheckFrontMsg {
 
@@ -16,8 +18,8 @@ public class CheckFrontMsg {
     private static Map<String, Set<String>> res = new LinkedHashMap<>();
 
     public static void main(String[] args) throws IOException {
-        String checkPath = "E:\\workspace\\ta6\\front\\HUI1.0\\console-fund-ta-vue";
-        String resPath = "C:\\Users\\hspcadmin\\Desktop\\checkFrontMsg.sql";
+        String checkPath = CHECK_FRONT_PATH + "console-fund-ta-vue";
+        String resPath = CHECK_RESULT_PATH + "checkFrontMsg.sql";
         System.out.println();
         System.out.println("开始检查 ...");
         System.out.println("检查路径 ... " + checkPath);

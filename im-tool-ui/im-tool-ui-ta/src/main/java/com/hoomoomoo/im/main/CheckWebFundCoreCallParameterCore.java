@@ -12,6 +12,8 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
 import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
+import static com.hoomoomoo.im.main.MainConst.CHECK_JAVA_PATH;
+import static com.hoomoomoo.im.main.MainConst.CHECK_RESULT_PATH;
 
 
 public class CheckWebFundCoreCallParameterCore {
@@ -212,8 +214,8 @@ public class CheckWebFundCoreCallParameterCore {
 
 
     public static void main(String[] args) throws IOException {
-        String checkPath = "E:\\workspace\\ta6\\server\\ta-web-manager-fund-core\\src";
-        String resPath = "C:\\Users\\hspcadmin\\Desktop\\checkWebFundCoreCallParameterCore.sql";
+        String checkPath = CHECK_JAVA_PATH + "server\\ta-web-manager-fund-core\\src";
+        String resPath = CHECK_RESULT_PATH + "checkWebFundCoreCallParameterCore.sql";
         System.out.println();
         System.out.println("开始检查 ...");
         System.out.println("检查路径 ... " + checkPath);
