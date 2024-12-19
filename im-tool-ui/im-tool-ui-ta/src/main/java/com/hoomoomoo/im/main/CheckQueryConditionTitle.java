@@ -13,12 +13,12 @@ import static com.hoomoomoo.im.main.MainConst.CHECK_FRONT_PATH;
 import static com.hoomoomoo.im.main.MainConst.CHECK_RESULT_PATH;
 
 /**
- * h-msg-box 配置检查
+ * 查询条件 配置检查
  */
-public class CheckFrontMsg {
+public class CheckQueryConditionTitle {
 
     private static int index;
-    private static Map<String, Set<String>> res = new LinkedHashMap<>();
+    private static List<String> res = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         executeCheck();
@@ -26,7 +26,7 @@ public class CheckFrontMsg {
 
     public static void executeCheck() throws IOException {
         String checkPath = CHECK_FRONT_PATH + "front\\HUI1.0\\console-fund-ta-vue";
-        String resPath = CHECK_RESULT_PATH + "checkFrontMsg.sql";
+        String resPath = CHECK_RESULT_PATH + "checkQueryConditionTitle.sql";
         System.out.println();
         System.out.println("检查路径 ... " + checkPath);
         doCheck(checkPath, resPath);
@@ -37,20 +37,9 @@ public class CheckFrontMsg {
 
     private static void doCheck(String checkPath, String resPath) throws IOException {
         check(new File(checkPath));
-        List<String> content = new ArrayList<>();
-        int boxSize = 0;
-        for (Map.Entry<String, Set<String>> entry : res.entrySet()) {
-            String fileName = entry.getKey();
-            Set<String> box = entry.getValue();
-            content.add(fileName);
-            for (String ele : box) {
-                content.add("     -- " + ele);
-                boxSize++;
-            }
-        }
-        content.add(0, "-- 文件总数:" + res.size() + "  弹窗总数:" + boxSize + STR_NEXT_LINE);
-        content.add(0, "-- <h-msg-box> 使用v-if且transfer未配置为false");
-        FileUtils.writeFile(resPath, content, false);
+        res.add(0, "-- 文件总数:" + res.size() + STR_NEXT_LINE);
+        res.add(0, "-- 同时调用方法setColsDiffResolution和addTitleSearchCondition");
+        FileUtils.writeFile(resPath, res, false);
 
     }
 
@@ -62,7 +51,7 @@ public class CheckFrontMsg {
             }
         } else {
             String fileName = file.getName();
-            if (fileName.endsWith(".vue") || fileName.endsWith(".js")) {
+            if (fileName.endsWith(".vue")) {
                 index++;
                 if (index % 100 == 0) {
                     System.out.print(".");
@@ -70,7 +59,7 @@ public class CheckFrontMsg {
                 String content = FileUtils.readNormalFileToString(file.getPath(), false);
                 content = CommonUtils.formatStrToSingleSpace(content);
                 if (StringUtils.isNotBlank(content)) {
-                    if (content.indexOf("h-msg-box") != -1) {
+                    if (content.indexOf("mounted()") != -1) {
                         checkElement(fileName, content);
                     }
                 }
@@ -79,25 +68,11 @@ public class CheckFrontMsg {
     }
 
     private static void checkElement(String fileName, String content) {
-        int start = content.indexOf("<h-msg-box");
-        if (start == -1) {
-            return;
+        int mark1 = content.indexOf("setColsDiffResolution");
+        int mark2 = content.indexOf("addTitleSearchCondition");
+        if (mark1 != -1 && mark2 != -1) {
+            res.add(fileName);
         }
-        int end = start + content.substring(start).indexOf(">");
-        if (end == -1) {
-            return;
-        }
-        String ele = content.substring(start, end + 1);
-        if (ele.contains("v-if") && !ele.contains("transfer=\"false\"")) {
-            if (res.containsKey(fileName)) {
-                res.get(fileName).add(ele);
-            } else {
-                Set<String> box = new LinkedHashSet<>();
-                box.add(ele);
-                res.put(fileName, box);
-            }
-        }
-        content = content.substring(end + 10);
-        checkElement(fileName, content);
     }
+
 }

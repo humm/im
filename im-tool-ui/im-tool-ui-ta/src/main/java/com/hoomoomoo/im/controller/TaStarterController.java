@@ -32,7 +32,7 @@ public class TaStarterController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         JvmCache.setTaStarterController(this);
         CommonUtils.initialize(location, resources, functionTab, menuBar);
-        //startRestPlan();
+        startRestPlan();
     }
 
 }

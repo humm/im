@@ -83,18 +83,6 @@ public class FileUtils {
     }
 
     /**
-     * 读取正常文件 忽略注释
-     *
-     * @param
-     * @author: humm23693
-     * @date: 2021/04/23
-     * @return:
-     */
-    public static String readNormalFileToString(String filePath) throws IOException {
-        return readNormalFileToString(filePath, true);
-    }
-
-    /**
      * 读取正常文件
      *
      * @param
@@ -211,7 +199,7 @@ public class FileUtils {
      * @return:
      */
     public static void buildFileContent(List<String> fileContent, String content, boolean skipAnnotation) {
-        if (skipAnnotation && content.startsWith(ANNOTATION_NORMAL)) {
+        if (skipAnnotation && (content.trim().startsWith(ANNOTATION_NORMAL))) {
             return;
         }
         fileContent.add(content);

@@ -266,6 +266,7 @@ public class BaseConst {
     public static final String STR_BR = "</br>";
 
     public final static String ANNOTATION_NORMAL = "--";
+    public final static String ANNOTATION_NORMAL_2 = "//";
     public final static String ANNOTATION_CONFIG = "#";
 
     public final static Integer FUNCTION_CONFIG_SET = 9999;

@@ -4,7 +4,6 @@ package com.hoomoomoo.im.main;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +14,9 @@ import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
 import static com.hoomoomoo.im.main.MainConst.CHECK_JAVA_PATH;
 import static com.hoomoomoo.im.main.MainConst.CHECK_RESULT_PATH;
 
-
+/**
+ * webFundCore调用ParameterCode检查
+ */
 public class CheckWebFundCoreCallParameterCore {
 
     private static int index;
@@ -94,6 +95,8 @@ public class CheckWebFundCoreCallParameterCore {
             "generateServiceOfAuditHints",
             "getBusinParamNo",
             "andInListConditionStringVaule",
+            "selectExistsNoDealStart",
+            "checkNavImpStatus",
             "addNetInfo",
             "prepareRptSql",
             "getFundReportSqlTmp",
@@ -196,12 +199,6 @@ public class CheckWebFundCoreCallParameterCore {
         put("FundReqRealtimeRequestService.java", new HashMap<String, String>(){{
             put("FundPubServiceFactory.getMemoryCacheService().getFundDelayCfmInfo", "交易申请实时申请查询  审核按钮");
         }});
-        put("CCQueryKJQSFileController.java", new HashMap<String, String>(){{
-            put("FundPubServiceFactory.getSystemPublicService().andInListConditionStringVaule", "");
-        }});
-        put("FAQueryKJQSFileController.java", new HashMap<String, String>(){{
-            put("FundPubServiceFactory.getSystemPublicService().andInListConditionStringVaule", "");
-        }});
         put("PrdSellerParamInfoController.java", new HashMap<String, String>(){{
             put("FundPubServiceFactory.getFundArLimitService().getPrdcodeArLimitInfo", "查询个户交易限制信息");
             put("FundPubServiceFactory.getExportNavService().getFundPrdStatusChgStatusThesame07file", "按07文件导出 逻辑返回 基金状态/基金转换状态");
@@ -214,14 +211,16 @@ public class CheckWebFundCoreCallParameterCore {
 
 
     public static void main(String[] args) throws IOException {
+        executeCheck();
+    }
+
+    public static void executeCheck() throws IOException {
         String checkPath = CHECK_JAVA_PATH + "server\\ta-web-manager-fund-core\\src";
         String resPath = CHECK_RESULT_PATH + "checkWebFundCoreCallParameterCore.sql";
         System.out.println();
-        System.out.println("开始检查 ...");
         System.out.println("检查路径 ... " + checkPath);
         doCheck(checkPath, resPath);
         System.out.println();
-        System.out.println("完成检查 ...");
         System.out.println("结果路径 ... " + resPath);
         System.out.println();
     }
@@ -274,6 +273,7 @@ public class CheckWebFundCoreCallParameterCore {
         res.add(STR_BLANK);
         res.addAll(special);
         res.add(0, "-- 方法总数:" + totalNum + "  补充方法说明:" + descNum + "  特殊场景:" + special.size() + STR_NEXT_LINE);
+        res.add(0, "-- webFundCore代码调用ParameterCode方法");
         FileUtils.writeFile(resPath, res, false);
     }
 
