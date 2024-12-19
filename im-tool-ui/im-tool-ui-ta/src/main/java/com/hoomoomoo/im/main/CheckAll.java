@@ -7,10 +7,10 @@ import java.io.IOException;
  */
 public class CheckAll {
 
-
     public static void main(String[] args) throws IOException {
         CheckWebFundCoreCallParameterCore.executeCheck();
         CheckFrontMsg.executeCheck();
         CheckQueryConditionTitle.executeCheck();
+        CheckConfirmColumn.executeCheck();
     }
 }

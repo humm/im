@@ -1,11 +1,10 @@
 package com.hoomoomoo.im.main;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hoomoomoo.im.extend.ScriptSqlUtils;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -14,8 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.main.MainConst.CHECK_FRONT_PATH;
-import static com.hoomoomoo.im.main.MainConst.CHECK_RESULT_PATH;
+import static com.hoomoomoo.im.main.CheckConfigConsts.*;
 
 /**
  * 复核字段 配置检查
@@ -25,7 +23,8 @@ public class CheckConfirmColumn {
     private static int index;
     private static Map<String, Set<String>> existConfirmColumn = new LinkedHashMap<>();
     private static Map<String, Set<String>> needConfirmColumn = new LinkedHashMap<>();
-    private static Map<String, Set<String>> lackConfirmColumn = new LinkedHashMap<>();
+    private static Set<String> needConfirmUrl = new LinkedHashSet<>();
+    private static String WORK_FLOW_SUB_TRANS = CHECK_MAIN_PATH + "sql\\pub\\001initdata\\basedata\\workflow\\tbworkflowsubtrans-fund.sql";
 
     public static void main(String[] args) throws IOException {
         executeCheck();
@@ -44,11 +43,8 @@ public class CheckConfirmColumn {
 
     private static void doCheck(String checkPath, String resPath) throws IOException {
         check(new File(checkPath));
-        List<String> content = new ArrayList<>();
-        int num = 0;
-        boolean addUrl;
+        Map<String, Set<String>> lackField = new LinkedHashMap<>();
         for (Map.Entry<String, Set<String>> entry : needConfirmColumn.entrySet()) {
-            addUrl = false;
             String url = entry.getKey();
             Set<String> value = entry.getValue();
             if (existConfirmColumn.containsKey(url)) {
@@ -56,23 +52,105 @@ public class CheckConfirmColumn {
                 for (String column : value) {
                     String columnTranslate = column + "Name";
                     if (!existColumn.contains(column) && !existColumn.contains(columnTranslate)) {
-                        if (!addUrl) {
-                            content.add(url);
-                            addUrl = true;
+                        if (lackField.containsKey(url)) {
+                            lackField.get(url).add(column);
+                        } else {
+                            Set<String> field = new LinkedHashSet<>();
+                            field.add(column);
+                            lackField.put(url, field);
                         }
-                        content.add("     -- " + column);
                     }
                 }
             } else {
-                content.add(url);
-                for (String column : value) {
-                    content.add("     -- " + column);
-                }
+                lackField.put(url, value);
             }
         }
-        content.add(0, "-- url总数:" + num + STR_NEXT_LINE);
+        Map<String, Set<String>> urlGroup = new LinkedHashMap<>();
+        Iterator<Map.Entry<String, Set<String>>> iterator = lackField.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, Set<String>> entry = iterator.next();
+            String url = entry.getKey();
+            Set<String> columns = entry.getValue();
+            if (deleteUrl(urlGroup, url, columns.size())) {
+                iterator.remove();
+            }
+        }
+        initNeedConfirmUrl();
+        int num = 0;
+        List<String> content = new ArrayList<>();
+        for (Map.Entry<String, Set<String>> entry : lackField.entrySet()) {
+            String url = entry.getKey();
+            if (!needConfirmUrl.contains(url) || skipUrl(url)) {
+                continue;
+            }
+            Set<String> columns = entry.getValue();
+            num++;
+            url = getUrlGroup(urlGroup, url, columns.size());
+            content.add(url);
+            for (String ele : columns) {
+                content.add("     -- " + ele);
+            }
+            content.add(STR_BLANK);
+        }
+        content.add(0, "-- url组总数:" + num + STR_NEXT_LINE);
+        content.add(0, "-- 特别注意: 无列表页面git未检查 比如单笔TA发起业务");
         content.add(0, "-- 复核页面缺少字段");
         FileUtils.writeFile(resPath, content, false);
+    }
+
+    private static void initNeedConfirmUrl() throws IOException {
+        String content = FileUtils.readNormalFileToString(WORK_FLOW_SUB_TRANS, false);
+        String[] urlList = content.split(";");
+        for (String url : urlList) {
+            String transCode = ScriptSqlUtils.getTransCodeByWorkFlow(url);
+            String subTransCode = ScriptSqlUtils.getSubTransCodeByWorkFlow(url);
+            if (transCode == null || subTransCode == null) {
+                continue;
+            }
+            needConfirmUrl.add(transCode + "$" + subTransCode);
+        }
+    }
+
+    private static boolean skipUrl(String url) {
+        Set<String> skipUrl = new HashSet<String>(){{
+            add("Query");
+            add("Qry");
+            add("Export");
+        }};
+        for (String ele : skipUrl) {
+            if (url.endsWith(ele)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static String getUrlGroup(Map<String, Set<String>> urlGroup, String url, int fieldSize) {
+        String groupCode = getGroupCode(url, fieldSize);
+        if (urlGroup.containsKey(groupCode)) {
+            return String.join(STR_NEXT_LINE, urlGroup.get(groupCode));
+        }
+        return url;
+    }
+
+    private static boolean deleteUrl(Map<String, Set<String>> urlGroup, String url, int fieldSize) {
+        boolean flag;
+        String groupCode = getGroupCode(url, fieldSize);
+        if (urlGroup.containsKey(groupCode)) {
+            urlGroup.get(groupCode).add(url);
+            flag = true;
+        } else {
+            Set<String> urlList = new LinkedHashSet<>();
+            urlList.add(url);
+            urlGroup.put(groupCode, urlList);
+            flag = false;
+        }
+        return flag;
+    }
+
+    private static String getGroupCode(String url, int fieldSize) {
+        String transCode = url.split("\\$")[0];
+        return transCode + "$" + transCode + "$" + fieldSize;
     }
 
     private static void check(File file) throws IOException {
