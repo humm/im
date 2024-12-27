@@ -128,7 +128,7 @@ public class ConfigCache {
                         }
                     }
                 }
-                // 复制代码配置
+                // 复制文件配置
                 if (item.startsWith(KEY_COPY_CODE_VERSION)) {
                     int index = item.indexOf(STR_EQUALS);
                     String code = item.substring(KEY_COPY_CODE_VERSION.length(), index);

@@ -256,6 +256,10 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskSyncPath;
 
+    private String systemToolSyncCodeSource;
+
+    private String systemToolSyncCodeTarget;
+
     public AppConfigDto() {
         this.execute = false;
         this.appLogEnable = false;

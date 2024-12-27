@@ -415,8 +415,8 @@ public class HepTodoController extends BaseController implements Initializable {
         scriptCheck.setDisable(true);
         try {
             new ScriptCompareSql().check();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("脚本检查完成，请查看检查结果"));
-            CommonUtils.showTipsByInfo("脚本检查完成，请查看检查结果");
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("检查文件完成，请查看检查结果"));
+            CommonUtils.showTipsByInfo("检查文件完成，请查看检查结果");
         } catch (Exception e) {
             String msg = e.getMessage();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));

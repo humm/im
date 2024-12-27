@@ -509,7 +509,7 @@ public class FileUtils {
                 }
             }
 
-            // 获取历史复制代码版本配置
+            // 获取历史复制文件版本配置
             if (item.startsWith(KEY_COPY_CODE_VERSION)) {
                 List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_COPY_CODE_VERSION);
                 updateContent.addAll(updateConfig);

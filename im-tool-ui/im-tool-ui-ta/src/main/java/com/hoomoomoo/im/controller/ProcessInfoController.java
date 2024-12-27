@@ -495,7 +495,7 @@ public class ProcessInfoController extends BaseController implements Initializab
 
         for (int k = 2; k < rows; k++) {
             String sql = "-- insert into tbscheduletrigger (sche_code_type,sche_code,sche_trigger_status," +
-                    "sche_trigger_lasttime,sche_trigger_nexttime,sche_trigger_cron,is_workday_trigger,enable_flag) " +
+                    "sche_trigger_lasttime,sche_trigger_nexttime,sche_trigger_cron,is_workday_trigger,enable_flag, date_type) " +
                     " \n-- values ("
                     + getCell(sheet, 1, k) + ","
                     + getCell(sheet, 2, k) + ","
@@ -504,7 +504,8 @@ public class ProcessInfoController extends BaseController implements Initializab
                     + getCell(sheet, 5, k) + ","
                     + getCell(sheet, 6, k) + ","
                     + getCell(sheet, 7, k) + ","
-                    + getCell(sheet, 8, k)
+                    + getCell(sheet, 8, k) + ","
+                    + getCell(sheet, 9, k)
                     + ");";
             bufferedWriter.write(sql + "\n");
         }

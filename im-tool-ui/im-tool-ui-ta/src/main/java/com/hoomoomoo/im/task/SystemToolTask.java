@@ -15,6 +15,8 @@ public class SystemToolTask implements Callable<SystemToolTaskParam> {
     @Override
     public SystemToolTaskParam call() throws Exception {
         switch (systemToolTaskParam.getTaskType()) {
+            case NAME_SYNC_CODE:
+                systemToolTaskParam.getSystemToolController().doSyncCode();
             default:
                 new Exception("未匹配执行方法，请检查");
         }

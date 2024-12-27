@@ -12,8 +12,8 @@ public class MenuFunctionConfig {
 
         // TA菜单
         MENU_SVN("menuSvn", "SVN", 10, "svn"),
-        MENU_SCRIPT("menuCommon", "通用", 20, "common"),
-        MENU_SYSTEM("menuSystem", "定制", 50, "system"),
+        MENU_SCRIPT("menuCommon", "基础", 20, "common"),
+        MENU_SYSTEM("menuSystem", "高级", 50, "system"),
 
         // 公共菜单
         MENU_SET("menuSet", "设置", 1000, "set");
@@ -79,7 +79,7 @@ public class MenuFunctionConfig {
 
         GENERATE_SQL("240", "分库分表", "/conf/fxml/generateSql.fxml", "generateSql", "generateSql", "menuCommon", "分库分表"),
 
-        COPY_CODE("300", "复制代码", "/conf/fxml/copyCode.fxml", "copyCode", "copyCode", "menuCommon", "复制代码"),
+        COPY_CODE("300", "复制文件", "/conf/fxml/copyCode.fxml", "copyCode", "copyCode", "menuCommon", "复制文件"),
 
         //GENERATE_CODE("310", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuCommon", "生成代码"),
 
@@ -87,11 +87,11 @@ public class MenuFunctionConfig {
 
         TASK_SYNC("410", "同步需求", "/conf/fxml/hepTaskSync.fxml", "hepTaskSync", "hepTaskSync", "menuSystem", "同步需求"),
 
-        SCRIPT_CHECK("500", "脚本检查", "/conf/fxml/scriptCheck.fxml", "scriptCheck", "scriptCheck", "menuSystem", "脚本检查"),
+        SCRIPT_CHECK("500", "检查文件", "/conf/fxml/scriptCheck.fxml", "scriptCheck", "scriptCheck", "menuSystem", "检查文件"),
 
         CHANGE_FUNCTION_TOOL("600", "版本切换", "/conf/fxml/changeFunctionTool.fxml", "changeFunctionTool", "changeFunctionTool", "menuSystem", "版本切换"),
 
-        SYSTEM_TOOL("700", "辅助功能", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuSystem", "辅助功能"),
+        SYSTEM_TOOL("700", "系统工具", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuSystem", "系统工具"),
 
         // 公共组件 3000-9999
         CONFIG_SET("9999", "参数设置", "/conf/fxml/configSet.fxml", "configSet", "configSet", "menuSet", "应用信息"),

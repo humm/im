@@ -4,6 +4,10 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.task.ScriptCheckTask;
+import com.hoomoomoo.im.task.ScriptCheckTaskParam;
+import com.hoomoomoo.im.task.SystemToolTask;
+import com.hoomoomoo.im.task.SystemToolTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,6 +30,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -192,6 +197,26 @@ public class SystemToolController implements Initializable {
             serialVersion.append((int) (Math.random() * 9));
         }
         OutputUtils.info(logs, "private static final long  serialVersionUID = " + serialVersion.toString() + "L;");
+    }
+
+    @FXML
+    void syncCode(ActionEvent event) throws Exception {
+        OutputUtils.clearLog(logs);
+        OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步源码开始"));
+        TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_SYNC_CODE)));
+    }
+
+    public void doSyncCode() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String source = appConfigDto.getSystemToolSyncCodeSource();
+        String target = appConfigDto.getSystemToolSyncCodeTarget();
+        if (StringUtils.isBlank(source)) {
+            OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "请配置参数【system.tool.sync.code.source】"));
+        }
+        if (StringUtils.isBlank(target)) {
+            OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "请配置参数【system.tool.sync.code.target】"));
+        }
+        OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步源码结束"));
     }
 
     private String formatDate(String date) {

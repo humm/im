@@ -90,7 +90,7 @@
                             </padding>
                         </Button>
 
-                        <Label layoutX="1520.0" layoutY="60.0" text="脚本检查"/>
+                        <Label layoutX="1520.0" layoutY="60.0" text="检查文件"/>
                         <Button fx:id="scriptCheck" layoutX="1590.0" layoutY="55.0" mnemonicParsing="false"
                                 onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="55.0" text="检查">
                             <padding>

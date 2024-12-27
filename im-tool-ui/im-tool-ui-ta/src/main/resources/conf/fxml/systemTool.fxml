@@ -48,8 +48,15 @@
                                          </padding>
                                      </Button>
 
-                                     <Label layoutX="20.0" layoutY="140.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="注释" />
-                                     <Button layoutX="130.0" layoutY="135" mnemonicParsing="false" onAction="#showExplain" prefWidth="100.0" text="注释模板">
+                                     <Label layoutX="20.0" layoutY="140.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="注释模板" />
+                                     <Button layoutX="130.0" layoutY="135" mnemonicParsing="false" onAction="#showExplain" prefWidth="100.0" text="生成">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
+
+                                     <Label layoutX="20.0" layoutY="200.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="同步源码" />
+                                     <Button layoutX="130.0" layoutY="195" mnemonicParsing="false" onAction="#syncCode" prefWidth="100.0" text="同步">
                                          <padding>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                          </padding>
