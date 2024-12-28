@@ -25,7 +25,7 @@ public class CheckFrontMsg {
     }
 
     public static void executeCheck() throws IOException {
-        String checkPath = CHECK_FRONT_PATH + "front\\HUI1.0\\console-fund-ta-vue";
+        String checkPath = CHECK_FRONT_PATH + "console-fund-ta-vue";
         String resPath = CHECK_RESULT_PATH + "checkFrontMsg.sql";
         System.out.println();
         System.out.println("检查路径 ... " + checkPath);
