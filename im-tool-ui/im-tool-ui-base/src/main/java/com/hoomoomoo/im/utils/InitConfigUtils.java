@@ -445,6 +445,9 @@ public class InitConfigUtils {
         keys.put("system.tool.check.menu.pub.path", null);
         keys.put("system.tool.script.change.menu.path", null);
 
+        keys.put("system.tool.sync.code.source", null);
+        keys.put("system.tool.sync.code.target", null);
+
     }
 
     /**

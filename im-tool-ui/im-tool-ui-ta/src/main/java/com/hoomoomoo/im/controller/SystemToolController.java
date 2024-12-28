@@ -216,7 +216,25 @@ public class SystemToolController implements Initializable {
         if (StringUtils.isBlank(target)) {
             OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "请配置参数【system.tool.sync.code.target】"));
         }
+        syncFile(new File(source), source, target);
         OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步源码结束"));
+    }
+
+    private void syncFile(File source, String sourcePath, String targetPath) throws Exception {
+        String fileName = source.getName();
+        if ("target".equals(fileName) || ".git".equals(fileName) || ".idea".equals(fileName) || ".gitignore".equals(fileName) || fileName.endsWith(".iml")) {
+            return;
+        }
+        if (source.isDirectory()) {
+            File[] files = source.listFiles();
+            for (File item : files) {
+                syncFile(item, sourcePath, targetPath);
+            }
+        } else {
+            OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步文件 " + fileName));
+            String filePath = source.getAbsolutePath();
+            FileUtils.writeFile(source.getAbsolutePath().replace(sourcePath, targetPath), FileUtils.readNormalFileToString(filePath, false), false);
+        }
     }
 
     private String formatDate(String date) {
