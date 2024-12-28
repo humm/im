@@ -222,7 +222,8 @@ public class SystemToolController implements Initializable {
 
     private void syncFile(File source, String sourcePath, String targetPath) throws Exception {
         String fileName = source.getName();
-        if ("target".equals(fileName) || ".git".equals(fileName) || ".idea".equals(fileName) || ".gitignore".equals(fileName) || fileName.endsWith(".iml")) {
+        if ("target".equals(fileName) || ".git".equals(fileName) || ".idea".equals(fileName) || ".gitignore".equals(fileName)
+                || fileName.endsWith(".iml") || fileName.endsWith(".conf")) {
             return;
         }
         if (source.isDirectory()) {
@@ -233,7 +234,18 @@ public class SystemToolController implements Initializable {
         } else {
             OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步文件 " + fileName));
             String filePath = source.getAbsolutePath();
-            FileUtils.writeFile(source.getAbsolutePath().replace(sourcePath, targetPath), FileUtils.readNormalFileToString(filePath, false), false);
+            List<String> content =  FileUtils.readNormalFile(filePath, false);
+            if ("HepTodoController.java".equals(fileName)) {
+                for (int j=0; j<content.size(); j++) {
+                    String ele = content.get(j);
+                    if (ele.contains("FileUtils.startByJar()")) {
+                        ele = ele.replace("FileUtils.startByJar()", "true");
+                    }
+                    FileUtils.writeFile(filePath.replace(sourcePath, targetPath), ele + STR_NEXT_LINE,true);
+                }
+            } else {
+                FileUtils.writeFile(filePath.replace(sourcePath, targetPath), content, false);
+            }
         }
     }
 

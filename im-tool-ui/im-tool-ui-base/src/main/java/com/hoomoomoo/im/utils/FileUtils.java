@@ -797,6 +797,9 @@ public class FileUtils {
 
     public static void addWatermark(File source, File target) throws IOException {
         BufferedImage bufferedImage = ImageIO.read(source);
+        if (bufferedImage == null) {
+            return;
+        }
         Graphics2D graphics = bufferedImage.createGraphics();
         graphics.setColor(Color.BLUE);
         graphics.setFont(new Font("微软雅黑", Font.BOLD, 30));

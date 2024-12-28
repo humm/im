@@ -233,7 +233,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                         }
                         if (CollectionUtils.isNotEmpty(sourceContent)) {
                             for (int j=0; j<sourceContent.size(); j++) {
-                                FileUtils.writeFile(targetFileLocation, sourceContent.get(j) + STR_NEXT_LINE, encode, true);
+                                FileUtils.writeFile(targetFileLocation, sourceContent.get(j) + STR_NEXT_LINE, encode,true);
                             }
                             fileLog.add("原始文件: " + fileLocation);
                             fileLog.add("目标文件: " + targetFileLocation);
