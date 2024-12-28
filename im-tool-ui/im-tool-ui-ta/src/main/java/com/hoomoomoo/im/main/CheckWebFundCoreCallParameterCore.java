@@ -11,8 +11,8 @@ import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
 import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
-import static com.hoomoomoo.im.main.CheckConfigConsts.CHECK_JAVA_PATH;
-import static com.hoomoomoo.im.main.CheckConfigConsts.CHECK_RESULT_PATH;
+import static com.hoomoomoo.im.main.CheckConfigConst.CHECK_JAVA_PATH;
+import static com.hoomoomoo.im.main.CheckConfigConst.CHECK_RESULT_PATH;
 
 /**
  * webFundCore调用ParameterCode检查

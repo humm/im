@@ -1,6 +1,6 @@
 package com.hoomoomoo.im.main;
 
-public class CheckConfigConsts {
+public class CheckConfigConst {
 
     // 检查对应版本配置
     public static final String CHECK_FRONT_PATH = "E:\\workspace\\ta6\\";

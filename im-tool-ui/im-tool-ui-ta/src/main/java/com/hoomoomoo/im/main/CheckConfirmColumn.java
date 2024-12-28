@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.main.CheckConfigConsts.*;
+import static com.hoomoomoo.im.main.CheckConfigConst.*;
 
 /**
  * 复核字段 配置检查

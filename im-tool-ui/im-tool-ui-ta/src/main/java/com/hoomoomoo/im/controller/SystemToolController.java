@@ -234,17 +234,21 @@ public class SystemToolController implements Initializable {
         } else {
             OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步文件 " + fileName));
             String filePath = source.getAbsolutePath();
+            String toTargetPath = filePath.replace(sourcePath, targetPath);
             List<String> content =  FileUtils.readNormalFile(filePath, false);
             if ("HepTodoController.java".equals(fileName)) {
+                FileUtils.deleteFile(new File(toTargetPath));
                 for (int j=0; j<content.size(); j++) {
                     String ele = content.get(j);
                     if (ele.contains("FileUtils.startByJar()")) {
                         ele = ele.replace("FileUtils.startByJar()", "true");
                     }
-                    FileUtils.writeFile(filePath.replace(sourcePath, targetPath), ele + STR_NEXT_LINE,true);
+                    FileUtils.writeFile(toTargetPath, ele + STR_NEXT_LINE,true);
                 }
+            } else if ("CheckConfigConst.java".equals(fileName)) {
+                return;
             } else {
-                FileUtils.writeFile(filePath.replace(sourcePath, targetPath), content, false);
+                FileUtils.writeFile(toTargetPath, content, false);
             }
         }
     }

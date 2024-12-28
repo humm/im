@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
-import static com.hoomoomoo.im.main.CheckConfigConsts.CHECK_FRONT_PATH;
-import static com.hoomoomoo.im.main.CheckConfigConsts.CHECK_RESULT_PATH;
+import static com.hoomoomoo.im.main.CheckConfigConst.CHECK_FRONT_PATH;
+import static com.hoomoomoo.im.main.CheckConfigConst.CHECK_RESULT_PATH;
 
 /**
  * 查询条件 配置检查
