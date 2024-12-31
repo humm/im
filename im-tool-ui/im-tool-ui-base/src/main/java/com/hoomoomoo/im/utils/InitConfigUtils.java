@@ -390,6 +390,7 @@ public class InitConfigUtils {
      */
     public static void  updateConfigByTa(Map<String, String> keys) {
         keys.put("app.tab.show", "200");
+        keys.put("app.mode", null);
 
         keys.put("svn.username", null);
         keys.put("svn.password", null);

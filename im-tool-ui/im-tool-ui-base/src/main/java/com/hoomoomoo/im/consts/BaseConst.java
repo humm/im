@@ -17,6 +17,8 @@ public class BaseConst {
 
     public static final String APP_VERSION = "1.0.0.0";
 
+    public static final String APP_MODE_SYNC = "sync";
+
     public static final String DEMO = "demo10000";
 
     public static final int MAX_COMMON_FUNCTION_CODE = 3000;

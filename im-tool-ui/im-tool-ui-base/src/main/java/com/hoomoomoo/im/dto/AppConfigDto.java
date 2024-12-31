@@ -36,6 +36,8 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean appLogEnable;
 
+    private String appMode;
+
     private String fundExcelPath;
 
     private String fundGenerateMode;
@@ -251,8 +253,6 @@ public class AppConfigDto extends BaseDto {
     private String hepTaskPrintParam;
 
     private String systemToolScriptChangeMenuPath;
-
-    private String hepSyncOnly;
 
     private String hepTaskSyncPath;
 

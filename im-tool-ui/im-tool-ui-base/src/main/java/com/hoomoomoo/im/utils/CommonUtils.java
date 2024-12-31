@@ -14,12 +14,10 @@ import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
-import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -326,7 +324,7 @@ public class CommonUtils {
             String appCode = ConfigCache.getAppCodeCache();
             functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
         }
-        if (isSyncOnlyMode()) {
+        if (isSyncMode()) {
             functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode()) || item.getFunctionCode().equals(TASK_SYNC.getCode())).collect(Collectors.toList());
         }
         for (FunctionDto functionDto : functionDtoList) {
@@ -357,7 +355,7 @@ public class CommonUtils {
         if (isSuperUser()) {
             functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
         }
-        if (isSyncOnlyMode()) {
+        if (isSyncMode()) {
             functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode()) || item.getFunctionCode().equals(TASK_SYNC.getCode())).collect(Collectors.toList());
         }
         if (CollectionUtils.isEmpty(functionDtoList)) {
@@ -459,9 +457,9 @@ public class CommonUtils {
         return false;
     }
 
-    public static boolean isSyncOnlyMode() throws Exception {
+    public static boolean isSyncMode() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        return StringUtils.equals(STR_1, appConfigDto.getHepSyncOnly());
+        return StringUtils.equals(APP_MODE_SYNC, appConfigDto.getAppMode());
     }
 
     public static String initialUpper(String str) {

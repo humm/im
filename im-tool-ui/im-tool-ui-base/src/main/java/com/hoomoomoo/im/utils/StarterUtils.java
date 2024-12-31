@@ -43,7 +43,7 @@ public class StarterUtils {
                 primaryStage.getIcons().add(new Image(FACTORY_ICON));
             } else {
                 Image icon;
-                if (CommonUtils.isSyncOnlyMode()) {
+                if (CommonUtils.isSyncMode()) {
                     icon = new Image(PATH_SYNC_ICON);
                 } else {
                     icon = new Image(PATH_ICON);

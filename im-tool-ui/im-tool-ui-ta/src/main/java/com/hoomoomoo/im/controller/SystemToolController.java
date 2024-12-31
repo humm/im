@@ -71,6 +71,9 @@ public class SystemToolController implements Initializable {
     private Robot robot;
 
     private int moveStep = 1;
+    private int syncFile = 0;
+    private int updateFile = 0;
+    private int skipFile = 0;
 
     private boolean executeFlag = false;
 
@@ -216,7 +219,11 @@ public class SystemToolController implements Initializable {
         if (StringUtils.isBlank(target)) {
             OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "请配置参数【system.tool.sync.code.target】"));
         }
+        syncFile = 0;
+        updateFile = 0;
+        skipFile = 0;
         syncFile(new File(source), source, target);
+        OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, String.format("同步文件: %s  修改文件: %s  忽略文件: %s", syncFile, updateFile, skipFile)));
         OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步源码结束"));
     }
 
@@ -236,7 +243,10 @@ public class SystemToolController implements Initializable {
             String filePath = source.getAbsolutePath();
             String toTargetPath = filePath.replace(sourcePath, targetPath);
             List<String> content =  FileUtils.readNormalFile(filePath, false);
+            syncFile++;
             if ("HepTodoController.java".equals(fileName)) {
+                updateFile++;
+                OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "修改文件 " + fileName));
                 FileUtils.deleteFile(new File(toTargetPath));
                 for (int j=0; j<content.size(); j++) {
                     String ele = content.get(j);
@@ -246,11 +256,15 @@ public class SystemToolController implements Initializable {
                     FileUtils.writeFile(toTargetPath, ele + STR_NEXT_LINE,true);
                 }
             } else if ("CheckConfigConst.java".equals(fileName)) {
+                syncFile--;
+                skipFile++;
+                OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "忽略文件 " + fileName));
                 return;
             } else {
                 FileUtils.writeFile(toTargetPath, content, false);
             }
         }
+        return;
     }
 
     private String formatDate(String date) {
