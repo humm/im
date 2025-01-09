@@ -744,6 +744,7 @@ public class HepTodoController extends BaseController implements Initializable {
         Map<String, String> taskDemandNo = new HashMap<>();
         Map<String, String> taskDemandStatus = new HashMap<>();
         Map<String, String> taskSubmitStatus = new HashMap<>();
+        Map<String, String> taskCancelDevSubmit = new HashMap<>();
         boolean waitTaskSync = false;
         try {
             List<String> versionList = new ArrayList<>();
@@ -756,6 +757,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 taskDemandNo = taskInfo.get(KEY_TASK);
                 taskDemandStatus = getDemandInfo();
                 taskSubmitStatus = getTaskStatusInfo();
+                taskCancelDevSubmit = getCancelDevSubmitTaskInfo();
             }
             for (String item : versionList) {
                 String[] elements = item.split(STR_SEMICOLON);
@@ -826,12 +828,12 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             if (!taskName.contains(COMMIT_TAG) && taskSubmitStatus.containsKey(taskNumberIn)) {
                 taskName = COMMIT_TAG + taskName;
-                if (!taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG) ) {
+                if (!taskName.contains(DEV_COMMIT_TAG)) {
                     taskName = DEV_COMMIT_TAG + taskName;
                 }
                 item.setTaskMark(COMMIT_TAG.replace(STR_BRACKETS_3_LEFT, STR_BLANK).replace(STR_BRACKETS_3_RIGHT, STR_BLANK));
             }
-            if (!taskName.contains(DEV_COMMIT_TAG) && !taskName.contains(DEFECT_TAG) && (taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn))) {
+            if (!taskName.contains(DEV_COMMIT_TAG) && (taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn)) && !taskCancelDevSubmit.containsKey(taskNumberIn)) {
                 taskName = DEV_COMMIT_TAG + taskName;
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
@@ -1699,6 +1701,27 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         task.put(KEY_CUSTOMER, customerName);
         task.put(KEY_TASK, demandNo);
+        return task;
+    }
+
+    public Map<String,String> getCancelDevSubmitTaskInfo() {
+        Map<String, String> task = new HashMap<>();
+        try {
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT), false);
+            if (CollectionUtils.isNotEmpty(taskList)) {
+                for (String item : taskList) {
+                    String[] elementList = item.split(STR_SEMICOLON);
+                    if (STR_FALSE.equals(elementList[1])) {
+                        task.put(elementList[0], elementList[1]);
+                    }
+                }
+            }
+        } catch (IOException e) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            LoggerUtils.info(e);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
         return task;
     }
 
