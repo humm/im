@@ -123,6 +123,20 @@ public class CommonUtils {
     }
 
     /**
+     * 获取明天日期
+     *
+     * @return
+     */
+    public static String getTomorrowDateTime() {
+        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        String month = String.valueOf(tomorrow.getMonthValue());
+        if (month.length() == 1) {
+            month = STR_0 + month;
+        }
+        return tomorrow.getYear() + STR_HYPHEN + month + STR_HYPHEN + tomorrow.getDayOfMonth();
+    }
+
+    /**
      * 格式化日期
      *
      * @param

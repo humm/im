@@ -705,6 +705,7 @@ public class HepTodoController extends BaseController implements Initializable {
     @SneakyThrows
     public synchronized void dealTaskList(JSONArray task, boolean tagFlag) {
         Set<String> dayTodoTask = new HashSet<>();
+        Set<String> tomorrowTodoTask = new HashSet<>();
         Set<String> weekTodoTask = new HashSet<>();
         Set<String> finishDateError = new HashSet<>();
         taskList.setDisable(true);
@@ -738,6 +739,7 @@ public class HepTodoController extends BaseController implements Initializable {
         StringBuilder dayCloseVersion = new StringBuilder();
         String currentDay = CommonUtils.getCurrentDateTime3();
         String currentDate = CommonUtils.getCurrentDateTime4();
+        String tomorrowDate = CommonUtils.getTomorrowDateTime();
         String lastDayByWeek = CommonUtils.getLastDayByWeek();
         String weekDay = CommonUtils.getLastDayByWeek2();
         Map<String, String> taskCustomerName = new HashMap<>();
@@ -889,9 +891,13 @@ public class HepTodoController extends BaseController implements Initializable {
             String estimateFinishDate = item.getEstimateFinishTime().split(STR_SPACE)[0];
             String estimateFinishTime = item.getEstimateFinishTime().split(STR_SPACE)[1];
             boolean today = todayMustComplete(item, currentDate, estimateFinishDate);
+            boolean tomorrow = todayMustComplete(item, tomorrowDate, estimateFinishDate);
             if (dayVersion.toString().contains(sprintVersion + STR_SPACE) || dayCloseVersion.toString().contains(sprintVersion + STR_SPACE) || today) {
                 dayVersionNum++;
                 dayTodoTask.add(item.getTaskNumber());
+            }
+            if (tomorrow) {
+                tomorrowTodoTask.add(item.getTaskNumber());
             }
             if (!endDate.startsWith(STR_99)) {
                 boolean week = today || (StringUtils.compare(lastDayByWeek, estimateFinishDate) >= 0);
@@ -1000,7 +1006,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
 
         OutputUtils.clearLog(taskList);
-        infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError);
+        infoTaskList(taskList, res, dayTodoTask, tomorrowTodoTask, weekTodoTask, finishDateError);
         taskList.setDisable(false);
     }
 
@@ -1106,7 +1112,7 @@ public class HepTodoController extends BaseController implements Initializable {
         return date.toString();
     }
 
-    private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
+    private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask, Set<String> tomorrowTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
         if (taskListIn == null) {
             return;
         }
@@ -1114,13 +1120,13 @@ public class HepTodoController extends BaseController implements Initializable {
             for (HepTaskDto hepTaskDto : res) {
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
-                initRowColor(taskListIn, dayTodoTask, weekTodoTask, finishDateError);
+                initRowColor(taskListIn, dayTodoTask, tomorrowTodoTask, weekTodoTask, finishDateError);
             }
             OutputUtils.setEnabled(taskListIn);
         });
     }
 
-    private void initRowColor(TableView taskListIn, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
+    private void initRowColor(TableView taskListIn, Set<String> dayTodoTask, Set<String> tomorrowTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
         taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
             @Override
             public TableRow<HepTaskDto> call(TableView<HepTaskDto> param) {
@@ -1154,7 +1160,11 @@ public class HepTodoController extends BaseController implements Initializable {
                             }
                             setStyle(taskColor[0]);
                             if (StringUtils.equals(STR_1, taskColor[1])) {
-                               item.setTaskMark(taskColor[2]);
+                                String mark = taskColor[2];
+                                if ("本周".equals(mark) && tomorrowTodoTask.contains(taskNumber)) {
+                                    mark = "明日";
+                                }
+                               item.setTaskMark(mark);
                             }
                         }
                         // 颜色展示
