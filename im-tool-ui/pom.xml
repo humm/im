@@ -3,12 +3,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <description>图形界面工具</description>
-
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-tool-ui</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0.0</version>
+	<version>2025.000011</version>
 
     <modules>
         <module>im-tool-ui-ta</module>

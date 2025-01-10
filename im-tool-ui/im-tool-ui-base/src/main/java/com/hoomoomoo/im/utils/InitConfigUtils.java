@@ -10,6 +10,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -172,15 +173,49 @@ public class InitConfigUtils {
                     }
                 }
             }
+            String ver = CommonUtils.getCurrentDateTime12() + STR_POINT + subVersion;
             StringBuilder statLog = new StringBuilder();
-            statLog.append("当前版本: ").append(CommonUtils.getCurrentDateTime12()).append(STR_POINT).append(subVersion).append(STR_NEXT_LINE);
+            statLog.append("当前版本: ").append(ver).append(STR_NEXT_LINE);
             statLog.append("发版时间: ").append(CommonUtils.getCurrentDateTime1()).append(STR_NEXT_LINE_2);
             statLog.append("首版时间: ").append("2021-05-06 23:17:56").append(STR_NEXT_LINE);
             statLog.append("发版次数: ").append(times).append(STR_NEXT_LINE);
             FileUtils.writeFile(versionFilePath, statLog.toString(), false);
             FileUtils.writeFile(versionFilePathSource, statLog.toString(), false);
+            updatePom(versionFilePath.substring(0, versionFilePath.indexOf("target")), ver);
         } catch (Exception e) {
             LoggerUtils.info(e);
+        }
+    }
+
+    /**
+     * 修改pom版本
+     *
+     * @param basePath
+     * @param ver
+     */
+    private static void updatePom(String basePath, String ver) throws IOException {
+        String basePomPath = basePath + "pom.xml";
+        String parentPomPath = basePath.replace("im-tool-ui-ta/", STR_BLANK) + "pom.xml";
+        updatePomFile(basePomPath, ver);
+        updatePomFile(parentPomPath, ver);
+    }
+
+    private static void updatePomFile(String pomPath, String ver) throws IOException {
+        List<String> content = FileUtils.readNormalFile(pomPath, false);
+        if (CollectionUtils.isNotEmpty(content)) {
+            boolean updateMark = false;
+            for (int i=0; i<content.size(); i++) {
+                String item = content.get(i);
+                if (StringUtils.equals("<artifactId>im-tool-ui</artifactId>", item.trim()) || StringUtils.equals("<artifactId>im-tool-ui-ta</artifactId>", item.trim())) {
+                    updateMark = true;
+                }
+                if (updateMark && item.contains("<version>")) {
+                    String verLeft = item.substring(0, item.indexOf("<version>"));
+                    content.set(i, verLeft + "<version>" + ver + "</version>");
+                    updateMark = false;
+                }
+            }
+            FileUtils.writeFile(pomPath, content, false);
         }
     }
 

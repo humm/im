@@ -30,7 +30,4 @@
     </build>
     <packaging>jar</packaging>
 
-    <description>基础图形界面工具</description>
-
-
 </project>
