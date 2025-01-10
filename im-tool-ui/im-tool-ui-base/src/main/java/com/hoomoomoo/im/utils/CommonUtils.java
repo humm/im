@@ -596,7 +596,17 @@ public class CommonUtils {
         } catch (IOException e) {
             LoggerUtils.info(e);
         }
-        return version;
+        String[] verList = version.split(STR_POINT_SLASH);
+        String versionYear = verList[0];
+        String versionNum = verList[1];
+        long ver = Long.parseLong(versionNum);
+        ver--;
+        String verAfter = String.valueOf(ver);
+        int supplementLength = versionNum.length() - verAfter.length();
+        for (int i=0; i<supplementLength; i++) {
+            verAfter = STR_0 + verAfter;
+        }
+        return versionYear + STR_POINT + verAfter;
     }
 
     /**

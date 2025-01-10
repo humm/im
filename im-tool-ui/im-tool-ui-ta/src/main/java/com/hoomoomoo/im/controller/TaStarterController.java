@@ -2,6 +2,7 @@ package com.hoomoomoo.im.controller;
 
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.JvmCache;
+import com.hoomoomoo.im.utils.TaCommonUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -30,7 +31,7 @@ public class TaStarterController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         JvmCache.setTaStarterController(this);
         CommonUtils.initialize(location, resources, functionTab, menuBar);
-        //startRestPlan();
+        // TaCommonUtils.startRestPlan();
     }
 
 }
