@@ -66,6 +66,9 @@ public class SystemToolController implements Initializable {
     @FXML
     private Button showVersionBtn;
 
+    @FXML
+    private Button syncCodeBtn;
+
     private Timer shakeMouseTimer;
 
     private Robot robot;
@@ -207,6 +210,7 @@ public class SystemToolController implements Initializable {
         OutputUtils.clearLog(logs);
         OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步源码开始"));
         TaskUtils.execute(new SystemToolTask(new SystemToolTaskParam(this, NAME_SYNC_CODE)));
+        syncCodeBtn.setDisable(true);
     }
 
     public void doSyncCode() throws Exception {
@@ -222,9 +226,16 @@ public class SystemToolController implements Initializable {
         syncFile = 0;
         updateFile = 0;
         skipFile = 0;
-        syncFile(new File(source), source, target);
-        OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, String.format("同步文件: %s  修改文件: %s  忽略文件: %s", syncFile, updateFile, skipFile)));
-        OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步源码结束"));
+        try {
+            syncFile(new File(source), source, target);
+            OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, String.format("同步文件: %s  修改文件: %s  忽略文件: %s", syncFile, updateFile, skipFile)));
+            OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步源码结束"));
+        } catch (Exception e) {
+            OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, e.getMessage()));
+            LoggerUtils.info(e);
+        } finally {
+            syncCodeBtn.setDisable(false);
+        }
     }
 
     private void syncFile(File source, String sourcePath, String targetPath) throws Exception {

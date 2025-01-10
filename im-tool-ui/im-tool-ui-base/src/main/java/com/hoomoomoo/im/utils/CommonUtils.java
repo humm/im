@@ -128,7 +128,17 @@ public class CommonUtils {
      * @return
      */
     public static String getTomorrowDateTime() {
-        LocalDate tomorrow = LocalDate.now().plusDays(1);
+        return getCustomDateTime(1);
+    }
+
+    /**
+     * 获取指定日期
+     *
+     * @param addDays
+     * @return
+     */
+    public static String getCustomDateTime(int addDays) {
+        LocalDate tomorrow = LocalDate.now().plusDays(addDays);
         String month = String.valueOf(tomorrow.getMonthValue());
         if (month.length() == 1) {
             month = STR_0 + month;
