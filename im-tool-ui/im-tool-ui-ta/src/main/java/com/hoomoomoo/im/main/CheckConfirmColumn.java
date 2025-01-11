@@ -93,7 +93,7 @@ public class CheckConfirmColumn {
             content.add(STR_BLANK);
         }
         content.add(0, "-- url组总数:" + num + STR_NEXT_LINE);
-        content.add(0, "-- 特别注意: 无列表页面git未检查 比如单笔TA发起业务");
+        content.add(0, "-- 特别注意: 无列表页面未检查 比如单笔TA发起业务");
         content.add(0, "-- 复核页面缺少字段");
         FileUtils.writeFile(resPath, content, false);
     }

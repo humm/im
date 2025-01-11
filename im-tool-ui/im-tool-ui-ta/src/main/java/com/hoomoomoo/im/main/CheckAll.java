@@ -12,5 +12,6 @@ public class CheckAll {
         CheckFrontMsg.executeCheck();
         CheckQueryConditionTitle.executeCheck();
         CheckConfirmColumn.executeCheck();
+        CheckImportFunctionNotUse.executeCheck();
     }
 }

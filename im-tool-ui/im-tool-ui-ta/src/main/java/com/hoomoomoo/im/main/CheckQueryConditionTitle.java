@@ -60,7 +60,7 @@ public class CheckQueryConditionTitle {
                 content = CommonUtils.formatStrToSingleSpace(content);
                 if (StringUtils.isNotBlank(content)) {
                     if (content.indexOf("mounted()") != -1) {
-                        checkElement(fileName, content);
+                        checkElement(file.getAbsolutePath(), content);
                     }
                 }
             }
