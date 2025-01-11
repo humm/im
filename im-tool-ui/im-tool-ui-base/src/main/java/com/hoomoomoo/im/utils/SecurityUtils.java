@@ -8,8 +8,6 @@ import javax.crypto.KeyGenerator;
 import java.security.Key;
 import java.security.SecureRandom;
 
-import static com.hoomoomoo.im.consts.BaseConst.SUPER_MAC_ADDRESS;
-
 /**
  * @author humm23693
  * @description TODO

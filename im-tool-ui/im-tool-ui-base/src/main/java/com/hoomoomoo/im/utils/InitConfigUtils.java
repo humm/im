@@ -33,7 +33,7 @@ public class InitConfigUtils {
      */
     public static void buildLicense(String appCode) throws Exception {
         ConfigCache.initAppCodeCache(appCode);
-        String pathAuth = FileUtils.getFilePath(PATH_AUTH);
+        String pathAuth = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_AUTH), appCode);
         LinkedHashMap<String, String> content = FileUtils.readConfigFileToMapIncludePoint(pathAuth);
         String appFunction = content.get("app.license.function");
         String effectiveDate = content.get("app.license.effective.date");
@@ -57,7 +57,7 @@ public class InitConfigUtils {
             }
         }
         String licenseContent = SecurityUtils.getEncryptString(JSON.toJSONString(license));
-        String licensePath = FileUtils.getFilePath(PATH_LICENSE);
+        String licensePath = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_LICENSE), appCode);
         FileUtils.writeFile(licensePath, licenseContent, false);
         FileUtils.writeFile(pathAuth, STR_BLANK, false);
     }
@@ -72,7 +72,7 @@ public class InitConfigUtils {
      */
     public static void buildConfig(String appCode) throws Exception {
         ConfigCache.initAppCodeCache(appCode);
-        String pathApp = FileUtils.getFilePath(PATH_APP);
+        String pathApp = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_APP), appCode);
         List<String> content = FileUtils.readNormalFile(pathApp, false);
         Iterator<String> iterator = content.iterator();
         boolean flag = false;
@@ -118,7 +118,7 @@ public class InitConfigUtils {
                 break;
         }
 
-        String confPath = FileUtils.getFilePath(PATH_APP);
+        String confPath = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_APP), appCode);
         List<String> content = FileUtils.readNormalFile(confPath, false);
         if (CollectionUtils.isNotEmpty(content)) {
             for (int i = 0; i < content.size(); i++) {
@@ -148,19 +148,20 @@ public class InitConfigUtils {
     public static void updateVersion(String appCode) {
         try {
             ConfigCache.initAppCodeCache(appCode);
-            String versionFilePath = FileUtils.getFilePath(PATH_VERSION);
+            String versionFilePath = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_VERSION), appCode);
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
             List<String> content = FileUtils.readNormalFile(versionFilePath, false);
             String subVersion = "000001";
+            String currentVersion = STR_BLANK;
             int times = 0;
             if (CollectionUtils.isNotEmpty(content)) {
                 for (int i = 0; i < content.size(); i++) {
                     String item = content.get(i);
                     if (item.startsWith(NAME_CURRENT_VERSION)) {
                         int index = item.indexOf(":") + 1;
-                        String version = item.substring(index);
-                        String versionNo = version.substring(version.indexOf(STR_POINT) + 1);
-                        if (CommonUtils.getCurrentDateTime12().equals(version.substring(0, 5).trim())) {
+                        currentVersion = item.substring(index).trim();
+                        String versionNo = currentVersion.substring(currentVersion.indexOf(STR_POINT) + 1);
+                        if (CommonUtils.getCurrentDateTime12().equals(currentVersion.substring(0, 4).trim())) {
                             subVersion = String.valueOf(Long.valueOf(versionNo) + 1);
                             for (int j=subVersion.length(); j<6; j++) {
                                 subVersion = STR_0 + subVersion;
@@ -173,15 +174,15 @@ public class InitConfigUtils {
                     }
                 }
             }
-            String ver = CommonUtils.getCurrentDateTime12() + STR_POINT + subVersion;
+            String nextVersion = CommonUtils.getCurrentDateTime12() + STR_POINT + subVersion;
             StringBuilder statLog = new StringBuilder();
-            statLog.append("当前版本: ").append(ver).append(STR_NEXT_LINE);
+            statLog.append("当前版本: ").append(currentVersion.trim()).append(STR_NEXT_LINE);
             statLog.append("发版时间: ").append(CommonUtils.getCurrentDateTime1()).append(STR_NEXT_LINE_2);
             statLog.append("首版时间: ").append("2021-05-06 23:17:56").append(STR_NEXT_LINE);
             statLog.append("发版次数: ").append(times).append(STR_NEXT_LINE);
             FileUtils.writeFile(versionFilePath, statLog.toString(), false);
-            FileUtils.writeFile(versionFilePathSource, statLog.toString(), false);
-            updatePom(versionFilePath.substring(0, versionFilePath.indexOf("target")), ver);
+            FileUtils.writeFile(versionFilePathSource, statLog.toString().replace(currentVersion, nextVersion), false);
+            updatePom(versionFilePath.substring(0, versionFilePath.indexOf("target")), nextVersion);
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -190,13 +191,15 @@ public class InitConfigUtils {
     /**
      * 修改pom版本
      *
-     * @param basePath
+     * @param appPath
      * @param ver
      */
-    private static void updatePom(String basePath, String ver) throws IOException {
-        String basePomPath = basePath + "pom.xml";
-        String parentPomPath = basePath.replace("im-tool-ui-ta/", STR_BLANK) + "pom.xml";
+    private static void updatePom(String appPath, String ver) throws IOException {
+        String appPomPath = appPath + "pom.xml";
+        String basePomPath = appPath.replace("im-tool-ui-ta/", "im-tool-ui-base/") + "pom.xml";
+        String parentPomPath = appPath.replace("im-tool-ui-ta/", STR_BLANK) + "pom.xml";
         updatePomFile(basePomPath, ver);
+        updatePomFile(appPomPath, ver);
         updatePomFile(parentPomPath, ver);
     }
 
@@ -206,7 +209,9 @@ public class InitConfigUtils {
             boolean updateMark = false;
             for (int i=0; i<content.size(); i++) {
                 String item = content.get(i);
-                if (StringUtils.equals("<artifactId>im-tool-ui</artifactId>", item.trim()) || StringUtils.equals("<artifactId>im-tool-ui-ta</artifactId>", item.trim())) {
+                if (StringUtils.equals("<artifactId>im-tool-ui</artifactId>", item.trim())
+                        || StringUtils.equals("<artifactId>im-tool-ui-ta</artifactId>", item.trim())
+                        || StringUtils.equals("<artifactId>im-tool-ui-base</artifactId>", item.trim())) {
                     updateMark = true;
                 }
                 if (updateMark && item.contains("<version>")) {
@@ -229,10 +234,10 @@ public class InitConfigUtils {
      */
     public static void copyBaseConfig(String appCode) {
         ConfigCache.initAppCodeCache(appCode);
-        String pathFxml = FileUtils.getFilePath(PATH_FXML).replaceAll(appCode, APP_CODE_BASE);
+        String pathFxml = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_FXML), appCode).replaceAll(appCode, APP_CODE_BASE);
         copyFile(appCode, pathFxml);
 
-        String pathStyle = FileUtils.getFilePath(PATH_STYLE).replaceAll(appCode, APP_CODE_BASE);
+        String pathStyle = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_STYLE), appCode).replaceAll(appCode, APP_CODE_BASE);
         copyFile(appCode, pathStyle);
     }
 
@@ -285,7 +290,7 @@ public class InitConfigUtils {
     public static String buildFunctionName(String appCode, String item, ListIterator<String> itemIterator) {
         if (item.contains(NAME_APP_TAB_SHOW)) {
             try {
-                List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
+                List<FunctionDto> functionDtoList = CommonUtils.getAuthFunctionByMavenInstall(appCode);
                 Map<String, MenuFunctionConfig.FunctionConfig> noAuthFunctionConfig = CommonUtils.getNoAuthFunctionConfigMap(appCode);
                 Map<String, FunctionDto> functionMap = new LinkedHashMap<>(16);
                 if (CollectionUtils.isNotEmpty(functionDtoList)) {
@@ -310,14 +315,9 @@ public class InitConfigUtils {
                 Iterator<String> iterator = functionMap.keySet().iterator();
                 String content = STR_NEXT_LINE + ANNOTATION_CONFIG + STR_SPACE;
                 String noAuthContent = STR_NEXT_LINE + ANNOTATION_CONFIG + STR_SPACE;
-                int index = 0;
                 while (iterator.hasNext()) {
                     String functionCode = iterator.next();
                     if (Integer.valueOf(functionCode) < FUNCTION_CONFIG_SET) {
-                        index++;
-                        /*if (index % 15 == 0) {
-                            content += STR_NEXT_LINE + ANNOTATION_CONFIG + STR_SPACE;
-                        }*/
                         content += functionCode + STR_COLON + functionMap.get(functionCode).getFunctionName() + STR_SPACE;
                     } else {
                         noAuthContent += functionCode + STR_COLON + functionMap.get(functionCode).getFunctionName() + STR_SPACE;
@@ -496,8 +496,8 @@ public class InitConfigUtils {
      */
     public static void cleanFile(String appCode) {
         ConfigCache.initAppCodeCache(appCode);
-        String pathAuth = FileUtils.getFilePath(PATH_AUTH);
-        String pathLogs = FileUtils.getFilePath("/logs");
+        String pathAuth = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_AUTH), appCode);
+        String pathLogs = CommonUtils.dealFilePath(FileUtils.getFilePath("/logs"), appCode);
         FileUtils.deleteFile(new File(pathAuth).getParentFile());
         FileUtils.deleteFile(new File(pathLogs));
     }

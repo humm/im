@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.hoomoomoo.im.cache.AppCache;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
@@ -373,6 +374,17 @@ public class CommonUtils {
         return functionDtoList;
     }
 
+    public static List<FunctionDto> getAuthFunctionByMavenInstall(String appCode) throws Exception {
+        String licensePath = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_LICENSE), appCode);
+        String licenseContent = FileUtils.readNormalFileToString(licensePath, false);
+        LicenseDto licenseDto = JSON.parseObject(SecurityUtils.getDecryptString(licenseContent), LicenseDto.class);
+        List<FunctionDto> functionDtoList = licenseDto.getFunction();
+        if (isSuperUser()) {
+            functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+        }
+        return functionDtoList;
+    }
+
     public static void showAuthFunction(MenuBar menuBar, TabPane functionTab) throws Exception {
         String appCode = ConfigCache.getAppCodeCache();
         List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
@@ -596,7 +608,8 @@ public class CommonUtils {
         } catch (IOException e) {
             LoggerUtils.info(e);
         }
-        String[] verList = version.split(STR_POINT_SLASH);
+        return version;
+        /*String[] verList = version.split(STR_POINT_SLASH);
         String versionYear = verList[0];
         String versionNum = verList[1];
         long ver = Long.parseLong(versionNum);
@@ -606,7 +619,7 @@ public class CommonUtils {
         for (int i=0; i<supplementLength; i++) {
             verAfter = STR_0 + verAfter;
         }
-        return versionYear + STR_POINT + verAfter;
+        return versionYear + STR_POINT + verAfter;*/
     }
 
     /**
@@ -984,5 +997,21 @@ public class CommonUtils {
             return STR_BLANK;
         }
         return str.replaceAll("\\s+", " ").trim();
+    }
+
+    /**
+     * 文件路径转换
+     *
+     * @param path
+     * @param appCode
+     * @return
+     */
+    public static String dealFilePath(String path, String appCode) {
+        int left = path.indexOf(appCode + STR_HYPHEN);
+        int right = path.indexOf(FILE_TYPE_JAR);
+        if (left > 0 && right > 0) {
+            return path.substring(0, left) + "classes" + path.substring(right + FILE_TYPE_JAR.length());
+        }
+        return path;
     }
 }

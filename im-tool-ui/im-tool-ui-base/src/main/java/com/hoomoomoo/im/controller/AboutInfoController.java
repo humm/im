@@ -55,9 +55,9 @@ public class AboutInfoController implements Initializable {
                         OutputUtils.info(about, STR_NEXT_LINE);
                         continue;
                     }
-                    if (item.startsWith(NAME_CURRENT_VERSION)) {
+                    /*if (item.startsWith(NAME_CURRENT_VERSION)) {
                         item = NAME_CURRENT_VERSION + STR_SPACE + CommonUtils.getVersion();
-                    }
+                    }*/
                     OutputUtils.info(about, STR_SPACE_4 + item + STR_NEXT_LINE_2);
                 }
             }
