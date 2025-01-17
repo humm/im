@@ -42,7 +42,9 @@
                         <Label layoutX="410.0" layoutY="105.0" style="-fx-font-weight: bold;" text="待合并："/>
                         <Label fx:id="waitMergerNum" layoutX="465.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
 
-                        <Label fx:id="taskTips" layoutX="20.0" layoutY="130.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                        <Label fx:id="taskTips" layoutX="20.0" layoutY="135.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+
+                        <Label fx:id="fileTips" layoutX="400.0" layoutY="135.0" style="-fx-font-weight: bold;"/>
 
                         <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="99.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="635" layoutY="102.0" text="0%"/>

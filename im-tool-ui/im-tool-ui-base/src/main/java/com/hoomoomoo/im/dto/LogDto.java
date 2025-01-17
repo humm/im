@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.dto;
 
+import com.hoomoomoo.im.utils.CommonUtils;
 import lombok.Data;
 
 import java.util.List;
@@ -35,6 +36,9 @@ public class LogDto extends BaseDto implements Comparable<LogDto> {
 
     @Override
     public int compareTo(LogDto logDto) {
-        return (int) (Long.parseLong(logDto.version) - Long.parseLong(this.version));
+        if (CommonUtils.isNumber(logDto.version) && CommonUtils.isNumber(this.version)) {
+            return (int) (Long.parseLong(logDto.version) - Long.parseLong(this.version));
+        }
+        return logDto.version.compareTo(this.version);
     }
 }

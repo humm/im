@@ -8,6 +8,13 @@ import com.hoomoomoo.im.dto.SvnStatDto;
 import javafx.scene.control.TextArea;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.lib.AnyObjectId;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevTree;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.treewalk.TreeWalk;
 import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
@@ -18,6 +25,7 @@ import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.*;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -34,50 +42,105 @@ public class SvnUtils {
 
     public static List<LogDto> getSvnLog(int version, String modifyNo) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        SVNRepository repository = getSVNRepository(appConfigDto);
+        String svnUrl = getSvnUrl(appConfigDto);
         List<LogDto> logList = new ArrayList<>();
-        // 最后一次提交记录
-        long endRevision = -1;
-        SVNDirEntry lastSVNDirEntry = repository.info(STR_POINT, endRevision);
-        // 开始版本
-        long startRevision = lastSVNDirEntry.getRevision() - Integer.valueOf(appConfigDto.getSvnMaxRevision());
-        if (version != 0) {
-            startRevision = version;
-            endRevision = version;
-        }
-        repository.log(new String[]{STR_BLANK}, startRevision, endRevision, true, true, svnLogEntry -> {
-            if (StringUtils.equals(svnLogEntry.getAuthor(), appConfigDto.getSvnUsername())) {
-                LogDto svnLogDto = new LogDto();
-                svnLogDto.setVersion(Long.valueOf(svnLogEntry.getRevision()).toString());
-                svnLogDto.setTime(CommonUtils.getCurrentDateTime1(svnLogEntry.getDate()));
-                Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
-                svnLogDto.setNum(String.valueOf(logMap.size()));
-                List<String> pathList = new ArrayList<>();
-                svnLogDto.setFile(pathList);
-                svnLogDto.setMsg(getSvnMsg(svnLogEntry, STR_0));
-                String modifyMsg = getSvnMsg(svnLogEntry, STR_1);
-                svnLogDto.setSerialNo(modifyMsg);
-                if (StringUtils.isNotBlank(modifyNo)) {
-                    if (!StringUtils.equals(modifyNo.trim(), modifyMsg.trim())) {
-                        return;
+        if (svnUrl.contains(KEY_TRUNK)) {
+            // git
+            Git git = getGit(appConfigDto);
+            TreeWalk treeWalk = new TreeWalk(git.getRepository());
+            Iterable<RevCommit> logs = git.log().setMaxCount(Integer.valueOf(appConfigDto.getSvnMaxRevision())).call();
+            for (RevCommit commit : logs) {
+                if (StringUtils.equals(commit.getAuthorIdent().getName(), appConfigDto.getSvnUsername())) {
+                    String commitMessage = commit.getFullMessage();
+                    if (commitMessage.trim().startsWith("Merge branch")) {
+                        continue;
                     }
-                }
-                Iterator<String> iterator = logMap.keySet().iterator();
-                while (iterator.hasNext()) {
-                    String key = iterator.next();
-                    SVNLogEntryPath value = logMap.get(key);
-                    String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), STR_BLANK);
-                    if (OPERATE_TYPE_DELETE.equals(String.valueOf(value.getType()))) {
-                        path += NAME_DELETE;
+                    LogDto svnLogDto = new LogDto();
+                    String modifyMsg = getSvnMsg(commitMessage, STR_1);
+                    svnLogDto.setSerialNo(modifyMsg);
+                    if (StringUtils.isNotBlank(modifyNo)) {
+                        if (!StringUtils.equals(modifyNo.trim(), modifyMsg.trim())) {
+                            continue;
+                        }
                     }
-                    svnLogDto.setCodeVersion(getVersion(path));
-                    pathList.add(path + STR_NEXT_LINE);
+                    svnLogDto.setMsg(getSvnMsg(commitMessage, STR_0));
+                    svnLogDto.setVersion(commit.getName());
+                    svnLogDto.setTime(CommonUtils.getCurrentDateTime1(commit.getAuthorIdent().getWhen()));
+                    // List<String> pathList = getGitCommitFile(treeWalk, commit.getTree());
+                    List<String> pathList = new ArrayList<>();
+                    svnLogDto.setNum(String.valueOf(pathList.size()));
+                    svnLogDto.setFile(pathList);
+                    /*Iterator<String> iterator = logMap.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        String key = iterator.next();
+                        SVNLogEntryPath value = logMap.get(key);
+                        String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), STR_BLANK);
+                        if (OPERATE_TYPE_DELETE.equals(String.valueOf(value.getType()))) {
+                            path += NAME_DELETE;
+                        }
+                        svnLogDto.setCodeVersion(getVersion(path));
+                        pathList.add(path + STR_NEXT_LINE);
+                    }*/
+                    logList.add(svnLogDto);
                 }
-                logList.add(svnLogDto);
             }
-        });
+        } else {
+            // svn
+            SVNRepository repository = getSVNRepository(appConfigDto);
+            // 最后一次提交记录
+            long endRevision = -1;
+            SVNDirEntry lastSVNDirEntry = repository.info(STR_POINT, endRevision);
+            // 开始版本
+            long startRevision = lastSVNDirEntry.getRevision() - Integer.valueOf(appConfigDto.getSvnMaxRevision());
+            if (version != 0) {
+                startRevision = version;
+                endRevision = version;
+            }
+            repository.log(new String[]{STR_BLANK}, startRevision, endRevision, true, true, svnLogEntry -> {
+                if (StringUtils.equals(svnLogEntry.getAuthor(), appConfigDto.getSvnUsername())) {
+                    LogDto svnLogDto = new LogDto();
+                    svnLogDto.setVersion(Long.valueOf(svnLogEntry.getRevision()).toString());
+                    svnLogDto.setTime(CommonUtils.getCurrentDateTime1(svnLogEntry.getDate()));
+                    Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
+                    svnLogDto.setNum(String.valueOf(logMap.size()));
+                    List<String> pathList = new ArrayList<>();
+                    svnLogDto.setFile(pathList);
+                    String msg = svnLogEntry.getMessage();
+                    svnLogDto.setMsg(getSvnMsg(msg, STR_0));
+                    String modifyMsg = getSvnMsg(msg, STR_1);
+                    svnLogDto.setSerialNo(modifyMsg);
+                    if (StringUtils.isNotBlank(modifyNo)) {
+                        if (!StringUtils.equals(modifyNo.trim(), modifyMsg.trim())) {
+                            return;
+                        }
+                    }
+                    Iterator<String> iterator = logMap.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        String key = iterator.next();
+                        SVNLogEntryPath value = logMap.get(key);
+                        String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), STR_BLANK);
+                        if (OPERATE_TYPE_DELETE.equals(String.valueOf(value.getType()))) {
+                            path += NAME_DELETE;
+                        }
+                        svnLogDto.setCodeVersion(getVersion(path));
+                        pathList.add(path + STR_NEXT_LINE);
+                    }
+                    logList.add(svnLogDto);
+                }
+            });
+        }
         Collections.sort(logList);
         return logList;
+    }
+
+    private static List<String> getGitCommitFile(TreeWalk treeWalk, AnyObjectId id) throws IOException {
+        treeWalk.addTree(id);
+        treeWalk.setRecursive(true);
+        List<String> fileList = new ArrayList<>();
+        while (treeWalk.next()) {
+            fileList.add(treeWalk.getPathString());
+        }
+        return fileList;
     }
 
     private static String getVersion(String path) {
@@ -182,7 +245,7 @@ public class SvnUtils {
                                     svnStatDto.setFileTimes(String.valueOf(Integer.valueOf(svnStatDto.getFileTimes()) + 1));
                                 }
                             }
-                            String msg = getSvnMsg(svnLogEntry, STR_0);
+                            String msg = getSvnMsg(svnLogEntry.getMessage(), STR_0);
                             if (notice) {
                                 String noticeMsg = String.format(MSG_SVN_REALTIME_STAT, userName, svnStatDto.getLastTime(), msg, svnLogEntry.getRevision());
                                 svnStat.get(KEY_NOTICE).setNotice(noticeMsg);
@@ -195,12 +258,11 @@ public class SvnUtils {
         return svnStat;
     }
 
-    private static String getSvnMsg(SVNLogEntry svnLogEntry, String type) {
+    private static String getSvnMsg(String msg, String type) {
         String indexMsg = NAME_SVN_DESCRIBE;
         if (STR_1.equals(type)) {
             indexMsg = NAME_SVN_MODIFY_NO;
         }
-        String msg = svnLogEntry.getMessage();
         if (StringUtils.isNotBlank(msg)) {
             String[] message = msg.split(STR_NEXT_LINE);
             for (String item : message) {
@@ -217,11 +279,24 @@ public class SvnUtils {
         return msg;
     }
 
-    private static SVNRepository getSVNRepository(AppConfigDto appConfigDto) throws Exception {
+    private static String getSvnUrl(AppConfigDto appConfigDto) {
         String svnUrl = appConfigDto.getSvnUrl().get(appConfigDto.getSvnRep());
         if (StringUtils.isBlank(svnUrl)) {
             svnUrl = appConfigDto.getSvnRep();
         }
+        return svnUrl;
+    }
+
+    private static Git getGit(AppConfigDto appConfigDto) throws IOException {
+        FileRepositoryBuilder builder = new FileRepositoryBuilder();
+        builder.setGitDir(new File("D:/workspace/ta6-git/fund/db/.git"));
+        Repository repo = builder.build();
+        Git git = new Git(repo);
+        return git;
+    }
+
+    private static SVNRepository getSVNRepository(AppConfigDto appConfigDto) throws Exception {
+        String svnUrl = getSvnUrl(appConfigDto);
         String svnName = appConfigDto.getSvnUsername();
         String svnPassword = appConfigDto.getSvnPassword();
         DAVRepositoryFactory.setup();

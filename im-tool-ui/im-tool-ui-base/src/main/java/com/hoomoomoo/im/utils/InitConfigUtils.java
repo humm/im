@@ -484,6 +484,9 @@ public class InitConfigUtils {
         keys.put("system.tool.sync.code.source", null);
         keys.put("system.tool.sync.code.target", null);
 
+        keys.put("file.sync.source", null);
+        keys.put("file.sync.target", null);
+
     }
 
     /**

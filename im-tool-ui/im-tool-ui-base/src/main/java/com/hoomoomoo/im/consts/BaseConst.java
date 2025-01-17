@@ -239,6 +239,7 @@ public class BaseConst {
     public final static String STR_SPACE_2 = "  ";
     public final static String STR_SPACE_3 = "   ";
     public final static String STR_SPACE_4 = "    ";
+    public final static String STR_SPACE_5 = "     ";
     public final static String STR_SPACE_8 = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     public final static String STR_EQUALS = "=";
     public static final String STR_COMMA = ",";

@@ -260,6 +260,12 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolSyncCodeTarget;
 
+    private String fileSyncSource;
+
+    private String fileSyncTarget;
+
+    private int fileSyncTimer;
+
     public AppConfigDto() {
         this.execute = false;
         this.appLogEnable = false;

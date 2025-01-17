@@ -6,7 +6,7 @@
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-tool-ui</artifactId>
     <packaging>pom</packaging>
-	<version>2025.000020</version>
+	<version>2025.000027</version>
 
     <modules>
         <module>im-tool-ui-ta</module>
@@ -36,6 +36,8 @@
         <poi-ooxml>3.17</poi-ooxml>
         <poi-ooxml-schemas>3.17</poi-ooxml-schemas>
         <jsqlparser.version>4.8</jsqlparser.version>
+        <org.eclipse.jgit.version>5.11.0.202103091610-r</org.eclipse.jgit.version>
+
     </properties>
 
     <dependencies>
@@ -129,6 +131,11 @@
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>
             <version>${ojdbc6.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit</artifactId>
+            <version>${org.eclipse.jgit.version}</version>
         </dependency>
     </dependencies>
 </project>

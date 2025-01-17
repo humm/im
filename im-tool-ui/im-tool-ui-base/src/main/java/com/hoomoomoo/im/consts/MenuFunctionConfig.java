@@ -87,9 +87,12 @@ public class MenuFunctionConfig {
 
         TASK_SYNC("410", "同步需求", "/conf/fxml/hepTaskSync.fxml", "hepTaskSync", "hepTaskSync", "menuSystem", "同步需求"),
 
+        FILE_SYNC("420", "同步文件", "/conf/fxml/fileSync.fxml", "fileSync", "fileSync", "menuSystem", "同步文件"),
+
         SCRIPT_CHECK("500", "检查文件", "/conf/fxml/scriptCheck.fxml", "scriptCheck", "scriptCheck", "menuSystem", "检查文件"),
 
         CHANGE_FUNCTION_TOOL("600", "版本切换", "/conf/fxml/changeFunctionTool.fxml", "changeFunctionTool", "changeFunctionTool", "menuSystem", "版本切换"),
+
 
         SYSTEM_TOOL("700", "系统工具", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuSystem", "系统工具"),
 

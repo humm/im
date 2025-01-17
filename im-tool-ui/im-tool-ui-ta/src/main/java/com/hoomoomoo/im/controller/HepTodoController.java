@@ -40,6 +40,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -230,6 +231,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label taskTips;
 
     @FXML
+    private Label fileTips;
+
+    @FXML
     private RadioButton all;
 
     @FXML
@@ -244,6 +248,8 @@ public class HepTodoController extends BaseController implements Initializable {
     private Pane mask;
 
     private static Map<String, Integer> minDateCache = new HashMap<>();
+
+    private static Set<String> fileSyncSourceFile = new HashSet<>();
 
     @FXML
     void selectAll(ActionEvent event) throws Exception {
@@ -1587,8 +1593,95 @@ public class HepTodoController extends BaseController implements Initializable {
             executeQuery(null);
             initColorDesc();
             buildTestData();
+            syncFile(appConfigDto);
         } catch (Exception e) {
             LoggerUtils.info(e);
+        }
+    }
+
+    private void syncFile(AppConfigDto appConfigDto) throws Exception {
+        if (isExtendUser()) {
+            return;
+        }
+        String fileSyncSource = appConfigDto.getFileSyncSource();
+        String fileSyncTarget = appConfigDto.getFileSyncTarget();
+        if (StringUtils.isBlank(fileSyncSource) || StringUtils.isBlank(fileSyncTarget)) {
+           return;
+        }
+        OutputUtils.info(fileTips, String.format("监听目录: %s ", fileSyncSource));
+        new Thread(new Runnable() {
+            @SneakyThrows
+            @Override
+            public void run() {
+                while (true) {
+                    fileSyncSourceFile.clear();
+                    sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget);
+                    clearFile(new File(fileSyncTarget));
+                    Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
+                }
+            }
+        }).start();
+    }
+
+    private void sync(File sourceFile, String sourcePath, String targetPath) throws IOException {
+        if (sourceFile.isDirectory()) {
+            File[] files = sourceFile.listFiles();
+            for (File item : files) {
+                sync(item, sourcePath, targetPath);
+            }
+        } else {
+            String source = sourceFile.getAbsolutePath();
+            String target = source.replace(sourcePath, targetPath);
+            fileSyncSourceFile.add(target);
+            File targetFile = new File(target);
+            boolean needSync = false;
+            String operate = "修改";
+            if (targetFile.exists() && sourceFile.lastModified() > targetFile.lastModified()) {
+                needSync = true;
+            }
+            if (!targetFile.exists()) {
+                operate = "新增";
+                needSync = true;
+            }
+            if (needSync) {
+                List<String> content = FileUtils.readNormalFile(source, false);
+                if (CollectionUtils.isEmpty(content)) {
+                    printLog(getSyncLog(source, operate, "不同步 空文件"));
+                    return;
+                }
+                printLog(getSyncLog(source, operate, "同步开始"));
+                FileUtils.writeFile(target, content, false);
+                printLog(getSyncLog(source, operate, "同步结束"));
+            }
+        }
+    }
+
+    private void printLog(String log) {
+        OutputUtils.info(fileTips, log);
+        OutputUtils.info(notice, log.replaceAll(STR_SPACE_3, STR_SPACE) + STR_NEXT_LINE);
+    }
+
+    private String getSyncLog(String filePath, String operate, String tag) {
+        int index = filePath.lastIndexOf("\\");
+        if (index > 0) {
+            filePath = filePath.substring(index + 1);
+        }
+        return CommonUtils.getCurrentDateTime14() + STR_SPACE_3 + String.format(operate + STR_SPACE_3 + filePath + STR_SPACE_5 + tag);
+    }
+
+    private void clearFile(File sourceFile) {
+        if (sourceFile.isDirectory()) {
+            File[] files = sourceFile.listFiles();
+            for (File item : files) {
+                clearFile(item);
+            }
+        } else {
+            String source = sourceFile.getAbsolutePath();
+            if (!fileSyncSourceFile.contains(source)) {
+                printLog(getSyncLog(source, "删除", "同步开始"));
+                FileUtils.deleteFile(sourceFile);
+                printLog(getSyncLog(source, "删除", "同步结束"));
+            }
         }
     }
 

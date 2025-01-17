@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.hoomoomoo.im.controller.FileTaskSyncController">
+    <children>
+        <SplitPane dividerPositions="0.6500084373620749" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
+                   prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <items>
+
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>
