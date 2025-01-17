@@ -93,7 +93,7 @@ public class HepTodoController extends BaseController implements Initializable {
     public final static String UPDATE_TAG = "【已修改】";
     public final static String SELF_BUILD_TAG = "【自建任务】";
     public final static String SELF_TEST_TAG = "【自测问题】";
-    public final static String DEFECT_TAG = "【缺陷:";
+    public final static String DEFECT_TAG = "【缺陷:FUNDTAVI";
 
     private final static String EXTEND_USER_FRONT_CODE = "front";
     private String PAGE_USER = "";
@@ -991,7 +991,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     min = minCache;
                 }
                 String estimateFinishDate = item.getEstimateFinishDate();
-                if (estimateFinishDate.startsWith(STR_9950) || estimateFinishDate.startsWith(STR_9960)) {
+                if (!taskName.contains(DEFECT_TAG) && (estimateFinishDate.startsWith(STR_9950) || estimateFinishDate.startsWith(STR_9960))) {
                     min = 999;
                 } else if (estimateFinishDate.startsWith(STR_99)) {
                     min = Integer.valueOf(estimateFinishDate.replaceAll(STR_HYPHEN, STR_BLANK).substring(2, 4)) * -1;
@@ -1198,8 +1198,6 @@ public class HepTodoController extends BaseController implements Initializable {
                                 taskColor = color.get("今天待提交");
                             } else if (weekTodoTask.contains(taskNumber)) {
                                 taskColor = color.get("本周待提交");
-                            } else if (taskNameTag.contains(DEFECT_TAG)) {
-                                taskColor = color.get("缺陷");
                             } else if (taskNameTag.contains(SELF_TEST_TAG)) {
                                 taskColor = color.get("自测问题");
                             } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
@@ -1208,6 +1206,8 @@ public class HepTodoController extends BaseController implements Initializable {
                                 taskColor = color.get("已修改");
                             } else if (taskName.contains(COMMIT_TAG)) {
                                 taskColor = color.get("已提交");
+                            } else if (taskName.contains(DEFECT_TAG)) {
+                                taskColor = color.get("缺陷");
                             } else {
                                 taskColor = color.get("默认");
                             }
@@ -1358,7 +1358,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 iterator.remove();
                 continue;
             }
-            if (taskNameTag.contains(DEFECT_TAG)) {
+            if (taskName.contains(DEFECT_TAG)) {
                 item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
                 taskType.put(STR_1, STR_1);
             } else if (taskNameTag.contains(SELF_TEST_TAG)) {
@@ -1560,17 +1560,20 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private String getValue(String value, String type) {
+        if (StringUtils.isBlank(type)) {
+            type = STR_1;
+        }
         if (StringUtils.isBlank(value)) {
-            if (StringUtils.isBlank(type) || STR_1.equals(type)) {
+            if (STR_1.equals(type)) {
                 return "9990-12-31 23:59:59";
             } else if (STR_2.equals(type)) {
                 return "9980-12-31 23:59:59";
-            } else if (STR_3.equals(type)) {
-                return "9970-12-31 23:59:59";
-            } else if (STR_4.equals(type)) {
+            }else if (STR_4.equals(type)) {
                 return "9960-12-31 23:59:59";
             } else if (STR_5.equals(type)) {
                 return "9950-12-31 23:59:59";
+            } else if (STR_3.equals(type)) {
+                return "9940-12-31 23:59:59";
             }
         }
         return value;
