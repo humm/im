@@ -9,13 +9,14 @@ import javafx.scene.control.TextArea;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.lib.AnyObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
-import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.TreeWalk;
-import org.tmatesoft.svn.core.*;
+import org.tmatesoft.svn.core.SVNDepth;
+import org.tmatesoft.svn.core.SVNDirEntry;
+import org.tmatesoft.svn.core.SVNLogEntryPath;
+import org.tmatesoft.svn.core.SVNURL;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.internal.io.dav.DAVRepositoryFactory;
 import org.tmatesoft.svn.core.internal.io.svn.SVNRepositoryFactoryImpl;
@@ -66,21 +67,10 @@ public class SvnUtils {
                     svnLogDto.setMsg(getSvnMsg(commitMessage, STR_0));
                     svnLogDto.setVersion(commit.getName());
                     svnLogDto.setTime(CommonUtils.getCurrentDateTime1(commit.getAuthorIdent().getWhen()));
-                    // List<String> pathList = getGitCommitFile(treeWalk, commit.getTree());
-                    List<String> pathList = new ArrayList<>();
+                    List<String> pathList = getGitCommitFile(commit.name());
                     svnLogDto.setNum(String.valueOf(pathList.size()));
                     svnLogDto.setFile(pathList);
-                    /*Iterator<String> iterator = logMap.keySet().iterator();
-                    while (iterator.hasNext()) {
-                        String key = iterator.next();
-                        SVNLogEntryPath value = logMap.get(key);
-                        String path = value.getPath().replace(appConfigDto.getSvnDeletePrefix(), STR_BLANK);
-                        if (OPERATE_TYPE_DELETE.equals(String.valueOf(value.getType()))) {
-                            path += NAME_DELETE;
-                        }
-                        svnLogDto.setCodeVersion(getVersion(path));
-                        pathList.add(path + STR_NEXT_LINE);
-                    }*/
+                    svnLogDto.setCodeVersion(getSvnMsg(commitMessage, STR_2));
                     logList.add(svnLogDto);
                 }
             }
@@ -133,12 +123,20 @@ public class SvnUtils {
         return logList;
     }
 
-    private static List<String> getGitCommitFile(TreeWalk treeWalk, AnyObjectId id) throws IOException {
-        treeWalk.addTree(id);
-        treeWalk.setRecursive(true);
+    private static List<String> getGitCommitFile(String commitId) throws IOException {
         List<String> fileList = new ArrayList<>();
-        while (treeWalk.next()) {
-            fileList.add(treeWalk.getPathString());
+        String fileName = FileUtils.getFilePath(PATH_GIT_LOG) + commitId + FILE_TYPE_LOG;
+        File log = new File(fileName);
+        if (!log.exists()) {
+            CmdUtils.exe("git show " + commitId + " > " + fileName);
+        }
+        List<String> logList = FileUtils.readNormalFile(fileName, false);
+        for (int i=0; i<logList.size(); i++) {
+            String item = logList.get(i).trim();
+            if (item.startsWith(KEY_GIT_LOG_FILE)) {
+                String name = item.split(KEY_GIT_LOG_FILE)[1].split(STR_SPACE)[0];
+                fileList.add(name);
+            }
         }
         return fileList;
     }
@@ -262,6 +260,8 @@ public class SvnUtils {
         String indexMsg = NAME_SVN_DESCRIBE;
         if (STR_1.equals(type)) {
             indexMsg = NAME_SVN_MODIFY_NO;
+        } else if (STR_2.equals(type)) {
+            indexMsg = NAME_SVN_VERSION_NO;
         }
         if (StringUtils.isNotBlank(msg)) {
             String[] message = msg.split(STR_NEXT_LINE);

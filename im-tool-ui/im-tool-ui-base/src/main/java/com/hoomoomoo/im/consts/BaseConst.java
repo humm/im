@@ -158,6 +158,7 @@ public class BaseConst {
     public final static String KEY_UPDATE_CHANGE_MENU = "updateChangeMenu";
     public final static String KEY_SCHEDULE = "schedule";
     public final static String KEY_TASK = "task";
+    public final static String KEY_GIT_LOG_FILE = "diff --git";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
@@ -182,6 +183,7 @@ public class BaseConst {
     public static final String NAME_END = "结束";
     public static final String NAME_SVN_DESCRIBE = "[需求描述]";
     public static final String NAME_SVN_MODIFY_NO = "[修改单编号]";
+    public static final String NAME_SVN_VERSION_NO = "[修改单版本]";
     public static final String NAME_CURRENT_VERSION = "当前版本:";
     public static final String NAME_SAVE_SUCCESS = "修改成功 ";
     public static final String NAME_DEAL_SUCCESS = "处理成功";
@@ -194,7 +196,6 @@ public class BaseConst {
     public static final String NAME_FILE_SAME = "文件一致性";
     public static final String NAME_CONFIG_FILE = "配置文件";
     public static final String NAME_VERSION = "版本";
-    public static final String NAME_MAC = "MAC地址";
     public static final String NAME_APP_TAB_SHOW = "# 默认展示tab页";
     public static final String NAME_APP_TAB_SHOW_CODE = "app.tab.show";
     public static final String NAME_CONFIG_COLUMN = "字段参数";
@@ -355,9 +356,9 @@ public class BaseConst {
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/extend/version/version.stat";
-    public static final String PATH_VERSION_SYNC_STAT = "/extend/version/versionSync.stat";
     public static final String PATH_VERSION_EXTEND_STAT = "/extend/version/versionExtend.stat";
     public static final String PATH_TASK_STAT = "/extend/task/task.stat";
+    public static final String PATH_GIT_LOG = "/extend/git/";
     public static final String PATH_DEMAND_STAT = "/demand.stat";
     public static final String PATH_DEFINE_TASK_DEV_EXTEND_STAT = "/extend/task/taskDevExtend.stat";
     public static final String PATH_DEFINE_TASK_EXTEND_STAT = "/extend/task/taskExtend.stat";
