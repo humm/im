@@ -45,33 +45,44 @@ public class SvnUtils {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String svnUrl = getSvnUrl(appConfigDto);
         List<LogDto> logList = new ArrayList<>();
-        if (svnUrl.contains(KEY_TRUNK)) {
+        if (!svnUrl.contains(KEY_HTTPS)) {
             // git
-            Git git = getGit(appConfigDto);
-            TreeWalk treeWalk = new TreeWalk(git.getRepository());
-            Iterable<RevCommit> logs = git.log().setMaxCount(Integer.valueOf(appConfigDto.getSvnMaxRevision())).call();
-            for (RevCommit commit : logs) {
-                if (StringUtils.equals(commit.getAuthorIdent().getName(), appConfigDto.getSvnUsername())) {
-                    String commitMessage = commit.getFullMessage();
-                    if (commitMessage.trim().startsWith("Merge branch")) {
+            File fileParent = new File(svnUrl);
+            if (fileParent.isDirectory()) {
+                File[] fileList = fileParent.listFiles();
+                for (File file : fileList) {
+                    if (!file.isDirectory()) {
                         continue;
                     }
-                    LogDto svnLogDto = new LogDto();
-                    String modifyMsg = getSvnMsg(commitMessage, STR_1);
-                    svnLogDto.setSerialNo(modifyMsg);
-                    if (StringUtils.isNotBlank(modifyNo)) {
-                        if (!StringUtils.equals(modifyNo.trim(), modifyMsg.trim())) {
-                            continue;
+                    if (!FileUtils.isSuffixDirectory(file, FILE_TYPE_GIT)) {
+                        continue;
+                    }
+                    Git git = getGit(file.getAbsolutePath() + STR_SLASH + FILE_TYPE_GIT);
+                    Iterable<RevCommit> logs = git.log().setMaxCount(Integer.valueOf(appConfigDto.getSvnMaxRevision())).call();
+                    for (RevCommit commit : logs) {
+                        if (StringUtils.equals(commit.getAuthorIdent().getName(), appConfigDto.getSvnUsername())) {
+                            String commitMessage = commit.getFullMessage();
+                            if (commitMessage.trim().startsWith("Merge branch")) {
+                                continue;
+                            }
+                            LogDto svnLogDto = new LogDto();
+                            String modifyMsg = getSvnMsg(commitMessage, STR_1);
+                            svnLogDto.setSerialNo(modifyMsg);
+                            if (StringUtils.isNotBlank(modifyNo)) {
+                                if (!StringUtils.equals(modifyNo.trim(), modifyMsg.trim())) {
+                                    continue;
+                                }
+                            }
+                            svnLogDto.setMsg(getSvnMsg(commitMessage, STR_0));
+                            svnLogDto.setVersion(commit.getName());
+                            svnLogDto.setTime(CommonUtils.getCurrentDateTime1(commit.getAuthorIdent().getWhen()));
+                            List<String> pathList = getGitCommitFile(commit.name());
+                            svnLogDto.setNum(String.valueOf(pathList.size()));
+                            svnLogDto.setFile(pathList);
+                            svnLogDto.setCodeVersion(getSvnMsg(commitMessage, STR_2));
+                            logList.add(svnLogDto);
                         }
                     }
-                    svnLogDto.setMsg(getSvnMsg(commitMessage, STR_0));
-                    svnLogDto.setVersion(commit.getName());
-                    svnLogDto.setTime(CommonUtils.getCurrentDateTime1(commit.getAuthorIdent().getWhen()));
-                    List<String> pathList = getGitCommitFile(commit.name());
-                    svnLogDto.setNum(String.valueOf(pathList.size()));
-                    svnLogDto.setFile(pathList);
-                    svnLogDto.setCodeVersion(getSvnMsg(commitMessage, STR_2));
-                    logList.add(svnLogDto);
                 }
             }
         } else {
@@ -287,9 +298,9 @@ public class SvnUtils {
         return svnUrl;
     }
 
-    private static Git getGit(AppConfigDto appConfigDto) throws IOException {
+    private static Git getGit(String gitPath) throws IOException {
         FileRepositoryBuilder builder = new FileRepositoryBuilder();
-        builder.setGitDir(new File("D:/workspace/ta6-git/fund/db/.git"));
+        builder.setGitDir(new File(gitPath));
         Repository repo = builder.build();
         Git git = new Git(repo);
         return git;

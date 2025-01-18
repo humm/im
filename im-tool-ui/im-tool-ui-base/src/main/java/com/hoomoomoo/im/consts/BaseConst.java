@@ -159,10 +159,12 @@ public class BaseConst {
     public final static String KEY_SCHEDULE = "schedule";
     public final static String KEY_TASK = "task";
     public final static String KEY_GIT_LOG_FILE = "diff --git";
+    public final static String KEY_HTTPS = "https://";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
     public static final String FILE_TYPE_SVN = ".svn";
+    public static final String FILE_TYPE_GIT = ".git";
     public static final String FILE_TYPE_LOG = ".log";
     public static final String FILE_TYPE_JAR = ".jar";
     public static final String FILE_TYPE_BAK = ".bak";
