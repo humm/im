@@ -12,7 +12,6 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
-import org.eclipse.jgit.treewalk.TreeWalk;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNDirEntry;
 import org.tmatesoft.svn.core.SVNLogEntryPath;
@@ -76,7 +75,7 @@ public class SvnUtils {
                             svnLogDto.setMsg(getSvnMsg(commitMessage, STR_0));
                             svnLogDto.setVersion(commit.getName());
                             svnLogDto.setTime(CommonUtils.getCurrentDateTime1(commit.getAuthorIdent().getWhen()));
-                            List<String> pathList = getGitCommitFile(commit.name());
+                            List<String> pathList = getGitCommitFile(file.getAbsolutePath(), commit.name());
                             svnLogDto.setNum(String.valueOf(pathList.size()));
                             svnLogDto.setFile(pathList);
                             svnLogDto.setCodeVersion(getSvnMsg(commitMessage, STR_2));
@@ -134,18 +133,17 @@ public class SvnUtils {
         return logList;
     }
 
-    private static List<String> getGitCommitFile(String commitId) throws IOException {
+    private static List<String> getGitCommitFile(String dir, String commitId) throws IOException {
         List<String> fileList = new ArrayList<>();
-        String fileName = FileUtils.getFilePath(PATH_GIT_LOG) + commitId + FILE_TYPE_LOG;
-        File log = new File(fileName);
-        if (!log.exists()) {
-            CmdUtils.exe("git show " + commitId + " > " + fileName);
-        }
-        List<String> logList = FileUtils.readNormalFile(fileName, false);
+        String content = CmdUtils.exe(dir, "git show " + commitId);
+        List<String> logList = Arrays.asList(content.split(STR_NEXT_LINE));
         for (int i=0; i<logList.size(); i++) {
             String item = logList.get(i).trim();
             if (item.startsWith(KEY_GIT_LOG_FILE)) {
-                String name = item.split(KEY_GIT_LOG_FILE)[1].split(STR_SPACE)[0];
+                String name = item.split(KEY_GIT_LOG_FILE)[1].trim().split(STR_SPACE)[0].trim();
+                if (name.startsWith(KEY_GIT_FILE_PREFIX)) {
+                    name = name.substring(name.indexOf(KEY_GIT_FILE_PREFIX) + KEY_GIT_FILE_PREFIX.length());
+                }
                 fileList.add(name);
             }
         }

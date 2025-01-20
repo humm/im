@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
@@ -15,24 +16,34 @@ import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
  * @date 2022/3/31
  */
 public class CmdUtils {
-    public static String exe(String command) {
-        BufferedReader bufferedReader = null;
+
+    /**
+     * @param dir
+     * @param command
+     * @return
+     */
+    public static String exe(String dir, String command) {
         StringBuilder content = new StringBuilder();
         try {
-            Process p = Runtime.getRuntime().exec(command);
-            bufferedReader = new BufferedReader(new InputStreamReader(p.getInputStream(), Charset.forName(ENCODING_GBK)));
+            // 创建 ProcessBuilder 对象
+            ProcessBuilder processBuilder = new ProcessBuilder();
+            // 设置命令执行的目录，这里可以修改为你需要的目录路径
+            processBuilder.directory(new File(dir));
+            // 设置要执行的命令，例如 dir 命令
+            processBuilder.command("cmd.exe", "/c", command);
+            // 启动进程
+            Process process = processBuilder.start();
+
+            // 获取进程的输入流
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                content.append(line + STR_NEXT_LINE);
+            while ((line = reader.readLine())!= null) {
+                content.append(line).append(STR_NEXT_LINE);
             }
-        } catch (IOException e) {
+            // 等待进程执行结束
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
             LoggerUtils.info(e);
-        } finally {
-            try {
-                bufferedReader.close();
-            } catch (IOException e) {
-                LoggerUtils.info(e);
-            }
         }
         return content.toString();
     }

@@ -96,6 +96,7 @@ public class BaseConst {
     public static final String KEY_FUND = "FUND";
     public static final String KEY_SOURCES_TA_FUND = "/Sources/ta/fund";
     public static final String KEY_TEMP = "temp/";
+    public static final String KEY_GIT_FILE_PREFIX = "a/";
 
     public final static String KEY_APP_ID = "app_id";
     public final static String KEY_APP_KEY = "app_key";
