@@ -17,7 +17,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.HepTodoController">
     <children>
-        <SplitPane dividerPositions="0.195713567839195" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
+        <SplitPane dividerPositions="0.260713567839195" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
                    prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -44,7 +44,25 @@
 
                         <Label fx:id="taskTips" layoutX="20.0" layoutY="135.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                        <Label fx:id="fileTips" layoutX="400.0" layoutY="135.0" style="-fx-font-weight: bold;"/>
+                        <Label layoutX="20.0" layoutY="165.0" style="-fx-font-weight: bold;" text="轮询路径："/>
+                        <Label fx:id="fileTipsSource" layoutX="90.0" layoutY="165.0" style="-fx-font-weight: bold;"/>
+                        <Label layoutX="860.0" layoutY="165.0" style="-fx-font-weight: bold;" text="目标路径："/>
+                        <Label fx:id="fileTipsTarget" layoutX="930.0" layoutY="165.0" style="-fx-font-weight: bold;"/>
+
+                        <Label layoutX="20.0" layoutY="190.0" style="-fx-font-weight: bold;" text="轮询文件："/>
+                        <Label fx:id="fileTipsFile" layoutX="90.0" layoutY="190.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+
+                        <Label layoutX="450.0" layoutY="190.0" style="-fx-font-weight: bold;" text="轮询时间："/>
+                        <Label fx:id="fileTipsFileTime" layoutX="520.0" layoutY="190.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+
+                        <Label layoutX="620.0" layoutY="190.0" style="-fx-font-weight: bold;" text="轮询状态："/>
+                        <Label fx:id="fileTipsFileStatus" layoutX="690.0" layoutY="190.0" style="-fx-font-weight: bold;"/>
+
+                        <Label layoutX="760.0" layoutY="190.0" style="-fx-font-weight: bold;" text="操作类型："/>
+                        <Label fx:id="fileTipsFileOperate" layoutX="830.0" layoutY="190.0" style="-fx-font-weight: bold;"/>
+
+                        <Label layoutX="900.0" layoutY="190.0" style="-fx-font-weight: bold;" text="轮询版本："/>
+                        <Label fx:id="fileTipsVersion" layoutX="970.0" layoutY="190.0" style="-fx-font-weight: bold;"/>
 
                         <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="99.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="635" layoutY="102.0" text="0%"/>

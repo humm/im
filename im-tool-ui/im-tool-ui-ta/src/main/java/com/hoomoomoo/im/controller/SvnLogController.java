@@ -46,9 +46,6 @@ public class SvnLogController extends BaseController implements Initializable {
     private TextField svnTimes;
 
     @FXML
-    private TextField version;
-
-    @FXML
     private TextField modifyNo;
 
     @FXML
@@ -76,12 +73,9 @@ public class SvnLogController extends BaseController implements Initializable {
 
     @FXML
     void showVersion(MouseEvent event) throws ExecutionException, InterruptedException {
-        String ver = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getVersion();
-        String serialNo = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getSerialNo();
+        String serialNo = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getTaskNo();
         String codeVersion = ((LogDto)svnLog.getSelectionModel().getSelectedItem()).getCodeVersion();
         svnVersion.getSelectionModel().select(codeVersion);
-        OutputUtils.clearLog(version);
-        OutputUtils.info(version, ver);
         OutputUtils.clearLog(modifyNo);
         OutputUtils.info(modifyNo, serialNo);
         SvnLogTaskParam svnLogTaskParam = new SvnLogTaskParam(this, "execute");
@@ -128,7 +122,6 @@ public class SvnLogController extends BaseController implements Initializable {
     public void execute(boolean updateLog, String type) {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, SVN_LOG.getName()));
         if (updateLog) {
-            OutputUtils.clearLog(version);
             OutputUtils.clearLog(svnLog);
         }
         try {
@@ -139,21 +132,16 @@ public class SvnLogController extends BaseController implements Initializable {
             setProgress(0);
             OutputUtils.clearLog(fileLog);
             String times = svnTimes.getText().trim();
-            String ver = version.getText().trim();
             String modify = modifyNo.getText().trim();
-            if (StringUtils.isBlank(times) && StringUtils.isBlank(ver)) {
+            if (StringUtils.isBlank(times)) {
                 return;
             }
             if (StringUtils.isBlank(times)) {
                 times = BaseConst.STR_0;
             }
-            if (StringUtils.isBlank(ver)) {
-                ver = BaseConst.STR_0;
-            }
             updateProgress();
             SvnLogTaskParam svnLogTaskParam = new SvnLogTaskParam(this, "query");
             svnLogTaskParam.setTimes(Integer.valueOf(times));
-            svnLogTaskParam.setVersion(Integer.valueOf(ver));
             svnLogTaskParam.setModifyNo(modify);
             svnLogTaskParam.setUpdateLog(updateLog);
             svnLogTaskParam.setType(type);
@@ -166,7 +154,7 @@ public class SvnLogController extends BaseController implements Initializable {
         }
     }
 
-    public void getSvnLog(int times, int version, String modifyNo, boolean updateLog, String type) {
+    public void getSvnLog(int times, String modifyNo, boolean updateLog, String type) {
         try {
             svnSubmit.setDisable(true);
             svnResetSubmit.setDisable(true);
@@ -193,7 +181,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 }
                 appConfigDto.setSvnRep(svnUrl + versionValue);
             }
-            logDtoList.addAll(SvnUtils.getSvnLog(version, modifyNo));
+            logDtoList.addAll(SvnUtils.getSvnLog(times, modifyNo));
             Collections.sort(logDtoList, new Comparator<LogDto>() {
                 @Override
                 public int compare(LogDto o1, LogDto o2) {
@@ -222,7 +210,6 @@ public class SvnLogController extends BaseController implements Initializable {
                     List<String> fileList = new ArrayList<>();
                     int length = logDtoList.size();
                     for (LogDto svnLogDto : logDtoList) {
-                        svnLogDto.setGetNum(String.valueOf(length));
                         svnLogDto.setMatch((times == length || StringUtils.isNotBlank(modifyNo)) ? "匹配" : "未匹配");
                         if (updateLog) {
                             OutputUtils.info(svnLog, svnLogDto);

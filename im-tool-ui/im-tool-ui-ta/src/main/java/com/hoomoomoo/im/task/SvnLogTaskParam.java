@@ -11,7 +11,6 @@ public class SvnLogTaskParam {
     private String taskType;
 
     private int times;
-    private int version;
     private String modifyNo;
     private boolean updateLog;
     private String type;

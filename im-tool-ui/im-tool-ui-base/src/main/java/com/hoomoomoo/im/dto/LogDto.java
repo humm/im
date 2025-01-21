@@ -22,13 +22,11 @@ public class LogDto extends BaseDto implements Comparable<LogDto> {
 
     private String num;
 
-    private String getNum;
-
     private String match;
 
-    private String version;
+    private String taskNo;
 
-    private String serialNo;
+    private String submitNo;
 
     private String codeVersion;
 
@@ -36,9 +34,6 @@ public class LogDto extends BaseDto implements Comparable<LogDto> {
 
     @Override
     public int compareTo(LogDto logDto) {
-        if (CommonUtils.isNumber(logDto.version) && CommonUtils.isNumber(this.version)) {
-            return (int) (Long.parseLong(logDto.version) - Long.parseLong(this.version));
-        }
-        return logDto.version.compareTo(this.version);
+        return logDto.time.compareTo(this.time);
     }
 }

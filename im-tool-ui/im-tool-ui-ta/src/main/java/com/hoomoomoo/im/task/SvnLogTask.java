@@ -14,7 +14,7 @@ public class SvnLogTask implements Callable<SvnLogTaskParam> {
     public SvnLogTaskParam call() throws Exception {
         switch (svnLogTaskParam.getTaskType()) {
             case "query":
-                svnLogTaskParam.getSvnLogController().getSvnLog(svnLogTaskParam.getTimes(), svnLogTaskParam.getVersion(),
+                svnLogTaskParam.getSvnLogController().getSvnLog(svnLogTaskParam.getTimes(),
                         svnLogTaskParam.getModifyNo(), svnLogTaskParam.isUpdateLog(), svnLogTaskParam.getType());
                 break;
             case "execute":

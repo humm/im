@@ -74,6 +74,7 @@ public class BaseConst {
     public static final String KEY_COPY_CODE_LOCATION_REPLACE_TARGET = "copy.code.location.replace.target.";
     public static final String KEY_SVN_URL = "svn.url.";
     public static final String KEY_FIELD_TRANSLATE = "generate.code.field.translate.";
+    public static final String KEY_FILE_SYNC_VERSION = "file.sync.version.";
 
     public static final String KEY_CLASSES = "classes";
     public static final String KEY_NOTICE = "notice";

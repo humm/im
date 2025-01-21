@@ -7,6 +7,7 @@ import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.task.SvnUpdateTask;
 import com.hoomoomoo.im.task.SvnUpdateTaskParam;
 import com.hoomoomoo.im.utils.*;
+import com.sun.jna.platform.unix.solaris.LibKstat;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -101,10 +102,10 @@ public class SvnUpdateController extends BaseController implements Initializable
                         OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】开始\n");
                         OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE_4 + path + "\n");
                         if (FileUtils.isSuffixDirectory(new File(path), BaseConst.FILE_TYPE_SVN)) {
-                            Long version = SvnUtils.updateSvn(path, fileLog);
+                            String version = SvnUtils.updateSvn(path, fileLog);
                             if (version == null) {
                                 LoggerUtils.info("更新异常: " + name);
-                                infoMsg(name, version, "更新异常");
+                                infoMsg(name, null, "更新异常");
                                 OutputUtils.info(failNum, String.valueOf(Integer.valueOf(failNum.getText()) + 1));
                                 OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】异常\n");
                             } else {
@@ -113,7 +114,7 @@ public class SvnUpdateController extends BaseController implements Initializable
                             }
                         } else {
                             Thread.sleep(500L);
-                            infoMsg(name, -1L, "无需更新");
+                            infoMsg(name, "-1", "无需更新");
                             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "【 " + name + " 】非svn目录,无需更新\n");
                         }
                     }
@@ -147,14 +148,14 @@ public class SvnUpdateController extends BaseController implements Initializable
         }
     }
 
-    private void infoMsg(String name, Long version, String msg) {
-        if (version == null) {
-            version = 0L;
+    private void infoMsg(String name, String submitNo, String msg) {
+        if (StringUtils.isBlank(submitNo)) {
+            submitNo = STR_0;
         }
         LogDto logDto = new LogDto();
         logDto.setTime(CommonUtils.getCurrentDateTime1());
         logDto.setName(name);
-        logDto.setVersion(version.toString());
+        logDto.setSubmitNo(submitNo);
         logDto.setMsg(msg);
         OutputUtils.info(svnLog, logDto);
     }

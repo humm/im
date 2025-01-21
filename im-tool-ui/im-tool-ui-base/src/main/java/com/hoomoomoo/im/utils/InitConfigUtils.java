@@ -351,6 +351,7 @@ public class InitConfigUtils {
         boolean locationReplaceSource = false;
         boolean locationReplaceTarget = false;
         boolean fieldTranslate = false;
+        boolean fileSyncVersion = false;
         ListIterator<String> iterator = content.listIterator();
         while (iterator.hasNext()) {
             String item = iterator.next();
@@ -410,6 +411,13 @@ public class InitConfigUtils {
                 } else {
                     fieldTranslate = true;
                     iterator.set("generate.code.field.translate.demo=");
+                }
+            } else if (item.startsWith(KEY_FILE_SYNC_VERSION)) {
+                if (fileSyncVersion) {
+                    iterator.remove();
+                } else {
+                    fileSyncVersion = true;
+                    iterator.set("file.sync.version.trunk.demo=");
                 }
             }
         }

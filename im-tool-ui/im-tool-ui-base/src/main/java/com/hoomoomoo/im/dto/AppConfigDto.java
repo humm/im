@@ -142,6 +142,8 @@ public class AppConfigDto extends BaseDto {
 
     private Map<String, String> fieldTranslateMap;
 
+    private Map<String, String> fileSyncVersionMap;
+
     private HepTaskDto hepTaskDto;
 
     private HepTaskComponentDto hepTaskComponentDto;
@@ -260,10 +262,6 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolSyncCodeTarget;
 
-    private String fileSyncSource;
-
-    private String fileSyncTarget;
-
     private int fileSyncTimer;
 
     public AppConfigDto() {
@@ -283,6 +281,7 @@ public class AppConfigDto extends BaseDto {
         this.replaceTargetUrl = new LinkedHashMap(16);
         this.cookieMap = new HashMap<>(16);
         this.fieldTranslateMap = new HashMap<>(16);
+        this.fileSyncVersionMap = new HashMap<>(16);
         this.executeType = STR_BLANK;
         this.appUser = STR_BLANK;
         this.timerList = new ArrayList<>();

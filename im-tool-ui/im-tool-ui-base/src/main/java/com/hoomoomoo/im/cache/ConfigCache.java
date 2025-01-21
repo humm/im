@@ -195,6 +195,17 @@ public class ConfigCache {
                         }
                     }
                 }
+
+                if (item.startsWith(KEY_FILE_SYNC_VERSION)) {
+                    int index = item.indexOf(STR_EQUALS);
+                    String code = item.substring(KEY_FILE_SYNC_VERSION.length(), index);
+                    String name = item.substring(index + 1);
+                    if (StringUtils.isNotBlank(name)) {
+                        if (!DEMO.equalsIgnoreCase(code)) {
+                            appConfigDto.getFileSyncVersionMap().put(code.toLowerCase(), name);
+                        }
+                    }
+                }
             }
 
             // 路径替换跳过版本号

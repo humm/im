@@ -554,6 +554,15 @@ public class FileUtils {
                 }
             }
 
+            // 文件同步版本
+            if (item.startsWith(KEY_FILE_SYNC_VERSION)) {
+                List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_FILE_SYNC_VERSION);
+                updateContent.addAll(updateConfig);
+                if (CollectionUtils.isNotEmpty(updateConfig)) {
+                    continue;
+                }
+            }
+
             // 更新历史配置项
             Iterator<String> iterator = oldAppConfig.keySet().iterator();
             while (iterator.hasNext()) {

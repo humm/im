@@ -40,16 +40,25 @@ import static org.apache.commons.beanutils.BeanUtils.copyProperties;
  */
 public class SvnUtils {
 
-    public static List<LogDto> getSvnLog(int version, String modifyNo) throws Exception {
+    /**
+     *
+     * @param times  获取提交记录次数
+     * @param modifyNo 任务单编号
+     * @return
+     * @throws Exception
+     */
+    public static List<LogDto> getSvnLog(int times, String modifyNo) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String svnUrl = getSvnUrl(appConfigDto);
-        List<LogDto> logList = new ArrayList<>();
+        final List<LogDto> logList = new ArrayList<>();
         if (!svnUrl.contains(KEY_HTTPS)) {
             // git
+            int current;
             File fileParent = new File(svnUrl);
             if (fileParent.isDirectory()) {
                 File[] fileList = fileParent.listFiles();
-                for (File file : fileList) {
+                outer: for (File file : fileList) {
+                    current = 0;
                     if (!file.isDirectory()) {
                         continue;
                     }
@@ -60,25 +69,29 @@ public class SvnUtils {
                     Iterable<RevCommit> logs = git.log().setMaxCount(Integer.valueOf(appConfigDto.getSvnMaxRevision())).call();
                     for (RevCommit commit : logs) {
                         if (StringUtils.equals(commit.getAuthorIdent().getName(), appConfigDto.getSvnUsername())) {
+                            if (current > times) {
+                                break;
+                            }
+                            current++;
                             String commitMessage = commit.getFullMessage();
                             if (commitMessage.trim().startsWith("Merge branch")) {
                                 continue;
                             }
                             LogDto svnLogDto = new LogDto();
                             String modifyMsg = getSvnMsg(commitMessage, STR_1);
-                            svnLogDto.setSerialNo(modifyMsg);
+                            svnLogDto.setTaskNo(modifyMsg);
                             if (StringUtils.isNotBlank(modifyNo)) {
                                 if (!StringUtils.equals(modifyNo.trim(), modifyMsg.trim())) {
                                     continue;
                                 }
                             }
+                            svnLogDto.setSubmitNo(commit.getName());
                             svnLogDto.setMsg(getSvnMsg(commitMessage, STR_0));
-                            svnLogDto.setVersion(commit.getName());
                             svnLogDto.setTime(CommonUtils.getCurrentDateTime1(commit.getAuthorIdent().getWhen()));
                             List<String> pathList = getGitCommitFile(file.getAbsolutePath(), commit.name());
                             svnLogDto.setNum(String.valueOf(pathList.size()));
                             svnLogDto.setFile(pathList);
-                            svnLogDto.setCodeVersion(getSvnMsg(commitMessage, STR_2));
+                            svnLogDto.setCodeVersion(getVersion(getSvnMsg(commitMessage, STR_2)));
                             logList.add(svnLogDto);
                         }
                     }
@@ -92,14 +105,10 @@ public class SvnUtils {
             SVNDirEntry lastSVNDirEntry = repository.info(STR_POINT, endRevision);
             // 开始版本
             long startRevision = lastSVNDirEntry.getRevision() - Integer.valueOf(appConfigDto.getSvnMaxRevision());
-            if (version != 0) {
-                startRevision = version;
-                endRevision = version;
-            }
             repository.log(new String[]{STR_BLANK}, startRevision, endRevision, true, true, svnLogEntry -> {
                 if (StringUtils.equals(svnLogEntry.getAuthor(), appConfigDto.getSvnUsername())) {
                     LogDto svnLogDto = new LogDto();
-                    svnLogDto.setVersion(Long.valueOf(svnLogEntry.getRevision()).toString());
+                    svnLogDto.setSubmitNo(Long.valueOf(svnLogEntry.getRevision()).toString());
                     svnLogDto.setTime(CommonUtils.getCurrentDateTime1(svnLogEntry.getDate()));
                     Map<String, SVNLogEntryPath> logMap = svnLogEntry.getChangedPaths();
                     svnLogDto.setNum(String.valueOf(logMap.size()));
@@ -108,7 +117,7 @@ public class SvnUtils {
                     String msg = svnLogEntry.getMessage();
                     svnLogDto.setMsg(getSvnMsg(msg, STR_0));
                     String modifyMsg = getSvnMsg(msg, STR_1);
-                    svnLogDto.setSerialNo(modifyMsg);
+                    svnLogDto.setTaskNo(modifyMsg);
                     if (StringUtils.isNotBlank(modifyNo)) {
                         if (!StringUtils.equals(modifyNo.trim(), modifyMsg.trim())) {
                             return;
@@ -130,7 +139,11 @@ public class SvnUtils {
             });
         }
         Collections.sort(logList);
-        return logList;
+        List<LogDto> res = logList;
+        if (res.size() > times) {
+            res = res.subList(0, times);
+        }
+        return res;
     }
 
     private static List<String> getGitCommitFile(String dir, String commitId) throws IOException {
@@ -144,19 +157,10 @@ public class SvnUtils {
                 if (name.startsWith(KEY_GIT_FILE_PREFIX)) {
                     name = name.substring(name.indexOf(KEY_GIT_FILE_PREFIX) + KEY_GIT_FILE_PREFIX.length());
                 }
-                fileList.add(name);
+                fileList.add(name + STR_NEXT_LINE);
             }
         }
         return fileList;
-    }
-
-    private static String getVersion(String path) {
-        String version = KEY_TRUNK;
-        if (path.contains(KEY_FIX) && path.contains(KEY_SOURCES)) {
-            path = path.replace(KEY_FUND_SLASH, STR_BLANK).replace(KEY_TEMP, STR_BLANK);
-            version = path.substring(path.indexOf(KEY_FIX) + KEY_FIX.length() + 1, path.indexOf(KEY_SOURCES) - 1);
-        }
-        return version;
     }
 
     public static LinkedHashMap<String, SvnStatDto> getSvnLog(Date start, Date end, LinkedHashMap<String, SvnStatDto> svnStat, boolean notice) throws Exception {
@@ -265,6 +269,15 @@ public class SvnUtils {
         return svnStat;
     }
 
+    private static String getVersion(String path) {
+        String version = KEY_TRUNK;
+        if (path.contains(KEY_FIX) && path.contains(KEY_SOURCES)) {
+            path = path.replace(KEY_FUND_SLASH, STR_BLANK).replace(KEY_TEMP, STR_BLANK);
+            version = path.substring(path.indexOf(KEY_FIX) + KEY_FIX.length() + 1, path.indexOf(KEY_SOURCES) - 1);
+        }
+        return version;
+    }
+
     private static String getSvnMsg(String msg, String type) {
         String indexMsg = NAME_SVN_DESCRIBE;
         if (STR_1.equals(type)) {
@@ -315,7 +328,7 @@ public class SvnUtils {
         return repository;
     }
 
-    public static Long updateSvn(String workspace, TextArea fileLog) throws Exception {
+    public static String updateSvn(String workspace, TextArea fileLog) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String svnName = appConfigDto.getSvnUsername();
         String svnPassword = appConfigDto.getSvnPassword();
@@ -331,6 +344,6 @@ public class SvnUtils {
             LoggerUtils.info(e);
             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e) + STR_NEXT_LINE);
         }
-        return version;
+        return version == null ? null : String.valueOf(version);
     }
 }

@@ -38,6 +38,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -231,7 +232,25 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label taskTips;
 
     @FXML
-    private Label fileTips;
+    private Label fileTipsVersion;
+
+    @FXML
+    private Label fileTipsSource;
+
+    @FXML
+    private Label fileTipsTarget;
+
+    @FXML
+    private Label fileTipsFile;
+
+    @FXML
+    private Label fileTipsFileOperate;
+
+    @FXML
+    private Label fileTipsFileStatus;
+
+    @FXML
+    private Label fileTipsFileTime;
 
     @FXML
     private RadioButton all;
@@ -1606,31 +1625,40 @@ public class HepTodoController extends BaseController implements Initializable {
         if (isExtendUser()) {
             return;
         }
-        String fileSyncSource = appConfigDto.getFileSyncSource();
-        String fileSyncTarget = appConfigDto.getFileSyncTarget();
-        if (StringUtils.isBlank(fileSyncSource) || StringUtils.isBlank(fileSyncTarget)) {
-           return;
+        Map<String,String> syncFileVersion = appConfigDto.getFileSyncVersionMap();
+        if (MapUtils.isEmpty(syncFileVersion)) {
+            return;
         }
-        OutputUtils.info(fileTips, String.format("监听目录: %s ", fileSyncSource));
         new Thread(new Runnable() {
             @SneakyThrows
             @Override
             public void run() {
                 while (true) {
-                    fileSyncSourceFile.clear();
-                    sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget);
-                    clearFile(new File(fileSyncTarget));
-                    Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
+                    for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
+                        String ver = version.getKey().toUpperCase();
+                        String[] path = version.getValue().split(STR_COMMA);
+                        if (path.length != 2) {
+                            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
+                        }
+                        String fileSyncSource = path[0];
+                        String fileSyncTarget = path[1];
+                        OutputUtils.info(fileTipsSource, fileSyncSource);
+                        OutputUtils.info(fileTipsTarget, fileSyncTarget);
+                        fileSyncSourceFile.clear();
+                        sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
+                        clearFile(new File(fileSyncTarget), ver);
+                        Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
+                    }
                 }
             }
         }).start();
     }
 
-    private void sync(File sourceFile, String sourcePath, String targetPath) throws IOException {
+    private void sync(File sourceFile, String sourcePath, String targetPath, String version) throws IOException {
         if (sourceFile.isDirectory()) {
             File[] files = sourceFile.listFiles();
             for (File item : files) {
-                sync(item, sourcePath, targetPath);
+                sync(item, sourcePath, targetPath, version);
             }
         } else {
             String source = sourceFile.getAbsolutePath();
@@ -1648,42 +1676,52 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             if (needSync) {
                 List<String> content = FileUtils.readNormalFile(source, false);
+                OutputUtils.info(fileTipsVersion, version);
+                OutputUtils.info(fileTipsFile, getFileName(source));
+                OutputUtils.info(fileTipsFileOperate, operate);
+
                 if (CollectionUtils.isEmpty(content)) {
-                    printLog(getSyncLog(source, operate, "不同步 空文件"));
+                    OutputUtils.info(fileTipsFileStatus, "略过");
+                    OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
                     return;
                 }
-                printLog(getSyncLog(source, operate, "同步开始"));
+
+                OutputUtils.info(fileTipsFileStatus, "开始");
+                OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
                 FileUtils.writeFile(target, content, false);
-                printLog(getSyncLog(source, operate, "同步结束"));
+                OutputUtils.info(fileTipsFileStatus, "结束");
+                OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
             }
         }
     }
 
-    private void printLog(String log) {
-        OutputUtils.info(fileTips, log);
-        OutputUtils.info(notice, log.replaceAll(STR_SPACE_3, STR_SPACE) + STR_NEXT_LINE);
-    }
-
-    private String getSyncLog(String filePath, String operate, String tag) {
+    private String getFileName(String filePath) {
         int index = filePath.lastIndexOf("\\");
         if (index > 0) {
             filePath = filePath.substring(index + 1);
         }
-        return CommonUtils.getCurrentDateTime14() + STR_SPACE_3 + String.format(operate + STR_SPACE_3 + filePath + STR_SPACE_5 + tag);
+        return filePath;
+
     }
 
-    private void clearFile(File sourceFile) {
+    private void clearFile(File sourceFile, String version) {
         if (sourceFile.isDirectory()) {
             File[] files = sourceFile.listFiles();
             for (File item : files) {
-                clearFile(item);
+                clearFile(item, version);
             }
         } else {
             String source = sourceFile.getAbsolutePath();
             if (!fileSyncSourceFile.contains(source)) {
-                printLog(getSyncLog(source, "删除", "同步开始"));
+                OutputUtils.info(fileTipsVersion, version);
+                OutputUtils.info(fileTipsFile, getFileName(source));
+                OutputUtils.info(fileTipsFileOperate, "删除");
+                OutputUtils.info(fileTipsFileStatus, "开始");
+                OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
                 FileUtils.deleteFile(sourceFile);
-                printLog(getSyncLog(source, "删除", "同步结束"));
+
+                OutputUtils.info(fileTipsFileStatus, "结束");
+                OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
             }
         }
     }

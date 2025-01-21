@@ -33,14 +33,9 @@
                                         <Label fx:id="svnName" layoutX="100.0" layoutY="15.0" prefHeight="15.0"
                                                prefWidth="133.0" AnchorPane.topAnchor="15.0"/>
 
-                                        <Label layoutX="15.0" layoutY="55.0" prefHeight="15.0" prefWidth="80.0"
-                                               text="提交次数"/>
-                                        <TextField fx:id="svnTimes" layoutX="100.0" layoutY="51.0" prefHeight="23.0"
-                                                   prefWidth="160.0"/>
-
                                         <Label layoutX="15.0" layoutY="95.0" prefHeight="15.0" prefWidth="80.0"
-                                               text="SVN编号"/>
-                                        <TextField fx:id="version" layoutX="100.0" layoutY="91.0" prefHeight="23.0"
+                                               text="提交次数"/>
+                                        <TextField fx:id="svnTimes" layoutX="100.0" layoutY="91.0" prefHeight="23.0"
                                                    prefWidth="160.0"/>
 
                                         <Label layoutX="15.0" layoutY="135.0" prefHeight="15.0" prefWidth="80.0"
@@ -85,9 +80,9 @@
                                             </padding>
                                         </Button>
 
-                                        <ProgressIndicator fx:id="schedule" layoutX="300.0" layoutY="70.0"
+                                        <ProgressIndicator fx:id="schedule" layoutX="300.0" layoutY="40.0"
                                                            progress="0.0"/>
-                                        <Label fx:id="scheduleText" layoutX="340.0" layoutY="73.0" text="0%"/>
+                                        <Label fx:id="scheduleText" layoutX="340.0" layoutY="43.0" text="0%"/>
 
                                     </children>
                                 </AnchorPane>
@@ -104,10 +99,10 @@
                                                         <PropertyValueFactory property="match"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="serialNo" editable="false" prefWidth="135"
+                                                <TableColumn id="taskNo" editable="false" prefWidth="150"
                                                              sortable="false" text="任务单编号">
                                                     <cellValueFactory>
-                                                        <PropertyValueFactory property="serialNo"/>
+                                                        <PropertyValueFactory property="taskNo"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
                                                 <TableColumn id="codeVersion" editable="false" prefWidth="200"
@@ -116,7 +111,7 @@
                                                         <PropertyValueFactory property="codeVersion"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="510"
+                                                <TableColumn id="msg" editable="false" prefWidth="500"
                                                              sortable="false" text="提交备注">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="msg"/>
@@ -128,10 +123,10 @@
                                                         <PropertyValueFactory property="time"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="version" editable="false" prefWidth="100"
-                                                             sortable="false" text="SVN编号">
+                                                <TableColumn id="submitNo" editable="false" prefWidth="100"
+                                                             sortable="false" text="提交编号">
                                                     <cellValueFactory>
-                                                        <PropertyValueFactory property="version"/>
+                                                        <PropertyValueFactory property="submitNo"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
                                                 <TableColumn id="num" editable="false" prefWidth="80" sortable="false"
