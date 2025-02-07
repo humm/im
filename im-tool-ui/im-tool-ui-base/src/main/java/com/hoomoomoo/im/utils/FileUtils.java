@@ -104,6 +104,19 @@ public class FileUtils {
      * @return:
      */
     public static void writeFile(String filePath, List<String> contentList, boolean isAppend) throws IOException {
+        writeFile(filePath, contentList, null, isAppend);
+    }
+
+    /**
+     * 写文件
+     *
+     * @param filePath
+     * @param contentList
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static void writeFile(String filePath, List<String> contentList, String encode, boolean isAppend) throws IOException {
         if (CollectionUtils.isEmpty(contentList)) {
             return;
         }
@@ -111,7 +124,7 @@ public class FileUtils {
         for (String item : contentList) {
             content += item + STR_NEXT_LINE;
         }
-        writeFile(filePath, content, isAppend);
+        writeFile(filePath, content, encode, isAppend);
     }
 
     /**

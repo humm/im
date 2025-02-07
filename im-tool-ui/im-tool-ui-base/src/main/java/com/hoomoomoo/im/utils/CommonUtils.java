@@ -729,7 +729,6 @@ public class CommonUtils {
         if (menuConfig == null) {
             return;
         }
-        //CommonUtils.setIcon(tab, "/conf/image/" + menuConfig.getMenuIcon() + ".png", MENUITEM_ICON_SIZE);
     }
 
     private static void setMenuStyle(Menu menu, String icon) {
@@ -754,15 +753,25 @@ public class CommonUtils {
             return;
         }
         tab.setOnClosed(new EventHandler<Event>() {
-            @SneakyThrows
             @Override
             public void handle(Event t) {
-                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-                List<Timer> timerList = appConfigDto.getTimerList();
-                if (CollectionUtils.isNotEmpty(timerList)) {
-                    for (Timer timer : timerList) {
-                        timer.cancel();
+                try {
+                    AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                    List<Timer> timerList = appConfigDto.getTimerList();
+                    if (CollectionUtils.isNotEmpty(timerList)) {
+                        for (Timer timer : timerList) {
+                            timer.cancel();
+                        }
                     }
+                    if (tab.getText().equals(CommonUtils.getMenuName(TASK_TODO.getCode(), TASK_TODO.getName()))) {
+                        Thread fileSyncThread = appConfigDto.getFileSyncThread();
+                        if (fileSyncThread != null) {
+                            fileSyncThread.interrupt();
+                            appConfigDto.setFileSyncThread(null);
+                        }
+                    }
+                } catch (Exception e) {
+                    LoggerUtils.info(e);
                 }
             }
         });

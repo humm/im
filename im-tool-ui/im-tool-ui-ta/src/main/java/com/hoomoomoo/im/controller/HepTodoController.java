@@ -1633,14 +1633,10 @@ public class HepTodoController extends BaseController implements Initializable {
         if (MapUtils.isEmpty(syncFileVersion)) {
             return;
         }
-        Thread fileSyncThread = appConfigDto.getFileSyncThread();
-        if (fileSyncThread != null) {
-            fileSyncThread.interrupt();
-        }
-        fileSyncThread = new Thread(new Runnable() {
+        Thread fileSyncThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true) {
+                outer: while (true) {
                     for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
                         String ver = version.getKey().toUpperCase();
                         String[] path = version.getValue().split(STR_COMMA);
@@ -1663,8 +1659,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
                         } catch (InterruptedException e) {
                             LoggerUtils.info("停止文件同步");
-                            LoggerUtils.info(e);
-                            break;
+                            break outer;
                         }
                     }
                 }
@@ -1708,7 +1703,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
                 OutputUtils.info(fileTipsFileStatus, "开始");
                 OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
-                FileUtils.writeFile(target, content, false);
+                FileUtils.writeFile(target, content, ENCODING_UTF8, false);
                 OutputUtils.info(fileTipsFileStatus, "结束");
                 OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
             }
