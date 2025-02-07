@@ -1031,6 +1031,10 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.isBlank(item.getCustomer()) && item.getName().contains(DEFECT_TAG)) {
                 item.setCustomer(NAME_INNER_CUSTOMER);
             }
+            String customer = item.getCustomer();
+            if (StringUtils.isNotBlank(customer) && customer.length() > 6) {
+                item.setCustomer(customer.substring(0, 6));
+            }
         }
 
         res = sortTask(res, false);

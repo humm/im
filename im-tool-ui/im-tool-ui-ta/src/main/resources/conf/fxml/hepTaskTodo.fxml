@@ -56,13 +56,13 @@
                         <Label fx:id="fileTipsFileTime" layoutX="520.0" layoutY="190.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                         <Label layoutX="620.0" layoutY="190.0" style="-fx-font-weight: bold;" text="同步状态："/>
-                        <Label fx:id="fileTipsFileStatus" layoutX="690.0" layoutY="190.0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="fileTipsFileStatus" layoutX="690.0" layoutY="190.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                         <Label layoutX="760.0" layoutY="190.0" style="-fx-font-weight: bold;" text="操作类型："/>
-                        <Label fx:id="fileTipsFileOperate" layoutX="830.0" layoutY="190.0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="fileTipsFileOperate" layoutX="830.0" layoutY="190.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                         <Label layoutX="900.0" layoutY="190.0" style="-fx-font-weight: bold;" text="同步版本："/>
-                        <Label fx:id="fileTipsVersion" layoutX="970.0" layoutY="190.0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="fileTipsVersion" layoutX="970.0" layoutY="190.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                         <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="99.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="635" layoutY="102.0" text="0%"/>

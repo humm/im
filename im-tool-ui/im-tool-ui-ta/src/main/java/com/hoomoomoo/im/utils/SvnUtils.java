@@ -140,7 +140,7 @@ public class SvnUtils {
         }
         Collections.sort(logList);
         List<LogDto> res = logList;
-        if (res.size() > times) {
+        if (times > 0 && res.size() > times) {
             res = res.subList(0, times);
         }
         return res;
