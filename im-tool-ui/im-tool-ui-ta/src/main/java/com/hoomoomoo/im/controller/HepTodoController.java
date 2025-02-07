@@ -1629,8 +1629,11 @@ public class HepTodoController extends BaseController implements Initializable {
         if (MapUtils.isEmpty(syncFileVersion)) {
             return;
         }
-        new Thread(new Runnable() {
-            @SneakyThrows
+        Thread fileSyncThread = appConfigDto.getFileSyncThread();
+        if (fileSyncThread != null) {
+            fileSyncThread.interrupt();
+        }
+        fileSyncThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 while (true) {
@@ -1645,13 +1648,26 @@ public class HepTodoController extends BaseController implements Initializable {
                         OutputUtils.info(fileTipsSource, fileSyncSource);
                         OutputUtils.info(fileTipsTarget, fileSyncTarget);
                         fileSyncSourceFile.clear();
-                        sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
+                        try {
+                            sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
+                        } catch (IOException e) {
+                            LoggerUtils.info(e);
+                            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+                        }
                         clearFile(new File(fileSyncTarget), ver);
-                        Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
+                        try {
+                            Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
+                        } catch (InterruptedException e) {
+                            LoggerUtils.info("停止文件同步");
+                            LoggerUtils.info(e);
+                            break;
+                        }
                     }
                 }
             }
-        }).start();
+        });
+        appConfigDto.setFileSyncThread(fileSyncThread);
+        fileSyncThread.start();
     }
 
     private void sync(File sourceFile, String sourcePath, String targetPath, String version) throws IOException {

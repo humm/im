@@ -262,6 +262,8 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolSyncCodeTarget;
 
+    private Thread fileSyncThread;
+
     private int fileSyncTimer;
 
     public AppConfigDto() {
