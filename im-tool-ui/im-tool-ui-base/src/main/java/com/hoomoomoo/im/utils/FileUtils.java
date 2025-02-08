@@ -505,9 +505,9 @@ public class FileUtils {
             }
             // 获取历史升级脚本配置
             if (item.startsWith(KEY_SCRIPT_UPDATE_TABLE)) {
+                appendExtendConfig(updateContent);
                 List<String> updateConfig = getUpdateConfig(oldAppConfig, KEY_SCRIPT_UPDATE_TABLE);
                 updateContent.addAll(updateConfig);
-                appendExtendConfig(updateContent);
                 if (CollectionUtils.isNotEmpty(updateConfig)) {
                     continue;
                 }
