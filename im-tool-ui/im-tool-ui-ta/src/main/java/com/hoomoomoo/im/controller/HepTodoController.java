@@ -145,6 +145,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private AnchorPane todoTitle;
 
     @FXML
+    private AnchorPane colorDesc;
+
+    @FXML
     private Label weekPublish;
 
     @FXML
@@ -1819,13 +1822,13 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void initColorDesc() {
         double step = 15;
-        double x = 950;
-        double y = 135;
+        double x = 20;
+        double y = 5;
         Label label = new Label("颜色说明:");
         label.setStyle("-fx-font-weight: bold;");
         label.setLayoutX(x);
         label.setLayoutY(y);
-        todoTitle.getChildren().add(label);
+        colorDesc.getChildren().add(label);
         int prevLen = 4;
         int diff = 0;
         for (Map.Entry<String, String[]> entry : color.entrySet()) {
@@ -1840,7 +1843,7 @@ public class HepTodoController extends BaseController implements Initializable {
             ele.setStyle(color.get(key)[0]);
             ele.setLayoutX(x);
             ele.setLayoutY(y);
-            todoTitle.getChildren().add(ele);
+            colorDesc.getChildren().add(ele);
             prevLen = len;
             x -= step * diff;
             x += 20;
