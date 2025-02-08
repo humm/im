@@ -1649,6 +1649,7 @@ public class HepTodoController extends BaseController implements Initializable {
             public void run() {
                 while (true) {
                     appConfigDto.getThreadId().add(threadId);
+                    OutputUtils.info(notice, STR_BLANK + STR_NEXT_LINE);
                     OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("轮询线程数: " + appConfigDto.getThreadId().size()));
                     for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
                         String ver = version.getKey().toUpperCase();
