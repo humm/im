@@ -238,6 +238,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label taskTips;
 
     @FXML
+    private Label scrollTips;
+
+    @FXML
     private Label fileTipsVersion;
 
     @FXML
@@ -1653,7 +1656,9 @@ public class HepTodoController extends BaseController implements Initializable {
                 while (true) {
                     appConfigDto.getThreadId().add(threadId);
                     OutputUtils.info(notice, STR_BLANK + STR_NEXT_LINE);
-                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("轮询线程数: " + appConfigDto.getThreadId().size()));
+                    String threadMsg = "轮询线程数: " + appConfigDto.getThreadId().size();
+                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
+                    OutputUtils.info(scrollTips, threadMsg);
                     for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
                         String ver = version.getKey().toUpperCase();
                         String[] path = version.getValue().split(STR_COMMA);
@@ -1662,7 +1667,8 @@ public class HepTodoController extends BaseController implements Initializable {
                         }
                         String fileSyncSource = path[0];
                         String fileSyncTarget = path[1];
-                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK)));
+                        String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
+                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
                         fileSyncSourceFile.clear();
                         try {
                             sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
@@ -1825,7 +1831,8 @@ public class HepTodoController extends BaseController implements Initializable {
         double x = 20;
         double y = 5;
         Label label = new Label("颜色说明:");
-        label.setStyle("-fx-font-weight: bold;");
+        String boldStyle = "-fx-font-weight: bold;";
+        label.setStyle(boldStyle);
         label.setLayoutX(x);
         label.setLayoutY(y);
         colorDesc.getChildren().add(label);
@@ -1840,7 +1847,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 len = prevLen;
             }
             x += step * len;
-            ele.setStyle(color.get(key)[0]);
+            ele.setStyle(boldStyle + color.get(key)[0]);
             ele.setLayoutX(x);
             ele.setLayoutY(y);
             colorDesc.getChildren().add(ele);
