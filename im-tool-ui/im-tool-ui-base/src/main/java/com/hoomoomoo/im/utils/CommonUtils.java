@@ -764,17 +764,22 @@ public class CommonUtils {
                         }
                     }
                     if (tab.getText().equals(CommonUtils.getMenuName(TASK_TODO.getCode(), TASK_TODO.getName()))) {
-                        Thread fileSyncThread = appConfigDto.getFileSyncThread();
-                        if (fileSyncThread != null) {
-                            fileSyncThread.interrupt();
-                            appConfigDto.setFileSyncThread(null);
-                        }
+                        stopHepToDoSyncFile(appConfigDto);
                     }
                 } catch (Exception e) {
                     LoggerUtils.info(e);
                 }
             }
         });
+    }
+
+    public static void stopHepToDoSyncFile(AppConfigDto appConfigDto) {
+        Thread fileSyncThread = appConfigDto.getFileSyncThread();
+        if (fileSyncThread != null) {
+            fileSyncThread.interrupt();
+            appConfigDto.setFileSyncThread(null);
+            appConfigDto.getThreadId().clear();
+        }
     }
 
     /**

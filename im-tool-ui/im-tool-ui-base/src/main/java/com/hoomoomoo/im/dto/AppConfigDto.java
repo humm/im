@@ -264,6 +264,8 @@ public class AppConfigDto extends BaseDto {
 
     private Thread fileSyncThread;
 
+    private Set<String> threadId;
+
     private int fileSyncTimer;
 
     public AppConfigDto() {
@@ -281,9 +283,9 @@ public class AppConfigDto extends BaseDto {
         this.svnUrl = new LinkedHashMap(16);
         this.replaceSourceUrl = new LinkedHashMap(16);
         this.replaceTargetUrl = new LinkedHashMap(16);
-        this.cookieMap = new HashMap<>(16);
-        this.fieldTranslateMap = new HashMap<>(16);
-        this.fileSyncVersionMap = new HashMap<>(16);
+        this.cookieMap = new LinkedHashMap<>(16);
+        this.fieldTranslateMap = new LinkedHashMap<>(16);
+        this.fileSyncVersionMap = new LinkedHashMap(16);
         this.executeType = STR_BLANK;
         this.appUser = STR_BLANK;
         this.timerList = new ArrayList<>();
@@ -291,5 +293,6 @@ public class AppConfigDto extends BaseDto {
         this.tableColumnList = new ArrayList<>(16);
         this.dayPublishVersion = new ArrayList<>(16);
         this.weekPublishVersion = new ArrayList<>(16);
+        this.threadId = new LinkedHashSet<>();
     }
 }

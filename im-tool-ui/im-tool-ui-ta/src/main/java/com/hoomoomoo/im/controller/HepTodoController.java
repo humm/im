@@ -190,6 +190,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private Button query;
 
     @FXML
+    private Button syncFileBtn;
+
+    @FXML
     private Button extendUser;
 
     @FXML
@@ -235,12 +238,6 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label fileTipsVersion;
 
     @FXML
-    private Label fileTipsSource;
-
-    @FXML
-    private Label fileTipsTarget;
-
-    @FXML
     private Label fileTipsFile;
 
     @FXML
@@ -269,6 +266,19 @@ public class HepTodoController extends BaseController implements Initializable {
     private static Map<String, Integer> minDateCache = new HashMap<>();
 
     private static Set<String> fileSyncSourceFile = new HashSet<>();
+
+    @FXML
+    void syncOrSuspend(ActionEvent event) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        if (appConfigDto.getFileSyncThread() != null) {
+            CommonUtils.stopHepToDoSyncFile(appConfigDto);
+            syncFileBtn.setText("启动");
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("暂停文件同步"));
+        } else {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("启动文件同步"));
+            syncFile(appConfigDto);
+        }
+    }
 
     @FXML
     void selectAll(ActionEvent event) throws Exception {
@@ -1633,10 +1643,13 @@ public class HepTodoController extends BaseController implements Initializable {
         if (MapUtils.isEmpty(syncFileVersion)) {
             return;
         }
+        String threadId = CommonUtils.getCurrentDateTime2();
         Thread fileSyncThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                outer: while (true) {
+                while (true) {
+                    appConfigDto.getThreadId().add(threadId);
+                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("轮询线程数: " + appConfigDto.getThreadId().size()));
                     for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
                         String ver = version.getKey().toUpperCase();
                         String[] path = version.getValue().split(STR_COMMA);
@@ -1645,8 +1658,7 @@ public class HepTodoController extends BaseController implements Initializable {
                         }
                         String fileSyncSource = path[0];
                         String fileSyncTarget = path[1];
-                        OutputUtils.info(fileTipsSource, fileSyncSource);
-                        OutputUtils.info(fileTipsTarget, fileSyncTarget);
+                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK)));
                         fileSyncSourceFile.clear();
                         try {
                             sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
@@ -1655,18 +1667,19 @@ public class HepTodoController extends BaseController implements Initializable {
                             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
                         }
                         clearFile(new File(fileSyncTarget), ver);
-                        try {
-                            Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
-                        } catch (InterruptedException e) {
-                            LoggerUtils.info("停止文件同步");
-                            break outer;
-                        }
+                    }
+                    try {
+                        Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
+                    } catch (InterruptedException e) {
+                        LoggerUtils.info("停止文件同步");
+                        break;
                     }
                 }
             }
         });
         appConfigDto.setFileSyncThread(fileSyncThread);
         fileSyncThread.start();
+        syncFileBtn.setText("暂停");
     }
 
     private void sync(File sourceFile, String sourcePath, String targetPath, String version) throws IOException {
