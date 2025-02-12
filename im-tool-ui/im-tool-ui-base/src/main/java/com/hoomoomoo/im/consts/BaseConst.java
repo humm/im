@@ -329,6 +329,8 @@ public class BaseConst {
 
     public static final String CMD_KILL_APP = "taskill /f /t /im %s";
 
+    public static final String FILE_GIT_PULL_BAT = "git-pull.bat";
+
     public static final String DEFAULT_FOLDER = "/extend/scriptUpdate";
     public static final String PATH_APP = "/conf/app.conf";
     public static final String PATH_APP_EXTEND = "/conf/extend/appExtend.conf";
@@ -370,6 +372,7 @@ public class BaseConst {
     public static final String PATH_DEFINE_DEMAND_SYNC_STAT = "/extend/task/demandSync.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";
+    public static final String PATH_GIT_PULL = "/conf/bat/git-pull.bat";
 
     public static final String SERVER_HTTP = "http://127.0.0.1";
     public static final String SERVER_URL = "/tool/im";

@@ -298,18 +298,18 @@
                                                     <Label layoutX="15.0" layoutY="10.0"
                                                            style="-fx-font-weight: bold; -fx-font-size: 15;"
                                                            text="任务单信息"/>
-                                                    <Label layoutX="15.0" layoutY="55.0" text="单号"/>
-                                                    <TextField fx:id="taskNumber" layoutX="60.0" layoutY="47.0"
-                                                               prefWidth="240"/>
-                                                    <Label layoutX="15.0" layoutY="95.0" text="名称"/>
-                                                    <TextField fx:id="name" layoutX="60.0" layoutY="90.0"
-                                                               prefWidth="240"/>
-                                                    <Label layoutX="15.0" layoutY="135.0" text="版本"/>
-                                                    <TextField fx:id="sprintVersion" layoutX="60.0" layoutY="130.0"
-                                                               prefWidth="240"/>
-                                                    <Label layoutX="15.0" layoutY="175.0" text="状态"/>
-                                                    <TextField fx:id="statusName" layoutX="60.0" layoutY="170.0"
-                                                               prefWidth="240"/>
+                                                    <Label layoutX="15.0" layoutY="55.0" text="需求编号"/>
+                                                    <TextField fx:id="TaskDemandNo" layoutX="85.0" layoutY="47.0"
+                                                               prefWidth="220"/>
+                                                    <Label layoutX="15.0" layoutY="95.0" text="任务单号"/>
+                                                    <TextField fx:id="taskNumber" layoutX="85.0" layoutY="90.0"
+                                                               prefWidth="220"/>
+                                                    <Label layoutX="15.0" layoutY="135.0" text="任务名称"/>
+                                                    <TextField fx:id="name" layoutX="85.0" layoutY="130.0"
+                                                               prefWidth="220"/>
+                                                    <Label layoutX="15.0" layoutY="175.0" text="任务版本"/>
+                                                    <TextField fx:id="sprintVersion" layoutX="85.0" layoutY="170.0"
+                                                               prefWidth="220"/>
                                                 </AnchorPane>
                                                 <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
                                                             prefHeight="114.0" prefWidth="108.0">

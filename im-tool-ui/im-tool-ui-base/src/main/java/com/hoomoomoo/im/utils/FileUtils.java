@@ -789,11 +789,10 @@ public class FileUtils {
      * @date: 2020/09/12
      * @return:
      */
-    public static boolean isSuffixDirectory(File file, String suffix) {
-        boolean exist = false;
+    public static boolean isSuffixDirectory(File file, String suffix, boolean containsParent, boolean containsChild) {
         if (file != null && suffix != null) {
             if (!file.isDirectory()) {
-                exist = false;
+                return false;
             }
             // 判断当前文件下是否存在文件
             File[] fileList = file.listFiles();
@@ -802,19 +801,29 @@ public class FileUtils {
             }
             for (File item : fileList) {
                 if (item.getName().equals(suffix)) {
-                    exist = true;
-                    break;
+                    return true;
                 }
             }
-            // 判断父文件夹下是否存在文件
-            File parentFile = file.getParentFile();
-            if (parentFile != null) {
-                if (isSuffixDirectory(parentFile, suffix)) {
-                    exist = true;
+            if (containsParent) {
+                File parentFile = file.getParentFile();
+                if (parentFile != null) {
+                    if (isSuffixDirectory(parentFile, suffix, containsParent, containsChild)) {
+                        return true;
+                    }
+                }
+            }
+            if (containsChild) {
+                File[] listFile = file.listFiles();
+                if (listFile != null) {
+                    for (File item : listFile) {
+                        if (isSuffixDirectory(item, suffix, containsParent, containsChild)) {
+                            return true;
+                        }
+                    }
                 }
             }
         }
-        return exist;
+        return false;
     }
 
     public static void addWatermark(File source, File target) throws IOException {

@@ -404,6 +404,9 @@ public class CommonUtils {
             for (FunctionDto functionDto : functionDtoList) {
                 MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
                 if (menu.getId().equals(functionConfig.getParentMenuId())) {
+                    if (STR_TRUE.equals(functionConfig.getHide())) {
+                        continue;
+                    }
                     MenuItem item = new MenuItem();
                     item.setId(functionConfig.getMenuId());
                     item.setText(functionConfig.getName());
@@ -422,7 +425,6 @@ public class CommonUtils {
 
     public static void initMenuBar(MenuBar menuBar, List<FunctionDto> functionDtoList) throws Exception {
         if (CollectionUtils.isNotEmpty(functionDtoList)) {
-            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             Map<String, MenuFunctionConfig.MenuConfig> menuConfigList = new LinkedHashMap<>(16);
             Map<String, Integer> authMenu = new LinkedHashMap<>(16);
             for (FunctionDto functionDto : functionDtoList) {

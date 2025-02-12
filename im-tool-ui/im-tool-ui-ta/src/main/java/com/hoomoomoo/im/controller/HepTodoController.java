@@ -178,7 +178,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private ComboBox sprintVersionQuery;
 
     @FXML
-    private TextField statusName;
+    private TextField TaskDemandNo;
 
     @FXML
     private TextField id;
@@ -337,7 +337,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.repeatInfo(taskNumber, item.getTaskNumber());
         OutputUtils.repeatInfo(name, item.getName());
         OutputUtils.repeatInfo(sprintVersion, item.getSprintVersion());
-        OutputUtils.repeatInfo(statusName, item.getStatusName());
+        OutputUtils.repeatInfo(TaskDemandNo, item.getDemandNo());
         OutputUtils.repeatInfo(id, item.getId());
         String clickType = event.getButton().toString();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();

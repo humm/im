@@ -62,7 +62,7 @@ public class SvnUtils {
                     if (!file.isDirectory()) {
                         continue;
                     }
-                    if (!FileUtils.isSuffixDirectory(file, FILE_TYPE_GIT)) {
+                    if (!FileUtils.isSuffixDirectory(file, FILE_TYPE_GIT, false, false)) {
                         continue;
                     }
                     Git git = getGit(file.getAbsolutePath() + STR_SLASH + FILE_TYPE_GIT);

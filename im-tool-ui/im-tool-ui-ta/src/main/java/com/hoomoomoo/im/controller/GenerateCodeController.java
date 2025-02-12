@@ -28,7 +28,7 @@ import java.util.*;
 import java.util.List;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-// import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.GENERATE_CODE;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.GENERATE_CODE;
 
 /**
  * @author humm23693
@@ -300,7 +300,7 @@ public class GenerateCodeController extends BaseController implements Initializa
     void execute(ActionEvent event) {
         try {
             OutputUtils.clearLog(log);
-            // LoggerUtils.info(String.format(BaseConst.MSG_USE, GENERATE_CODE.getName()));
+            LoggerUtils.info(String.format(BaseConst.MSG_USE, GENERATE_CODE.getName()));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             buildInputInfo();
             if (!TaCommonUtils.checkConfigGenerateCode(log, appConfigDto)) {

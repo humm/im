@@ -47,4 +47,27 @@ public class CmdUtils {
         }
         return content.toString();
     }
+
+
+    public static String exeByFile(String filePath) {
+        StringBuilder content = new StringBuilder();
+        try {
+            // 获取 Runtime 实例
+            Runtime runtime = Runtime.getRuntime();
+            // 执行 .bat 文件
+            Process process = runtime.exec(filePath);
+            // 获取命令执行的输出流
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                content.append(line).append(STR_NEXT_LINE);
+            }
+            // 等待命令执行完成
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            LoggerUtils.info(e);
+        }
+        return content.toString();
+    }
+
 }

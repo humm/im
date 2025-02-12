@@ -19,7 +19,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.*;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_0;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_UPDATE;
 
 /**
@@ -49,15 +49,19 @@ public class SvnUpdateController extends BaseController implements Initializable
     private TextArea fileLog;
 
     @FXML
+    private TextArea fileLogError;
+
+    @FXML
     void executeSubmit(ActionEvent event) {
         LoggerUtils.info(String.format(BaseConst.MSG_USE, SVN_UPDATE.getName()));
         try {
-            if (!TaCommonUtils.checkConfig(fileLog, SVN_UPDATE.getCode())) {
+            if (!TaCommonUtils.checkConfig(fileLogError, SVN_UPDATE.getCode())) {
                 return;
             }
             setProgress(0);
             OutputUtils.clearLog(svnLog);
             OutputUtils.clearLog(fileLog);
+            OutputUtils.clearLog(fileLogError);
             OutputUtils.clearLog(workspaceNum);
             OutputUtils.clearLog(failNum);
 
@@ -68,7 +72,7 @@ public class SvnUpdateController extends BaseController implements Initializable
             TaskUtils.execute(new SvnUpdateTask(new SvnUpdateTaskParam(this)));
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + e.getMessage());
+            OutputUtils.info(fileLogError, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + e.getMessage());
         }
     }
 
@@ -93,7 +97,7 @@ public class SvnUpdateController extends BaseController implements Initializable
                         String path = item.get(name);
                         if (updateFlag.contains(name)) {
                             Thread.sleep(500L);
-                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "重复路径【 " + name + " 】跳过更新...\n");
+                            OutputUtils.info(fileLogError, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "重复路径【 " + name + " 】跳过更新...\n");
                             OutputUtils.info(workspaceNum, String.valueOf(workspaceNumWaitUpdate));
                             continue;
                         }
@@ -101,21 +105,28 @@ public class SvnUpdateController extends BaseController implements Initializable
                         updatePath.add(path);
                         OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】开始\n");
                         OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE_4 + path + "\n");
-                        if (FileUtils.isSuffixDirectory(new File(path), BaseConst.FILE_TYPE_SVN)) {
-                            String version = SvnUtils.updateSvn(path, fileLog);
+                        File updateFile = new File(path);
+                        if (FileUtils.isSuffixDirectory(updateFile, BaseConst.FILE_TYPE_SVN, true, false)) {
+                            String version = SvnUtils.updateSvn(path, fileLogError);
                             if (version == null) {
                                 LoggerUtils.info("更新异常: " + name);
                                 infoMsg(name, null, "更新异常");
                                 OutputUtils.info(failNum, String.valueOf(Integer.valueOf(failNum.getText()) + 1));
-                                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】异常\n");
+                                OutputUtils.info(fileLogError, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】异常\n");
                             } else {
                                 infoMsg(name, version, "更新完成");
                                 OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】完成\n");
                             }
+                        } else if (FileUtils.isSuffixDirectory(updateFile, BaseConst.FILE_TYPE_GIT, false, true)) {
+                            String pullPath = path + STR_SLASH + FILE_GIT_PULL_BAT;
+                            FileUtils.copyFile(new File(FileUtils.getFilePath(PATH_GIT_PULL)), new File(pullPath));
+                            String res = CmdUtils.exeByFile(pullPath);
+                            updatePath.add(res);
+                            infoMsg(name, "-1", "更新完成");
                         } else {
                             Thread.sleep(500L);
                             infoMsg(name, "-1", "无需更新");
-                            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "【 " + name + " 】非svn目录,无需更新\n");
+                            OutputUtils.info(fileLogError, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "【 " + name + " 】非svn git目录,无需更新\n");
                         }
                     }
                     OutputUtils.info(workspaceNum, String.valueOf(workspaceNumWaitUpdate));
@@ -125,7 +136,7 @@ public class SvnUpdateController extends BaseController implements Initializable
             LoggerUtils.writeSvnUpdateInfo(date, updatePath);
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
+            OutputUtils.info(fileLogError, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
         } finally {
             svnSubmit.setDisable(false);
         }
