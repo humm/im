@@ -1654,34 +1654,35 @@ public class HepTodoController extends BaseController implements Initializable {
             @Override
             public void run() {
                 while (true) {
-                    appConfigDto.getThreadId().add(threadId);
-                    OutputUtils.info(notice, STR_BLANK + STR_NEXT_LINE);
-                    String threadMsg = "轮询线程数: " + appConfigDto.getThreadId().size();
-                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
-                    OutputUtils.info(scrollTips, threadMsg);
-                    for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
-                        String ver = version.getKey().toUpperCase();
-                        String[] path = version.getValue().split(STR_COMMA);
-                        if (path.length != 2) {
-                            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
-                        }
-                        String fileSyncSource = path[0];
-                        String fileSyncTarget = path[1];
-                        String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
-                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
-                        fileSyncSourceFile.clear();
-                        try {
-                            sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
-                        } catch (IOException e) {
-                            LoggerUtils.info(e);
-                            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
-                        }
-                        clearFile(new File(fileSyncTarget), ver);
-                    }
                     try {
+                        appConfigDto.getThreadId().add(threadId);
+                        OutputUtils.info(notice, STR_BLANK + STR_NEXT_LINE);
+                        String threadMsg = "轮询线程数: " + appConfigDto.getThreadId().size();
+                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
+                        OutputUtils.info(scrollTips, threadMsg);
+                        for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
+                            String ver = version.getKey().toUpperCase();
+                            String[] path = version.getValue().split(STR_COMMA);
+                            if (path.length != 2) {
+                                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
+                            }
+                            String fileSyncSource = path[0];
+                            String fileSyncTarget = path[1];
+                            String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
+                            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
+                            fileSyncSourceFile.clear();
+                            try {
+                                sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
+                            } catch (IOException e) {
+                                LoggerUtils.info(e);
+                                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+                            }
+                            clearFile(new File(fileSyncTarget), ver);
+                        }
                         Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
                     } catch (InterruptedException e) {
                         LoggerUtils.info("停止文件同步");
+                        OutputUtils.info(scrollTips, STR_BLANK);
                         break;
                     }
                 }
