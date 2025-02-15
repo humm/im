@@ -724,7 +724,7 @@ public class FileUtils {
                 }
                 File targetFile1 = new File(file1.getAbsolutePath() + File.separator + file.getName());
                 if (extendConfFile(targetFile1)) {
-                    if (targetFile1.exists()) {
+                    if (targetFile1.exists() && !FILE_APP_EXTEND.equals(file.getName())) {
                         continue;
                     } else {
                         copyFile(file, targetFile1);

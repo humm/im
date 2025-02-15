@@ -184,6 +184,7 @@ public class BaseConst {
 
     public static final String FILE_TYPE_CHECK_SQL = ".check.sql";
     public static final String FILE_TYPE_RES_SQL = ".res.sql";
+    public static final String FILE_APP_EXTEND = "appExtend.conf";
 
     public static final String NAME_DELETE = " 删除";
     public static final String NAME_END = "结束";

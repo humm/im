@@ -20,7 +20,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -35,7 +34,6 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -960,8 +958,12 @@ public class CommonUtils {
         showTips(STR_0, msg, null, true);
     }
 
-    public static void showTipsByErrorNotAutoClose(String msg, String detail) {
-        showTips(STR_0, msg, detail, false);
+    public static void showTipsByErrorNotAutoClose(String msg, List<String> detail) {
+        if (detail.size() > 40) {
+            detail = detail.subList(0, 40);
+            detail.add("显示部分内容 . 详情参阅文件 " + getSpecialString(50, STR_POINT + STR_SPACE));
+        }
+        showTips(STR_0, msg, detail.stream().map(Object::toString).collect(Collectors.joining()), false);
     }
 
     public static void showTips(String tipsType, String msg, String detail, boolean autoClose) {
@@ -1092,39 +1094,26 @@ public class CommonUtils {
                                     File file = files.get(0);
                                     try {
                                         List<String> content = FileUtils.readNormalFile(file.getAbsolutePath(), false);
-                                        StringBuilder errorMessage = new StringBuilder();
+                                        ArrayList errorMessage = new ArrayList();
                                         String tipsDate = STR_0;
                                         for (int i=0; i<content.size(); i++) {
                                             String line = content.get(i).trim();
-                                            if (line.startsWith(getCurrentDateTime4()) && StringUtils.isNotBlank(errorMessage)) {
-                                                Map<String, String> scanLogTipsIndex = appConfigDto.getScanLogTipsIndex();
-                                                String tipsType = item.getName();
-                                                boolean show = false;
-                                                if (scanLogTipsIndex.containsKey(tipsType)) {
-                                                    String date = scanLogTipsIndex.get(tipsType);
-                                                    if (tipsDate.compareTo(date) > 0) {
-                                                        show = true;
-                                                    }
-                                                } else {
-                                                    show = true;
-                                                }
-                                                if (show) {
-                                                    scanLogTipsIndex.put(tipsType, tipsDate);
-                                                    if (!appConfigDto.getInitScanLog()) {
-                                                        showTipsByErrorNotAutoClose(file.getAbsolutePath(), errorMessage.toString());
-                                                    }
-                                                }
-                                                errorMessage.setLength(0);
+                                            String tipsType = item.getName();
+                                            if (line.startsWith(getCurrentDateTime4()) && CollectionUtils.isNotEmpty(errorMessage)) {
+                                                showErrorMessage(appConfigDto, tipsType, tipsDate, file.getAbsolutePath(), errorMessage);
                                             }
-                                            if (line.contains("Exception") || StringUtils.isNotBlank(errorMessage)) {
-                                                if (StringUtils.isBlank(errorMessage)) {
+                                            if (line.contains("Exception") || CollectionUtils.isNotEmpty(errorMessage)) {
+                                                if (CollectionUtils.isEmpty(errorMessage)) {
                                                     String date = content.get(i - 1);
                                                     if (date.length() == 19) {
                                                         tipsDate = date;
                                                     }
                                                 }
                                                 if (!StringUtils.equals(MSG_DIVIDE_LINE.trim(), line)) {
-                                                    errorMessage.append(line).append(STR_NEXT_LINE);
+                                                    errorMessage.add(line + STR_NEXT_LINE);
+                                                }
+                                                if (i == content.size() -1) {
+                                                    showErrorMessage(appConfigDto, tipsType, tipsDate, file.getAbsolutePath(), errorMessage);
                                                 }
                                             }
                                         }
@@ -1141,4 +1130,31 @@ public class CommonUtils {
         }, 1000, 1000);
     }
 
+    private static void showErrorMessage(AppConfigDto appConfigDto, String tipsType, String tipsDate, String fileName, List<String> message) {
+        Map<String, String> scanLogTipsIndex = appConfigDto.getScanLogTipsIndex();
+        boolean show = false;
+        if (scanLogTipsIndex.containsKey(tipsType)) {
+            String date = scanLogTipsIndex.get(tipsType);
+            if (tipsDate.compareTo(date) > 0) {
+                show = true;
+            }
+        } else {
+            show = true;
+        }
+        if (show) {
+            scanLogTipsIndex.put(tipsType, tipsDate);
+            if (!appConfigDto.getInitScanLog()) {
+                showTipsByErrorNotAutoClose(fileName + getSpecialString(150, STR_SPACE), message);
+            }
+        }
+        message.clear();
+    }
+
+    private static String getSpecialString(int num, String content) {
+        StringBuilder val = new StringBuilder();
+        for (int i=0; i<num; i++) {
+            val.append(content);
+        }
+        return val.toString();
+    }
 }

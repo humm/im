@@ -15,7 +15,9 @@ for /d %%i in (%1\*) do (
 	if exist .git (
 		echo %%i
 		echo start git pull.
+		git stash
 		git pull
+		git stash pop
 	) else (
 		call :find_and_pull %%i
 	)
