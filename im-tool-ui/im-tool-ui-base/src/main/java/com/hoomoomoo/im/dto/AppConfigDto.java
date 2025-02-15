@@ -150,8 +150,6 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskTodoCostTime;
 
-    private List<Timer> timerList;
-
     private String hepTaskUser;
 
     private String hepTaskUserExtend;
@@ -262,11 +260,13 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolSyncCodeTarget;
 
-    private Thread fileSyncThread;
-
-    private Set<String> threadId;
+    private LinkedHashMap<String, Set<Timer>> timer;
 
     private int fileSyncTimer;
+
+    private Boolean initScanLog;
+
+    private LinkedHashMap<String, String> scanLogTipsIndex;
 
     public AppConfigDto() {
         this.execute = false;
@@ -288,11 +288,12 @@ public class AppConfigDto extends BaseDto {
         this.fileSyncVersionMap = new LinkedHashMap(16);
         this.executeType = STR_BLANK;
         this.appUser = STR_BLANK;
-        this.timerList = new ArrayList<>();
         this.configColumnList = new ArrayList<>(16);
         this.tableColumnList = new ArrayList<>(16);
         this.dayPublishVersion = new ArrayList<>(16);
         this.weekPublishVersion = new ArrayList<>(16);
-        this.threadId = new LinkedHashSet<>();
+        this.timer = new LinkedHashMap<>();
+        this.initScanLog = true;
+        this.scanLogTipsIndex = new LinkedHashMap<>();
     }
 }

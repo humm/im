@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.controller;
 
+import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.JvmCache;
 import com.hoomoomoo.im.utils.TaCommonUtils;
@@ -31,6 +32,7 @@ public class TaStarterController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         JvmCache.setTaStarterController(this);
         CommonUtils.initialize(location, resources, functionTab, menuBar);
+        CommonUtils.scanLog(ConfigCache.getAppConfigDtoCache());
         // TaCommonUtils.startRestPlan();
     }
 

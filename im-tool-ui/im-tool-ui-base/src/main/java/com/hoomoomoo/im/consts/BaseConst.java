@@ -162,6 +162,8 @@ public class BaseConst {
     public final static String KEY_TASK = "task";
     public final static String KEY_GIT_LOG_FILE = "diff --git";
     public final static String KEY_HTTPS = "https://";
+    public final static String KEY_FILE_SYNC_TIMER = "fileSyncTimer";
+    public final static String KEY_LOG_TIMER = "logTimer";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
@@ -340,6 +342,7 @@ public class BaseConst {
     public static final String PATH_FXML = "/conf/fxml";
     public static final String PATH_STYLE = "/conf/style";
     public static final String PATH_LOG = "/logs/%s/%s";
+    public static final String PATH_LOG_ROOT = "/logs";
     public static final String SUB_PATH_LOG = "/logs/%s";
     public static final String PATH_STAT = "/stats/%s";
     public static final String PATH_ICON = "/conf/image/icon.png";

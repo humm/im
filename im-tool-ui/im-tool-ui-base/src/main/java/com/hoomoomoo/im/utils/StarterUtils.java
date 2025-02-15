@@ -3,6 +3,7 @@ package com.hoomoomoo.im.utils;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -97,7 +98,7 @@ public class StarterUtils {
                 }
             });
 
-            deleteVersionFile(appCode);
+            CommonUtils.deleteVersionFile(appCode);
 
             if (true) {
                 return;
@@ -132,29 +133,5 @@ public class StarterUtils {
         return appName;
     }
 
-    private static void deleteVersionFile(String appCode) {
-        if (!FileUtils.startByJar()) {
-            return;
-        }
-        String path = FileUtils.getPathFolder().replace(KEY_FILE_SLASH, STR_BLANK).split(START_MODE_JAR)[0];
-        path = path.substring(0, path.lastIndexOf("/"));
-        File file = new File(path);
-        if (!file.exists()) {
-            return;
-        }
-        List<File> fileList = Arrays.asList(file.listFiles()).stream()
-                .filter(item -> item.getName().endsWith(FILE_TYPE_JAR) && item.getName().contains(appCode)).collect(Collectors.toList());
-        Collections.sort(fileList, new Comparator<File>() {
-            @Override
-            public int compare(File o1, File o2) {
-                return Long.valueOf(o2.lastModified() - o1.lastModified()).intValue();
-            }
-        });
-        if (fileList.size() > 1) {
-            Iterator<File> iterator = fileList.listIterator();
-            while (iterator.hasNext()) {
-                FileUtils.deleteFile(iterator.next());
-            }
-        }
-    }
+
 }

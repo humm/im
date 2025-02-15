@@ -8,6 +8,7 @@ import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
@@ -23,6 +24,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.NetworkInterface;
@@ -33,6 +35,7 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -334,7 +337,7 @@ public class CommonUtils {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         LicenseDto licenseDto = appConfigDto.getLicense();
         if (StringUtils.isBlank(functionCode)) {
-            if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
+            if (Integer.valueOf(getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
                 LoggerUtils.info(String.format(MSG_LICENSE_EXPIRE, licenseDto.getEffectiveDate()));
                 return false;
             } else {
@@ -347,7 +350,7 @@ public class CommonUtils {
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
         if (isSuperUser()) {
             String appCode = ConfigCache.getAppCodeCache();
-            functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+            functionDtoList = functionConfigToFunctionDto(appCode, getAppFunctionConfig(appCode));
         }
         if (isSyncMode()) {
             functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode()) || item.getFunctionCode().equals(TASK_SYNC.getCode())).collect(Collectors.toList());
@@ -363,33 +366,33 @@ public class CommonUtils {
     public static List<FunctionDto> getAuthFunction() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         LicenseDto licenseDto = appConfigDto.getLicense();
-        if (Integer.valueOf(CommonUtils.getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
+        if (Integer.valueOf(getCurrentDateTime3()) > Integer.valueOf(licenseDto.getEffectiveDate())) {
             return new ArrayList<>();
         }
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
         if (isSuperUser()) {
             String appCode = ConfigCache.getAppCodeCache();
-            functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+            functionDtoList = functionConfigToFunctionDto(appCode, getAppFunctionConfig(appCode));
         }
         return functionDtoList;
     }
 
     public static List<FunctionDto> getAuthFunctionByMavenInstall(String appCode) throws Exception {
-        String licensePath = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_LICENSE), appCode);
+        String licensePath = dealFilePath(FileUtils.getFilePath(PATH_LICENSE), appCode);
         String licenseContent = FileUtils.readNormalFileToString(licensePath, false);
         LicenseDto licenseDto = JSON.parseObject(SecurityUtils.getDecryptString(licenseContent), LicenseDto.class);
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
         if (isSuperUser()) {
-            functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+            functionDtoList = functionConfigToFunctionDto(appCode, getAppFunctionConfig(appCode));
         }
         return functionDtoList;
     }
 
     public static void showAuthFunction(MenuBar menuBar, TabPane functionTab) throws Exception {
         String appCode = ConfigCache.getAppCodeCache();
-        List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
+        List<FunctionDto> functionDtoList = getAuthFunction();
         if (isSuperUser()) {
-            functionDtoList = functionConfigToFunctionDto(appCode, CommonUtils.getAppFunctionConfig(appCode));
+            functionDtoList = functionConfigToFunctionDto(appCode, getAppFunctionConfig(appCode));
         }
         if (isSyncMode()) {
             functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode()) || item.getFunctionCode().equals(TASK_SYNC.getCode())).collect(Collectors.toList());
@@ -414,7 +417,7 @@ public class CommonUtils {
                     item.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
                         public void handle(ActionEvent event) {
-                            CommonUtils.openMenu(event, functionTab);
+                            openMenu(event, functionTab);
                         }
                     });
                     list.add(item);
@@ -670,7 +673,7 @@ public class CommonUtils {
         ObservableList<Tab> tabList = functionTab.getTabs();
         if (tabList != null) {
             for (Tab item : tabList) {
-                if (item.getText().equals(CommonUtils.getMenuName(tabCode, tabName))) {
+                if (item.getText().equals(getMenuName(tabCode, tabName))) {
                     return item;
                 }
             }
@@ -703,9 +706,9 @@ public class CommonUtils {
             }
 
             LoggerUtils.info(String.format(BaseConst.MSG_OPEN, functionConfig.getName()));
-            Tab tab = CommonUtils.getOpenTab(functionTab, functionConfig);
+            Tab tab = getOpenTab(functionTab, functionConfig);
             if (tab == null) {
-                tab = CommonUtils.getFunctionTab(functionConfig.getPath(), functionConfig.getName(), functionConfig.getCode(), functionConfig.getName());
+                tab = getFunctionTab(functionConfig.getPath(), functionConfig.getName(), functionConfig.getCode(), functionConfig.getName());
                 setTabStyle(tab, functionConfig);
                 bindTabEvent(tab);
                 functionTab.getTabs().add(tab);
@@ -734,7 +737,7 @@ public class CommonUtils {
     }
 
     private static void setMenuStyle(Menu menu, String icon) {
-        CommonUtils.setIcon(menu, "/conf/image/" + icon + ".png", MENUITEM_ICON_SIZE);
+        setIcon(menu, "/conf/image/" + icon + ".png", MENUITEM_ICON_SIZE);
     }
 
     public static void setIcon(Object element, String iconPath, int size) {
@@ -759,13 +762,7 @@ public class CommonUtils {
             public void handle(Event t) {
                 try {
                     AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-                    List<Timer> timerList = appConfigDto.getTimerList();
-                    if (CollectionUtils.isNotEmpty(timerList)) {
-                        for (Timer timer : timerList) {
-                            timer.cancel();
-                        }
-                    }
-                    if (tab.getText().equals(CommonUtils.getMenuName(TASK_TODO.getCode(), TASK_TODO.getName()))) {
+                    if (tab.getText().equals(getMenuName(TASK_TODO.getCode(), TASK_TODO.getName()))) {
                         stopHepToDoSyncFile(appConfigDto);
                     }
                 } catch (Exception e) {
@@ -776,11 +773,12 @@ public class CommonUtils {
     }
 
     public static void stopHepToDoSyncFile(AppConfigDto appConfigDto) {
-        Thread fileSyncThread = appConfigDto.getFileSyncThread();
-        if (fileSyncThread != null) {
-            fileSyncThread.interrupt();
-            appConfigDto.setFileSyncThread(null);
-            appConfigDto.getThreadId().clear();
+        Set<Timer> timers = appConfigDto.getTimer().get(KEY_FILE_SYNC_TIMER);
+        Iterator<Timer> iterator = timers.iterator();
+        while (iterator.hasNext()) {
+            Timer timer = iterator.next();
+            timer.cancel();
+            iterator.remove();
         }
     }
 
@@ -801,7 +799,7 @@ public class CommonUtils {
             appConfigDto.setTabPane(functionTab);
 
             // 加载已授权功能
-            CommonUtils.showAuthFunction(menuBar, functionTab);
+            showAuthFunction(menuBar, functionTab);
 
             String showTab = appConfigDto.getAppTabShow();
             if (StringUtils.isNotBlank(showTab)) {
@@ -812,11 +810,11 @@ public class CommonUtils {
                         continue;
                     }
                     // 校验功能是否有权限
-                    if (!CommonUtils.checkLicense(tab)) {
+                    if (!checkLicense(tab)) {
                         continue;
                     }
                     MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(tab);
-                    Tab openTab = CommonUtils.getFunctionTab(getPath(tab), getName(tab), functionConfig.getCode(), functionConfig.getName());
+                    Tab openTab = getFunctionTab(getPath(tab), getName(tab), functionConfig.getCode(), functionConfig.getName());
                     setTabStyle(openTab, functionConfig);
                     bindTabEvent(openTab);
                     functionTab.getTabs().add(openTab);
@@ -824,10 +822,10 @@ public class CommonUtils {
                 }
             } else {
                 // 默认打开有权限的第一个功能
-                List<FunctionDto> functionDtoList = CommonUtils.getAuthFunction();
+                List<FunctionDto> functionDtoList = getAuthFunction();
                 if (CollectionUtils.isNotEmpty(functionDtoList)) {
                     FunctionDto functionDto = functionDtoList.get(0);
-                    Tab tab = CommonUtils.getFunctionTab(getPath(functionDto.getFunctionCode()), getName(functionDto.getFunctionCode()), functionDto.getFunctionCode(), functionDto.getFunctionName());
+                    Tab tab = getFunctionTab(getPath(functionDto.getFunctionCode()), getName(functionDto.getFunctionCode()), functionDto.getFunctionCode(), functionDto.getFunctionName());
                     MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
                     setTabStyle(tab, functionConfig);
                     bindTabEvent(tab);
@@ -945,8 +943,8 @@ public class CommonUtils {
             return new Task<Void>() {
                 @Override
                 protected Void call() throws Exception {
-                    Thread.sleep(1000);
-                    return null;
+                Thread.sleep(1000);
+                return null;
                 }
             };
             }
@@ -955,14 +953,18 @@ public class CommonUtils {
     }
 
     public static void showTipsByInfo(String msg) {
-        showTips(STR_1, msg);
+        showTips(STR_1, msg, null,true);
     }
 
     public static void showTipsByError(String msg) {
-        showTips(STR_0, msg);
+        showTips(STR_0, msg, null, true);
     }
 
-    public static void showTips(String tipsType, String msg) {
+    public static void showTipsByErrorNotAutoClose(String msg, String detail) {
+        showTips(STR_0, msg, detail, false);
+    }
+
+    public static void showTips(String tipsType, String msg, String detail, boolean autoClose) {
         Alert alert;
         if (STR_0.equals(tipsType)) {
             alert = new Alert(Alert.AlertType.ERROR);
@@ -971,10 +973,17 @@ public class CommonUtils {
         }
         alert.setTitle("提示");
         alert.setHeaderText(String.format("%s", msg));
-        alert.setContentText("弹窗将自动关闭");
-        Service<Void> service = getCloseInfoService();
-        service.setOnSucceeded(e -> alert.hide());
-        service.start();
+        if (detail != null) {
+            alert.setContentText(detail);
+        }
+        if (autoClose) {
+            if (detail == null) {
+                alert.setContentText("弹窗将自动关闭");
+            }
+            Service<Void> service = getCloseInfoService();
+            service.setOnSucceeded(e -> alert.hide());
+            service.start();
+        }
         alert.show();
     }
 
@@ -1030,4 +1039,106 @@ public class CommonUtils {
         }
         return path;
     }
+
+    public static void deleteVersionFile(String appCode) {
+        if (!FileUtils.startByJar()) {
+            return;
+        }
+        String path = FileUtils.getPathFolder().replace(KEY_FILE_SLASH, STR_BLANK).split(START_MODE_JAR)[0];
+        path = path.substring(0, path.lastIndexOf("/"));
+        File file = new File(path);
+        if (!file.exists()) {
+            return;
+        }
+        List<File> fileList = Arrays.asList(file.listFiles()).stream()
+                .filter(item -> item.getName().endsWith(FILE_TYPE_JAR) && item.getName().contains(appCode)).collect(Collectors.toList());
+        Collections.sort(fileList, new Comparator<File>() {
+            @Override
+            public int compare(File o1, File o2) {
+                return Long.valueOf(o2.lastModified() - o1.lastModified()).intValue();
+            }
+        });
+        if (fileList.size() > 1) {
+            Iterator<File> iterator = fileList.listIterator();
+            while (iterator.hasNext()) {
+                FileUtils.deleteFile(iterator.next());
+            }
+        }
+    }
+
+    public static void scanLog(AppConfigDto appConfigDto) {
+        String timerId = getCurrentDateTime2();
+        Timer timer = new Timer(timerId);
+        Set<Timer> timers = new LinkedHashSet<>();
+        appConfigDto.getTimer().put(KEY_LOG_TIMER, timers);
+        timers.add(timer);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
+                    if (log.exists()) {
+                        File[] subLog = log.listFiles();
+                        for (File item : subLog) {
+                            if (item.isDirectory()) {
+                                List<File> files = Arrays.asList(item.listFiles());
+                                if (CollectionUtils.isNotEmpty(files)) {
+                                    Collections.sort(files, new Comparator<File>() {
+                                        @Override
+                                        public int compare(File o1, File o2) {
+                                            return Long.valueOf(o2.lastModified() - o1.lastModified()).intValue();
+                                        }
+                                    });
+                                    File file = files.get(0);
+                                    try {
+                                        List<String> content = FileUtils.readNormalFile(file.getAbsolutePath(), false);
+                                        StringBuilder errorMessage = new StringBuilder();
+                                        String tipsDate = STR_0;
+                                        for (int i=0; i<content.size(); i++) {
+                                            String line = content.get(i).trim();
+                                            if (line.startsWith(getCurrentDateTime4()) && StringUtils.isNotBlank(errorMessage)) {
+                                                Map<String, String> scanLogTipsIndex = appConfigDto.getScanLogTipsIndex();
+                                                String tipsType = item.getName();
+                                                boolean show = false;
+                                                if (scanLogTipsIndex.containsKey(tipsType)) {
+                                                    String date = scanLogTipsIndex.get(tipsType);
+                                                    if (tipsDate.compareTo(date) > 0) {
+                                                        show = true;
+                                                    }
+                                                } else {
+                                                    show = true;
+                                                }
+                                                if (show) {
+                                                    scanLogTipsIndex.put(tipsType, tipsDate);
+                                                    if (!appConfigDto.getInitScanLog()) {
+                                                        showTipsByErrorNotAutoClose(file.getAbsolutePath(), errorMessage.toString());
+                                                    }
+                                                }
+                                                errorMessage.setLength(0);
+                                            }
+                                            if (line.contains("Exception") || StringUtils.isNotBlank(errorMessage)) {
+                                                if (StringUtils.isBlank(errorMessage)) {
+                                                    String date = content.get(i - 1);
+                                                    if (date.length() == 19) {
+                                                        tipsDate = date;
+                                                    }
+                                                }
+                                                if (!StringUtils.equals(MSG_DIVIDE_LINE.trim(), line)) {
+                                                    errorMessage.append(line).append(STR_NEXT_LINE);
+                                                }
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        LoggerUtils.info(e);
+                                    }
+                                }
+                            }
+                        }
+                        appConfigDto.setInitScanLog(false);
+                    }
+                });
+            }
+        }, 1000, 1000);
+    }
+
 }
