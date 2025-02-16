@@ -245,10 +245,10 @@
                                                 <AnchorPane fx:id="colorDesc" minHeight="0.0" minWidth="0.0"
                                                             prefHeight="100.0"
                                                             prefWidth="160.0">
-                                                    <Label fx:id="scrollTips" layoutX="920.0" layoutY="5.0"
-                                                           style="-fx-font-weight: bold;"/>
-                                                    <Label fx:id="taskTips" layoutX="1270.0" layoutY="5.0"
+                                                    <Label fx:id="taskTips" layoutX="920.0" layoutY="5.0"
                                                            style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                                    <Label fx:id="scrollTips" layoutX="1150.0" layoutY="5.0"
+                                                           style="-fx-font-weight: bold;"/>
                                                 </AnchorPane>
                                             </items>
                                         </SplitPane>
