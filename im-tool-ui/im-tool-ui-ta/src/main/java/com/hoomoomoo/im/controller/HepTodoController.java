@@ -1673,7 +1673,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("停止轮询线程: " + threadId));
                 break;
             }
-            String threadMsg = "轮询线程名称: " + threadId;
+            String threadMsg = "轮询线程: " + threadId;
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
             OutputUtils.info(scrollTips, threadMsg);
             for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
