@@ -281,7 +281,7 @@ public class HepTodoController extends BaseController implements Initializable {
             CommonUtils.stopHepToDoSyncFile(appConfigDto);
             syncFileBtn.setText("启动");
             OutputUtils.info(scrollTips, STR_BLANK);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("暂停文件同步"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
         } else {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("启动文件同步"));
             syncFile();
@@ -1664,12 +1664,13 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         Platform.runLater(() -> {
-            syncFileBtn.setText("暂停");
+            syncFileBtn.setText("停止");
         });
         while (true) {
             OutputUtils.info(notice, STR_BLANK + STR_NEXT_LINE);
             String currentThreadId = appConfigDto.getThreadId().get(KEY_FILE_SYNC_TIMER);
             if (!StringUtils.equals(threadId, currentThreadId)) {
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("停止轮询线程: " + threadId));
                 break;
             }
             String threadMsg = "轮询线程名称: " + threadId;
@@ -1697,7 +1698,7 @@ public class HepTodoController extends BaseController implements Initializable {
             try {
                 Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
             } catch (InterruptedException e) {
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("暂停文件同步"));
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
             }
         }
     }
