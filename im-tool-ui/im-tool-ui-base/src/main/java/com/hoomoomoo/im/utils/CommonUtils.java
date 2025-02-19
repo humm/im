@@ -771,13 +771,7 @@ public class CommonUtils {
     }
 
     public static void stopHepToDoSyncFile(AppConfigDto appConfigDto) {
-        Set<Timer> timers = appConfigDto.getTimer().get(KEY_FILE_SYNC_TIMER);
-        Iterator<Timer> iterator = timers.iterator();
-        while (iterator.hasNext()) {
-            Timer timer = iterator.next();
-            timer.cancel();
-            iterator.remove();
-        }
+        appConfigDto.getThreadId().remove(KEY_FILE_SYNC_TIMER);
     }
 
     /**
@@ -1069,65 +1063,71 @@ public class CommonUtils {
     }
 
     public static void scanLog(AppConfigDto appConfigDto) {
-        String timerId = getCurrentDateTime2();
-        Timer timer = new Timer(timerId);
-        Set<Timer> timers = new LinkedHashSet<>();
-        appConfigDto.getTimer().put(KEY_LOG_TIMER, timers);
-        timers.add(timer);
-        timer.schedule(new TimerTask() {
+        String currentThreadId = getCurrentDateTime2();
+        appConfigDto.getThreadId().put(KEY_LOG_TIMER, currentThreadId);
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                Platform.runLater(() -> {
-                    File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
-                    if (log.exists()) {
-                        File[] subLog = log.listFiles();
-                        for (File item : subLog) {
-                            if (item.isDirectory()) {
-                                List<File> files = Arrays.asList(item.listFiles());
-                                if (CollectionUtils.isNotEmpty(files)) {
-                                    Collections.sort(files, new Comparator<File>() {
-                                        @Override
-                                        public int compare(File o1, File o2) {
-                                            return Long.valueOf(o2.lastModified() - o1.lastModified()).intValue();
-                                        }
-                                    });
-                                    File file = files.get(0);
-                                    try {
-                                        List<String> content = FileUtils.readNormalFile(file.getAbsolutePath(), false);
-                                        ArrayList errorMessage = new ArrayList();
-                                        String tipsDate = STR_0;
-                                        for (int i=0; i<content.size(); i++) {
-                                            String line = content.get(i).trim();
-                                            String tipsType = item.getName();
-                                            if (line.startsWith(getCurrentDateTime4()) && CollectionUtils.isNotEmpty(errorMessage)) {
-                                                showErrorMessage(appConfigDto, tipsType, tipsDate, file.getAbsolutePath(), errorMessage);
+                while (true) {
+                    Platform.runLater(() -> {
+                        File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
+                        if (log.exists()) {
+                            File[] subLog = log.listFiles();
+                            for (File item : subLog) {
+                                if (item.isDirectory()) {
+                                    List<File> files = Arrays.asList(item.listFiles());
+                                    if (CollectionUtils.isNotEmpty(files)) {
+                                        Collections.sort(files, new Comparator<File>() {
+                                            @Override
+                                            public int compare(File o1, File o2) {
+                                                return Long.valueOf(o2.lastModified() - o1.lastModified()).intValue();
                                             }
-                                            if (line.contains("Exception") || CollectionUtils.isNotEmpty(errorMessage)) {
-                                                if (CollectionUtils.isEmpty(errorMessage)) {
-                                                    String date = content.get(i - 1);
-                                                    if (date.length() == 19) {
-                                                        tipsDate = date;
-                                                    }
-                                                }
-                                                if (!StringUtils.equals(MSG_DIVIDE_LINE.trim(), line)) {
-                                                    errorMessage.add(line + STR_NEXT_LINE);
-                                                }
-                                                if (i == content.size() -1) {
+                                        });
+                                        File file = files.get(0);
+                                        try {
+                                            List<String> content = FileUtils.readNormalFile(file.getAbsolutePath(), false);
+                                            ArrayList errorMessage = new ArrayList();
+                                            String tipsDate = STR_0;
+                                            for (int i=0; i<content.size(); i++) {
+                                                String line = content.get(i).trim();
+                                                String tipsType = item.getName();
+                                                if (line.startsWith(getCurrentDateTime4()) && CollectionUtils.isNotEmpty(errorMessage)) {
                                                     showErrorMessage(appConfigDto, tipsType, tipsDate, file.getAbsolutePath(), errorMessage);
                                                 }
+                                                if (line.contains("Exception") || CollectionUtils.isNotEmpty(errorMessage)) {
+                                                    if (CollectionUtils.isEmpty(errorMessage)) {
+                                                        String date = content.get(i - 1);
+                                                        if (date.length() == 19) {
+                                                            tipsDate = date;
+                                                        }
+                                                    }
+                                                    if (!StringUtils.equals(MSG_DIVIDE_LINE.trim(), line)) {
+                                                        errorMessage.add(line + STR_NEXT_LINE);
+                                                    }
+                                                    if (i == content.size() -1) {
+                                                        showErrorMessage(appConfigDto, tipsType, tipsDate, file.getAbsolutePath(), errorMessage);
+                                                    }
+                                                }
                                             }
+                                        } catch (Exception e) {
+                                            LoggerUtils.info(e);
                                         }
-                                    } catch (Exception e) {
-                                        LoggerUtils.info(e);
                                     }
                                 }
                             }
+                            appConfigDto.setInitScanLog(false);
                         }
-                        appConfigDto.setInitScanLog(false);
+                    });
+                    try {
+                        Thread.sleep(appConfigDto.getFileSyncTimer() * 5000);
+                    } catch (InterruptedException e) {
+                        LoggerUtils.info("暂停系统日志扫描");
+                        break;
                     }
-                });
+                }
+
             }
-        }, 1000, 1000);
+        }).start();
     }
 
     private static void showErrorMessage(AppConfigDto appConfigDto, String tipsType, String tipsDate, String fileName, List<String> message) {

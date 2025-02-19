@@ -22,6 +22,9 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
             case "doExecuteQuery":
                 hepTodoTaskParam.getHepTodoController().doExecuteQuery();
                 break;
+            case "doSyncFile":
+                hepTodoTaskParam.getHepTodoController().doSyncFile();
+                break;
             default:
                 new Exception("未匹配执行方法，请检查");
         }

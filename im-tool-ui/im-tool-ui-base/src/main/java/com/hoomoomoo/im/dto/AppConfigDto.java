@@ -260,7 +260,7 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolSyncCodeTarget;
 
-    private LinkedHashMap<String, Set<Timer>> timer;
+    private LinkedHashMap<String, String> ThreadId;
 
     private int fileSyncTimer;
 
@@ -292,7 +292,7 @@ public class AppConfigDto extends BaseDto {
         this.tableColumnList = new ArrayList<>(16);
         this.dayPublishVersion = new ArrayList<>(16);
         this.weekPublishVersion = new ArrayList<>(16);
-        this.timer = new LinkedHashMap<>();
+        this.ThreadId = new LinkedHashMap<>();
         this.initScanLog = true;
         this.scanLogTipsIndex = new LinkedHashMap<>();
     }
