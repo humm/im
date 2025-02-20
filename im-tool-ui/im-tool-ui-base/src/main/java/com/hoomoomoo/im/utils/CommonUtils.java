@@ -953,8 +953,8 @@ public class CommonUtils {
     }
 
     public static void showTipsByErrorNotAutoClose(String msg, List<String> detail) {
-        if (detail.size() > 40) {
-            detail = detail.subList(0, 40);
+        if (detail.size() > 30) {
+            detail = detail.subList(0, 30);
             detail.add("显示部分内容 . 详情参阅文件 " + getSpecialString(50, STR_POINT + STR_SPACE));
         }
         showTips(STR_0, msg, detail.stream().map(Object::toString).collect(Collectors.joining()), false);
@@ -1119,7 +1119,7 @@ public class CommonUtils {
                         }
                     });
                     try {
-                        Thread.sleep(appConfigDto.getFileSyncTimer() * 5000);
+                        Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
                     } catch (InterruptedException e) {
                         LoggerUtils.info("暂停系统日志扫描");
                         break;
