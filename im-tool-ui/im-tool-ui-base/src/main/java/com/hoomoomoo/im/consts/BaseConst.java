@@ -377,6 +377,7 @@ public class BaseConst {
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";
     public static final String PATH_GIT_PULL = "/conf/bat/git-pull.bat";
+    public static final String PATH_APP_START = "/conf/bat/start.vbe";
 
     public static final String SERVER_HTTP = "http://127.0.0.1";
     public static final String SERVER_URL = "/tool/im";

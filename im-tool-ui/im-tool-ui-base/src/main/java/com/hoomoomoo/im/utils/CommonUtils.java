@@ -1062,7 +1062,21 @@ public class CommonUtils {
         }
     }
 
-    public static void scanLog(AppConfigDto appConfigDto) {
+    public static void restart() throws InterruptedException {
+        new Timer().schedule(new TimerTask() {
+            @Override
+            public void run() {
+                LoggerUtils.info("应用重启");
+                String appStart = FileUtils.getFilePath(PATH_APP_START);
+                if (new File(appStart).exists()) {
+                    CmdUtils.exeByFile(appStart);
+                }
+            }
+        }, 1 * 60 * 60 * 1000);
+    }
+
+    public static void scanLog() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String currentThreadId = getCurrentDateTime2();
         appConfigDto.getThreadId().put(KEY_LOG_TIMER, currentThreadId);
         new Thread(new Runnable() {
@@ -1119,7 +1133,7 @@ public class CommonUtils {
                         }
                     });
                     try {
-                        Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
+                        Thread.sleep(appConfigDto.getFileSyncTimer() * 5000);
                     } catch (InterruptedException e) {
                         LoggerUtils.info("暂停系统日志扫描");
                         break;
