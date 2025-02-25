@@ -1062,19 +1062,6 @@ public class CommonUtils {
         }
     }
 
-    public static void restart() throws InterruptedException {
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                LoggerUtils.info("应用重启");
-                String appStart = FileUtils.getFilePath(PATH_APP_START);
-                if (new File(appStart).exists()) {
-                    CmdUtils.exeByFile(appStart);
-                }
-            }
-        }, 1 * 60 * 60 * 1000);
-    }
-
     public static void scanLog() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String currentThreadId = getCurrentDateTime2();

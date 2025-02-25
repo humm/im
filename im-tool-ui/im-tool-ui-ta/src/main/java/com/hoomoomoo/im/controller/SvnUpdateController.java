@@ -118,11 +118,13 @@ public class SvnUpdateController extends BaseController implements Initializable
                                 OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】完成\n");
                             }
                         } else if (FileUtils.isSuffixDirectory(updateFile, BaseConst.FILE_TYPE_GIT, false, true)) {
-                            String pullPath = path + STR_SLASH + FILE_GIT_PULL_BAT;
-                            FileUtils.copyFile(new File(FileUtils.getFilePath(PATH_GIT_PULL)), new File(pullPath));
-                            String res = CmdUtils.exeByFile(pullPath);
-                            updatePath.add(res);
-                            infoMsg(name, "-1", "更新完成");
+                            // String pullPath = path + STR_SLASH + FILE_GIT_PULL_BAT;
+                            // FileUtils.copyFile(new File(FileUtils.getFilePath(PATH_GIT_PULL)), new File(pullPath));
+                            // String res = CmdUtils.exeByFile(pullPath);
+                            // updatePath.add(res);
+                            // infoMsg(name, "-1", "更新完成");
+                            infoMsg(name, "-1", "git目录请手动更新");
+                            OutputUtils.info(fileLogError, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "【 " + name + " 】git目录请手动更新\n");
                         } else {
                             Thread.sleep(500L);
                             infoMsg(name, "-1", "无需更新");
