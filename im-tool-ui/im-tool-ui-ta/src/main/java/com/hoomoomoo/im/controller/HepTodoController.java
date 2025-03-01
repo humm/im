@@ -1702,9 +1702,11 @@ public class HepTodoController extends BaseController implements Initializable {
             } catch (InterruptedException e) {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
             }
-            if (times > 100) {
+            if (times > 10) {
                 times = 0;
                 OutputUtils.info(taskTips, CommonUtils.getMemoryInfo());
+            } else if (times == 5) {
+                OutputUtils.info(taskTips, STR_BLANK);
             }
         }
     }
