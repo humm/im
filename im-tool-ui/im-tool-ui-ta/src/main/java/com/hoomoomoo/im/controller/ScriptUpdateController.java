@@ -713,14 +713,22 @@ public class ScriptUpdateController extends BaseController implements Initializa
         String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
         String[] value = handleValue(column.length, sql[1].substring(sql[1].indexOf("(") + 1, sql[1].indexOf(")")).split(","));
         for (int i=0; i<column.length; i++) {
-            if (keyColumn.contains(column[i])) {
+            String col = column[i];
+            String val = value[i];
+            if (keyColumn.contains(col) || "sort_flag".equals(col.toLowerCase())) {
                 continue;
             }
             updateSql.append(STR_SPACE_2);
-            updateSql.append(column[i] + " = " + ("''".equals(value[i]) ? "' '": value[i]));
+            updateSql.append(col + " = " + ("''".equals(val) ? "' '": val));
             if (i != column.length - 1) {
                 updateSql.append(STR_COMMA).append(STR_NEXT_LINE);
             }
+        }
+        String preInfo = updateSql.toString().trim();
+        if (preInfo.endsWith(STR_COMMA)) {
+            String temp = preInfo.substring(0, preInfo.lastIndexOf(STR_COMMA));
+            updateSql.setLength(0);
+            updateSql.append(temp);
         }
         updateSql.append(STR_NEXT_LINE + "where " + updateKey);
         return updateSql.toString();

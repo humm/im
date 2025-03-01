@@ -1063,13 +1063,13 @@ public class CommonUtils {
     }
 
     public static void scanLog() throws Exception {
-        long start = System.currentTimeMillis();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String currentThreadId = getCurrentDateTime2();
         appConfigDto.getThreadId().put(KEY_LOG_TIMER, currentThreadId);
         new Thread(new Runnable() {
             @Override
             public void run() {
+                long start = System.currentTimeMillis();
                 while (true) {
                     Platform.runLater(() -> {
                         File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
@@ -1119,6 +1119,7 @@ public class CommonUtils {
                             }
                             appConfigDto.setInitScanLog(false);
                         }
+                        cleanFile(log);
                     });
                     try {
                         Thread.sleep( 10 * 1000);
@@ -1126,18 +1127,13 @@ public class CommonUtils {
                         LoggerUtils.info("暂停系统日志扫描");
                         break;
                     }
-                    if (CommonUtils.isSuperUser()) {
-                        String tipsType = "restart";
-                        if ((System.currentTimeMillis() - start) / 1000 > 3 * 60 * 60) {
-                            if (!appConfigDto.getScanLogTipsIndex().containsKey(tipsType)) {
-                                Platform.runLater(() -> {
-                                    showErrorMessage(appConfigDto, tipsType, CommonUtils.getCurrentDateTime1(), "起飞提醒...", Arrays.asList("系统长时间运行...若卡顿...请重启..."));
-                                });
-                            }
-                        }
+                    if ((System.currentTimeMillis() - start) / 1000 > 1 * 60 * 60) {
+                        start = System.currentTimeMillis();
+                        LoggerUtils.info("主动请求垃圾回收");
+                        System.gc();
                     }
-                }
 
+                }
             }
         }).start();
     }
@@ -1168,5 +1164,13 @@ public class CommonUtils {
             val.append(content);
         }
         return val.toString();
+    }
+
+    public static void cleanFile(File... files) {
+        if (files != null) {
+            for (File file : files) {
+                file = null;
+            }
+        }
     }
 }

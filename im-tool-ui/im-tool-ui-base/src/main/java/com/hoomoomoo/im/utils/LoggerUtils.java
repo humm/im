@@ -70,15 +70,6 @@ public class LoggerUtils {
         }
     }
 
-    public static void writeFunctionLog(String logFolder, String mgs) {
-        try {
-            String logFilePath = String.format(PATH_LOG, logFolder, CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), mgs + STR_NEXT_LINE_2, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void writeAppLog(Exception exception) {
         try {
             String logFilePath = String.format(PATH_LOG, KEY_APP_LOG, CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);

@@ -1732,15 +1732,15 @@ public class HepTodoController extends BaseController implements Initializable {
                 if (CollectionUtils.isEmpty(content)) {
                     OutputUtils.info(fileTipsFileStatus, "略过");
                     OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
-                    return;
+                } else {
+                    OutputUtils.info(fileTipsFileStatus, "开始");
+                    OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
+                    FileUtils.writeFile(target, content, ENCODING_UTF8, false);
+                    OutputUtils.info(fileTipsFileStatus, "结束");
+                    OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
                 }
-
-                OutputUtils.info(fileTipsFileStatus, "开始");
-                OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
-                FileUtils.writeFile(target, content, ENCODING_UTF8, false);
-                OutputUtils.info(fileTipsFileStatus, "结束");
-                OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
             }
+            CommonUtils.cleanFile(sourceFile, targetFile);
         }
     }
 
@@ -1772,6 +1772,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 OutputUtils.info(fileTipsFileStatus, "结束");
                 OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
             }
+            CommonUtils.cleanFile(sourceFile);
         }
     }
 
