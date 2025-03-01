@@ -834,8 +834,8 @@ public class CommonUtils {
                         String activatePrevFunction = appConfig.getActivateFunction();
                         appConfig.setActivatePrevFunction(activatePrevFunction);
                         appConfig.setActivateFunction(tabName);
-                        LoggerUtils.info("上次激活页签: " + activatePrevFunction);
-                        LoggerUtils.info("当前激活页签: " + tabName);
+                        LoggerUtils.info(String.format("上次激活页签【%s】", activatePrevFunction));
+                        LoggerUtils.info(String.format("当前激活页签【%s】", tabName));
                     } catch (Exception e) {
                         LoggerUtils.info(e);
                     }

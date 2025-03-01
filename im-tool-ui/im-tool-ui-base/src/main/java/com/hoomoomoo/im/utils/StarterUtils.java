@@ -56,7 +56,7 @@ public class StarterUtils {
             }
             String mac = CommonUtils.getMacAddress();
             appName += String.format(MSG_APP_TITLE, NAME_VERSION, CommonUtils.getVersion());
-            LoggerUtils.info(mac);
+            LoggerUtils.info(String.format("MAC地址【%s】", mac));
             // 校验证书是否过期
             if (!CommonUtils.checkLicense(null)) {
                 appName += STR_SPACE_2 + String.format(MSG_LICENSE_EXPIRE, appConfigDto.getLicense().getEffectiveDate());
