@@ -1122,17 +1122,16 @@ public class CommonUtils {
                         cleanFile(log);
                     });
                     try {
-                        Thread.sleep( 10 * 1000);
+                        Thread.sleep( appConfigDto.getSystemToolLogScanTimer() * 1000);
                     } catch (InterruptedException e) {
-                        LoggerUtils.info("暂停系统日志扫描");
+                        LoggerUtils.info("停止系统日志扫描");
                         break;
                     }
-                    if ((System.currentTimeMillis() - start) / 1000 > 1 * 60 * 60) {
+                    if ((System.currentTimeMillis() - start) / 1000 > appConfigDto.getSystemToolGarbageCollectionTimer()) {
                         start = System.currentTimeMillis();
-                        LoggerUtils.info("主动请求垃圾回收");
+                        LoggerUtils.info("请求垃圾回收");
                         System.gc();
                     }
-
                 }
             }
         }).start();
@@ -1172,5 +1171,22 @@ public class CommonUtils {
                 file = null;
             }
         }
+    }
+
+    public static String getMemoryInfo() {
+        Runtime runtime = Runtime.getRuntime();
+        // 获取JVM总内存
+        long totalMemory = runtime.totalMemory();
+        // 获取空闲内存
+        long freeMemory = runtime.freeMemory();
+        // 获取最大可用内存
+        long maxMemory = runtime.maxMemory();
+        // 计算已用内存
+        long usedMemory = totalMemory - freeMemory;
+        return formatMemoryInfo(totalMemory) + "/" + formatMemoryInfo(usedMemory);
+    }
+
+    private static String formatMemoryInfo(long memory) {
+        return memory / (1024 * 1024) + "MB";
     }
 }

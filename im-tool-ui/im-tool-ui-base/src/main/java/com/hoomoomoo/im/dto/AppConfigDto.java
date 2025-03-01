@@ -142,6 +142,8 @@ public class AppConfigDto extends BaseDto {
 
     private Map<String, String> fieldTranslateMap;
 
+    private int fileSyncTimer;
+
     private Map<String, String> fileSyncVersionMap;
 
     private HepTaskDto hepTaskDto;
@@ -240,6 +242,16 @@ public class AppConfigDto extends BaseDto {
 
     private int systemToolScriptRepairBatchNum;
 
+    private String systemToolScriptChangeMenuPath;
+
+    private int systemToolGarbageCollectionTimer;
+
+    private int systemToolLogScanTimer;
+
+    private String systemToolSyncCodeSource;
+
+    private String systemToolSyncCodeTarget;
+
     private Boolean execute;
 
     private String repairSchedule;
@@ -252,17 +264,9 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskPrintParam;
 
-    private String systemToolScriptChangeMenuPath;
-
     private String hepTaskSyncPath;
 
-    private String systemToolSyncCodeSource;
-
-    private String systemToolSyncCodeTarget;
-
     private LinkedHashMap<String, String> ThreadId;
-
-    private int fileSyncTimer;
 
     private Boolean initScanLog;
 

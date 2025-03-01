@@ -1666,7 +1666,9 @@ public class HepTodoController extends BaseController implements Initializable {
         Platform.runLater(() -> {
             syncFileBtn.setText("停止");
         });
+        int times = 0;
         while (true) {
+            times++;
             OutputUtils.info(notice, STR_BLANK + STR_NEXT_LINE);
             String currentThreadId = appConfigDto.getThreadId().get(KEY_FILE_SYNC_TIMER);
             if (!StringUtils.equals(threadId, currentThreadId)) {
@@ -1699,6 +1701,10 @@ public class HepTodoController extends BaseController implements Initializable {
                 Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
             } catch (InterruptedException e) {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
+            }
+            if (times > 100) {
+                times = 0;
+                OutputUtils.info(taskTips, CommonUtils.getMemoryInfo());
             }
         }
     }
