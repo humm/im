@@ -36,26 +36,26 @@
                                          </padding>
                                      </Button>
 
-                                     <Label layoutX="20.0" layoutY="80.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="系统日志" />
-                                     <Button layoutX="130.0" layoutY="75" mnemonicParsing="false" onAction="#showSystemLog" prefWidth="100.0" text="查看">
+                                     <Label layoutX="20.0" layoutY="80.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="模拟鼠标移动" />
+                                     <Button fx:id="shakeMouseBtn" layoutX="130.0" layoutY="75" mnemonicParsing="false" onAction="#shakeMouse" prefWidth="100.0" text="开始">
                                          <padding>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                          </padding>
                                      </Button>
-                                     <Button layoutX="260.0" layoutY="75" mnemonicParsing="false" onAction="#clearSystemLog" prefWidth="100.0" text="清除">
+                                     <Button fx:id="cancelShakeMouseBtn" layoutX="260.0" layoutY="75" mnemonicParsing="false" onAction="#cancelShakeMouse" prefWidth="100.0" text="停止">
                                          <padding>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                          </padding>
                                      </Button>
 
-                                     <Label layoutX="20.0" layoutY="140.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="注释模板" />
+                                     <Label layoutX="20.0" layoutY="140.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="文件基础标识" />
                                      <Button layoutX="130.0" layoutY="135" mnemonicParsing="false" onAction="#showExplain" prefWidth="100.0" text="生成">
                                          <padding>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                          </padding>
                                      </Button>
 
-                                     <Label layoutX="20.0" layoutY="200.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="同步源码" />
+                                     <Label layoutX="20.0" layoutY="200.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="同步代码源码" />
                                      <Button fx:id="syncCodeBtn" layoutX="130.0" layoutY="195" mnemonicParsing="false" onAction="#syncCode" prefWidth="100.0" text="同步">
                                          <padding>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
@@ -70,13 +70,13 @@
                                       <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                              <children>
-                                                 <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="模拟鼠标移动" />
-                                                 <Button fx:id="shakeMouseBtn" layoutX="130.0" layoutY="15" mnemonicParsing="false" onAction="#shakeMouse" prefWidth="100.0" text="开始">
+                                                 <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="系统日志" />
+                                                 <Button layoutX="130.0" layoutY="15" mnemonicParsing="false" onAction="#showSystemLog" prefWidth="100.0" text="查看">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
-                                                 <Button fx:id="cancelShakeMouseBtn" layoutX="260.0" layoutY="15" mnemonicParsing="false" onAction="#cancelShakeMouse" prefWidth="100.0" text="停止">
+                                                 <Button layoutX="260.0" layoutY="15" mnemonicParsing="false" onAction="#clearSystemLog" prefWidth="100.0" text="清除">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
