@@ -1115,7 +1115,9 @@ public class CommonUtils {
                                             LoggerUtils.info(e);
                                         }
                                     }
+                                    cleanFile(files);
                                 }
+                                cleanFile(item);
                             }
                             appConfigDto.setInitScanLog(false);
                         }
@@ -1166,6 +1168,14 @@ public class CommonUtils {
     }
 
     public static void cleanFile(File... files) {
+        if (files != null) {
+            for (File file : files) {
+                file = null;
+            }
+        }
+    }
+
+    public static void cleanFile(List<File> files) {
         if (files != null) {
             for (File file : files) {
                 file = null;

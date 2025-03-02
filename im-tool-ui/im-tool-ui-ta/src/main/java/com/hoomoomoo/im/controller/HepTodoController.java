@@ -238,6 +238,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label taskTips;
 
     @FXML
+    private Label memoryTips;
+
+    @FXML
     private Label scrollTips;
 
     @FXML
@@ -1081,7 +1084,6 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.clearLog(waitMergerNum);
         OutputUtils.info(waitMergerNum, String.valueOf(mergerNum));
 
-        OutputUtils.clearLog(taskTips);
         if (waitTaskSync) {
             OutputUtils.info(taskTips, "请同步任务信息");
         }
@@ -1666,9 +1668,8 @@ public class HepTodoController extends BaseController implements Initializable {
         Platform.runLater(() -> {
             syncFileBtn.setText("停止");
         });
-        int times = 0;
+        OutputUtils.info(memoryTips, CommonUtils.getMemoryInfo());
         while (true) {
-            times++;
             OutputUtils.info(notice, STR_BLANK + STR_NEXT_LINE);
             String currentThreadId = appConfigDto.getThreadId().get(KEY_FILE_SYNC_TIMER);
             if (!StringUtils.equals(threadId, currentThreadId)) {
@@ -1697,16 +1698,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 clearFile(new File(fileSyncTarget), ver);
             }
+            OutputUtils.info(memoryTips, CommonUtils.getMemoryInfo());
             try {
                 Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
             } catch (InterruptedException e) {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
-            }
-            if (times > 10) {
-                times = 0;
-                OutputUtils.info(taskTips, CommonUtils.getMemoryInfo());
-            } else if (times == 5) {
-                OutputUtils.info(taskTips, STR_BLANK);
             }
         }
     }
@@ -1716,6 +1712,7 @@ public class HepTodoController extends BaseController implements Initializable {
             File[] files = sourceFile.listFiles();
             for (File item : files) {
                 sync(item, sourcePath, targetPath, version);
+                CommonUtils.cleanFile(sourceFile, item);
             }
         } else {
             String source = sourceFile.getAbsolutePath();
