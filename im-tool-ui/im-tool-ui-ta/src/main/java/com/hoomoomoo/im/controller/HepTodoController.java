@@ -279,8 +279,8 @@ public class HepTodoController extends BaseController implements Initializable {
     @FXML
     void syncOrSuspend(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        String currentThreadId = appConfigDto.getThreadId().get(KEY_FILE_SYNC_TIMER);
-        if (StringUtils.isNotBlank(currentThreadId)) {
+        Timer timer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
+        if (timer != null) {
             CommonUtils.stopHepToDoSyncFile(appConfigDto);
             syncFileBtn.setText("启动");
             OutputUtils.info(scrollTips, STR_BLANK);
@@ -1658,52 +1658,57 @@ public class HepTodoController extends BaseController implements Initializable {
         if (MapUtils.isEmpty(syncFileVersion)) {
             return;
         }
-        String threadId = appConfigDto.getThreadId().get(KEY_FILE_SYNC_TIMER);
-        if (StringUtils.isBlank(threadId)) {
-            threadId = CommonUtils.getCurrentDateTime2();
-            appConfigDto.getThreadId().put(KEY_FILE_SYNC_TIMER, threadId);
+        Timer timer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
+        String timerId = CommonUtils.getCurrentDateTime2();
+        if (timer == null) {
+            timer = new Timer(timerId);
+            appConfigDto.getTimerMap().put(KEY_FILE_SYNC_TIMER, timer);
         } else {
             return;
         }
         Platform.runLater(() -> {
             syncFileBtn.setText("停止");
         });
-        OutputUtils.info(memoryTips, CommonUtils.getMemoryInfo());
-        while (true) {
-            OutputUtils.info(notice, STR_BLANK + STR_NEXT_LINE);
-            String currentThreadId = appConfigDto.getThreadId().get(KEY_FILE_SYNC_TIMER);
-            if (!StringUtils.equals(threadId, currentThreadId)) {
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("停止轮询线程: " + threadId));
-                break;
-            }
-            String threadMsg = "轮询线程: " + threadId;
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
-            OutputUtils.info(scrollTips, threadMsg);
-            for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
-                String ver = version.getKey().toUpperCase();
-                String[] path = version.getValue().split(STR_COMMA);
-                if (path.length != 2) {
-                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
+        outputMemory();
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                OutputUtils.info(notice, STR_BLANK + STR_NEXT_LINE);
+                String threadMsg = "轮询线程: " + timerId;
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
+                OutputUtils.info(scrollTips, threadMsg);
+                for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
+                    String ver = version.getKey().toUpperCase();
+                    String[] path = version.getValue().split(STR_COMMA);
+                    if (path.length != 2) {
+                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
+                    }
+                    String fileSyncSource = path[0];
+                    String fileSyncTarget = path[1];
+                    String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
+                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
+                    fileSyncSourceFile.clear();
+                    try {
+                        sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
+                    } catch (IOException e) {
+                        LoggerUtils.info(e);
+                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+                    }
+                    clearFile(new File(fileSyncTarget), ver);
                 }
-                String fileSyncSource = path[0];
-                String fileSyncTarget = path[1];
-                String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
-                fileSyncSourceFile.clear();
-                try {
-                    sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
-                } catch (IOException e) {
-                    LoggerUtils.info(e);
-                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
-                }
-                clearFile(new File(fileSyncTarget), ver);
+                outputMemory();
             }
-            OutputUtils.info(memoryTips, CommonUtils.getMemoryInfo());
-            try {
-                Thread.sleep(appConfigDto.getFileSyncTimer() * 1000);
-            } catch (InterruptedException e) {
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
-            }
+        };
+        timer.schedule(timerTask, 5000, appConfigDto.getFileSyncTimer() * 1000);
+    }
+
+    private void outputMemory() {
+        String[] memoryInfo = CommonUtils.getMemoryInfo();
+        OutputUtils.info(memoryTips, memoryInfo[0]);
+        if (Integer.valueOf(memoryInfo[2]) > 1) {
+            memoryTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
+        } else {
+            memoryTips.setStyle("-fx-font-weight: bold;");
         }
     }
 
@@ -1744,6 +1749,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     OutputUtils.info(fileTipsFileStatus, "结束");
                     OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
                 }
+                CommonUtils.cleanFile(content);
             }
             CommonUtils.cleanFile(sourceFile, targetFile);
         }
@@ -1763,6 +1769,7 @@ public class HepTodoController extends BaseController implements Initializable {
             File[] files = sourceFile.listFiles();
             for (File item : files) {
                 clearFile(item, version);
+                CommonUtils.cleanFile(sourceFile, item);
             }
         } else {
             String source = sourceFile.getAbsolutePath();

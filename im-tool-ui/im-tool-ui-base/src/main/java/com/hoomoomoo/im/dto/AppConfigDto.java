@@ -266,7 +266,7 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskSyncPath;
 
-    private LinkedHashMap<String, String> ThreadId;
+    private LinkedHashMap<String, Timer> timerMap;
 
     private Boolean initScanLog;
 
@@ -296,7 +296,7 @@ public class AppConfigDto extends BaseDto {
         this.tableColumnList = new ArrayList<>(16);
         this.dayPublishVersion = new ArrayList<>(16);
         this.weekPublishVersion = new ArrayList<>(16);
-        this.ThreadId = new LinkedHashMap<>();
+        this.timerMap = new LinkedHashMap<>();
         this.initScanLog = true;
         this.scanLogTipsIndex = new LinkedHashMap<>();
     }

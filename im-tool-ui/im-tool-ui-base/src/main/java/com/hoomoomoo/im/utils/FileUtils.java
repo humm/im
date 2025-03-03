@@ -188,7 +188,10 @@ public class FileUtils {
             LoggerUtils.info("文件不存在,请检查: " + filePath);
             throw new IOException("文件不存在,请检查: " + filePath);
         } else {
-            BufferedReader bufferedReader = getBufferedReader(filePath);
+            String fileEncode = getFileEncode(filePath);
+            FileInputStream fileInputStream = new FileInputStream(filePath);
+            InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, fileEncode);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
             String content;
             while ((content = bufferedReader.readLine()) != null) {
                 if (FILE_TYPE_NORMAL.equals(fileType)) {
@@ -198,6 +201,8 @@ public class FileUtils {
                 }
             }
             bufferedReader.close();
+            inputStreamReader.close();
+            fileInputStream.close();
         }
         return FILE_TYPE_NORMAL.equals(fileType) ? fileContent : fileContentMap;
     }
@@ -267,20 +272,6 @@ public class FileUtils {
         } catch (Exception e) {
             return ENCODING_GBK;
         }
-    }
-
-    /**
-     * 获取文件读取类
-     *
-     * @param filePath
-     * @author: humm23693
-     * @date: 2021/04/23
-     * @return:
-     */
-    public static BufferedReader getBufferedReader(String filePath) throws FileNotFoundException,
-            UnsupportedEncodingException {
-        String fileEncode = getFileEncode(filePath);
-        return new BufferedReader(new InputStreamReader(new FileInputStream(filePath), fileEncode));
     }
 
     /**

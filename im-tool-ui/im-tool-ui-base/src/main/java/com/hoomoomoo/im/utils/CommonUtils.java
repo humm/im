@@ -771,7 +771,11 @@ public class CommonUtils {
     }
 
     public static void stopHepToDoSyncFile(AppConfigDto appConfigDto) {
-        appConfigDto.getThreadId().remove(KEY_FILE_SYNC_TIMER);
+        Timer timer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
+        if (timer != null) {
+            timer.cancel();
+            appConfigDto.getTimerMap().remove(KEY_FILE_SYNC_TIMER);
+        }
     }
 
     /**
@@ -1064,9 +1068,9 @@ public class CommonUtils {
 
     public static void scanLog() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        String currentThreadId = getCurrentDateTime2();
-        appConfigDto.getThreadId().put(KEY_LOG_TIMER, currentThreadId);
-        new Thread(new Runnable() {
+        Map<String, Long> fileTime = new HashMap<>();
+        Timer timer = new Timer();
+        TimerTask timerTask =  new TimerTask() {
             @Override
             public void run() {
                 long start = System.currentTimeMillis();
@@ -1086,6 +1090,13 @@ public class CommonUtils {
                                             }
                                         });
                                         File file = files.get(0);
+                                        String name = file.getAbsolutePath();
+                                        Long modify = file.lastModified();
+                                        Long modifyExist = fileTime.get(name);
+                                        if (modifyExist != null && modify.compareTo(modifyExist) == 0) {
+                                            continue;
+                                        }
+                                        fileTime.put(name, modify);
                                         try {
                                             List<String> content = FileUtils.readNormalFile(file.getAbsolutePath(), false);
                                             ArrayList errorMessage = new ArrayList();
@@ -1111,6 +1122,7 @@ public class CommonUtils {
                                                     }
                                                 }
                                             }
+                                            cleanFile(content);
                                         } catch (Exception e) {
                                             LoggerUtils.info(e);
                                         }
@@ -1136,7 +1148,9 @@ public class CommonUtils {
                     }
                 }
             }
-        }).start();
+        };
+        timer.schedule(timerTask, 5000, appConfigDto.getSystemToolLogScanTimer() * 1000);
+        appConfigDto.getTimerMap().put(KEY_LOG_TIMER, timer);
     }
 
     private static void showErrorMessage(AppConfigDto appConfigDto, String tipsType, String tipsDate, String fileName, List<String> message) {
@@ -1167,23 +1181,15 @@ public class CommonUtils {
         return val.toString();
     }
 
-    public static void cleanFile(File... files) {
+    public static void cleanFile(Object... files) {
         if (files != null) {
-            for (File file : files) {
+            for (Object file : files) {
                 file = null;
             }
         }
     }
 
-    public static void cleanFile(List<File> files) {
-        if (files != null) {
-            for (File file : files) {
-                file = null;
-            }
-        }
-    }
-
-    public static String getMemoryInfo() {
+    public static String[] getMemoryInfo() {
         Runtime runtime = Runtime.getRuntime();
         // 获取JVM总内存
         long totalMemory = runtime.totalMemory();
@@ -1193,10 +1199,16 @@ public class CommonUtils {
         long maxMemory = runtime.maxMemory();
         // 计算已用内存
         long usedMemory = totalMemory - freeMemory;
-        return formatMemoryInfo(totalMemory) + "/" + formatMemoryInfo(usedMemory);
+        String[] res = new String[3];
+        String totalMemoryUnit = formatMemoryInfo(totalMemory);
+        String usedMemoryUnit = formatMemoryInfo(usedMemory);
+        res[0] = totalMemoryUnit + STR_SLASH + usedMemoryUnit;
+        res[1] = totalMemoryUnit.replace(KEY_UNIT_MB, STR_BLANK);
+        res[2] = usedMemoryUnit.replace(KEY_UNIT_MB, STR_BLANK);;
+        return res;
     }
 
     private static String formatMemoryInfo(long memory) {
-        return memory / (1024 * 1024) + "MB";
+        return memory / (1024 * 1024) + KEY_UNIT_MB;
     }
 }
