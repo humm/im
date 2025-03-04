@@ -1667,17 +1667,17 @@ public class HepTodoController extends BaseController implements Initializable {
             timer.cancel();
             return;
         }
-        Platform.runLater(() -> {
-            syncFileBtn.setText("停止");
-        });
         String fileSyncAuthVersion = appConfigDto.getFileSyncAuthVersion();
         if (StringUtils.isBlank(fileSyncAuthVersion)) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("未配置同步版本信息"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("未配置授权同步版本信息"));
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
             return;
         }
-        List<String> authVersion = Arrays.asList(fileSyncAuthVersion.split(STR_COMMA));
+        Platform.runLater(() -> {
+            syncFileBtn.setText("停止");
+        });
         outputMemory();
+        List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
@@ -1689,7 +1689,6 @@ public class HepTodoController extends BaseController implements Initializable {
                     String ver = version.getKey();
                     if (!authVersion.contains(ver)) {
                         OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ver.toUpperCase() + " 未授权同步"));
-                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
                         continue;
                     }
                     ver = ver.toUpperCase();
