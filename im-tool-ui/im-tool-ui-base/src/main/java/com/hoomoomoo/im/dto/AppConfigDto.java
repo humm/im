@@ -145,6 +145,8 @@ public class AppConfigDto extends BaseDto {
 
     private int fileSyncTimer;
 
+    private String fileSyncAuthVersion;
+
     private Map<String, String> fileSyncVersionMap;
 
     private HepTaskDto hepTaskDto;

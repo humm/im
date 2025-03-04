@@ -1670,6 +1670,13 @@ public class HepTodoController extends BaseController implements Initializable {
         Platform.runLater(() -> {
             syncFileBtn.setText("停止");
         });
+        String fileSyncAuthVersion = appConfigDto.getFileSyncAuthVersion();
+        if (StringUtils.isBlank(fileSyncAuthVersion)) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("未配置同步版本信息"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
+            return;
+        }
+        List<String> authVersion = Arrays.asList(fileSyncAuthVersion.split(STR_COMMA));
         outputMemory();
         TimerTask timerTask = new TimerTask() {
             @Override
@@ -1679,10 +1686,17 @@ public class HepTodoController extends BaseController implements Initializable {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
                 OutputUtils.info(scrollTips, threadMsg);
                 for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
-                    String ver = version.getKey().toUpperCase();
+                    String ver = version.getKey();
+                    if (!authVersion.contains(ver)) {
+                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ver.toUpperCase() + " 未授权同步"));
+                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
+                        continue;
+                    }
+                    ver = ver.toUpperCase();
                     String[] path = version.getValue().split(STR_COMMA);
                     if (path.length != 2) {
                         OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
+                        continue;
                     }
                     String fileSyncSource = path[0];
                     String fileSyncTarget = path[1];
