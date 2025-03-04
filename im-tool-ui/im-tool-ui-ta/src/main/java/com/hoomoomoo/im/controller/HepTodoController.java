@@ -679,16 +679,17 @@ public class HepTodoController extends BaseController implements Initializable {
             try {
                 AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 Stage stage = appConfigDto.getChildStage();
-                if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
-                    Map responseInfo = (Map) JSONObject.parse(response.body());
-                    String code = String.valueOf(responseInfo.get(KEY_CODE));
-                    if (STR_STATUS_200.equals(code)) {
-                        Map data = (Map) responseInfo.get(KEY_DATA);
+                Map responseInfo = (Map) JSONObject.parse(response.body());
+                String code = String.valueOf(responseInfo.get(KEY_CODE));
+                if (STR_STATUS_200.equals(code)) {
+                    Map data = (Map) responseInfo.get(KEY_DATA);
+                    if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
                         hepTaskDto.setRealWorkload(STR_1);
-                        hepTaskDto.setModifiedFile(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_MODIFIED_FILE)));
-                        hepTaskDto.setEditDescription(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_EDIT_DESCRIPTION)));
-                        hepTaskDto.setSuggestion(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_SUGGESTION)));
                     }
+                    hepTaskDto.setModifiedFile(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_MODIFIED_FILE)));
+                    hepTaskDto.setEditDescription(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_EDIT_DESCRIPTION)));
+                    hepTaskDto.setSuggestion(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_SUGGESTION)));
+                    hepTaskDto.setSelfTestDesc(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_SELF_TEST_DESC)));
                 }
                 // 每次页面都重新打开
                 if (stage != null) {

@@ -281,12 +281,13 @@ public class HepCompleteTaskController extends BaseController implements Initial
             if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
                 realFinishTime.setDisable(true);
                 sync.setDisable(true);
-                OutputUtils.repeatInfo(modifiedFile, hepTaskDto.getModifiedFile());
-                OutputUtils.repeatInfo(editDescription, hepTaskDto.getEditDescription());
-                OutputUtils.repeatInfo(suggestion, hepTaskDto.getSuggestion());
-                OutputUtils.repeatInfo(realRorkload, hepTaskDto.getRealWorkload());
 
             }
+            OutputUtils.repeatInfo(modifiedFile, hepTaskDto.getModifiedFile());
+            OutputUtils.repeatInfo(editDescription, formatText(hepTaskDto.getEditDescription()));
+            OutputUtils.repeatInfo(suggestion, formatText(hepTaskDto.getSuggestion()));
+            OutputUtils.repeatInfo(selfTestDesc, formatText(hepTaskDto.getSelfTestDesc()));
+            OutputUtils.repeatInfo(realRorkload, formatText(hepTaskDto.getRealWorkload()));
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -296,5 +297,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
+    }
+
+    private String formatText(String text) {
+        return text.replaceAll("<p>", STR_BLANK).replaceAll("</p>", STR_BLANK).replaceAll("&nbsp;", STR_SPACE).replaceAll("<br>", STR_BLANK).replaceAll("\r", STR_BLANK);
     }
 }
