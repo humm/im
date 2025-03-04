@@ -1661,9 +1661,10 @@ public class HepTodoController extends BaseController implements Initializable {
         Timer timer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
         String timerId = CommonUtils.getCurrentDateTime2();
         if (timer == null) {
-            timer = new Timer(timerId);
+            timer = new Timer();
             appConfigDto.getTimerMap().put(KEY_FILE_SYNC_TIMER, timer);
         } else {
+            timer.cancel();
             return;
         }
         Platform.runLater(() -> {
@@ -1673,7 +1674,7 @@ public class HepTodoController extends BaseController implements Initializable {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                OutputUtils.info(notice, STR_BLANK + STR_NEXT_LINE);
+                OutputUtils.clearLog(notice);
                 String threadMsg = "轮询线程: " + timerId;
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
                 OutputUtils.info(scrollTips, threadMsg);
@@ -1699,13 +1700,13 @@ public class HepTodoController extends BaseController implements Initializable {
                 outputMemory();
             }
         };
-        timer.schedule(timerTask, 5000, appConfigDto.getFileSyncTimer() * 1000);
+        timer.schedule(timerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
     }
 
     private void outputMemory() {
         String[] memoryInfo = CommonUtils.getMemoryInfo();
         OutputUtils.info(memoryTips, memoryInfo[0]);
-        if (Integer.valueOf(memoryInfo[2]) > 1) {
+        if (Integer.valueOf(memoryInfo[2]) > 1024) {
             memoryTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
         } else {
             memoryTips.setStyle("-fx-font-weight: bold;");

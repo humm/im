@@ -5,6 +5,7 @@ import javafx.stage.Stage;
 import lombok.Data;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
 
@@ -266,7 +267,7 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskSyncPath;
 
-    private LinkedHashMap<String, Timer> timerMap;
+    private ConcurrentHashMap<String, Timer> timerMap;
 
     private Boolean initScanLog;
 
@@ -296,7 +297,7 @@ public class AppConfigDto extends BaseDto {
         this.tableColumnList = new ArrayList<>(16);
         this.dayPublishVersion = new ArrayList<>(16);
         this.weekPublishVersion = new ArrayList<>(16);
-        this.timerMap = new LinkedHashMap<>();
+        this.timerMap = new ConcurrentHashMap<>();
         this.initScanLog = true;
         this.scanLogTipsIndex = new LinkedHashMap<>();
     }
