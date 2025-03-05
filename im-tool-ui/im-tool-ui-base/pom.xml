@@ -5,12 +5,12 @@
     <parent>
         <artifactId>im-tool-ui</artifactId>
         <groupId>com.hoomoomoo</groupId>
-        <version>2025.000129</version>
+        <version>2025.000132</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>im-tool-ui-base</artifactId>
-    <version>2025.000129</version>
+    <version>2025.000132</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

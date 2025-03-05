@@ -88,7 +88,7 @@ public class SvnUtils {
                             svnLogDto.setSubmitNo(commit.getName());
                             svnLogDto.setMsg(getSvnMsg(commitMessage, STR_0));
                             svnLogDto.setTime(CommonUtils.getCurrentDateTime1(commit.getAuthorIdent().getWhen()));
-                            List<String> pathList = getGitCommitFile(file.getAbsolutePath(), commit.name());
+                            List<String> pathList = getGitCommitFile(file, commit.name());
                             svnLogDto.setNum(String.valueOf(pathList.size()));
                             svnLogDto.setFile(pathList);
                             svnLogDto.setCodeVersion(getVersion(getSvnMsg(commitMessage, STR_2)));
@@ -146,9 +146,9 @@ public class SvnUtils {
         return res;
     }
 
-    private static List<String> getGitCommitFile(String dir, String commitId) throws IOException {
+    private static List<String> getGitCommitFile(File file, String commitId) throws IOException {
         List<String> fileList = new ArrayList<>();
-        String content = CmdUtils.exe(dir, "git show " + commitId);
+        String content = CmdUtils.exe(file.getAbsolutePath(), "git show " + commitId);
         List<String> logList = Arrays.asList(content.split(STR_NEXT_LINE));
         for (int i=0; i<logList.size(); i++) {
             String item = logList.get(i).trim();
@@ -157,7 +157,7 @@ public class SvnUtils {
                 if (name.startsWith(KEY_GIT_FILE_PREFIX)) {
                     name = name.substring(name.indexOf(KEY_GIT_FILE_PREFIX) + KEY_GIT_FILE_PREFIX.length());
                 }
-                fileList.add(name + STR_NEXT_LINE);
+                fileList.add(file.getName() + STR_SLASH + name + STR_NEXT_LINE);
             }
         }
         return fileList;

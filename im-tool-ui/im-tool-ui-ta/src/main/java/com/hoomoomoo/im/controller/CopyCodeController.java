@@ -187,7 +187,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                         String targetFileLocation = target + STR_SLASH + item;
                         String targetVersionSelected = (String)targetVersion.getSelectionModel().getSelectedItem();
                         String sourceVersionSelected = (String)sourceVersion.getSelectionModel().getSelectedItem();
-                        if (!appConfigDto.getCopyCodeLocationReplaceSkipVersion().contains(targetVersionSelected)) {
+                        if (!appConfigDto.getCopyCodeLocationReplaceSkipVersion().contains(targetVersionSelected) || KEY_TRUNK.equals(sourceVersionSelected)) {
                             Iterator<String> iterator = appConfigDto.getReplaceTargetUrl().keySet().iterator();
                             while (iterator.hasNext()) {
                                 String key = iterator.next();
@@ -199,6 +199,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                                     }
                                     break;
                                 }
+                                LoggerUtils.info(key + " " + targetFileLocation.contains(key));
                                 if (targetFileLocation.contains(key)) {
                                     targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key));
                                     break;
