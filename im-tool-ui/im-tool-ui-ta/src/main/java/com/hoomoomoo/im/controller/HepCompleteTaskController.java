@@ -281,13 +281,12 @@ public class HepCompleteTaskController extends BaseController implements Initial
             if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
                 realFinishTime.setDisable(true);
                 sync.setDisable(true);
-
+                OutputUtils.repeatInfo(realRorkload, formatText(hepTaskDto.getRealWorkload()));
             }
             OutputUtils.repeatInfo(modifiedFile, hepTaskDto.getModifiedFile());
             OutputUtils.repeatInfo(editDescription, formatText(hepTaskDto.getEditDescription()));
             OutputUtils.repeatInfo(suggestion, formatText(hepTaskDto.getSuggestion()));
             OutputUtils.repeatInfo(selfTestDesc, formatText(hepTaskDto.getSelfTestDesc()));
-            OutputUtils.repeatInfo(realRorkload, formatText(hepTaskDto.getRealWorkload()));
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
