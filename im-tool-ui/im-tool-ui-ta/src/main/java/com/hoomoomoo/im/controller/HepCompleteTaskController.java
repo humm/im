@@ -192,16 +192,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         if (isTrunk) {
             resVer = KEY_TRUNK;
         } else {
-            if (ver.contains("M")) {
-                resVer = ver.substring(0, ver.lastIndexOf("M") + 1) + "1";
-            } else if (ver.endsWith("000")) {
-                resVer = ver;
-            } else {
-                resVer = ver.substring(0, ver.lastIndexOf(".") + 1) + "001";
-            }
-        }
-        if ("TA6.0V202202.02.001".equals(resVer)) {
-            resVer = KEY_B + resVer;
+            resVer = TaCommonUtils.changeVersion(ver);
         }
         LoggerUtils.info("转换前版本号为: " + ver);
         LoggerUtils.info("转换后版本号为: " + resVer);

@@ -302,6 +302,9 @@
                                                     <Label layoutX="15.0" layoutY="10.0"
                                                            style="-fx-font-weight: bold; -fx-font-size: 15;"
                                                            text="任务单信息"/>
+                                                    <Label fx:id="frontTips" layoutX="190.0" layoutY="10.0"
+                                                           style="-fx-font-weight: bold; -fx-font-size: 15; -fx-text-background-color: red;"
+                                                           text="front未实时同步"/>
                                                     <Label layoutX="15.0" layoutY="55.0" text="需求编号"/>
                                                     <TextField fx:id="TaskDemandNo" layoutX="85.0" layoutY="47.0"
                                                                prefWidth="220"/>

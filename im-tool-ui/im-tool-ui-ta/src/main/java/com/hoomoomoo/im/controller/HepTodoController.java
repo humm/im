@@ -259,6 +259,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label fileTipsFileTime;
 
     @FXML
+    private Label frontTips;
+
+    @FXML
     private RadioButton all;
 
     @FXML
@@ -347,6 +350,14 @@ public class HepTodoController extends BaseController implements Initializable {
         String clickType = event.getButton().toString();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setHepTaskDto(item);
+        String ver = TaCommonUtils.changeVersion(item.getSprintVersion()) + STR_COMMA;
+        String verYear = ver.split("\\.")[0];
+        String authVer = appConfigDto.getFileSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
+        if (authVer.contains(ver) || verYear.compareTo("2025") >= 0) {
+            frontTips.setVisible(false);
+        } else {
+            frontTips.setVisible(true);
+        }
         if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
             if (isExtendUser()) {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户不支持此操作"));
@@ -1629,6 +1640,7 @@ public class HepTodoController extends BaseController implements Initializable {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             initUserInfo(appConfigDto);
+            frontTips.setVisible(false);
             devCompleteHide.setSelected(true);
             if (isExtendUser()) {
                 extendUser.setVisible(false);
@@ -1720,7 +1732,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private void outputMemory() {
         String[] memoryInfo = CommonUtils.getMemoryInfo();
         OutputUtils.info(memoryTips, memoryInfo[0]);
-        if (Integer.valueOf(memoryInfo[2]) > 1024) {
+        if (Integer.valueOf(memoryInfo[1]) > 1024 || Integer.valueOf(memoryInfo[2]) > 1024) {
             memoryTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
         } else {
             memoryTips.setStyle("-fx-font-weight: bold;");
