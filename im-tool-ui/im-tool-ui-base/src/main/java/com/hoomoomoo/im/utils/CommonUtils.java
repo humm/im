@@ -1122,18 +1122,14 @@ public class CommonUtils {
                                                     }
                                                 }
                                             }
-                                            cleanFile(content);
                                         } catch (Exception e) {
                                             LoggerUtils.info(e);
                                         }
                                     }
-                                    cleanFile(files);
                                 }
-                                cleanFile(item);
                             }
                             appConfigDto.setInitScanLog(false);
                         }
-                        cleanFile(log);
                     });
                     try {
                         Thread.sleep( appConfigDto.getSystemToolLogScanTimer() * 1000);
@@ -1179,14 +1175,6 @@ public class CommonUtils {
             val.append(content);
         }
         return val.toString();
-    }
-
-    public static void cleanFile(Object... files) {
-        if (files != null) {
-            for (Object file : files) {
-                file = null;
-            }
-        }
     }
 
     public static String[] getMemoryInfo() {
