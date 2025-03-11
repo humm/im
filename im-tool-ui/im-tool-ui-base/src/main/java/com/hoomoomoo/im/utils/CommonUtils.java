@@ -936,13 +936,13 @@ public class CommonUtils {
         Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
-            return new Task<Void>() {
-                @Override
-                protected Void call() throws Exception {
-                Thread.sleep(1000);
-                return null;
-                }
-            };
+                return new Task<Void>() {
+                    @Override
+                    protected Void call() throws Exception {
+                        Thread.sleep(1000);
+                        return null;
+                    }
+                };
             }
         };
         return service;
@@ -1122,14 +1122,18 @@ public class CommonUtils {
                                                     }
                                                 }
                                             }
+                                            cleanFile(content);
                                         } catch (Exception e) {
                                             LoggerUtils.info(e);
                                         }
                                     }
+                                    cleanFile(files);
                                 }
+                                cleanFile(item);
                             }
                             appConfigDto.setInitScanLog(false);
                         }
+                        cleanFile(log);
                     });
                     try {
                         Thread.sleep( appConfigDto.getSystemToolLogScanTimer() * 1000);
@@ -1175,6 +1179,14 @@ public class CommonUtils {
             val.append(content);
         }
         return val.toString();
+    }
+
+    public static void cleanFile(Object... files) {
+        if (files != null) {
+            for (Object file : files) {
+                file = null;
+            }
+        }
     }
 
     public static String[] getMemoryInfo() {

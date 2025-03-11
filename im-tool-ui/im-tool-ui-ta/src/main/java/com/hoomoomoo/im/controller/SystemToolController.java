@@ -332,7 +332,7 @@ public class SystemToolController implements Initializable {
 
     public void executeUpdateVersion() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        syncExcel(appConfigDto.getSystemToolUpdateVersionPath(), "system.tool.update.version.path", "版本列表", PATH_VERSION_STAT, "同步发版时间", "version");
+        syncExcel(appConfigDto.getSystemToolUpdateVersionPath(), "system.tool.update.version.path", "Version列表", PATH_VERSION_STAT, "同步发版时间", "version");
     }
 
     public void executeSyncTaskInfo() throws Exception {

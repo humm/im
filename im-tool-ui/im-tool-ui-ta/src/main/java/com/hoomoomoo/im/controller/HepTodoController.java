@@ -269,7 +269,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     private RadioButton devCompleteHide;
-    
+
     @FXML
     private RadioButton devCompleteShow;
 
@@ -350,7 +350,7 @@ public class HepTodoController extends BaseController implements Initializable {
         String clickType = event.getButton().toString();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setHepTaskDto(item);
-        String ver = TaCommonUtils.changeVersion(item.getSprintVersion()) + STR_COMMA;
+        String ver = item.getSprintVersion() + STR_COMMA;
         String verYear = ver.split("\\.")[0];
         String authVer = appConfigDto.getFileSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
         if (authVer.contains(ver) || verYear.compareTo("2025") >= 0) {
@@ -1276,7 +1276,7 @@ public class HepTodoController extends BaseController implements Initializable {
                                         mark = "后天";
                                     }
                                 }
-                               item.setTaskMark(mark);
+                                item.setTaskMark(mark);
                             }
                         }
                         // 颜色展示
@@ -1744,6 +1744,7 @@ public class HepTodoController extends BaseController implements Initializable {
             File[] files = sourceFile.listFiles();
             for (File item : files) {
                 sync(item, sourcePath, targetPath, version);
+                CommonUtils.cleanFile(sourceFile, item);
             }
         } else {
             String source = sourceFile.getAbsolutePath();
@@ -1775,7 +1776,9 @@ public class HepTodoController extends BaseController implements Initializable {
                     OutputUtils.info(fileTipsFileStatus, "结束");
                     OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
                 }
+                CommonUtils.cleanFile(content);
             }
+            CommonUtils.cleanFile(sourceFile, targetFile);
         }
     }
 
@@ -1793,6 +1796,7 @@ public class HepTodoController extends BaseController implements Initializable {
             File[] files = sourceFile.listFiles();
             for (File item : files) {
                 clearFile(item, version);
+                CommonUtils.cleanFile(sourceFile, item);
             }
         } else {
             String source = sourceFile.getAbsolutePath();
@@ -1807,6 +1811,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 OutputUtils.info(fileTipsFileStatus, "结束");
                 OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
             }
+            CommonUtils.cleanFile(sourceFile);
         }
     }
 
