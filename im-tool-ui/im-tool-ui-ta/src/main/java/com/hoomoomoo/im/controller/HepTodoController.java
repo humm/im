@@ -1697,7 +1697,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 OutputUtils.clearLog(notice);
                 String threadMsg = "轮询线程: " + timerId;
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
-                OutputUtils.info(scrollTips, threadMsg);
                 for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
                     String ver = version.getKey();
                     if (!authVersion.contains(ver)) {
@@ -1723,10 +1722,36 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     clearFile(new File(fileSyncTarget), ver);
                 }
+                checkCommitNotPush(appConfigDto, threadMsg);
                 outputMemory();
             }
         };
         timer.schedule(timerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
+    }
+
+    private void checkCommitNotPush(AppConfigDto appConfigDto, String threadMsg) {
+        Map<String, String> svnRep = appConfigDto.getSvnUrl();
+        String trunk = svnRep.get(KEY_TRUNK);
+        boolean push = false;
+        if (StringUtils.isNotBlank(trunk)) {
+            File[] file = new File(trunk).listFiles();
+            for (File item : file) {
+                if (FileUtils.isSuffixDirectory(item, BaseConst.FILE_TYPE_GIT, false, true)) {
+                    String content = CmdUtils.exe(item.getAbsolutePath(), "git status");
+                    if (StringUtils.isNotBlank(content) && content.toLowerCase().contains("your branch is ahead of")) {
+                        threadMsg = item.getName() + " 已commit未push";
+                        push = true;
+                        break;
+                    }
+                }
+            }
+        }
+        if (push) {
+            scrollTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
+        } else {
+            scrollTips.setStyle("-fx-font-weight: bold;");
+        }
+        OutputUtils.info(scrollTips, threadMsg);
     }
 
     private void outputMemory() {
