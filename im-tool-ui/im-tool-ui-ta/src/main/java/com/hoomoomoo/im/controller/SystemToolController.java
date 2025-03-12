@@ -402,7 +402,7 @@ public class SystemToolController implements Initializable {
                     }
                     if ("version".equals(excelType)) {
                         String version = row.getCell(0).toString();
-                        if (StringUtils.isBlank(version)) {
+                        if (StringUtils.isBlank(version) || version.contains("TA6.0-PRO")) {
                             continue;
                         }
                         String closeDate = formatDate(row.getCell(1).toString());
