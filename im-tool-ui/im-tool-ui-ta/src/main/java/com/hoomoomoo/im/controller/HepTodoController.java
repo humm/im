@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -101,15 +102,15 @@ public class HepTodoController extends BaseController implements Initializable {
     private boolean dealTask = true;
 
     private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
-        put("完成日期错误", new String[] {"-fx-text-background-color: #ff0073;", "1", "超期"});
-        put("今天待提交", new String[] {"-fx-text-background-color: #ff0000;", "1", "今天"});
-        put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;", "1", "本周"});
-        put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "1", "缺陷"});
-        /**put("自测问题", new String[] {"-fx-text-background-color: #804000;", "0", "自测"});
-        put("自建任务", new String[] {"-fx-text-background-color: #008071;", "0", "自建"});
-        put("已修改", new String[] {"-fx-text-background-color: #7b00ff;", "0", "已修改"});
-        put("已提交", new String[] {"-fx-text-background-color: #7b00ff;", "0", "已提交"});*/
-        put("默认", new String[] {"-fx-text-background-color: #000000;", "0", " "});
+        put("完成日期错误", new String[] {"-fx-text-background-color: #7b00ff;", "超期"});
+        put("今天待提交", new String[] {"-fx-text-background-color: #008071;", "今天"});
+        put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;", "本周"});
+        put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "缺陷"});
+        /**put("自测问题", new String[] {"-fx-text-background-color: #804000;", "自测"});
+        put("自建任务", new String[] {"-fx-text-background-color: #008071;", "自建"});
+        put("已修改", new String[] {"-fx-text-background-color: #7b00ff;", "已修改"});
+        put("已提交", new String[] {"-fx-text-background-color: #7b00ff;", "已提交"});*/
+        put("默认", new String[] {"-fx-text-background-color: #000000;", " "});
     }};
 
 
@@ -143,9 +144,6 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     private AnchorPane todoTitle;
-
-    @FXML
-    private AnchorPane colorDesc;
 
     @FXML
     private Label weekPublish;
@@ -837,7 +835,7 @@ public class HepTodoController extends BaseController implements Initializable {
         String tomorrowDate = CommonUtils.getTomorrowDateTime();
         String thirdDate = CommonUtils.getCustomDateTime(2);
         String lastDayByWeek = CommonUtils.getLastDayByWeek();
-        String weekDay = CommonUtils.getLastDayByWeek2();
+        String weekDay = CommonUtils.getLastDayByWeekYmd();
         Map<String, String> taskCustomerName = new HashMap<>();
         Map<String, String> taskDemandNo = new HashMap<>();
         Map<String, String> taskDemandStatus = new HashMap<>();
@@ -1030,6 +1028,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 item.setEstimateFinishTime(estimateFinishTime);
             }
             initMinDate(minDate, item);
+
         }
         iterator = res.listIterator();
         while (iterator.hasNext()) {
@@ -1227,18 +1226,23 @@ public class HepTodoController extends BaseController implements Initializable {
         if (taskListIn == null) {
             return;
         }
+        int nextMonday = CommonUtils.getNextWeekDayYmd(DayOfWeek.MONDAY);
+        int nextTuesday = CommonUtils.getNextWeekDayYmd(DayOfWeek.TUESDAY);
+        int nextWednesday = CommonUtils.getNextWeekDayYmd(DayOfWeek.WEDNESDAY);
         Platform.runLater(() -> {
             for (HepTaskDto hepTaskDto : res) {
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
-                initRowColor(taskListIn, dayTodoTask, tomorrowTodoTask, thirdTodoTask,  weekTodoTask, finishDateError);
+                initRowColor(taskListIn, dayTodoTask, tomorrowTodoTask, thirdTodoTask,  weekTodoTask, finishDateError,
+                        nextMonday, nextTuesday, nextWednesday);
             }
             OutputUtils.setEnabled(taskListIn);
         });
     }
 
     private void initRowColor(TableView taskListIn, Set<String> dayTodoTask, Set<String> tomorrowTodoTask,
-                              Set<String> thirdTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
+                              Set<String> thirdTodoTask, Set<String> weekTodoTask, Set<String> finishDateError,
+                              int nextMonday, int nextTuesday, int nextWednesday) {
         taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
             @Override
             public TableRow<HepTaskDto> call(TableView<HepTaskDto> param) {
@@ -1249,7 +1253,6 @@ public class HepTodoController extends BaseController implements Initializable {
                         if (item != null && getIndex() > -1) {
                             String taskName = item.getName();
                             String taskNumber = item.getTaskNumber();
-                            String taskNameTag = getTaskNameTag(taskName);
                             String[] taskColor;
                             if (finishDateError.contains(taskNumber)) {
                                 taskColor = color.get("完成日期错误");
@@ -1270,48 +1273,42 @@ public class HepTodoController extends BaseController implements Initializable {
                             } else {
                                 taskColor = color.get("默认");
                             }
-                            if (taskColor == null) {
-                                return;
-                            }
                             setStyle(taskColor[0]);
-                            if (StringUtils.equals(STR_1, taskColor[1])) {
-                                String mark = taskColor[2];
-                                if ("本周".equals(mark)) {
-                                    if (tomorrowTodoTask.contains(taskNumber)) {
-                                        mark = "明天";
-                                    } else if (thirdTodoTask.contains(taskNumber)) {
-                                        mark = "后天";
-                                    }
+                            String mark = taskColor[1];
+                            if ("本周".equals(mark)) {
+                                if (tomorrowTodoTask.contains(taskNumber)) {
+                                    mark = "明天";
+                                } else if (thirdTodoTask.contains(taskNumber)) {
+                                    mark = "后天";
                                 }
-                                item.setTaskMark(mark);
                             }
-                        }
-                        // 颜色展示
-                        if (false) {
-                            // 完成时间错误
-                            setStyle("-fx-text-background-color: #ff0073;");
-                            // 今天待提交
-                            setStyle("-fx-text-background-color: #ff0000;");
-                            // 本周待提交
-                            setStyle("-fx-text-background-color: #0015ff;");
-                            // 缺陷
-                            setStyle("-fx-text-background-color: #ff00a6;");
-                            // 自测问题
-                            setStyle("-fx-text-background-color: #804000;");
-                            // 自建任务
-                            setStyle("-fx-text-background-color: #008071;");
-                            // 已修改
-                            setStyle("-fx-text-background-color: #7b00ff;");
-                            // 已提交
-                            setStyle("-fx-text-background-color: #7b00ff;");
-                            // 默认
-                            setStyle("-fx-text-background-color: #000000;");
+                            if (StringUtils.isBlank(mark)) {
+                                int minDate = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getEstimateFinishDate());
+                                if (nextMonday == minDate) {
+                                    mark = "下周一";
+                                } else if (nextTuesday == minDate) {
+                                    mark = "下周二";
+                                } else if (nextWednesday == minDate) {
+                                    mark = "下周三";
+                                }
+                            }
+                            item.setTaskMark(mark);
                         }
                     }
                 };
                 return row;
             }
         });
+    }
+
+    private int getMinDate(String closeDate, String publishDate, String endDate) {
+        closeDate = closeDate.replaceAll(STR_HYPHEN, STR_BLANK);
+        publishDate = publishDate.replaceAll(STR_HYPHEN, STR_BLANK);
+        endDate = endDate.replaceAll(STR_HYPHEN, STR_BLANK);
+        if (StringUtils.isBlank(endDate)) {
+            endDate = STR_20991231;
+        }
+        return Math.min(Math.min(Integer.valueOf(closeDate), Integer.valueOf(publishDate)), Integer.valueOf(endDate));
     }
 
     private void initTag(List<HepTaskDto> task) {
@@ -1742,13 +1739,15 @@ public class HepTodoController extends BaseController implements Initializable {
         boolean push = false;
         if (StringUtils.isNotBlank(trunk)) {
             File[] file = new File(trunk).listFiles();
-            for (File item : file) {
-                if (FileUtils.isSuffixDirectory(item, BaseConst.FILE_TYPE_GIT, false, true)) {
-                    String content = CmdUtils.exe(item.getAbsolutePath(), "git status");
-                    if (StringUtils.isNotBlank(content) && content.toLowerCase().contains("your branch is ahead of")) {
-                        threadMsg = item.getName() + " 已commit未push";
-                        push = true;
-                        break;
+            if (file != null) {
+                for (File item : file) {
+                    if (FileUtils.isSuffixDirectory(item, BaseConst.FILE_TYPE_GIT, false, true)) {
+                        String content = CmdUtils.exe(item.getAbsolutePath(), "git status");
+                        if (StringUtils.isNotBlank(content) && content.toLowerCase().contains("your branch is ahead of")) {
+                            threadMsg = item.getName() + " 已commit未push";
+                            push = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -1912,13 +1911,13 @@ public class HepTodoController extends BaseController implements Initializable {
     private void initColorDesc() {
         double step = 15;
         double x = 20;
-        double y = 5;
+        double y = 180;
         Label label = new Label("颜色说明:");
         String boldStyle = "-fx-font-weight: normal;";
-        label.setStyle(boldStyle);
+        label.setStyle("-fx-font-weight: bold;");
         label.setLayoutX(x);
         label.setLayoutY(y);
-        colorDesc.getChildren().add(label);
+        todoTitle.getChildren().add(label);
         int prevLen = 4;
         int diff = 0;
         for (Map.Entry<String, String[]> entry : color.entrySet()) {
@@ -1933,7 +1932,7 @@ public class HepTodoController extends BaseController implements Initializable {
             ele.setStyle(boldStyle + color.get(key)[0]);
             ele.setLayoutX(x);
             ele.setLayoutY(y);
-            colorDesc.getChildren().add(ele);
+            todoTitle.getChildren().add(ele);
             prevLen = len;
             x -= step * diff;
             x += 20;

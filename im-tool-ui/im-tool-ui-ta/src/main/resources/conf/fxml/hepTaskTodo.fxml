@@ -17,7 +17,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.hoomoomoo.im.controller.HepTodoController">
     <children>
-        <SplitPane dividerPositions="0.225713567839195" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
+        <SplitPane dividerPositions="0.250713567839195" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
                    prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -65,7 +65,8 @@
                         <Label fx:id="fileTipsVersion" layoutX="970.0" layoutY="150.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                        <Label fx:id="taskTips" layoutX="1480.0" layoutY="150.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                        <Label fx:id="taskTips" layoutX="1480.0" layoutY="150.0"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                         <Button fx:id="syncFileBtn" layoutX="1650.0" layoutY="145.0" mnemonicParsing="false"
                                 onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="55.0" text="暂停">
@@ -73,6 +74,10 @@
                                 <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
                             </padding>
                         </Button>
+
+                        <Label fx:id="memoryTips" layoutX="800" layoutY="180.0"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                        <Label fx:id="scrollTips" layoutX="1200.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
 
                         <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="99.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="635" layoutY="105.0" text="0%"/>
@@ -148,11 +153,10 @@
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="312.0">
                                     <children>
-                                        <SplitPane dividerPositions="0.9451005209333756" layoutX="35.0" layoutY="36.0"
-                                                   orientation="VERTICAL" prefHeight="298.4727169219722"
-                                                   prefWidth="295.8545351945865" AnchorPane.bottomAnchor="0.0"
-                                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
-                                                   AnchorPane.topAnchor="0.0">
+                                        <SplitPane layoutX="35.0" layoutY="36.0" orientation="VERTICAL"
+                                                   prefHeight="298.4727169219722" prefWidth="295.8545351945865"
+                                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                             <items>
                                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0"
                                                             prefWidth="160.0">
@@ -244,21 +248,13 @@
                                                         </TableView>
                                                     </children>
                                                 </AnchorPane>
-                                                <AnchorPane fx:id="colorDesc" minHeight="0.0" minWidth="0.0"
-                                                            prefHeight="100.0"
-                                                            prefWidth="160.0">
-                                                    <Label fx:id="memoryTips" layoutX="780" layoutY="5.0"
-                                                           style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                                                    <Label fx:id="scrollTips" layoutX="1130.0" layoutY="5.0"
-                                                           style="-fx-font-weight: bold;"/>
-                                                </AnchorPane>
                                             </items>
                                         </SplitPane>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="342.0">
                                     <children>
-                                        <SplitPane dividerPositions="0.36670175438596491, 0.71" orientation="VERTICAL"
+                                        <SplitPane dividerPositions="0.3667017543859649, 0.71" orientation="VERTICAL"
                                                    prefHeight="318.4" prefWidth="191.0" AnchorPane.bottomAnchor="0.0"
                                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                                                    AnchorPane.topAnchor="0.0">

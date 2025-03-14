@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -302,8 +303,20 @@ public class CommonUtils {
      *
      * @return
      */
-    public static String getLastDayByWeek2() {
+    public static String getLastDayByWeekYmd() {
         return getLastDayByWeek().replaceAll(STR_HYPHEN, STR_BLANK);
+    }
+
+    /**
+     * 获取下周某天
+     *
+     * @param dayOfWeek
+     * @return
+     */
+    public static int getNextWeekDayYmd(DayOfWeek dayOfWeek) {
+        LocalDate today = LocalDate.now();
+        LocalDate nextWeekDay = today.with(TemporalAdjusters.next(dayOfWeek));
+        return Integer.parseInt(nextWeekDay.toString().replaceAll(STR_HYPHEN, STR_BLANK));
     }
 
     public static String checkLicenseDate(AppConfigDto appConfigDto) {
