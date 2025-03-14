@@ -101,14 +101,14 @@ public class HepTodoController extends BaseController implements Initializable {
     private boolean dealTask = true;
 
     private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
-        put("完成日期错误", new String[] {"-fx-text-background-color: #ff0073;", "1", "错误"});
+        put("完成日期错误", new String[] {"-fx-text-background-color: #ff0073;", "1", "超期"});
         put("今天待提交", new String[] {"-fx-text-background-color: #ff0000;", "1", "今天"});
         put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;", "1", "本周"});
         put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "1", "缺陷"});
-        put("自测问题", new String[] {"-fx-text-background-color: #804000;", "0", "自测"});
+        /**put("自测问题", new String[] {"-fx-text-background-color: #804000;", "0", "自测"});
         put("自建任务", new String[] {"-fx-text-background-color: #008071;", "0", "自建"});
         put("已修改", new String[] {"-fx-text-background-color: #7b00ff;", "0", "已修改"});
-        put("已提交", new String[] {"-fx-text-background-color: #7b00ff;", "0", "已提交"});
+        put("已提交", new String[] {"-fx-text-background-color: #7b00ff;", "0", "已提交"});*/
         put("默认", new String[] {"-fx-text-background-color: #000000;", "0", " "});
     }};
 
@@ -1059,11 +1059,13 @@ public class HepTodoController extends BaseController implements Initializable {
             if (taskCustomerName.containsKey(taskNumberIn)) {
                 item.setCustomer(taskCustomerName.get(taskNumberIn));
             } else {
-                waitTaskSync = true;
+                if (StringUtils.isBlank(item.getCustomer()) && item.getName().contains(DEFECT_TAG)) {
+                    item.setCustomer(NAME_INNER_CUSTOMER);
+                } else {
+                    waitTaskSync = true;
+                }
             }
-            if (StringUtils.isBlank(item.getCustomer()) && item.getName().contains(DEFECT_TAG)) {
-                item.setCustomer(NAME_INNER_CUSTOMER);
-            }
+
             String customer = item.getCustomer();
             if (StringUtils.isNotBlank(customer) && customer.length() > 6) {
                 item.setCustomer(customer.substring(0, 6));
@@ -1098,6 +1100,8 @@ public class HepTodoController extends BaseController implements Initializable {
 
         if (waitTaskSync) {
             OutputUtils.info(taskTips, "请同步任务信息");
+        } else {
+            OutputUtils.info(taskTips, STR_BLANK);
         }
 
         if (dayVersionNum > 0) {
@@ -1253,7 +1257,7 @@ public class HepTodoController extends BaseController implements Initializable {
                                 taskColor = color.get("今天待提交");
                             } else if (weekTodoTask.contains(taskNumber)) {
                                 taskColor = color.get("本周待提交");
-                            } else if (taskNameTag.contains(SELF_TEST_TAG)) {
+                            } /*else if (taskNameTag.contains(SELF_TEST_TAG)) {
                                 taskColor = color.get("自测问题");
                             } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
                                 taskColor = color.get("自建任务");
@@ -1261,10 +1265,13 @@ public class HepTodoController extends BaseController implements Initializable {
                                 taskColor = color.get("已修改");
                             } else if (taskName.contains(COMMIT_TAG)) {
                                 taskColor = color.get("已提交");
-                            } else if (taskName.contains(DEFECT_TAG)) {
+                            } */else if (taskName.contains(DEFECT_TAG)) {
                                 taskColor = color.get("缺陷");
                             } else {
                                 taskColor = color.get("默认");
+                            }
+                            if (taskColor == null) {
+                                return;
                             }
                             setStyle(taskColor[0]);
                             if (StringUtils.equals(STR_1, taskColor[1])) {
@@ -1749,7 +1756,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (push) {
             scrollTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
         } else {
-            scrollTips.setStyle("-fx-font-weight: bold;");
+            scrollTips.setStyle("-fx-font-weight: normal;");
         }
         OutputUtils.info(scrollTips, threadMsg);
     }
@@ -1760,7 +1767,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (Integer.valueOf(memoryInfo[1]) > 1024 || Integer.valueOf(memoryInfo[2]) > 1024) {
             memoryTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
         } else {
-            memoryTips.setStyle("-fx-font-weight: bold;");
+            memoryTips.setStyle("-fx-font-weight: normal;");
         }
     }
 
@@ -1907,7 +1914,7 @@ public class HepTodoController extends BaseController implements Initializable {
         double x = 20;
         double y = 5;
         Label label = new Label("颜色说明:");
-        String boldStyle = "-fx-font-weight: bold;";
+        String boldStyle = "-fx-font-weight: normal;";
         label.setStyle(boldStyle);
         label.setLayoutX(x);
         label.setLayoutY(y);

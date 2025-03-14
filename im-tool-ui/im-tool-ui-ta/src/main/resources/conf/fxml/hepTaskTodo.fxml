@@ -247,9 +247,9 @@
                                                 <AnchorPane fx:id="colorDesc" minHeight="0.0" minWidth="0.0"
                                                             prefHeight="100.0"
                                                             prefWidth="160.0">
-                                                    <Label fx:id="memoryTips" layoutX="939.0" layoutY="5.0"
+                                                    <Label fx:id="memoryTips" layoutX="780" layoutY="5.0"
                                                            style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                                                    <Label fx:id="scrollTips" layoutX="1165.0" layoutY="5.0"
+                                                    <Label fx:id="scrollTips" layoutX="1130.0" layoutY="5.0"
                                                            style="-fx-font-weight: bold;"/>
                                                 </AnchorPane>
                                             </items>
