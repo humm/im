@@ -106,10 +106,6 @@ public class HepTodoController extends BaseController implements Initializable {
         put("今天待提交", new String[] {"-fx-text-background-color: #008071;", "今天"});
         put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;", "本周"});
         put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "缺陷"});
-        /**put("自测问题", new String[] {"-fx-text-background-color: #804000;", "自测"});
-        put("自建任务", new String[] {"-fx-text-background-color: #008071;", "自建"});
-        put("已修改", new String[] {"-fx-text-background-color: #7b00ff;", "已修改"});
-        put("已提交", new String[] {"-fx-text-background-color: #7b00ff;", "已提交"});*/
         put("默认", new String[] {"-fx-text-background-color: #000000;", " "});
     }};
 
@@ -1260,21 +1256,16 @@ public class HepTodoController extends BaseController implements Initializable {
                                 taskColor = color.get("今天待提交");
                             } else if (weekTodoTask.contains(taskNumber)) {
                                 taskColor = color.get("本周待提交");
-                            } /*else if (taskNameTag.contains(SELF_TEST_TAG)) {
-                                taskColor = color.get("自测问题");
-                            } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
-                                taskColor = color.get("自建任务");
-                            } else if (taskName.contains(UPDATE_TAG) || taskName.contains(DEV_COMMIT_TAG)) {
-                                taskColor = color.get("已修改");
-                            } else if (taskName.contains(COMMIT_TAG)) {
-                                taskColor = color.get("已提交");
-                            } */else if (taskName.contains(DEFECT_TAG)) {
+                            } else if (taskName.contains(DEFECT_TAG)) {
                                 taskColor = color.get("缺陷");
                             } else {
                                 taskColor = color.get("默认");
                             }
                             setStyle(taskColor[0]);
                             String mark = taskColor[1];
+                            if (taskName.contains(COMMIT_TAG)) {
+                                mark = "已提交";
+                            }
                             if ("本周".equals(mark)) {
                                 if (tomorrowTodoTask.contains(taskNumber)) {
                                     mark = "明天";

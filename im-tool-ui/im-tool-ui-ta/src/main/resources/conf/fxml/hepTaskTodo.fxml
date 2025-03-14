@@ -170,7 +170,7 @@
                                                                    AnchorPane.rightAnchor="0.0"
                                                                    AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn id="name" editable="false" prefWidth="540"
+                                                                <TableColumn id="name" editable="false" prefWidth="520"
                                                                              sortable="false" text="任务名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="name"/>
@@ -191,7 +191,7 @@
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="statusName" editable="false"
-                                                                             prefWidth="70" sortable="false"
+                                                                             prefWidth="90" sortable="false"
                                                                              style="-fx-alignment: center;" text="状态">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="statusName"/>
