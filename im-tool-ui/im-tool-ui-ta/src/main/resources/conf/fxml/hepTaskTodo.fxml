@@ -170,7 +170,7 @@
                                                                    AnchorPane.rightAnchor="0.0"
                                                                    AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn id="name" editable="false" prefWidth="520"
+                                                                <TableColumn id="name" editable="false" prefWidth="640"
                                                                              sortable="false" text="任务名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="name"/>
@@ -204,7 +204,7 @@
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="estimateFinishDate" editable="false"
-                                                                             prefWidth="100" sortable="false"
+                                                                             prefWidth="105" sortable="false"
                                                                              style="-fx-alignment: center;" text="完成日期">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory
@@ -212,14 +212,14 @@
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="oriCloseDate" editable="false"
-                                                                             prefWidth="100" sortable="false"
+                                                                             prefWidth="105" sortable="false"
                                                                              style="-fx-alignment: center;" text="封版日期">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="oriCloseDate"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="oriPublishDate" editable="false"
-                                                                             prefWidth="100" sortable="false"
+                                                                             prefWidth="115" sortable="false"
                                                                              style="-fx-alignment: center;" text="发版日期">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory
