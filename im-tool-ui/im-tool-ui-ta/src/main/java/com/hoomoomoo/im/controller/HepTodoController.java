@@ -102,7 +102,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private boolean dealTask = true;
 
     private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
-        put("完成日期错误", new String[] {"-fx-text-background-color: #7b00ff;", "超期"});
+        put("完成日期超期", new String[] {"-fx-text-background-color: #7b00ff;", "超期"});
         put("今天待提交", new String[] {"-fx-text-background-color: #008071;", "今天"});
         put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;", "本周"});
         put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "缺陷"});
@@ -1225,12 +1225,16 @@ public class HepTodoController extends BaseController implements Initializable {
         int nextMonday = CommonUtils.getNextWeekDayYmd(DayOfWeek.MONDAY);
         int nextTuesday = CommonUtils.getNextWeekDayYmd(DayOfWeek.TUESDAY);
         int nextWednesday = CommonUtils.getNextWeekDayYmd(DayOfWeek.WEDNESDAY);
+        int nextThursday = CommonUtils.getNextWeekDayYmd(DayOfWeek.THURSDAY);
+        int nextFriday = CommonUtils.getNextWeekDayYmd(DayOfWeek.FRIDAY);
+        int thursday = CommonUtils.getWeekDayYmd(DayOfWeek.THURSDAY);
+        int friday = CommonUtils.getWeekDayYmd(DayOfWeek.FRIDAY);
         Platform.runLater(() -> {
             for (HepTaskDto hepTaskDto : res) {
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
                 initRowColor(taskListIn, dayTodoTask, tomorrowTodoTask, thirdTodoTask,  weekTodoTask, finishDateError,
-                        nextMonday, nextTuesday, nextWednesday);
+                        nextMonday, nextTuesday, nextWednesday, nextThursday, nextFriday, thursday, friday);
             }
             OutputUtils.setEnabled(taskListIn);
         });
@@ -1238,7 +1242,8 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void initRowColor(TableView taskListIn, Set<String> dayTodoTask, Set<String> tomorrowTodoTask,
                               Set<String> thirdTodoTask, Set<String> weekTodoTask, Set<String> finishDateError,
-                              int nextMonday, int nextTuesday, int nextWednesday) {
+                              int nextMonday, int nextTuesday, int nextWednesday, int nextThursday, int nextFriday,
+                              int thursday, int friday) {
         taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
             @Override
             public TableRow<HepTaskDto> call(TableView<HepTaskDto> param) {
@@ -1251,7 +1256,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             String taskNumber = item.getTaskNumber();
                             String[] taskColor;
                             if (finishDateError.contains(taskNumber)) {
-                                taskColor = color.get("完成日期错误");
+                                taskColor = color.get("完成日期超期");
                             } else if (dayTodoTask.contains(taskNumber)) {
                                 taskColor = color.get("今天待提交");
                             } else if (weekTodoTask.contains(taskNumber)) {
@@ -1273,14 +1278,25 @@ public class HepTodoController extends BaseController implements Initializable {
                                     mark = "后天";
                                 }
                             }
+                            int minDate = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getEstimateFinishDate());
                             if (StringUtils.isBlank(mark)) {
-                                int minDate = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getEstimateFinishDate());
                                 if (nextMonday == minDate) {
                                     mark = "下周一";
                                 } else if (nextTuesday == minDate) {
                                     mark = "下周二";
                                 } else if (nextWednesday == minDate) {
                                     mark = "下周三";
+                                } else if (nextThursday == minDate) {
+                                    mark = "下周四";
+                                } else if (nextFriday == minDate) {
+                                    mark = "下周五";
+                                }
+                            }
+                            if (StringUtils.isBlank(mark)) {
+                                if (thursday == minDate) {
+                                    mark = "周四";
+                                } else if (friday == minDate) {
+                                    mark = "周五";
                                 }
                             }
                             item.setTaskMark(mark);
@@ -2103,6 +2119,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private boolean requestStatus(HttpResponse response) {
+
         return !proScene() || STATUS_200 == response.getStatus();
     }
 

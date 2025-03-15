@@ -319,6 +319,18 @@ public class CommonUtils {
         return Integer.parseInt(nextWeekDay.toString().replaceAll(STR_HYPHEN, STR_BLANK));
     }
 
+    /**
+     * 获取本周某天
+     *
+     * @param dayOfWeek
+     * @return
+     */
+    public static int getWeekDayYmd(DayOfWeek dayOfWeek) {
+        LocalDate today = LocalDate.now();
+        LocalDate nextWeekDay = today.with(TemporalAdjusters.nextOrSame(dayOfWeek));
+        return Integer.parseInt(nextWeekDay.toString().replaceAll(STR_HYPHEN, STR_BLANK));
+    }
+
     public static String checkLicenseDate(AppConfigDto appConfigDto) {
         String tips = STR_BLANK;
         LicenseDto licenseDto = appConfigDto.getLicense();
