@@ -194,6 +194,15 @@ public class MenuFunctionConfig {
             return null;
         }
 
+        public static String getHide(String code) {
+            for (FunctionConfig tab : FunctionConfig.values()) {
+                if (tab.getCode().equals(code)) {
+                    return tab.hide;
+                }
+            }
+            return null;
+        }
+
         public static FunctionConfig getFunctionConfig(String code) {
             for (FunctionConfig tab : FunctionConfig.values()) {
                 if (tab.getCode().equals(code)) {

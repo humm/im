@@ -12,6 +12,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,23 +51,21 @@ public class FunctionStatInfoController implements Initializable {
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
-        if (CollectionUtils.isNotEmpty(functionDtoList)) {
-            Iterator<FunctionDto> iterator = functionDtoList.iterator();
-            while (iterator.hasNext()) {
-                FunctionDto item = iterator.next();
-                if (item.getFunctionCode().equals(FUNCTION_STAT_INFO.getCode()) || item.getFunctionCode().equals(ABOUT_INFO.getCode())) {
-                    iterator.remove();
-                }
-            }
-        }
         if (CollectionUtils.isEmpty(functionDtoList)) {
             return;
         }
-        int num = functionDtoList.size();
-
-        OutputUtils.info(title, "功能数量  " + num);
-        for (int i = 0; i < functionDtoList.size(); i++) {
-            FunctionDto functionDto = functionDtoList.get(i);
+        Iterator<FunctionDto> iterator = functionDtoList.listIterator();
+        while (iterator.hasNext()) {
+            FunctionDto functionDto = iterator.next();
+            if (functionDto.getFunctionCode().equals(FUNCTION_STAT_INFO.getCode()) || functionDto.getFunctionCode().equals(ABOUT_INFO.getCode())) {
+                iterator.remove();
+                continue;
+            }
+            String hide = MenuFunctionConfig.FunctionConfig.getHide(functionDto.getFunctionCode());
+            if (StringUtils.equals(STR_1, hide)) {
+                iterator.remove();
+                continue;
+            }
             String logPath = String.format(BaseConst.PATH_STAT, MenuFunctionConfig.FunctionConfig.getLogFolder(functionDto.getFunctionCode())) + BaseConst.FILE_TYPE_STAT;
             try {
                 File statFile = new File(FileUtils.getFilePath(logPath));
@@ -84,6 +83,7 @@ public class FunctionStatInfoController implements Initializable {
                 LoggerUtils.info(e);
             }
         }
+        OutputUtils.info(title, "功能数量  " + functionDtoList.size());
         CommonUtils.sortFunctionDtoList(functionDtoList);
         for (FunctionDto functionDto : functionDtoList) {
             OutputUtils.info(stat, functionDto);
