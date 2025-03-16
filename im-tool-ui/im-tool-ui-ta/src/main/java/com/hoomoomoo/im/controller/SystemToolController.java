@@ -58,9 +58,6 @@ public class SystemToolController implements Initializable {
     private Button cancelShakeMouseBtn;
 
     @FXML
-    private Button clearVersionBtn;
-
-    @FXML
     private Button updateVersionBtn;
 
     @FXML
@@ -132,23 +129,6 @@ public class SystemToolController implements Initializable {
         } finally {
             updateVersionBtn.setDisable(false);
         }
-    }
-
-    @FXML
-    void clearVersion(ActionEvent event) {
-        clearVersionBtn.setDisable(true);
-        try {
-            String statPath = FileUtils.getFilePath(PATH_VERSION_EXTEND_STAT);
-            FileUtils.writeFile(statPath, STR_BLANK, false);
-            OutputUtils.info(logs, getUpdateVersionMsg("清除个性化成功"));
-            OutputUtils.info(logs, STR_NEXT_LINE);
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-            OutputUtils.info(logs, e.getMessage());
-        } finally {
-            clearVersionBtn.setDisable(false);
-        }
-        addLog("同步发版时间");
     }
 
     @FXML

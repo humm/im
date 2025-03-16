@@ -843,7 +843,6 @@ public class HepTodoController extends BaseController implements Initializable {
             Map<String, String[]> versionExtend = new HashMap<>();
             if (proScene()) {
                 versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
-                versionExtend = getVersionExtendInfo();
                 Map<String, Map<String, String>> taskInfo = getTaskInfo();
                 taskCustomerName = taskInfo.get(KEY_CUSTOMER);
                 taskDemandNo = taskInfo.get(KEY_TASK);
@@ -1309,12 +1308,18 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private int getMinDate(String closeDate, String publishDate, String endDate) {
-        closeDate = closeDate.replaceAll(STR_HYPHEN, STR_BLANK);
-        publishDate = publishDate.replaceAll(STR_HYPHEN, STR_BLANK);
-        endDate = endDate.replaceAll(STR_HYPHEN, STR_BLANK);
+        if (StringUtils.isBlank(closeDate)) {
+            closeDate = STR_20991231;
+        }
+        if (StringUtils.isBlank(publishDate)) {
+            publishDate = STR_20991231;
+        }
         if (StringUtils.isBlank(endDate)) {
             endDate = STR_20991231;
         }
+        closeDate = closeDate.replaceAll(STR_HYPHEN, STR_BLANK);
+        publishDate = publishDate.replaceAll(STR_HYPHEN, STR_BLANK);
+        endDate = endDate.replaceAll(STR_HYPHEN, STR_BLANK);
         return Math.min(Math.min(Integer.valueOf(closeDate), Integer.valueOf(publishDate)), Integer.valueOf(endDate));
     }
 
@@ -1948,7 +1953,6 @@ public class HepTodoController extends BaseController implements Initializable {
 
     public static List<VersionDto> getVersionInfo() throws Exception {
         List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
-        Map<String, String[]> versionExtend = getVersionExtendInfo();
         List<VersionDto> versionDtoList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(versionList)) {
             String currentDay = CommonUtils.getCurrentDateTime3();
@@ -1958,11 +1962,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 String oriCloseDate = getRealDate(elements[1]);
                 String oriPublishDate = getRealDate(elements[2]);
                 String versionCode = elements[0];
-                if (versionExtend.containsKey(versionCode)) {
-                    oriCloseDate = versionExtend.get(versionCode)[0];
-                    oriPublishDate = versionExtend.get(versionCode)[1];
-                    versionDto.setOrderNo(versionExtend.get(versionCode)[2]);
-                }
                 String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
                 String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
                 versionDto.setCode(versionCode);
@@ -1975,23 +1974,6 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         }
         return versionDtoList;
-    }
-
-    private static Map<String, String[]> getVersionExtendInfo() {
-        Map<String, String[]> version = new HashMap<>();
-        List<String> versionExtendList = null;
-        try {
-            versionExtendList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_EXTEND_STAT), false);
-        } catch (IOException e) {
-            LoggerUtils.info(e);
-        }
-        if (CollectionUtils.isNotEmpty(versionExtendList)) {
-            for (String item : versionExtendList) {
-                String[] elementList = item.split(STR_SEMICOLON);
-                version.put(elementList[0], new String[]{elementList[1], elementList[2], elementList[3]});
-            }
-        }
-        return version;
     }
 
     public Map<String, Map<String, String>> getTaskInfo() {

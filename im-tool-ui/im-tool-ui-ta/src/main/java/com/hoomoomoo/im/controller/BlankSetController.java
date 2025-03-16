@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
+import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -153,6 +154,10 @@ public class BlankSetController implements Initializable {
                         }
                     }
                 }
+            }
+            if (!new File(confPath).exists()) {
+                LoggerUtils.info("文件不存在: " + confPath);
+                return;
             }
             List<String> content = FileUtils.readNormalFile(confPath, false);
             for (String item : content) {

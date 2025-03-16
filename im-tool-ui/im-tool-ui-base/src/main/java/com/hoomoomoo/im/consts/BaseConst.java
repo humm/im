@@ -185,7 +185,7 @@ public class BaseConst {
 
     public static final String FILE_TYPE_CHECK_SQL = ".check.sql";
     public static final String FILE_TYPE_RES_SQL = ".res.sql";
-    public static final String FILE_APP_EXTEND = "appExtend.conf";
+    public static final String FILE_APP_EXTEND = "scriptUpdateDefaultRule.conf";
 
     public static final String NAME_DELETE = " 删除";
     public static final String NAME_END = "结束";
@@ -337,7 +337,7 @@ public class BaseConst {
 
     public static final String DEFAULT_FOLDER = "/extend/scriptUpdate";
     public static final String PATH_APP = "/conf/app.conf";
-    public static final String PATH_APP_EXTEND = "/conf/extend/appExtend.conf";
+    public static final String PATH_APP_EXTEND = "/conf/extend/scriptUpdateDefaultRule.conf";
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
     public static final String PATH_VERSION = "/conf/init/version.init";
@@ -368,7 +368,6 @@ public class BaseConst {
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/extend/version/version.stat";
-    public static final String PATH_VERSION_EXTEND_STAT = "/extend/version/versionExtend.stat";
     public static final String PATH_TASK_STAT = "/extend/task/task.stat";
     public static final String PATH_GIT_LOG = "/extend/git/";
     public static final String PATH_DEMAND_STAT = "/demand.stat";
@@ -436,15 +435,15 @@ public class BaseConst {
 
     public enum SQL_CHECK_TYPE {
         CHECK_RESULT_SUMMARY(100, "结果汇总", "100.结果汇总.sql", ""),
-        LACK_NEW_MENU_ALL(200, "缺少新版全量", "200.缺少新版全量.sql", "/conf/extend/skipNewMenu.conf"),
-        LACK_OLD_NEW_ALL(300, "缺少老版全量", "300.缺少老版全量.sql", "/conf/extend/skipOldMenu.conf"),
-        DIFF_NEW_ALL_EXT(400, "新版全量开通不同", "400.新版全量开通不同.sql", "/conf/extend/skipNewDiffMenu.conf"),
-        DIFF_OLD_ALL_EXT(500, "老版全量开通不同", "500.老版全量开通不同.sql", "/conf/extend/skipOldDiffMenu.conf"),
-        LEGAL_NEW_MENU(600, "新版菜单合法性", "600.新版菜单合法性.sql", "/conf/extend/legalNewMenu.conf"),
-        LEGAL_EXT_MENU(700, "开通脚本合法性", "700.开通脚本合法性.sql", "/conf/extend/legalExtMenu.conf"),
-        LACK_ROUTER(800, "缺少路由", "800.缺少路由.sql", "/conf/extend/skipRouter.conf"),
-        LACK_LOG(900, "缺少日志", "900.缺少日志.sql", "/conf/extend/skipLog.conf"),
-        ERROR_LOG(1000, "错误日志", "1000.错误日志.sql", "/conf/extend/skipErrorLog.conf"),
+        LACK_NEW_MENU_ALL(200, "缺少新版全量", "200.缺少新版全量.sql", "/extend/check/conf/skipNewMenu.conf"),
+        LACK_OLD_NEW_ALL(300, "缺少老版全量", "300.缺少老版全量.sql", "/extend/check/conf/skipOldMenu.conf"),
+        DIFF_NEW_ALL_EXT(400, "新版全量开通不同", "400.新版全量开通不同.sql", "/extend/check/conf/skipNewDiffMenu.conf"),
+        DIFF_OLD_ALL_EXT(500, "老版全量开通不同", "500.老版全量开通不同.sql", "/extend/check/conf/skipOldDiffMenu.conf"),
+        LEGAL_NEW_MENU(600, "新版菜单合法性", "600.新版菜单合法性.sql", "/extend/check/conf/legalNewMenu.conf"),
+        LEGAL_EXT_MENU(700, "开通脚本合法性", "700.开通脚本合法性.sql", "/extend/check/conf/legalExtMenu.conf"),
+        LACK_ROUTER(800, "缺少路由", "800.缺少路由.sql", "/extend/check/conf/skipRouter.conf"),
+        LACK_LOG(900, "缺少日志", "900.缺少日志.sql", "/extend/check/conf/skipLog.conf"),
+        ERROR_LOG(1000, "错误日志", "1000.错误日志.sql", "/extend/check/conf/skipErrorLog.conf"),
         ALL_MENU(1100, "所有菜单", "1100.所有菜单.sql", "");
 
         private int index;
@@ -548,8 +547,8 @@ public class BaseConst {
     }
 
     public enum SQL_CHECK_TYPE_EXTEND {
-        REPAIR_OLD_MENU(100000, "修正老版全量", "100000.修正老版全量.sql", "/conf/extend/skipRepairOldMenu.conf"),
-        REPAIR_EXT(200000, "修正开通脚本", "200000.修正开通脚本.sql", "/conf/extend/repairExt.conf");
+        REPAIR_OLD_MENU(100000, "修正老版全量", "100000.修正老版全量.sql", "/extend/check/conf/skipRepairOldMenu.conf"),
+        REPAIR_EXT(200000, "修正开通脚本", "200000.修正开通脚本.sql", "/extend/check/conf/repairExt.conf");
 
         private int index;
 

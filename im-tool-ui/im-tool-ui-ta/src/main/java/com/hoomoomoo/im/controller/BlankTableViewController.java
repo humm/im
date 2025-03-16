@@ -12,8 +12,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lombok.SneakyThrows;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -58,26 +56,12 @@ public class BlankTableViewController implements Initializable {
         closeDate.setPrefWidth(150);
         closeDate.setEditable(true);
         closeDate.setStyle(STYLE_CENTER);
-        closeDate.setOnEditCommit(event -> {
-            int index = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getTablePosition().getRow();
-            VersionDto item = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getTableView().getItems().get(index);
-            String close = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getNewValue().toString();
-            item.setCloseDate(close);
-            writeExtendFile(item);
-        });
 
         TableColumn publishDate = new TableColumn<>("发版时间");
         publishDate.setCellValueFactory(new PropertyValueFactory<>("publishDate"));
         publishDate.setPrefWidth(150);
         publishDate.setEditable(true);
         publishDate.setStyle(STYLE_CENTER);
-        publishDate.setOnEditCommit(event -> {
-            int index = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getTablePosition().getRow();
-            VersionDto item = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getTableView().getItems().get(index);
-            String publish = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getNewValue().toString();
-            item.setPublishDate(publish);
-            writeExtendFile(item);
-        });
 
         /*TableColumn orderNo = new TableColumn<>("指定排序");
         orderNo.setCellValueFactory(new PropertyValueFactory<>("orderNo"));
@@ -129,57 +113,6 @@ public class BlankTableViewController implements Initializable {
             }
         });
         OutputUtils.infoList(table, versionDtoList, false);
-    }
-
-    private void writeExtendFile(VersionDto versionDto) {
-        List<String> versionList = new ArrayList<>();
-        try {
-            versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_EXTEND_STAT), false);
-        } catch (IOException e) {
-            LoggerUtils.info(e);
-        }
-        boolean hasRecord = false;
-        String versionCode = versionDto.getCode();
-        String close = versionDto.getCloseDate();
-        String publish = versionDto.getPublishDate();
-        String order = StringUtils.isBlank(versionDto.getOrderNo()) ? STR_SPACE : versionDto.getOrderNo();
-        if (CollectionUtils.isNotEmpty(versionList)) {
-            for (int i=0; i<versionList.size(); i++) {
-                String item = versionList.get(i);
-                String[] elementList = item.split(STR_SEMICOLON);
-                String version = elementList[0];
-                if (versionCode.equals(version)) {
-                    hasRecord = true;
-                    if (StringUtils.isBlank(close)) {
-                        close = elementList[1];
-                    }
-                    if (StringUtils.isBlank(publish)) {
-                        publish = elementList[2];
-                    }
-                    if (StringUtils.isBlank(order)) {
-                        order = elementList[3];
-                    }
-                    versionList.set(i, versionCode + STR_SEMICOLON +  close + STR_SEMICOLON + publish + STR_SEMICOLON + order);
-                }
-            }
-        }
-        if (!hasRecord) {
-            versionList.add(versionCode + STR_SEMICOLON +  close + STR_SEMICOLON + publish + STR_SEMICOLON + order);
-        }
-        String statPath = FileUtils.getFilePath(PATH_VERSION_EXTEND_STAT);
-        try {
-            FileUtils.writeFile(statPath, versionList, false);
-        } catch (IOException e) {
-            LoggerUtils.info(e);
-        }
-
-        List<VersionDto> versionDtoList = new ArrayList<>();
-        try {
-            versionDtoList = HepTodoController.getVersionInfo();
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-        }
-        showVersion(versionDtoList);
     }
 
 }
