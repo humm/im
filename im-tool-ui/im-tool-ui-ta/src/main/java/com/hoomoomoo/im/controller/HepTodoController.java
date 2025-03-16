@@ -109,7 +109,7 @@ public class HepTodoController extends BaseController implements Initializable {
         put("今天待提交", new String[] {"-fx-text-background-color: #008071;", "今天"});
         put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;", "本周"});
         put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "缺陷"});
-        put("默认", new String[] {"-fx-text-background-color: #000000;"});
+        put("默认", new String[] {"-fx-text-background-color: #000000;", ""});
     }};
 
 
@@ -349,9 +349,9 @@ public class HepTodoController extends BaseController implements Initializable {
         String clickType = event.getButton().toString();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setHepTaskDto(item);
-        String ver = item.getSprintVersion() + STR_COMMA;
+        String ver = item.getSprintVersion();
         String verYear = ver.split("\\.")[0];
-        ver = TaCommonUtils.changeVersion(ver);
+        ver = TaCommonUtils.changeVersion(ver) + STR_COMMA;
         String authVer = appConfigDto.getFileSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
         if (authVer.contains(ver) || verYear.compareTo("2025") >= 0 || verYear.compareTo("202202") == 0) {
             frontTips.setVisible(false);
@@ -1255,56 +1255,60 @@ public class HepTodoController extends BaseController implements Initializable {
                 final TableRow<HepTaskDto> row = new TableRow<HepTaskDto>() {
                     @Override
                     protected void updateItem(HepTaskDto item, boolean empty) {
-                        super.updateItem(item, empty);
-                        if (item != null && getIndex() > -1) {
-                            String taskName = item.getName();
-                            String taskNumber = item.getTaskNumber();
-                            String[] taskColor;
-                            if (finishDateError.contains(taskNumber)) {
-                                taskColor = color.get("完成日期超期");
-                            } else if (dayTodoTask.contains(taskNumber)) {
-                                taskColor = color.get("今天待提交");
-                            } else if (weekTodoTask.contains(taskNumber)) {
-                                taskColor = color.get("本周待提交");
-                            } else if (taskName.contains(DEFECT_TAG)) {
-                                taskColor = color.get("缺陷");
-                            } else {
-                                taskColor = color.get("默认");
-                            }
-                            setStyle(taskColor[0]);
-                            String mark = taskColor[1];
-                            if (taskName.contains(COMMIT_TAG)) {
-                                mark = "已提交";
-                            }
-                            if ("本周".equals(mark)) {
-                                if (tomorrowTodoTask.contains(taskNumber)) {
-                                    mark = "明天";
-                                } else if (thirdTodoTask.contains(taskNumber)) {
-                                    mark = "后天";
+                        try {
+                            super.updateItem(item, empty);
+                            if (item != null && getIndex() > -1) {
+                                String taskName = item.getName();
+                                String taskNumber = item.getTaskNumber();
+                                String[] taskColor;
+                                if (finishDateError.contains(taskNumber)) {
+                                    taskColor = color.get("完成日期超期");
+                                } else if (dayTodoTask.contains(taskNumber)) {
+                                    taskColor = color.get("今天待提交");
+                                } else if (weekTodoTask.contains(taskNumber)) {
+                                    taskColor = color.get("本周待提交");
+                                } else if (taskName.contains(DEFECT_TAG)) {
+                                    taskColor = color.get("缺陷");
+                                } else {
+                                    taskColor = color.get("默认");
                                 }
-                            }
-                            int minDate = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getEstimateFinishDate());
-                            if (StringUtils.isBlank(mark)) {
-                                if (nextMonday == minDate) {
-                                    mark = "下周一";
-                                } else if (nextTuesday == minDate) {
-                                    mark = "下周二";
-                                } else if (nextWednesday == minDate) {
-                                    mark = "下周三";
-                                } else if (nextThursday == minDate) {
-                                    mark = "下周四";
-                                } else if (nextFriday == minDate) {
-                                    mark = "下周五";
+                                setStyle(taskColor[0]);
+                                String mark = taskColor[1];
+                                if (taskName.contains(COMMIT_TAG)) {
+                                    mark = "已提交";
                                 }
-                            }
-                            if (StringUtils.isBlank(mark)) {
-                                if (thursday == minDate) {
-                                    mark = "周四";
-                                } else if (friday == minDate) {
-                                    mark = "周五";
+                                if ("本周".equals(mark)) {
+                                    if (tomorrowTodoTask.contains(taskNumber)) {
+                                        mark = "明天";
+                                    } else if (thirdTodoTask.contains(taskNumber)) {
+                                        mark = "后天";
+                                    }
                                 }
+                                int minDate = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getEstimateFinishDate());
+                                if (StringUtils.isBlank(mark)) {
+                                    if (nextMonday == minDate) {
+                                        mark = "下周一";
+                                    } else if (nextTuesday == minDate) {
+                                        mark = "下周二";
+                                    } else if (nextWednesday == minDate) {
+                                        mark = "下周三";
+                                    } else if (nextThursday == minDate) {
+                                        mark = "下周四";
+                                    } else if (nextFriday == minDate) {
+                                        mark = "下周五";
+                                    }
+                                }
+                                if (StringUtils.isBlank(mark)) {
+                                    if (thursday == minDate) {
+                                        mark = "周四";
+                                    } else if (friday == minDate) {
+                                        mark = "周五";
+                                    }
+                                }
+                                item.setTaskMark(mark);
                             }
-                            item.setTaskMark(mark);
+                        } catch (Exception e) {
+                            LoggerUtils.info(e);
                         }
                     }
                 };
