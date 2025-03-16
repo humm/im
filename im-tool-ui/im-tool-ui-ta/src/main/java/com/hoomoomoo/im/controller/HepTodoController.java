@@ -109,7 +109,7 @@ public class HepTodoController extends BaseController implements Initializable {
         put("今天待提交", new String[] {"-fx-text-background-color: #008071;", "今天"});
         put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;", "本周"});
         put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "缺陷"});
-        put("默认", new String[] {"-fx-text-background-color: #000000;", " "});
+        put("默认", new String[] {"-fx-text-background-color: #000000;"});
     }};
 
 
@@ -275,6 +275,8 @@ public class HepTodoController extends BaseController implements Initializable {
     private static Map<String, Integer> minDateCache = new HashMap<>();
 
     private static Set<String> fileSyncSourceFile = new HashSet<>();
+
+    List<Label> colorList = new ArrayList<>();
 
     @FXML
     void syncOrSuspend(ActionEvent event) throws Exception {
@@ -1929,6 +1931,18 @@ public class HepTodoController extends BaseController implements Initializable {
         double x = 20;
         double y = 180;
         Label label = new Label("颜色说明:");
+        label.setOnMouseClicked(event -> {
+            if (CollectionUtils.isEmpty(colorList)) {
+                return;
+            }
+            for (Label ele : colorList) {
+                if (ele.isVisible()) {
+                    ele.setVisible(false);
+                } else {
+                    ele.setVisible(true);
+                }
+            }
+        });
         String boldStyle = "-fx-font-weight: normal;";
         label.setStyle("-fx-font-weight: bold;");
         label.setLayoutX(x);
@@ -1948,6 +1962,8 @@ public class HepTodoController extends BaseController implements Initializable {
             ele.setStyle(boldStyle + color.get(key)[0]);
             ele.setLayoutX(x);
             ele.setLayoutY(y);
+            ele.setVisible(false);
+            colorList.add(ele);
             todoTitle.getChildren().add(ele);
             prevLen = len;
             x -= step * diff;
