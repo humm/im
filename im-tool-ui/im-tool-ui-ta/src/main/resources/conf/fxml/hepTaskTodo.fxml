@@ -36,12 +36,11 @@
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                         <Label layoutX="20.0" layoutY="105.0" style="-fx-font-weight: bold;" text="今天待提交："/>
-                        <Label fx:id="dayTodo" layoutX="105.0" layoutY="105.0"/>
+                        <Label fx:id="dayTodo" layoutX="105.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
                         <Label layoutX="150.0" layoutY="105.0" style="-fx-font-weight: bold;" text="本周待提交："/>
-                        <Label fx:id="weekTodo" layoutX="235.0" layoutY="105.0"/>
+                        <Label fx:id="weekTodo" layoutX="235.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
                         <Label layoutX="280.0" layoutY="105.0" style="-fx-font-weight: bold;" text="待提交："/>
-                        <Label fx:id="waitHandleTaskNum" layoutX="335.0" layoutY="105.0"
-                               style="-fx-font-weight: bold;"/>
+                        <Label fx:id="waitHandleTaskNum" layoutX="335.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
                         <Label layoutX="410.0" layoutY="105.0" style="-fx-font-weight: bold;" text="待合并："/>
                         <Label fx:id="waitMergerNum" layoutX="465.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
 

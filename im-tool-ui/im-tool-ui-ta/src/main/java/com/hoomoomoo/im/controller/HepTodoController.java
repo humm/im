@@ -101,6 +101,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private String PAGE_USER = "";
     private boolean dealTask = true;
 
+    private final static String STYLE_RED_COLOR = "-fx-text-background-color: red;-fx-font-weight: bold;";
+    private final static String STYLE_BLACK_COLOR = "-fx-text-background-color: #000000;-fx-font-weight: bold;";
+
     private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
         put("完成日期超期", new String[] {"-fx-text-background-color: #7b00ff;", "超期"});
         put("今天待提交", new String[] {"-fx-text-background-color: #008071;", "今天"});
@@ -1100,14 +1103,14 @@ public class HepTodoController extends BaseController implements Initializable {
         }
 
         if (dayVersionNum > 0) {
-            dayTodo.setStyle(color.get("今天待提交")[0]);
+            dayTodo.setStyle(STYLE_RED_COLOR);
         } else {
-            dayTodo.setStyle(color.get("默认")[0]);
+            dayTodo.setStyle(STYLE_BLACK_COLOR);
         }
         if (weekVersionNum > 0) {
-            weekTodo.setStyle(color.get("本周待提交")[0]);
+            weekTodo.setStyle(STYLE_RED_COLOR);
         } else {
-            weekTodo.setStyle(color.get("默认")[0]);
+            weekTodo.setStyle(STYLE_BLACK_COLOR);
         }
 
         OutputUtils.clearLog(taskList);
