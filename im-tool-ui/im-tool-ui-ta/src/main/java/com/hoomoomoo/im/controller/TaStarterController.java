@@ -33,7 +33,8 @@ public class TaStarterController implements Initializable {
         JvmCache.setTaStarterController(this);
         CommonUtils.initialize(location, resources, functionTab, menuBar);
         CommonUtils.scanLog();
-        // TaCommonUtils.startRestPlan();
+        CommonUtils.clearLog();
+        //TaCommonUtils.startRestPlan();
     }
 
 }

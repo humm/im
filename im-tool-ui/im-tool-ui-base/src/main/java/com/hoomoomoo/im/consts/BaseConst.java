@@ -19,8 +19,6 @@ public class BaseConst {
 
     public static final String APP_MODE_SYNC = "sync";
 
-    public static final String DEMO = "demo10000";
-
     public static final int MAX_COMMON_FUNCTION_CODE = 3000;
 
     public static final String STR_0 = "0";
@@ -76,6 +74,7 @@ public class BaseConst {
     public static final String KEY_FIELD_TRANSLATE = "generate.code.field.translate.";
     public static final String KEY_FILE_SYNC_VERSION = "file.sync.version.";
 
+    public static final String KEY_DEMO = "demo10000";
     public static final String KEY_CLASSES = "classes";
     public static final String KEY_NOTICE = "notice";
     public static final String KEY_VALUES = "values";

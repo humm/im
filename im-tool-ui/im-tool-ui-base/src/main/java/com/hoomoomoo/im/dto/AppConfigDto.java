@@ -37,6 +37,8 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean appLogEnable;
 
+    private int appLogSaveDay;
+
     private String appMode;
 
     private String fundExcelPath;

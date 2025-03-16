@@ -123,7 +123,7 @@ public class ConfigCache {
                     String code = item.substring(KEY_SVN_STAT_USER.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
-                        if (!DEMO.equalsIgnoreCase(code)) {
+                        if (!KEY_DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getSvnStatUser().put(code.toLowerCase(), name);
                         }
                     }
@@ -134,7 +134,7 @@ public class ConfigCache {
                     String code = item.substring(KEY_COPY_CODE_VERSION.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
-                        if (!DEMO.equalsIgnoreCase(code)) {
+                        if (!KEY_DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getCopyCodeVersion().put(code, name);
                             if (!KEY_DESKTOP.equalsIgnoreCase(code) && !KEY_TRUNK.equalsIgnoreCase(code)) {
                                 LinkedHashMap<String, String> version = new LinkedHashMap<>(1);
@@ -154,7 +154,7 @@ public class ConfigCache {
                     String code = item.substring(KEY_SVN_URL.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
-                        if (!DEMO.equalsIgnoreCase(code)) {
+                        if (!KEY_DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getSvnUrl().put(code.toLowerCase(), name);
                         }
                     }
@@ -166,7 +166,7 @@ public class ConfigCache {
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
                         String[] location = name.split(STR_COMMA);
-                        if (!DEMO.equalsIgnoreCase(code)) {
+                        if (!KEY_DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getReplaceSourceUrl().put(location[0], location[1]);
                         }
                     }
@@ -178,7 +178,7 @@ public class ConfigCache {
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
                         String[] location = name.split(STR_COMMA);
-                        if (!DEMO.equalsIgnoreCase(code)) {
+                        if (!KEY_DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getReplaceTargetUrl().put(location[0], location[1]);
                         }
                     }
@@ -190,7 +190,7 @@ public class ConfigCache {
                     String code = item.substring(KEY_FIELD_TRANSLATE.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
-                        if (!DEMO.equalsIgnoreCase(code)) {
+                        if (!KEY_DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getFieldTranslateMap().put(code.toLowerCase(), name);
                         }
                     }
@@ -201,7 +201,7 @@ public class ConfigCache {
                     String code = item.substring(KEY_FILE_SYNC_VERSION.length(), index);
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
-                        if (!DEMO.equalsIgnoreCase(code)) {
+                        if (!KEY_DEMO.equalsIgnoreCase(code)) {
                             appConfigDto.getFileSyncVersionMap().put(code.toLowerCase(), name);
                         }
                     }

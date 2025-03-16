@@ -1091,6 +1091,41 @@ public class CommonUtils {
         }
     }
 
+    public static void clearLog() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        int appLogSaveDay = appConfigDto.getAppLogSaveDay();
+        if (appLogSaveDay <= 0) {
+            return;
+        }
+        int index;
+        MenuFunctionConfig.FunctionConfig[] functionConfigs = MenuFunctionConfig.FunctionConfig.values();
+        for (MenuFunctionConfig.FunctionConfig functionConfig : functionConfigs) {
+            File[] log = new File(FileUtils.getFilePath(String.format(SUB_PATH_LOG, functionConfig.getLogFolder()))).listFiles();
+            if (log == null) {
+                continue;
+            }
+            List<File> fileList = Arrays.asList(log);
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    return Long.valueOf(o2.lastModified() - o1.lastModified()).intValue();
+                }
+            });
+            if (fileList.size() > appLogSaveDay) {
+                index = 0;
+                Iterator<File> iterator = fileList.listIterator();
+                while (iterator.hasNext()) {
+                    File item = iterator.next();
+                    index++;
+                    if (appLogSaveDay >= index) {
+                        continue;
+                    }
+                    FileUtils.deleteFile(item);
+                }
+            }
+        }
+    }
+
     public static void scanLog() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         Map<String, Long> fileTime = new HashMap<>();
