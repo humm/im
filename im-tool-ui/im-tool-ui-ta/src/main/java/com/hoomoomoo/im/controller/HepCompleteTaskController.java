@@ -194,8 +194,6 @@ public class HepCompleteTaskController extends BaseController implements Initial
         } else {
             resVer = TaCommonUtils.changeVersion(ver);
         }
-        LoggerUtils.info("转换前版本号为: " + ver);
-        LoggerUtils.info("转换后版本号为: " + resVer);
         return resVer;
     }
 

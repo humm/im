@@ -346,8 +346,9 @@ public class HepTodoController extends BaseController implements Initializable {
         appConfigDto.setHepTaskDto(item);
         String ver = item.getSprintVersion() + STR_COMMA;
         String verYear = ver.split("\\.")[0];
+        ver = TaCommonUtils.changeVersion(ver);
         String authVer = appConfigDto.getFileSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
-        if (authVer.contains(ver) || verYear.compareTo("2025") >= 0) {
+        if (authVer.contains(ver) || verYear.compareTo("2025") >= 0 || verYear.compareTo("202202") == 0) {
             frontTips.setVisible(false);
         } else {
             frontTips.setVisible(true);
