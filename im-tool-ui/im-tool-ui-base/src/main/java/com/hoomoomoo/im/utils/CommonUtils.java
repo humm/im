@@ -1099,8 +1099,10 @@ public class CommonUtils {
         }
         int index;
         MenuFunctionConfig.FunctionConfig[] functionConfigs = MenuFunctionConfig.FunctionConfig.values();
-        for (MenuFunctionConfig.FunctionConfig functionConfig : functionConfigs) {
-            File[] log = new File(FileUtils.getFilePath(String.format(SUB_PATH_LOG, functionConfig.getLogFolder()))).listFiles();
+        List<String> logs = Arrays.stream(functionConfigs).map(item -> item.getLogFolder()).distinct().collect(Collectors.toList());
+        logs.add("appLog");
+        for (String file : logs) {
+            File[] log = new File(FileUtils.getFilePath(String.format(SUB_PATH_LOG, file))).listFiles();
             if (log == null) {
                 continue;
             }
