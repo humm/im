@@ -1674,11 +1674,17 @@ public class HepTodoController extends BaseController implements Initializable {
             addTaskMenu(appConfigDto, this);
             executeQuery(null);
             initColorDesc();
-            buildTestData();
+            initStatus();
             syncFile();
+            buildTestData();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
+    }
+
+    private void initStatus() {
+        memoryTips.setVisible(false);
+        scrollTips.setVisible(false);
     }
 
     private void syncFile() throws Exception {
@@ -1773,6 +1779,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         if (push) {
             scrollTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
+            scrollTips.setVisible(true);
         } else {
             scrollTips.setStyle("-fx-font-weight: normal;");
         }
@@ -1784,6 +1791,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.info(memoryTips, memoryInfo[0]);
         if (Integer.valueOf(memoryInfo[1]) > 1024 || Integer.valueOf(memoryInfo[2]) > 1024) {
             memoryTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
+            memoryTips.setVisible(true);
         } else {
             memoryTips.setStyle("-fx-font-weight: normal;");
         }
@@ -1936,13 +1944,12 @@ public class HepTodoController extends BaseController implements Initializable {
             if (CollectionUtils.isEmpty(colorList)) {
                 return;
             }
+            boolean visible = !colorList.get(0).isVisible();
             for (Label ele : colorList) {
-                if (ele.isVisible()) {
-                    ele.setVisible(false);
-                } else {
-                    ele.setVisible(true);
-                }
+                ele.setVisible(visible);
             }
+            memoryTips.setVisible(visible);
+            scrollTips.setVisible(visible);
         });
         String boldStyle = "-fx-font-weight: normal;";
         label.setStyle("-fx-font-weight: bold;");
