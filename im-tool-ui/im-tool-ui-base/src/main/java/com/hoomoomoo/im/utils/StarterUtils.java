@@ -69,6 +69,11 @@ public class StarterUtils {
             }
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
 
+            Thread.setDefaultUncaughtExceptionHandler((thread, e) -> {
+                LoggerUtils.info("全局异常处理");
+                LoggerUtils.info(e);
+            });
+
             Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_STARTER_FXML)));
             Scene scene = new Scene(root);
             scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());

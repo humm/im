@@ -51,9 +51,14 @@ public class LoggerUtils {
         writeAppLog(msg, includeDate);
     }
 
+    public static void info(Throwable e) {
+        e.printStackTrace();
+        writeAppLog(e.toString(), e.getStackTrace());
+    }
+
     public static void info(Exception e) {
         e.printStackTrace();
-        writeAppLog(e);
+        writeAppLog(e.toString(), e.getStackTrace());
     }
 
     public static void writeAppLog(String mgs, boolean includeDate) {
@@ -70,14 +75,13 @@ public class LoggerUtils {
         }
     }
 
-    public static void writeAppLog(Exception exception) {
+    public static void writeAppLog(String errorMessage, StackTraceElement[] errorStackTrace) {
         try {
             String logFilePath = String.format(PATH_LOG, KEY_APP_LOG, CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
             StringBuilder log = new StringBuilder(CommonUtils.getCurrentDateTime1(new Date())).append(STR_NEXT_LINE);
-            log.append(getLineIndentation()).append(exception.toString()).append(STR_NEXT_LINE);
-            StackTraceElement[] stackTraceElements = exception.getStackTrace();
-            for (int i = 0; i < stackTraceElements.length; i++) {
-                log.append(getLineIndentation()).append(stackTraceElements[i].toString()).append(STR_NEXT_LINE);
+            log.append(getLineIndentation()).append(errorMessage).append(STR_NEXT_LINE);
+            for (int i = 0; i < errorStackTrace.length; i++) {
+                log.append(getLineIndentation()).append(errorStackTrace[i].toString()).append(STR_NEXT_LINE);
             }
             FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
         } catch (Exception e) {

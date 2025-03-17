@@ -1277,14 +1277,18 @@ public class HepTodoController extends BaseController implements Initializable {
                                 if (taskName.contains(COMMIT_TAG)) {
                                     mark = "已提交";
                                 }
+                                int minDate = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getEstimateFinishDate());
                                 if ("本周".equals(mark)) {
                                     if (tomorrowTodoTask.contains(taskNumber)) {
                                         mark = "明天";
                                     } else if (thirdTodoTask.contains(taskNumber)) {
                                         mark = "后天";
+                                    } else if (thursday == minDate) {
+                                        mark = "周四";
+                                    } else if (friday == minDate) {
+                                        mark = "周五";
                                     }
                                 }
-                                int minDate = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getEstimateFinishDate());
                                 if (StringUtils.isBlank(mark)) {
                                     if (nextMonday == minDate) {
                                         mark = "下周一";
@@ -1296,13 +1300,6 @@ public class HepTodoController extends BaseController implements Initializable {
                                         mark = "下周四";
                                     } else if (nextFriday == minDate) {
                                         mark = "下周五";
-                                    }
-                                }
-                                if (StringUtils.isBlank(mark)) {
-                                    if (thursday == minDate) {
-                                        mark = "周四";
-                                    } else if (friday == minDate) {
-                                        mark = "周五";
                                     }
                                 }
                                 item.setTaskMark(mark);
