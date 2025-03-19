@@ -70,8 +70,17 @@ public class StarterUtils {
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
 
             Thread.setDefaultUncaughtExceptionHandler((thread, e) -> {
-                LoggerUtils.info("全局异常处理");
-                LoggerUtils.info(e);
+                LoggerUtils.info("全局异常处理日志打印开始");
+                if (e instanceof IllegalStateException) {
+                    if (e.getMessage().contains("Not on FX application thread;")) {
+                        LoggerUtils.info("忽略异常信息 " + e.getMessage());
+                    } else {
+                        LoggerUtils.info(e);
+                    }
+                } else {
+                    LoggerUtils.info(e);
+                }
+                LoggerUtils.info("全局异常处理日志打印结束");
             });
 
             Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_STARTER_FXML)));
