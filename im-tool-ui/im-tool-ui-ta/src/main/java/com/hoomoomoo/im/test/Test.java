@@ -24,5 +24,6 @@ public class Test {
         LocalDate today = LocalDate.now();
         LocalDate nextMonday = today.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
         System.out.println("下周一的日期是: " + nextMonday);
+
     }
 }

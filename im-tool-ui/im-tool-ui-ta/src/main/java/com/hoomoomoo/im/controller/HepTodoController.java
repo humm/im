@@ -1782,6 +1782,7 @@ public class HepTodoController extends BaseController implements Initializable {
             scrollTips.setVisible(true);
         } else {
             scrollTips.setStyle("-fx-font-weight: normal;");
+            scrollTips.setVisible(colorList.get(0).isVisible());
         }
         OutputUtils.info(scrollTips, threadMsg);
     }
@@ -1794,6 +1795,7 @@ public class HepTodoController extends BaseController implements Initializable {
             memoryTips.setVisible(true);
         } else {
             memoryTips.setStyle("-fx-font-weight: normal;");
+            memoryTips.setVisible(colorList.get(0).isVisible());
         }
     }
 

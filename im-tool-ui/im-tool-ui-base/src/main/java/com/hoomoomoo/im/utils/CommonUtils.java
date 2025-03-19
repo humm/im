@@ -33,6 +33,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -314,9 +315,14 @@ public class CommonUtils {
      * @return
      */
     public static int getNextWeekDayYmd(DayOfWeek dayOfWeek) {
-        LocalDate today = LocalDate.now();
-        LocalDate nextWeekDay = today.with(TemporalAdjusters.next(dayOfWeek));
-        return Integer.parseInt(nextWeekDay.toString().replaceAll(STR_HYPHEN, STR_BLANK));
+        LocalDate currentDate = LocalDate.now();
+        LocalDate nextWeekDay = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
+        String nextWeekDayStr = nextWeekDay.toString().replaceAll(STR_HYPHEN, STR_BLANK);
+        String weekLastDay = getLastDayByWeek().replaceAll(STR_HYPHEN, STR_BLANK);
+        if (weekLastDay.compareTo(nextWeekDayStr) > 0) {
+            nextWeekDayStr = nextWeekDay.with(TemporalAdjusters.next(dayOfWeek)).toString().replaceAll(STR_HYPHEN, STR_BLANK);
+        }
+        return Integer.parseInt(nextWeekDayStr);
     }
 
     /**
@@ -326,9 +332,14 @@ public class CommonUtils {
      * @return
      */
     public static int getWeekDayYmd(DayOfWeek dayOfWeek) {
-        LocalDate today = LocalDate.now();
-        LocalDate nextWeekDay = today.with(TemporalAdjusters.nextOrSame(dayOfWeek));
-        return Integer.parseInt(nextWeekDay.toString().replaceAll(STR_HYPHEN, STR_BLANK));
+        LocalDate currentDate = LocalDate.now();
+        LocalDate nextDay = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
+        String nextDayStr = nextDay.toString().replaceAll(STR_HYPHEN, STR_BLANK);
+        String weekLastDay = getLastDayByWeek().replaceAll(STR_HYPHEN, STR_BLANK);
+        if (weekLastDay.compareTo(nextDayStr) < 0) {
+            nextDayStr = currentDate.with(TemporalAdjusters.previous(dayOfWeek)).toString().replaceAll(STR_HYPHEN, STR_BLANK);
+        }
+        return Integer.parseInt(nextDayStr);
     }
 
     public static String checkLicenseDate(AppConfigDto appConfigDto) {
