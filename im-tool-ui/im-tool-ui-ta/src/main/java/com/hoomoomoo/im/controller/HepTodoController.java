@@ -1664,12 +1664,13 @@ public class HepTodoController extends BaseController implements Initializable {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             initUserInfo(appConfigDto);
             frontTips.setVisible(false);
-            all.setSelected(true);
             if (isExtendUser()) {
+                all.setSelected(true);
                 extendUser.setVisible(false);
                 syncTask.setVisible(false);
             } else {
                 JvmCache.setHepTodoController(this);
+                devCompleteHide.setSelected(true);
             }
             addTaskMenu(appConfigDto, this);
             executeQuery(null);
