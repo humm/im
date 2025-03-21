@@ -17,9 +17,11 @@ import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -985,22 +987,26 @@ public class CommonUtils {
     }
 
     public static void showTipsByInfo(String msg) {
-        showTips(STR_1, msg, null,true);
+        showTips(STR_1, msg, null,null,true, false);
     }
 
     public static void showTipsByError(String msg) {
-        showTips(STR_0, msg, null, true);
+        showTips(STR_0, msg, null, null,true, false);
     }
 
     public static void showTipsByErrorNotAutoClose(String msg, List<String> detail) {
+        boolean showDetail = false;
+        String all = STR_BLANK;
         if (detail.size() > 30) {
+            all = msg + STR_NEXT_LINE_2 + detail.stream().map(Object::toString).collect(Collectors.joining());
             detail = detail.subList(0, 30);
             detail.add("显示部分内容 . 详情参阅文件 " + getSpecialString(50, STR_POINT + STR_SPACE));
+            showDetail = true;
         }
-        showTips(STR_0, msg, detail.stream().map(Object::toString).collect(Collectors.joining()), false);
+        showTips(STR_0, msg, detail.stream().map(Object::toString).collect(Collectors.joining()), all, false, showDetail);
     }
 
-    public static void showTips(String tipsType, String msg, String detail, boolean autoClose) {
+    public static void showTips(String tipsType, String msg, String detail,String all, boolean autoClose, boolean showDetail) {
         Alert alert;
         if (STR_0.equals(tipsType)) {
             alert = new Alert(Alert.AlertType.ERROR);
@@ -1019,6 +1025,47 @@ public class CommonUtils {
             Service<Void> service = getCloseInfoService();
             service.setOnSucceeded(e -> alert.hide());
             service.start();
+        }
+        if (showDetail) {
+            ButtonType detailBtn = new ButtonType ("详情");
+            ButtonType closeBtn = new ButtonType ("关闭");
+            alert.getButtonTypes().clear();
+            alert.getButtonTypes().addAll(detailBtn, closeBtn);
+            alert.show();
+            alert.setOnHidden(event -> {
+                Optional<ButtonType> result = Optional.ofNullable(alert.getResult());
+                result.ifPresent(buttonType -> {
+                    if (buttonType == detailBtn) {
+                        try {
+                            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                            appConfigDto.setPageType(PAGE_TYPE_LOG_DETAIL);
+                            appConfigDto.setErrorLogDetail(all);
+                            Stage stage = appConfigDto.getErrorLogStage();
+                            // 每次页面都重新打开
+                            if (stage != null) {
+                                stage.close();
+                                appConfigDto.setErrorLogStage(null);
+                            }
+                            Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_BLANK_SET_FXML)));
+                            Scene scene = new Scene(root);
+                            scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
+                            stage = new Stage();
+                            stage.getIcons().add(new Image(PATH_ICON));
+                            stage.setScene(scene);
+                            stage.setTitle("详情");
+                            stage.setResizable(false);
+                            stage.show();
+                            appConfigDto.setErrorLogStage(stage);
+                            stage.setOnCloseRequest(columnEvent -> {
+                                appConfigDto.getErrorLogStage().close();
+                                appConfigDto.setErrorLogStage(null);
+                            });
+                        } catch (Exception e) {
+                            LoggerUtils.info(e);
+                        }
+                    }
+                });
+            });
         }
         alert.show();
     }
@@ -1239,7 +1286,7 @@ public class CommonUtils {
         }
         if (show) {
             scanLogTipsIndex.put(tipsType, tipsDate);
-            if (!appConfigDto.getInitScanLog()) {
+            if (appConfigDto.getInitScanLog()) {
                 showTipsByErrorNotAutoClose(fileName + getSpecialString(150, STR_SPACE), message);
             }
         }

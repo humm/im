@@ -46,25 +46,19 @@ public class BlankSetController implements Initializable {
     void onSave(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String pageType = appConfigDto.getPageType();
-        if (!PAGE_TYPE_HEP_DETAIL.equals(pageType)) {
-            String content = config.getText();
-            String confPath = STR_BLANK;
-            SQL_CHECK_TYPE[] checkType = SQL_CHECK_TYPE.values();
-            if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
-                String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
-                confPath = resultPath + "\\" + ERROR_LOG.getFileName();
-            } else {
-                for (SQL_CHECK_TYPE item : checkType) {
-                    String index = String.valueOf(item.getIndex());
-                    if (appConfigDto.getPageType().equals(index)) {
-                        String pathConf = item.getPathConf();
-                        confPath = FileUtils.getFilePath(pathConf);
-                        break;
-                    }
-                }
-                if (StringUtils.isBlank(confPath)) {
-                    SQL_CHECK_TYPE_EXTEND[] checkTypeExtend = SQL_CHECK_TYPE_EXTEND.values();
-                    for (SQL_CHECK_TYPE_EXTEND item : checkTypeExtend) {
+        if (PAGE_TYPE_LOG_DETAIL.equals(pageType)) {
+            appConfigDto.getErrorLogStage().close();
+            appConfigDto.setErrorLogStage(null);
+        } else {
+            if (!PAGE_TYPE_HEP_DETAIL.equals(pageType)) {
+                String content = config.getText();
+                String confPath = STR_BLANK;
+                SQL_CHECK_TYPE[] checkType = SQL_CHECK_TYPE.values();
+                if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
+                    String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
+                    confPath = resultPath + "\\" + ERROR_LOG.getFileName();
+                } else {
+                    for (SQL_CHECK_TYPE item : checkType) {
                         String index = String.valueOf(item.getIndex());
                         if (appConfigDto.getPageType().equals(index)) {
                             String pathConf = item.getPathConf();
@@ -72,15 +66,26 @@ public class BlankSetController implements Initializable {
                             break;
                         }
                     }
+                    if (StringUtils.isBlank(confPath)) {
+                        SQL_CHECK_TYPE_EXTEND[] checkTypeExtend = SQL_CHECK_TYPE_EXTEND.values();
+                        for (SQL_CHECK_TYPE_EXTEND item : checkTypeExtend) {
+                            String index = String.valueOf(item.getIndex());
+                            if (appConfigDto.getPageType().equals(index)) {
+                                String pathConf = item.getPathConf();
+                                confPath = FileUtils.getFilePath(pathConf);
+                                break;
+                            }
+                        }
+                    }
                 }
+                FileUtils.writeFile(confPath, content, false);
             }
-            FileUtils.writeFile(confPath, content, false);
+            if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
+                TaskUtils.execute(new BlankSetTask(new BlankSetTaskParam(this)));
+            }
+            appConfigDto.getChildStage().close();
+            appConfigDto.setChildStage(null);
         }
-        if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
-            TaskUtils.execute(new BlankSetTask(new BlankSetTaskParam(this)));
-        }
-        appConfigDto.getChildStage().close();
-        appConfigDto.setChildStage(null);
     }
 
     public void repairErrorLog() throws Exception {
@@ -126,6 +131,10 @@ public class BlankSetController implements Initializable {
             }
             info = StringUtils.isBlank(info) ? STR_BLANK : info;
             OutputUtils.info(config, info);
+            submit.setText("关闭");
+        } else if (PAGE_TYPE_LOG_DETAIL.equals(pageType)) {
+            info = appConfigDto.getErrorLogDetail();
+            OutputUtils.info(config, StringUtils.isBlank(info) ? STR_BLANK : info);
             submit.setText("关闭");
         } else  {
             String confPath = STR_BLANK;

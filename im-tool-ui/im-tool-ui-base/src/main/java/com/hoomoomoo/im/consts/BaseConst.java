@@ -393,6 +393,7 @@ public class BaseConst {
     public static final String MENU_CODE_BUSIN = "busin";
 
     public static final String PAGE_TYPE_HEP_DETAIL = "detail";
+    public static final String PAGE_TYPE_LOG_DETAIL = "logDetail";
     public static final String PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT = "checkResult";
     public static final String PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT = "updateResult";
     public static final String PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG = "repairErrorLog";

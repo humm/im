@@ -932,7 +932,7 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             if (!taskName.contains(DEV_COMMIT_TAG) && (taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn)) && !taskCancelDevSubmit.containsKey(taskNumberIn)) {
                 taskName = DEV_COMMIT_TAG + taskName;
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
+                //item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
             }
             if (PAGE_USER.equals(EXTEND_USER_FRONT_CODE)) {
                 taskName = String.format("【%s】", item.getAssigneeId()) + taskName;
@@ -1669,8 +1669,8 @@ public class HepTodoController extends BaseController implements Initializable {
                 extendUser.setVisible(false);
                 syncTask.setVisible(false);
             } else {
-                JvmCache.setHepTodoController(this);
                 devCompleteHide.setSelected(true);
+                JvmCache.setHepTodoController(this);
             }
             addTaskMenu(appConfigDto, this);
             executeQuery(null);

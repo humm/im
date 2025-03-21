@@ -131,6 +131,8 @@ public class AppConfigDto extends BaseDto {
 
     private Stage childStage;
 
+    private Stage errorLogStage;
+
     private Stage checkResultStage;
 
     private String pageType;
@@ -270,6 +272,8 @@ public class AppConfigDto extends BaseDto {
     private String hepTaskPrintParam;
 
     private String hepTaskSyncPath;
+
+    private String errorLogDetail;
 
     private ConcurrentHashMap<String, Timer> timerMap;
 
