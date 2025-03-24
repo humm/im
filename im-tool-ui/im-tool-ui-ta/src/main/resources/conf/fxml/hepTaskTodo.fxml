@@ -202,12 +202,12 @@
                                                                         <PropertyValueFactory property="sprintVersion"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="estimateFinishDate" editable="false"
+                                                                <TableColumn id="finishDate" editable="false"
                                                                              prefWidth="105" sortable="false"
                                                                              style="-fx-alignment: center;" text="完成日期">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory
-                                                                                property="estimateFinishDate"/>
+                                                                                property="finishDate"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="oriCloseDate" editable="false"

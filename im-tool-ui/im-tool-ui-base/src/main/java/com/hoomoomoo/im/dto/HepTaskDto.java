@@ -19,7 +19,7 @@ public class HepTaskDto extends BaseDto{
     private String sprintVersion;
     private String status;
     private String statusName;
-    private String estimateFinishDate;
+    // yyyy-MM-dd HH:mm:ss
     private String estimateFinishTime;
 
     private String realFinishTime;
@@ -31,19 +31,27 @@ public class HepTaskDto extends BaseDto{
 
     private String operateType;
 
-    private String closeDate;
+    // HH:mm:ss
+    private String finishTime;
+    // yyyy-MM-dd
+    private String finishDate;
+    // yyyy-MM-dd
     private String oriCloseDate;
+    // yyyy-MM-dd
     private String oriPublishDate;
+    // int
+    private String closeDate;
+    // int
     private String publishDate;
+    // int
+    private String endDate;
+
     private String customer;
 
     private String description;
 
-    private String endDate;
-
-    private String orderNo;
-
     private String assigneeId;
+
     private String assigneeName;
 
     private String demandNo;

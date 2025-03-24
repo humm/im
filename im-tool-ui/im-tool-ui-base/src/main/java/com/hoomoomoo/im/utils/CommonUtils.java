@@ -1286,7 +1286,7 @@ public class CommonUtils {
         }
         if (show) {
             scanLogTipsIndex.put(tipsType, tipsDate);
-            if (appConfigDto.getInitScanLog()) {
+            if (!appConfigDto.getInitScanLog()) {
                 showTipsByErrorNotAutoClose(fileName + getSpecialString(150, STR_SPACE), message);
             }
         }

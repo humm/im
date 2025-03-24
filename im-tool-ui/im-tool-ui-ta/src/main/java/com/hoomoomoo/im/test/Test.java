@@ -1,29 +1,37 @@
 package com.hoomoomoo.im.test;
 
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
+import com.hoomoomoo.im.utils.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
 
 public class Test {
 
-    public static void main(String[] args) {
-        /*while (true) {
-            Runtime runtime = Runtime.getRuntime();
-            long totalMemory = runtime.totalMemory(); // 获取JVM总内存
-            long freeMemory = runtime.freeMemory(); // 获取空闲内存
-            long maxMemory = runtime.maxMemory(); // 获取最大可用内存
-            long usedMemory = totalMemory - freeMemory; // 计算已用内存
+    private static int num;
 
-            System.out.println("Total Memory (JVM): " + totalMemory / (1024 * 1024) + " MB");
-            System.out.println("Free Memory (JVM): " + freeMemory / (1024 * 1024) + " MB");
-            System.out.println("Used Memory (JVM): " + usedMemory / (1024 * 1024) + " MB");
-            System.out.println("Max Memory (JVM): " + maxMemory / (1024 * 1024) + " MB");
-            System.out.println("--------------------------------------------");
-        }*/
-        LocalDate today = LocalDate.now();
-        LocalDate nextMonday = today.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
-        System.out.println("下周一的日期是: " + nextMonday);
+    public static void main(String[] args) throws IOException {
+        File file = new File("E:\\workspace\\ta6\\server\\ta-web-manager-fund-core\\");
+        readFile(file);
+        System.out.println(num);
+    }
 
+    private static void readFile(File file) throws IOException {
+        if (file.isDirectory()) {
+            File[] list = file.listFiles();
+            for (File item : list) {
+                readFile(item);
+            }
+        } else {
+            List<String> content = FileUtils.readNormalFile(file.getAbsolutePath(), false);
+            for (String line : content) {
+                if (line.contains("queryLogDataService")) {
+                    num++;
+                    System.out.println(file.getAbsolutePath());
+                    break;
+                }
+            }
+        }
     }
 }
