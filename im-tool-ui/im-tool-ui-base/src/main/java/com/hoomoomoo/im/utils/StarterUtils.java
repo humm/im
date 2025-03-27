@@ -15,6 +15,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -70,16 +71,9 @@ public class StarterUtils {
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
 
             Thread.setDefaultUncaughtExceptionHandler((thread, e) -> {
+                // 只能处理 RuntimeException 异常及其子类异常  不含孙异常
                 LoggerUtils.info("全局异常处理日志打印开始");
-                if (e instanceof IllegalStateException) {
-                    if (e.getMessage().contains("Not on FX application thread;")) {
-                        LoggerUtils.info("忽略异常信息 " + e.getMessage());
-                    } else {
-                        LoggerUtils.info(e);
-                    }
-                } else {
-                    LoggerUtils.info(e);
-                }
+                LoggerUtils.info("忽略异常信息 " + e.getMessage());
                 LoggerUtils.info("全局异常处理日志打印结束");
             });
 

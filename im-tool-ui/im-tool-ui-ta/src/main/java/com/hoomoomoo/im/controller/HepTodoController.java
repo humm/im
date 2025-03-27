@@ -824,7 +824,7 @@ public class HepTodoController extends BaseController implements Initializable {
         String thirdDate = CommonUtils.getCustomDateTime(2);
         String lastDayByWeek = CommonUtils.getLastDayByWeek();
         String weekDay = CommonUtils.getLastDayByWeekYmd();
-        List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
+        List<String> versionList = getTaskVersionInfo();
         Map<String, Map<String, String>> taskInfo = getTaskInfo();
         Map<String, String> taskCustomerName = taskInfo.get(KEY_CUSTOMER);
         Map<String, String> taskDemandNo = taskInfo.get(KEY_TASK);
@@ -961,18 +961,23 @@ public class HepTodoController extends BaseController implements Initializable {
                 item.setSortDate(finishDate);
             }
 
-            String minCompleteBySort = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getSortDate());
-            item.setMinCompleteBySort(minCompleteBySort);
-
             String minCompleteByMark = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), finishDate);
             item.setMinCompleteByMark(minCompleteByMark);
 
+            String minCompleteBySort = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getSortDate());
+
             if (taskMinCompleteDate.containsKey(taskName)) {
                 if (finishDate.compareTo(taskMinCompleteDate.get(taskName).getFinishDate()) < 0) {
-                    taskMinCompleteDate.put(taskName, item);
+                    taskMinCompleteDate.get(taskName).setFinishDate(finishDate);
+                }
+                if (minCompleteBySort.compareTo(taskMinCompleteDate.get(taskName).getMinCompleteBySort()) < 0) {
+                    taskMinCompleteDate.get(taskName).setMinCompleteBySort(minCompleteBySort);
                 }
             } else {
-                taskMinCompleteDate.put(taskName, item);
+                HepTaskDto taskMin = new HepTaskDto();
+                taskMin.setMinCompleteBySort(minCompleteBySort);
+                taskMin.setFinishDate(finishDate);
+                taskMinCompleteDate.put(taskName, taskMin);
             }
 
             boolean today = todayMustComplete(item, currentDate, finishDate);
@@ -1420,6 +1425,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.setSortCode(sortCode);
                     sortCodeCache.put(taskName, sortCode);
                 }
+                item.setMinCompleteBySort(hepTaskDto.getMinCompleteBySort());
             }
         }).collect(Collectors.toList());
         task.sort(new Comparator<HepTaskDto>() {
@@ -1437,13 +1443,13 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         if (StringUtils.isBlank(value)) {
             if (STR_1.equals(type)) {
-                return "0000-00-00";
+                return "1000-00-00";
             } else if (STR_2.equals(type)) {
-                return "0010-00-00";
+                return "1010-00-00";
             } else if (STR_3.equals(type)) {
-                return "0020-00-00";
+                return "1020-00-00";
             } else if (STR_4.equals(type)) {
-                return "0030-00-00";
+                return "1030-00-00";
             } else if (STR_5.equals(type)) {
                 return "9940-00-00";
             } else if (STR_6.equals(type)) {
@@ -1838,6 +1844,19 @@ public class HepTodoController extends BaseController implements Initializable {
             LoggerUtils.info(e);
         }
         return task;
+    }
+
+    public List<String> getTaskVersionInfo() {
+        List<String> versionList = new ArrayList<>();
+        try {
+            versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);;
+        } catch (IOException e) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            LoggerUtils.info(e);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+        return versionList;
     }
 
     public Map<String,String> getDemandInfo() {
