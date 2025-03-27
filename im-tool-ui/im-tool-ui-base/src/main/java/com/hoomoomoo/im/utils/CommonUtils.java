@@ -307,7 +307,7 @@ public class CommonUtils {
      * @return
      */
     public static String getLastDayByWeekYmd() {
-        return getLastDayByWeek().replaceAll(STR_HYPHEN, STR_BLANK);
+        return getLastDayByWeek();
     }
 
     /**
@@ -993,6 +993,9 @@ public class CommonUtils {
     public static void showTipsByError(String msg) {
         showTips(STR_0, msg, null, null,true, false);
     }
+    public static void showTipsByError(String msg, boolean autoClose) {
+        showTips(STR_0, msg, null, null,autoClose, false);
+    }
 
     public static void showTipsByErrorNotAutoClose(String msg, List<String> detail) {
         boolean showDetail = false;
@@ -1330,5 +1333,21 @@ public class CommonUtils {
 
     private static String formatMemoryInfo(long memory) {
         return memory / (1024 * 1024) + KEY_UNIT_MB;
+    }
+
+    public static String getRealDate(String oriDate) {
+        StringBuilder date = new StringBuilder();
+        if (StringUtils.isNotBlank(oriDate)) {
+            for (int i = 0; i < oriDate.length(); i++) {
+                char item = oriDate.charAt(i);
+                if (Character.isDigit(item)) {
+                    date.append(item);
+                }
+            }
+        }
+        if (date.length() > 8) {
+            return date.substring(8);
+        }
+        return date.toString();
     }
 }

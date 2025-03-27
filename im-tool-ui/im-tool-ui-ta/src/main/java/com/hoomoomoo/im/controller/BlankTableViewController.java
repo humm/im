@@ -63,31 +63,7 @@ public class BlankTableViewController implements Initializable {
         publishDate.setEditable(true);
         publishDate.setStyle(STYLE_CENTER);
 
-        /*TableColumn orderNo = new TableColumn<>("指定排序");
-        orderNo.setCellValueFactory(new PropertyValueFactory<>("orderNo"));
-        orderNo.setPrefWidth(100);
-        orderNo.setEditable(true);
-        orderNo.setStyle(STYLE_CENTER);
-        orderNo.setOnEditCommit(event -> {
-            int index = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getTablePosition().getRow();
-            VersionDto item = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getTableView().getItems().get(index);
-            String order = ((TableColumn.CellEditEvent<VersionDto, Object>) event).getNewValue().toString();
-            item.setOrderNo(order);
-            writeExtendFile(item);
-        });*/
-
-        TableColumn closeInterval = new TableColumn<>("封版截止");
-        closeInterval.setCellValueFactory(new PropertyValueFactory<>("closeInterval"));
-        closeInterval.setPrefWidth(100);
-        closeInterval.setEditable(false);
-        closeInterval.setStyle(STYLE_CENTER);
-
-        TableColumn publishInterval = new TableColumn<>("发版截止");
-        publishInterval.setCellValueFactory(new PropertyValueFactory<>("publishInterval"));
-        publishInterval.setPrefWidth(100);
-        publishInterval.setStyle(STYLE_CENTER);
-
-        table.getColumns().addAll(code, closeDate, publishDate, closeInterval, publishInterval);
+        table.getColumns().addAll(code, closeDate, publishDate);
         showVersion(versionDtoList);
 
         close.setLayoutX(400);

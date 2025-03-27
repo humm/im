@@ -48,6 +48,7 @@ public class BaseConst {
     public static final String STR_9960 = "9960";
     public static final String STR_99999999 = "99999999";
     public static final String STR_20991231 = "20991231";
+    public static final String STR_DATE_20991231 = "2099-12-31";
 
     public static final String STR_TRUE = "1";
     public static final String STR_SUCCESS_CODE = "200";
@@ -210,8 +211,6 @@ public class BaseConst {
     public static final String NAME_SCRIPT_DETAIL = "脚本详情";
     public static final String NAME_SYSTEM_LOG = "系统日志";
     public static final String NAME_INNER_CUSTOMER = "内部客户";
-    public static final String NAME_J_S_J_J = "嘉实基金";
-    public static final String NAME_A_D_B_L = "爱答不理";
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
     public static final String NAME_UPDATE_VERSION = "同步发版时间";

@@ -40,11 +40,9 @@ public class HepTaskDto extends BaseDto{
     // yyyy-MM-dd
     private String oriPublishDate;
     // int
-    private String closeDate;
-    // int
-    private String publishDate;
-    // int
-    private String endDate;
+    private String minComplete;
+
+    private String sortCode;
 
     private String customer;
 

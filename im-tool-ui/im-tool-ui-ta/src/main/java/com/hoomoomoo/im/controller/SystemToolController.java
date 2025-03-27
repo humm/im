@@ -259,7 +259,7 @@ public class SystemToolController implements Initializable {
     }
 
     private String formatDate(String date) {
-        return StringUtils.isBlank(date) ? STR_20991231 : date.replaceAll(STR_HYPHEN, STR_BLANK);
+        return StringUtils.isBlank(date) ? STR_DATE_20991231 : date;
     }
 
     private String getShakeMouseMsg (String msg) {

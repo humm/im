@@ -45,10 +45,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_TODO;
@@ -97,6 +96,13 @@ public class HepTodoController extends BaseController implements Initializable {
     public final static String SELF_TEST_TAG = "【自测问题】";
     public final static String DEFECT_TAG = "【缺陷:FUNDTAVI";
 
+    private static Set<String> fileSyncSourceFile = new HashSet<>();
+
+    Map<String, String> taskMinCompleteDate = new HashMap<>();
+    Map<String, String> sortCodeCache = new HashMap<>();
+
+    List<Label> colorList = new ArrayList<>();
+
     private final static String EXTEND_USER_FRONT_CODE = "front";
     private String PAGE_USER = "";
     private boolean dealTask = true;
@@ -111,7 +117,6 @@ public class HepTodoController extends BaseController implements Initializable {
         put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "缺陷"});
         put("默认", new String[] {"-fx-text-background-color: #000000;", ""});
     }};
-
 
     // 字段顺序不可调整 与约定接口保持顺序一致
     private static Set<String> field = new LinkedHashSet<String>(){{
@@ -271,12 +276,6 @@ public class HepTodoController extends BaseController implements Initializable {
     private RadioButton devCompleteShow;
 
     private Pane mask;
-
-    private static Map<String, Integer> minDateCache = new HashMap<>();
-
-    private static Set<String> fileSyncSourceFile = new HashSet<>();
-
-    List<Label> colorList = new ArrayList<>();
 
     @FXML
     void syncOrSuspend(ActionEvent event) throws Exception {
@@ -563,7 +562,7 @@ public class HepTodoController extends BaseController implements Initializable {
             setProgress(0);
             updateProgress();
             if (event != null) {
-                minDateCache.clear();
+                sortCodeCache.clear();
             }
             TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "doExecuteQuery")));
         } catch (Exception e) {
@@ -661,6 +660,8 @@ public class HepTodoController extends BaseController implements Initializable {
                     } else if (OPERATE_START.equals(operateType)) {
                         executeQuery(null);
                     }
+                } else {
+                    CommonUtils.showTipsByError(message, false);
                 }
             }
             if (notice == null) {
@@ -800,30 +801,16 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         Set<String> dayTodoTask = new HashSet<>();
         Set<String> tomorrowTodoTask = new HashSet<>();
-        Set<String> thirdTodoTask = new HashSet<>();
+        Set<String> thirdDayTodoTask = new HashSet<>();
         Set<String> weekTodoTask = new HashSet<>();
         Set<String> finishDateError = new HashSet<>();
         taskList.setDisable(true);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
-        res = sortTask(res, true);
         filterTask(res);
         if (tagFlag) {
             initTag(res);
-        }
-        Map<String, String> taskMinCompleteDate = new HashMap<>();
-        for (int i = 0; i < task.size(); i++) {
-            Map<String, Object> item = (Map) task.get(i);
-            String name = String.valueOf(item.get(KEY_NAME)).replaceAll(STR_NEXT_LINE, STR_BLANK);
-            String estimateFinishTime = String.valueOf(item.get(KEY_ESTIMATE_FINISH_TIME)).split(STR_SPACE)[0];
-            if (taskMinCompleteDate.containsKey(name)) {
-                if (estimateFinishTime.compareTo(taskMinCompleteDate.get(name)) < 0) {
-                    taskMinCompleteDate.put(name, estimateFinishTime);
-                }
-            } else {
-                taskMinCompleteDate.put(name, estimateFinishTime);
-            }
         }
         boolean hasBlank = false;
         int taskTotal = 0;
@@ -832,78 +819,51 @@ public class HepTodoController extends BaseController implements Initializable {
         StringBuilder weekCloseVersion = new StringBuilder();
         StringBuilder dayVersion = new StringBuilder();
         StringBuilder dayCloseVersion = new StringBuilder();
-        String currentDay = CommonUtils.getCurrentDateTime3();
         String currentDate = CommonUtils.getCurrentDateTime4();
         String tomorrowDate = CommonUtils.getTomorrowDateTime();
         String thirdDate = CommonUtils.getCustomDateTime(2);
         String lastDayByWeek = CommonUtils.getLastDayByWeek();
         String weekDay = CommonUtils.getLastDayByWeekYmd();
-        Map<String, String> taskCustomerName = new HashMap<>();
-        Map<String, String> taskDemandNo = new HashMap<>();
-        Map<String, String> taskDemandStatus = new HashMap<>();
-        Map<String, String> taskSubmitStatus = new HashMap<>();
-        Map<String, String> taskCancelDevSubmit = new HashMap<>();
+        List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
+        Map<String, Map<String, String>> taskInfo = getTaskInfo();
+        Map<String, String> taskCustomerName = taskInfo.get(KEY_CUSTOMER);
+        Map<String, String> taskDemandNo = taskInfo.get(KEY_TASK);
+        Map<String, String> taskDemandStatus = getDemandInfo();
+        Map<String, String> taskSubmitStatus = getTaskStatusInfo();
+        Map<String, String> taskCancelDevSubmit = getCancelDevSubmitTaskInfo();
         boolean waitTaskSync = false;
-        try {
-            List<String> versionList = new ArrayList<>();
-            Map<String, String[]> versionExtend = new HashMap<>();
-            if (proScene()) {
-                versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
-                Map<String, Map<String, String>> taskInfo = getTaskInfo();
-                taskCustomerName = taskInfo.get(KEY_CUSTOMER);
-                taskDemandNo = taskInfo.get(KEY_TASK);
-                taskDemandStatus = getDemandInfo();
-                taskSubmitStatus = getTaskStatusInfo();
-                taskCancelDevSubmit = getCancelDevSubmitTaskInfo();
+        for (String item : versionList) {
+            String[] elements = item.split(STR_SEMICOLON);
+            Map<String, String> ele = new HashMap<>();
+            String oriCloseDate = elements[1];
+            String oriPublishDate = elements[2];
+            String versionCode = elements[0];
+            ele.put(KEY_ORI_CLOSE_DATE, oriCloseDate);
+            ele.put(KEY_ORI_PUBLISH_DATE, oriPublishDate);
+            ele.put(KEY_ORDER_NO, STR_0);
+            if (currentDate.equals(oriCloseDate)) {
+                dayCloseVersion.append(versionCode).append(STR_SPACE);
             }
-            for (String item : versionList) {
-                String[] elements = item.split(STR_SEMICOLON);
-                Map<String, String> ele = new HashMap<>();
-                String oriCloseDate = getRealDate(elements[1]);
-                String oriPublishDate = getRealDate(elements[2]);
-                String oriOrderNo = STR_0;
-                String versionCode = elements[0];
-                if (versionExtend.containsKey(versionCode)) {
-                    oriCloseDate = versionExtend.get(versionCode)[0];
-                    oriPublishDate = versionExtend.get(versionCode)[1];
-                    oriOrderNo = StringUtils.isBlank(versionExtend.get(versionCode)[2]) ? STR_0 : versionExtend.get(versionCode)[2];
-                }
-                String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
-                String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
-                ele.put(KEY_ORI_CLOSE_DATE, oriCloseDate);
-                ele.put(KEY_ORI_PUBLISH_DATE, oriPublishDate);
-                ele.put(KEY_CLOSE_DATE, closeDate);
-                ele.put(KEY_PUBLISH_DATE, publishDate);
-                ele.put(KEY_ORDER_NO, oriOrderNo);
-                if (currentDay.equals(oriCloseDate)) {
-                    dayCloseVersion.append(versionCode).append(STR_SPACE);
-                }
-                if (currentDay.equals(oriPublishDate)) {
-                    dayVersion.append(versionCode).append(STR_SPACE);
-                }
-
-                if (currentDay.equals(oriCloseDate) || currentDay.equals(oriPublishDate)) {
-                    dayPublishVersion.add(versionCode);
-                }
-
-                if (weekDay.compareTo(oriCloseDate) >= 0 && currentDay.compareTo(oriCloseDate) <= 0) {
-                    weekCloseVersion.append(versionCode).append(STR_SPACE);
-                }
-
-                if (weekDay.compareTo(oriPublishDate) >= 0 && currentDay.compareTo(oriPublishDate) <= 0) {
-                    weekVersion.append(versionCode).append(STR_SPACE);
-                }
-                version.put(versionCode, ele);
+            if (currentDate.equals(oriPublishDate)) {
+                dayVersion.append(versionCode).append(STR_SPACE);
             }
-        } catch (IOException e) {
-            LoggerUtils.info(e);
-        } catch (ParseException e) {
-            LoggerUtils.info(e);
+
+            if (currentDate.equals(oriCloseDate) || currentDate.equals(oriPublishDate)) {
+                dayPublishVersion.add(versionCode);
+            }
+
+            if (weekDay.compareTo(oriCloseDate) >= 0 && currentDate.compareTo(oriCloseDate) <= 0) {
+                weekCloseVersion.append(versionCode).append(STR_SPACE);
+            }
+
+            if (weekDay.compareTo(oriPublishDate) >= 0 && currentDate.compareTo(oriPublishDate) <= 0) {
+                weekVersion.append(versionCode).append(STR_SPACE);
+            }
+            version.put(versionCode, ele);
         }
         int dayVersionNum = 0;
         int weekVersionNum = 0;
         int mergerNum = 0;
-        Map<String, Integer> minDate = new HashMap<>();
         Iterator<HepTaskDto> iterator = res.listIterator();
         Set<String> existTask = new HashSet<>();
         while (iterator.hasNext()) {
@@ -949,7 +909,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 iterator.remove();
                 continue;
             }
-
             if (only.isSelected()) {
                 if (existTask.contains(taskName)) {
                     iterator.remove();
@@ -968,22 +927,36 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
 
+            String taskNameTag = getTaskNameTag(taskName);
+            if (taskName.contains(DEFECT_TAG)) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
+            } else if (taskNameTag.contains(SELF_TEST_TAG)) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
+            } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_3));
+            } else if (taskName.contains(COMMIT_TAG)) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
+            } else if (taskName.contains(UPDATE_TAG) || taskName.contains(DEV_COMMIT_TAG)) {
+                item.setEstimateFinishTime(getValue(STR_BLANK, STR_5));
+            }
+
             String sprintVersion = item.getSprintVersion();
             if (version.containsKey(sprintVersion)) {
                 Map<String, String> versionInfo = version.get(sprintVersion);
-                item.setCloseDate(versionInfo.get(KEY_CLOSE_DATE));
                 item.setOriCloseDate(CommonUtils.getCurrentDateTime5(versionInfo.get(KEY_ORI_CLOSE_DATE)));
                 item.setOriPublishDate(CommonUtils.getCurrentDateTime5(versionInfo.get(KEY_ORI_PUBLISH_DATE)));
-                item.setPublishDate(versionInfo.get(KEY_PUBLISH_DATE));
                 item.setCustomer(versionInfo.get(KEY_CUSTOMER));
             }
-            String endDate = item.getEstimateFinishTime().split(STR_SPACE)[0].replaceAll(STR_HYPHEN, STR_BLANK);
-            item.setEndDate(CommonUtils.getIntervalDays(currentDay, endDate));
+
+            String minComplete = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getFinishDate());
+            item.setMinComplete(minComplete);
+
             String finishDate = item.getEstimateFinishTime().split(STR_SPACE)[0];
             String finishTime = item.getEstimateFinishTime().split(STR_SPACE)[1];
+
             boolean today = todayMustComplete(item, currentDate, finishDate);
             boolean tomorrow = todayMustComplete(item, tomorrowDate, finishDate);
-            boolean third = todayMustComplete(item, thirdDate, finishDate);
+            boolean thirdDay = todayMustComplete(item, thirdDate, finishDate);
             if (dayVersion.toString().contains(sprintVersion + STR_SPACE) || dayCloseVersion.toString().contains(sprintVersion + STR_SPACE) || today) {
                 dayVersionNum++;
                 dayTodoTask.add(item.getTaskNumber());
@@ -991,61 +964,30 @@ public class HepTodoController extends BaseController implements Initializable {
             if (tomorrow) {
                 tomorrowTodoTask.add(item.getTaskNumber());
             }
-            if (third) {
-                thirdTodoTask.add(item.getTaskNumber());
+            if (thirdDay) {
+                thirdDayTodoTask.add(item.getTaskNumber());
             }
-            if (!endDate.startsWith(STR_99)) {
+            if (!finishDate.startsWith(STR_99)) {
                 boolean week = today || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
                 if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || week) {
                     weekVersionNum++;
                     weekTodoTask.add(item.getTaskNumber());
                 }
             }
-            if (!endDate.startsWith(STR_99) && StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
+            if (!finishDate.startsWith(STR_99) && StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
                 if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0) {
                     finishDateError.add(item.getTaskNumber());
                 }
             }
-            if (StringUtils.isBlank(status)) {
-                hasBlank = true;
-                taskTotal++;
-            } else {
-                hasBlank = false;
-            }
-            if (StringUtils.isBlank(status)) {
-                item.setFinishDate(STR_BLANK);
-                item.setFinishTime(STR_BLANK);
-            } else {
-                item.setFinishDate(finishDate);
-                item.setFinishTime(finishTime);
-            }
-            initMinDate(minDate, item);
 
-        }
-        iterator = res.listIterator();
-        while (iterator.hasNext()) {
-            HepTaskDto item = iterator.next();
-            String taskName = item.getName();
-            String taskNumberIn = item.getTaskNumber();
-            if (minDate.containsKey(taskName)) {
-                int min = minDate.get(taskName);
-                int minCache = minDateCache.get(taskName);
-                if (minCache < min) {
-                    min = minCache;
-                }
-                String finishDate = item.getFinishDate();
-                if (!taskName.contains(DEFECT_TAG) && (finishDate.startsWith(STR_9950) || finishDate.startsWith(STR_9960))) {
-                    min = 999;
-                } else if (finishDate.startsWith(STR_99)) {
-                    min = Integer.valueOf(finishDate.replaceAll(STR_HYPHEN, STR_BLANK).substring(2, 4)) * -1;
-                }
-                item.setEndDate(String.valueOf(min));
-            }
             if (taskMinCompleteDate.containsKey(taskName)) {
-                if (!StringUtils.equals(taskMinCompleteDate.get(taskName), item.getFinishDate())) {
-                    item.setFinishDate(STR_BLANK);
+                if (finishDate.compareTo(taskMinCompleteDate.get(taskName)) < 0) {
+                    taskMinCompleteDate.put(taskName, finishDate);
                 }
+            } else {
+                taskMinCompleteDate.put(taskName, finishDate);
             }
+
             item.setSprintVersion(formatVersion(item.getSprintVersion()));
             if (taskCustomerName.containsKey(taskNumberIn)) {
                 item.setCustomer(taskCustomerName.get(taskNumberIn));
@@ -1061,9 +1003,23 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.isNotBlank(customer) && customer.length() > 6) {
                 item.setCustomer(customer.substring(0, 6));
             }
+
+            if (StringUtils.isBlank(status)) {
+                hasBlank = true;
+                taskTotal++;
+            } else {
+                hasBlank = false;
+            }
+            if (StringUtils.isBlank(status)) {
+                item.setFinishDate(STR_BLANK);
+                item.setFinishTime(STR_BLANK);
+            } else {
+                item.setFinishDate(finishDate);
+                item.setFinishTime(finishTime);
+            }
         }
 
-        res = sortTask(res, false);
+        res = sortTask(res);
 
         OutputUtils.clearLog(dayTodo);
         OutputUtils.info(dayTodo, String.valueOf(dayVersionNum));
@@ -1107,7 +1063,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
 
         OutputUtils.clearLog(taskList);
-        infoTaskList(taskList, res, dayTodoTask, tomorrowTodoTask, thirdTodoTask, weekTodoTask, finishDateError);
+        infoTaskList(taskList, res, dayTodoTask, tomorrowTodoTask, thirdDayTodoTask, weekTodoTask, finishDateError);
         taskList.setDisable(false);
     }
 
@@ -1143,19 +1099,8 @@ public class HepTodoController extends BaseController implements Initializable {
         if( StringUtils.equals(currentDate, finishDate)) {
             return true;
         }
-        if (StringUtils.isNotBlank(item.getCloseDate())) {
-            if (Integer.parseInt(item.getCloseDate()) == 0) {
-                return true;
-            }
-        }
-        if (StringUtils.isNotBlank(item.getPublishDate())) {
-            if (Integer.parseInt(item.getPublishDate()) == 0) {
-                return true;
-            }
-        }
-        String endDate = item.getEndDate();
-        if (StringUtils.isNotBlank(endDate)) {
-            int date = Integer.parseInt(endDate);
+        if (StringUtils.isNotBlank(item.getMinComplete())) {
+            int date = Integer.parseInt((item.getMinComplete()));
             if (date <= 0 && date > -50) {
                 return true;
             }
@@ -1163,58 +1108,8 @@ public class HepTodoController extends BaseController implements Initializable {
         return false;
     }
 
-    private static void initMinDate(Map<String, Integer> minDate, HepTaskDto item) {
-        String closeDate = item.getCloseDate();
-        if (StringUtils.isBlank(closeDate)) {
-            closeDate = STR_99999999;
-        }
-        String publishDate = item.getPublishDate();
-        if (StringUtils.isBlank(publishDate)) {
-            publishDate = STR_99999999;
-        }
-        String endDate = item.getEndDate();
-        if (StringUtils.isBlank(endDate)) {
-            endDate = STR_99999999;
-        }
-        String taskName = item.getName();
-        int min = Math.min(Math.min(Integer.valueOf(closeDate), Integer.valueOf(publishDate)), Integer.valueOf(endDate));
-        if (min < 0) {
-            min = Integer.valueOf(endDate);
-        }
-        if (minDate.containsKey(taskName)) {
-            if (minDate.get(taskName) > min) {
-                minDate.put(taskName, min);
-            }
-        } else {
-            minDate.put(taskName, min);
-        }
-        if (minDateCache.containsKey(taskName)) {
-            if (minDateCache.get(taskName) > min) {
-                minDateCache.put(taskName, min);
-            }
-        } else {
-            minDateCache.put(taskName, min);
-        }
-    }
-
-    private static String getRealDate(String oriDate) {
-        StringBuilder date = new StringBuilder();
-        if (StringUtils.isNotBlank(oriDate)) {
-            for (int i = 0; i < oriDate.length(); i++) {
-                char item = oriDate.charAt(i);
-                if (Character.isDigit(item)) {
-                    date.append(item);
-                }
-            }
-        }
-        if (date.length() > 8) {
-            return date.substring(8);
-        }
-        return date.toString();
-    }
-
     private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask,
-                              Set<String> tomorrowTodoTask, Set<String> thirdTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
+                              Set<String> tomorrowTodoTask, Set<String> thirdDayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
         if (taskListIn == null) {
             return;
         }
@@ -1229,15 +1124,15 @@ public class HepTodoController extends BaseController implements Initializable {
             for (HepTaskDto hepTaskDto : res) {
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
-                initRowColor(taskListIn, dayTodoTask, tomorrowTodoTask, thirdTodoTask,  weekTodoTask, finishDateError,
+                initRowStyle(taskListIn, dayTodoTask, tomorrowTodoTask, thirdDayTodoTask,  weekTodoTask, finishDateError,
                         nextMonday, nextTuesday, nextWednesday, nextThursday, nextFriday, thursday, friday);
             }
             OutputUtils.setEnabled(taskListIn);
         });
     }
 
-    private void initRowColor(TableView taskListIn, Set<String> dayTodoTask, Set<String> tomorrowTodoTask,
-                              Set<String> thirdTodoTask, Set<String> weekTodoTask, Set<String> finishDateError,
+    private void initRowStyle(TableView taskListIn, Set<String> dayTodoTask, Set<String> tomorrowTodoTask,
+                              Set<String> thirdDayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError,
                               int nextMonday, int nextTuesday, int nextWednesday, int nextThursday, int nextFriday,
                               int thursday, int friday) {
         taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
@@ -1271,11 +1166,11 @@ public class HepTodoController extends BaseController implements Initializable {
                                 if (StringUtils.isBlank(item.getFinishDate())) {
                                     return;
                                 }
-                                int minDate = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getFinishDate());
+                                int minDate = Integer.parseInt(item.getMinComplete());
                                 if ("本周".equals(mark)) {
                                     if (tomorrowTodoTask.contains(taskNumber)) {
                                         mark = "明天";
-                                    } else if (thirdTodoTask.contains(taskNumber)) {
+                                    } else if (thirdDayTodoTask.contains(taskNumber)) {
                                         mark = "后天";
                                     } else if (thursday == minDate) {
                                         mark = "周四";
@@ -1308,7 +1203,7 @@ public class HepTodoController extends BaseController implements Initializable {
         });
     }
 
-    private int getMinDate(String closeDate, String publishDate, String endDate) {
+    private String getMinDate(String closeDate, String publishDate, String endDate) {
         if (StringUtils.isBlank(closeDate)) {
             closeDate = STR_20991231;
         }
@@ -1321,7 +1216,7 @@ public class HepTodoController extends BaseController implements Initializable {
         closeDate = closeDate.replaceAll(STR_HYPHEN, STR_BLANK);
         publishDate = publishDate.replaceAll(STR_HYPHEN, STR_BLANK);
         endDate = endDate.replaceAll(STR_HYPHEN, STR_BLANK);
-        return Math.min(Math.min(Integer.valueOf(closeDate), Integer.valueOf(publishDate)), Integer.valueOf(endDate));
+        return String.valueOf(Math.min(Math.min(Integer.valueOf(closeDate), Integer.valueOf(publishDate)), Integer.valueOf(endDate)));
     }
 
     private void initTag(List<HepTaskDto> task) {
@@ -1409,7 +1304,6 @@ public class HepTodoController extends BaseController implements Initializable {
         String taskNumberQ = CommonUtils.getComponentValue(taskNumberQuery);
         String nameQ = CommonUtils.getComponentValue(nameQuery);
         String sprintVersionQ = CommonUtils.getComponentValue(sprintVersionQuery);
-        Map<String, String> taskType = new HashMap<>();
         Set<String> currentTaskVersion = new HashSet<>();
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
@@ -1417,7 +1311,6 @@ public class HepTodoController extends BaseController implements Initializable {
             String taskName = item.getName();
             String sprintVersion = item.getSprintVersion();
             currentTaskVersion.add(sprintVersion);
-            String taskNameTag = getTaskNameTag(taskName);
             if (StringUtils.isNotBlank(taskNumberQ) && !taskNumber.contains(taskNumberQ)) {
                 iterator.remove();
                 continue;
@@ -1429,22 +1322,6 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.isNotBlank(sprintVersionQ) && !sprintVersion.contains(sprintVersionQ)) {
                 iterator.remove();
                 continue;
-            }
-            if (taskName.contains(DEFECT_TAG)) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
-                taskType.put(STR_1, STR_1);
-            } else if (taskNameTag.contains(SELF_TEST_TAG)) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
-                taskType.put(STR_2, STR_2);
-            } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_3));
-                taskType.put(STR_3, STR_3);
-            } else if (taskName.contains(COMMIT_TAG)) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
-                taskType.put(STR_4, STR_4);
-            } else if (taskName.contains(UPDATE_TAG) || taskName.contains(DEV_COMMIT_TAG)) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_5));
-                taskType.put(STR_5, STR_5);
             }
         }
         initVersion(currentTaskVersion, sprintVersionQ);
@@ -1529,101 +1406,30 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    private List<HepTaskDto> sortTask(List<HepTaskDto> task, boolean prevOrder) {
-        List<HepTaskDto> res = new ArrayList<>();
-        Set<String> existkey = new HashSet<>();
-        boolean completeShow = devCompleteShow.isSelected();
+    private List<HepTaskDto> sortTask(List<HepTaskDto> task) {
+        task = task.stream().peek(item -> {
+            String taskName = item.getName();
+            if (taskMinCompleteDate.containsKey(taskName)) {
+                if (sortCodeCache.containsKey(taskName)) {
+                    item.setSortCode(sortCodeCache.get(taskName));
+                } else {
+                    String minCompleteDate = taskMinCompleteDate.get(taskName);
+                    if (!StringUtils.equals(minCompleteDate, item.getFinishDate())) {
+                        item.setFinishDate(STR_BLANK);
+                    }
+                    String sortCode = minCompleteDate + taskName + item.getSprintVersion();
+                    item.setSortCode(sortCode);
+                    sortCodeCache.put(taskName, sortCode);
+                }
+            }
+        }).collect(Collectors.toList());
         task.sort(new Comparator<HepTaskDto>() {
             @Override
             public int compare(HepTaskDto o1, HepTaskDto o2) {
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                try {
-                    if (prevOrder) {
-                        String finishTime1 = getValue(o1.getEstimateFinishTime(), STR_BLANK);
-                        String finishTime2 = getValue(o2.getEstimateFinishTime(), STR_BLANK);
-                        return finishTime1.compareTo(finishTime2);
-                    }
-                    if (completeShow) {
-                        String taskMark1 = StringUtils.isBlank(o1.getTaskMark()) ? STR_BLANK : o1.getTaskMark();
-                        String taskMark2 = StringUtils.isBlank(o2.getTaskMark()) ? STR_BLANK : o2.getTaskMark();
-                        if (!StringUtils.equals(taskMark1, taskMark2)) {
-                            return taskMark2.compareTo(taskMark1);
-                        }
-                        String customer1 = getSortCustomerName(o1.getCustomer());
-                        String customer2 = getSortCustomerName(o2.getCustomer());
-                        return customer1.compareTo(customer2);
-                    }
-
-                    int endDate1 = Integer.valueOf(o1.getEndDate() == null ? STR_99999999 : o1.getEndDate());
-                    int endDate2 = Integer.valueOf(o2.getEndDate() == null ? STR_99999999 : o2.getEndDate());
-                    if (endDate1 != endDate2) {
-                        return endDate1 - endDate2;
-                    }
-
-                    int closeDate1 = Integer.valueOf(o1.getCloseDate() == null ? STR_99999999 : o1.getCloseDate());
-                    int closeDate2 = Integer.valueOf(o2.getCloseDate() == null ? STR_99999999 : o2.getCloseDate());
-                    if (closeDate1 != closeDate2) {
-                        return closeDate1 - closeDate2;
-                    }
-
-                    int publishDate1 = Integer.valueOf(o1.getPublishDate() == null ? STR_99999999 : o1.getPublishDate());
-                    int publishDate2 = Integer.valueOf(o2.getPublishDate() == null ? STR_99999999 : o2.getPublishDate());
-                    if (publishDate1 != publishDate2) {
-                        return publishDate1 - publishDate2;
-                    }
-
-                    if (StringUtils.isNotBlank(o1.getFinishDate()) && StringUtils.isNotBlank(o2.getFinishDate())) {
-                        Date finishTime1 = simpleDateFormat.parse(getValue(o1.getFinishDate() + STR_SPACE + o1.getFinishTime(), STR_BLANK));
-                        Date finishTime2 = simpleDateFormat.parse(getValue(o2.getFinishDate() + STR_SPACE + o2.getFinishTime(), STR_BLANK));
-                        if (finishTime1.getTime() != finishTime2.getTime()) {
-                            return finishTime1.compareTo(finishTime2);
-                        }
-                    }
-                    String taskName1 = o1.getName();
-                    String taskName2 = o2.getName();
-                    if (taskName1.contains(STR_BRACKETS_2_RIGHT)) {
-                        taskName1 = taskName1.split(STR_BRACKETS_2_RIGHT)[1];
-                    }
-                    if (taskName2.contains(STR_BRACKETS_2_RIGHT)) {
-                        taskName2 = taskName2.split(STR_BRACKETS_2_RIGHT)[1];
-                    }
-                    return taskName1.compareTo(taskName2);
-                } catch (ParseException e) {
-                    LoggerUtils.info(e);
-                }
-                return 1;
+                return o1.getSortCode().compareTo(o2.getSortCode());
             }
         });
-        for (int i = 0; i < task.size(); i++) {
-            HepTaskDto item = task.get(i);
-            String taskNumber = item.getTaskNumber();
-            String taskName = item.getName();
-            if (existkey.contains(taskNumber)) {
-                continue;
-            }
-            existkey.add(taskNumber);
-            res.add(item);
-            for (int j = 0; j < task.size(); j++) {
-                HepTaskDto itemTmp = task.get(j);
-                String taskNumberTmp = itemTmp.getTaskNumber();
-                String taskNameTmp = itemTmp.getName();
-                if (existkey.contains(taskNumberTmp)) {
-                    continue;
-                }
-                if (taskNameTmp.equals(taskName)) {
-                    res.add(itemTmp);
-                    existkey.add(taskNumberTmp);
-                }
-            }
-        }
-        return res;
-    }
-
-    private String getSortCustomerName(String customerName) {
-        if (StringUtils.isBlank(customerName)) {
-            customerName = STR_BLANK;
-        }
-        return NAME_J_S_J_J.equals(customerName) ? NAME_A_D_B_L : customerName;
+        return task;
     }
 
     private String getValue(String value, String type) {
@@ -1632,15 +1438,15 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         if (StringUtils.isBlank(value)) {
             if (STR_1.equals(type)) {
-                return "9990-12-31 23:59:59";
+                return "0000-00-00 23:59:59";
             } else if (STR_2.equals(type)) {
-                return "9980-12-31 23:59:59";
-            }else if (STR_4.equals(type)) {
-                return "9960-12-31 23:59:59";
-            } else if (STR_5.equals(type)) {
-                return "9950-12-31 23:59:59";
+                return "0010-00-00 23:59:59";
             } else if (STR_3.equals(type)) {
-                return "9940-12-31 23:59:59";
+                return "0020-00-00 23:59:59";
+            } else if (STR_4.equals(type)) {
+                return "0030-00-00 23:59:59";
+            } else if (STR_5.equals(type)) {
+                return "0040-00-00 23:59:59";
             }
         }
         return value;
@@ -1975,21 +1781,16 @@ public class HepTodoController extends BaseController implements Initializable {
         List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
         List<VersionDto> versionDtoList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(versionList)) {
-            String currentDay = CommonUtils.getCurrentDateTime3();
             for (String item : versionList) {
                 String[] elements = item.split(STR_SEMICOLON);
                 VersionDto versionDto = new VersionDto();
-                String oriCloseDate = getRealDate(elements[1]);
-                String oriPublishDate = getRealDate(elements[2]);
+                String oriCloseDate = elements[1];
+                String oriPublishDate = elements[2];
                 String versionCode = elements[0];
-                String closeDate = CommonUtils.getIntervalDays(currentDay, oriCloseDate);
-                String publishDate = CommonUtils.getIntervalDays(currentDay, oriPublishDate);
                 versionDto.setCode(versionCode);
                 versionDto.setCloseDate(oriCloseDate);
                 versionDto.setPublishDate(oriPublishDate);
                 versionDto.setClientName(elements[3]);
-                versionDto.setCloseInterval(closeDate);
-                versionDto.setPublishInterval(publishDate);
                 versionDtoList.add(versionDto);
             }
         }
