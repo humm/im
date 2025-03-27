@@ -65,7 +65,7 @@ public class AboutInfoController implements Initializable {
             if (CommonUtils.isSuperUser()) {
                 OutputUtils.info(about, STR_NEXT_LINE);
                 LicenseDto licenseDto = appConfigDto.getLicense();
-                String effectiveDate = CommonUtils.getCurrentDateTime5(licenseDto.getEffectiveDate());
+                String effectiveDate = CommonUtils.getCurrentDate(licenseDto.getEffectiveDate());
                 OutputUtils.info(about, STR_SPACE_4 + "授权截止: " + effectiveDate + STR_NEXT_LINE_2);
 
                 String authStatus = "已过期";

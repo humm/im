@@ -39,8 +39,12 @@ public class HepTaskDto extends BaseDto{
     private String oriCloseDate;
     // yyyy-MM-dd
     private String oriPublishDate;
-    // int
-    private String minComplete;
+    // yyyyMMdd
+    private String minCompleteBySort;
+    // yyyyMMdd
+    private String minCompleteByMark;
+    // yyyyMMdd
+    private String sortDate;
 
     private String sortCode;
 

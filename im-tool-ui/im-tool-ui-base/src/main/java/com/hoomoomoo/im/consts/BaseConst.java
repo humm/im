@@ -44,8 +44,7 @@ public class BaseConst {
     public static final String STR_20 = "20";
     public static final String STR_69 = "69";
     public static final String STR_99 = "99";
-    public static final String STR_9950 = "9950";
-    public static final String STR_9960 = "9960";
+    public static final String STR_00 = "00";
     public static final String STR_99999999 = "99999999";
     public static final String STR_20991231 = "20991231";
     public static final String STR_DATE_20991231 = "2099-12-31";

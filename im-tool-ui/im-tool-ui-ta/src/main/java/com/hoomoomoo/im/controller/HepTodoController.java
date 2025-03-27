@@ -98,7 +98,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private static Set<String> fileSyncSourceFile = new HashSet<>();
 
-    Map<String, String> taskMinCompleteDate = new HashMap<>();
+    Map<String, HepTaskDto> taskMinCompleteDate = new HashMap<>();
     Map<String, String> sortCodeCache = new HashMap<>();
 
     List<Label> colorList = new ArrayList<>();
@@ -927,32 +927,53 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
 
-            String taskNameTag = getTaskNameTag(taskName);
-            if (taskName.contains(DEFECT_TAG)) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_1));
-            } else if (taskNameTag.contains(SELF_TEST_TAG)) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_2));
-            } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_3));
-            } else if (taskName.contains(COMMIT_TAG)) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_4));
-            } else if (taskName.contains(UPDATE_TAG) || taskName.contains(DEV_COMMIT_TAG)) {
-                item.setEstimateFinishTime(getValue(STR_BLANK, STR_5));
+            String finishDate = item.getEstimateFinishTime().split(STR_SPACE)[0];
+            String finishTime = item.getEstimateFinishTime().split(STR_SPACE)[1];
+
+            if (StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
+                if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0) {
+                    finishDateError.add(item.getTaskNumber());
+                }
             }
 
             String sprintVersion = item.getSprintVersion();
             if (version.containsKey(sprintVersion)) {
                 Map<String, String> versionInfo = version.get(sprintVersion);
-                item.setOriCloseDate(CommonUtils.getCurrentDateTime5(versionInfo.get(KEY_ORI_CLOSE_DATE)));
-                item.setOriPublishDate(CommonUtils.getCurrentDateTime5(versionInfo.get(KEY_ORI_PUBLISH_DATE)));
+                item.setOriCloseDate(CommonUtils.getCurrentDate(versionInfo.get(KEY_ORI_CLOSE_DATE)));
+                item.setOriPublishDate(CommonUtils.getCurrentDate(versionInfo.get(KEY_ORI_PUBLISH_DATE)));
                 item.setCustomer(versionInfo.get(KEY_CUSTOMER));
             }
 
-            String minComplete = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getFinishDate());
-            item.setMinComplete(minComplete);
+            String taskNameTag = getTaskNameTag(taskName);
+            if (taskName.contains(DEFECT_TAG)) {
+                item.setSortDate(getValue(STR_BLANK, STR_1));
+            } else if (taskNameTag.contains(SELF_TEST_TAG)) {
+                item.setSortDate(getValue(STR_BLANK, STR_2));
+            } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
+                item.setSortDate(getValue(STR_BLANK, STR_3));
+            } else if (taskName.contains(COMMIT_TAG)) {
+                item.setSortDate(getValue(STR_BLANK, STR_4));
+            } else if (taskName.contains(DEV_COMMIT_TAG)) {
+                item.setSortDate(getValue(STR_BLANK, STR_5));
+            } else if (taskName.contains(UPDATE_TAG)) {
+                item.setSortDate(getValue(STR_BLANK, STR_6));
+            } else {
+                item.setSortDate(finishDate);
+            }
 
-            String finishDate = item.getEstimateFinishTime().split(STR_SPACE)[0];
-            String finishTime = item.getEstimateFinishTime().split(STR_SPACE)[1];
+            String minCompleteBySort = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getSortDate());
+            item.setMinCompleteBySort(minCompleteBySort);
+
+            String minCompleteByMark = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), finishDate);
+            item.setMinCompleteByMark(minCompleteByMark);
+
+            if (taskMinCompleteDate.containsKey(taskName)) {
+                if (finishDate.compareTo(taskMinCompleteDate.get(taskName).getFinishDate()) < 0) {
+                    taskMinCompleteDate.put(taskName, item);
+                }
+            } else {
+                taskMinCompleteDate.put(taskName, item);
+            }
 
             boolean today = todayMustComplete(item, currentDate, finishDate);
             boolean tomorrow = todayMustComplete(item, tomorrowDate, finishDate);
@@ -967,25 +988,10 @@ public class HepTodoController extends BaseController implements Initializable {
             if (thirdDay) {
                 thirdDayTodoTask.add(item.getTaskNumber());
             }
-            if (!finishDate.startsWith(STR_99)) {
-                boolean week = today || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
-                if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || week) {
-                    weekVersionNum++;
-                    weekTodoTask.add(item.getTaskNumber());
-                }
-            }
-            if (!finishDate.startsWith(STR_99) && StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
-                if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0) {
-                    finishDateError.add(item.getTaskNumber());
-                }
-            }
-
-            if (taskMinCompleteDate.containsKey(taskName)) {
-                if (finishDate.compareTo(taskMinCompleteDate.get(taskName)) < 0) {
-                    taskMinCompleteDate.put(taskName, finishDate);
-                }
-            } else {
-                taskMinCompleteDate.put(taskName, finishDate);
+            boolean week = today || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
+            if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || week) {
+                weekVersionNum++;
+                weekTodoTask.add(item.getTaskNumber());
             }
 
             item.setSprintVersion(formatVersion(item.getSprintVersion()));
@@ -1010,13 +1016,8 @@ public class HepTodoController extends BaseController implements Initializable {
             } else {
                 hasBlank = false;
             }
-            if (StringUtils.isBlank(status)) {
-                item.setFinishDate(STR_BLANK);
-                item.setFinishTime(STR_BLANK);
-            } else {
-                item.setFinishDate(finishDate);
-                item.setFinishTime(finishTime);
-            }
+            item.setFinishDate(finishDate);
+            item.setFinishTime(finishTime);
         }
 
         res = sortTask(res);
@@ -1099,8 +1100,8 @@ public class HepTodoController extends BaseController implements Initializable {
         if( StringUtils.equals(currentDate, finishDate)) {
             return true;
         }
-        if (StringUtils.isNotBlank(item.getMinComplete())) {
-            int date = Integer.parseInt((item.getMinComplete()));
+        if (StringUtils.isNotBlank(item.getMinCompleteByMark())) {
+            int date = Integer.parseInt((item.getMinCompleteByMark()));
             if (date <= 0 && date > -50) {
                 return true;
             }
@@ -1147,15 +1148,15 @@ public class HepTodoController extends BaseController implements Initializable {
                                 String taskName = item.getName();
                                 String taskNumber = item.getTaskNumber();
                                 String[] taskColor;
-                                if (finishDateError.contains(taskNumber)) {
+                                if (taskName.contains(DEFECT_TAG)) {
+                                    taskColor = color.get("缺陷");
+                                } else if (finishDateError.contains(taskNumber)) {
                                     taskColor = color.get("完成日期超期");
                                 } else if (dayTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("今天待提交");
                                 } else if (weekTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("本周待提交");
-                                } else if (taskName.contains(DEFECT_TAG)) {
-                                    taskColor = color.get("缺陷");
-                                } else {
+                                }  else {
                                     taskColor = color.get("默认");
                                 }
                                 setStyle(taskColor[0]);
@@ -1163,31 +1164,29 @@ public class HepTodoController extends BaseController implements Initializable {
                                 if (taskName.contains(COMMIT_TAG)) {
                                     mark = "已提交";
                                 }
-                                if (StringUtils.isBlank(item.getFinishDate())) {
-                                    return;
-                                }
-                                int minDate = Integer.parseInt(item.getMinComplete());
+
+                                int minComplete = Integer.parseInt(item.getMinCompleteByMark());
                                 if ("本周".equals(mark)) {
                                     if (tomorrowTodoTask.contains(taskNumber)) {
                                         mark = "明天";
                                     } else if (thirdDayTodoTask.contains(taskNumber)) {
                                         mark = "后天";
-                                    } else if (thursday == minDate) {
+                                    } else if (thursday == minComplete) {
                                         mark = "周四";
-                                    } else if (friday == minDate) {
+                                    } else if (friday == minComplete) {
                                         mark = "周五";
                                     }
                                 }
                                 if (StringUtils.isBlank(mark)) {
-                                    if (nextMonday == minDate) {
+                                    if (nextMonday == minComplete) {
                                         mark = "下周一";
-                                    } else if (nextTuesday == minDate) {
+                                    } else if (nextTuesday == minComplete) {
                                         mark = "下周二";
-                                    } else if (nextWednesday == minDate) {
+                                    } else if (nextWednesday == minComplete) {
                                         mark = "下周三";
-                                    } else if (nextThursday == minDate) {
+                                    } else if (nextThursday == minComplete) {
                                         mark = "下周四";
-                                    } else if (nextFriday == minDate) {
+                                    } else if (nextFriday == minComplete) {
                                         mark = "下周五";
                                     }
                                 }
@@ -1410,14 +1409,14 @@ public class HepTodoController extends BaseController implements Initializable {
         task = task.stream().peek(item -> {
             String taskName = item.getName();
             if (taskMinCompleteDate.containsKey(taskName)) {
+                HepTaskDto hepTaskDto = taskMinCompleteDate.get(taskName);
+                if (!StringUtils.equals(hepTaskDto.getFinishDate(), item.getFinishDate())) {
+                    item.setFinishDate(STR_BLANK);
+                }
                 if (sortCodeCache.containsKey(taskName)) {
                     item.setSortCode(sortCodeCache.get(taskName));
                 } else {
-                    String minCompleteDate = taskMinCompleteDate.get(taskName);
-                    if (!StringUtils.equals(minCompleteDate, item.getFinishDate())) {
-                        item.setFinishDate(STR_BLANK);
-                    }
-                    String sortCode = minCompleteDate + taskName + item.getSprintVersion();
+                    String sortCode = hepTaskDto.getMinCompleteBySort() + taskName + item.getSprintVersion();
                     item.setSortCode(sortCode);
                     sortCodeCache.put(taskName, sortCode);
                 }
@@ -1438,15 +1437,17 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         if (StringUtils.isBlank(value)) {
             if (STR_1.equals(type)) {
-                return "0000-00-00 23:59:59";
+                return "0000-00-00";
             } else if (STR_2.equals(type)) {
-                return "0010-00-00 23:59:59";
+                return "0010-00-00";
             } else if (STR_3.equals(type)) {
-                return "0020-00-00 23:59:59";
+                return "0020-00-00";
             } else if (STR_4.equals(type)) {
-                return "0030-00-00 23:59:59";
+                return "0030-00-00";
             } else if (STR_5.equals(type)) {
-                return "0040-00-00 23:59:59";
+                return "9940-00-00";
+            } else if (STR_6.equals(type)) {
+                return "9950-00-00";
             }
         }
         return value;

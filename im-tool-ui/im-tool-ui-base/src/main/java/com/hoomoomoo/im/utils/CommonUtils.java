@@ -160,7 +160,7 @@ public class CommonUtils {
      * @date: 2021/04/28
      * @return:
      */
-    public static String getCurrentDateTime5(String date) {
+    public static String getCurrentDate(String date) {
         if (date.length() != 8) {
             return date;
         }
