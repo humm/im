@@ -298,9 +298,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(only, false);
         OutputUtils.selected(devCompleteHide, false);
         OutputUtils.selected(devCompleteShow, false);
-        if (event != null) {
-            executeQuery(null);
-        }
+        executeQuery(event);
     }
 
     @FXML
@@ -309,9 +307,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(all, false);
         OutputUtils.selected(devCompleteHide, false);
         OutputUtils.selected(devCompleteShow, false);
-        if (event != null) {
-            executeQuery(null);
-        }
+        executeQuery(event);
     }
 
     @FXML
@@ -320,9 +316,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(devCompleteShow, false);
         OutputUtils.selected(only, false);
         OutputUtils.selected(all, false);
-        if (event != null) {
-            executeQuery(null);
-        }
+        executeQuery(event);
     }
 
     @FXML
@@ -331,9 +325,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.selected(devCompleteHide, false);
         OutputUtils.selected(only, false);
         OutputUtils.selected(all, false);
-        if (event != null) {
-            executeQuery(null);
-        }
+        executeQuery(event);
     }
 
     @FXML
@@ -1421,7 +1413,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 if (sortCodeCache.containsKey(taskName)) {
                     item.setSortCode(sortCodeCache.get(taskName));
                 } else {
-                    String sortCode = hepTaskDto.getMinCompleteBySort() + taskName + item.getSprintVersion();
+                    String sortCode = hepTaskDto.getMinCompleteBySort() + item.getCustomer() + taskName + item.getFinishDate() + item.getSprintVersion();
                     item.setSortCode(sortCode);
                     sortCodeCache.put(taskName, sortCode);
                 }

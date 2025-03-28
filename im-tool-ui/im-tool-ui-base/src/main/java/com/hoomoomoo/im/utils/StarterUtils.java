@@ -73,7 +73,7 @@ public class StarterUtils {
             Thread.setDefaultUncaughtExceptionHandler((thread, e) -> {
                 // 只能处理 RuntimeException 异常及其子类异常  不含孙异常
                 LoggerUtils.info("全局异常处理日志打印开始");
-                LoggerUtils.info("忽略异常信息 " + e.getMessage());
+                // LoggerUtils.info("忽略异常信息 " + e.getMessage());
                 LoggerUtils.info("全局异常处理日志打印结束");
             });
 
