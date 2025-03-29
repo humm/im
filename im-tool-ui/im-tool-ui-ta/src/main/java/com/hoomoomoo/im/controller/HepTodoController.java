@@ -801,9 +801,6 @@ public class HepTodoController extends BaseController implements Initializable {
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
         filterTask(res);
-        if (tagFlag) {
-            initTag(res);
-        }
         boolean hasBlank = false;
         int taskTotal = 0;
         Map<String, Map<String, String>> version = new HashMap<>();
@@ -1018,6 +1015,10 @@ public class HepTodoController extends BaseController implements Initializable {
         }
 
         res = sortTask(res);
+
+        if (tagFlag) {
+            initTag(res);
+        }
 
         OutputUtils.clearLog(dayTodo);
         OutputUtils.info(dayTodo, String.valueOf(dayVersionNum));
@@ -1934,7 +1935,6 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private boolean requestStatus(HttpResponse response) {
-
         return !proScene() || STATUS_200 == response.getStatus();
     }
 
