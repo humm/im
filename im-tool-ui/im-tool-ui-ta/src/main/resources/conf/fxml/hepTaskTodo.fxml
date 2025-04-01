@@ -64,9 +64,6 @@
                         <Label fx:id="fileTipsVersion" layoutX="970.0" layoutY="150.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                        <Label fx:id="taskTips" layoutX="1480.0" layoutY="150.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-
                         <Button fx:id="syncFileBtn" layoutX="1650.0" layoutY="145.0" mnemonicParsing="false"
                                 onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="55.0" text="暂停">
                             <padding>
@@ -74,9 +71,11 @@
                             </padding>
                         </Button>
 
-                        <Label fx:id="memoryTips" layoutX="770" layoutY="180.0"
+                        <Label fx:id="memoryTips" layoutX="700" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="scrollTips" layoutX="1200.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="scrollTips" layoutX="1100.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="taskTips" layoutX="1470.0" layoutY="180.0"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                         <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="99.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="635" layoutY="105.0" text="0%"/>
