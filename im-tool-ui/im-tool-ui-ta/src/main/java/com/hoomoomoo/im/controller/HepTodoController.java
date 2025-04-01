@@ -1585,7 +1585,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void outputMemory() {
         String[] memoryInfo = CommonUtils.getMemoryInfo();
-        OutputUtils.info(memoryTips, memoryInfo[0]);
+        OutputUtils.info(memoryTips, "内存使用: " + memoryInfo[0]);
         if (Integer.valueOf(memoryInfo[1]) > 1024 || Integer.valueOf(memoryInfo[2]) > 1024) {
             memoryTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
             memoryTips.setVisible(true);
