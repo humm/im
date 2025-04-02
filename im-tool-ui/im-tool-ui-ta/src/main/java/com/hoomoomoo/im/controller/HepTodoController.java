@@ -1458,7 +1458,7 @@ public class HepTodoController extends BaseController implements Initializable {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             initUserInfo(appConfigDto);
-            //frontTips.setVisible(false);
+            frontTips.setVisible(true);
             if (isExtendUser()) {
                 all.setSelected(true);
                 extendUser.setVisible(false);
