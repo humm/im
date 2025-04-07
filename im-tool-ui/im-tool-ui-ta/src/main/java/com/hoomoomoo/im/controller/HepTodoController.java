@@ -918,6 +918,8 @@ public class HepTodoController extends BaseController implements Initializable {
 
             String finishDate = item.getEstimateFinishTime().split(STR_SPACE)[0];
             String finishTime = item.getEstimateFinishTime().split(STR_SPACE)[1];
+            item.setFinishDate(finishDate);
+            item.setFinishTime(finishTime);
 
             if (StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
                 if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0) {
@@ -934,20 +936,23 @@ public class HepTodoController extends BaseController implements Initializable {
             }
 
             String taskNameTag = getTaskNameTag(taskName);
-            if (taskName.contains(DEFECT_TAG)) {
-                item.setSortDate(getValue(STR_BLANK, STR_1));
-            } else if (taskNameTag.contains(SELF_TEST_TAG)) {
-                item.setSortDate(getValue(STR_BLANK, STR_2));
-            } else if (taskNameTag.contains(SELF_BUILD_TAG)) {
-                item.setSortDate(getValue(STR_BLANK, STR_3));
-            } else if (taskName.contains(COMMIT_TAG)) {
-                item.setSortDate(getValue(STR_BLANK, STR_4));
-            } else if (taskName.contains(DEV_COMMIT_TAG)) {
-                item.setSortDate(getValue(STR_BLANK, STR_5));
-            } else if (taskName.contains(UPDATE_TAG)) {
-                item.setSortDate(getValue(STR_BLANK, STR_6));
-            } else {
-                item.setSortDate(finishDate);
+            switch (taskNameTag) {
+                case DEFECT_TAG:
+                    item.setSortDate(getValue(STR_BLANK, STR_1));
+                    break;
+                case SELF_TEST_TAG:
+                    item.setSortDate(getValue(STR_BLANK, STR_2));
+                    break;
+                case SELF_BUILD_TAG:
+                    item.setSortDate(getValue(STR_BLANK, STR_3));
+                    break;
+                case COMMIT_TAG:
+                case DEV_COMMIT_TAG:
+                case UPDATE_TAG:
+                default:
+                    item.setSortDate(finishDate);
+                    break;
+
             }
 
             String minCompleteByMark = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), finishDate);
@@ -956,16 +961,12 @@ public class HepTodoController extends BaseController implements Initializable {
             String minCompleteBySort = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getSortDate());
 
             if (taskMinCompleteDate.containsKey(taskName)) {
-                if (finishDate.compareTo(taskMinCompleteDate.get(taskName).getFinishDate()) < 0) {
-                    taskMinCompleteDate.get(taskName).setFinishDate(finishDate);
-                }
                 if (minCompleteBySort.compareTo(taskMinCompleteDate.get(taskName).getMinCompleteBySort()) < 0) {
                     taskMinCompleteDate.get(taskName).setMinCompleteBySort(minCompleteBySort);
                 }
             } else {
                 HepTaskDto taskMin = new HepTaskDto();
                 taskMin.setMinCompleteBySort(minCompleteBySort);
-                taskMin.setFinishDate(finishDate);
                 taskMinCompleteDate.put(taskName, taskMin);
             }
 
@@ -1010,8 +1011,6 @@ public class HepTodoController extends BaseController implements Initializable {
             } else {
                 hasBlank = false;
             }
-            item.setFinishDate(finishDate);
-            item.setFinishTime(finishTime);
         }
 
         res = sortTask(res);
@@ -1220,6 +1219,9 @@ public class HepTodoController extends BaseController implements Initializable {
         if (CollectionUtils.isEmpty(task)) {
             return;
         }
+        if (StringUtils.equals(PAGE_USER, EXTEND_USER_FRONT_CODE)) {
+            return;
+        }
         Map<String, String> tags = new LinkedHashMap<>();
         for (HepTaskDto item : task) {
             String taskName = item.getName();
@@ -1327,7 +1329,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private static String getTaskNameTag(String taskName) {
         int start = 0;
         int end = taskName.length();
-        if (taskName.contains(STR_BRACKETS_3_LEFT) && taskName.contains(STR_BRACKETS_3_RIGHT)) {
+        if (taskName.contains(DEFECT_TAG)) {
+            return DEFECT_TAG;
+        } else if (taskName.contains(STR_BRACKETS_3_LEFT) && taskName.contains(STR_BRACKETS_3_RIGHT)) {
             return taskName.substring(taskName.indexOf(STR_BRACKETS_3_LEFT) , taskName.indexOf(STR_BRACKETS_3_RIGHT) + 1);
         } else if (taskName.startsWith(STR_BRACKETS_2_LEFT) && taskName.contains(STR_BRACKETS_2_RIGHT)) {
             start = taskName.indexOf(STR_BRACKETS_2_LEFT);
@@ -1406,17 +1410,15 @@ public class HepTodoController extends BaseController implements Initializable {
     private List<HepTaskDto> sortTask(List<HepTaskDto> task) {
         task = task.stream().peek(item -> {
             String taskName = item.getName();
+            String cacheKey = taskName + STR_HYPHEN + item.getSprintVersion();
             if (taskMinCompleteDate.containsKey(taskName)) {
                 HepTaskDto hepTaskDto = taskMinCompleteDate.get(taskName);
-                if (!StringUtils.equals(hepTaskDto.getFinishDate(), item.getFinishDate())) {
-                    item.setFinishDate(STR_BLANK);
-                }
-                if (sortCodeCache.containsKey(taskName)) {
-                    item.setSortCode(sortCodeCache.get(taskName));
+                if (sortCodeCache.containsKey(cacheKey)) {
+                    item.setSortCode(sortCodeCache.get(cacheKey));
                 } else {
                     String sortCode = hepTaskDto.getMinCompleteBySort() + item.getCustomer() + taskName + item.getFinishDate() + item.getSprintVersion();
                     item.setSortCode(sortCode);
-                    sortCodeCache.put(taskName, sortCode);
+                    sortCodeCache.put(cacheKey, sortCode);
                 }
                 item.setMinCompleteBySort(hepTaskDto.getMinCompleteBySort());
             }
