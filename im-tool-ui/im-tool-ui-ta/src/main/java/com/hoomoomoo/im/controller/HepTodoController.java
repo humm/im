@@ -112,7 +112,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
         put("完成日期超期", new String[] {"-fx-text-background-color: #7b00ff;", "超期"});
-        put("今天待提交", new String[] {"-fx-text-background-color: #518000;", "今天"});
+        put("今天待提交", new String[] {"-fx-text-background-color: #ff0000;", "今天"});
         put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;", "本周"});
         put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "缺陷"});
         put("默认", new String[] {"-fx-text-background-color: #000000;", ""});
