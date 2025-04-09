@@ -235,6 +235,9 @@ public class BaseConst {
     public static final String NAME_MENU_CANCEL_DEV = "取标分支";
     public static final String NAME_MENU_MARK_SUBMIT = "标记提交";
     public static final String NAME_MENU_CANCEL_SUBMIT = "取标提交";
+    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记简单";
+    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记一般";
+    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记复杂";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -355,6 +358,10 @@ public class BaseConst {
     public static final String CANCEL_ICON = "/conf/image/cancel.png";
     public static final String SUBMIT_ICON = "/conf/image/submit.png";
     public static final String CANCEL_SUBMIT_ICON = "/conf/image/submitCancel.png";
+    public static final String CANCEL_LEVEL_ICON = "/conf/image/level.png";
+    public static final String CANCEL_LEVEL_SIMPLE_ICON = "/conf/image/simple.png";
+    public static final String CANCEL_LEVEL_GENERAL_ICON = "/conf/image/general.png";
+    public static final String CANCEL_LEVEL_DIFFICULTY_ICON = "/conf/image/difficulty.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
     public static final String DETAIL_ICON = "/conf/image/detail.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";
@@ -370,6 +377,7 @@ public class BaseConst {
     public static final String PATH_DEMAND_STAT = "/demand.stat";
     public static final String PATH_DEFINE_TASK_DEV_EXTEND_STAT = "/extend/task/taskDevExtend.stat";
     public static final String PATH_DEFINE_TASK_EXTEND_STAT = "/extend/task/taskExtend.stat";
+    public static final String PATH_DEFINE_TASK_LEVEL_EXTEND_STAT = "/extend/task/taskLevelExtend.stat";
     public static final String PATH_DEFINE_DEMAND_SYNC_STAT = "/extend/task/demandSync.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";

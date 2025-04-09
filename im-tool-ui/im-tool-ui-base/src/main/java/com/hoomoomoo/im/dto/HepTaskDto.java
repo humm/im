@@ -60,4 +60,6 @@ public class HepTaskDto extends BaseDto{
 
     private String taskMark;
 
+    private String taskLevel;
+
 }

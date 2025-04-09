@@ -133,6 +133,36 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
 
+        MenuItem menuTaskLevelSimple = new MenuItem(NAME_MENU_TASK_LEVEL_SIMPLE);
+        CommonUtils.setIcon(menuTaskLevelSimple, CANCEL_LEVEL_SIMPLE_ICON, MENUITEM_ICON_SIZE);
+        menuTaskLevelSimple.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                handleLevel(STR_0, NAME_MENU_TASK_LEVEL_SIMPLE);
+            }
+        });
+
+        MenuItem menuTaskLevelGeneral = new MenuItem(NAME_MENU_TASK_LEVEL_GENERAL);
+        CommonUtils.setIcon(menuTaskLevelGeneral, CANCEL_LEVEL_GENERAL_ICON, MENUITEM_ICON_SIZE);
+        menuTaskLevelGeneral.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                handleLevel(STR_1, NAME_MENU_TASK_LEVEL_GENERAL);
+            }
+        });
+
+        MenuItem menuTaskLevelDifficulty = new MenuItem(NAME_MENU_TASK_LEVEL_DIFFICULTY);
+        CommonUtils.setIcon(menuTaskLevelDifficulty, CANCEL_LEVEL_DIFFICULTY_ICON, MENUITEM_ICON_SIZE);
+        menuTaskLevelDifficulty.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                handleLevel(STR_2, NAME_MENU_TASK_LEVEL_DIFFICULTY);
+            }
+        });
+
         MenuItem detailTask = new MenuItem(NAME_MENU_DETAIL);
         CommonUtils.setIcon(detailTask, DETAIL_ICON, MENUITEM_ICON_SIZE);
         detailTask.setOnAction(new EventHandler<ActionEvent>() {
@@ -174,6 +204,9 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         getItems().add(menuCancelDev);
         getItems().add(menuMarkSubmit);
         getItems().add(menuCancelSubmit);
+        getItems().add(menuTaskLevelSimple);
+        getItems().add(menuTaskLevelGeneral);
+        getItems().add(menuTaskLevelDifficulty);
     }
 
     public static HepWaitHandleTaskMenu getInstance() {
@@ -241,6 +274,46 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
         OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
         activeHepTodoController.doExecuteQuery();
+    }
+
+    private void handleLevel(String type, String btnName) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        HepTaskDto item = appConfigDto.getHepTaskDto();
+        String taskNumber = item.getTaskNumber();
+        String eleValue = taskNumber + STR_SEMICOLON + type;
+        String eleIndex = taskNumber + STR_SEMICOLON;
+        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT);
+        File taskExtendStat = new File(path);
+        if (!taskExtendStat.exists()) {
+            taskExtendStat.createNewFile();
+        }
+        List<String> taskNumberList = FileUtils.readNormalFile(path, false);
+        remarkLevel(taskNumberList, eleValue, eleIndex);
+        taskNumber = item.getDemandNo();
+        if (StringUtils.isNotBlank(taskNumber)) {
+            eleValue = taskNumber + STR_SEMICOLON + type;
+            eleIndex = taskNumber + STR_SEMICOLON;
+            remarkLevel(taskNumberList, eleValue, eleIndex);
+        }
+        FileUtils.writeFile(path, taskNumberList, false);
+        String msg = btnName + "成功";
+        HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
+        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+        activeHepTodoController.doExecuteQuery();
+    }
+
+    private void remarkLevel(List<String> taskNumberList, String eleValue, String eleIndex) {
+        if (!taskNumberList.contains(eleIndex + STR_0) && !taskNumberList.contains(eleIndex + STR_1) && !taskNumberList.contains(eleIndex + STR_2)) {
+            taskNumberList.add(eleValue);
+        } else {
+            for (int i=0; i<taskNumberList.size(); i++) {
+                String ele = taskNumberList.get(i);
+                if (ele.contains(eleIndex)) {
+                    taskNumberList.set(i, eleValue);
+                    break;
+                }
+            }
+        }
     }
 
     private String getCopyContent(HepTaskDto item, boolean hasDescribe) {

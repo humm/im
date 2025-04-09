@@ -833,6 +833,7 @@ public class HepTodoController extends BaseController implements Initializable {
         String weekDay = CommonUtils.getLastDayByWeekYmd();
         List<String> versionList = getTaskVersionInfo();
         Map<String, Map<String, String>> taskInfo = getTaskInfo();
+        Map<String, String> taskLevel = getTaskLevelInfo();
         Map<String, String> taskCustomerName = taskInfo.get(KEY_CUSTOMER);
         Map<String, String> taskDemandNo = taskInfo.get(KEY_TASK);
         Map<String, String> taskDemandStatus = getDemandInfo();
@@ -903,6 +904,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 mergerNum++;
             }
 
+            if (taskLevel.containsKey(demandNo)) {
+                item.setTaskLevel(taskLevel.get(demandNo));
+            } else if (taskLevel.containsKey(taskNumberIn)) {
+                item.setTaskLevel(taskLevel.get(taskNumberIn));
+            }
             String status = item.getStatus();
             if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
                 if (taskName.contains(DEV_COMMIT_TAG)) {
@@ -1510,7 +1516,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 positions = 1;
                 sideBarBtn.setText("显示侧边栏");
             } else {
-                width = 640;
+                width = 570;
                 sideBarBtn.setText("隐藏侧边栏");
             }
             ((TableColumn)taskList.getColumns().get(0)).setPrefWidth(width);
@@ -1872,6 +1878,37 @@ public class HepTodoController extends BaseController implements Initializable {
                     if (STR_FALSE.equals(elementList[1])) {
                         task.put(elementList[0], elementList[1]);
                     }
+                }
+            }
+        } catch (IOException e) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            LoggerUtils.info(e);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+        return task;
+    }
+
+    public Map<String,String> getTaskLevelInfo() {
+        Map<String, String> task = new HashMap<>();
+        try {
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT), false);
+            if (CollectionUtils.isNotEmpty(taskList)) {
+                for (String item : taskList) {
+                    String[] elementList = item.split(STR_SEMICOLON);
+                    String level = elementList[1];
+                    switch (level) {
+                        case STR_0:
+                            level = "简单";
+                            break;
+                        case STR_1:
+                            level = "一般";
+                            break;
+                        default:
+                            level = "复杂";
+                            break;
+                    }
+                    task.put(elementList[0], level);
                 }
             }
         } catch (IOException e) {

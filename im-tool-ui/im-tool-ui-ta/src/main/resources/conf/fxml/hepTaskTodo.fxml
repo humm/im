@@ -174,7 +174,7 @@
                                                                    AnchorPane.rightAnchor="0.0"
                                                                    AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn id="name" editable="false" prefWidth="850"
+                                                                <TableColumn id="name" editable="false" prefWidth="890"
                                                                              sortable="false" text="任务名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="name"/>
@@ -192,6 +192,13 @@
                                                                              style="-fx-alignment: center;" text="标记">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="taskMark"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="taskLevel" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="复杂度">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="taskLevel"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="statusName" editable="false"
