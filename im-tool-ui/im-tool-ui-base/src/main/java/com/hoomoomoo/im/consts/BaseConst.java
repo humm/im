@@ -225,7 +225,7 @@ public class BaseConst {
     public static final String NAME_CLEAR_LOG = "系统日志";
     public static final String NAME_SYNC_CODE = "同步源码";
 
-    public static final String NAME_MENU_UPDATE = "任务更新";
+    public static final String NAME_MENU_UPDATE = "更新任务";
     public static final String NAME_MENU_COPY = "复制详细";
     public static final String NAME_MENU_SIMPLE_COPY = "复制简单";
     public static final String NAME_MENU_DETAIL = "任务详情";

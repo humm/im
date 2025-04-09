@@ -64,19 +64,6 @@
                         <Label fx:id="fileTipsVersion" layoutX="970.0" layoutY="150.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                        <Button fx:id="syncFileBtn" layoutX="1650.0" layoutY="145.0" mnemonicParsing="false"
-                                onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="55.0" text="暂停">
-                            <padding>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </padding>
-                        </Button>
-
-                        <Label fx:id="memoryTips" layoutX="700" layoutY="180.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="scrollTips" layoutX="1100.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="taskTips" layoutX="1470.0" layoutY="180.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-
                         <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="99.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="635" layoutY="105.0" text="0%"/>
 
@@ -95,23 +82,6 @@
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
-
-                        <Button fx:id="syncTask" layoutX="1480.0" layoutY="100.0" mnemonicParsing="false"
-                                onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务信息">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-
-                        <Button fx:id="extendUser" layoutX="1590.0" layoutY="100.0" mnemonicParsing="false"
-                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="115.0" text="关联用户任务">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-
-                        <!-- 获取焦点 -->
-                        <TextField layoutX="2000.0" layoutY="1000.0" prefWidth="240" text=""/>
 
                         <Label layoutX="1520.0" layoutY="22.0" text="发版计划"/>
                         <Button fx:id="updateVersion" layoutX="1590.0" layoutY="15.0" mnemonicParsing="false"
@@ -141,11 +111,47 @@
                             </padding>
                         </Button>
 
+                        <Button fx:id="syncTask" layoutX="1480.0" layoutY="100.0" mnemonicParsing="false"
+                                onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务信息">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
+                        <Button fx:id="extendUser" layoutX="1590.0" layoutY="100.0" mnemonicParsing="false"
+                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="115.0" text="关联用户任务">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
+                        <Button fx:id="syncFileBtn" layoutX="1480.0" layoutY="145.0" mnemonicParsing="false"
+                                onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="暂停文件同步">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
+                        <Button fx:id="sideBarBtn" layoutX="1590.0" layoutY="145.0" mnemonicParsing="false"
+                                onAction="#sideBarStatus" prefHeight="30.0" prefWidth="115.0" text="隐藏侧边栏">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
+                        <Label fx:id="memoryTips" layoutX="600" layoutY="180.0"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                        <Label fx:id="scrollTips" layoutX="900.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="taskTips" layoutX="1270.0" layoutY="180.0"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                        <Label fx:id="frontTips" layoutX="1500.0" layoutY="180.0" text="front未实时同步"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+
                     </children>
                 </AnchorPane>
                 <AnchorPane fx:id="hep" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.81" layoutX="174.0" layoutY="76.0" prefHeight="187.0"
+                        <SplitPane fx:id="taskSplitPane" dividerPositions="0.81" layoutX="174.0" layoutY="76.0" prefHeight="187.0"
                                    prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
@@ -168,7 +174,7 @@
                                                                    AnchorPane.rightAnchor="0.0"
                                                                    AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn id="name" editable="false" prefWidth="640"
+                                                                <TableColumn id="name" editable="false" prefWidth="850"
                                                                              sortable="false" text="任务名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="name"/>
@@ -285,7 +291,7 @@
                                                     <Label layoutX="15.0" layoutY="10.0"
                                                            style="-fx-font-weight: bold; -fx-font-size: 15;"
                                                            text="任务单信息"/>
-                                                    <Label fx:id="frontTips" layoutX="190.0" layoutY="10.0"
+                                                    <Label fx:id="frontTipsSideBar" layoutX="190.0" layoutY="10.0"
                                                            style="-fx-font-weight: bold; -fx-font-size: 15; -fx-text-background-color: red;"
                                                            text="front未实时同步"/>
                                                     <Label layoutX="15.0" layoutY="55.0" text="需求编号"/>

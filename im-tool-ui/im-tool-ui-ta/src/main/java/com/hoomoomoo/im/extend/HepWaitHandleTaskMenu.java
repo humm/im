@@ -169,11 +169,11 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         getItems().add(menuScript);
         getItems().add(menuTaskNo);
         getItems().add(updateTask);
+        getItems().add(detailTask);
         getItems().add(menuMarkDev);
         getItems().add(menuCancelDev);
         getItems().add(menuMarkSubmit);
         getItems().add(menuCancelSubmit);
-        getItems().add(detailTask);
     }
 
     public static HepWaitHandleTaskMenu getInstance() {
