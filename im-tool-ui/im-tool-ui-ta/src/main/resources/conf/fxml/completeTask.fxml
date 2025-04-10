@@ -71,7 +71,7 @@
                                         <TextArea fx:id="selfTestDesc" layoutX="90.0" layoutY="645.0"
                                                   prefHeight="200.0" prefWidth="900.0" />
 
-                                        <Label fx:id="notice" layoutX="14.0" layoutY="9999.0" prefHeight="15.0" prefWidth="600.0"/>
+                                        <Label fx:id="notice" layoutX="14.0" layoutY="860.0" prefHeight="15.0" prefWidth="600.0"/>
 
                                         <Button fx:id="execute" layoutX="410.0" layoutY="855.0"
                                                 mnemonicParsing="false" onAction="#execute" prefHeight="30.0"

@@ -58,7 +58,7 @@ public class UnZipRarUtils {
                 } else {
                     if (fileDate < min || fileDate > max) {
                         LoggerUtils.info(String.format("文件【 %s 】已被修改", fileName));
-                        throw new Exception(String.format(MSG_TIPS, NAME_FILE_SAME) + "校验不通过,请勿修改");
+                        throw new Exception(String.format(MSG_TIPS, NAME_FILE_SAME) + "校验不通过,请勿修改文件");
                     }
                 }
             }

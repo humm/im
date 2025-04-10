@@ -318,6 +318,7 @@ public class BaseConst {
     public static final String MSG_LICENSE_NOT_AUTH = "功能【 %s 】未授权";
     public static final String MSG_LICENSE_NOT_USE = "未启用【 %s 】功能";
     public static final String MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ";
+    public static final String MSG_TASK_DIVIDE_LINE = "=========================================================";
     public static final String MSG_SVN_REALTIME_STAT = "%s  %s  %s  %s";
     public static final String MSG_TIPS = "【%s】";
     public static final String MSG_WAIT_HANDLE_NUM = "-- 待处理【%s】\n\n";
@@ -375,6 +376,7 @@ public class BaseConst {
     public static final String PATH_TASK_STAT = "/extend/task/task.stat";
     public static final String PATH_GIT_LOG = "/extend/git/";
     public static final String PATH_DEMAND_STAT = "/demand.stat";
+    public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
     public static final String PATH_DEFINE_TASK_DEV_EXTEND_STAT = "/extend/task/taskDevExtend.stat";
     public static final String PATH_DEFINE_TASK_EXTEND_STAT = "/extend/task/taskExtend.stat";
     public static final String PATH_DEFINE_TASK_LEVEL_EXTEND_STAT = "/extend/task/taskLevelExtend.stat";

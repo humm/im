@@ -877,7 +877,7 @@ public class HepTodoController extends BaseController implements Initializable {
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String taskName = item.getName().replaceAll(STR_NEXT_LINE, STR_BLANK);
-
+            item.setOriTaskName(taskName);
             String taskNumberIn = item.getTaskNumber();
             if (taskDemandNo.containsKey(taskNumberIn)) {
                 item.setDemandNo(taskDemandNo.get(taskNumberIn));

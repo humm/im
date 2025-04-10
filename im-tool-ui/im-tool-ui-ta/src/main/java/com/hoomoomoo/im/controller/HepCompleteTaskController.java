@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
@@ -96,7 +97,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         try {
             logDtoList.addAll(SvnUtils.getSvnLog(0, taskNumber));
         } catch (Exception e) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("修改记录信息同步异常,请检查"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("修改记录信息同步异常,请检查"));
             LoggerUtils.info(e);
             sync.setDisable(false);
             execute.setDisable(false);
@@ -134,6 +135,38 @@ public class HepCompleteTaskController extends BaseController implements Initial
         if (StringUtils.isBlank(editDescriptionValue)) {
             editDescriptionValue.append(STR_NEXT_LINE);
         }
+        String taskDesc = STR_BLANK;
+        try {
+            String fileName = hepTaskDto.getOriTaskName() + FILE_TYPE_STAT;
+            String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
+            taskDesc = FileUtils.readNormalFileToString(path, false);
+        } catch (Exception e) {
+        }
+        if (StringUtils.isNotBlank(taskDesc)) {
+            String[] parts = taskDesc.split(MSG_TASK_DIVIDE_LINE);
+            if (parts.length == 3) {
+                String editDescriptionIn = TaCommonUtils.formatTextBrToNextLine(parts[0]);
+                String suggestionIn = TaCommonUtils.formatTextBrToNextLine(parts[1]);
+                String selfTestDescIn = TaCommonUtils.formatTextBrToNextLine(parts[2]);
+                OutputUtils.repeatInfo(suggestion, formatText(suggestionIn));
+                OutputUtils.repeatInfo(selfTestDesc, formatText(selfTestDescIn));
+            } else {
+                OutputUtils.info(notice, "已提交任务信息格式错误");
+                setDefaultTaskDesc(editDescriptionValue.toString());
+            }
+        } else {
+            setDefaultTaskDesc(editDescriptionValue.toString());
+        }
+        if (StringUtils.isBlank(modifiedFileValue)) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("未查询到修改记录信息,请检查"));
+        } else {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("修改记录信息同步完成"));
+        }
+        sync.setDisable(false);
+        execute.setDisable(false);
+    }
+
+    private void setDefaultTaskDesc(String editDescriptionValue) {
         StringBuilder suggestionMsg = new StringBuilder();
         suggestionMsg.append("【功能入口】\n");
         suggestionMsg.append("\t\n");
@@ -154,13 +187,6 @@ public class HepCompleteTaskController extends BaseController implements Initial
         selfTestDescMsg.append("\t无\n");
         selfTestDescMsg.append("【其他】");
         OutputUtils.repeatInfo(selfTestDesc, selfTestDescMsg.toString());
-        if (StringUtils.isBlank(modifiedFileValue)) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("未查询到修改记录信息,请检查"));
-        } else {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainDate("修改记录信息同步完成"));
-        }
-        sync.setDisable(false);
-        execute.setDisable(false);
     }
 
     private String getVersion(AppConfigDto appConfigDto, String ver) {
@@ -238,18 +264,30 @@ public class HepCompleteTaskController extends BaseController implements Initial
             alert.showAndWait();
             return;
         }
-
+        String modifiedFile = TaCommonUtils.formatText(modifiedFileValue, true);
+        String editDescription = TaCommonUtils.formatText(editDescriptionValue, true);
+        String suggestion = TaCommonUtils.formatText(suggestionValue, true);
+        String selfTestDesc = TaCommonUtils.formatTextOnlyBr(selfTestDescValue);
         hepTaskDto.setRealWorkload(realRorkloadValue.trim());
         hepTaskDto.setRealFinishTime(realFinishTimeValue + STR_SPACE +CommonUtils.getCurrentDateTime8(new Date()));
-        hepTaskDto.setModifiedFile(TaCommonUtils.formatText(modifiedFileValue, true));
-        hepTaskDto.setEditDescription(TaCommonUtils.formatText(editDescriptionValue, true));
-        hepTaskDto.setSuggestion(TaCommonUtils.formatText(suggestionValue, true));
-        hepTaskDto.setSelfTestDesc(TaCommonUtils.formatTextOnlyBr(selfTestDescValue));
+        hepTaskDto.setModifiedFile(modifiedFile);
+        hepTaskDto.setEditDescription(editDescription);
+        hepTaskDto.setSuggestion(suggestion);
+        hepTaskDto.setSelfTestDesc(selfTestDesc);
         HepTodoController hep = JvmCache.getHepTodoController();
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
         if (!OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
             JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);
             hep.dealTaskList(res, true);
+            List<String> taskDesc = new ArrayList<>();
+            taskDesc.add(editDescription);
+            taskDesc.add(MSG_TASK_DIVIDE_LINE);
+            taskDesc.add(suggestion);
+            taskDesc.add(MSG_TASK_DIVIDE_LINE);
+            taskDesc.add(selfTestDesc);
+            String fileName = hepTaskDto.getOriTaskName() + FILE_TYPE_STAT;
+            String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
+            FileUtils.writeFile(path, taskDesc, false);
         }
         appConfigDto.getChildStage().close();
         appConfigDto.setChildStage(null);

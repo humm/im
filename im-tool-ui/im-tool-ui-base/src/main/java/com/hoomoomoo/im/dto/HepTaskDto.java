@@ -15,6 +15,7 @@ public class HepTaskDto extends BaseDto{
     private String id;
     private String taskNumber;
     private String name;
+    private String oriTaskName;
     private String productName;
     private String sprintVersion;
     private String status;

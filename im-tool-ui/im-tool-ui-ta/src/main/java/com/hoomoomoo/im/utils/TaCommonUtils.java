@@ -395,6 +395,10 @@ public class TaCommonUtils {
         return CommonUtils.getCurrentDateTime1() + STR_SPACE + msg;
     }
 
+    public static String getMsgContainTime(String msg) {
+        return CommonUtils.getCurrentDateTime14() + STR_SPACE + msg;
+    }
+
     public static String getMsgContainTimeContainBr(String msg) {
         return CommonUtils.getCurrentDateTime14() + STR_SPACE + msg + STR_NEXT_LINE;
     }
