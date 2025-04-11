@@ -99,7 +99,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleDev(STR_1);
+                handleDev(STR_1, NAME_MENU_MARK_DEV);
             }
         });
 
@@ -109,7 +109,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleDev(STR_0);
+                handleDev(STR_0, NAME_MENU_CANCEL_DEV);
             }
         });
 
@@ -119,7 +119,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleSubmit(STR_1);
+                handleSubmit(STR_1, NAME_MENU_MARK_SUBMIT);
             }
         });
 
@@ -129,7 +129,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleSubmit(STR_0);
+                handleSubmit(STR_0, NAME_MENU_CANCEL_SUBMIT);
             }
         });
 
@@ -216,7 +216,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         return instance;
     }
 
-    private void handleDev(String type) throws Exception {
+    private void handleDev(String type, String btnName) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto item = appConfigDto.getHepTaskDto();
         String taskNumber = item.getTaskNumber();
@@ -240,13 +240,13 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         }
         FileUtils.writeFile(path, taskNumberList, false);
-        String msg = STR_1.equals(type) ? "标记分支成功" : "取标分支成功";
+        String msg = btnName + "成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
         OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
         activeHepTodoController.doExecuteQuery();
     }
 
-    private void handleSubmit(String type) throws Exception {
+    private void handleSubmit(String type, String btnName) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto item = appConfigDto.getHepTaskDto();
         String taskNumber = item.getTaskNumber();
@@ -270,7 +270,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         }
         FileUtils.writeFile(path, taskNumberList, false);
-        String msg = STR_1.equals(type) ? "标记提交成功" : "取标提交成功";
+        String msg = btnName + "成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
         OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
         activeHepTodoController.doExecuteQuery();

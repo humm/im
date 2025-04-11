@@ -226,18 +226,18 @@ public class BaseConst {
     public static final String NAME_SYNC_CODE = "同步源码";
 
     public static final String NAME_MENU_UPDATE = "更新任务";
-    public static final String NAME_MENU_COPY = "复制详细";
-    public static final String NAME_MENU_SIMPLE_COPY = "复制简单";
-    public static final String NAME_MENU_DETAIL = "任务详情";
-    public static final String NAME_MENU_SCRIPT = "复制摘要";
-    public static final String NAME_MENU_TASK_NO = "复制单号";
-    public static final String NAME_MENU_MARK_DEV = "标记分支";
-    public static final String NAME_MENU_CANCEL_DEV = "取标分支";
-    public static final String NAME_MENU_MARK_SUBMIT = "标记提交";
-    public static final String NAME_MENU_CANCEL_SUBMIT = "取标提交";
-    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记简单";
-    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记一般";
-    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记复杂";
+    public static final String NAME_MENU_COPY = "复制提交描述";
+    public static final String NAME_MENU_SIMPLE_COPY = "复制提交描述不包含需求描述";
+    public static final String NAME_MENU_DETAIL = "查看任务详情";
+    public static final String NAME_MENU_SCRIPT = "复制升级脚本提交摘要";
+    public static final String NAME_MENU_TASK_NO = "复制任务单号";
+    public static final String NAME_MENU_MARK_DEV = "标记分支任务已完成";
+    public static final String NAME_MENU_CANCEL_DEV = "取标分支任务已完成";
+    public static final String NAME_MENU_MARK_SUBMIT = "标记任务已提交";
+    public static final String NAME_MENU_CANCEL_SUBMIT = "取标任务已提交";
+    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记任务等级-简单";
+    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记任务等级-一般";
+    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记任务等级-复杂";
 
     public final static String SECURITY_FLAG = "+++";
 
