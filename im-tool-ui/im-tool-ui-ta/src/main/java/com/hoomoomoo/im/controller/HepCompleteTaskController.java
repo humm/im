@@ -19,6 +19,8 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.util.*;
@@ -144,14 +146,19 @@ public class HepCompleteTaskController extends BaseController implements Initial
         }
         if (StringUtils.isNotBlank(taskDesc)) {
             String[] parts = taskDesc.split(MSG_TASK_DIVIDE_LINE);
-            if (parts.length == 3) {
-                String editDescriptionIn = TaCommonUtils.formatTextBrToNextLine(parts[0]);
-                String suggestionIn = TaCommonUtils.formatTextBrToNextLine(parts[1]);
-                String selfTestDescIn = TaCommonUtils.formatTextBrToNextLine(parts[2]);
-                OutputUtils.repeatInfo(suggestion, formatText(suggestionIn));
-                OutputUtils.repeatInfo(selfTestDesc, formatText(selfTestDescIn));
+            if (parts.length == 4) {
+                String taskNumberIn = TaCommonUtils.formatTextBrToNextLine(parts[0]);
+                if (!StringUtils.equals(taskNumber, taskNumberIn)) {
+                    String editDescriptionIn = TaCommonUtils.formatTextBrToNextLine(parts[1]);
+                    String suggestionIn = TaCommonUtils.formatTextBrToNextLine(parts[2]);
+                    String selfTestDescIn = TaCommonUtils.formatTextBrToNextLine(parts[3]);
+                    OutputUtils.repeatInfo(suggestion,  TaCommonUtils.formatText(suggestionIn));
+                    OutputUtils.repeatInfo(selfTestDesc,  TaCommonUtils.formatText(selfTestDescIn));
+                } else {
+                    setDefaultTaskDesc(editDescriptionValue.toString());
+                }
             } else {
-                OutputUtils.info(notice, "已提交任务信息格式错误");
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("已提交任务信息格式错误"));
                 setDefaultTaskDesc(editDescriptionValue.toString());
             }
         } else {
@@ -279,18 +286,27 @@ public class HepCompleteTaskController extends BaseController implements Initial
         if (!OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
             JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);
             hep.dealTaskList(res, true);
-            List<String> taskDesc = new ArrayList<>();
-            taskDesc.add(editDescription);
-            taskDesc.add(MSG_TASK_DIVIDE_LINE);
-            taskDesc.add(suggestion);
-            taskDesc.add(MSG_TASK_DIVIDE_LINE);
-            taskDesc.add(selfTestDesc);
-            String fileName = hepTaskDto.getOriTaskName() + FILE_TYPE_STAT;
-            String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
-            FileUtils.writeFile(path, taskDesc, false);
+            addTaskDesc(hepTaskDto, editDescription, suggestion, selfTestDesc);
         }
         appConfigDto.getChildStage().close();
         appConfigDto.setChildStage(null);
+    }
+
+    private void addTaskDesc(HepTaskDto hepTaskDto, String editDescription, String suggestion, String selfTestDesc) throws IOException {
+        String fileName = hepTaskDto.getOriTaskName() + FILE_TYPE_STAT;
+        String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
+        if (new File(path).exists()) {
+            return;
+        }
+        List<String> taskDesc = new ArrayList<>();
+        taskDesc.add(hepTaskDto.getTaskNumber());
+        taskDesc.add(MSG_TASK_DIVIDE_LINE);
+        taskDesc.add(editDescription);
+        taskDesc.add(MSG_TASK_DIVIDE_LINE);
+        taskDesc.add(suggestion);
+        taskDesc.add(MSG_TASK_DIVIDE_LINE);
+        taskDesc.add(selfTestDesc);
+        FileUtils.writeFile(path, taskDesc, false);
     }
 
     @Override
@@ -308,27 +324,24 @@ public class HepCompleteTaskController extends BaseController implements Initial
             if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
                 realFinishTime.setDisable(true);
                 sync.setDisable(true);
-                OutputUtils.repeatInfo(realRorkload, formatText(hepTaskDto.getRealWorkload()));
+                OutputUtils.repeatInfo(realRorkload, TaCommonUtils.formatText(hepTaskDto.getRealWorkload()));
             }
             OutputUtils.repeatInfo(modifiedFile, hepTaskDto.getModifiedFile());
-            OutputUtils.repeatInfo(editDescription, formatText(hepTaskDto.getEditDescription()));
-            OutputUtils.repeatInfo(suggestion, formatText(hepTaskDto.getSuggestion()));
-            OutputUtils.repeatInfo(selfTestDesc, formatText(hepTaskDto.getSelfTestDesc()));
+            OutputUtils.repeatInfo(editDescription, TaCommonUtils.formatText(hepTaskDto.getEditDescription()));
+            OutputUtils.repeatInfo(suggestion, TaCommonUtils.formatText(hepTaskDto.getSuggestion()));
+            OutputUtils.repeatInfo(selfTestDesc, TaCommonUtils.formatText(hepTaskDto.getSelfTestDesc()));
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
                     modifiedFile.requestFocus();
                 }
             });
+            if (StringUtils.isBlank(hepTaskDto.getModifiedFile())) {
+                syncSvn(null);
+            }
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
     }
 
-    private String formatText(String text) {
-        if (StringUtils.isBlank(text)) {
-            return STR_BLANK;
-        }
-        return text.replaceAll("<p>", STR_BLANK).replaceAll("</p>", STR_BLANK).replaceAll("&nbsp;", STR_SPACE).replaceAll("<br>", STR_BLANK).replaceAll("\r", STR_BLANK);
-    }
 }

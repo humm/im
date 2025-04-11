@@ -366,6 +366,13 @@ public class TaCommonUtils {
         return svnUrl;
     }
 
+    public static String formatText(String text) {
+        if (StringUtils.isBlank(text)) {
+            return STR_BLANK;
+        }
+        return text.replaceAll("<p>", STR_BLANK).replaceAll("</p>", STR_BLANK).replaceAll("&nbsp;", STR_SPACE).replaceAll("<br>", STR_BLANK).replaceAll("\r", STR_BLANK);
+    }
+
     public static String formatText(String text, boolean toBr){
         if (StringUtils.isBlank(text)) {
             return STR_BLANK;
