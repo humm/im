@@ -1486,8 +1486,6 @@ public class HepTodoController extends BaseController implements Initializable {
             initUserInfo(appConfigDto);
             defaultDividerPositions = taskSplitPane.getDividerPositions()[0];
             defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
-            setSideBar();
-            setFrontTips(false);
             if (isExtendUser()) {
                 all.setSelected(true);
                 extendUser.setVisible(false);
@@ -1496,12 +1494,12 @@ public class HepTodoController extends BaseController implements Initializable {
             } else {
                 devCompleteHide.setSelected(true);
                 JvmCache.setHepTodoController(this);
+                syncFile();
             }
             addTaskMenu(appConfigDto, this);
+            initComponentStatus();
             executeQuery(null);
             initColorDesc();
-            initStatus();
-            syncFile();
             buildTestData();
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -1529,9 +1527,11 @@ public class HepTodoController extends BaseController implements Initializable {
         frontTips.setVisible(visible);
     }
 
-    private void initStatus() {
+    private void initComponentStatus() {
         memoryTips.setVisible(false);
         scrollTips.setVisible(false);
+        setFrontTips(false);
+        setSideBar();
     }
 
     private void syncFile() throws Exception {
@@ -1598,7 +1598,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     clearFile(new File(fileSyncTarget), ver);
                 }
-                checkCommitNotPush(appConfigDto, "轮询时间: " +  CommonUtils.getCurrentDateTime2());
+                checkCommitNotPush(appConfigDto, "轮询时间: " +  CommonUtils.getCurrentDateTime14());
                 outputMemory();
             }
         };
