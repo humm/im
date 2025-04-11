@@ -235,9 +235,9 @@ public class BaseConst {
     public static final String NAME_MENU_CANCEL_DEV = "取标分支任务已完成";
     public static final String NAME_MENU_MARK_SUBMIT = "标记任务已提交";
     public static final String NAME_MENU_CANCEL_SUBMIT = "取标任务已提交";
-    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记任务等级-简单";
-    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记任务等级-一般";
-    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记任务等级-复杂";
+    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记任务等级#简单";
+    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记任务等级#一般";
+    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记任务等级#复杂";
 
     public final static String SECURITY_FLAG = "+++";
 
