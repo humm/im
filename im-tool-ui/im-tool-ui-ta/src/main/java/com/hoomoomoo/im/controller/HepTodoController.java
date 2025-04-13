@@ -826,6 +826,7 @@ public class HepTodoController extends BaseController implements Initializable {
         StringBuilder weekCloseVersion = new StringBuilder();
         StringBuilder dayVersion = new StringBuilder();
         StringBuilder dayCloseVersion = new StringBuilder();
+        String todayDate = CommonUtils.getCurrentDateTime3();
         String currentDate = CommonUtils.getCurrentDateTime4();
         String tomorrowDate = CommonUtils.getTomorrowDateTime();
         String thirdDate = CommonUtils.getCustomDateTime(2);
@@ -945,12 +946,6 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setFinishDate(finishDate);
             item.setFinishTime(finishTime);
 
-            if (StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
-                if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0) {
-                    finishDateError.add(item.getTaskNumber());
-                }
-            }
-
             String sprintVersion = item.getSprintVersion();
             if (version.containsKey(sprintVersion)) {
                 Map<String, String> versionInfo = version.get(sprintVersion);
@@ -981,6 +976,12 @@ public class HepTodoController extends BaseController implements Initializable {
 
             String minCompleteByMark = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), finishDate);
             item.setMinCompleteByMark(minCompleteByMark);
+
+            if (StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
+                if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0 || StringUtils.compare(todayDate, minCompleteByMark) > 0) {
+                    finishDateError.add(item.getTaskNumber());
+                }
+            }
 
             String minCompleteBySort = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getSortDate());
 
