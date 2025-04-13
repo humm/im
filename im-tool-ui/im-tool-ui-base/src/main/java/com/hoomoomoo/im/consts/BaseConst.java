@@ -74,6 +74,7 @@ public class BaseConst {
     public static final String KEY_FIELD_TRANSLATE = "generate.code.field.translate.";
     public static final String KEY_FILE_SYNC_VERSION = "file.sync.version.";
     public static final String KEY_PACKAGE_IM = "com.hoomoomoo.im";
+    public static final String KEY_ERROR_CODE_NO_AUTH_SERVER_AOP = "Failed to mark 'lcpt-server/aop' absent: item of the same name is already scheduled for addition";
 
     public static final String KEY_DEMO = "demo10000";
     public static final String KEY_CLASSES = "classes";
@@ -188,6 +189,7 @@ public class BaseConst {
     public static final String FILE_APP_EXTEND = "scriptUpdateDefaultRule.conf";
 
     public static final String NAME_DELETE = " 删除";
+    public static final String NAME_NO_AUTH = "权限不够,请重试";
     public static final String NAME_END = "结束";
     public static final String NAME_SVN_DESCRIBE = "[需求描述]";
     public static final String NAME_SVN_MODIFY_NO = "[修改单编号]";
@@ -233,12 +235,13 @@ public class BaseConst {
     public static final String NAME_MENU_SCRIPT = "复制升级脚本提交摘要";
     public static final String NAME_MENU_TASK_NO = "复制任务单号";
     public static final String NAME_MENU_MARK_DEV = "标记分支任务已完成";
-    public static final String NAME_MENU_CANCEL_DEV = "取标分支任务已完成";
+    public static final String NAME_MENU_CANCEL_DEV = "取消标记分支任务已完成";
     public static final String NAME_MENU_MARK_SUBMIT = "标记任务已提交";
-    public static final String NAME_MENU_CANCEL_SUBMIT = "取标任务已提交";
+    public static final String NAME_MENU_CANCEL_SUBMIT = "取消标记任务已提交";
     public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记任务等级#简单";
     public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记任务等级#一般";
     public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记任务等级#复杂";
+    public static final String NAME_MENU_TASK_LEVEL_QUESTION = "标记任务等级#待明确";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -364,6 +367,7 @@ public class BaseConst {
     public static final String CANCEL_LEVEL_SIMPLE_ICON = "/conf/image/simple.png";
     public static final String CANCEL_LEVEL_GENERAL_ICON = "/conf/image/general.png";
     public static final String CANCEL_LEVEL_DIFFICULTY_ICON = "/conf/image/difficulty.png";
+    public static final String CANCEL_LEVEL_QUESTION_ICON = "/conf/image/question.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
     public static final String DETAIL_ICON = "/conf/image/detail.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";

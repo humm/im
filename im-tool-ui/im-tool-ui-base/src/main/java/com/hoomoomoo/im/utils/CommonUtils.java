@@ -1290,7 +1290,7 @@ public class CommonUtils {
         if (show) {
             scanLogTipsIndex.put(tipsType, tipsDate);
             if (!appConfigDto.getInitScanLog()) {
-                if (imLog(message)) {
+                if (printImLog(message)) {
                     showTipsByErrorNotAutoClose(fileName + getSpecialString(150, STR_SPACE), message);
                 }
             }
@@ -1298,14 +1298,16 @@ public class CommonUtils {
         message.clear();
     }
 
-    private static boolean imLog(List<String> message) {
+    private static boolean printImLog(List<String> message) {
         if (CollectionUtils.isEmpty(message)) {
             return false;
         }
-        for (String msg : message) {
-            if (msg.contains(KEY_PACKAGE_IM)) {
-                return true;
-            }
+        String msg = message.stream().collect(Collectors.joining(STR_COMMA));
+        if (msg.contains(NAME_NO_AUTH) || msg.contains(KEY_ERROR_CODE_NO_AUTH_SERVER_AOP)) {
+            return false;
+        }
+        if (msg.contains(KEY_PACKAGE_IM)) {
+            return true;
         }
         return false;
     }

@@ -456,7 +456,7 @@ public class SystemToolController implements Initializable {
                 if (times <= 3) {
                     getSyncFile(fileInputStream, filePath, times);
                 }
-                throw new FileNotFoundException("权限不够,请重试");
+                throw new FileNotFoundException(NAME_NO_AUTH);
             } else {
                 throw new FileNotFoundException("文件不存在,请检查");
             }

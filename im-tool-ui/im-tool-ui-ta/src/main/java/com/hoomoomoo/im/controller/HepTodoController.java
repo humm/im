@@ -1906,8 +1906,11 @@ public class HepTodoController extends BaseController implements Initializable {
                         case STR_1:
                             level = "一般";
                             break;
-                        default:
+                        case STR_2:
                             level = "复杂";
+                            break;
+                        default:
+                            level = "待明确";
                             break;
                     }
                     task.put(elementList[0], level);

@@ -163,6 +163,16 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
 
+        MenuItem menuTaskLevelQuestion = new MenuItem(NAME_MENU_TASK_LEVEL_QUESTION);
+        CommonUtils.setIcon(menuTaskLevelQuestion, CANCEL_LEVEL_QUESTION_ICON, MENUITEM_ICON_SIZE);
+        menuTaskLevelQuestion.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                handleLevel(STR_3, NAME_MENU_TASK_LEVEL_QUESTION);
+            }
+        });
+
         MenuItem detailTask = new MenuItem(NAME_MENU_DETAIL);
         CommonUtils.setIcon(detailTask, DETAIL_ICON, MENUITEM_ICON_SIZE);
         detailTask.setOnAction(new EventHandler<ActionEvent>() {
@@ -207,6 +217,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         getItems().add(menuTaskLevelSimple);
         getItems().add(menuTaskLevelGeneral);
         getItems().add(menuTaskLevelDifficulty);
+        getItems().add(menuTaskLevelQuestion);
     }
 
     public static HepWaitHandleTaskMenu getInstance() {
