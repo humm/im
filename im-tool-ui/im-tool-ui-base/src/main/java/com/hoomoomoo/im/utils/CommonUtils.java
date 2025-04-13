@@ -1290,10 +1290,24 @@ public class CommonUtils {
         if (show) {
             scanLogTipsIndex.put(tipsType, tipsDate);
             if (!appConfigDto.getInitScanLog()) {
-                showTipsByErrorNotAutoClose(fileName + getSpecialString(150, STR_SPACE), message);
+                if (imLog(message)) {
+                    showTipsByErrorNotAutoClose(fileName + getSpecialString(150, STR_SPACE), message);
+                }
             }
         }
         message.clear();
+    }
+
+    private static boolean imLog(List<String> message) {
+        if (CollectionUtils.isEmpty(message)) {
+            return false;
+        }
+        for (String msg : message) {
+            if (msg.contains(KEY_PACKAGE_IM)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static String getSpecialString(int num, String content) {

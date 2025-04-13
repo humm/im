@@ -73,6 +73,7 @@ public class BaseConst {
     public static final String KEY_SVN_URL = "svn.url.";
     public static final String KEY_FIELD_TRANSLATE = "generate.code.field.translate.";
     public static final String KEY_FILE_SYNC_VERSION = "file.sync.version.";
+    public static final String KEY_PACKAGE_IM = "com.hoomoomoo.im";
 
     public static final String KEY_DEMO = "demo10000";
     public static final String KEY_CLASSES = "classes";

@@ -573,6 +573,7 @@ public class HepTodoController extends BaseController implements Initializable {
             updateProgress();
             if (event != null) {
                 sortCodeCache.clear();
+                taskMinCompleteDate.clear();
             }
             TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "doExecuteQuery")));
         } catch (Exception e) {
