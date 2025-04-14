@@ -815,6 +815,7 @@ public class HepTodoController extends BaseController implements Initializable {
         Set<String> thirdDayTodoTask = new HashSet<>();
         Set<String> weekTodoTask = new HashSet<>();
         Set<String> finishDateError = new HashSet<>();
+        Set<String> finishDateOver = new HashSet<>();
         taskList.setDisable(true);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
@@ -979,8 +980,11 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setMinCompleteByMark(minCompleteByMark);
 
             if (StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
-                if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0 || StringUtils.compare(todayDate, minCompleteByMark) > 0) {
+                if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0) {
                     finishDateError.add(item.getTaskNumber());
+                }
+                if (StringUtils.compare(todayDate, minCompleteByMark) > 0) {
+                    finishDateOver.add(item.getTaskNumber());
                 }
             }
 
@@ -1087,7 +1091,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
 
         OutputUtils.clearLog(taskList);
-        infoTaskList(taskList, res, dayTodoTask, tomorrowTodoTask, thirdDayTodoTask, weekTodoTask, finishDateError);
+        infoTaskList(taskList, res, dayTodoTask, tomorrowTodoTask, thirdDayTodoTask, weekTodoTask, finishDateError, finishDateOver);
         taskList.setDisable(false);
     }
 
@@ -1133,7 +1137,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask,
-                              Set<String> tomorrowTodoTask, Set<String> thirdDayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
+                              Set<String> tomorrowTodoTask, Set<String> thirdDayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError, Set<String> finishDateOver) {
         if (taskListIn == null) {
             return;
         }
@@ -1148,7 +1152,7 @@ public class HepTodoController extends BaseController implements Initializable {
             for (HepTaskDto hepTaskDto : res) {
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
-                initRowStyle(taskListIn, dayTodoTask, tomorrowTodoTask, thirdDayTodoTask,  weekTodoTask, finishDateError,
+                initRowStyle(taskListIn, dayTodoTask, tomorrowTodoTask, thirdDayTodoTask,  weekTodoTask, finishDateError, finishDateOver,
                         nextMonday, nextTuesday, nextWednesday, nextThursday, nextFriday, thursday, friday);
             }
             OutputUtils.setEnabled(taskListIn);
@@ -1156,7 +1160,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initRowStyle(TableView taskListIn, Set<String> dayTodoTask, Set<String> tomorrowTodoTask,
-                              Set<String> thirdDayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError,
+                              Set<String> thirdDayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError, Set<String> finishDateOver,
                               int nextMonday, int nextTuesday, int nextWednesday, int nextThursday, int nextFriday,
                               int thursday, int friday) {
         taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
@@ -1184,6 +1188,9 @@ public class HepTodoController extends BaseController implements Initializable {
                                 }
                                 setStyle(taskColor[0]);
                                 String mark = taskColor[1];
+                                if (finishDateOver.contains(taskNumber)) {
+                                    mark = "已超期";
+                                }
                                 if (taskName.contains(COMMIT_TAG)) {
                                     mark = "已提交";
                                 }

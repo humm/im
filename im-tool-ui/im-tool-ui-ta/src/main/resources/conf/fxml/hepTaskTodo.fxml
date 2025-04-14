@@ -189,14 +189,14 @@
                                                                 </TableColumn>
                                                                 <TableColumn id="taskMark" editable="false"
                                                                              prefWidth="65" sortable="false"
-                                                                             style="-fx-alignment: center;" text="标记">
+                                                                             style="-fx-alignment: center;" text="备注">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="taskMark"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="taskLevel" editable="false"
                                                                              prefWidth="65" sortable="false"
-                                                                             style="-fx-alignment: center;" text="等级">
+                                                                             style="-fx-alignment: center;" text="描述">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="taskLevel"/>
                                                                     </cellValueFactory>

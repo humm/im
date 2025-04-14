@@ -238,10 +238,10 @@ public class BaseConst {
     public static final String NAME_MENU_CANCEL_DEV = "取消标记分支任务已完成";
     public static final String NAME_MENU_MARK_SUBMIT = "标记任务已提交";
     public static final String NAME_MENU_CANCEL_SUBMIT = "取消标记任务已提交";
-    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记任务等级#简单";
-    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记任务等级#一般";
-    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记任务等级#复杂";
-    public static final String NAME_MENU_TASK_LEVEL_QUESTION = "标记任务等级#待明确";
+    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记任务描述#简单";
+    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记任务描述#一般";
+    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记任务描述#复杂";
+    public static final String NAME_MENU_TASK_LEVEL_QUESTION = "标记任务描述#待明确";
 
     public final static String SECURITY_FLAG = "+++";
 
