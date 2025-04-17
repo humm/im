@@ -189,6 +189,9 @@ public class HepTodoController extends BaseController implements Initializable {
     public TextArea notice;
 
     @FXML
+    public TextArea noticeSync;
+
+    @FXML
     private TableView taskList;
 
     @FXML
@@ -298,9 +301,9 @@ public class HepTodoController extends BaseController implements Initializable {
             CommonUtils.stopHepToDoSyncFile(appConfigDto);
             syncFileBtn.setText("启动文件同步");
             OutputUtils.info(scrollTips, STR_BLANK);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
         } else {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("启动文件同步"));
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("启动文件同步"));
             syncFile();
         }
     }
@@ -1567,8 +1570,8 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         String fileSyncAuthVersion = appConfigDto.getFileSyncAuthVersion();
         if (StringUtils.isBlank(fileSyncAuthVersion)) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("未配置授权同步版本信息"));
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("未配置授权同步版本信息"));
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
             return;
         }
         Platform.runLater(() -> {
@@ -1579,31 +1582,31 @@ public class HepTodoController extends BaseController implements Initializable {
         TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                OutputUtils.clearLog(notice);
+                OutputUtils.clearLog(noticeSync);
                 String threadMsg = "轮询线程: " + timerId;
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContain(threadMsg));
                 for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
                     String ver = version.getKey();
                     if (!authVersion.contains(ver)) {
-                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ver.toUpperCase() + " 未授权同步"));
+                        OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(ver.toUpperCase() + " 未授权同步"));
                         continue;
                     }
                     ver = ver.toUpperCase();
                     String[] path = version.getValue().split(STR_COMMA);
                     if (path.length != 2) {
-                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
+                        OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
                         continue;
                     }
                     String fileSyncSource = path[0];
                     String fileSyncTarget = path[1];
                     String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
-                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
+                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
                     fileSyncSourceFile.clear();
                     try {
                         sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
                     } catch (IOException e) {
                         LoggerUtils.info(e);
-                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+                        OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
                     }
                     clearFile(new File(fileSyncTarget), ver);
                 }

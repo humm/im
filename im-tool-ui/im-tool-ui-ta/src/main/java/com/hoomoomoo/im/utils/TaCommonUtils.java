@@ -407,7 +407,11 @@ public class TaCommonUtils {
     }
 
     public static String getMsgContainTimeContainBr(String msg) {
-        return CommonUtils.getCurrentDateTime14() + STR_SPACE + msg + STR_NEXT_LINE;
+        return STR_NEXT_LINE + getMsgContainTimeContain(msg);
+    }
+
+    public static String getMsgContainTimeContain(String msg) {
+        return CommonUtils.getCurrentDateTime14() + STR_SPACE + msg;
     }
 
     public static void openBlankChildStage(int pageType, String title) throws Exception {
