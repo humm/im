@@ -150,6 +150,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
                 String taskNumberIn = TaCommonUtils.formatTextBrToNextLine(parts[0]);
                 if (!StringUtils.equals(taskNumber, taskNumberIn)) {
                     String editDescriptionIn = TaCommonUtils.formatTextBrToNextLine(parts[1]);
+                    if (CollectionUtils.isEmpty(logDtoList)) {
+                        OutputUtils.repeatInfo(editDescription, TaCommonUtils.formatText(editDescriptionIn));
+                    }
                     String suggestionIn = TaCommonUtils.formatTextBrToNextLine(parts[2]);
                     String selfTestDescIn = TaCommonUtils.formatTextBrToNextLine(parts[3]);
                     OutputUtils.repeatInfo(suggestion,  TaCommonUtils.formatText(suggestionIn));
