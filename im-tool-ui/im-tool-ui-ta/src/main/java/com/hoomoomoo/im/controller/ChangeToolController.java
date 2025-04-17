@@ -52,20 +52,32 @@ public class ChangeToolController implements Initializable {
     private static final String executeMenu = "1";
     private static final String executeMode = "2";
 
+    private static final String MENU_MODE_NEW = "新版";
+    private static final String MENU_MODE_OLD = "老版";
+    private static final String MENU_MODE_OLD_ALL = "老版(全部)";
+
+    private static final String AUTO_MODE_GM = "公募模式";
+    private static final String AUTO_MODE_ZX = "中信模式";
+    private static final String AUTO_MODE_XY = "兴业模式";
+    private static final String AUTO_MODE_ZJ = "中金模式";
+    private static final String AUTO_MODE_GJDF = "国金道富模式";
+    private static final String AUTO_MODE_FCP = "分产品模式";
+    private static final String AUTO_MODE_GTHT = "国泰海通模式";
+
     private Set<String> autoModeSet = new LinkedHashSet<String>(){{
-        add("公募自动化");
-        add("中信自动化");
-        add("兴业自动化");
-        add("中金自动化");
-        add("分产品自动化");
-        add("国泰君安自动化");
-        add("国金道富自动化");
+        add(AUTO_MODE_GM);
+        add(AUTO_MODE_ZX);
+        add(AUTO_MODE_XY);
+        add(AUTO_MODE_ZJ);
+        add(AUTO_MODE_GJDF);
+        add(AUTO_MODE_FCP);
+        add(AUTO_MODE_GTHT);
     }};
 
     private Set<String> menuModeSet = new LinkedHashSet<String>(){{
-        add("新版");
-        add("老版");
-        add("老版(全部)");
+        add(MENU_MODE_NEW);
+        add(MENU_MODE_OLD);
+        add(MENU_MODE_OLD_ALL);
     }};
 
     @Override
@@ -91,6 +103,19 @@ public class ChangeToolController implements Initializable {
             }
         }
         menuMode.getSelectionModel().select(0);
+
+        StringBuilder tips = new StringBuilder();
+        tips.append(buildTipsMessage(AUTO_MODE_GM, "fund_MultiProcessesLiqDeal"));
+        tips.append(buildTipsMessage(AUTO_MODE_ZX, "fund_ParamProcessesLiqDeal"));
+        tips.append(buildTipsMessage(AUTO_MODE_XY, "fund_XyMultiProcessesPrivate"));
+        tips.append(buildTipsMessage(AUTO_MODE_GTHT, "fund_JaSpecialDeal"));
+        tips.append(buildTipsMessage(AUTO_MODE_ZJ, "fund_ZjMultiProcessesPrivate"));
+        tips.append(buildTipsMessage(AUTO_MODE_FCP, "fund_AutoLiqByPrd"));
+        OutputUtils.info(logs, tips.toString());
+    }
+
+    private String buildTipsMessage(String mode, String val) {
+        return "【" + mode + "】" + " 个性化参数 " + "【" + val + "】" + STR_NEXT_LINE;
     }
 
     @FXML
@@ -204,13 +229,13 @@ public class ChangeToolController implements Initializable {
 
     public void buildMenuModeSql(String taskType) throws Exception {
         switch (taskType) {
-            case "新版":
+            case MENU_MODE_NEW:
                 buildMenuSql(taskType,true, false);
                 break;
-            case "老版":
+            case MENU_MODE_OLD:
                 buildMenuSql(taskType,false, false);
                 break;
-            case "老版(全部)":
+            case MENU_MODE_OLD_ALL:
                 buildMenuSql(taskType,false, true);
                 break;
             default:
@@ -270,25 +295,25 @@ public class ChangeToolController implements Initializable {
 
     public void buildAutoModeSql(String taskType) throws Exception {
         switch (taskType) {
-            case "公募自动化":
+            case AUTO_MODE_GM:
                 buildAutoModeSql(taskType, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0);
                 break;
-            case "中信自动化":
+            case AUTO_MODE_ZX:
                 buildAutoModeSql(taskType, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0);
                 break;
-            case "兴业自动化":
+            case AUTO_MODE_XY:
                 buildAutoModeSql(taskType, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0);
                 break;
-            case "中金自动化":
+            case AUTO_MODE_ZJ:
                 buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0);
                 break;
-            case "分产品自动化":
+            case AUTO_MODE_FCP:
                 buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1);
                 break;
-            case "国泰君安自动化":
+            case AUTO_MODE_GTHT:
                 buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1);
                 break;
-            case "国金道富自动化":
+            case AUTO_MODE_GJDF:
                 buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0);
                 break;
             default:
