@@ -1498,13 +1498,12 @@ public class HepTodoController extends BaseController implements Initializable {
             initUserInfo(appConfigDto);
             defaultDividerPositions = taskSplitPane.getDividerPositions()[0];
             defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
+            devCompleteHide.setSelected(true);
             if (isExtendUser()) {
-                all.setSelected(true);
                 extendUser.setVisible(false);
                 syncTask.setVisible(false);
                 syncFileBtn.setVisible(false);
             } else {
-                devCompleteHide.setSelected(true);
                 JvmCache.setHepTodoController(this);
                 syncFile();
             }
