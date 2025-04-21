@@ -514,18 +514,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     void executeExtendUser(ActionEvent event) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (StringUtils.isBlank(appConfigDto.getHepTaskUserExtend())) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请设置关联用户信息【hep.task.user.extend】"));
-        }
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户任务加载开始 . . ."));
-        try {
-            extendUser.setDisable(true);
-            showExtendTask();
-        } finally {
-            extendUser.setDisable(false);
-        }
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户任务加载完成 . . ."));
+        showExtentUserTask(true);
     }
 
     @FXML
@@ -952,6 +941,10 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setFinishTime(finishTime);
 
             String sprintVersion = item.getSprintVersion();
+            if (sprintVersion.startsWith(KEY_TA5)) {
+                iterator.remove();
+                continue;
+            }
             if (version.containsKey(sprintVersion)) {
                 Map<String, String> versionInfo = version.get(sprintVersion);
                 item.setOriCloseDate(CommonUtils.getCurrentDate(versionInfo.get(KEY_ORI_CLOSE_DATE)));
@@ -1512,8 +1505,43 @@ public class HepTodoController extends BaseController implements Initializable {
             executeQuery(null);
             initColorDesc();
             buildTestData();
+            showExtendUserTask();
         } catch (Exception e) {
             LoggerUtils.info(e);
+        }
+    }
+
+    private void showExtentUserTask(boolean changeTab) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        if (StringUtils.isBlank(appConfigDto.getHepTaskUserExtend())) {
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请设置关联用户信息【hep.task.user.extend】"));
+        }
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户任务加载开始 . . ."));
+        try {
+            extendUser.setDisable(true);
+            showExtendTask(changeTab);
+        } finally {
+            extendUser.setDisable(false);
+        }
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户任务加载完成 . . ."));
+    }
+
+    private void showExtendUserTask() throws Exception {
+        if (!isExtendUser()) {
+            Timer timer = new Timer();
+            TimerTask timerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    Platform.runLater(() -> {
+                        try {
+                            showExtentUserTask(false);
+                        } catch (Exception e) {
+                            LoggerUtils.info(e);
+                        }
+                    });
+                }
+            };
+            timer.schedule(timerTask, 10);
         }
     }
 
@@ -1767,11 +1795,11 @@ public class HepTodoController extends BaseController implements Initializable {
         return !CURRENT_USER_ID.equals(appConfigDto.getHepTaskUser());
     }
 
-    private void showExtendTask() throws Exception {
+    private void showExtendTask(boolean changeTab) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String userExtend = appConfigDto.getHepTaskUserExtend();
         if (StringUtils.isNotBlank(userExtend)) {
-            userExtend = EXTEND_USER_FRONT_CODE + STR_COMMA + userExtend;
+            userExtend = userExtend + STR_COMMA + EXTEND_USER_FRONT_CODE;
             String[] user = userExtend.split(STR_COMMA);
             Tab defaultTab = null;
             for (String extend : user) {
@@ -1790,8 +1818,10 @@ public class HepTodoController extends BaseController implements Initializable {
                     defaultTab = openTab;
                 }
             }
-            appConfigDto.setActivateFunction(defaultTab.getText());
-            AppCache.FUNCTION_TAB_CACHE.getSelectionModel().select(defaultTab);
+            if (changeTab) {
+                appConfigDto.setActivateFunction(defaultTab.getText());
+                AppCache.FUNCTION_TAB_CACHE.getSelectionModel().select(defaultTab);
+            }
         }
     }
 
