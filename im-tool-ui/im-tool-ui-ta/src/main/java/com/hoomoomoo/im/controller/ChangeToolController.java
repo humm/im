@@ -325,6 +325,7 @@ public class ChangeToolController implements Initializable {
                 buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1);
                 break;
             case AUTO_MODE_SWHY:
+                TA_CODE = "SA";
                 buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1);
                 break;
             case AUTO_MODE_ZX:
