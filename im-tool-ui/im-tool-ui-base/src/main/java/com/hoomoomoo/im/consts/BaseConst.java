@@ -364,7 +364,6 @@ public class BaseConst {
     public static final String CANCEL_ICON = "/conf/image/cancel.png";
     public static final String SUBMIT_ICON = "/conf/image/submit.png";
     public static final String CANCEL_SUBMIT_ICON = "/conf/image/submitCancel.png";
-    public static final String CANCEL_LEVEL_ICON = "/conf/image/level.png";
     public static final String CANCEL_LEVEL_SIMPLE_ICON = "/conf/image/simple.png";
     public static final String CANCEL_LEVEL_GENERAL_ICON = "/conf/image/general.png";
     public static final String CANCEL_LEVEL_DIFFICULTY_ICON = "/conf/image/difficulty.png";
