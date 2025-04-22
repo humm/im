@@ -1535,6 +1535,10 @@ public class HepTodoController extends BaseController implements Initializable {
                     Platform.runLater(() -> {
                         try {
                             showExtentUserTask(false);
+                            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                            Tab openTab = CommonUtils.getOpenTab(AppCache.FUNCTION_TAB_CACHE, TASK_TODO.getCode(), TASK_TODO.getName());
+                            appConfigDto.setActivateFunction(openTab.getText());
+                            AppCache.FUNCTION_TAB_CACHE.getSelectionModel().select(openTab);
                         } catch (Exception e) {
                             LoggerUtils.info(e);
                         }
