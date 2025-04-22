@@ -1608,7 +1608,6 @@ public class HepTodoController extends BaseController implements Initializable {
         Platform.runLater(() -> {
             syncFileBtn.setText("停止文件同步");
         });
-        outputMemory();
         List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
         TimerTask timerTask = new TimerTask() {
             @Override
