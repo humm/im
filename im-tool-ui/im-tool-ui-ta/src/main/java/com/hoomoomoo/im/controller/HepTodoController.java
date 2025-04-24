@@ -95,6 +95,8 @@ public class HepTodoController extends BaseController implements Initializable {
     public final static String SELF_BUILD_TAG = "【自建任务】";
     public final static String SELF_TEST_TAG = "【自测问题】";
     public final static String DEFECT_TAG = "【缺陷:FUNDTAVI";
+    public final static String AUDIT_FAIL = "审核不通过";
+    public final static String INTEGRATION_FAIL = "集成失败";
 
     private static Set<String> fileSyncSourceFile = new HashSet<>();
 
@@ -963,6 +965,12 @@ public class HepTodoController extends BaseController implements Initializable {
                 case SELF_BUILD_TAG:
                     item.setSortDate(getValue(STR_BLANK, STR_3));
                     break;
+                case AUDIT_FAIL:
+                    item.setSortDate(getValue(STR_BLANK, STR_4));
+                    break;
+                case INTEGRATION_FAIL:
+                    item.setSortDate(getValue(STR_BLANK, STR_5));
+                    break;
                 case COMMIT_TAG:
                 case DEV_COMMIT_TAG:
                 case UPDATE_TAG:
@@ -1475,8 +1483,10 @@ public class HepTodoController extends BaseController implements Initializable {
             } else if (STR_4.equals(type)) {
                 return "1030-00-00";
             } else if (STR_5.equals(type)) {
-                return "9940-00-00";
+                return "1040-00-00";
             } else if (STR_6.equals(type)) {
+                return "9940-00-00";
+            } else if (STR_7.equals(type)) {
                 return "9950-00-00";
             }
         }
@@ -1557,7 +1567,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 positions = 1;
                 sideBarBtn.setText("显示侧边栏");
             } else {
-                width = 570;
+                width = 505;
                 sideBarBtn.setText("隐藏侧边栏");
             }
             ((TableColumn)taskList.getColumns().get(0)).setPrefWidth(width);

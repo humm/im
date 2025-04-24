@@ -63,4 +63,8 @@ public class HepTaskDto extends BaseDto{
 
     private String taskLevel;
 
+    private String creatorId;
+
+    private String creatorName;
+
 }

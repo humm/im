@@ -175,10 +175,16 @@
                                                                    AnchorPane.rightAnchor="0.0"
                                                                    AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn id="name" editable="false" prefWidth="890"
+                                                                <TableColumn id="name" editable="false" prefWidth="825"
                                                                              sortable="false" text="任务名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="name"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="creatorName" editable="false" prefWidth="65"
+                                                                             sortable="false" text="创建人">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="creatorName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="customer" editable="false"
@@ -197,7 +203,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn id="taskLevel" editable="false"
                                                                              prefWidth="65" sortable="false"
-                                                                             style="-fx-alignment: center;" text="描述">
+                                                                             style="-fx-alignment: center;" text="复杂度">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="taskLevel"/>
                                                                     </cellValueFactory>
