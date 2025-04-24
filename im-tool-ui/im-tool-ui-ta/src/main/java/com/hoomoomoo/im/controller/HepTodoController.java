@@ -965,19 +965,18 @@ public class HepTodoController extends BaseController implements Initializable {
                 case SELF_BUILD_TAG:
                     item.setSortDate(getValue(STR_BLANK, STR_3));
                     break;
-                case AUDIT_FAIL:
-                    item.setSortDate(getValue(STR_BLANK, STR_4));
-                    break;
-                case INTEGRATION_FAIL:
-                    item.setSortDate(getValue(STR_BLANK, STR_5));
-                    break;
                 case COMMIT_TAG:
                 case DEV_COMMIT_TAG:
                 case UPDATE_TAG:
                 default:
-                    item.setSortDate(finishDate);
+                    if (AUDIT_FAIL.equals(item.getStatusName())) {
+                        item.setSortDate(getValue(STR_BLANK, STR_4));
+                    } else if (INTEGRATION_FAIL.equals(item.getStatusName())) {
+                        item.setSortDate(getValue(STR_BLANK, STR_5));
+                    } else {
+                        item.setSortDate(finishDate);
+                    }
                     break;
-
             }
 
             String minCompleteByMark = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), finishDate);
