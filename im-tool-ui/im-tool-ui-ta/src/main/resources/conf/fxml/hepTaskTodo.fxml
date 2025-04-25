@@ -143,10 +143,12 @@
                         <Label fx:id="memoryTips" layoutX="600" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="scrollTips" layoutX="900.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="taskTips" layoutX="1270.0" layoutY="180.0"
+                        <Label fx:id="taskTips" layoutX="1070.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="frontTips" layoutX="1500.0" layoutY="180.0"
+                        <Label fx:id="frontTips" layoutX="1250.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;" text="front未实时同步"/>
+                        <Label fx:id="demandNo" layoutX="1420.0" layoutY="180.0"/>
+                        <Label fx:id="taskNo" layoutX="1570.0" layoutY="180.0"/>
 
                     </children>
                 </AnchorPane>

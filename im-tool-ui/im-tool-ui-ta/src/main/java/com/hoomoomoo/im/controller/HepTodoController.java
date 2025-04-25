@@ -291,6 +291,12 @@ public class HepTodoController extends BaseController implements Initializable {
     @FXML
     private Button sideBarBtn;
 
+    @FXML
+    private Label demandNo;
+
+    @FXML
+    private Label taskNo;
+
     private double defaultDividerPositions;
 
     private double defaultTaskNameWidth;
@@ -360,6 +366,10 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.repeatInfo(sprintVersion, item.getSprintVersion());
         OutputUtils.repeatInfo(TaskDemandNo, item.getDemandNo());
         OutputUtils.repeatInfo(id, item.getId());
+
+        OutputUtils.repeatInfo(demandNo, item.getDemandNo());
+        OutputUtils.repeatInfo(taskNo, item.getTaskNumber());
+
         String clickType = event.getButton().toString();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setHepTaskDto(item);
@@ -372,6 +382,7 @@ public class HepTodoController extends BaseController implements Initializable {
         } else {
             setFrontTips(true);
         }
+
         if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
             if (isExtendUser()) {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户不支持此操作"));
@@ -1554,7 +1565,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     });
                 }
             };
-            timer.schedule(timerTask, 10);
+            timer.schedule(timerTask, 1);
         }
     }
 
