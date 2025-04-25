@@ -167,6 +167,7 @@ public class BaseConst {
     public final static String KEY_LOG_TIMER = "logTimer";
     public final static String KEY_UNIT_MB = "MB";
     public final static String KEY_TA5 = "TA5";
+    public final static String KEY_TA6 = "TA6";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
