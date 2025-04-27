@@ -183,10 +183,11 @@
                                                                         <PropertyValueFactory property="name"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="creatorName" editable="false" prefWidth="65"
-                                                                             sortable="false" text="创建人">
+                                                                <TableColumn id="statusName" editable="false"
+                                                                             prefWidth="90" sortable="false"
+                                                                             style="-fx-alignment: center;" text="状态">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="creatorName"/>
+                                                                        <PropertyValueFactory property="statusName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="customer" editable="false"
@@ -210,11 +211,10 @@
                                                                         <PropertyValueFactory property="taskLevel"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="statusName" editable="false"
-                                                                             prefWidth="90" sortable="false"
-                                                                             style="-fx-alignment: center;" text="状态">
+                                                                <TableColumn id="creatorName" editable="false" prefWidth="65"
+                                                                             sortable="false" text="创建人">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="statusName"/>
+                                                                        <PropertyValueFactory property="creatorName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="sprintVersion" editable="false"

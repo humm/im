@@ -429,6 +429,7 @@ public class HepTodoController extends BaseController implements Initializable {
         } else {
             LoggerUtils.info("不支持的操作类型");
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("不支持的操作类型"));
+            CommonUtils.showTipsByError("不支持的操作类型");
         }
     }
 
@@ -653,6 +654,7 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         } else {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("不支持的操作类型"));
+            CommonUtils.showTipsByError("不支持的操作类型");
             throw new Exception("不支持的操作类型");
         }
         JSONArray items = new JSONArray();
