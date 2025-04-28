@@ -81,7 +81,7 @@ public class MenuFunctionConfig {
         TASK_TODO("400", "开发任务", "/conf/fxml/hepTaskTodo.fxml", "hepTaskTodo", "hepTaskTodo", "menuHep", "开发任务", "0"),
         TASK_SYNC("410", "同步需求", "/conf/fxml/hepTaskSync.fxml", "hepTaskSync", "hepTaskSync", "menuHep", "同步需求", "0"),
 
-        CHANGE_FUNCTION_TOOL("600", "版本切换", "/conf/fxml/changeFunctionTool.fxml", "changeFunctionTool", "changeFunctionTool", "menuOther", "版本切换", "0"),
+        CHANGE_FUNCTION_TOOL("600", "整备环境", "/conf/fxml/changeFunctionTool.fxml", "changeFunctionTool", "changeFunctionTool", "menuOther", "整备环境", "0"),
 
         SYSTEM_TOOL("700", "系统工具", "/conf/fxml/systemTool.fxml", "systemTool", "systemTool", "menuTool", "系统工具", "0"),
 
