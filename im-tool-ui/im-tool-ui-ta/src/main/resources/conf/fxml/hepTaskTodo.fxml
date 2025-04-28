@@ -73,9 +73,9 @@
                         <RadioButton fx:id="only" layoutX="870.0" layoutY="105.0" mnemonicParsing="false"
                                      onAction="#selectOnly" text="去重"/>
                         <RadioButton fx:id="devCompleteShow" layoutX="940.0" layoutY="105.0" mnemonicParsing="false"
-                                     onAction="#selectDevCompleteShow" text="显示分支已提交"/>
+                                     onAction="#selectDevCompleteShow" text="显示分支已完成"/>
                         <RadioButton fx:id="devCompleteHide" layoutX="1080.0" layoutY="105.0" mnemonicParsing="false"
-                                     onAction="#selectDevCompleteHide" text="隐藏分支已提交"/>
+                                     onAction="#selectDevCompleteHide" text="隐藏分支已完成"/>
 
                         <Button fx:id="query" layoutX="1300.0" layoutY="100.0" mnemonicParsing="false"
                                 onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">

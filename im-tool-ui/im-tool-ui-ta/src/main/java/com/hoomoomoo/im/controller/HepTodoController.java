@@ -956,7 +956,7 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setFinishTime(finishTime);
 
             String sprintVersion = item.getSprintVersion();
-            if (sprintVersion.startsWith(KEY_TA5) || (sprintVersion.contains(KEY_TA6) && !sprintVersion.contains(KEY_FUND))) {
+            if (sprintVersion.startsWith(KEY_TA5) || (sprintVersion.contains(KEY_TA6) && !sprintVersion.contains(KEY_FUND) && !sprintVersion.contains("2022"))) {
                 iterator.remove();
                 continue;
             }
