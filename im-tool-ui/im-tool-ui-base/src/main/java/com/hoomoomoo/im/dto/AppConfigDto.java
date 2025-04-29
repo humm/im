@@ -161,6 +161,8 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskUser;
 
+    private String hepTaskUserName;
+
     private String hepTaskUserExtend;
 
     private String hepTaskCustomerPath;

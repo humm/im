@@ -106,6 +106,9 @@ public class HepTodoController extends BaseController implements Initializable {
     List<Label> colorList = new ArrayList<>();
 
     private final static String EXTEND_USER_FRONT_CODE = "front";
+    private final static Map<String, String> extendUserInfoCodeToName = new HashMap();
+    private final static Map<String, String> extendUserInfoNameToCode = new HashMap();
+
     private String PAGE_USER = "";
     private boolean dealTask = true;
 
@@ -614,9 +617,7 @@ public class HepTodoController extends BaseController implements Initializable {
             String userExtend = appConfigDto.getHepTaskUserExtend();
             JSONArray task = new JSONArray();
             if (StringUtils.isNotBlank(userExtend)) {
-                userExtend = appConfigDto.getHepTaskUser() + STR_COMMA + userExtend;
-                String[] user = userExtend.split(STR_COMMA);
-                for (String item : user) {
+                for (String item : extendUserInfoCodeToName.keySet()) {
                     if (EXTEND_USER_FRONT_CODE.equals(item)) {
                         continue;
                     }
@@ -907,7 +908,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 taskName = DEV_COMMIT_TAG + taskName;
             }
             if (PAGE_USER.equals(EXTEND_USER_FRONT_CODE)) {
-                taskName = String.format("【%s】", item.getAssigneeId()) + taskName;
+                taskName = String.format("【%s】", item.getAssigneeName()) + taskName;
             }
             item.setName(taskName);
             if (taskName.contains(DEV_COMMIT_TAG)) {
@@ -1791,6 +1792,9 @@ public class HepTodoController extends BaseController implements Initializable {
             String activateFunction = appConfigDto.getActivateFunction();
             if (StringUtils.isNotBlank(activateFunction)) {
                 String tabCode = activateFunction.split(STR_COLON)[0];
+                if (extendUserInfoNameToCode.containsKey(tabCode)) {
+                    tabCode = extendUserInfoNameToCode.get(tabCode);
+                }
                 if (StringUtils.equals(tabCode, EXTEND_USER_FRONT_CODE)) {
                     CURRENT_USER_ID = EXTEND_USER_FRONT_CODE;
                 } else if (!MenuFunctionConfig.FunctionConfig.TASK_TODO.getCode().equals(tabCode) && appConfigDto.getHepTaskUserExtend().contains(tabCode)) {
@@ -1824,12 +1828,18 @@ public class HepTodoController extends BaseController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String userExtend = appConfigDto.getHepTaskUserExtend();
         if (StringUtils.isNotBlank(userExtend)) {
-            userExtend = userExtend + STR_COMMA + EXTEND_USER_FRONT_CODE;
+            extendUserInfoCodeToName.put(appConfigDto.getHepTaskUser(), appConfigDto.getHepTaskUserName());
+            extendUserInfoCodeToName.put(appConfigDto.getHepTaskUserName(), appConfigDto.getHepTaskUser());
             String[] user = userExtend.split(STR_COMMA);
             Tab defaultTab = null;
             for (String extend : user) {
+                String[] extendInfo = extend.split(STR_COLON);
+                if (extendInfo.length == 2) {
+                    extendUserInfoCodeToName.put(extendInfo[0], extendInfo[1]);
+                    extendUserInfoNameToCode.put(extendInfo[1], extendInfo[0]);
+                }
                 MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.TASK_TODO;
-                String tabCode = extend;
+                String tabCode = extendInfo.length == 2 ? extendInfo[1] : extendInfo[0];
                 String tabName = functionConfig.getName();
                 Tab openTab = CommonUtils.getOpenTab(AppCache.FUNCTION_TAB_CACHE, tabCode, tabName);
                 if (openTab == null) {

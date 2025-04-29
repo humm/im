@@ -264,7 +264,7 @@
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="342.0">
                                     <children>
                                         <SplitPane
-                                                dividerPositions="0.3676617038783742, 0.7297015167350199, 0.822574654977713"
+                                                dividerPositions="0.3676617038783742, 0.7297015167350199, 0.85"
                                                 orientation="VERTICAL" prefHeight="318.4" prefWidth="191.0"
                                                 AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                 AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
