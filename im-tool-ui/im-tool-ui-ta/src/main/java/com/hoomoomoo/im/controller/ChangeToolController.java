@@ -76,6 +76,7 @@ public class ChangeToolController implements Initializable {
     private static final String AUTO_MODE_XY = "兴业证券";
     private static final String AUTO_MODE_ZJ = "中金公司";
     private static final String AUTO_MODE_GJDF = "国金道富";
+    private static final String AUTO_MODE_TIPS = "***参数提示***";
 
     private Set<String> autoModeSet = new LinkedHashSet<String>(){{
         add(AUTO_MODE_JJHY);
@@ -90,6 +91,8 @@ public class ChangeToolController implements Initializable {
         add(AUTO_MODE_XY);
         add(AUTO_MODE_ZJ);
         add(AUTO_MODE_GJDF);
+
+        add(AUTO_MODE_TIPS);
     }};
 
     private Set<String> menuModeSet = new LinkedHashSet<String>(){{
@@ -130,6 +133,11 @@ public class ChangeToolController implements Initializable {
         db.add(STR_16);
         dbNum.getSelectionModel().select(0);
 
+        buildTips();
+    }
+
+    private void buildTips() {
+        OutputUtils.clearLog(logs);
         StringBuilder tips = new StringBuilder();
         tips.append(buildTipsMessage(AUTO_MODE_JJHY + " (实时并发清算)", "fund_MultiProcessesLiqDeal"));
         tips.append(buildTipsMessage(AUTO_MODE_ZQHY + " (分产品自动化清算)", "fund_AutoLiqByPrd"));
@@ -379,6 +387,9 @@ public class ChangeToolController implements Initializable {
             case AUTO_MODE_GJDF:
                 TA_CODE = "NB";
                 buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0);
+                break;
+            case AUTO_MODE_TIPS:
+                buildTips();
                 break;
             default:
                 new Exception("未匹配执行方法，请检查");
