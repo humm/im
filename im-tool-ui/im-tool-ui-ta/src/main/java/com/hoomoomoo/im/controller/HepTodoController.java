@@ -1194,12 +1194,25 @@ public class HepTodoController extends BaseController implements Initializable {
 
         Platform.runLater(() -> {
             for (HepTaskDto hepTaskDto : res) {
+                formatData(hepTaskDto);
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
                 initRowStyle(taskListIn, dayTodoTask,  weekTodoTask, finishDateError);
             }
             OutputUtils.setEnabled(taskListIn);
         });
+    }
+
+    private void formatData(HepTaskDto hepTaskDto) {
+        if (StringUtils.isNotBlank(hepTaskDto.getFinishDate())) {
+            hepTaskDto.setFinishDate(hepTaskDto.getFinishDate().substring(5));
+        }
+        if (StringUtils.isNotBlank(hepTaskDto.getOriCloseDate())) {
+            hepTaskDto.setOriCloseDate(hepTaskDto.getOriCloseDate().substring(5));
+        }
+        if (StringUtils.isNotBlank(hepTaskDto.getOriPublishDate())) {
+            hepTaskDto.setOriPublishDate(hepTaskDto.getOriPublishDate().substring(5));
+        }
     }
 
     private void initRowStyle(TableView taskListIn, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
@@ -1541,7 +1554,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 positions = 1;
                 sideBarBtn.setText("显示侧边栏");
             } else {
-                width = 505;
+                width = 620;
                 sideBarBtn.setText("隐藏侧边栏");
             }
             ((TableColumn)taskList.getColumns().get(0)).setPrefWidth(width);

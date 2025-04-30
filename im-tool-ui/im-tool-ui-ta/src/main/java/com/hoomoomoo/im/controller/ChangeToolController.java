@@ -11,9 +11,8 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -37,6 +36,9 @@ public class ChangeToolController implements Initializable {
     private TextArea logs;
 
     @FXML
+    private AnchorPane autoModePane;
+
+    @FXML
     private Button autoModeBtn;
 
     @FXML
@@ -47,6 +49,12 @@ public class ChangeToolController implements Initializable {
 
     @FXML
     private ComboBox menuMode;
+
+    @FXML
+    private TextField code;
+
+    @FXML
+    private ComboBox dbNum;
 
     private static String executeType;
     private static final String executeMenu = "1";
@@ -105,6 +113,7 @@ public class ChangeToolController implements Initializable {
             }
         }
         autoMode.getSelectionModel().select(0);
+
         ObservableList menu = menuMode.getItems();
         if (CollectionUtils.isNotEmpty(menuModeSet)) {
             Iterator<String> ver = menuModeSet.iterator();
@@ -114,18 +123,28 @@ public class ChangeToolController implements Initializable {
         }
         menuMode.getSelectionModel().select(0);
 
+        ObservableList db = dbNum.getItems();
+        db.add(STR_2);
+        db.add(STR_4);
+        db.add(STR_8);
+        db.add(STR_16);
+        dbNum.getSelectionModel().select(0);
+
         StringBuilder tips = new StringBuilder();
-        tips.append(buildTipsMessage(AUTO_MODE_JJHY + "(实时并发清算)", "fund_MultiProcessesLiqDeal"));
-        tips.append(buildTipsMessage(AUTO_MODE_ZQHY + "(分产品自动化清算)", "fund_AutoLiqByPrd"));
+        tips.append(buildTipsMessage(AUTO_MODE_JJHY + " (实时并发清算)", "fund_MultiProcessesLiqDeal"));
+        tips.append(buildTipsMessage(AUTO_MODE_ZQHY + " (分产品自动化清算)", "fund_AutoLiqByPrd"));
         tips.append(buildTipsMessage(AUTO_MODE_GTHT, "fund_JaSpecialDeal"));
+
+        tips.append(buildTipsMessage("***中信模式***", "fund_T1MultiProcessesLiqDeal"));
         tips.append(buildTipsMessage(AUTO_MODE_ZX, "fund_ParamProcessesLiqDeal"));
+        tips.append(buildTipsMessage("***兴业模式***", "fund_XyMultiProcessesLiqDeal"));
         tips.append(buildTipsMessage(AUTO_MODE_XY, "fund_XyMultiProcessesPrivate"));
         tips.append(buildTipsMessage(AUTO_MODE_ZJ, "fund_ZjMultiProcessesPrivate"));
         OutputUtils.info(logs, tips.toString());
     }
 
     private String buildTipsMessage(String mode, String val) {
-        return "【" + mode + "】" + " 个性化参数 " + "【" + val + "】" + STR_NEXT_LINE;
+        return "【" + mode + "】" + " 个性化参数 " + "【" + val + "】" + STR_NEXT_LINE_2;
     }
 
     @FXML
@@ -174,6 +193,23 @@ public class ChangeToolController implements Initializable {
     @FXML
     void showMenuResult(ActionEvent event) throws IOException {
         Runtime.getRuntime().exec("explorer /e,/select," + new File(FileUtils.getFilePath(FILE_CHANGE_MENU)).getAbsolutePath());
+    }
+
+    @FXML
+    void executeDbBtn(ActionEvent event) throws IOException {
+        OutputUtils.clearLog(logs);
+        String codeIn =  CommonUtils.getComponentValue(code);
+        String dbNumIn =  CommonUtils.getComponentValue(dbNum);
+        if (StringUtils.isBlank(codeIn) || codeIn.length() < 8) {
+            OutputUtils.infoContainBr(logs, "基金账号/内部客户号 至少输入8位");
+        }
+        if (StringUtils.isBlank(dbNumIn)) {
+            OutputUtils.infoContainBr(logs, "分库数量 不能为空");
+        }
+        int codeValue = Integer.parseInt(codeIn.substring(codeIn.length() -8));
+        int dbNumValue = Integer.parseInt(dbNumIn);
+        OutputUtils.infoContainBr(logs, "分库号: " + ((codeValue % dbNumValue) + 1));
+        OutputUtils.infoContainBr(logs, "分表号: " + ((codeValue / dbNumValue) % 16 + 1));
     }
 
     private void disableBtn() {
