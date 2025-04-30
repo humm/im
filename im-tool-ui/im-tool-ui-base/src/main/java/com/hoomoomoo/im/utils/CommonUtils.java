@@ -149,7 +149,7 @@ public class CommonUtils {
         if (month.length() == 1) {
             month = STR_0 + month;
         }
-        return tomorrow.getYear() + STR_HYPHEN + month + STR_HYPHEN + tomorrow.getDayOfMonth();
+        return tomorrow.getYear() + month + tomorrow.getDayOfMonth();
     }
 
     /**
@@ -165,6 +165,18 @@ public class CommonUtils {
             return date;
         }
         return date.substring(0, 4) + STR_HYPHEN + date.substring(4, 6) + STR_HYPHEN + date.substring(6);
+    }
+
+    /**
+     * 格式化日期
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static String getCurrentDateYmd(String date) {
+        return date.replaceAll(STR_HYPHEN, STR_BLANK);
     }
 
     /**
@@ -316,7 +328,7 @@ public class CommonUtils {
      * @param dayOfWeek
      * @return
      */
-    public static int getNextWeekDayYmd(DayOfWeek dayOfWeek) {
+    public static String getNextWeekDayYmd(DayOfWeek dayOfWeek) {
         LocalDate currentDate = LocalDate.now();
         LocalDate nextWeekDay = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
         String nextWeekDayStr = nextWeekDay.toString().replaceAll(STR_HYPHEN, STR_BLANK);
@@ -324,7 +336,7 @@ public class CommonUtils {
         if (weekLastDay.compareTo(nextWeekDayStr) > 0) {
             nextWeekDayStr = nextWeekDay.with(TemporalAdjusters.next(dayOfWeek)).toString().replaceAll(STR_HYPHEN, STR_BLANK);
         }
-        return Integer.parseInt(nextWeekDayStr);
+        return nextWeekDayStr;
     }
 
     /**
@@ -333,7 +345,7 @@ public class CommonUtils {
      * @param dayOfWeek
      * @return
      */
-    public static int getWeekDayYmd(DayOfWeek dayOfWeek) {
+    public static String getWeekDayYmd(DayOfWeek dayOfWeek) {
         LocalDate currentDate = LocalDate.now();
         LocalDate nextDay = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
         String nextDayStr = nextDay.toString().replaceAll(STR_HYPHEN, STR_BLANK);
@@ -341,7 +353,7 @@ public class CommonUtils {
         if (weekLastDay.compareTo(nextDayStr) < 0) {
             nextDayStr = currentDate.with(TemporalAdjusters.previous(dayOfWeek)).toString().replaceAll(STR_HYPHEN, STR_BLANK);
         }
-        return Integer.parseInt(nextDayStr);
+        return nextDayStr;
     }
 
     public static String checkLicenseDate(AppConfigDto appConfigDto) {

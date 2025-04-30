@@ -206,7 +206,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn id="taskLevel" editable="false"
                                                                              prefWidth="65" sortable="false"
-                                                                             style="-fx-alignment: center;" text="复杂度">
+                                                                             style="-fx-alignment: center;" text="描述">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="taskLevel"/>
                                                                     </cellValueFactory>

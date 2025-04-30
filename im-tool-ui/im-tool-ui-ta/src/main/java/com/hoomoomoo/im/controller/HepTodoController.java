@@ -109,6 +109,8 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static Map<String, String> extendUserInfoCodeToName = new HashMap();
     private final static Map<String, String> extendUserInfoNameToCode = new HashMap();
 
+    private final static Map<String, String> dayCompleteTipsInfo = new HashMap();
+
     private String PAGE_USER = "";
     private boolean dealTask = true;
 
@@ -116,11 +118,11 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static String STYLE_BLACK_COLOR = "-fx-text-background-color: #000000;-fx-font-weight: bold;";
 
     private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
-        put("完成日期超期", new String[] {"-fx-text-background-color: #7b00ff;", "超期"});
-        put("今天待提交", new String[] {"-fx-text-background-color: #ff0000;", "今天"});
-        put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;", "本周"});
-        put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;", "缺陷"});
-        put("默认", new String[] {"-fx-text-background-color: #000000;", ""});
+        put("完成日期超期", new String[] {"-fx-text-background-color: #7b00ff;"});
+        put("今天待提交", new String[] {"-fx-text-background-color: #ff0000;"});
+        put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;"});
+        put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;"});
+        put("默认", new String[] {"-fx-text-background-color: #000000;"});
     }};
 
     // 字段顺序不可调整 与约定接口保持顺序一致
@@ -303,6 +305,35 @@ public class HepTodoController extends BaseController implements Initializable {
     private double defaultDividerPositions;
 
     private double defaultTaskNameWidth;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        try {
+            LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            initUserInfo(appConfigDto);
+            defaultDividerPositions = taskSplitPane.getDividerPositions()[0];
+            defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
+            devCompleteHide.setSelected(true);
+            if (isExtendUser()) {
+                extendUser.setVisible(false);
+                syncTask.setVisible(false);
+                syncFileBtn.setVisible(false);
+            } else {
+                JvmCache.setHepTodoController(this);
+                syncFile();
+            }
+            addTaskMenu(appConfigDto, this);
+            initComponentStatus();
+            executeQuery(null);
+            initColorDesc();
+            buildTestData();
+            showExtendUserTask();
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+    }
+
 
     @FXML
     void syncOrSuspend(ActionEvent event) throws Exception {
@@ -818,9 +849,19 @@ public class HepTodoController extends BaseController implements Initializable {
         if (!dealTask) {
             return;
         }
+        dayCompleteTipsInfo.clear();
+        dayCompleteTipsInfo.put(CommonUtils.getCurrentDateTime3(), "今天");
+        dayCompleteTipsInfo.put(CommonUtils.getTomorrowDateTime(), "明天");
+        dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(2), "后天");
+        dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.THURSDAY), "周四");
+        dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.FRIDAY), "周五");
+        dayCompleteTipsInfo.put(CommonUtils.getNextWeekDayYmd(DayOfWeek.MONDAY), "下周一");
+        dayCompleteTipsInfo.put(CommonUtils.getNextWeekDayYmd(DayOfWeek.TUESDAY), "下周二");
+        dayCompleteTipsInfo.put(CommonUtils.getNextWeekDayYmd(DayOfWeek.WEDNESDAY), "下周三");
+        dayCompleteTipsInfo.put(CommonUtils.getNextWeekDayYmd(DayOfWeek.THURSDAY), "下周四");
+        dayCompleteTipsInfo.put(CommonUtils.getNextWeekDayYmd(DayOfWeek.FRIDAY), "下周五");
+
         Set<String> dayTodoTask = new HashSet<>();
-        Set<String> tomorrowTodoTask = new HashSet<>();
-        Set<String> thirdDayTodoTask = new HashSet<>();
         Set<String> weekTodoTask = new HashSet<>();
         Set<String> finishDateError = new HashSet<>();
         Set<String> finishDateOver = new HashSet<>();
@@ -836,10 +877,8 @@ public class HepTodoController extends BaseController implements Initializable {
         StringBuilder weekCloseVersion = new StringBuilder();
         StringBuilder dayVersion = new StringBuilder();
         StringBuilder dayCloseVersion = new StringBuilder();
-        String todayDate = CommonUtils.getCurrentDateTime3();
-        String currentDate = CommonUtils.getCurrentDateTime4();
-        String tomorrowDate = CommonUtils.getTomorrowDateTime();
-        String thirdDate = CommonUtils.getCustomDateTime(2);
+        String todayDateYmd = CommonUtils.getCurrentDateTime3();
+        String todayDate = CommonUtils.getCurrentDate(todayDateYmd);
         String lastDayByWeek = CommonUtils.getLastDayByWeek();
         String weekDay = CommonUtils.getLastDayByWeekYmd();
         List<String> versionList = getTaskVersionInfo();
@@ -860,22 +899,22 @@ public class HepTodoController extends BaseController implements Initializable {
             ele.put(KEY_ORI_CLOSE_DATE, oriCloseDate);
             ele.put(KEY_ORI_PUBLISH_DATE, oriPublishDate);
             ele.put(KEY_ORDER_NO, STR_0);
-            if (currentDate.equals(oriCloseDate)) {
+            if (todayDate.equals(oriCloseDate)) {
                 dayCloseVersion.append(versionCode).append(STR_SPACE);
             }
-            if (currentDate.equals(oriPublishDate)) {
+            if (todayDate.equals(oriPublishDate)) {
                 dayVersion.append(versionCode).append(STR_SPACE);
             }
 
-            if (currentDate.equals(oriCloseDate) || currentDate.equals(oriPublishDate)) {
+            if (todayDate.equals(oriCloseDate) || todayDate.equals(oriPublishDate)) {
                 dayPublishVersion.add(versionCode);
             }
 
-            if (weekDay.compareTo(oriCloseDate) >= 0 && currentDate.compareTo(oriCloseDate) <= 0) {
+            if (weekDay.compareTo(oriCloseDate) >= 0 && todayDate.compareTo(oriCloseDate) <= 0) {
                 weekCloseVersion.append(versionCode).append(STR_SPACE);
             }
 
-            if (weekDay.compareTo(oriPublishDate) >= 0 && currentDate.compareTo(oriPublishDate) <= 0) {
+            if (weekDay.compareTo(oriPublishDate) >= 0 && todayDate.compareTo(oriPublishDate) <= 0) {
                 weekVersion.append(versionCode).append(STR_SPACE);
             }
             version.put(versionCode, ele);
@@ -902,7 +941,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 if (!taskName.contains(DEV_COMMIT_TAG)) {
                     taskName = DEV_COMMIT_TAG + taskName;
                 }
-                item.setTaskMark(COMMIT_TAG.replace(STR_BRACKETS_3_LEFT, STR_BLANK).replace(STR_BRACKETS_3_RIGHT, STR_BLANK));
             }
             if (!taskName.contains(DEV_COMMIT_TAG) && (taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn)) && !taskCancelDevSubmit.containsKey(taskNumberIn)) {
                 taskName = DEV_COMMIT_TAG + taskName;
@@ -993,17 +1031,20 @@ public class HepTodoController extends BaseController implements Initializable {
                     break;
             }
 
-            String minCompleteByMark = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), finishDate);
-            item.setMinCompleteByMark(minCompleteByMark);
+            String minCompleteByMarkYmd = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), finishDate);
 
             if (StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
                 if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0) {
                     finishDateError.add(item.getTaskNumber());
+                    minCompleteByMarkYmd = CommonUtils.getCurrentDateYmd(finishDate);
                 }
-                if (StringUtils.compare(todayDate, minCompleteByMark) > 0) {
+                if (StringUtils.compare(todayDate, finishDate) > 0) {
                     finishDateOver.add(item.getTaskNumber());
+                    minCompleteByMarkYmd = CommonUtils.getCurrentDateYmd(finishDate);
                 }
             }
+
+            item.setMinCompleteByMark(minCompleteByMarkYmd);
 
             String minCompleteBySort = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getSortDate());
 
@@ -1017,23 +1058,29 @@ public class HepTodoController extends BaseController implements Initializable {
                 taskMinCompleteDate.put(taskName, taskMin);
             }
 
-            boolean today = todayMustComplete(item, currentDate, finishDate);
-            boolean tomorrow = todayMustComplete(item, tomorrowDate, finishDate);
-            boolean thirdDay = todayMustComplete(item, thirdDate, finishDate);
+            boolean today = todayDate.equals(finishDate);
             if (dayVersion.toString().contains(sprintVersion + STR_SPACE) || dayCloseVersion.toString().contains(sprintVersion + STR_SPACE) || today) {
                 dayVersionNum++;
                 dayTodoTask.add(item.getTaskNumber());
-            }
-            if (tomorrow) {
-                tomorrowTodoTask.add(item.getTaskNumber());
-            }
-            if (thirdDay) {
-                thirdDayTodoTask.add(item.getTaskNumber());
             }
             boolean week = today || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
             if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || week) {
                 weekVersionNum++;
                 weekTodoTask.add(item.getTaskNumber());
+            }
+
+            if (dayCompleteTipsInfo.containsKey(minCompleteByMarkYmd)) {
+                item.setTaskMark(dayCompleteTipsInfo.get(minCompleteByMarkYmd));
+            }
+
+            if (taskName.contains(COMMIT_TAG)) {
+                item.setTaskLevel( "已提交");
+            }
+
+            if (finishDateError.contains(taskNumberIn)) {
+                item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? "超期" : item.getTaskLevel() + "/超期");
+            } else if (finishDateOver.contains(taskNumberIn)) {
+                item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? "已超期" : item.getTaskLevel() + "/已超期");
             }
 
             item.setSprintVersion(formatVersion(item.getSprintVersion()));
@@ -1108,7 +1155,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
 
         OutputUtils.clearLog(taskList);
-        infoTaskList(taskList, res, dayTodoTask, tomorrowTodoTask, thirdDayTodoTask, weekTodoTask, finishDateError, finishDateOver);
+        infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError);
         taskList.setDisable(false);
     }
 
@@ -1140,46 +1187,22 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    private static boolean todayMustComplete(HepTaskDto item, String currentDate, String finishDate) {
-        if( StringUtils.equals(currentDate, finishDate)) {
-            return true;
-        }
-        if (StringUtils.isNotBlank(item.getMinCompleteByMark())) {
-            int date = Integer.parseInt((item.getMinCompleteByMark()));
-            if (date <= 0 && date > -50) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask,
-                              Set<String> tomorrowTodoTask, Set<String> thirdDayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError, Set<String> finishDateOver) {
+    private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
         if (taskListIn == null) {
             return;
         }
-        int nextMonday = CommonUtils.getNextWeekDayYmd(DayOfWeek.MONDAY);
-        int nextTuesday = CommonUtils.getNextWeekDayYmd(DayOfWeek.TUESDAY);
-        int nextWednesday = CommonUtils.getNextWeekDayYmd(DayOfWeek.WEDNESDAY);
-        int nextThursday = CommonUtils.getNextWeekDayYmd(DayOfWeek.THURSDAY);
-        int nextFriday = CommonUtils.getNextWeekDayYmd(DayOfWeek.FRIDAY);
-        int thursday = CommonUtils.getWeekDayYmd(DayOfWeek.THURSDAY);
-        int friday = CommonUtils.getWeekDayYmd(DayOfWeek.FRIDAY);
+
         Platform.runLater(() -> {
             for (HepTaskDto hepTaskDto : res) {
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
-                initRowStyle(taskListIn, dayTodoTask, tomorrowTodoTask, thirdDayTodoTask,  weekTodoTask, finishDateError, finishDateOver,
-                        nextMonday, nextTuesday, nextWednesday, nextThursday, nextFriday, thursday, friday);
+                initRowStyle(taskListIn, dayTodoTask,  weekTodoTask, finishDateError);
             }
             OutputUtils.setEnabled(taskListIn);
         });
     }
 
-    private void initRowStyle(TableView taskListIn, Set<String> dayTodoTask, Set<String> tomorrowTodoTask,
-                              Set<String> thirdDayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError, Set<String> finishDateOver,
-                              int nextMonday, int nextTuesday, int nextWednesday, int nextThursday, int nextFriday,
-                              int thursday, int friday) {
+    private void initRowStyle(TableView taskListIn, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
         taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
             @Override
             public TableRow<HepTaskDto> call(TableView<HepTaskDto> param) {
@@ -1194,50 +1217,16 @@ public class HepTodoController extends BaseController implements Initializable {
                                 String[] taskColor;
                                 if (taskName.contains(DEFECT_TAG)) {
                                     taskColor = color.get("缺陷");
-                                } else if (finishDateError.contains(taskNumber)) {
-                                    taskColor = color.get("完成日期超期");
                                 } else if (dayTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("今天待提交");
                                 } else if (weekTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("本周待提交");
-                                }  else {
+                                } else if (finishDateError.contains(taskNumber)) {
+                                    taskColor = color.get("完成日期超期");
+                                } else {
                                     taskColor = color.get("默认");
                                 }
                                 setStyle(taskColor[0]);
-                                String mark = taskColor[1];
-                                if (finishDateOver.contains(taskNumber)) {
-                                    mark = "已超期";
-                                }
-                                if (taskName.contains(COMMIT_TAG)) {
-                                    mark = "已提交";
-                                }
-
-                                int minComplete = Integer.parseInt(item.getMinCompleteByMark());
-                                if ("本周".equals(mark)) {
-                                    if (tomorrowTodoTask.contains(taskNumber)) {
-                                        mark = "明天";
-                                    } else if (thirdDayTodoTask.contains(taskNumber)) {
-                                        mark = "后天";
-                                    } else if (thursday == minComplete) {
-                                        mark = "周四";
-                                    } else if (friday == minComplete) {
-                                        mark = "周五";
-                                    }
-                                }
-                                if (StringUtils.isBlank(mark)) {
-                                    if (nextMonday == minComplete) {
-                                        mark = "下周一";
-                                    } else if (nextTuesday == minComplete) {
-                                        mark = "下周二";
-                                    } else if (nextWednesday == minComplete) {
-                                        mark = "下周三";
-                                    } else if (nextThursday == minComplete) {
-                                        mark = "下周四";
-                                    } else if (nextFriday == minComplete) {
-                                        mark = "下周五";
-                                    }
-                                }
-                                item.setTaskMark(mark);
                             }
                         } catch (Exception e) {
                             LoggerUtils.info(e);
@@ -1259,9 +1248,9 @@ public class HepTodoController extends BaseController implements Initializable {
         if (StringUtils.isBlank(endDate)) {
             endDate = STR_20991231;
         }
-        closeDate = closeDate.replaceAll(STR_HYPHEN, STR_BLANK);
-        publishDate = publishDate.replaceAll(STR_HYPHEN, STR_BLANK);
-        endDate = endDate.replaceAll(STR_HYPHEN, STR_BLANK);
+        closeDate = CommonUtils.getCurrentDateYmd(closeDate);
+        publishDate = CommonUtils.getCurrentDateYmd(publishDate);
+        endDate = CommonUtils.getCurrentDateYmd(endDate);
         return String.valueOf(Math.min(Math.min(Integer.valueOf(closeDate), Integer.valueOf(publishDate)), Integer.valueOf(endDate)));
     }
 
@@ -1504,34 +1493,6 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         }
         return value;
-    }
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        try {
-            LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
-            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            initUserInfo(appConfigDto);
-            defaultDividerPositions = taskSplitPane.getDividerPositions()[0];
-            defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
-            devCompleteHide.setSelected(true);
-            if (isExtendUser()) {
-                extendUser.setVisible(false);
-                syncTask.setVisible(false);
-                syncFileBtn.setVisible(false);
-            } else {
-                JvmCache.setHepTodoController(this);
-                syncFile();
-            }
-            addTaskMenu(appConfigDto, this);
-            initComponentStatus();
-            executeQuery(null);
-            initColorDesc();
-            buildTestData();
-            showExtendUserTask();
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-        }
     }
 
     private void showExtentUserTask(boolean changeTab) throws Exception {
