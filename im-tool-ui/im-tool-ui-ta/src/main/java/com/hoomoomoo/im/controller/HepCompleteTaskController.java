@@ -97,7 +97,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
             appConfigDto.setSvnRep(svnRep);
         }
         try {
-            logDtoList.addAll(SvnUtils.getSvnLog(0, taskNumber));
+            logDtoList.addAll(SvnUtils.getSvnLog(10, taskNumber));
         } catch (Exception e) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("修改记录信息同步异常,请检查"));
             LoggerUtils.info(e);

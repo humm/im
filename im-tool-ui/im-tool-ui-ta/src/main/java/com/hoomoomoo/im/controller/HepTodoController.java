@@ -19,16 +19,20 @@ import com.hoomoomoo.im.task.HepTodoTask;
 import com.hoomoomoo.im.task.HepTodoTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -1078,16 +1082,19 @@ public class HepTodoController extends BaseController implements Initializable {
             }
 
             if (finishDateError.contains(taskNumberIn)) {
-                item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? "超期" : item.getTaskLevel() + "/超期");
+                item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? "超期" : "超期/" + item.getTaskLevel() );
             } else if (finishDateOver.contains(taskNumberIn)) {
-                item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? "已超期" : item.getTaskLevel() + "/已超期");
+                item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? "已超期" : "已超期/" + item.getTaskLevel());
+            }
+            if (taskName.contains(DEFECT_TAG)) {
+                item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? "缺陷" : "缺陷/" + item.getTaskLevel() );
             }
 
             item.setSprintVersion(formatVersion(item.getSprintVersion()));
             if (taskCustomerName.containsKey(taskNumberIn)) {
                 item.setCustomer(taskCustomerName.get(taskNumberIn));
             } else {
-                if (StringUtils.isBlank(item.getCustomer()) && item.getName().contains(DEFECT_TAG)) {
+                if (StringUtils.isBlank(item.getCustomer()) && taskName.contains(DEFECT_TAG)) {
                     item.setCustomer(NAME_INNER_CUSTOMER);
                 } else {
                     waitTaskSync = true;
@@ -2030,6 +2037,19 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void addTaskMenu(AppConfigDto appConfigDto, HepTodoController hepTodoController) throws Exception {
+        Tooltip tooltip = new Tooltip();
+        taskList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                tooltip.hide();
+                if (newValue instanceof HepTaskDto) {
+                    HepTaskDto val = (HepTaskDto) newValue;
+                    if (!val.getTaskLevel().contains(STR_SLASH)) {
+                        tooltip.show(taskList, 1400, 280);
+                    }
+                }
+            }
+        });
+
         taskList.addEventFilter(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>() {
             @SneakyThrows
             @Override
