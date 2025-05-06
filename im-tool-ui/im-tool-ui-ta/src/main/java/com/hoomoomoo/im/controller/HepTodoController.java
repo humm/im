@@ -1662,7 +1662,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     if (FileUtils.isSuffixDirectory(item, BaseConst.FILE_TYPE_GIT, false, true)) {
                         String content = CmdUtils.exe(item.getAbsolutePath(), "git status");
                         if (StringUtils.isNotBlank(content) && content.toLowerCase().contains("your branch is ahead of")) {
-                            threadMsg = item.getName() + " 已commit未push";
+                            threadMsg = item.getName() + " 本地提交未推送仓库";
                             push = true;
                             break;
                         }
