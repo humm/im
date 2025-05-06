@@ -2037,14 +2037,16 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void addTaskMenu(AppConfigDto appConfigDto, HepTodoController hepTodoController) throws Exception {
-        Tooltip tooltip = new Tooltip();
         taskList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
+                Tooltip tooltip = appConfigDto.getTooltip();
                 tooltip.hide();
                 if (newValue instanceof HepTaskDto) {
                     HepTaskDto val = (HepTaskDto) newValue;
                     if (!val.getTaskLevel().contains(STR_SLASH)) {
-                        tooltip.show(taskList, 1400, 280);
+                        tooltip.setText(val.getTaskLevel());
+                        tooltip.show(taskList, 1400, 260);
+                        tooltip.setAutoHide(true);
                     }
                 }
             }

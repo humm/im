@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.dto;
 
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
 import lombok.Data;
 
@@ -281,6 +282,8 @@ public class AppConfigDto extends BaseDto {
 
     private LinkedHashMap<String, String> scanLogTipsIndex;
 
+    private Tooltip tooltip;
+
     public AppConfigDto() {
         this.execute = false;
         this.appLogEnable = false;
@@ -308,5 +311,6 @@ public class AppConfigDto extends BaseDto {
         this.timerMap = new ConcurrentHashMap<>();
         this.initScanLog = true;
         this.scanLogTipsIndex = new LinkedHashMap<>();
+        tooltip = new Tooltip();
     }
 }
