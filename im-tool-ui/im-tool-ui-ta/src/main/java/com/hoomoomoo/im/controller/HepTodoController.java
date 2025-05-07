@@ -2043,7 +2043,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 tooltip.hide();
                 if (newValue instanceof HepTaskDto) {
                     HepTaskDto val = (HepTaskDto) newValue;
-                    if (val.getTaskLevel().contains(STR_SLASH)) {
+                    if (val != null && StringUtils.isNotBlank(val.getTaskLevel()) && val.getTaskLevel().contains(STR_SLASH)) {
                         tooltip.setText(val.getTaskLevel());
                         tooltip.show(taskList, 1400, 260);
                         tooltip.setAutoHide(true);
