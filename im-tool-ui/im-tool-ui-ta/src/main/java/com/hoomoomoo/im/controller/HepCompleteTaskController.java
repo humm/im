@@ -83,9 +83,10 @@ public class HepCompleteTaskController extends BaseController implements Initial
         String taskNumber = hepTaskDto.getTaskNumber();
         List<LogDto> logDtoList = new ArrayList<>(16);
         String versionValue = getVersion(appConfigDto, hepTaskDto.getSprintVersion());
-        if (KEY_TRUNK.equals(versionValue)) {
+        String versionValueYear = versionValue.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
+        if (KEY_TRUNK.equals(versionValue) || versionValueYear.compareTo("2025") >= 0) {
             appConfigDto.setSvnRep(appConfigDto.getSvnUrl().get(KEY_TRUNK));
-            LoggerUtils.info("svn仓库地址为: " + appConfigDto.getSvnUrl().get(KEY_TRUNK));
+            LoggerUtils.info("git仓库地址为: " + appConfigDto.getSvnUrl().get(KEY_TRUNK));
         } else {
             String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
             if (versionValue.contains(KEY_FUND)) {

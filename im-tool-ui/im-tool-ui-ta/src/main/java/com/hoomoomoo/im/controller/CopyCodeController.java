@@ -187,32 +187,35 @@ public class CopyCodeController extends BaseController implements Initializable 
                         String targetFileLocation = target + STR_SLASH + item;
                         String targetVersionSelected = (String)targetVersion.getSelectionModel().getSelectedItem();
                         String sourceVersionSelected = (String)sourceVersion.getSelectionModel().getSelectedItem();
-                        if (!appConfigDto.getCopyCodeLocationReplaceSkipVersion().contains(targetVersionSelected) || KEY_TRUNK.equals(sourceVersionSelected)) {
-                            Iterator<String> iterator = appConfigDto.getReplaceTargetUrl().keySet().iterator();
-                            while (iterator.hasNext()) {
-                                String key = iterator.next();
-                                if (targetFileLocation.contains("views/fundAccount")) {
-                                    if (appConfigDto.getCopyCodeLocationReplaceSkipAccountVersion().contains(targetVersionSelected)) {
-                                        targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_$_SLASH)[1]);
-                                    } else {
-                                        targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_$_SLASH)[0]);
+                        String targetVersionYear = targetVersionSelected.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
+                        if (targetVersionYear.compareTo("2025") < 0) {
+                            if (!appConfigDto.getCopyCodeLocationReplaceSkipVersion().contains(targetVersionSelected) || KEY_TRUNK.equals(sourceVersionSelected)) {
+                                Iterator<String> iterator = appConfigDto.getReplaceTargetUrl().keySet().iterator();
+                                while (iterator.hasNext()) {
+                                    String key = iterator.next();
+                                    if (targetFileLocation.contains("views/fundAccount")) {
+                                        if (appConfigDto.getCopyCodeLocationReplaceSkipAccountVersion().contains(targetVersionSelected)) {
+                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_$_SLASH)[1]);
+                                        } else {
+                                            targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key).split(STR_$_SLASH)[0]);
+                                        }
+                                        break;
                                     }
-                                    break;
-                                }
-                                LoggerUtils.info(key + " " + targetFileLocation.contains(key));
-                                if (targetFileLocation.contains(key)) {
-                                    targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key));
-                                    break;
+                                    LoggerUtils.info(key + " " + targetFileLocation.contains(key));
+                                    if (targetFileLocation.contains(key)) {
+                                        targetFileLocation = targetFileLocation.replace(key, appConfigDto.getReplaceTargetUrl().get(key));
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if (KEY_TRUNK.equals(sourceVersionSelected)) {
-                            Iterator<String> iteratorSource = appConfigDto.getReplaceSourceUrl().keySet().iterator();
-                            while (iteratorSource.hasNext()) {
-                                String key = iteratorSource.next();
-                                if (fileLocation.contains(key)) {
-                                    fileLocation = fileLocation.replace(key, appConfigDto.getReplaceSourceUrl().get(key));
-                                    break;
+                            if (KEY_TRUNK.equals(sourceVersionSelected)) {
+                                Iterator<String> iteratorSource = appConfigDto.getReplaceSourceUrl().keySet().iterator();
+                                while (iteratorSource.hasNext()) {
+                                    String key = iteratorSource.next();
+                                    if (fileLocation.contains(key)) {
+                                        fileLocation = fileLocation.replace(key, appConfigDto.getReplaceSourceUrl().get(key));
+                                        break;
+                                    }
                                 }
                             }
                         }
