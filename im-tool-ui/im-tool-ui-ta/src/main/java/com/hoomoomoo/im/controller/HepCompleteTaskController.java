@@ -84,7 +84,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         List<LogDto> logDtoList = new ArrayList<>(16);
         String versionValue = getVersion(appConfigDto, hepTaskDto.getSprintVersion());
         String versionValueYear = versionValue.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
-        if (KEY_TRUNK.equals(versionValue) || versionValueYear.compareTo("2025") >= 0) {
+        if (KEY_TRUNK.equals(versionValue) || (versionValueYear.compareTo("2025") >= 0 && !versionValue.contains("2022"))) {
             appConfigDto.setSvnRep(appConfigDto.getSvnUrl().get(KEY_TRUNK));
             LoggerUtils.info("git仓库地址为: " + appConfigDto.getSvnUrl().get(KEY_TRUNK));
         } else {
@@ -183,6 +183,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         suggestionMsg.append("\t\n");
         suggestionMsg.append("【测试准备】\n");
         suggestionMsg.append("\t更新ta-web-manager-fund-core等前台相关包及console包，执行升级脚本\n");
+        suggestionMsg.append("\t清除浏览器缓存，刷新系统内存\n");
         suggestionMsg.append("【测试场景及预期结果】\n");
         suggestionMsg.append(editDescriptionValue);
         suggestionMsg.append("【影响范围】\n");

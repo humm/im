@@ -125,7 +125,6 @@ public class HepTodoController extends BaseController implements Initializable {
         put("完成日期超期", new String[] {"-fx-text-background-color: #7b00ff;"});
         put("今天待提交", new String[] {"-fx-text-background-color: #ff0000;"});
         put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;"});
-        put("缺陷", new String[] {"-fx-text-background-color: #ff00a6;"});
         put("默认", new String[] {"-fx-text-background-color: #000000;"});
     }};
 
@@ -1082,7 +1081,9 @@ public class HepTodoController extends BaseController implements Initializable {
             if (dayCompleteTipsInfo.containsKey(minCompleteByMarkYmd)) {
                 item.setTaskMark(dayCompleteTipsInfo.get(minCompleteByMarkYmd));
             }
-
+            if (StringUtils.isBlank(item.getTaskMark()) && weekTodoTask.contains(taskNumberIn)) {
+                item.setTaskMark("本周");
+            }
             if (taskName.contains(COMMIT_TAG)) {
                 item.setTaskLevel( "已提交");
             }
@@ -1241,9 +1242,7 @@ public class HepTodoController extends BaseController implements Initializable {
                                 String taskName = item.getName();
                                 String taskNumber = item.getTaskNumber();
                                 String[] taskColor;
-                                if (taskName.contains(DEFECT_TAG)) {
-                                    taskColor = color.get("缺陷");
-                                } else if (dayTodoTask.contains(taskNumber)) {
+                                if (dayTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("今天待提交");
                                 } else if (weekTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("本周待提交");
