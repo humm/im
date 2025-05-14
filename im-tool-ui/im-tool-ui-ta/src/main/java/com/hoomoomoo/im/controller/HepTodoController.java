@@ -19,20 +19,16 @@ import com.hoomoomoo.im.task.HepTodoTask;
 import com.hoomoomoo.im.task.HepTodoTaskParam;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -1244,10 +1240,10 @@ public class HepTodoController extends BaseController implements Initializable {
                                 String[] taskColor;
                                 if (dayTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("今天待提交");
-                                } else if (weekTodoTask.contains(taskNumber)) {
-                                    taskColor = color.get("本周待提交");
                                 } else if (finishDateError.contains(taskNumber)) {
                                     taskColor = color.get("完成日期超期");
+                                } else if (weekTodoTask.contains(taskNumber)) {
+                                    taskColor = color.get("本周待提交");
                                 } else {
                                     taskColor = color.get("默认");
                                 }
@@ -2050,7 +2046,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     HepTaskDto val = (HepTaskDto) newValue;
                     if (val != null && StringUtils.isNotBlank(val.getTaskLevel()) && val.getTaskLevel().contains(STR_SLASH)) {
                         tooltip.setText(val.getTaskLevel());
-                        tooltip.show(taskList, 1400, 260);
+                        tooltip.show(taskList, 1400, 255);
                         tooltip.setAutoHide(true);
                     }
                 }
