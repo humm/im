@@ -89,8 +89,12 @@ public class HepCompleteTaskController extends BaseController implements Initial
             if (!versionValue.endsWith("000")) {
                 url = appConfigDto.getSvnUrl().get(KEY_GIT_BRANCHES);
             }
-            appConfigDto.setSvnRep(url);
             LoggerUtils.info("git仓库地址为: " + url);
+            if (StringUtils.isNotBlank(url)) {
+                appConfigDto.setSvnRep(url);
+            } else {
+                LoggerUtils.info("git仓库地址为空, 请检查git分支配置信息");
+            }
         } else {
             String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
             if (versionValue.contains(KEY_FUND)) {
