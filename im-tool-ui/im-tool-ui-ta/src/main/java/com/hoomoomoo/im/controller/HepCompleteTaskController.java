@@ -85,8 +85,12 @@ public class HepCompleteTaskController extends BaseController implements Initial
         String versionValue = getVersion(appConfigDto, hepTaskDto.getSprintVersion());
         String versionValueYear = versionValue.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
         if (KEY_TRUNK.equals(versionValue) || (versionValueYear.compareTo("2025") >= 0 && !versionValue.contains("2022"))) {
-            appConfigDto.setSvnRep(appConfigDto.getSvnUrl().get(KEY_TRUNK));
-            LoggerUtils.info("git仓库地址为: " + appConfigDto.getSvnUrl().get(KEY_TRUNK));
+            String url = appConfigDto.getSvnUrl().get(KEY_TRUNK);
+            if (!versionValue.endsWith("000")) {
+                url = appConfigDto.getSvnUrl().get(KEY_GIT_BRANCHES);
+            }
+            appConfigDto.setSvnRep(url);
+            LoggerUtils.info("git仓库地址为: " + url);
         } else {
             String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
             if (versionValue.contains(KEY_FUND)) {
@@ -140,7 +144,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         }
         String taskDesc = STR_BLANK;
         try {
-            String fileName = hepTaskDto.getOriTaskName() + FILE_TYPE_STAT;
+            String fileName = hepTaskDto.getOriTaskName().replaceAll(STR_COLON, STR_BLANK) + FILE_TYPE_STAT;
             String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
             taskDesc = FileUtils.readNormalFileToString(path, false);
         } catch (Exception e) {
@@ -202,7 +206,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
     }
 
     private String getVersion(AppConfigDto appConfigDto, String ver) {
-       ver = CommonUtils.getComplexVer(ver);
+        ver = CommonUtils.getComplexVer(ver);
         String resVer;
         boolean isTrunk = true;
         if (ver.contains(KEY_FUND)) {
@@ -298,7 +302,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
     }
 
     private void addTaskDesc(HepTaskDto hepTaskDto, String editDescription, String suggestion, String selfTestDesc) throws IOException {
-        String fileName = hepTaskDto.getOriTaskName() + FILE_TYPE_STAT;
+        String fileName = hepTaskDto.getOriTaskName().replaceAll(STR_COLON, STR_BLANK) + FILE_TYPE_STAT;
         String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
         if (new File(path).exists()) {
             return;
