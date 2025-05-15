@@ -40,6 +40,8 @@ public class AppConfigDto extends BaseDto {
 
     private int appLogSaveDay;
 
+    private String appLogLevel;
+
     private String appMode;
 
     private String fundExcelPath;

@@ -509,7 +509,7 @@ public class TaCommonUtils {
         FileUtils.writeFile(confPath, content, false);
     }
 
-    public static String changeVersion(String ver) {
+    public static String changeVersion(AppConfigDto appConfigDto, String ver) {
         String resVer;
         if (ver.contains("M")) {
             resVer = ver.substring(0, ver.lastIndexOf("M") + 1) + "1";
@@ -521,8 +521,10 @@ public class TaCommonUtils {
         if ("TA6.0V202202.02.001".equals(resVer)) {
             resVer = KEY_B + resVer;
         }
-        LoggerUtils.info("转换前版本号为: " + ver);
-        LoggerUtils.info("转换后版本号为: " + resVer);
+        if (StringUtils.equals(KEY_LOG_DEBUG, appConfigDto.getAppLogLevel())) {
+            LoggerUtils.info("转换前版本号为: " + ver);
+            LoggerUtils.info("转换后版本号为: " + resVer);
+        }
         return resVer;
     }
 }

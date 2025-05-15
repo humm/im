@@ -92,8 +92,6 @@ public class HepCompleteTaskController extends BaseController implements Initial
             LoggerUtils.info("git仓库地址为: " + url);
             if (StringUtils.isNotBlank(url)) {
                 appConfigDto.setSvnRep(url);
-            } else {
-                LoggerUtils.info("git仓库地址为空, 请检查git分支配置信息");
             }
         } else {
             String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
@@ -108,6 +106,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         try {
             logDtoList.addAll(SvnUtils.getSvnLog(10, taskNumber));
         } catch (Exception e) {
+            notice.setStyle(STYLE_BOLD_RED);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("修改记录信息同步异常,请检查"));
             LoggerUtils.info(e);
             sync.setDisable(false);
@@ -170,6 +169,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
                     setDefaultTaskDesc(editDescriptionValue.toString());
                 }
             } else {
+                notice.setStyle(STYLE_BOLD_RED);
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("已提交任务信息格式错误"));
                 setDefaultTaskDesc(editDescriptionValue.toString());
             }
@@ -177,8 +177,10 @@ public class HepCompleteTaskController extends BaseController implements Initial
             setDefaultTaskDesc(editDescriptionValue.toString());
         }
         if (StringUtils.isBlank(modifiedFileValue)) {
+            notice.setStyle(STYLE_BOLD_RED);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("未查询到修改记录信息,请检查"));
         } else {
+            notice.setStyle(STYLE_NORMAL);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("修改记录信息同步完成"));
         }
         sync.setDisable(false);
@@ -238,7 +240,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         if (isTrunk) {
             resVer = KEY_TRUNK;
         } else {
-            resVer = TaCommonUtils.changeVersion(ver);
+            resVer = TaCommonUtils.changeVersion(appConfigDto, ver);
         }
         return resVer;
     }

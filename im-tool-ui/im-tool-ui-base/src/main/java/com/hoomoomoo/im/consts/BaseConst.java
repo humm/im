@@ -101,6 +101,8 @@ public class BaseConst {
     public static final String KEY_TEMP = "temp/";
     public static final String KEY_GIT_FILE_PREFIX = "a/";
 
+    public final static String KEY_LOG_DEBUG = "debug";
+
     public final static String KEY_APP_ID = "app_id";
     public final static String KEY_APP_KEY = "app_key";
     public final static String KEY_MESSAGE = "message";
@@ -166,6 +168,7 @@ public class BaseConst {
     public final static String KEY_HTTPS = "https://";
     public final static String KEY_FILE_SYNC_TIMER = "fileSyncTimer";
     public final static String KEY_LOG_TIMER = "logTimer";
+    public final static String KEY_COMPLETE_TASK_TIMER = "completeTaskTimer";
     public final static String KEY_UNIT_MB = "MB";
     public final static String KEY_TA5 = "TA5";
     public final static String KEY_TA6 = "TA6";
@@ -445,6 +448,9 @@ public class BaseConst {
     public static final String COLUMN_TYPE_CLOB = "clob";
 
     public static final String STYLE_CENTER = "-fx-alignment: center;";
+    public static final String STYLE_BOLD_RED = "-fx-font-weight: bold; -fx-text-background-color: red;";
+    public static final String STYLE_BOLD = "-fx-font-weight: bold;";
+    public static final String STYLE_NORMAL = "-fx-font-weight: normal;";
 
     public static final String CONF_FUNCTION_PREFIX = "####################";
 

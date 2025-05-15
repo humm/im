@@ -408,7 +408,7 @@ public class HepTodoController extends BaseController implements Initializable {
         appConfigDto.setHepTaskDto(item);
         String ver = item.getSprintVersion();
         String verYear = ver.split("\\.")[0];
-        ver = TaCommonUtils.changeVersion(ver) + STR_COMMA;
+        ver = TaCommonUtils.changeVersion(appConfigDto, ver) + STR_COMMA;
         String authVer = appConfigDto.getFileSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
         if (authVer.contains(ver) || verYear.compareTo("2025") >= 0 || verYear.compareTo("202202") == 0) {
             setFrontTips(false);
@@ -1673,10 +1673,10 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         }
         if (push) {
-            scrollTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
+            scrollTips.setStyle(STYLE_BOLD_RED);
             scrollTips.setVisible(true);
         } else {
-            scrollTips.setStyle("-fx-font-weight: normal;");
+            scrollTips.setStyle(STYLE_NORMAL);
             scrollTips.setVisible(colorList.get(0).isVisible());
         }
         OutputUtils.info(scrollTips, threadMsg);
@@ -1686,10 +1686,10 @@ public class HepTodoController extends BaseController implements Initializable {
         String[] memoryInfo = CommonUtils.getMemoryInfo();
         OutputUtils.info(memoryTips, "内存使用: " + memoryInfo[0]);
         if (Integer.valueOf(memoryInfo[1]) > 1024 || Integer.valueOf(memoryInfo[2]) > 1024) {
-            memoryTips.setStyle("-fx-font-weight: bold; -fx-text-background-color: red;");
+            memoryTips.setStyle(STYLE_BOLD_RED);
             memoryTips.setVisible(true);
         } else {
-            memoryTips.setStyle("-fx-font-weight: normal;");
+            memoryTips.setStyle(STYLE_NORMAL);
             memoryTips.setVisible(colorList.get(0).isVisible());
         }
     }
@@ -1859,8 +1859,8 @@ public class HepTodoController extends BaseController implements Initializable {
             memoryTips.setVisible(visible);
             scrollTips.setVisible(visible);
         });
-        String boldStyle = "-fx-font-weight: normal;";
-        label.setStyle("-fx-font-weight: bold;");
+        String boldStyle = STYLE_NORMAL;
+        label.setStyle(STYLE_BOLD);
         label.setLayoutX(x);
         label.setLayoutY(y);
         todoTitle.getChildren().add(label);

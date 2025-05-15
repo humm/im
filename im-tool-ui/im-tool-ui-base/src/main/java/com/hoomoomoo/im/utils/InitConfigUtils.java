@@ -433,6 +433,7 @@ public class InitConfigUtils {
      */
     public static void  updateConfigByTa(Map<String, String> keys) {
         keys.put("app.tab.show", "200");
+        keys.put("app.log.level", "info");
         keys.put("app.mode", null);
 
         keys.put("svn.username", null);
