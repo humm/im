@@ -430,7 +430,7 @@ public class ChangeToolController implements Initializable {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_ParamProcessesLiqDeal';\n");
         }
 
-        res.add("-- 是否兴业自动化清算特有功能(兴业特有功能)");
+        res.add("-- 兴业自动化清算特有功能(兴业特有功能)");
         res.add("update tbparam set param_value = '" + xy + "' where param_id = 'fund_XyMultiProcessesPrivate';\n");
 
         res.add("-- 清算列表外部发起(兴业自动化清算模式)");

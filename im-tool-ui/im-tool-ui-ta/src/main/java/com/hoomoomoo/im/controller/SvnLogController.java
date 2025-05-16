@@ -171,16 +171,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 appConfigDto.setSvnMaxRevision(String.valueOf(maxVersionConfig));
             }
             String versionValue = String.valueOf(svnVersion.getValue());
-            if (KEY_TRUNK.equals(versionValue)) {
-                appConfigDto.setSvnRep(appConfigDto.getSvnUrl().get(KEY_TRUNK));
-            } else {
-                String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
-                if (versionValue.contains(KEY_FUND)) {
-                    svnUrl = TaCommonUtils.getSvnUrl(versionValue, svnUrl);
-                    versionValue += KEY_SOURCES_TA_FUND;
-                }
-                appConfigDto.setSvnRep(svnUrl + versionValue);
-            }
+            SvnUtils.initSvnRep(appConfigDto, versionValue);
             logDtoList.addAll(SvnUtils.getSvnLog(times, modifyNo));
             Collections.sort(logDtoList, new Comparator<LogDto>() {
                 @Override

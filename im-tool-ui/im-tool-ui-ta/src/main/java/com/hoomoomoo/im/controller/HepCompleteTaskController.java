@@ -3,7 +3,6 @@ package com.hoomoomoo.im.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.dto.HepTaskComponentDto;
 import com.hoomoomoo.im.dto.HepTaskDto;
 import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.utils.*;
@@ -43,7 +42,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
     private Label taskNumber;
 
     @FXML
-    private TextField realRorkload;
+    private TextField realWorkload;
 
     @FXML
     private DatePicker realFinishTime;
@@ -82,27 +81,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
         String taskNumber = hepTaskDto.getTaskNumber();
         List<LogDto> logDtoList = new ArrayList<>(16);
-        String versionValue = getVersion(appConfigDto, hepTaskDto.getSprintVersion());
-        String versionValueYear = versionValue.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
-        if (KEY_TRUNK.equals(versionValue) || (versionValueYear.compareTo("2025") >= 0 && !versionValue.contains("2022"))) {
-            String url = appConfigDto.getSvnUrl().get(KEY_TRUNK);
-            if (!versionValue.endsWith("000")) {
-                url = appConfigDto.getSvnUrl().get(KEY_GIT_BRANCHES);
-            }
-            LoggerUtils.info("git仓库地址为: " + url);
-            if (StringUtils.isNotBlank(url)) {
-                appConfigDto.setSvnRep(url);
-            }
-        } else {
-            String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
-            if (versionValue.contains(KEY_FUND)) {
-                svnUrl = TaCommonUtils.getSvnUrl(versionValue, svnUrl);
-                versionValue += KEY_SOURCES_TA_FUND;
-            }
-            String svnRep = svnUrl + versionValue;
-            LoggerUtils.info("svn仓库地址为: " + svnRep);
-            appConfigDto.setSvnRep(svnRep);
-        }
+        SvnUtils.initSvnRep(appConfigDto, hepTaskDto.getSprintVersion());
         try {
             logDtoList.addAll(SvnUtils.getSvnLog(10, taskNumber));
         } catch (Exception e) {
@@ -211,44 +190,10 @@ public class HepCompleteTaskController extends BaseController implements Initial
         OutputUtils.repeatInfo(selfTestDesc, selfTestDescMsg.toString());
     }
 
-    private String getVersion(AppConfigDto appConfigDto, String ver) {
-        ver = CommonUtils.getComplexVer(ver);
-        String resVer;
-        boolean isTrunk = true;
-        if (ver.contains(KEY_FUND)) {
-            Map<String, String> svnVersionMap = appConfigDto.getCopyCodeVersion();
-            if (MapUtils.isNotEmpty(svnVersionMap)) {
-                Iterator<String> version = svnVersionMap.keySet().iterator();
-                while (version.hasNext()) {
-                    String verTmp = version.next();
-                    if (KEY_DESKTOP.equals(verTmp) || KEY_TRUNK.equals(verTmp) || !verTmp.contains(KEY_FUND)) {
-                        continue;
-                    }
-                    if (!ver.endsWith("000")) {
-                        isTrunk = false;
-                        break;
-                    }
-                    if (ver.compareTo(verTmp) <= 0) {
-                        isTrunk = false;
-                        break;
-                    }
-                }
-            }
-        } else {
-            isTrunk = false;
-        }
-        if (isTrunk) {
-            resVer = KEY_TRUNK;
-        } else {
-            resVer = TaCommonUtils.changeVersion(appConfigDto, ver);
-        }
-        return resVer;
-    }
-
     @FXML
     void execute(ActionEvent event) throws Exception {
         StringBuilder tips = new StringBuilder();
-        String realRorkloadValue = realRorkload.getText();
+        String realWorkloadValue = realWorkload.getText();
         String realFinishTimeValue = STR_BLANK;
         if (realFinishTime.getValue() != null) {
             realFinishTimeValue = realFinishTime.getValue().toString();
@@ -259,7 +204,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         String selfTestDescValue = selfTestDesc.getText();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
-        if (StringUtils.isBlank(realRorkloadValue)) {
+        if (StringUtils.isBlank(realWorkloadValue)) {
             tips.append("【耗费工时】").append(STR_NEXT_LINE);
         }
         if (StringUtils.isBlank(realFinishTimeValue)) {
@@ -290,7 +235,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         String editDescription = TaCommonUtils.formatText(editDescriptionValue, true);
         String suggestion = TaCommonUtils.formatText(suggestionValue, true);
         String selfTestDesc = TaCommonUtils.formatTextOnlyBr(selfTestDescValue);
-        hepTaskDto.setRealWorkload(realRorkloadValue.trim());
+        hepTaskDto.setRealWorkload(realWorkloadValue.trim());
         hepTaskDto.setRealFinishTime(realFinishTimeValue + STR_SPACE +CommonUtils.getCurrentDateTime8(new Date()));
         hepTaskDto.setModifiedFile(modifiedFile);
         hepTaskDto.setEditDescription(editDescription);
@@ -334,12 +279,12 @@ public class HepCompleteTaskController extends BaseController implements Initial
             OutputUtils.clearLog(suggestion);
             OutputUtils.repeatInfo(id, hepTaskDto.getId());
             OutputUtils.repeatInfo(taskNumber, hepTaskDto.getTaskNumber());
-            OutputUtils.repeatInfo(realRorkload, appConfigDto.getHepTaskTodoCostTime());
+            OutputUtils.repeatInfo(realWorkload, appConfigDto.getHepTaskTodoCostTime());
             realFinishTime.setValue(LocalDate.now());
             if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
                 realFinishTime.setDisable(true);
                 sync.setDisable(true);
-                OutputUtils.repeatInfo(realRorkload, TaCommonUtils.formatText(hepTaskDto.getRealWorkload()));
+                OutputUtils.repeatInfo(realWorkload, TaCommonUtils.formatText(hepTaskDto.getRealWorkload()));
             }
             OutputUtils.repeatInfo(modifiedFile, hepTaskDto.getModifiedFile());
             OutputUtils.repeatInfo(editDescription, TaCommonUtils.formatText(hepTaskDto.getEditDescription()));

@@ -278,6 +278,40 @@ public class SvnUtils {
         return version;
     }
 
+    private static String getVersion(AppConfigDto appConfigDto, String ver) {
+        ver = CommonUtils.getComplexVer(ver);
+        String resVer;
+        boolean isTrunk = true;
+        if (ver.contains(KEY_FUND)) {
+            Map<String, String> svnVersionMap = appConfigDto.getCopyCodeVersion();
+            if (MapUtils.isNotEmpty(svnVersionMap)) {
+                Iterator<String> version = svnVersionMap.keySet().iterator();
+                while (version.hasNext()) {
+                    String verTmp = version.next();
+                    if (KEY_DESKTOP.equals(verTmp) || KEY_TRUNK.equals(verTmp) || !verTmp.contains(KEY_FUND)) {
+                        continue;
+                    }
+                    if (!ver.endsWith("000")) {
+                        isTrunk = false;
+                        break;
+                    }
+                    if (ver.compareTo(verTmp) <= 0) {
+                        isTrunk = false;
+                        break;
+                    }
+                }
+            }
+        } else {
+            isTrunk = false;
+        }
+        if (isTrunk) {
+            resVer = KEY_TRUNK;
+        } else {
+            resVer = TaCommonUtils.changeVersion(appConfigDto, ver);
+        }
+        return resVer;
+    }
+
     private static String getSvnMsg(String msg, String type) {
         String indexMsg = NAME_SVN_DESCRIBE;
         if (STR_1.equals(type)) {
@@ -345,5 +379,29 @@ public class SvnUtils {
             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e) + STR_NEXT_LINE);
         }
         return version == null ? null : String.valueOf(version);
+    }
+
+    public static void initSvnRep(AppConfigDto appConfigDto, String version) {
+        String versionValue = getVersion(appConfigDto, version);
+        String versionValueYear = versionValue.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
+        if (KEY_TRUNK.equals(versionValue) || (versionValueYear.compareTo("2025") >= 0 && !versionValue.contains("2022"))) {
+            String url = appConfigDto.getSvnUrl().get(KEY_TRUNK);
+            if (!versionValue.endsWith("000")) {
+                url = appConfigDto.getSvnUrl().get(KEY_GIT_BRANCHES);
+            }
+            LoggerUtils.info("git仓库地址为: " + url);
+            if (StringUtils.isNotBlank(url)) {
+                appConfigDto.setSvnRep(url);
+            }
+        } else {
+            String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
+            if (versionValue.contains(KEY_FUND)) {
+                svnUrl = TaCommonUtils.getSvnUrl(versionValue, svnUrl);
+                versionValue += KEY_SOURCES_TA_FUND;
+            }
+            String svnRep = svnUrl + versionValue;
+            LoggerUtils.info("svn仓库地址为: " + svnRep);
+            appConfigDto.setSvnRep(svnRep);
+        }
     }
 }

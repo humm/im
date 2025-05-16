@@ -33,7 +33,7 @@
 
                                         <Label layoutX="15.0" layoutY="58.0" prefHeight="15.0" prefWidth="120.0"
                                                text="耗费工时" />
-                                        <TextField fx:id="realRorkload" layoutX="90.0" layoutY="55.0" prefHeight="23.0"
+                                        <TextField fx:id="realWorkload" layoutX="90.0" layoutY="55.0" prefHeight="23.0"
                                                    prefWidth="220.0" />
 
                                         <Label layoutX="350.0" layoutY="58.0" prefHeight="15.0" prefWidth="120.0"
