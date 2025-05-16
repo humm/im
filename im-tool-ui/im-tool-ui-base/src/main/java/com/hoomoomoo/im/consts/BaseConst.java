@@ -288,6 +288,7 @@ public class BaseConst {
     public static final String STR_QUOTES_SINGLE = "'";
     public static final String STR_BR = "</br>";
     public static final String STR_VERSION_PREFIX = "TA6.0-FUND.V";
+    public static final String STR_VERSION_PREFIX_2022 = "TA6.0V";
 
     public final static String ANNOTATION_NORMAL = "--";
     public final static String ANNOTATION_NORMAL_2 = "//";

@@ -147,8 +147,8 @@
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="frontTips" layoutX="1250.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;" text="front未实时同步"/>
-                        <Label fx:id="demandNo" layoutX="1420.0" layoutY="180.0"/>
-                        <Label fx:id="taskNo" layoutX="1570.0" layoutY="180.0"/>
+                        <TextField fx:id="demandNo" layoutX="1415.0" layoutY="177.0" editable="false" style="-fx-background-color: transparent;"/>
+                        <TextField fx:id="taskNo" layoutX="1565.0" layoutY="177.0" editable="false" style="-fx-background-color: transparent;"/>
 
                     </children>
                 </AnchorPane>

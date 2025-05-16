@@ -296,10 +296,10 @@ public class HepTodoController extends BaseController implements Initializable {
     private Button sideBarBtn;
 
     @FXML
-    private Label demandNo;
+    private TextField demandNo;
 
     @FXML
-    private Label taskNo;
+    private TextField taskNo;
 
     private double defaultDividerPositions;
 

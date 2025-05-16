@@ -1107,10 +1107,14 @@ public class CommonUtils {
     }
 
     public static String getComplexVer(String ver) {
-        if (ver.startsWith("2022")) {
-            ver = "TA6.0V" + ver;
+        if (ver.contains("2022")) {
+            if (!ver.contains(STR_VERSION_PREFIX_2022)) {
+                ver = STR_VERSION_PREFIX_2022 + ver;
+            }
         } else {
-            ver ="TA6.0-FUND.V" + ver;
+            if (!ver.contains(STR_VERSION_PREFIX)) {
+                ver = STR_VERSION_PREFIX + ver;
+            }
         }
         return ver;
     }
