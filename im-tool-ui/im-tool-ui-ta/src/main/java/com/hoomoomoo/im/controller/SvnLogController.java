@@ -249,13 +249,7 @@ public class SvnLogController extends BaseController implements Initializable {
 
     @FXML
     void selectSvnVersion(ActionEvent event) {
-        try {
-            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            String version = (String)svnVersion.getSelectionModel().getSelectedItem();
-        } catch (Exception e) {
-            LoggerUtils.info(e);
-            OutputUtils.info(fileLog, e.getMessage());
-        }
+
     }
 
     @Override

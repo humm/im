@@ -941,8 +941,9 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.isBlank(demandNo)) {
                 demandNo = taskNumberIn;
             }
+            boolean commitTag = false;
             if (!taskName.contains(COMMIT_TAG) && taskSubmitStatus.containsKey(taskNumberIn)) {
-                taskName = COMMIT_TAG + taskName;
+                commitTag = true;
                 if (!taskName.contains(DEV_COMMIT_TAG)) {
                     taskName = DEV_COMMIT_TAG + taskName;
                 }
@@ -1080,17 +1081,16 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.isBlank(item.getTaskMark()) && weekTodoTask.contains(taskNumberIn)) {
                 item.setTaskMark("本周");
             }
-            if (taskName.contains(COMMIT_TAG)) {
-                item.setTaskLevel( "已提交");
+            if (commitTag) {
+                setTaskLevel(item, "已提交");
             }
-
             if (finishDateError.contains(taskNumberIn)) {
-                item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? "超期" : "超期/" + item.getTaskLevel() );
+                setTaskLevel(item, "超期");
             } else if (finishDateOver.contains(taskNumberIn)) {
-                item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? "已超期" : "已超期/" + item.getTaskLevel());
+                setTaskLevel(item, "已超期");
             }
             if (taskName.contains(DEFECT_TAG)) {
-                item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? "缺陷" : "缺陷/" + item.getTaskLevel() );
+                setTaskLevel(item, "缺陷");
             }
 
             item.setSprintVersion(formatVersion(item.getSprintVersion()));
@@ -1168,6 +1168,10 @@ public class HepTodoController extends BaseController implements Initializable {
         finishDateError.addAll(finishDateOver);
         infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError);
         taskList.setDisable(false);
+    }
+
+    private void setTaskLevel(HepTaskDto item, String taskLevel) {
+        item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? taskLevel : taskLevel + "/" + item.getTaskLevel() );
     }
 
     private String formatVersion(String ver) {
