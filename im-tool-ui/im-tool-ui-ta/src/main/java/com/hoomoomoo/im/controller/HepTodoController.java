@@ -1252,7 +1252,8 @@ public class HepTodoController extends BaseController implements Initializable {
                                 } else {
                                     taskColor = color.get("默认");
                                 }
-                                setStyle(taskColor[0]);
+                                String taskStyle = taskColor[0];
+                                setStyle(taskStyle);
                             }
                         } catch (Exception e) {
                             LoggerUtils.info(e);
@@ -1481,7 +1482,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 if (sortCodeCache.containsKey(cacheKey)) {
                     item.setSortCode(sortCodeCache.get(cacheKey));
                 } else {
-                    String sortCode = hepTaskDto.getMinCompleteBySort() + item.getCustomer() + taskName + item.getFinishDate() + item.getSprintVersion();
+                    String sortCode = hepTaskDto.getMinCompleteBySort() + item.getCustomer() + taskName + item.getFinishDate() + item.getSprintVersion() + item.getTaskLevel();
                     item.setSortCode(sortCode);
                     sortCodeCache.put(cacheKey, sortCode);
                 }

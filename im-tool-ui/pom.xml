@@ -6,7 +6,7 @@
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-tool-ui</artifactId>
     <packaging>pom</packaging>
-	<version>2025.000400</version>
+	<version>2025.000413</version>
 
     <modules>
         <module>im-tool-ui-ta</module>
