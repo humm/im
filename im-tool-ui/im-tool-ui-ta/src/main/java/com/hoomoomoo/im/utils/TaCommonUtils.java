@@ -521,7 +521,7 @@ public class TaCommonUtils {
         if ("TA6.0V202202.02.001".equals(resVer)) {
             resVer = KEY_B + resVer;
         }
-        if (StringUtils.equals(KEY_LOG_DEBUG, appConfigDto.getAppLogLevel())) {
+        if (CommonUtils.isDebug()) {
             LoggerUtils.info("转换前版本号为: " + ver);
             LoggerUtils.info("转换后版本号为: " + resVer);
         }

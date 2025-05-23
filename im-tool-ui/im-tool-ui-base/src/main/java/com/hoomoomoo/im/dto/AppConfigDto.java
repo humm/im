@@ -272,8 +272,6 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskRestPlanTime;
 
-    private String hepTaskPrintParam;
-
     private String hepTaskSyncPath;
 
     private String errorLogDetail;

@@ -53,8 +53,6 @@ public class HepTaskDto extends BaseDto{
 
     private String description;
 
-    private String assigneeId;
-
     private String assigneeName;
 
     private String demandNo;
@@ -66,5 +64,11 @@ public class HepTaskDto extends BaseDto{
     private String creatorId;
 
     private String creatorName;
+
+    // 开发人
+    private String assigneeId;
+
+    // 审核人
+    private String reviewerId;
 
 }

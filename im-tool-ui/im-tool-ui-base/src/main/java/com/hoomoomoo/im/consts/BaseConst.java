@@ -49,6 +49,8 @@ public class BaseConst {
     public static final String STR_20991231 = "20991231";
     public static final String STR_DATE_20991231 = "2099-12-31";
 
+    public static final int DEFAULT_AUTO_CLOSE_MILLIS = 1000;
+
     public static final String STR_TRUE = "1";
     public static final String STR_SUCCESS_CODE = "200";
     public static final String STR_FALSE = "0";
@@ -258,7 +260,7 @@ public class BaseConst {
     public final static String STR_SPACE_2 = "  ";
     public final static String STR_SPACE_3 = "   ";
     public final static String STR_SPACE_4 = "    ";
-    public final static String STR_SPACE_5 = "     ";
+    public final static String STR_SPACE_10 = "          ";
     public final static String STR_SPACE_8 = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     public final static String STR_EQUALS = "=";
     public static final String STR_COMMA = ",";

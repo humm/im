@@ -97,6 +97,7 @@ public class HepTodoController extends BaseController implements Initializable {
     public final static String DEFECT_TAG = "【缺陷:FUNDTAVI";
     public final static String AUDIT_FAIL = "审核不通过";
     public final static String INTEGRATION_FAIL = "集成失败";
+    public final static String TASK_NAME_SCENE = "现场问题处理";
 
     private static Set<String> fileSyncSourceFile = new HashSet<>();
 
@@ -419,6 +420,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
             if (isExtendUser()) {
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户不支持此操作"));
+                CommonUtils.showTipsByError("关联用户不支持此操作", 3 * 1000);
                 return;
             }
             operateTask(item);
@@ -428,6 +430,13 @@ public class HepTodoController extends BaseController implements Initializable {
     void operateTask(HepTaskDto item) throws Exception {
         if (TaCommonUtils.restPlan()) {
             CommonUtils.showTipsByRest();
+            return;
+        }
+        if (StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
+            String msg = String.format("任务开发人员和任务审核人员为同一人【%s】 请检查", item.getAssigneeId());
+            LoggerUtils.info(msg);
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            CommonUtils.showTipsByError(msg, 10 * 1000);
             return;
         }
         String status = item.getStatus();
@@ -652,7 +661,7 @@ public class HepTodoController extends BaseController implements Initializable {
                         continue;
                     }
                     CURRENT_USER_ID = item;
-                    String userInfo = String.format("查询用户【%s】", CURRENT_USER_ID);
+                    String userInfo = String.format("查询用户: %s", CURRENT_USER_ID);
                     OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(userInfo));
                     if (!logs.contains(userInfo)) {
                         logs.add(userInfo);
@@ -1015,22 +1024,24 @@ public class HepTodoController extends BaseController implements Initializable {
             String taskNameTag = getTaskNameTag(taskName);
             switch (taskNameTag) {
                 case DEFECT_TAG:
-                    item.setSortDate(getValue(STR_BLANK, STR_1));
+                    item.setSortDate(getValue(STR_1));
                     break;
                 case SELF_TEST_TAG:
-                    item.setSortDate(getValue(STR_BLANK, STR_2));
+                    item.setSortDate(getValue(STR_2));
                     break;
                 case SELF_BUILD_TAG:
-                    item.setSortDate(getValue(STR_BLANK, STR_3));
+                    item.setSortDate(getValue(STR_3));
                     break;
                 case COMMIT_TAG:
                 case DEV_COMMIT_TAG:
                 case UPDATE_TAG:
                 default:
                     if (AUDIT_FAIL.equals(item.getStatusName())) {
-                        item.setSortDate(getValue(STR_BLANK, STR_4));
+                        item.setSortDate(getValue(STR_4));
                     } else if (INTEGRATION_FAIL.equals(item.getStatusName())) {
-                        item.setSortDate(getValue(STR_BLANK, STR_5));
+                        item.setSortDate(getValue(STR_5));
+                    } else if (TASK_NAME_SCENE.equals(taskName.trim())) {
+                        item.setSortDate(getValue(STR_6));
                     } else {
                         item.setSortDate(finishDate);
                     }
@@ -1420,8 +1431,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (!proScene()) {
             return null;
         }
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (STR_TRUE.equals(appConfigDto.getHepTaskPrintParam())) {
+        if (CommonUtils.isDebug()) {
             logs.add("请求入参: " + jsonObject);
         } else {
             cn.hutool.json.JSONObject print = initJSONObject();
@@ -1435,26 +1445,25 @@ public class HepTodoController extends BaseController implements Initializable {
         HttpResponse response = HttpRequest.post(REQUEST_URL).timeout(10 * 1000).form(jsonObject).execute();
         Map<String, String> result = (Map) JSONObject.parse(response.body());
         if (StringUtils.equals(STR_SUCCESS_CODE, result.get(KEY_CODE))) {
-            if (STR_TRUE.equals(appConfigDto.getHepTaskPrintParam())) {
+            if (CommonUtils.isDebug()) {
+                Object data = result.get(KEY_DATA);
+                result.remove(KEY_DATA);
                 logs.add("返回结果: " + result);
+                if (data instanceof JSONArray) {
+                    JSONArray ele = (JSONArray) data;
+                    if (ele.size() > 0) {
+                        for (int i = 0; i < ele.size(); i++) {
+                            logs.add(STR_SPACE_10 + ele.get(i));
+                        }
+                    }
+                }
             } else {
                 cn.hutool.json.JSONObject print = initJSONObject();
                 print.set(KEY_MESSAGE, NAME_DEAL_SUCCESS);
-                logs.add("返回结果: " +print);
+                logs.add("返回结果: " + print);
             }
         } else {
             logs.add("返回结果: " + result);
-        }
-
-        Object data = result.get("data");
-        if (data instanceof JSONArray) {
-            JSONArray ele = (JSONArray) data;
-            if (ele.size() > 1) {
-                StringBuilder msg = new StringBuilder(STR_NEXT_LINE);
-                for (int i = 0; i < ele.size(); i++) {
-                    msg.append(STR_SPACE_3 + ele.get(i).toString()).append(STR_NEXT_LINE);
-                }
-            }
         }
         return response;
     }
@@ -1498,28 +1507,26 @@ public class HepTodoController extends BaseController implements Initializable {
         return task;
     }
 
-    private String getValue(String value, String type) {
+    private String getValue(String type) {
         if (StringUtils.isBlank(type)) {
             type = STR_1;
         }
-        if (StringUtils.isBlank(value)) {
-            if (STR_1.equals(type)) {
-                return "1000-00-00";
-            } else if (STR_2.equals(type)) {
-                return "1010-00-00";
-            } else if (STR_3.equals(type)) {
-                return "1020-00-00";
-            } else if (STR_4.equals(type)) {
-                return "1030-00-00";
-            } else if (STR_5.equals(type)) {
-                return "1040-00-00";
-            } else if (STR_6.equals(type)) {
-                return "9940-00-00";
-            } else if (STR_7.equals(type)) {
-                return "9950-00-00";
-            }
+        if (STR_1.equals(type)) {
+            return "1000-00-00";
+        } else if (STR_2.equals(type)) {
+            return "1010-00-00";
+        } else if (STR_3.equals(type)) {
+            return "1020-00-00";
+        } else if (STR_4.equals(type)) {
+            return "1030-00-00";
+        } else if (STR_5.equals(type)) {
+            return "1040-00-00";
+        } else if (STR_6.equals(type)) {
+            return "1050-00-00";
+        } else if (STR_7.equals(type)) {
+            return "9950-00-00";
         }
-        return value;
+        return "9999-00-00";
     }
 
     private void showExtentUserTask(boolean changeTab) throws Exception {
@@ -1800,7 +1807,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (PAGE_USER.equals(EXTEND_USER_FRONT_CODE)) {
             CURRENT_USER_ID = EXTEND_USER_FRONT_CODE;
         }
-        String user = String.format("当前用户【%s】", CURRENT_USER_ID);
+        String user = String.format("当前用户: %s", CURRENT_USER_ID);
         OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(user));
         if (!logs.contains(user)) {
             logs.add(user);
@@ -1809,7 +1816,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private boolean isExtendUser() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        return !CURRENT_USER_ID.equals(appConfigDto.getHepTaskUser());
+        return !CURRENT_USER_ID.equals(appConfigDto.getHepTaskUser()) || StringUtils.equals(PAGE_USER, EXTEND_USER_FRONT_CODE);
     }
 
     private void showExtendTask(boolean changeTab) throws Exception {
@@ -1817,7 +1824,7 @@ public class HepTodoController extends BaseController implements Initializable {
         String userExtend = appConfigDto.getHepTaskUserExtend();
         if (StringUtils.isNotBlank(userExtend)) {
             extendUserInfoCodeToName.put(appConfigDto.getHepTaskUser(), appConfigDto.getHepTaskUserName());
-            extendUserInfoCodeToName.put(appConfigDto.getHepTaskUserName(), appConfigDto.getHepTaskUser());
+            extendUserInfoNameToCode.put(appConfigDto.getHepTaskUserName(), appConfigDto.getHepTaskUser());
             String[] user = userExtend.split(STR_COMMA);
             Tab defaultTab = null;
             for (String extend : user) {

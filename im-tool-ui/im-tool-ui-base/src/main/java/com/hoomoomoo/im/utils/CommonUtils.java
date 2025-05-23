@@ -982,14 +982,14 @@ public class CommonUtils {
         return matcher.matches();
     }
 
-    public static Service<Void> getCloseInfoService() {
+    public static Service<Void> getCloseInfoService(int millis) {
         Service<Void> service = new Service<Void>() {
             @Override
             protected Task<Void> createTask() {
                 return new Task<Void>() {
                     @Override
                     protected Void call() throws Exception {
-                        Thread.sleep(1000);
+                        Thread.sleep(millis);
                         return null;
                     }
                 };
@@ -999,14 +999,18 @@ public class CommonUtils {
     }
 
     public static void showTipsByInfo(String msg) {
-        showTips(STR_1, msg, null,null,true, false);
+        showTips(STR_1, msg, null,null,true, false, DEFAULT_AUTO_CLOSE_MILLIS);
     }
 
     public static void showTipsByError(String msg) {
-        showTips(STR_0, msg, null, null,true, false);
+        showTips(STR_0, msg, null, null,true, false, DEFAULT_AUTO_CLOSE_MILLIS);
+    }
+
+    public static void showTipsByError(String msg, int millis) {
+        showTips(STR_0, msg, null, null,true, false, millis);
     }
     public static void showTipsByError(String msg, boolean autoClose) {
-        showTips(STR_0, msg, null, null,autoClose, false);
+        showTips(STR_0, msg, null, null,autoClose, false, DEFAULT_AUTO_CLOSE_MILLIS);
     }
 
     public static void showTipsByErrorNotAutoClose(String msg, List<String> detail) {
@@ -1018,10 +1022,10 @@ public class CommonUtils {
             detail.add("显示部分内容 . 详情参阅文件 " + getSpecialString(50, STR_POINT + STR_SPACE));
             showDetail = true;
         }
-        showTips(STR_0, msg, detail.stream().map(Object::toString).collect(Collectors.joining()), all, false, showDetail);
+        showTips(STR_0, msg, detail.stream().map(Object::toString).collect(Collectors.joining()), all, false, showDetail, DEFAULT_AUTO_CLOSE_MILLIS);
     }
 
-    public static void showTips(String tipsType, String msg, String detail,String all, boolean autoClose, boolean showDetail) {
+    public static void showTips(String tipsType, String msg, String detail,String all, boolean autoClose, boolean showDetail, int millis) {
         Alert alert;
         if (STR_0.equals(tipsType)) {
             alert = new Alert(Alert.AlertType.ERROR);
@@ -1035,9 +1039,9 @@ public class CommonUtils {
         }
         if (autoClose) {
             if (detail == null) {
-                alert.setContentText("弹窗将自动关闭");
+                alert.setContentText((millis / 1000) + "秒后将自动关闭");
             }
-            Service<Void> service = getCloseInfoService();
+            Service<Void> service = getCloseInfoService(millis);
             service.setOnSucceeded(e -> alert.hide());
             service.start();
         }
@@ -1381,5 +1385,15 @@ public class CommonUtils {
             return date.substring(8);
         }
         return date.toString();
+    }
+
+    public static boolean isDebug() {
+        try {
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            return StringUtils.equals(KEY_LOG_DEBUG, appConfigDto.getAppLogLevel());
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+        }
+        return false;
     }
 }
