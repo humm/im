@@ -129,8 +129,7 @@ public class BaseConst {
     public final static String KEY_TIMESTAMP = "timestamp";
     public final static String KEY_STATUS_LIST = "status_list";
     public final static String KEY_SIGN = "sign";
-    public final static String KEY_EFFICIENCY_TYPE = "efficiency_type";
-    public final static String KEY_LIGHT_CODE = "lightCode";
+    public final static String[] KEY_LIGHT_CODE = new String[]{"lightCode"};
     public final static String KEY_REAL_FINISH_TIME = "real_finish_time";
     public final static String KEY_SUGGESTION = "suggestion";
     public final static String KEY_SELF_TEST_DESC = "self_test_desc";
@@ -246,16 +245,18 @@ public class BaseConst {
     public static final String NAME_MENU_TASK_NO = "复制任务单号";
     public static final String NAME_MENU_MARK_DEV = "标记分支任务已完成";
     public static final String NAME_MENU_CANCEL_DEV = "取消标记分支任务已完成";
-    public static final String NAME_MENU_MARK_SUBMIT = "标记任务已提交";
-    public static final String NAME_MENU_CANCEL_SUBMIT = "取消标记任务已提交";
+    public static final String NAME_MENU_MARK_SUBMIT = "标记当前任务已提交";
+    public static final String NAME_MENU_CANCEL_SUBMIT = "取消标记当前任务已提交";
     public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记任务描述#简单";
     public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记任务描述#一般";
     public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记任务描述#复杂";
     public static final String NAME_MENU_TASK_LEVEL_QUESTION = "标记任务描述#待明确";
+    public static final String NAME_MENU_TASK_LEVEL_CLEAR = "标记任务描述#清除标记";
 
     public final static String SECURITY_FLAG = "+++";
 
     public final static String STR_BLANK = "";
+    public final static String STR_NUMBER_SIGN = "#";
     public final static String STR_AND = "&";
     public final static String STR_EQUAL = "=";
     public final static String STR_SPACE = " ";
@@ -378,6 +379,7 @@ public class BaseConst {
     public static final String CANCEL_LEVEL_GENERAL_ICON = "/conf/image/general.png";
     public static final String CANCEL_LEVEL_DIFFICULTY_ICON = "/conf/image/difficulty.png";
     public static final String CANCEL_LEVEL_QUESTION_ICON = "/conf/image/question.png";
+    public static final String CANCEL_LEVEL_CLEAR_ICON = "/conf/image/clear.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
     public static final String DETAIL_ICON = "/conf/image/detail.png";
     public static final String PATH_STARTER_FXML = "/conf/fxml/starter.fxml";

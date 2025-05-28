@@ -146,7 +146,6 @@ public class HepTodoController extends BaseController implements Initializable {
         add(KEY_EDIT_DESCRIPTION);
         add(KEY_TIMESTAMP);
         add(KEY_SELF_TEST_DESC);
-        add(KEY_EFFICIENCY_TYPE);
     }};
 
     private List<String> logs = new ArrayList<>();
@@ -819,8 +818,6 @@ public class HepTodoController extends BaseController implements Initializable {
         request.put(KEY_SUGGESTION, hepTaskDto.getSuggestion());
         // 自测说明
         request.put(KEY_SELF_TEST_DESC, hepTaskDto.getSelfTestDesc());
-        // 提效方式
-        request.put(KEY_EFFICIENCY_TYPE, KEY_LIGHT_CODE);
         return request;
     }
 
@@ -1122,7 +1119,9 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.isNotBlank(customer) && customer.length() > 6) {
                 item.setCustomer(customer.substring(0, 6));
             }
-
+            if (StringUtils.equals(appConfigDto.getHepTaskUserName(), item.getCreatorName())) {
+                item.setCreatorName(STR_SPACE);
+            }
             if (StringUtils.isBlank(status)) {
                 hasBlank = true;
                 taskTotal++;
@@ -1973,16 +1972,21 @@ public class HepTodoController extends BaseController implements Initializable {
                     String level = elementList[1];
                     switch (level) {
                         case STR_0:
-                            level = "简单";
+                            level = NAME_MENU_TASK_LEVEL_SIMPLE.split(STR_NUMBER_SIGN)[1];
                             break;
                         case STR_1:
-                            level = "一般";
+                            level = NAME_MENU_TASK_LEVEL_GENERAL.split(STR_NUMBER_SIGN)[1];
                             break;
                         case STR_2:
-                            level = "复杂";
+                            level = NAME_MENU_TASK_LEVEL_DIFFICULTY.split(STR_NUMBER_SIGN)[1];
+                            break;
+                        case STR_3:
+                            level = NAME_MENU_TASK_LEVEL_QUESTION.split(STR_NUMBER_SIGN)[1];
+                            break;
+                        case STR_4:
+                            level = STR_SPACE;
                             break;
                         default:
-                            level = "待明确";
                             break;
                     }
                     task.put(elementList[0], level);
