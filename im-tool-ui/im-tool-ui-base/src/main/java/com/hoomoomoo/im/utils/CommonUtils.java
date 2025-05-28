@@ -35,7 +35,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -1323,7 +1322,7 @@ public class CommonUtils {
             return false;
         }
         String msg = message.stream().collect(Collectors.joining(STR_COMMA));
-        if (msg.contains(NAME_NO_AUTH) || msg.contains(KEY_ERROR_CODE_NO_AUTH_SERVER_AOP)) {
+        if (msg.contains(NAME_NO_AUTH) || msg.contains(KEY_ERROR_CODE_NO_AUTH_SERVICE)) {
             return false;
         }
         if (msg.contains(KEY_PACKAGE_IM)) {

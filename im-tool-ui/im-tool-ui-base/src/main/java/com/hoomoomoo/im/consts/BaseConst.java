@@ -76,7 +76,7 @@ public class BaseConst {
     public static final String KEY_FIELD_TRANSLATE = "generate.code.field.translate.";
     public static final String KEY_FILE_SYNC_VERSION = "file.sync.version.";
     public static final String KEY_PACKAGE_IM = "com.hoomoomoo.im";
-    public static final String KEY_ERROR_CODE_NO_AUTH_SERVER_AOP = "Failed to mark 'lcpt-server/aop' absent: item of the same name is already scheduled for addition";
+    public static final String KEY_ERROR_CODE_NO_AUTH_SERVICE = "absent: item of the same name is already scheduled for addition";
 
     public static final String KEY_DEMO = "demo10000";
     public static final String KEY_CLASSES = "classes";

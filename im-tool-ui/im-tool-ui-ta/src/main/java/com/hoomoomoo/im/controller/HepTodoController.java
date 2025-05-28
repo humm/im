@@ -433,7 +433,7 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         if (StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
-            String msg = String.format("任务开发人员和任务审核人员为同一人【%s】 请检查", item.getAssigneeId());
+            String msg = String.format("开发人员和审核人员为同一人【%s】 请检查", item.getAssigneeId());
             LoggerUtils.info(msg);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
             CommonUtils.showTipsByError(msg, 10 * 1000);
@@ -1575,7 +1575,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 positions = 1;
                 sideBarBtn.setText("显示侧边栏");
             } else {
-                width = 620;
+                width = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth() - 320;
                 sideBarBtn.setText("隐藏侧边栏");
             }
             ((TableColumn)taskList.getColumns().get(0)).setPrefWidth(width);
@@ -2057,10 +2057,23 @@ public class HepTodoController extends BaseController implements Initializable {
                 tooltip.hide();
                 if (newValue instanceof HepTaskDto) {
                     HepTaskDto val = (HepTaskDto) newValue;
-                    if (val != null && StringUtils.isNotBlank(val.getTaskLevel()) && val.getTaskLevel().contains(STR_SLASH)) {
-                        tooltip.setText(val.getTaskLevel());
-                        tooltip.show(taskList, 1400, 255);
-                        tooltip.setAutoHide(true);
+                    if (val != null) {
+                        tooltip.setText(STR_BLANK);
+                        if (StringUtils.isNotBlank(val.getTaskLevel()) && val.getTaskLevel().contains(STR_SLASH)) {
+                            tooltip.setText(val.getTaskLevel());
+                            tooltip.show(taskList, 1400, 255);
+                            tooltip.setAutoHide(true);
+                        }
+                        String reviewerName = val.getReviewerName();
+                        if (StringUtils.isNotBlank(reviewerName) && reviewerName.contains(STR_COMMA)) {
+                            if (StringUtils.isBlank(tooltip.getText())) {
+                                tooltip.setText(reviewerName);
+                            } else {
+                                tooltip.setText(tooltip.getText() + STR_SPACE_2 + reviewerName);
+                            }
+                            tooltip.show(taskList, 1400, 255);
+                            tooltip.setAutoHide(true);
+                        }
                     }
                 }
             }

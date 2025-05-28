@@ -70,5 +70,6 @@ public class HepTaskDto extends BaseDto{
 
     // 审核人
     private String reviewerId;
+    private String reviewerName;
 
 }
