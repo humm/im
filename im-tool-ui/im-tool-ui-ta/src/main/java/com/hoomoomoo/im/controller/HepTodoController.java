@@ -146,6 +146,7 @@ public class HepTodoController extends BaseController implements Initializable {
         add(KEY_EDIT_DESCRIPTION);
         add(KEY_TIMESTAMP);
         add(KEY_SELF_TEST_DESC);
+        add(KEY_EFFICIENCY_TYPE);
     }};
 
     private List<String> logs = new ArrayList<>();
@@ -818,6 +819,8 @@ public class HepTodoController extends BaseController implements Initializable {
         request.put(KEY_SUGGESTION, hepTaskDto.getSuggestion());
         // 自测说明
         request.put(KEY_SELF_TEST_DESC, hepTaskDto.getSelfTestDesc());
+        // 提效方式
+        request.put(KEY_EFFICIENCY_TYPE, KEY_LIGHT_CODE);
         return request;
     }
 
@@ -1040,7 +1043,7 @@ public class HepTodoController extends BaseController implements Initializable {
                         item.setSortDate(getValue(STR_4));
                     } else if (INTEGRATION_FAIL.equals(item.getStatusName())) {
                         item.setSortDate(getValue(STR_5));
-                    } else if (TASK_NAME_SCENE.equals(taskName.trim())) {
+                    } else if (taskName.contains(TASK_NAME_SCENE)) {
                         item.setSortDate(getValue(STR_6));
                     } else {
                         item.setSortDate(finishDate);

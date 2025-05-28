@@ -129,6 +129,8 @@ public class BaseConst {
     public final static String KEY_TIMESTAMP = "timestamp";
     public final static String KEY_STATUS_LIST = "status_list";
     public final static String KEY_SIGN = "sign";
+    public final static String KEY_EFFICIENCY_TYPE = "efficiency_type";
+    public final static String KEY_LIGHT_CODE = "lightCode";
     public final static String KEY_REAL_FINISH_TIME = "real_finish_time";
     public final static String KEY_SUGGESTION = "suggestion";
     public final static String KEY_SELF_TEST_DESC = "self_test_desc";
