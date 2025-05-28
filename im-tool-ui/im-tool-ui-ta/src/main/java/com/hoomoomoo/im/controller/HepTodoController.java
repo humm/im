@@ -423,16 +423,16 @@ public class HepTodoController extends BaseController implements Initializable {
                 CommonUtils.showTipsByError("关联用户不支持此操作", 3 * 1000);
                 return;
             }
-            operateTask(item);
+            operateTask(appConfigDto, item);
         }
     }
 
-    void operateTask(HepTaskDto item) throws Exception {
+    void operateTask(AppConfigDto appConfigDto, HepTaskDto item) throws Exception {
         if (TaCommonUtils.restPlan()) {
             CommonUtils.showTipsByRest();
             return;
         }
-        if (StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
+        if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
             String msg = String.format("开发人员和审核人员为同一人【%s】 请检查", item.getAssigneeId());
             LoggerUtils.info(msg);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
@@ -1119,9 +1119,15 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.isNotBlank(customer) && customer.length() > 6) {
                 item.setCustomer(customer.substring(0, 6));
             }
+
             if (StringUtils.equals(appConfigDto.getHepTaskUserName(), item.getCreatorName())) {
                 item.setCreatorName(STR_SPACE);
             }
+
+            if (StringUtils.equals(appConfigDto.getHepTaskUserName(), item.getReviewerName())) {
+                item.setReviewerName(STR_SPACE);
+            }
+
             if (StringUtils.isBlank(status)) {
                 hasBlank = true;
                 taskTotal++;

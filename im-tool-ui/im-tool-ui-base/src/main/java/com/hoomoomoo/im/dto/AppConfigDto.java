@@ -170,6 +170,8 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskCustomerPath;
 
+    private String hepTaskSameOne;
+
     private String activateFunction;
 
     private String activatePrevFunction;
