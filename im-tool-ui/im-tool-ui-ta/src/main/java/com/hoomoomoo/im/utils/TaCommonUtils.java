@@ -597,8 +597,8 @@ public class TaCommonUtils {
                     for (int i=0; i<items.size(); i++) {
                         JSONObject ele = items.getJSONObject(i);
                         String taskNumber = String.valueOf(ele.get(KEY_TASK_NUMBER));
-                        String customerNames = ele.get(KEY_CUSTOMER_NAMES) == null ? STR_BLANK : String.valueOf(ele.get(KEY_CUSTOMER_NAMES));
-                        String storyNumbers = ele.get(KEY_STORY_NUMBERS) == null ? STR_BLANK: String.valueOf(ele.get(KEY_STORY_NUMBERS));
+                        String customerNames = ele.get(KEY_CUSTOMER_NAMES) == null ? STR_SPACE : String.valueOf(ele.get(KEY_CUSTOMER_NAMES));
+                        String storyNumbers = ele.get(KEY_STORY_NUMBERS) == null ? STR_SPACE: String.valueOf(ele.get(KEY_STORY_NUMBERS));
                         String[] demandNoList = storyNumbers.split(STR_COMMA);
                         for (String single : demandNoList) {
                             demandInfo.setLength(0);

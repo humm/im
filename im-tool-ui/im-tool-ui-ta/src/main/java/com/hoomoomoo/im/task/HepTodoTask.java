@@ -37,9 +37,10 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
             case "syncTaskInfo":
                 try {
                     JvmCache.getSystemToolController().syncTask(ConfigCache.getAppConfigDtoCache());
+                    CommonUtils.showTipsByInfo("异步同步中...请稍后...", 5 * 1000);
                     hepTodoTaskParam.getHepTodoController().doExecuteQuery();
                     Platform.runLater(() -> {
-                        CommonUtils.showTipsByInfo("同步任务信息成功");
+                        CommonUtils.showTipsByInfo("同步任务信息成功", 30 * 1000);
                     });
                 } catch (Exception e) {
                     LoggerUtils.info(e);
@@ -48,7 +49,7 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
                         if (msg.contains("拒绝访问")) {
                             msg = NAME_NO_AUTH;
                         }
-                        CommonUtils.showTipsByError(msg);
+                        CommonUtils.showTipsByError(msg, 5 * 1000);
                     });
                 }
                 break;

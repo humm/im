@@ -590,7 +590,6 @@ public class HepTodoController extends BaseController implements Initializable {
         syncTask.setDisable(true);
         try {
             TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "syncTaskInfo")));
-            CommonUtils.showTipsByInfo("异步同步中...请稍后...", 3000);
         } catch (Exception e) {
             String msg = e.getMessage();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
