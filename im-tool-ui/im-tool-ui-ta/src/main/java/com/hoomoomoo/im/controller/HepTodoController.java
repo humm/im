@@ -749,17 +749,19 @@ public class HepTodoController extends BaseController implements Initializable {
             try {
                 AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 Stage stage = appConfigDto.getChildStage();
-                Map responseInfo = (Map) JSONObject.parse(response.body());
-                String code = String.valueOf(responseInfo.get(KEY_CODE));
-                if (STR_STATUS_200.equals(code)) {
-                    Map data = (Map) responseInfo.get(KEY_DATA);
-                    if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
-                        hepTaskDto.setRealWorkload(STR_1);
+                if (response != null) {
+                    Map responseInfo = (Map) JSONObject.parse(response.body());
+                    String code = String.valueOf(responseInfo.get(KEY_CODE));
+                    if (STR_STATUS_200.equals(code)) {
+                        Map data = (Map) responseInfo.get(KEY_DATA);
+                        if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
+                            hepTaskDto.setRealWorkload(STR_1);
+                        }
+                        hepTaskDto.setModifiedFile(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_MODIFIED_FILE)));
+                        hepTaskDto.setEditDescription(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_EDIT_DESCRIPTION)));
+                        hepTaskDto.setSuggestion(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_SUGGESTION)));
+                        hepTaskDto.setSelfTestDesc(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_SELF_TEST_DESC)));
                     }
-                    hepTaskDto.setModifiedFile(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_MODIFIED_FILE)));
-                    hepTaskDto.setEditDescription(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_EDIT_DESCRIPTION)));
-                    hepTaskDto.setSuggestion(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_SUGGESTION)));
-                    hepTaskDto.setSelfTestDesc(TaCommonUtils.formatTextBrToNextLine((String) data.get(KEY_SELF_TEST_DESC)));
                 }
                 // 每次页面都重新打开
                 if (stage != null) {
@@ -1436,7 +1438,7 @@ public class HepTodoController extends BaseController implements Initializable {
         DigestAlgorithm digestAlgorithm = DigestAlgorithm.MD5;
         String sign = SecureUtil.signParams(digestAlgorithm, jsonObject, "&", "=", true, new String[0]).toUpperCase();
         jsonObject.set(KEY_SIGN, sign);
-        if (!proScene()) {
+        if (!CommonUtils.proScene()) {
             return null;
         }
         if (CommonUtils.isDebug()) {
@@ -2131,11 +2133,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private boolean requestStatus(HttpResponse response) {
-        return !proScene() || STATUS_200 == response.getStatus();
-    }
-
-    private boolean proScene() {
-        return FileUtils.startByJar();
+        return !CommonUtils.proScene() || STATUS_200 == response.getStatus();
     }
 
     private void addMask() {
@@ -2156,7 +2154,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void buildTestData() throws Exception {
-        if (proScene()) {
+        if (CommonUtils.proScene()) {
             return;
         }
         JSONArray req = new JSONArray();

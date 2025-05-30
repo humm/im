@@ -1395,4 +1395,8 @@ public class CommonUtils {
         }
         return false;
     }
+
+    public static boolean proScene() {
+        return FileUtils.startByJar();
+    }
 }

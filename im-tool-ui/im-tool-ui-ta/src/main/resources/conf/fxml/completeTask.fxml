@@ -9,6 +9,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 <AnchorPane fx:id="completeTask" prefHeight="880.0" prefWidth="1000.0" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.hoomoomoo.im.controller.HepCompleteTaskController">
     <children>
@@ -80,6 +83,17 @@
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
                                             </padding>
                                         </Button>
+
+                                        <ComboBox fx:id="override" layoutX="910.0" layoutY="855.0"
+                                                  prefHeight="23.0" prefWidth="80.0">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList" >
+                                                    <String fx:value="原值" />
+                                                    <String fx:value="覆盖" />
+                                                </FXCollections>
+                                            </items>
+                                            <value>原值</value>
+                                        </ComboBox>
 
                                     </children>
                                 </AnchorPane>

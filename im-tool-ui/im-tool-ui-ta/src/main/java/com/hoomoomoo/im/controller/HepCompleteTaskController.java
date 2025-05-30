@@ -68,6 +68,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
     private Label notice;
 
     @FXML
+    private ComboBox override;
+
+    @FXML
     void changeRealFinishTime(ActionEvent event) {
 
     }
@@ -82,7 +85,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
         List<LogDto> logDtoList = new ArrayList<>(16);
         SvnUtils.initSvnRep(appConfigDto, hepTaskDto.getSprintVersion());
         try {
-            logDtoList.addAll(SvnUtils.getSvnLog(10, taskNumber));
+            if (CommonUtils.proScene()) {
+                logDtoList.addAll(SvnUtils.getSvnLog(10, taskNumber));
+            }
         } catch (Exception e) {
             notice.setStyle(STYLE_BOLD_RED);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("修改记录信息同步异常,请检查"));
@@ -254,7 +259,8 @@ public class HepCompleteTaskController extends BaseController implements Initial
     private void addTaskDesc(HepTaskDto hepTaskDto, String editDescription, String suggestion, String selfTestDesc) throws IOException {
         String fileName = hepTaskDto.getOriTaskName().replaceAll(STR_COLON, STR_BLANK) + FILE_TYPE_STAT;
         String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
-        if (new File(path).exists()) {
+        String desc = (String)override.getSelectionModel().getSelectedItem();
+        if (new File(path).exists() && StringUtils.equals("原值", desc)) {
             return;
         }
         List<String> taskDesc = new ArrayList<>();
