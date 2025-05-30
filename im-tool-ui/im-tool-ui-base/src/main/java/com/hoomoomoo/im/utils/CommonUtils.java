@@ -1001,6 +1001,10 @@ public class CommonUtils {
         showTips(STR_1, msg, null,null,true, false, DEFAULT_AUTO_CLOSE_MILLIS);
     }
 
+    public static void showTipsByInfo(String msg, int millis) {
+        showTips(STR_1, msg, null,null,true, false, millis);
+    }
+
     public static void showTipsByError(String msg) {
         showTips(STR_0, msg, null, null,true, false, DEFAULT_AUTO_CLOSE_MILLIS);
     }

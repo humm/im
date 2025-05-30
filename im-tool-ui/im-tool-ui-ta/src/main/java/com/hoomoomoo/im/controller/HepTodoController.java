@@ -589,10 +589,8 @@ public class HepTodoController extends BaseController implements Initializable {
     void syncTaskInfo (ActionEvent event) throws Exception {
         syncTask.setDisable(true);
         try {
-            JvmCache.getSystemToolController().executeSyncTaskInfo();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("同步任务信息成功"));
-            CommonUtils.showTipsByInfo("同步任务信息成功");
-            executeQuery(null);
+            TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "syncTaskInfo")));
+            CommonUtils.showTipsByInfo("异步同步中...请稍后...", 3000);
         } catch (Exception e) {
             String msg = e.getMessage();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
@@ -1118,8 +1116,13 @@ public class HepTodoController extends BaseController implements Initializable {
             }
 
             String customer = item.getCustomer();
-            if (StringUtils.isNotBlank(customer) && customer.length() > 6) {
-                item.setCustomer(customer.substring(0, 6));
+            if (StringUtils.isNotBlank(customer)) {
+                if (customer.contains(STR_COMMA)) {
+                    item.setCustomer(customer.split(STR_COMMA)[0]);
+                }
+                if (customer.length() > 6) {
+                    item.setCustomer(customer.substring(0, 6));
+                }
             }
 
             if (StringUtils.equals(appConfigDto.getHepTaskUserName(), item.getCreatorName())) {

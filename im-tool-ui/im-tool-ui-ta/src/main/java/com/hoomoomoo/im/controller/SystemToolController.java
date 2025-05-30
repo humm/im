@@ -317,8 +317,9 @@ public class SystemToolController implements Initializable {
 
     public void executeSyncTaskInfo() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        syncExcel(appConfigDto.getHepTaskCustomerPath(),"hep.task.customer.path", "任务列表", PATH_TASK_STAT, "同步任务信息", "task");
-        FileUtils.copyFile(new File(appConfigDto.getHepTaskSyncPath() + PATH_DEMAND_STAT), new File(FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT)));
+        // syncExcel(appConfigDto.getHepTaskCustomerPath(),"hep.task.customer.path", "任务列表", PATH_TASK_STAT, "同步任务信息", "task");
+        // FileUtils.copyFile(new File(appConfigDto.getHepTaskSyncPath() + PATH_DEMAND_STAT), new File(FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT)));
+        syncTask(appConfigDto);
         String msg = String.format(BaseConst.MSG_USE, TASK_SYNC.getName());
         LoggerUtils.info(msg);
         LoggerUtils.writeLogInfo(TASK_SYNC.getCode(), new Date(), new ArrayList<String>(){{
@@ -329,6 +330,66 @@ public class SystemToolController implements Initializable {
     public void executeSyncTaskInfoBySyncTask() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         syncExcel(appConfigDto.getHepTaskSyncPath(),"hep.task.sync.path", "任务列表", PATH_TASK_STAT, "同步任务信息", "task");
+    }
+
+    public void syncTask(AppConfigDto appConfigDto) throws Exception {
+        LoggerUtils.info("同步任务信息开始");
+        LoggerUtils.info("同步任务信息读取文件开始");
+        List<String> response = FileUtils.readNormalFile(appConfigDto.getHepTaskCustomerPath(), false);
+        LoggerUtils.info("同步任务信息读取文件结束");
+        Set<String> demand = new HashSet<String>(){{
+            add("https://dev.hundsun.com/heppm/story/getStoryMenuListV3");
+            add("https://dev.hundsun.com/heppm/onSiteDefect/getList");
+        }};
+        Set<String> task = new HashSet<String>(){{
+            add("https://dev.hundsun.com/heppm/task/queryByConditionV4");
+        }};
+        Set<String> demandList = new HashSet<>();
+        Set<String> taskList = new HashSet<>();
+        Set<String> effectiveDemandList = new HashSet<>();
+        if (CollectionUtils.isNotEmpty(response)) {
+            for (String item : response) {
+                if (CollectionUtils.isEmpty(demand) && CollectionUtils.isEmpty(task)) {
+                    break;
+                }
+                String[] element = item.split(STR_EQUAL_5);
+                if (element.length == 2) {
+                    String key = element[0];
+                    String value = element[1];
+                    if (demand.contains(key)) {
+                        demandList.addAll(TaCommonUtils.getDemandStatus(value));
+                        demand.remove(key);
+                    } else if (task.contains(key)) {
+                        Map<String, Set<String>> taskMap = TaCommonUtils.getTaskStatus(value);
+                        effectiveDemandList = taskMap.get(KEY_DEMAND);
+                        taskList.addAll(taskMap.get(KEY_TASK));
+                        task.remove(key);
+                    }
+
+                }
+            }
+        }
+        if (CollectionUtils.isNotEmpty(taskList)) {
+            String taskPath = FileUtils.getFilePath(PATH_TASK_STAT);
+            FileUtils.writeFile(taskPath, new ArrayList<>(taskList), false);
+        }
+        if (CollectionUtils.isNotEmpty(demandList)) {
+            String demandPath = FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT);
+            if (new File(demandPath).exists()) {
+                demandList.addAll(FileUtils.readNormalFile(demandPath, false));
+            }
+            List<String> demandRes = new ArrayList<>(demandList);
+            Iterator<String> iterator = demandRes.listIterator();
+            while (iterator.hasNext()) {
+                String item = iterator.next();
+                String key = item.split(STR_SEMICOLON)[0];
+                if (!effectiveDemandList.contains(key)) {
+                    iterator.remove();
+                }
+            }
+            FileUtils.writeFile(demandPath, demandRes, false);
+        }
+        LoggerUtils.info("同步任务信息结束");
     }
 
     private void syncExcel(String filePath, String configParam, String sheetName, String statFile, String logName, String excelType) throws Exception {

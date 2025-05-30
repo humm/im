@@ -1,5 +1,8 @@
 package com.hoomoomoo.im.utils;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
@@ -526,5 +529,89 @@ public class TaCommonUtils {
             LoggerUtils.info("转换后版本号为: " + resVer);
         }
         return resVer;
+    }
+
+    public static Set<String> getDemandStatus(String demand) {
+        // 8:已发布 16:已发放 25:测试中 27:待发布
+        Set<String> demandStatus = new HashSet<>(Arrays.asList("8", "16", "25", "27"));
+        Set<String> res = new HashSet<>();
+        if (StringUtils.isNotBlank(demand)) {
+            Map<String, Object> resMap = JSON.parseObject(demand, Map.class);
+            JSONObject data = (JSONObject)resMap.get(KEY_DATA);
+            if (data != null) {
+                JSONArray items = data.getJSONArray(KEY_ITEMS);
+                if (items != null) {
+                    StringBuilder demandInfo = new StringBuilder();
+                    for (int i=0; i<items.size(); i++) {
+                        JSONObject ele = items.getJSONObject(i);
+                        String demandNo = String.valueOf(ele.get(KEY_NUMBER));
+                        String status = String.valueOf(ele.get(KEY_STATUS));
+                        if (demandStatus.contains(status)) {
+                            status = STR_1;
+                        } else {
+                            status = STR_0;
+                        }
+                        JSONArray version = (JSONArray)ele.get(KEY_STORY_VERSION_LIST);
+                        if (version != null) {
+                            if (StringUtils.equals(status, STR_1) && version.size() > 2) {
+                                Map<String, String> versionList = new HashMap<>();
+                                for (int j=0; j<version.size(); j++) {
+                                    JSONObject ver = version.getJSONObject(j);
+                                    versionList.put(String.valueOf(ver.get(KEY_SPRINT_VERSION)), String.valueOf(ver.get(KEY_STORY_STATUS)));
+                                }
+                                for(Map.Entry<String, String> entry : versionList.entrySet()) {
+                                    String code = entry.getKey();
+                                    String value = entry.getValue();
+                                    if (STR_1.equals(status) && demandStatus.contains(value)) {
+                                        int ver = Integer.valueOf(code.substring(code.length() - 1)) + 1;
+                                        String nextVer = code.substring(0, code.length() - 1) + ver;
+                                        if (versionList.containsKey(nextVer) && !demandStatus.contains(versionList.get(nextVer))) {
+                                            status = STR_0;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        String[] demandNoList = demandNo.split(STR_COMMA);
+                        for (String single : demandNoList) {
+                            demandInfo.setLength(0);
+                            res.add(demandInfo.append(single).append(STR_SEMICOLON).append(status).toString());
+                        }
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    public static Map<String, Set<String>> getTaskStatus(String task) {
+        Set<String> taskList = new HashSet<>();
+        Set<String> demandList = new HashSet<>();
+        if (StringUtils.isNotBlank(task)) {
+            Map<String, Object> resMap = JSON.parseObject(task, Map.class);
+            JSONObject data = (JSONObject)resMap.get(KEY_DATA);
+            if (data != null) {
+                JSONArray items = data.getJSONArray(KEY_ITEMS);
+                if (items != null) {
+                    StringBuilder demandInfo = new StringBuilder();
+                    for (int i=0; i<items.size(); i++) {
+                        JSONObject ele = items.getJSONObject(i);
+                        String taskNumber = String.valueOf(ele.get(KEY_TASK_NUMBER));
+                        String customerNames = ele.get(KEY_CUSTOMER_NAMES) == null ? STR_BLANK : String.valueOf(ele.get(KEY_CUSTOMER_NAMES));
+                        String storyNumbers = ele.get(KEY_STORY_NUMBERS) == null ? STR_BLANK: String.valueOf(ele.get(KEY_STORY_NUMBERS));
+                        String[] demandNoList = storyNumbers.split(STR_COMMA);
+                        for (String single : demandNoList) {
+                            demandInfo.setLength(0);
+                            taskList.add(demandInfo.append(taskNumber).append(STR_SEMICOLON).append(customerNames).append(STR_SEMICOLON).append(single).toString());
+                            demandList.add(single);
+                        }
+                    }
+                }
+            }
+        }
+        Map<String, Set<String>> res = new HashMap<>(2);
+        res.put(KEY_TASK, taskList);
+        res.put(KEY_DEMAND, demandList);
+        return res;
     }
 }

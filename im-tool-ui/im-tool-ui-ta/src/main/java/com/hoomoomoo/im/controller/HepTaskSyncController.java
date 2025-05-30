@@ -40,8 +40,6 @@ public class HepTaskSyncController implements Initializable {
 
     @FXML
     private TextArea demandStatus2;
-    // 8:已发布 16:已发放 25:测试中 27:待发布
-    private Set<String> demandStatus = new HashSet<>(Arrays.asList("8", "16", "25", "27"));
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -107,8 +105,8 @@ public class HepTaskSyncController implements Initializable {
                 OutputUtils.infoContainBr(logs, "请输入需求结果集");
                 return;
             }
-            List<String> res = getDemandStatus(demand1);
-            res.addAll(getDemandStatus(demand2));
+            List<String> res = new ArrayList<>(TaCommonUtils.getDemandStatus(demand1));
+            res.addAll(TaCommonUtils.getDemandStatus(demand2));
             if (CollectionUtils.isNotEmpty(res)) {
                 AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                 String statPath = appConfigDto.getHepTaskSyncPath() + PATH_DEMAND_STAT;
@@ -121,56 +119,5 @@ public class HepTaskSyncController implements Initializable {
             LoggerUtils.info(e);
             OutputUtils.infoContainBr(logs, e.getMessage());
         }
-    }
-
-    private List<String> getDemandStatus(String demand) {
-        List<String> res = new ArrayList<>();
-        if (StringUtils.isNotBlank(demand)) {
-            Map<String, Object> resMap = JSON.parseObject(demand, Map.class);
-            JSONObject data = (JSONObject)resMap.get(KEY_DATA);
-            if (data != null) {
-                JSONArray items = data.getJSONArray(KEY_ITEMS);
-                if (items != null) {
-                    for (int i=0; i<items.size(); i++) {
-                        StringBuilder demandInfo = new StringBuilder();
-                        JSONObject ele = items.getJSONObject(i);
-                        String demandNo = String.valueOf(ele.get(KEY_NUMBER));
-                        String status = String.valueOf(ele.get(KEY_STATUS));
-                        if (demandStatus.contains(status)) {
-                            status = STR_1;
-                        } else {
-                            status = STR_0;
-                        }
-                        JSONArray version = (JSONArray)ele.get(KEY_STORY_VERSION_LIST);
-                        if (version != null) {
-                            if (StringUtils.equals(status, STR_1) && version.size() > 2) {
-                                Map<String, String> versionList = new HashMap<>();
-                                for (int j=0; j<version.size(); j++) {
-                                    JSONObject ver = version.getJSONObject(j);
-                                    versionList.put(String.valueOf(ver.get(KEY_SPRINT_VERSION)), String.valueOf(ver.get(KEY_STORY_STATUS)));
-                                }
-                                for(Map.Entry<String, String> entry : versionList.entrySet()) {
-                                    String code = entry.getKey();
-                                    String value = entry.getValue();
-                                    if (STR_1.equals(status) && demandStatus.contains(value)) {
-                                        int ver = Integer.valueOf(code.substring(code.length() - 1)) + 1;
-                                        String nextVer = code.substring(0, code.length() - 1) + ver;
-                                        if (versionList.containsKey(nextVer) && !demandStatus.contains(versionList.get(nextVer))) {
-                                            status = STR_0;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        demandInfo.setLength(0);
-                        String[] demandNoList = demandNo.split(STR_COMMA);
-                        for (String single : demandNoList) {
-                            res.add(demandInfo.append(single).append(STR_SEMICOLON).append(status).toString());
-                        }
-                    }
-                }
-            }
-        }
-        return res;
     }
 }

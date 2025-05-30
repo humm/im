@@ -100,6 +100,9 @@ public class OutputUtils {
     }
 
     public static void infoContainBr(Object obj, String text) {
+        if (obj == null) {
+            return;
+        }
         info(obj, text + STR_NEXT_LINE);
     }
 

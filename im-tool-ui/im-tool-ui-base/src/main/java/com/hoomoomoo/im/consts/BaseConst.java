@@ -117,6 +117,8 @@ public class BaseConst {
     public final static String KEY_NUMBER = "number";
     public final static String KEY_STATUS = "status";
     public final static String KEY_CREATE_TIME = "create_time";
+    public final static String KEY_CUSTOMER_NAMES = "customer_names";
+    public final static String KEY_STORY_NUMBERS = "story_numbers";
     public final static String KEY_STORY_VERSION_LIST = "story_version_list";
     public final static String KEY_ESTIMATE_FINISH_TIME = "estimate_finish_time";
     public final static String KEY_NAME = "name";
@@ -129,7 +131,6 @@ public class BaseConst {
     public final static String KEY_TIMESTAMP = "timestamp";
     public final static String KEY_STATUS_LIST = "status_list";
     public final static String KEY_SIGN = "sign";
-    public final static String[] KEY_LIGHT_CODE = new String[]{"lightCode"};
     public final static String KEY_REAL_FINISH_TIME = "real_finish_time";
     public final static String KEY_SUGGESTION = "suggestion";
     public final static String KEY_SELF_TEST_DESC = "self_test_desc";
@@ -167,6 +168,7 @@ public class BaseConst {
     public final static String KEY_UPDATE_CHANGE_MENU = "updateChangeMenu";
     public final static String KEY_SCHEDULE = "schedule";
     public final static String KEY_TASK = "task";
+    public final static String KEY_DEMAND = "demand";
     public final static String KEY_GIT_LOG_FILE = "diff --git";
     public final static String KEY_HTTPS = "https://";
     public final static String KEY_FILE_SYNC_TIMER = "fileSyncTimer";
@@ -259,6 +261,7 @@ public class BaseConst {
     public final static String STR_NUMBER_SIGN = "#";
     public final static String STR_AND = "&";
     public final static String STR_EQUAL = "=";
+    public final static String STR_EQUAL_5 = "=====";
     public final static String STR_SPACE = " ";
     public final static String STR_SPACE_2 = "  ";
     public final static String STR_SPACE_3 = "   ";
@@ -393,6 +396,7 @@ public class BaseConst {
     public static final String PATH_TASK_STAT = "/extend/task/task.stat";
     public static final String PATH_GIT_LOG = "/extend/git/";
     public static final String PATH_DEMAND_STAT = "/demand.stat";
+    public static final String PATH_RESPONSE_STAT = "/demand.stat";
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
     public static final String PATH_DEFINE_TASK_DEV_EXTEND_STAT = "/extend/task/taskDevExtend.stat";
     public static final String PATH_DEFINE_TASK_EXTEND_STAT = "/extend/task/taskExtend.stat";

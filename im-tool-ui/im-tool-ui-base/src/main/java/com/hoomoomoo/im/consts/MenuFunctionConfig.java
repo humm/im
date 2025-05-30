@@ -79,7 +79,7 @@ public class MenuFunctionConfig {
         GENERATE_CODE("310", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuFile", "生成代码", "1"),
 
         TASK_TODO("400", "开发任务", "/conf/fxml/hepTaskTodo.fxml", "hepTaskTodo", "hepTaskTodo", "menuHep", "开发任务", "0"),
-        TASK_SYNC("410", "同步需求", "/conf/fxml/hepTaskSync.fxml", "hepTaskSync", "hepTaskSync", "menuHep", "同步需求", "0"),
+        TASK_SYNC("410", "同步需求", "/conf/fxml/hepTaskSync.fxml", "hepTaskSync", "hepTaskSync", "menuHep", "同步需求", "1"),
 
         CHANGE_FUNCTION_TOOL("600", "整备环境", "/conf/fxml/changeFunctionTool.fxml", "changeFunctionTool", "changeFunctionTool", "menuOther", "整备环境", "0"),
 
