@@ -1105,7 +1105,8 @@ public class HepTodoController extends BaseController implements Initializable {
 
             item.setSprintVersion(formatVersion(item.getSprintVersion()));
             if (taskCustomerName.containsKey(taskNumberIn)) {
-                item.setCustomer(taskCustomerName.get(taskNumberIn));
+                String name = taskCustomerName.get(taskNumberIn);
+                item.setCustomer(StringUtils.isBlank(name) ? NAME_INNER_CUSTOMER : name);
             } else {
                 if (StringUtils.isBlank(item.getCustomer()) && taskName.contains(DEFECT_TAG)) {
                     item.setCustomer(NAME_INNER_CUSTOMER);
@@ -1117,7 +1118,8 @@ public class HepTodoController extends BaseController implements Initializable {
             String customer = item.getCustomer();
             if (StringUtils.isNotBlank(customer)) {
                 if (customer.contains(STR_COMMA)) {
-                    item.setCustomer(customer.split(STR_COMMA)[0]);
+                    customer = customer.split(STR_COMMA)[0];
+                    item.setCustomer(customer);
                 }
                 if (customer.length() > 6) {
                     item.setCustomer(customer.substring(0, 6));
