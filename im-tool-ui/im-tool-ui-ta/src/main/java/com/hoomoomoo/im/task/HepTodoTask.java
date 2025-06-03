@@ -36,7 +36,9 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
                 break;
             case "syncTaskInfo":
                 try {
-                    CommonUtils.showTipsByInfo("异步同步中...请稍后...", 5 * 1000);
+                    Platform.runLater(() -> {
+                        CommonUtils.showTipsByInfo("异步同步中...请稍后...", 3 * 1000);
+                    });
                     JvmCache.getSystemToolController().syncTask(ConfigCache.getAppConfigDtoCache());
                     hepTodoTaskParam.getHepTodoController().doExecuteQuery();
                     Platform.runLater(() -> {
