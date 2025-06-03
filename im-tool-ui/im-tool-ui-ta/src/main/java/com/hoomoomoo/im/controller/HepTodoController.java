@@ -1126,13 +1126,13 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
 
-            if (StringUtils.equals(appConfigDto.getHepTaskUserName(), item.getCreatorName())) {
+            /*if (StringUtils.equals(appConfigDto.getHepTaskUserName(), item.getCreatorName())) {
                 item.setCreatorName(STR_SPACE);
             }
 
             if (StringUtils.equals(appConfigDto.getHepTaskUserName(), item.getReviewerName())) {
                 item.setReviewerName(STR_SPACE);
-            }
+            }*/
 
             if (StringUtils.isBlank(status)) {
                 hasBlank = true;
@@ -2069,6 +2069,13 @@ public class HepTodoController extends BaseController implements Initializable {
         return task;
     }
 
+    private String getTipsMsg(String ori, String msg) {
+        if (StringUtils.isNotBlank(ori)) {
+            return ori + STR_SPACE_2 + msg;
+        }
+        return msg;
+    }
+
     private void addTaskMenu(AppConfigDto appConfigDto, HepTodoController hepTodoController) throws Exception {
         taskList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
@@ -2078,18 +2085,24 @@ public class HepTodoController extends BaseController implements Initializable {
                     HepTaskDto val = (HepTaskDto) newValue;
                     if (val != null) {
                         tooltip.setText(STR_BLANK);
-                        if (StringUtils.isNotBlank(val.getTaskLevel()) && val.getTaskLevel().contains(STR_SLASH)) {
-                            tooltip.setText(val.getTaskLevel());
-                            tooltip.show(taskList, 1400, 255);
-                            tooltip.setAutoHide(true);
+                        String msg = STR_BLANK;
+
+                        String version = val.getSprintVersion();
+                        if (StringUtils.isNotBlank(version) && version.length() > 16) {
+                            msg = version;
                         }
+
+                        String level = val.getTaskLevel();
+                        if (StringUtils.isNotBlank(level) && level.contains(STR_SLASH)) {
+                            msg = getTipsMsg(msg, level);
+                        }
+
                         String reviewerName = val.getReviewerName();
                         if (StringUtils.isNotBlank(reviewerName) && reviewerName.contains(STR_COMMA)) {
-                            if (StringUtils.isBlank(tooltip.getText())) {
-                                tooltip.setText(reviewerName);
-                            } else {
-                                tooltip.setText(tooltip.getText() + STR_SPACE_2 + reviewerName);
-                            }
+                            msg = getTipsMsg(msg, reviewerName);
+                        }
+                        if (StringUtils.isNotBlank(msg)) {
+                            tooltip.setText(msg);
                             tooltip.show(taskList, 1400, 255);
                             tooltip.setAutoHide(true);
                         }
