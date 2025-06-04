@@ -145,10 +145,14 @@ public class CommonUtils {
     public static String getCustomDateTime(int addDays) {
         LocalDate tomorrow = LocalDate.now().plusDays(addDays);
         String month = String.valueOf(tomorrow.getMonthValue());
+        String day = String.valueOf(tomorrow.getDayOfMonth());
         if (month.length() == 1) {
             month = STR_0 + month;
         }
-        return tomorrow.getYear() + month + tomorrow.getDayOfMonth();
+        if (day.length() == 1) {
+            day = STR_0 + day;
+        }
+        return tomorrow.getYear() + month + day;
     }
 
     /**

@@ -857,17 +857,13 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         dayCompleteTipsInfo.clear();
+        String thursday = CommonUtils.getWeekDayYmd(DayOfWeek.THURSDAY);
+        String friday = CommonUtils.getWeekDayYmd(DayOfWeek.FRIDAY);
+        dayCompleteTipsInfo.put(thursday, "周四");
+        dayCompleteTipsInfo.put(friday, "周五");
         dayCompleteTipsInfo.put(CommonUtils.getCurrentDateTime3(), "今天");
         dayCompleteTipsInfo.put(CommonUtils.getTomorrowDateTime(), "明天");
         dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(2), "后天");
-        String thursday = CommonUtils.getWeekDayYmd(DayOfWeek.THURSDAY);
-        String friday = CommonUtils.getWeekDayYmd(DayOfWeek.FRIDAY);
-        if (!dayCompleteTipsInfo.containsKey(thursday)) {
-            dayCompleteTipsInfo.put(thursday, "周四");
-        }
-        if (!dayCompleteTipsInfo.containsKey(friday)) {
-            dayCompleteTipsInfo.put(friday, "周五");
-        }
         dayCompleteTipsInfo.put(CommonUtils.getNextWeekDayYmd(DayOfWeek.MONDAY), "下周一");
         dayCompleteTipsInfo.put(CommonUtils.getNextWeekDayYmd(DayOfWeek.TUESDAY), "下周二");
         dayCompleteTipsInfo.put(CommonUtils.getNextWeekDayYmd(DayOfWeek.WEDNESDAY), "下周三");
