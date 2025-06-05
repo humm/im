@@ -16,6 +16,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -334,8 +335,44 @@ public class SystemToolController implements Initializable {
 
     public void syncTask(AppConfigDto appConfigDto) throws Exception {
         LoggerUtils.info("同步任务信息开始");
+        File file = new File(appConfigDto.getHepTaskCustomerPath());
+        if (!file.isDirectory()) {
+            LoggerUtils.info("非文件夹目录 不同步");
+            return;
+        }
         LoggerUtils.info("同步任务信息读取文件开始");
-        List<String> response = FileUtils.readNormalFile(appConfigDto.getHepTaskCustomerPath(), false);
+        File[] fileList = file.listFiles();
+        List<String> response = new ArrayList<>();
+        if (fileList != null) {
+            for (int i=0; i<fileList.length; i++) {
+                String subFilePath = fileList[i].getAbsolutePath();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            LoggerUtils.info(String.format("读取文件【%s】开始", subFilePath));
+                            List<String> res = FileUtils.readNormalFile(subFilePath, false);
+                            if (CollectionUtils.isNotEmpty(res)) {
+                                response.add(res.get(res.size() - 1));
+                            } else {
+                                response.add(STR_BLANK);
+                            }
+                            LoggerUtils.info(String.format("读取文件【%s】结束", subFilePath));
+                        } catch (IOException e) {
+                            LoggerUtils.info(e);
+                            LoggerUtils.info(String.format("读取文件【%s】异常", subFilePath));
+                            response.add(STR_BLANK);
+                        }
+                    }
+                }).start();
+            }
+        }
+        while (true) {
+            if (response.size() >= fileList.length) {
+                break;
+            }
+            Thread.sleep(3 * 1000);
+        }
         LoggerUtils.info("同步任务信息读取文件结束");
         Set<String> demand = new HashSet<String>(){{
             add("https://dev.hundsun.com/heppm/story/getStoryMenuListV3");

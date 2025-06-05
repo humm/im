@@ -220,7 +220,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private AnchorPane condition;
 
     @FXML
-    private Button syncTask;
+    public Button syncTask;
 
     @FXML
     private Button updateVersion;

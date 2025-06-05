@@ -36,13 +36,13 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
                 break;
             case "syncTaskInfo":
                 try {
-                    Platform.runLater(() -> {
-                        CommonUtils.showTipsByInfo("异步同步中...请稍后...", 3 * 1000);
-                    });
+                    long start = System.currentTimeMillis();
+                    hepTodoTaskParam.getHepTodoController().syncTask.setDisable(true);
                     JvmCache.getSystemToolController().syncTask(ConfigCache.getAppConfigDtoCache());
                     hepTodoTaskParam.getHepTodoController().doExecuteQuery();
+                    long end = System.currentTimeMillis();
                     Platform.runLater(() -> {
-                        CommonUtils.showTipsByInfo("同步任务信息成功", 30 * 1000);
+                        CommonUtils.showTipsByInfo(String.format("同步任务信息成功，耗时%s秒", (end - start) / 1000), 30 * 1000);
                     });
                 } catch (Exception e) {
                     LoggerUtils.info(e);
@@ -53,6 +53,8 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
                         }
                         CommonUtils.showTipsByError(msg, 5 * 1000);
                     });
+                } finally {
+                    hepTodoTaskParam.getHepTodoController().syncTask.setDisable(false);
                 }
                 break;
             default:
