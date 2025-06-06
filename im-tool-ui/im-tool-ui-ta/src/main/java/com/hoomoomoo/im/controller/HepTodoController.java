@@ -981,23 +981,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 iterator.remove();
                 continue;
             }
-            if (only.isSelected()) {
-                if (existTask.contains(taskName)) {
-                    iterator.remove();
-                    continue;
-                }
-                existTask.add(taskName);
-            } else if (devCompleteHide.isSelected()) {
-                if (taskName.contains(DEV_COMMIT_TAG)) {
-                    iterator.remove();
-                    continue;
-                }
-            } else if (devCompleteShow.isSelected()) {
-                if (!taskName.contains(DEV_COMMIT_TAG)) {
-                    iterator.remove();
-                    continue;
-                }
-            }
 
             String finishDate = item.getEstimateFinishTime().split(STR_SPACE)[0];
             String finishTime = item.getEstimateFinishTime().split(STR_SPACE)[1];
@@ -1079,6 +1062,26 @@ public class HepTodoController extends BaseController implements Initializable {
             if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || week) {
                 weekVersionNum++;
                 weekTodoTask.add(item.getTaskNumber());
+            }
+
+            if (!today) {
+                if (only.isSelected()) {
+                    if (existTask.contains(taskName)) {
+                        iterator.remove();
+                        continue;
+                    }
+                    existTask.add(taskName);
+                } else if (devCompleteHide.isSelected()) {
+                    if (taskName.contains(DEV_COMMIT_TAG)) {
+                        iterator.remove();
+                        continue;
+                    }
+                } else if (devCompleteShow.isSelected()) {
+                    if (!taskName.contains(DEV_COMMIT_TAG)) {
+                        iterator.remove();
+                        continue;
+                    }
+                }
             }
 
             if (dayCompleteTipsInfo.containsKey(minCompleteByMarkYmd)) {
