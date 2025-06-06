@@ -1918,13 +1918,14 @@ public class HepTodoController extends BaseController implements Initializable {
             for (String item : versionList) {
                 String[] elements = item.split(STR_SEMICOLON);
                 VersionDto versionDto = new VersionDto();
+                String versionCode = elements[0];
                 String oriCloseDate = elements[1];
                 String oriPublishDate = elements[2];
-                String versionCode = elements[0];
+                String endDate = elements[3];
                 versionDto.setCode(versionCode);
                 versionDto.setCloseDate(oriCloseDate);
                 versionDto.setPublishDate(oriPublishDate);
-                versionDto.setClientName(elements[3]);
+                versionDto.setEndData(endDate);
                 versionDtoList.add(versionDto);
             }
         }

@@ -89,6 +89,9 @@ public class BaseConst {
     public static final String KEY_DELETE = "delete";
     public static final String KEY_LIB = "/lib";
     public static final String KEY_VERSION = "version";
+    public static final String KEY_DEV_CLOSE_DATE = "dev_close_date";
+    public static final String KEY_PUBLISH_CLOSE_DATE = "publish_close_date";
+    public static final String KEY_END_DAY_TIME = "end_day_time";
     public static final String KEY_TRUNK = "trunk";
     public static final String KEY_BRANCHES = "branches";
     public static final String KEY_GIT_BRANCHES = "git-branches";
@@ -394,14 +397,14 @@ public class BaseConst {
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/extend/version/version.stat";
     public static final String PATH_TASK_STAT = "/extend/task/task.stat";
-    public static final String PATH_GIT_LOG = "/extend/git/";
     public static final String PATH_DEMAND_STAT = "/demand.stat";
-    public static final String PATH_RESPONSE_STAT = "/demand.stat";
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
+    public static final String PATH_SYNC_TASK_STAT = "/task";
+    public static final String PATH_SYNC_VERSION_STAT = "/version";
     public static final String PATH_DEFINE_TASK_DEV_EXTEND_STAT = "/extend/task/taskDevExtend.stat";
     public static final String PATH_DEFINE_TASK_EXTEND_STAT = "/extend/task/taskExtend.stat";
     public static final String PATH_DEFINE_TASK_LEVEL_EXTEND_STAT = "/extend/task/taskLevelExtend.stat";
-    public static final String PATH_DEFINE_DEMAND_SYNC_STAT = "/extend/task/demandSync.stat";
+    public static final String PATH_DEFINE_DEMAND_SYNC_STAT = "/extend/task/demand.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";
     public static final String PATH_GIT_PULL = "/conf/bat/git-pull.bat";

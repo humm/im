@@ -186,8 +186,6 @@ public class AppConfigDto extends BaseDto {
 
     private String systemToolShakeMouseStopTime;
 
-    private String systemToolUpdateVersionPath;
-
     private TabPane tabPane;
 
     private String generateCodeJavaPath;
@@ -273,8 +271,6 @@ public class AppConfigDto extends BaseDto {
     private String hepTaskRestPlanDate;
 
     private String hepTaskRestPlanTime;
-
-    private String hepTaskSyncPath;
 
     private String errorLogDetail;
 

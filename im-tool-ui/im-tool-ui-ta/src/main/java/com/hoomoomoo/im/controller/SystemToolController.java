@@ -31,12 +31,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SYSTEM_TOOL;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_SYNC;
 
 /**
  * @author humm23693
@@ -313,29 +311,17 @@ public class SystemToolController implements Initializable {
 
     public void executeUpdateVersion() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        syncExcel(appConfigDto.getSystemToolUpdateVersionPath(), "system.tool.update.version.path", "Version列表", PATH_VERSION_STAT, "同步发版时间", "version");
+        syncVersion(appConfigDto);
     }
 
     public void executeSyncTaskInfo() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        // syncExcel(appConfigDto.getHepTaskCustomerPath(),"hep.task.customer.path", "任务列表", PATH_TASK_STAT, "同步任务信息", "task");
-        // FileUtils.copyFile(new File(appConfigDto.getHepTaskSyncPath() + PATH_DEMAND_STAT), new File(FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT)));
         syncTask(appConfigDto);
-        String msg = String.format(BaseConst.MSG_USE, TASK_SYNC.getName());
-        LoggerUtils.info(msg);
-        LoggerUtils.writeLogInfo(TASK_SYNC.getCode(), new Date(), new ArrayList<String>(){{
-            add(msg);
-        }});
-    }
-
-    public void executeSyncTaskInfoBySyncTask() throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        syncExcel(appConfigDto.getHepTaskSyncPath(),"hep.task.sync.path", "任务列表", PATH_TASK_STAT, "同步任务信息", "task");
     }
 
     public void syncTask(AppConfigDto appConfigDto) throws Exception {
         LoggerUtils.info("同步任务信息开始");
-        File file = new File(appConfigDto.getHepTaskCustomerPath());
+        File file = new File(appConfigDto.getHepTaskCustomerPath() + PATH_SYNC_TASK_STAT);
         if (!file.isDirectory()) {
             LoggerUtils.info("非文件夹目录 不同步");
             return;
@@ -353,7 +339,7 @@ public class SystemToolController implements Initializable {
                             LoggerUtils.info(String.format("读取文件【%s】开始", subFilePath));
                             List<String> res = FileUtils.readNormalFile(subFilePath, false);
                             if (CollectionUtils.isNotEmpty(res)) {
-                                response.add(res.get(res.size() - 1));
+                                response.addAll(res);
                             } else {
                                 response.add(STR_BLANK);
                             }
@@ -386,21 +372,16 @@ public class SystemToolController implements Initializable {
         Set<String> effectiveDemandList = new HashSet<>();
         if (CollectionUtils.isNotEmpty(response)) {
             for (String item : response) {
-                if (CollectionUtils.isEmpty(demand) && CollectionUtils.isEmpty(task)) {
-                    break;
-                }
                 String[] element = item.split(STR_EQUAL_5);
                 if (element.length == 2) {
                     String key = element[0];
                     String value = element[1];
                     if (demand.contains(key)) {
                         demandList.addAll(TaCommonUtils.getDemandStatus(value));
-                        demand.remove(key);
                     } else if (task.contains(key)) {
                         Map<String, Set<String>> taskMap = TaCommonUtils.getTaskStatus(value);
                         effectiveDemandList = taskMap.get(KEY_DEMAND);
                         taskList.addAll(taskMap.get(KEY_TASK));
-                        task.remove(key);
                     }
 
                 }
@@ -427,6 +408,47 @@ public class SystemToolController implements Initializable {
             FileUtils.writeFile(demandPath, demandRes, false);
         }
         LoggerUtils.info("同步任务信息结束");
+    }
+
+    public void syncVersion(AppConfigDto appConfigDto) throws Exception {
+        LoggerUtils.info("同步版本信息开始");
+        File file = new File(appConfigDto.getHepTaskCustomerPath() + PATH_SYNC_VERSION_STAT);
+        if (!file.isDirectory()) {
+            LoggerUtils.info("非文件夹目录 不同步");
+            return;
+        }
+        LoggerUtils.info("同步版本信息读取文件开始");
+        File[] fileList = file.listFiles();
+        List<String> response = new ArrayList<>();
+        if (fileList != null) {
+            String subFilePath = fileList[0].getAbsolutePath();
+            try {
+                LoggerUtils.info(String.format("读取文件【%s】开始", subFilePath));
+                List<String> res = FileUtils.readNormalFile(subFilePath, false);
+                response.addAll(res);
+                LoggerUtils.info(String.format("读取文件【%s】结束", subFilePath));
+            } catch (IOException e) {
+                LoggerUtils.info(e);
+                LoggerUtils.info(String.format("读取文件【%s】异常", subFilePath));
+                response.add(STR_BLANK);
+            }
+        }
+        LoggerUtils.info("同步版本信息读取文件结束");
+
+        List<String> versionList = new ArrayList<>();
+        if (CollectionUtils.isNotEmpty(response)) {
+            for (String item : response) {
+                String[] element = item.split(STR_EQUAL_5);
+                if (element.length == 2) {
+                    String key = element[0];
+                    String value = element[1];
+                    versionList.addAll(TaCommonUtils.getVersionInfo(value));
+                }
+            }
+        }
+        String versionPath = FileUtils.getFilePath(PATH_VERSION_STAT);
+        FileUtils.writeFile(versionPath, versionList, false);
+        LoggerUtils.info("同步版本信息结束");
     }
 
     private void syncExcel(String filePath, String configParam, String sheetName, String statFile, String logName, String excelType) throws Exception {

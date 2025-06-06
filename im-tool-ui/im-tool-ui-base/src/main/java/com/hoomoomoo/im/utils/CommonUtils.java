@@ -404,7 +404,7 @@ public class CommonUtils {
             functionDtoList = functionConfigToFunctionDto(appCode, getAppFunctionConfig(appCode));
         }
         if (isSyncMode()) {
-            functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode()) || item.getFunctionCode().equals(TASK_SYNC.getCode())).collect(Collectors.toList());
+            functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode())).collect(Collectors.toList());
         }
         for (FunctionDto functionDto : functionDtoList) {
             if (functionCode.equals(functionDto.getFunctionCode())) {
@@ -446,7 +446,7 @@ public class CommonUtils {
             functionDtoList = functionConfigToFunctionDto(appCode, getAppFunctionConfig(appCode));
         }
         if (isSyncMode()) {
-            functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode()) || item.getFunctionCode().equals(TASK_SYNC.getCode())).collect(Collectors.toList());
+            functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode())).collect(Collectors.toList());
         }
         if (CollectionUtils.isEmpty(functionDtoList)) {
             return;

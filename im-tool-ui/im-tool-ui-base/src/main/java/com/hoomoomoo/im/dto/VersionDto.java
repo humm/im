@@ -8,7 +8,7 @@ public class VersionDto extends BaseDto{
     private String code;
     private String closeDate;
     private String publishDate;
-    private String clientName;
+    private String endData;
     private String closeInterval;
     private String publishInterval;
     private String memo;

@@ -38,7 +38,7 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
                 try {
                     long start = System.currentTimeMillis();
                     hepTodoTaskParam.getHepTodoController().syncTask.setDisable(true);
-                    JvmCache.getSystemToolController().syncTask(ConfigCache.getAppConfigDtoCache());
+                    JvmCache.getSystemToolController().executeSyncTaskInfo();
                     hepTodoTaskParam.getHepTodoController().doExecuteQuery();
                     long end = System.currentTimeMillis();
                     Platform.runLater(() -> {

@@ -584,6 +584,34 @@ public class TaCommonUtils {
         return res;
     }
 
+    public static Set<String> getVersionInfo(String demand) {
+        Set<String> res = new HashSet<>();
+        if (StringUtils.isNotBlank(demand)) {
+            Map<String, Object> resMap = JSON.parseObject(demand, Map.class);
+            JSONObject data = (JSONObject)resMap.get(KEY_DATA);
+            if (data != null) {
+                JSONArray items = data.getJSONArray(KEY_ITEMS);
+                if (items != null) {
+                    StringBuilder item = new StringBuilder();
+                    for (int i=0; i<items.size(); i++) {
+                        JSONObject ele = items.getJSONObject(i);
+                        String version = String.valueOf(ele.get(KEY_VERSION));
+                        if (StringUtils.isBlank(version) || version.contains("TA6.0-PRO") || version.contains("TA6.0-PHFUND") || version.contains("beta")) {
+                            continue;
+                        }
+                        String devCloseDate = String.valueOf(ele.get(KEY_DEV_CLOSE_DATE)).split(STR_SPACE)[0];
+                        String publishCloseDate = String.valueOf(ele.get(KEY_PUBLISH_CLOSE_DATE)).split(STR_SPACE)[0];
+                        String endDayTime = String.valueOf(ele.get(KEY_END_DAY_TIME)).split(STR_SPACE)[0];
+                        item.setLength(0);
+                        item.append(version).append(STR_SEMICOLON).append(devCloseDate).append(STR_SEMICOLON).append(publishCloseDate).append(STR_SEMICOLON).append(endDayTime).append(STR_SEMICOLON);
+                        res.add(item.toString());
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
     public static Map<String, Set<String>> getTaskStatus(String task) {
         Set<String> taskList = new HashSet<>();
         Set<String> demandList = new HashSet<>();

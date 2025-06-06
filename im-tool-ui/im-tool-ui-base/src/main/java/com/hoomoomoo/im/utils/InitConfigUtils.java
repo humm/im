@@ -480,7 +480,6 @@ public class InitConfigUtils {
         keys.put("hep.task.customer.path", null);
 
         keys.put("hep.sync.only", null);
-        keys.put("hep.task.sync.path", null);
 
         keys.put("system.tool.update.version.path", null);
         keys.put("hep.task.todo.end.date.version", null);
