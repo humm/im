@@ -86,7 +86,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         SvnUtils.initSvnRep(appConfigDto, hepTaskDto.getSprintVersion());
         try {
             if (CommonUtils.proScene()) {
-                logDtoList.addAll(SvnUtils.getSvnLog(10, taskNumber));
+                logDtoList.addAll(SvnUtils.getSvnLog(50, taskNumber));
             }
         } catch (Exception e) {
             notice.setStyle(STYLE_BOLD_RED);

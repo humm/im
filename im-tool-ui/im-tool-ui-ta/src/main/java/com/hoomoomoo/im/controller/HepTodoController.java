@@ -411,7 +411,7 @@ public class HepTodoController extends BaseController implements Initializable {
         String verYear = ver.split("\\.")[0];
         ver = TaCommonUtils.changeVersion(appConfigDto, ver) + STR_COMMA;
         String authVer = appConfigDto.getFileSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
-        if (authVer.contains(ver) || verYear.compareTo("2025") >= 0 || verYear.compareTo("202202") == 0) {
+        if (authVer.contains(ver) || verYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 || verYear.compareTo(KEY_VERSION_202202) == 0) {
             setFrontTips(false);
         } else {
             setFrontTips(true);
@@ -988,7 +988,7 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setFinishTime(finishTime);
 
             String sprintVersion = item.getSprintVersion();
-            if (sprintVersion.startsWith(KEY_TA5) || (sprintVersion.contains(KEY_TA6) && !sprintVersion.contains(KEY_FUND) && !sprintVersion.contains("2022"))) {
+            if (sprintVersion.startsWith(KEY_TA5) || (sprintVersion.contains(KEY_TA6) && !sprintVersion.contains(KEY_FUND) && !sprintVersion.contains(KEY_VERSION_YEAR_2022))) {
                 iterator.remove();
                 continue;
             }

@@ -91,7 +91,7 @@ public class SvnUtils {
                             List<String> pathList = getGitCommitFile(file, commit.name());
                             svnLogDto.setNum(String.valueOf(pathList.size()));
                             svnLogDto.setFile(pathList);
-                            svnLogDto.setCodeVersion(getVersion(getSvnMsg(commitMessage, STR_2)));
+                            svnLogDto.setCodeVersion(getSvnMsg(commitMessage, STR_2));
                             logList.add(svnLogDto);
                         }
                     }
@@ -384,7 +384,7 @@ public class SvnUtils {
     public static void initSvnRep(AppConfigDto appConfigDto, String version) {
         String versionValue = getVersion(appConfigDto, version);
         String versionValueYear = versionValue.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
-        if (KEY_TRUNK.equals(versionValue) || (versionValueYear.compareTo("2025") >= 0 && !versionValue.contains("2022"))) {
+        if (KEY_TRUNK.equals(versionValue) || (versionValueYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 && !versionValue.contains(KEY_VERSION_YEAR_2022))) {
             String url = appConfigDto.getSvnUrl().get(KEY_TRUNK);
             if (!versionValue.endsWith("000")) {
                 url = appConfigDto.getSvnUrl().get(KEY_GIT_BRANCHES);

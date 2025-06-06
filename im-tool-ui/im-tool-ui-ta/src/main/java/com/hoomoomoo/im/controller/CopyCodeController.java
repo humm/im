@@ -183,12 +183,33 @@ public class CopyCodeController extends BaseController implements Initializable 
                         if (yes.isSelected()) {
                             item = item.replace("src/main/java", "target/classes").replace(FILE_TYPE_JAVA, FILE_TYPE_CLASS);
                         }
-                        fileLocation = source + STR_SLASH + item;
-                        String targetFileLocation = target + STR_SLASH + item;
+
                         String targetVersionSelected = (String)targetVersion.getSelectionModel().getSelectedItem();
                         String sourceVersionSelected = (String)sourceVersion.getSelectionModel().getSelectedItem();
                         String targetVersionYear = targetVersionSelected.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
-                        if (targetVersionYear.compareTo("2025") < 0) {
+                        String subDir = STR_BLANK;
+                        if (targetVersionYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 || StringUtils.equals(targetVersionSelected, KEY_TRUNK)) {
+                            File sourceFile = new File(source);
+                            if (sourceFile.isDirectory()) {
+                                File[] sourceFileList = sourceFile.listFiles();
+                                for (int j=0; j<sourceFileList.length; j++) {
+                                    File subFile = sourceFileList[j];
+                                    String subFilePath = subFile.getAbsolutePath() + STR_SLASH + item;
+                                    if (new File(subFilePath).exists()) {
+                                        fileLocation = subFilePath.replaceAll("\\\\", "/");
+                                        subDir = subFile.getName();
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        if (!fileLocation.startsWith(source)) {
+                            fileLocation = source + STR_SLASH + item;
+                        } else {
+                            target += STR_SLASH + subDir;
+                        }
+                        String targetFileLocation = target + STR_SLASH + item;
+                        if (targetVersionYear.compareTo(KEY_GIT_VERSION_YEAR) < 0) {
                             if (!appConfigDto.getCopyCodeLocationReplaceSkipVersion().contains(targetVersionSelected) || KEY_TRUNK.equals(sourceVersionSelected)) {
                                 Iterator<String> iterator = appConfigDto.getReplaceTargetUrl().keySet().iterator();
                                 while (iterator.hasNext()) {

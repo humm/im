@@ -234,7 +234,7 @@ public class SystemToolController implements Initializable {
             String toTargetPath = filePath.replace(sourcePath, targetPath);
             List<String> content =  FileUtils.readNormalFile(filePath, false);
             syncFile++;
-            if ("HepTodoController.java".equals(fileName)) {
+            if ("CommonUtils.java".equals(fileName)) {
                 updateFile++;
                 OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "修改文件 " + fileName));
                 FileUtils.deleteFile(new File(toTargetPath));

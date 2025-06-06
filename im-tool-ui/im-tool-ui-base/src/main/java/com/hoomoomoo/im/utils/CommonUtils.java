@@ -1118,7 +1118,7 @@ public class CommonUtils {
     }
 
     public static String getComplexVer(String ver) {
-        if (ver.contains("2022")) {
+        if (ver.contains(KEY_VERSION_YEAR_2022)) {
             if (!ver.contains(STR_VERSION_PREFIX_2022)) {
                 ver = STR_VERSION_PREFIX_2022 + ver;
             }

@@ -78,6 +78,9 @@ public class BaseConst {
     public static final String KEY_PACKAGE_IM = "com.hoomoomoo.im";
     public static final String KEY_ERROR_CODE_NO_AUTH_SERVICE = "absent: item of the same name is already scheduled for addition";
 
+    public static final String KEY_GIT_VERSION_YEAR = "2025";
+    public static final String KEY_VERSION_YEAR_2022 = "2022";
+    public static final String KEY_VERSION_202202 = "202202";
     public static final String KEY_DEMO = "demo10000";
     public static final String KEY_CLASSES = "classes";
     public static final String KEY_NOTICE = "notice";

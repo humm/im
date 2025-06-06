@@ -105,13 +105,13 @@
                                                         <PropertyValueFactory property="taskNo"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="codeVersion" editable="false" prefWidth="200"
+                                                <TableColumn id="codeVersion" editable="false" prefWidth="235"
                                                              sortable="false" text="版本代码">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="codeVersion"/>
                                                     </cellValueFactory>
                                                 </TableColumn>
-                                                <TableColumn id="msg" editable="false" prefWidth="500"
+                                                <TableColumn id="msg" editable="false" prefWidth="465"
                                                              sortable="false" text="提交备注">
                                                     <cellValueFactory>
                                                         <PropertyValueFactory property="msg"/>
