@@ -74,6 +74,7 @@ public class MenuFunctionConfig {
         GENERATE_SQL("240", "分库分表", "/conf/fxml/generateSql.fxml", "generateSql", "generateSql", "menuScript", "分库分表", "0"),
 
         COPY_CODE("300", "复制文件", "/conf/fxml/copyCode.fxml", "copyCode", "copyCode", "menuFile", "复制文件", "0"),
+        FILE_SYNC("420", "同步文件", "/conf/fxml/fileSync.fxml", "fileSync", "fileSync", "menuFile", "同步文件", "1"),
         SCRIPT_CHECK("500", "检查文件", "/conf/fxml/scriptCheck.fxml", "scriptCheck", "scriptCheck", "menuFile", "检查文件", "0"),
         GENERATE_CODE("310", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "generateCode", "menuFile", "生成代码", "1"),
 
