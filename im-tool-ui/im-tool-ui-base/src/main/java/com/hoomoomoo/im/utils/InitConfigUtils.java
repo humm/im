@@ -162,7 +162,7 @@ public class InitConfigUtils {
                         currentVersion = item.substring(index).trim();
                         String versionNo = currentVersion.substring(currentVersion.indexOf(STR_POINT) + 1);
                         if (CommonUtils.getCurrentDateTime12().equals(currentVersion.substring(0, 4).trim())) {
-                            subVersion = String.valueOf(Long.valueOf(versionNo) + 1);
+                            subVersion = String.valueOf(Long.valueOf(versionNo) + 1).replaceAll(STR_4, STR_5);
                             for (int j=subVersion.length(); j<6; j++) {
                                 subVersion = STR_0 + subVersion;
                             }
