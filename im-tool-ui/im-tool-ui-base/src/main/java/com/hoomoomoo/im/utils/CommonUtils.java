@@ -143,16 +143,39 @@ public class CommonUtils {
      * @return
      */
     public static String getCustomDateTime(int addDays) {
-        LocalDate tomorrow = LocalDate.now().plusDays(addDays);
-        String month = String.valueOf(tomorrow.getMonthValue());
-        String day = String.valueOf(tomorrow.getDayOfMonth());
+        return getCustomDateTime(LocalDate.now(), addDays);
+    }
+
+    /**
+     * 获取指定日期
+     *
+     * @param addDays
+     * @return
+     */
+    public static String getCustomDateTime(String currentDate, int addDays) {
+        int year = Integer.parseInt(currentDate.substring(0, 4));
+        int month = Integer.parseInt(currentDate.substring(4, 6));
+        int day = Integer.parseInt(currentDate.substring(6));
+        return getCustomDateTime(LocalDate.of(year, month, day), addDays);
+    }
+
+    /**
+     * 获取指定日期
+     *
+     * @param addDays
+     * @return
+     */
+    public static String getCustomDateTime(LocalDate currentDate, int addDays) {
+        LocalDate nextDay = currentDate.plusDays(addDays);
+        String month = String.valueOf(nextDay.getMonthValue());
+        String day = String.valueOf(nextDay.getDayOfMonth());
         if (month.length() == 1) {
             month = STR_0 + month;
         }
         if (day.length() == 1) {
             day = STR_0 + day;
         }
-        return tomorrow.getYear() + month + day;
+        return nextDay.getYear() + month + day;
     }
 
     /**
