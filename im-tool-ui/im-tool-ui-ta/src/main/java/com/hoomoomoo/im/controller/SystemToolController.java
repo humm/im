@@ -323,8 +323,8 @@ public class SystemToolController implements Initializable {
         LoggerUtils.info("同步任务信息开始");
         File file = new File(appConfigDto.getHepTaskCustomerPath() + PATH_SYNC_TASK_STAT);
         if (!file.isDirectory()) {
-            LoggerUtils.info("非文件夹目录 不同步");
-            return;
+            LoggerUtils.info(String.format("读取文件夹【%s】", file.getAbsolutePath()));
+            throw new Exception(String.format("读取文件夹【%s】错误，请重试", file.getAbsolutePath()));
         }
         LoggerUtils.info("同步任务信息读取文件开始");
         File[] fileList = file.listFiles();
@@ -414,8 +414,8 @@ public class SystemToolController implements Initializable {
         LoggerUtils.info("同步版本信息开始");
         File file = new File(appConfigDto.getHepTaskCustomerPath() + PATH_SYNC_VERSION_STAT);
         if (!file.isDirectory()) {
-            LoggerUtils.info("非文件夹目录 不同步");
-            return;
+            LoggerUtils.info(String.format("读取文件夹【%s】", file.getAbsolutePath()));
+            throw new Exception(String.format("读取文件夹【%s】错误，请重试", file.getAbsolutePath()));
         }
         LoggerUtils.info("同步版本信息读取文件开始");
         File[] fileList = file.listFiles();
