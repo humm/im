@@ -1521,7 +1521,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 if (sortCodeCache.containsKey(cacheKey)) {
                     item.setSortCode(sortCodeCache.get(cacheKey));
                 } else {
-                    String sortCode = hepTaskDto.getMinCompleteBySort() + item.getCustomer() + taskName + item.getFinishDate() + item.getSprintVersion() + item.getTaskLevel();
+                    String sortCode = hepTaskDto.getMinCompleteBySort() + item.getFinishDate() + item.getCustomer() + taskName + item.getSprintVersion() + item.getTaskLevel();
                     item.setSortCode(sortCode);
                     sortCodeCache.put(cacheKey, sortCode);
                 }
