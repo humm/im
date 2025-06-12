@@ -183,7 +183,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录\n");
             } else {
                 String codeVersion = (String)svnVersion.getSelectionModel().getSelectedItem();
-                if (StringUtils.isNotBlank(codeVersion) && !codeVersion.contains(KEY_GIT_VERSION_YEAR)) {
+                if (StringUtils.isNotBlank(codeVersion) && appConfigDto.getSvnRep().startsWith("https")) {
                     List<LogDto> temp = new ArrayList<>(16);
                     for (LogDto item : logDtoList) {
                         if (item.getCodeVersion().equals(codeVersion) || (KEY_B + item.getCodeVersion()).equals(codeVersion)) {

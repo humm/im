@@ -382,11 +382,13 @@ public class SvnUtils {
     }
 
     public static void initSvnRep(AppConfigDto appConfigDto, String version) {
-        String versionValue = getVersion(appConfigDto, version);
-        String versionValueYear = versionValue.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
-        if (KEY_TRUNK.equals(versionValue) || (versionValueYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 && !versionValue.contains(KEY_VERSION_YEAR_2022))) {
+        if (!StringUtils.equals(KEY_TRUNK, version)) {
+            version = getVersion(appConfigDto, version);
+        }
+        String versionValueYear = version.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
+        if (KEY_TRUNK.equals(version) || (versionValueYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 && !version.contains(KEY_VERSION_YEAR_2022))) {
             String url = appConfigDto.getSvnUrl().get(KEY_TRUNK);
-            if (!versionValue.endsWith("000")) {
+            if (!StringUtils.equals(KEY_TRUNK, version)) {
                 url = appConfigDto.getSvnUrl().get(KEY_GIT_BRANCHES);
             }
             LoggerUtils.info("git仓库地址为: " + url);
@@ -395,11 +397,11 @@ public class SvnUtils {
             }
         } else {
             String svnUrl = appConfigDto.getSvnUrl().get(KEY_BRANCHES);
-            if (versionValue.contains(KEY_FUND)) {
-                svnUrl = TaCommonUtils.getSvnUrl(versionValue, svnUrl);
-                versionValue += KEY_SOURCES_TA_FUND;
+            if (version.contains(KEY_FUND)) {
+                svnUrl = TaCommonUtils.getSvnUrl(version, svnUrl);
+                version += KEY_SOURCES_TA_FUND;
             }
-            String svnRep = svnUrl + versionValue;
+            String svnRep = svnUrl + version;
             LoggerUtils.info("svn仓库地址为: " + svnRep);
             appConfigDto.setSvnRep(svnRep);
         }
