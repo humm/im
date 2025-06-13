@@ -48,7 +48,7 @@ public class CheckImportFunctionNotUse {
         }
         content.add(0, "-- 文件总数:" + res.size() + STR_NEXT_LINE);
         content.add(0, "-- 方法导入未使用");
-        FileUtils.writeFile(resPath, content, false);
+        FileUtils.writeFile(resPath, content);
 
     }
 
@@ -66,7 +66,7 @@ public class CheckImportFunctionNotUse {
                 if (index % 100 == 0) {
                     System.out.print(".");
                 }
-                String content = FileUtils.readNormalFileToString(file.getPath(), false);
+                String content = FileUtils.readNormalFileToString(file.getPath());
                 content = CommonUtils.formatStrToSingleSpace(content);
                 if (StringUtils.isNotBlank(content)) {
                     if (!fileFullName.contains("asyncPub") && content.indexOf("import {") != -1) {

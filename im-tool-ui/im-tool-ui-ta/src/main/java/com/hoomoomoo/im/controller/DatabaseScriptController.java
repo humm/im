@@ -114,7 +114,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                         OutputUtils.info(fileNum, String.valueOf(++fileNums));
                         OutputUtils.info(log, String.format("执行【 %s 】开始\n", item));
                         executeSql.clear();
-                        content = FileUtils.readNormalFile(item.getAbsolutePath(), false);
+                        content = FileUtils.readNormalFile(item.getAbsolutePath());
                         boolean procedure = false;
                         boolean multSql = false;
                         boolean function = false;
@@ -194,7 +194,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                     OutputUtils.info(log, "选文择件夹目录不存在sql文件");
                 }
                 if (executeFailSqlNum == 0) {
-                    FileUtils.writeFile(logFilePath, STR_BLANK, false);
+                    FileUtils.writeFile(logFilePath, STR_BLANK);
                     return;
                 }
                 LoggerUtils.writeDatabaScriptLogInfo(DATABASE_SCRIPT.getCode(), failSql, logFilePath);

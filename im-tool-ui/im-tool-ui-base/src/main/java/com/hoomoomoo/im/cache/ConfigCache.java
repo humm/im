@@ -82,7 +82,7 @@ public class ConfigCache {
 
     private static void initExtend(String confPath, AppConfigDto appConfigDto) throws Exception{
         // 更新配置信息
-        List<String> content = FileUtils.readNormalFile(confPath, false);
+        List<String> content = FileUtils.readNormalFile(confPath);
 
         // 加载配置信息
         if (CollectionUtils.isNotEmpty(content)) {
@@ -220,7 +220,7 @@ public class ConfigCache {
 
         // 加载证书信息
         String licensePath = FileUtils.getFilePath(PATH_LICENSE);
-        List<String> licenseContent = FileUtils.readNormalFile(licensePath, false);
+        List<String> licenseContent = FileUtils.readNormalFile(licensePath);
         StringBuilder license = new StringBuilder();
         if (CollectionUtils.isEmpty(licenseContent)) {
             LoggerUtils.info(MSG_LICENSE_NOT_EXIST);
@@ -324,7 +324,7 @@ public class ConfigCache {
             }
         }
 
-        FileUtils.writeFile(confPath, content, false);
+        FileUtils.writeFile(confPath, content);
 
         // 设置参数默认值
         if (StringUtils.isBlank(appConfigDto.getSystemToolCheckMenuResultPath())) {

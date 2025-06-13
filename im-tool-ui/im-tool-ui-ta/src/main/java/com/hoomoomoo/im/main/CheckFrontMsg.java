@@ -50,7 +50,7 @@ public class CheckFrontMsg {
         }
         content.add(0, "-- 文件总数:" + res.size() + "  弹窗总数:" + boxSize + STR_NEXT_LINE);
         content.add(0, "-- <h-msg-box> 使用v-if且transfer未配置为false");
-        FileUtils.writeFile(resPath, content, false);
+        FileUtils.writeFile(resPath, content);
 
     }
 
@@ -67,7 +67,7 @@ public class CheckFrontMsg {
                 if (index % 100 == 0) {
                     System.out.print(".");
                 }
-                String content = FileUtils.readNormalFileToString(file.getPath(), false);
+                String content = FileUtils.readNormalFileToString(file.getPath());
                 content = CommonUtils.formatStrToSingleSpace(content);
                 if (StringUtils.isNotBlank(content)) {
                     if (content.indexOf("h-msg-box") != -1) {

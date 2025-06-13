@@ -78,7 +78,7 @@ public class BlankSetController implements Initializable {
                         }
                     }
                 }
-                FileUtils.writeFile(confPath, content, false);
+                FileUtils.writeFile(confPath, content);
             }
             if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
                 TaskUtils.execute(new BlankSetTask(new BlankSetTaskParam(this)));
@@ -168,7 +168,7 @@ public class BlankSetController implements Initializable {
                 LoggerUtils.info("文件不存在: " + confPath);
                 return;
             }
-            List<String> content = FileUtils.readNormalFile(confPath, false);
+            List<String> content = FileUtils.readNormalFile(confPath);
             for (String item : content) {
                 if (StringUtils.isBlank(item) && !PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
                     continue;

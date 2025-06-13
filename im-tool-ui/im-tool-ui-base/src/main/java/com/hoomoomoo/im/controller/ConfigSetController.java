@@ -49,7 +49,7 @@ public class ConfigSetController implements Initializable {
         String activatePrevFunction = appConfigDto.getActivatePrevFunction();
         String content = config.getText();
         String confPath = FileUtils.getFilePath(PATH_APP);
-        FileUtils.writeFile(confPath, content, false);
+        FileUtils.writeFile(confPath, content);
         ConfigCache.initConfigCache();
         LoggerUtils.writeConfigSetInfo(CONFIG_SET.getCode());
         ConfigCache.getAppConfigDtoCache().setActivateFunction(activatePrevFunction);
@@ -89,7 +89,7 @@ public class ConfigSetController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         String confPath = FileUtils.getFilePath(PATH_APP);
-        List<String> content = FileUtils.readNormalFile(confPath, false);
+        List<String> content = FileUtils.readNormalFile(confPath);
         for (String item : content) {
             if (StringUtils.isBlank(item)) {
                 continue;

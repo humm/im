@@ -267,7 +267,7 @@ public class ScriptSqlUtils {
     }
 
     public static List<String> getSqlByFile(String filePath) throws IOException {
-        List<String> menuList = FileUtils.readNormalFile(filePath, false);
+        List<String> menuList = FileUtils.readNormalFile(filePath);
         StringBuilder menu = new StringBuilder();
         for (int i=0; i<menuList.size(); i++) {
             String item = menuList.get(i).trim();
@@ -294,7 +294,7 @@ public class ScriptSqlUtils {
     }
 
     public static Set<String> initRepairExtSkip() throws Exception {
-        List<String> skipContent = FileUtils.readNormalFile(FileUtils.getFilePath(SQL_CHECK_TYPE_EXTEND.REPAIR_EXT.getPathConf()), false);
+        List<String> skipContent = FileUtils.readNormalFile(FileUtils.getFilePath(SQL_CHECK_TYPE_EXTEND.REPAIR_EXT.getPathConf()));
         Set<String> skip = new HashSet<>();
         if (CollectionUtils.isNotEmpty(skipContent)) {
             for (String item : skipContent) {
@@ -318,7 +318,7 @@ public class ScriptSqlUtils {
     }
 
     public static Set<String> initExtLegalSkip() throws Exception {
-        List<String> skipContent = FileUtils.readNormalFile(FileUtils.getFilePath(LEGAL_EXT_MENU.getPathConf()), false);
+        List<String> skipContent = FileUtils.readNormalFile(FileUtils.getFilePath(LEGAL_EXT_MENU.getPathConf()));
         Set<String> skip = new HashSet<>();
         if (CollectionUtils.isNotEmpty(skipContent)) {
             for (String item : skipContent) {

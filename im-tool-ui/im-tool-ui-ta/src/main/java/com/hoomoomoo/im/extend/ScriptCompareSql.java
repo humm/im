@@ -98,35 +98,35 @@ public class ScriptCompareSql {
             resultPath = resPath + "\\";
 
             String confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LACK_NEW_MENU_ALL.getPathConf());
-            List<String> content = FileUtils.readNormalFile(confPath, false);
+            List<String> content = FileUtils.readNormalFile(confPath);
             initSkipCache(content, skipNewMenuCache);
 
             confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LACK_OLD_NEW_ALL.getPathConf());
-            content = FileUtils.readNormalFile(confPath, false);
+            content = FileUtils.readNormalFile(confPath);
             initSkipCache(content, skipOldMenuCache);
 
             confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LACK_ROUTER.getPathConf());
-            content = FileUtils.readNormalFile(confPath, false);
+            content = FileUtils.readNormalFile(confPath);
             initSkipCache(content, skipRouterCache);
 
             confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.DIFF_NEW_ALL_EXT.getPathConf());
-            content = FileUtils.readNormalFile(confPath, false);
+            content = FileUtils.readNormalFile(confPath);
             initSkipCache(content, skipNewDiffMenuCache);
 
             confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.DIFF_OLD_ALL_EXT.getPathConf());
-            content = FileUtils.readNormalFile(confPath, false);
+            content = FileUtils.readNormalFile(confPath);
             initSkipCache(content, skipOldDiffMenuCache);
 
             confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LACK_LOG.getPathConf());
-            content = FileUtils.readNormalFile(confPath, false);
+            content = FileUtils.readNormalFile(confPath);
             initSkipTransCache(content, skipLogCache);
 
             confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.ERROR_LOG.getPathConf());
-            content = FileUtils.readNormalFile(confPath, false);
+            content = FileUtils.readNormalFile(confPath);
             initSkipTransCache(content, skipErrorLogCache);
 
             confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LEGAL_NEW_MENU.getPathConf());
-            content = FileUtils.readNormalFile(confPath, false);
+            content = FileUtils.readNormalFile(confPath);
             initSkipMapCache(content, skipLegalNewMenu);
 
             initBaseAndExtMenuCache();
@@ -235,7 +235,7 @@ public class ScriptCompareSql {
                 continue;
             }
             summary = -1;
-            List<String> content = FileUtils.readNormalFile(resultPath + "\\" + item.getFileName(), false);
+            List<String> content = FileUtils.readNormalFile(resultPath + "\\" + item.getFileName());
             for (String line : content) {
                 if (line.contains("待处理") && line.contains("【") && line.contains("】")) {
                     summary = Integer.valueOf(line.split("【")[1].split("】")[0]);
@@ -250,7 +250,7 @@ public class ScriptCompareSql {
         }
         fileContent.add(0, String.format(MSG_WAIT_HANDLE_NUM, total));
         fileContent.add(0, String.format(MSG_WAIT_HANDLE_EVENT, CHECK_RESULT_SUMMARY.getName()));
-        FileUtils.writeFile(resultPath + CHECK_RESULT_SUMMARY.getFileName(), fileContent, false);
+        FileUtils.writeFile(resultPath + CHECK_RESULT_SUMMARY.getFileName(), fileContent);
     }
 
     /**
@@ -277,10 +277,10 @@ public class ScriptCompareSql {
             if ("analysisByTrans".equals(fileName) || skipRouter.contains(fileName)) {
                 continue;
             }
-            List<String> menuCodeList = FileUtils.readNormalFile(item.getPath(), false);
+            List<String> menuCodeList = FileUtils.readNormalFile(item.getPath());
             Set<String> menuMap = initMenuRouter(menuCodeList);
             if ("analysis".equals(fileName)) {
-                List<String> extendMenuCodeList = FileUtils.readNormalFile(basePathRouter + "analysisByTrans.js", false);
+                List<String> extendMenuCodeList = FileUtils.readNormalFile(basePathRouter + "analysisByTrans.js");
                 menuMap.addAll(initMenuRouter(extendMenuCodeList));
             }
             allRouterMenu.addAll(menuMap);
@@ -318,7 +318,7 @@ public class ScriptCompareSql {
         }
         needAddUedMenu.add(0, String.format(MSG_WAIT_HANDLE_NUM_0, needAddUedMenuNum));
         needAddUedMenu.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LACK_NEW_MENU_ALL.getName()));
-        FileUtils.writeFile(resultPath + LACK_NEW_MENU_ALL.getFileName(), needAddUedMenu, false);
+        FileUtils.writeFile(resultPath + LACK_NEW_MENU_ALL.getFileName(), needAddUedMenu);
     }
 
     /**
@@ -341,7 +341,7 @@ public class ScriptCompareSql {
         }
         lackMenuList.add(0, String.format(MSG_WAIT_HANDLE_NUM, lackMenu.size()));
         lackMenuList.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LACK_OLD_NEW_ALL.getName()));
-        FileUtils.writeFile(resultPath + LACK_OLD_NEW_ALL.getFileName(), lackMenuList, false);
+        FileUtils.writeFile(resultPath + LACK_OLD_NEW_ALL.getFileName(), lackMenuList);
     }
 
     /**
@@ -398,7 +398,7 @@ public class ScriptCompareSql {
         }
         newMenDiffInfo.add(0, String.format(MSG_WAIT_HANDLE_NUM, newMenDiff.size()));
         newMenDiffInfo.add(0, String.format(MSG_WAIT_HANDLE_EVENT, DIFF_NEW_ALL_EXT.getName()));
-        FileUtils.writeFile(resultPath + DIFF_NEW_ALL_EXT.getFileName(), newMenDiffInfo, false);
+        FileUtils.writeFile(resultPath + DIFF_NEW_ALL_EXT.getFileName(), newMenDiffInfo);
     }
 
     /**
@@ -456,7 +456,7 @@ public class ScriptCompareSql {
         }
         oldMenDiffInfo.add(0, String.format(MSG_WAIT_HANDLE_NUM, oldMenDiff.size()));
         oldMenDiffInfo.add(0, String.format(MSG_WAIT_HANDLE_EVENT, DIFF_OLD_ALL_EXT.getName()));
-        FileUtils.writeFile(resultPath + DIFF_OLD_ALL_EXT.getFileName(), oldMenDiffInfo, false);
+        FileUtils.writeFile(resultPath + DIFF_OLD_ALL_EXT.getFileName(), oldMenDiffInfo);
     }
 
     /**
@@ -482,7 +482,7 @@ public class ScriptCompareSql {
         }
         menuCodeList.add(0, String.format(MSG_WAIT_HANDLE_NUM, lackRouter.size()));
         menuCodeList.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LACK_ROUTER.getName()));
-        FileUtils.writeFile(resultPath + LACK_ROUTER.getFileName(), menuCodeList, false);
+        FileUtils.writeFile(resultPath + LACK_ROUTER.getFileName(), menuCodeList);
     }
 
     /**
@@ -504,7 +504,7 @@ public class ScriptCompareSql {
         }
         subTransExtList.add(0, String.format(MSG_WAIT_HANDLE_NUM, subTransExtList.size()));
         subTransExtList.add(0, String.format(MSG_WAIT_HANDLE_EVENT,LACK_LOG.getName()));
-        FileUtils.writeFile(resultPath + LACK_LOG.getFileName(), subTransExtList, false);
+        FileUtils.writeFile(resultPath + LACK_LOG.getFileName(), subTransExtList);
     }
 
     /**
@@ -531,7 +531,7 @@ public class ScriptCompareSql {
         subTransExtErrorList.add(0, String.format(MSG_WAIT_HANDLE_NUM, subTransExtErrorList.size()));
         subTransExtErrorList.add(0, "-- *************************************  0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入  *************************************");
         subTransExtErrorList.add(0, String.format(MSG_WAIT_HANDLE_EVENT, ERROR_LOG.getName()));
-        FileUtils.writeFile(resultPath + ERROR_LOG.getFileName(), subTransExtErrorList, false);
+        FileUtils.writeFile(resultPath + ERROR_LOG.getFileName(), subTransExtErrorList);
     }
 
     /**
@@ -556,7 +556,7 @@ public class ScriptCompareSql {
         }
         menu.add(0, String.format(MSG_WAIT_HANDLE_NUM, existMenu.size()).replace("待处理", "菜单总数"));
         menu.add(0, String.format(MSG_WAIT_HANDLE_EVENT, ALL_MENU.getName()));
-        FileUtils.writeFile(resultPath + ALL_MENU.getFileName(), menu, false);
+        FileUtils.writeFile(resultPath + ALL_MENU.getFileName(), menu);
     }
 
     /**
@@ -594,7 +594,7 @@ public class ScriptCompareSql {
         }
         res.add(0, String.format(MSG_WAIT_HANDLE_NUM_0, total));
         res.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_EXT_MENU.getName()));
-        FileUtils.writeFile(resultPath + LEGAL_EXT_MENU.getFileName(), res, false);
+        FileUtils.writeFile(resultPath + LEGAL_EXT_MENU.getFileName(), res);
     }
 
     private void checkMenuByFile(File file, Map<String, Set<String>> res, Set<String> skip) throws IOException {
@@ -611,7 +611,7 @@ public class ScriptCompareSql {
             if (skip.contains(fileName)) {
                 return;
             }
-            List<String> content = FileUtils.readNormalFile(filePath, false);
+            List<String> content = FileUtils.readNormalFile(filePath);
             for (String ele : content) {
                 ele = CommonUtils.trimStrToSpace(ele).toLowerCase();
                 if (!ele.contains("insert into")) {
@@ -778,7 +778,7 @@ public class ScriptCompareSql {
         }
 
         // 注释内容不存在开始结束标识
-        List<String> config = FileUtils.readNormalFile(newUedPage, false);
+        List<String> config = FileUtils.readNormalFile(newUedPage);
         List<String> remarkError = new ArrayList<>();
         for (int i=6; i<config.size(); i++) {
             String item = config.get(i).toLowerCase().trim();
@@ -804,7 +804,7 @@ public class ScriptCompareSql {
         List<String> errorNextLine = new ArrayList<>();
         List<String> errorTable = new ArrayList<>();
         List<String> errorAnnotation = new ArrayList<>();
-        List<String> menu = FileUtils.readNormalFile(newUedPage, false);
+        List<String> menu = FileUtils.readNormalFile(newUedPage);
         for (String item : menu) {
             String lower = item.toLowerCase().trim();
             if (StringUtils.isBlank(lower)) {
@@ -844,7 +844,7 @@ public class ScriptCompareSql {
 
         menuInfo.add(0, String.format(MSG_WAIT_HANDLE_NUM_0, total));
         menuInfo.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_NEW_MENU.getName()));
-        FileUtils.writeFile(resultPath + LEGAL_NEW_MENU.getFileName(), menuInfo, false);
+        FileUtils.writeFile(resultPath + LEGAL_NEW_MENU.getFileName(), menuInfo);
     }
 
     private void compareMenu(Set<String> menuMap, String fileName) throws Exception {
@@ -887,7 +887,7 @@ public class ScriptCompareSql {
         if (!LACK_NEW_MENU_ALL.getFileName().equals(fileName)) {
             return;
         }
-        FileUtils.writeFile(resultPath + fileName, menuCodeList, false);
+        FileUtils.writeFile(resultPath + fileName, menuCodeList);
     }
 
     private String buildDiffValueInfo(String value) {
@@ -940,7 +940,7 @@ public class ScriptCompareSql {
 
     private void initConfigUedMenuCache() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        List<String> config = FileUtils.readNormalFile(newUedPage, false);
+        List<String> config = FileUtils.readNormalFile(newUedPage);
         Iterator<String> iterator = config.iterator();
         while (iterator.hasNext()) {
             String item = iterator.next();
@@ -976,7 +976,7 @@ public class ScriptCompareSql {
 
     private void initConfigBaseMenuCache() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        List<String> config = FileUtils.readNormalFile(baseMenu, false);
+        List<String> config = FileUtils.readNormalFile(baseMenu);
         Iterator<String> iterator = config.iterator();
         while (iterator.hasNext()) {
             String item = iterator.next();
@@ -1062,7 +1062,7 @@ public class ScriptCompareSql {
             if (filePath.contains("/extradata/special/") || filePath.contains("\\extradata\\special\\") || filePath.contains("\\extradata\\UED\\")) {
                 return;
             }
-            List<String> content = FileUtils.readNormalFile(file.getPath(), false);
+            List<String> content = FileUtils.readNormalFile(file.getPath());
             // 缓存菜单信息
             boolean endFlag = true;
             for (String item : content) {

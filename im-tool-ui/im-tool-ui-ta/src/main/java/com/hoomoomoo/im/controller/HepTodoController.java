@@ -1758,7 +1758,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 needSync = true;
             }
             if (needSync) {
-                List<String> content = FileUtils.readNormalFile(source, false);
+                List<String> content = FileUtils.readNormalFile(source);
                 OutputUtils.info(fileTipsVersion, version);
                 OutputUtils.info(fileTipsFile, getFileName(source));
                 OutputUtils.info(fileTipsFileOperate, operate);
@@ -1769,7 +1769,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 } else {
                     OutputUtils.info(fileTipsFileStatus, "开始");
                     OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
-                    FileUtils.writeFile(target, content, ENCODING_UTF8, false);
+                    FileUtils.writeFile(target, content, ENCODING_UTF8);
                     OutputUtils.info(fileTipsFileStatus, "结束");
                     OutputUtils.info(fileTipsFileTime, CommonUtils.getCurrentDateTime14());
                 }
@@ -1929,7 +1929,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     public static List<VersionDto> getVersionInfo() throws Exception {
-        List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);
+        List<String> versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT));
         List<VersionDto> versionDtoList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(versionList)) {
             for (String item : versionList) {
@@ -1954,7 +1954,7 @@ public class HepTodoController extends BaseController implements Initializable {
         Map<String, String> customerName = new HashMap<>();
         Map<String, String> demandNo = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_STAT), false);
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
@@ -1973,7 +1973,7 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getCancelDevSubmitTaskInfo() {
         Map<String, String> task = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT), false);
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
@@ -1994,7 +1994,7 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getTaskLevelInfo() {
         Map<String, String> task = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT), false);
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
@@ -2033,7 +2033,7 @@ public class HepTodoController extends BaseController implements Initializable {
     public List<String> getTaskVersionInfo() {
         List<String> versionList = new ArrayList<>();
         try {
-            versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT), false);;
+            versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT));
         } catch (IOException e) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
             LoggerUtils.info(e);
@@ -2046,8 +2046,8 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getDemandInfo() {
         Map<String, String> demand = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT), false);
-            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT), false));
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT));
+            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT)));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);
@@ -2068,7 +2068,7 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getTaskStatusInfo() {
         Map<String, String> task = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT), false);
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     String[] elementList = item.split(STR_SEMICOLON);

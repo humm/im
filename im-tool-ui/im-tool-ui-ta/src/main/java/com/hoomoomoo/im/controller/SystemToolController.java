@@ -232,7 +232,7 @@ public class SystemToolController implements Initializable {
             OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步文件 " + fileName));
             String filePath = source.getAbsolutePath();
             String toTargetPath = filePath.replace(sourcePath, targetPath);
-            List<String> content =  FileUtils.readNormalFile(filePath, false);
+            List<String> content =  FileUtils.readNormalFile(filePath);
             syncFile++;
             if ("CommonUtils.java".equals(fileName)) {
                 updateFile++;
@@ -243,7 +243,7 @@ public class SystemToolController implements Initializable {
                     if (ele.contains("FileUtils.startByJar()")) {
                         ele = ele.replace("FileUtils.startByJar()", "true");
                     }
-                    FileUtils.writeFile(toTargetPath, ele + STR_NEXT_LINE,true);
+                    FileUtils.writeFileAppend(toTargetPath, ele + STR_NEXT_LINE);
                 }
             } else if ("CheckConfigConst.java".equals(fileName)) {
                 syncFile--;
@@ -251,7 +251,7 @@ public class SystemToolController implements Initializable {
                 OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "忽略文件 " + fileName));
                 return;
             } else {
-                FileUtils.writeFile(toTargetPath, content, false);
+                FileUtils.writeFile(toTargetPath, content);
             }
         }
         return;
@@ -337,7 +337,7 @@ public class SystemToolController implements Initializable {
                     public void run() {
                         try {
                             LoggerUtils.info(String.format("读取文件【%s】开始", subFilePath));
-                            List<String> res = FileUtils.readNormalFile(subFilePath, false);
+                            List<String> res = FileUtils.readNormalFile(subFilePath);
                             if (CollectionUtils.isNotEmpty(res)) {
                                 response.addAll(res);
                             } else {
@@ -389,12 +389,12 @@ public class SystemToolController implements Initializable {
         }
         if (CollectionUtils.isNotEmpty(taskList)) {
             String taskPath = FileUtils.getFilePath(PATH_TASK_STAT);
-            FileUtils.writeFile(taskPath, new ArrayList<>(taskList), false);
+            FileUtils.writeFile(taskPath, new ArrayList<>(taskList));
         }
         if (CollectionUtils.isNotEmpty(demandList)) {
             String demandPath = FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT);
             if (new File(demandPath).exists()) {
-                demandList.addAll(FileUtils.readNormalFile(demandPath, false));
+                demandList.addAll(FileUtils.readNormalFile(demandPath));
             }
             List<String> demandRes = new ArrayList<>(demandList);
             Iterator<String> iterator = demandRes.listIterator();
@@ -405,7 +405,7 @@ public class SystemToolController implements Initializable {
                     iterator.remove();
                 }
             }
-            FileUtils.writeFile(demandPath, demandRes, false);
+            FileUtils.writeFile(demandPath, demandRes);
         }
         LoggerUtils.info("同步任务信息结束");
     }
@@ -424,7 +424,7 @@ public class SystemToolController implements Initializable {
             String subFilePath = fileList[0].getAbsolutePath();
             try {
                 LoggerUtils.info(String.format("读取文件【%s】开始", subFilePath));
-                List<String> res = FileUtils.readNormalFile(subFilePath, false);
+                List<String> res = FileUtils.readNormalFile(subFilePath);
                 response.addAll(res);
                 LoggerUtils.info(String.format("读取文件【%s】结束", subFilePath));
             } catch (IOException e) {
@@ -447,7 +447,7 @@ public class SystemToolController implements Initializable {
             }
         }
         String versionPath = FileUtils.getFilePath(PATH_VERSION_STAT);
-        FileUtils.writeFile(versionPath, versionList, false);
+        FileUtils.writeFile(versionPath, versionList);
         LoggerUtils.info("同步版本信息结束");
     }
 
@@ -546,7 +546,7 @@ public class SystemToolController implements Initializable {
                 }
                 String statPath = FileUtils.getFilePath(statFile);
                 if (CollectionUtils.isNotEmpty(list)) {
-                    FileUtils.writeFile(statPath, list, false);
+                    FileUtils.writeFile(statPath, list);
                 }
                 if (logs != null) {
                     OutputUtils.info(logs, getUpdateVersionMsg("同步成功"));

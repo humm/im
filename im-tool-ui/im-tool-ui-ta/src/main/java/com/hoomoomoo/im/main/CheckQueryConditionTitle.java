@@ -39,7 +39,7 @@ public class CheckQueryConditionTitle {
         check(new File(checkPath));
         res.add(0, "-- 文件总数:" + res.size() + STR_NEXT_LINE);
         res.add(0, "-- 同时调用方法setColsDiffResolution和addTitleSearchCondition");
-        FileUtils.writeFile(resPath, res, false);
+        FileUtils.writeFile(resPath, res);
 
     }
 
@@ -56,7 +56,7 @@ public class CheckQueryConditionTitle {
                 if (index % 100 == 0) {
                     System.out.print(".");
                 }
-                String content = FileUtils.readNormalFileToString(file.getPath(), false);
+                String content = FileUtils.readNormalFileToString(file.getPath());
                 content = CommonUtils.formatStrToSingleSpace(content);
                 if (StringUtils.isNotBlank(content)) {
                     if (content.indexOf("mounted()") != -1) {

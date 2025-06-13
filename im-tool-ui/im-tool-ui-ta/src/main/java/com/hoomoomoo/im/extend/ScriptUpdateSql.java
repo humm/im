@@ -34,11 +34,11 @@ public class ScriptUpdateSql {
 
     public void generateSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        List<String> config = FileUtils.readNormalFile(newUedPage, false);
+        List<String> config = FileUtils.readNormalFile(newUedPage);
         List<String> sql = getUpdateSql(appConfigDto, config);
         sql.add(STR_NEXT_LINE);
         sql.add("commit;");
-        FileUtils.writeFile(resultPath + BaseConst.SQL_FilE_TYPE.NEW_MENU_UPDATE.getFileName(), sql, false);
+        FileUtils.writeFile(resultPath + BaseConst.SQL_FilE_TYPE.NEW_MENU_UPDATE.getFileName(), sql);
     }
 
     public void generateChangeMenuSql() throws Exception {
@@ -53,7 +53,7 @@ public class ScriptUpdateSql {
             throw new Exception("请配置参数【system.tool.check.menu.base.path】\n");
         }
         newUedPage = basePath + ScriptSqlUtils.newUedPage;
-        List<String> sqlList = FileUtils.readNormalFile(newUedPage, false);
+        List<String> sqlList = FileUtils.readNormalFile(newUedPage);
         List<String> res = new ArrayList<>();
         for (String ele : sqlList) {
             if (ele.startsWith("-- ") && (ele.contains("delete") || ele.contains("insert") || ele.contains("values"))) {
@@ -77,7 +77,7 @@ public class ScriptUpdateSql {
             }
             res.add(ele);
         }
-        FileUtils.writeFile(resPath + BaseConst.SQL_FilE_TYPE.UPDATE_CHANGE_MENU.getFileName(), res, false);
+        FileUtils.writeFile(resPath + BaseConst.SQL_FilE_TYPE.UPDATE_CHANGE_MENU.getFileName(), res);
     }
 
     public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {

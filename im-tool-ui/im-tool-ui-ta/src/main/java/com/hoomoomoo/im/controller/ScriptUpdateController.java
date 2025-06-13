@@ -483,7 +483,11 @@ public class ScriptUpdateController extends BaseController implements Initializa
             LoggerUtils.writeScriptUpdateInfo(date, logList);
             if (appConfigDto.getScriptUpdateGenerateFile()) {
                 String path = new URL("file:" + appConfigDto.getScriptUpdateGeneratePath() + "/script.sql").getFile();
-                FileUtils.writeFile(path, scriptList, STR_1.equals(appConfigDto.getScriptUpdateGenerateMode()));
+                if (STR_1.equals(appConfigDto.getScriptUpdateGenerateMode())) {
+                    FileUtils.writeFileAppend(path, scriptList);
+                } else {
+                    FileUtils.writeFile(path, scriptList);
+                }
             }
         }
         return result;

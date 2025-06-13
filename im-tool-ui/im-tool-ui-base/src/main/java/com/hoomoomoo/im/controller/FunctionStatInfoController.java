@@ -71,7 +71,7 @@ public class FunctionStatInfoController implements Initializable {
                 File statFile = new File(FileUtils.getFilePath(logPath));
                 List<String> logStat = new ArrayList<>();
                 if (statFile.exists()) {
-                    logStat = FileUtils.readNormalFile(FileUtils.getFilePath(logPath), false);
+                    logStat = FileUtils.readNormalFile(FileUtils.getFilePath(logPath));
                 }
                 functionDto.setFirstTime(getStatInfo(logStat, 0));
                 functionDto.setLastTime(getStatInfo(logStat, 1));

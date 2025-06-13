@@ -274,7 +274,7 @@ public class CheckWebFundCoreCallParameterCore {
         res.addAll(special);
         res.add(0, "-- 方法总数:" + totalNum + "  补充方法说明:" + descNum + "  特殊场景:" + special.size() + STR_NEXT_LINE);
         res.add(0, "-- webFundCore代码调用ParameterCode方法");
-        FileUtils.writeFile(resPath, res, false);
+        FileUtils.writeFile(resPath, res);
     }
 
     private static void check(File file) throws IOException {
@@ -290,7 +290,7 @@ public class CheckWebFundCoreCallParameterCore {
                 if (index % 100 == 0) {
                     System.out.print(".");
                 }
-                String content = FileUtils.readNormalFileToString(file.getPath(), false);
+                String content = FileUtils.readNormalFileToString(file.getPath());
                 List<String> contents = Arrays.asList(content.split(";"));
                 if (CollectionUtils.isNotEmpty(contents)) {
                     Set<String> markService = new HashSet<>();

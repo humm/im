@@ -40,7 +40,7 @@ public class ScriptRepairSql {
         repairFileNum = 0;
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
-        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + LACK_LOG.getFileName(), false);
+        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + LACK_LOG.getFileName());
         if (CollectionUtils.isEmpty(logList) || logList.size() <= 2) {
             return;
         }
@@ -79,7 +79,7 @@ public class ScriptRepairSql {
         repairFileNum = 0;
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
-        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + ERROR_LOG.getFileName(), false);
+        List<String> logList = FileUtils.readNormalFile(resultPath + "\\" + ERROR_LOG.getFileName());
         if (CollectionUtils.isEmpty(logList) || logList.size() <= 3) {
             return;
         }
@@ -124,7 +124,7 @@ public class ScriptRepairSql {
         if (StringUtils.isBlank(transCode) || StringUtils.isBlank(path) || StringUtils.isBlank(opDir)) {
             return;
         }
-        List<String> item = FileUtils.readNormalFile(path, false);
+        List<String> item = FileUtils.readNormalFile(path);
         String status = STR_0;
         for (int i = 0; i < item.size(); i++) {
             String ele = item.get(i).trim();
@@ -151,14 +151,14 @@ public class ScriptRepairSql {
                 }
             }
         }
-        FileUtils.writeFile(path, item, false);
+        FileUtils.writeFile(path, item);
     }
 
     private static void addSubTransExt(String transCode, String subTransCode, String opDir, String path) throws IOException {
         if (StringUtils.isBlank(transCode) || StringUtils.isBlank(path)) {
             return;
         }
-        List<String> item = FileUtils.readNormalFile(path, false);
+        List<String> item = FileUtils.readNormalFile(path);
         StringBuilder content = new StringBuilder();
         String lineIndex = EXT_LINE_INDEX;
         for (String ele : item) {
@@ -202,7 +202,7 @@ public class ScriptRepairSql {
                 break;
             }
         }
-        FileUtils.writeFile(path, item, false);
+        FileUtils.writeFile(path, item);
     }
 
     private static String buildSubTransExt(String transCode, String subTransCode, String opDir) {
@@ -251,14 +251,14 @@ public class ScriptRepairSql {
             if (skip.contains(fileName)) {
                 return;
             }
-            List<String> item = FileUtils.readNormalFile(file.getPath(), false);
+            List<String> item = FileUtils.readNormalFile(file.getPath());
             boolean modifyTrans = deleteSql(item, "tsys_trans", skip);
             boolean modifySubtrans = deleteSql(item, "tsys_subtrans", skip);
             boolean modifySubtransExt = deleteSql(item, "tsys_subtrans_ext", skip);
             boolean modifyWorkFlow = deleteSql(item, "tbworkflowsubtrans", skip);
             boolean modifyWorkFlowExt = deleteSql(item, "tbworkflowsubtransext", skip);
             if (modifyTrans || modifySubtrans || modifySubtransExt || modifyWorkFlow || modifyWorkFlowExt) {
-                FileUtils.writeFile(file.getPath(), item, false);
+                FileUtils.writeFile(file.getPath(), item);
                 repairFileNum++;
             }
         }
@@ -330,7 +330,7 @@ public class ScriptRepairSql {
     public static void repairWorkFlow() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String workFlowPath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.workFlow;
-        List<String> workFlow = FileUtils.readNormalFile(workFlowPath, false);
+        List<String> workFlow = FileUtils.readNormalFile(workFlowPath);
         StringBuilder content = new StringBuilder();
         for (String ele : workFlow) {
             String lowerEle = ele.toLowerCase();
@@ -403,7 +403,7 @@ public class ScriptRepairSql {
         }
 
         String basePath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu;
-        List<String> menuList = FileUtils.readNormalFile(basePath, false);
+        List<String> menuList = FileUtils.readNormalFile(basePath);
         StringBuilder menu = new StringBuilder();
         Map<String, String> menuGroupTitle = new LinkedHashMap();
         for (int i=7; i<menuList.size(); i++) {
@@ -501,7 +501,7 @@ public class ScriptRepairSql {
 
         String checkFile = workFlowPath.replace(".sql", ".check.sql");
         if (CollectionUtils.isNotEmpty(error)) {
-            FileUtils.writeFile(checkFile, error, false);
+            FileUtils.writeFile(checkFile, error);
         } else {
             File file = new File(checkFile);
             if (file.exists()) {
@@ -510,14 +510,14 @@ public class ScriptRepairSql {
         }
         String resFile = workFlowPath.replace(".sql", ".res.sql");
         if (CollectionUtils.isNotEmpty(error)) {
-            FileUtils.writeFile(resFile, res, false);
+            FileUtils.writeFile(resFile, res);
             throw new Exception("检查存在未匹配项，请查看结果文件");
         } else {
             File file = new File(resFile);
             if (file.exists()) {
                 file.delete();
             }
-            FileUtils.writeFile(workFlowPath, res, false);
+            FileUtils.writeFile(workFlowPath, res);
         }
     }
 
@@ -544,7 +544,7 @@ public class ScriptRepairSql {
             if (!fileName.endsWith(FILE_TYPE_SQL)) {
                 return;
             }
-            List<String> item = FileUtils.readNormalFile(file.getPath(), false);
+            List<String> item = FileUtils.readNormalFile(file.getPath());
             StringBuilder content = new StringBuilder();
             for (String ele : item) {
                 String lowerEle = ele.toLowerCase();
@@ -791,7 +791,7 @@ public class ScriptRepairSql {
 
         String checkFile = newUedPage.replace(".sql", ".check.sql");
         if (CollectionUtils.isNotEmpty(error)) {
-            FileUtils.writeFile(checkFile, error, false);
+            FileUtils.writeFile(checkFile, error);
         } else {
             File file = new File(checkFile);
             if (file.exists()) {
@@ -800,14 +800,14 @@ public class ScriptRepairSql {
         }
         String resFile = newUedPage.replace(".sql", ".res.sql");
         if (CollectionUtils.isNotEmpty(error)) {
-            FileUtils.writeFile(resFile, res, false);
+            FileUtils.writeFile(resFile, res);
             throw new Exception("检查存在未匹配项，请查看结果文件");
         } else {
             File file = new File(resFile);
             if (file.exists()) {
                 file.delete();
             }
-            FileUtils.writeFile(newUedPage, res, false);
+            FileUtils.writeFile(newUedPage, res);
         }
     }
 
@@ -828,7 +828,7 @@ public class ScriptRepairSql {
         res.add(STR_NEXT_LINE);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String basePath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu;
-        List<String> menuList = FileUtils.readNormalFile(basePath, false);
+        List<String> menuList = FileUtils.readNormalFile(basePath);
         StringBuilder menu = new StringBuilder();
         for (int i=7; i<menuList.size(); i++) {
             String item = menuList.get(i).trim();
@@ -921,7 +921,7 @@ public class ScriptRepairSql {
         }
 
         String menuConditionPath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.menuCondition;
-        List<String> menuConditionList = FileUtils.readNormalFile(menuConditionPath, false);
+        List<String> menuConditionList = FileUtils.readNormalFile(menuConditionPath);
         StringBuilder menuCondition = new StringBuilder();
         for (int i=0; i<menuConditionList.size(); i++) {
             String item = menuConditionList.get(i).trim();
@@ -1280,7 +1280,7 @@ public class ScriptRepairSql {
 
         String checkFile = basePath.replace(".sql", ".check.sql");
         if (CollectionUtils.isNotEmpty(error)) {
-            FileUtils.writeFile(checkFile, error, false);
+            FileUtils.writeFile(checkFile, error);
         } else {
             File file = new File(checkFile);
             if (file.exists()) {
@@ -1289,14 +1289,14 @@ public class ScriptRepairSql {
         }
         String resFile = basePath.replace(".sql", ".res.sql");
         if (CollectionUtils.isNotEmpty(error)) {
-            FileUtils.writeFile(resFile, res, false);
+            FileUtils.writeFile(resFile, res);
             throw new Exception("检查存在未匹配项，请查看结果文件");
         } else {
             File file = new File(resFile);
             if (file.exists()) {
                 file.delete();
             }
-            FileUtils.writeFile(basePath, res, false);
+            FileUtils.writeFile(basePath, res);
         }
     }
 
@@ -1344,7 +1344,7 @@ public class ScriptRepairSql {
         cache.put(KEY_TRANS, new ArrayList<>());
         cache.put(KEY_TRANS_EXT, new ArrayList<>());
         String confPath = FileUtils.getFilePath(SQL_CHECK_TYPE_EXTEND.REPAIR_OLD_MENU.getPathConf());
-        List<String> content = FileUtils.readNormalFile(confPath, false);
+        List<String> content = FileUtils.readNormalFile(confPath);
         if (CollectionUtils.isNotEmpty(content)) {
             for (String item : content) {
                 if (StringUtils.isBlank(item)) {
@@ -1506,7 +1506,7 @@ public class ScriptRepairSql {
             if (!fileName.endsWith(FILE_TYPE_SQL)) {
                 return;
             }
-            List<String> content = FileUtils.readNormalFile(file.getPath(), false);
+            List<String> content = FileUtils.readNormalFile(file.getPath());
             StringBuilder menu = new StringBuilder();
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i).trim();

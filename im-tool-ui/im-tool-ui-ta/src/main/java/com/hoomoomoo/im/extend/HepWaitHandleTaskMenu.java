@@ -248,7 +248,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         if (!demandExtendStat.exists()) {
             demandExtendStat.createNewFile();
         }
-        List<String> taskNumberList = FileUtils.readNormalFile(path, false);
+        List<String> taskNumberList = FileUtils.readNormalFile(path);
         if (!taskNumberList.contains(eleIndex + STR_0) && !taskNumberList.contains(eleIndex + STR_1)) {
             taskNumberList.add(eleValue);
         } else {
@@ -260,7 +260,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                 }
             }
         }
-        FileUtils.writeFile(path, taskNumberList, false);
+        FileUtils.writeFile(path, taskNumberList);
         String msg = btnName + "成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
         OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
@@ -278,7 +278,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         if (!taskExtendStat.exists()) {
             taskExtendStat.createNewFile();
         }
-        List<String> taskNumberList = FileUtils.readNormalFile(path, false);
+        List<String> taskNumberList = FileUtils.readNormalFile(path);
         if (!taskNumberList.contains(eleIndex + STR_0) && !taskNumberList.contains(eleIndex + STR_1)) {
             taskNumberList.add(eleValue);
         } else {
@@ -290,7 +290,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
                 }
             }
         }
-        FileUtils.writeFile(path, taskNumberList, false);
+        FileUtils.writeFile(path, taskNumberList);
         String msg = btnName + "成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
         OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
@@ -308,7 +308,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         if (!taskExtendStat.exists()) {
             taskExtendStat.createNewFile();
         }
-        List<String> taskNumberList = FileUtils.readNormalFile(path, false);
+        List<String> taskNumberList = FileUtils.readNormalFile(path);
         remarkLevel(taskNumberList, eleValue, eleIndex);
         taskNumber = item.getDemandNo();
         if (StringUtils.isNotBlank(taskNumber)) {
@@ -316,7 +316,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             eleIndex = taskNumber + STR_SEMICOLON;
             remarkLevel(taskNumberList, eleValue, eleIndex);
         }
-        FileUtils.writeFile(path, taskNumberList, false);
+        FileUtils.writeFile(path, taskNumberList);
         String msg = btnName + "成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
         OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));

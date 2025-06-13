@@ -89,7 +89,7 @@ public class CheckResultController implements Initializable {
                 lastModifiedFile = file;
             }
         }
-        List<String> content = FileUtils.readNormalFile(lastModifiedFile.getPath(), false);
+        List<String> content = FileUtils.readNormalFile(lastModifiedFile.getPath());
         StringBuilder text = new StringBuilder();
         for (String item : content) {
             text.append(item).append(STR_NEXT_LINE);
@@ -105,7 +105,7 @@ public class CheckResultController implements Initializable {
         if (!logFile.exists()) {
             return;
         }
-        List<String> content = FileUtils.readNormalFile(filePath, false);
+        List<String> content = FileUtils.readNormalFile(filePath);
         StringBuilder text = new StringBuilder();
         for (String item : content) {
             text.append(item).append(STR_NEXT_LINE);
@@ -132,7 +132,7 @@ public class CheckResultController implements Initializable {
 
     private List<String> getContent(AppConfigDto appConfigDto, String fileName) throws IOException {
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
-        return FileUtils.readNormalFile(resultPath + "\\" + fileName, false);
+        return FileUtils.readNormalFile(resultPath + "\\" + fileName);
     }
 
     private void outputContent(Tab tab, List<String> content, String fileName) {

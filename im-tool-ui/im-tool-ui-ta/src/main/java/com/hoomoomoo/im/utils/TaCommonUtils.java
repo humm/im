@@ -500,7 +500,7 @@ public class TaCommonUtils {
             return;
         }
         String confPath =  FileUtils.getFilePath(PATH_APP);
-        List<String> content = FileUtils.readNormalFile(confPath, false);
+        List<String> content = FileUtils.readNormalFile(confPath);
         // 强制启动休息计划
         for (int i = 0; i < content.size(); i++) {
             String item = content.get(i);
@@ -509,7 +509,7 @@ public class TaCommonUtils {
                 appConfigDto.setHepTaskRestPlan(STR_1);
             }
         }
-        FileUtils.writeFile(confPath, content, false);
+        FileUtils.writeFile(confPath, content);
     }
 
     public static String changeVersion(AppConfigDto appConfigDto, String ver) {

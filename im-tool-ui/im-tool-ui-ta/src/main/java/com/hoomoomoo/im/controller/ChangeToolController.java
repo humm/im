@@ -244,7 +244,7 @@ public class ChangeToolController implements Initializable {
             OutputUtils.infoContainBr(logs, "执行脚本 开始...");
             String sql = STR_BLANK;
             try {
-                String[] sqlList = FileUtils.readNormalFileToString(resFilePath, true).split(STR_SEMICOLON);
+                String[] sqlList = FileUtils.readNormalFileToStringSkipAnnotation(resFilePath).split(STR_SEMICOLON);
                 if (sqlList != null) {
                     int size = sqlList.length;
                     if (executeType.equals(executeMenu)) {
@@ -312,10 +312,10 @@ public class ChangeToolController implements Initializable {
         res.add("-- " + taskType);
         res.add("-- 更新系统参数");
         res.add("update tbparam set param_value = '" + paramValue + "' where param_id = 'IsNewMenuIndex';\n");
-        List<String> sqlList = FileUtils.readNormalFile(basePath, false);
+        List<String> sqlList = FileUtils.readNormalFile(basePath);
         String resFilePath = FileUtils.getFilePath(FILE_CHANGE_MENU);
         FileUtils.deleteFile(new File(resFilePath));
-        FileUtils.writeFile(resFilePath, res, false);
+        FileUtils.writeFile(resFilePath, res);
         if (CollectionUtils.isNotEmpty(sqlList)) {
             int size = sqlList.size();
             OutputUtils.info(logs, "执行中...");
@@ -330,7 +330,7 @@ public class ChangeToolController implements Initializable {
                 }
                 if (i % 1000 == 0) {
                     OutputUtils.info(logs, STR_POINT_3);
-                    FileUtils.writeFile(resFilePath, res, true);
+                    FileUtils.writeFileAppend(resFilePath, res);
                     res.clear();
                 }
                 String sqlLower = sql.toLowerCase();
@@ -342,7 +342,7 @@ public class ChangeToolController implements Initializable {
             }
         }
         if (CollectionUtils.isNotEmpty(res)) {
-            FileUtils.writeFile(resFilePath, res, true);
+            FileUtils.writeFileAppend(resFilePath, res);
         }
         executeEnd(resFilePath);
     }
@@ -487,7 +487,7 @@ public class ChangeToolController implements Initializable {
         String resFilePath = FileUtils.getFilePath(FILE_CHANGE_MODE);
         FileUtils.deleteFile(new File(resFilePath));
         if (CollectionUtils.isNotEmpty(res)) {
-            FileUtils.writeFile(resFilePath, res, true);
+            FileUtils.writeFileAppend(resFilePath, res);
         }
         executeEnd(resFilePath);
     }

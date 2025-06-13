@@ -36,7 +36,7 @@ public class FileUtils {
      * @return:
      */
     public static BaseDto readConfigFileToObject(String filePath, Class clazz) throws Exception {
-        return (BaseDto) mapToObject(readConfigFileToMap(filePath), clazz);
+        return (BaseDto) CommonUtils.mapToObject(readConfigFileToMap(filePath), clazz);
     }
 
     /**
@@ -48,7 +48,7 @@ public class FileUtils {
      * @return:
      */
     public static LinkedHashMap<String, String> readConfigFileToMapIncludePoint(String filePath) throws IOException {
-        return convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, false), false);
+        return CommonUtils.convertMap((HashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, false), false);
     }
 
     /**
@@ -60,7 +60,7 @@ public class FileUtils {
      * @return:
      */
     public static LinkedHashMap<String, String> readConfigFileToMap(String filePath) throws IOException {
-        return convertMap((LinkedHashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, false), true);
+        return CommonUtils.convertMap((LinkedHashMap<String, String>) readFile(filePath, FILE_TYPE_CONFIG, false), true);
     }
 
     /**
@@ -71,7 +71,31 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
-    public static String readNormalFileToString(String filePath, boolean skipAnnotation) throws IOException {
+    public static String readNormalFileToString(String filePath) throws IOException {
+        return readNormalFileToString(filePath, false) ;
+    }
+
+    /**
+     * 读取正常文件
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
+    public static String readNormalFileToStringSkipAnnotation(String filePath) throws IOException {
+        return readNormalFileToString(filePath, true) ;
+    }
+
+    /**
+     * 读取正常文件
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
+    private static String readNormalFileToString(String filePath, boolean skipAnnotation) throws IOException {
         List<String> config = (List<String>) readFile(filePath, FILE_TYPE_NORMAL, skipAnnotation);
         StringBuilder content = new StringBuilder();
         if (CollectionUtils.isNotEmpty(config)) {
@@ -90,8 +114,34 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
-    public static List<String> readNormalFile(String filePath, boolean skipAnnotation) throws IOException {
-        return (List<String>) readFile(filePath, FILE_TYPE_NORMAL, skipAnnotation);
+    public static List<String> readNormalFile(String filePath) throws IOException {
+        return (List<String>) readFile(filePath, FILE_TYPE_NORMAL, false);
+    }
+
+    /**
+     * 读取正常文件
+     *
+     * @param
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
+    public static List<String> readNormalFileSkipAnnotation(String filePath) throws IOException {
+        return (List<String>) readFile(filePath, FILE_TYPE_NORMAL, true);
+    }
+
+
+    /**
+     * 写文件
+     *
+     * @param filePath
+     * @param contentList
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static void writeFileAppend(String filePath, List<String> contentList) throws IOException {
+        writeFile(filePath, contentList, null, true);
     }
 
     /**
@@ -103,28 +153,8 @@ public class FileUtils {
      * @date: 2021/04/28
      * @return:
      */
-    public static void writeFile(String filePath, List<String> contentList, boolean isAppend) throws IOException {
-        writeFile(filePath, contentList, null, isAppend);
-    }
-
-    /**
-     * 写文件
-     *
-     * @param filePath
-     * @param contentList
-     * @author: humm23693
-     * @date: 2021/04/28
-     * @return:
-     */
-    public static void writeFile(String filePath, List<String> contentList, String encode, boolean isAppend) throws IOException {
-        if (CollectionUtils.isEmpty(contentList)) {
-            return;
-        }
-        String content = STR_BLANK;
-        for (String item : contentList) {
-            content += item + STR_NEXT_LINE;
-        }
-        writeFile(filePath, content, encode, isAppend);
+    public static void writeFile(String filePath, List<String> contentList) throws IOException {
+        writeFile(filePath, contentList, null, false);
     }
 
     /**
@@ -136,8 +166,21 @@ public class FileUtils {
      * @date: 2021/04/28
      * @return:
      */
-    public static void writeFile(String filePath, String content, boolean isAppend) throws IOException {
-        writeFile(filePath, content, null, isAppend);
+    public static void writeFile(String filePath, String content) throws IOException {
+        writeFile(filePath, content, null, false);
+    }
+
+    /**
+     * 写文件
+     *
+     * @param filePath
+     * @param content
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static void writeFileAppend(String filePath, String content) throws IOException {
+        writeFile(filePath, content, null, true);
     }
 
     /**
@@ -172,6 +215,93 @@ public class FileUtils {
     }
 
     /**
+     * 写文件
+     *
+     * @param filePath
+     * @param contentList
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static void writeFile(String filePath, List<String> contentList, String encode) throws IOException {
+        writeFile(filePath, contentList, encode, false);
+    }
+
+    /**
+     * 写文件
+     *
+     * @param filePath
+     * @param contentList
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    public static void writeFileAppend(String filePath, List<String> contentList, String encode) throws IOException {
+        writeFile(filePath, contentList, encode, true);
+    }
+
+    /**
+     * 获取文件编码格式
+     *
+     * @param filePath
+     * @author: humm23693
+     * @date: 2021/04/23
+     * @return:
+     */
+    public static String getFileEncode(String filePath) {
+        try {
+            String fileEncode = EncodingDetect.getJavaEncode(filePath);
+            if (StringUtils.startsWith(fileEncode.toUpperCase(), ENCODING_GB)) {
+                return ENCODING_GBK;
+            } else {
+                return ENCODING_UTF8;
+            }
+        } catch (Exception e) {
+            return ENCODING_GBK;
+        }
+    }
+
+    /**
+     * 获取文件路径
+     *
+     * @param path
+     * @author: humm23693
+     * @date: 2021/04/26
+     * @return:
+     */
+    public static String getFilePath(String path) {
+        String fileAbsolute = getPathFolder() + path;
+        if (fileAbsolute.contains(START_MODE_JAR)) {
+            fileAbsolute = new File(STR_BLANK).getAbsolutePath() + path;
+        }
+        if (fileAbsolute.startsWith(STR_SLASH)) {
+            fileAbsolute = fileAbsolute.substring(1);
+        }
+        fileAbsolute = fileAbsolute.replace(APP_CODE_BASE + STR_HYPHEN + APP_VERSION + FILE_TYPE_JAR, KEY_CLASSES);
+        return fileAbsolute.replaceAll("%20", " ").replaceAll(APP_CODE_BASE, ConfigCache.getAppCodeCache());
+    }
+
+    /**
+     * 写文件
+     *
+     * @param filePath
+     * @param contentList
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
+    private static void writeFile(String filePath, List<String> contentList, String encode, boolean isAppend) throws IOException {
+        if (CollectionUtils.isEmpty(contentList)) {
+            return;
+        }
+        String content = STR_BLANK;
+        for (String item : contentList) {
+            content += item + STR_NEXT_LINE;
+        }
+        writeFile(filePath, content, encode, isAppend);
+    }
+
+    /**
      * 读取文件
      *
      * @param filePath
@@ -180,7 +310,7 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    public static Object readFile(String filePath, String fileType, boolean skipAnnotation) throws IOException {
+    private static Object readFile(String filePath, String fileType, boolean skipAnnotation) throws IOException {
         List<String> fileContent = new LinkedList();
         LinkedHashMap<String, String> fileContentMap = new LinkedHashMap<>(16);
         File file = new File(filePath);
@@ -216,7 +346,7 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    public static void buildFileContent(List<String> fileContent, String content, boolean skipAnnotation) {
+    private static void buildFileContent(List<String> fileContent, String content, boolean skipAnnotation) {
         if (skipAnnotation && (content.trim().startsWith(ANNOTATION_NORMAL))) {
             return;
         }
@@ -232,7 +362,7 @@ public class FileUtils {
      * @date: 2021/04/24
      * @return:
      */
-    public static void buildFileContentMap(Map<String, String> fileContentMap, String content) {
+    private static void buildFileContentMap(Map<String, String> fileContentMap, String content) {
         if (StringUtils.isBlank(content) && StringUtils.isBlank(content.trim())) {
             return;
         }
@@ -254,27 +384,6 @@ public class FileUtils {
     }
 
     /**
-     * 获取文件编码格式
-     *
-     * @param filePath
-     * @author: humm23693
-     * @date: 2021/04/23
-     * @return:
-     */
-    public static String getFileEncode(String filePath) {
-        try {
-            String fileEncode = EncodingDetect.getJavaEncode(filePath);
-            if (StringUtils.startsWith(fileEncode.toUpperCase(), ENCODING_GB)) {
-                return ENCODING_GBK;
-            } else {
-                return ENCODING_UTF8;
-            }
-        } catch (Exception e) {
-            return ENCODING_GBK;
-        }
-    }
-
-    /**
      * unicode转中文字符串
      *
      * @param str
@@ -282,7 +391,7 @@ public class FileUtils {
      * @date: 2020/09/03
      * @return:
      */
-    public static String convertUnicodeToChar(String str) {
+    private static String convertUnicodeToChar(String str) {
         Matcher matcher = STR_PATTERN.matcher(str);
         // 迭代，将str中的所有unicode转换为正常字符
         while (matcher.find()) {
@@ -296,87 +405,6 @@ public class FileUtils {
             str = str.replace(unicodeFull, singleChar + STR_BLANK);
         }
         return str;
-    }
-
-    /**
-     * map 转 javaBean
-     *
-     * @param map
-     * @param clazz
-     * @author: hoomoomoo
-     * @date: 2020/12/02
-     * @return:
-     */
-    public static Object mapToObject(Map<String, String> map, Class clazz) throws Exception {
-        if (map == null) {
-            return null;
-        }
-        Object obj = clazz.newInstance();
-        BeanUtils.populate(obj, map);
-        return obj;
-    }
-
-    /**
-     * map 转换
-     *
-     * @param map
-     * @author: humm23693
-     * @date: 2020/12/02
-     * @return:
-     */
-    public static LinkedHashMap<String, String> convertMap(HashMap<String, String> map, boolean deletePoint) {
-        if (map == null) {
-            return null;
-        }
-        LinkedHashMap<String, String> afterMap = new LinkedHashMap<>(map.size());
-        Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
-        while (iterator.hasNext()) {
-            Map.Entry<String, String> item = iterator.next();
-            String key = item.getKey();
-            String value = item.getValue();
-            StringBuffer convertKey = new StringBuffer();
-            if (deletePoint) {
-                boolean isPoint = false;
-                for (int i = 0; i < key.length(); i++) {
-                    char single = key.charAt(i);
-                    if (String.valueOf(single).equals(STR_POINT)) {
-                        isPoint = true;
-                        continue;
-                    } else {
-                        if (isPoint) {
-                            convertKey.append(String.valueOf(single).toUpperCase());
-                        } else {
-                            convertKey.append(single);
-                        }
-                        isPoint = false;
-                    }
-                }
-            } else {
-                convertKey.append(key);
-            }
-            afterMap.put(convertKey.toString(), value);
-        }
-        return afterMap;
-    }
-
-    /**
-     * 获取文件路径
-     *
-     * @param path
-     * @author: humm23693
-     * @date: 2021/04/26
-     * @return:
-     */
-    public static String getFilePath(String path) {
-        String fileAbsolute = getPathFolder() + path;
-        if (fileAbsolute.contains(START_MODE_JAR)) {
-            fileAbsolute = new File(STR_BLANK).getAbsolutePath() + path;
-        }
-        if (fileAbsolute.startsWith(STR_SLASH)) {
-            fileAbsolute = fileAbsolute.substring(1);
-        }
-        fileAbsolute = fileAbsolute.replace(APP_CODE_BASE + STR_HYPHEN + APP_VERSION + FILE_TYPE_JAR, KEY_CLASSES);
-        return fileAbsolute.replaceAll("%20", " ").replaceAll(APP_CODE_BASE, ConfigCache.getAppCodeCache());
     }
 
     /**
@@ -483,7 +511,7 @@ public class FileUtils {
 
         // 更新配置文件
         LinkedHashSet<String> updateContent = new LinkedHashSet<>(16);
-        List<String> content = FileUtils.readNormalFile(url, false);
+        List<String> content = FileUtils.readNormalFile(url);
         for (int i = 0; i < content.size(); i++) {
             String item = content.get(i);
             // 获取历史代码更新配置
@@ -579,7 +607,7 @@ public class FileUtils {
             }
             updateContent.add(item);
         }
-        FileUtils.writeFile(url, new ArrayList<>(updateContent), false);
+        FileUtils.writeFile(url, new ArrayList<>(updateContent));
 
         // 删除 备份历史配置文件
         deleteBackupConfigFile(new File(bakFileConf));
@@ -602,7 +630,7 @@ public class FileUtils {
 
     private static void appendExtendConfig(Set<String> updateContent) throws IOException {
         String confPath = FileUtils.getFilePath(PATH_APP_EXTEND);
-        List<String> content = FileUtils.readNormalFile(confPath, true);
+        List<String> content = FileUtils.readNormalFileSkipAnnotation(confPath);
         if (CollectionUtils.isNotEmpty(content)) {
             for (String item : content) {
                 if (item.startsWith(ANNOTATION_CONFIG)) {
@@ -629,7 +657,7 @@ public class FileUtils {
             if (FILE_TYPE_CONFIG.equals(configType)) {
                 oldAppConfig.putAll(FileUtils.readConfigFileToMapIncludePoint(url));
             } else {
-                String config = FileUtils.readNormalFileToString(url, false);
+                String config = FileUtils.readNormalFileToString(url);
                 oldAppConfig.put(url, config);
             }
 
@@ -643,7 +671,7 @@ public class FileUtils {
                 if (FILE_TYPE_CONFIG.equals(configType)) {
                     oldAppConfig.putAll(FileUtils.readConfigFileToMapIncludePoint(bakFile));
                 } else {
-                    String config = FileUtils.readNormalFileToString(url, false);
+                    String config = FileUtils.readNormalFileToString(url);
                     oldAppConfig.put(url, config);
                 }
             }

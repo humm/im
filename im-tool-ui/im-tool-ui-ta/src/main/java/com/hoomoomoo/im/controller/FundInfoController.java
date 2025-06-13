@@ -226,7 +226,7 @@ public class FundInfoController extends BaseController implements Initializable 
             if (true) {
                 return;
             }
-            List<String> content = FileUtils.readNormalFile(productPath, false);
+            List<String> content = FileUtils.readNormalFile(productPath);
 
             infoMsg("mysql版本生成 开始");
             String fileNameMysql = "15fund-product-field.mysql.sql";
@@ -234,7 +234,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 fileNameMysql = "15fund-product-field-std.mysql.sql";
             }
             String productPathMysql = appConfigDto.getFundGeneratePath() + "/" + fileNameMysql;
-            FileUtils.writeFile(productPathMysql, content, false);
+            FileUtils.writeFile(productPathMysql, content);
             infoMsg("mysql版本生成 结束");
 
             infoMsg("pg版本生成 开始");
@@ -252,7 +252,7 @@ public class FundInfoController extends BaseController implements Initializable 
                     content.set(j, item);
                 }
             }
-            FileUtils.writeFile(productPathPg, content, false);
+            FileUtils.writeFile(productPathPg, content);
             infoMsg("pg版本生成 结束");
             logList.add(productPath);
             logList.add(productPathPg);

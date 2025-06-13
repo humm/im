@@ -132,7 +132,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         try {
             String fileName = hepTaskDto.getOriTaskName().replaceAll(STR_COLON, STR_BLANK) + FILE_TYPE_STAT;
             String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
-            taskDesc = FileUtils.readNormalFileToString(path, false);
+            taskDesc = FileUtils.readNormalFileToString(path);
         } catch (Exception e) {
         }
         if (StringUtils.isNotBlank(taskDesc)) {
@@ -271,7 +271,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         taskDesc.add(suggestion);
         taskDesc.add(MSG_TASK_DIVIDE_LINE);
         taskDesc.add(selfTestDesc);
-        FileUtils.writeFile(path, taskDesc, false);
+        FileUtils.writeFile(path, taskDesc);
     }
 
     @Override

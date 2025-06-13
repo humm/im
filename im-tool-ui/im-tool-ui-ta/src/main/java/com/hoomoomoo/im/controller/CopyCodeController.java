@@ -245,7 +245,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                             skipNum++;
                             continue;
                         }
-                        List<String> sourceContent = FileUtils.readNormalFile(fileLocation, false);
+                        List<String> sourceContent = FileUtils.readNormalFile(fileLocation);
                         File file = new File(fileLocation);
                         String encode = ENCODING_UTF8;
                         if (file.exists()) {

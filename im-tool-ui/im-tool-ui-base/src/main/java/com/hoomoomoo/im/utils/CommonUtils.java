@@ -22,6 +22,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -453,7 +454,7 @@ public class CommonUtils {
 
     public static List<FunctionDto> getAuthFunctionByMavenInstall(String appCode) throws Exception {
         String licensePath = dealFilePath(FileUtils.getFilePath(PATH_LICENSE), appCode);
-        String licenseContent = FileUtils.readNormalFileToString(licensePath, false);
+        String licenseContent = FileUtils.readNormalFileToString(licensePath);
         LicenseDto licenseDto = JSON.parseObject(SecurityUtils.getDecryptString(licenseContent), LicenseDto.class);
         List<FunctionDto> functionDtoList = licenseDto.getFunction();
         if (isSuperUser()) {
@@ -673,7 +674,7 @@ public class CommonUtils {
     public static String getVersion() {
         String version = STR_BLANK;
         try {
-            List<String> versionContent = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION), false);
+            List<String> versionContent = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION));
             if (CollectionUtils.isNotEmpty(versionContent)) {
                 for (String item : versionContent) {
                     if (item.startsWith(NAME_CURRENT_VERSION)) {
@@ -1271,7 +1272,7 @@ public class CommonUtils {
                                         }
                                         fileTime.put(name, modify);
                                         try {
-                                            List<String> content = FileUtils.readNormalFile(file.getAbsolutePath(), false);
+                                            List<String> content = FileUtils.readNormalFile(file.getAbsolutePath());
                                             ArrayList errorMessage = new ArrayList();
                                             String tipsDate = STR_0;
                                             for (int i=0; i<content.size(); i++) {
@@ -1429,5 +1430,66 @@ public class CommonUtils {
 
     public static boolean proScene() {
         return FileUtils.startByJar();
+    }
+
+    /**
+     * map 转 javaBean
+     *
+     * @param map
+     * @param clazz
+     * @author: hoomoomoo
+     * @date: 2020/12/02
+     * @return:
+     */
+    public static Object mapToObject(Map<String, String> map, Class clazz) throws Exception {
+        if (map == null) {
+            return null;
+        }
+        Object obj = clazz.newInstance();
+        BeanUtils.populate(obj, map);
+        return obj;
+    }
+
+    /**
+     * map 转换
+     *
+     * @param map
+     * @author: humm23693
+     * @date: 2020/12/02
+     * @return:
+     */
+    public static LinkedHashMap<String, String> convertMap(HashMap<String, String> map, boolean deletePoint) {
+        if (map == null) {
+            return null;
+        }
+        LinkedHashMap<String, String> afterMap = new LinkedHashMap<>(map.size());
+        Iterator<Map.Entry<String, String>> iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, String> item = iterator.next();
+            String key = item.getKey();
+            String value = item.getValue();
+            StringBuffer convertKey = new StringBuffer();
+            if (deletePoint) {
+                boolean isPoint = false;
+                for (int i = 0; i < key.length(); i++) {
+                    char single = key.charAt(i);
+                    if (String.valueOf(single).equals(STR_POINT)) {
+                        isPoint = true;
+                        continue;
+                    } else {
+                        if (isPoint) {
+                            convertKey.append(String.valueOf(single).toUpperCase());
+                        } else {
+                            convertKey.append(single);
+                        }
+                        isPoint = false;
+                    }
+                }
+            } else {
+                convertKey.append(key);
+            }
+            afterMap.put(convertKey.toString(), value);
+        }
+        return afterMap;
     }
 }

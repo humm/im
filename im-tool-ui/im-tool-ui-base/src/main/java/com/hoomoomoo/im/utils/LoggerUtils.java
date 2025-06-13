@@ -69,7 +69,7 @@ public class LoggerUtils {
                 log.append(CommonUtils.getCurrentDateTime1(new Date())).append(STR_SPACE);
             }
             log.append(mgs).append(STR_NEXT_LINE_2);
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
+            FileUtils.writeFileAppend(FileUtils.getFilePath(logFilePath), log.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,7 +83,7 @@ public class LoggerUtils {
             for (int i = 0; i < errorStackTrace.length; i++) {
                 log.append(getLineIndentation()).append(errorStackTrace[i].toString()).append(STR_NEXT_LINE);
             }
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
+            FileUtils.writeFileAppend(FileUtils.getFilePath(logFilePath), log.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -123,7 +123,7 @@ public class LoggerUtils {
             log.append(SVN_NUM).append(svnLogDtoList.size()).append(STR_SPACE);
             log.append(FILE_NUM).append(fileNum).append(STR_NEXT_LINE_2);
             String logFilePath = String.format(PATH_LOG, SVN_LOG.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
+            FileUtils.writeFileAppend(FileUtils.getFilePath(logFilePath), log.toString());
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -179,7 +179,7 @@ public class LoggerUtils {
             log.append(functionConfig.getName()).append(STR_SPACE);
             log.append(COST).append(costTime).append(UNIT).append(STR_NEXT_LINE_2);
             String logFilePath = String.format(PATH_LOG, functionConfig.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
-            FileUtils.writeFile(FileUtils.getFilePath(logFilePath), log.toString(), true);
+            FileUtils.writeFileAppend(FileUtils.getFilePath(logFilePath), log.toString());
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -196,7 +196,7 @@ public class LoggerUtils {
             if (!appConfigDto.getAppLogEnable()) {
                 return;
             }
-            FileUtils.writeFile(filePath, logs, false);
+            FileUtils.writeFile(filePath, logs);
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -238,7 +238,7 @@ public class LoggerUtils {
         String date = CommonUtils.getCurrentDateTime1();
         if (file.exists()) {
             // 修改文件
-            List<String> content = FileUtils.readNormalFile(filePath, false);
+            List<String> content = FileUtils.readNormalFile(filePath);
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i);
                 if (i == 1) {
@@ -254,14 +254,14 @@ public class LoggerUtils {
                     }
                 }
             }
-            FileUtils.writeFile(filePath, content, false);
+            FileUtils.writeFile(filePath, content);
         } else {
             // 重写文件
             StringBuilder statLog = new StringBuilder();
             statLog.append("首次使用时间: ").append(date).append(STR_NEXT_LINE);
             statLog.append("末次使用时间: ").append(date).append(STR_NEXT_LINE);
             statLog.append("使用次数: 1");
-            FileUtils.writeFile(filePath, statLog.toString(), false);
+            FileUtils.writeFile(filePath, statLog.toString());
         }
     }
 

@@ -180,7 +180,7 @@ public class SvnLogController extends BaseController implements Initializable {
                 }
             });
             if (CollectionUtils.isEmpty(logDtoList)) {
-                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录\n");
+                OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录");
             } else {
                 String codeVersion = (String)svnVersion.getSelectionModel().getSelectedItem();
                 if (StringUtils.isNotBlank(codeVersion) && appConfigDto.getSvnRep().startsWith("https")) {
@@ -193,7 +193,7 @@ public class SvnLogController extends BaseController implements Initializable {
                     logDtoList = temp;
                 }
                 if (CollectionUtils.isEmpty(logDtoList)) {
-                    OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录\n");
+                    OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + " 未获取到相关提交记录");
                 } else {
                     if (logDtoList.size() > maxTime) {
                         logDtoList = logDtoList.subList(0, maxTime);

@@ -45,7 +45,7 @@ public class AboutInfoController implements Initializable {
             OutputUtils.info(about, appConfigDto.getAppName() + STR_NEXT_LINE_2);
             List<String> version = new ArrayList<>(16);
             try {
-                version = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION), false);
+                version = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION));
             } catch (IOException e) {
                 LoggerUtils.info(e);
             }

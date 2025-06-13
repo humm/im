@@ -58,8 +58,8 @@ public class InitConfigUtils {
         }
         String licenseContent = SecurityUtils.getEncryptString(JSON.toJSONString(license));
         String licensePath = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_LICENSE), appCode);
-        FileUtils.writeFile(licensePath, licenseContent, false);
-        FileUtils.writeFile(pathAuth, STR_BLANK, false);
+        FileUtils.writeFile(licensePath, licenseContent);
+        FileUtils.writeFile(pathAuth, STR_BLANK);
     }
 
     /**
@@ -73,7 +73,7 @@ public class InitConfigUtils {
     public static void buildConfig(String appCode) throws Exception {
         ConfigCache.initAppCodeCache(appCode);
         String pathApp = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_APP), appCode);
-        List<String> content = FileUtils.readNormalFile(pathApp, false);
+        List<String> content = FileUtils.readNormalFile(pathApp);
         Iterator<String> iterator = content.iterator();
         boolean flag = false;
         while (iterator.hasNext()) {
@@ -96,7 +96,7 @@ public class InitConfigUtils {
                 break;
         }
 
-        FileUtils.writeFile(pathApp, content, false);
+        FileUtils.writeFile(pathApp, content);
     }
 
     /**
@@ -119,7 +119,7 @@ public class InitConfigUtils {
         }
 
         String confPath = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_APP), appCode);
-        List<String> content = FileUtils.readNormalFile(confPath, false);
+        List<String> content = FileUtils.readNormalFile(confPath);
         if (CollectionUtils.isNotEmpty(content)) {
             for (int i = 0; i < content.size(); i++) {
                 String item = content.get(i);
@@ -134,7 +134,7 @@ public class InitConfigUtils {
                 }
             }
         }
-        FileUtils.writeFile(confPath, content, false);
+        FileUtils.writeFile(confPath, content);
     }
 
     /**
@@ -150,7 +150,7 @@ public class InitConfigUtils {
             ConfigCache.initAppCodeCache(appCode);
             String versionFilePath = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_VERSION), appCode);
             String versionFilePathSource = versionFilePath.replace("/target/classes", "/src/main/resources");
-            List<String> content = FileUtils.readNormalFile(versionFilePath, false);
+            List<String> content = FileUtils.readNormalFile(versionFilePath);
             String subVersion = "000001";
             String currentVersion = STR_BLANK;
             int times = 0;
@@ -180,8 +180,8 @@ public class InitConfigUtils {
             statLog.append("发版时间: ").append(CommonUtils.getCurrentDateTime1()).append(STR_NEXT_LINE_2);
             statLog.append("首版时间: ").append("2021-05-06 23:17:56").append(STR_NEXT_LINE);
             statLog.append("发版次数: ").append(times).append(STR_NEXT_LINE);
-            FileUtils.writeFile(versionFilePath, statLog.toString(), false);
-            FileUtils.writeFile(versionFilePathSource, statLog.toString().replace(currentVersion, nextVersion), false);
+            FileUtils.writeFile(versionFilePath, statLog.toString());
+            FileUtils.writeFile(versionFilePathSource, statLog.toString().replace(currentVersion, nextVersion));
             updatePom(versionFilePath.substring(0, versionFilePath.indexOf("target")), nextVersion);
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -204,7 +204,7 @@ public class InitConfigUtils {
     }
 
     private static void updatePomFile(String pomPath, String ver) throws IOException {
-        List<String> content = FileUtils.readNormalFile(pomPath, false);
+        List<String> content = FileUtils.readNormalFile(pomPath);
         if (CollectionUtils.isNotEmpty(content)) {
             boolean updateMark = false;
             for (int i=0; i<content.size(); i++) {
@@ -220,7 +220,7 @@ public class InitConfigUtils {
                     updateMark = false;
                 }
             }
-            FileUtils.writeFile(pomPath, content, false);
+            FileUtils.writeFile(pomPath, content);
         }
     }
 

@@ -95,11 +95,11 @@ public class CheckConfirmColumn {
         content.add(0, "-- url组总数:" + num + STR_NEXT_LINE);
         content.add(0, "-- 特别注意: 无列表页面未检查 比如单笔TA发起业务");
         content.add(0, "-- 复核页面缺少字段");
-        FileUtils.writeFile(resPath, content, false);
+        FileUtils.writeFile(resPath, content);
     }
 
     private static void initNeedConfirmUrl() throws IOException {
-        String content = FileUtils.readNormalFileToString(WORK_FLOW_SUB_TRANS, false);
+        String content = FileUtils.readNormalFileToString(WORK_FLOW_SUB_TRANS);
         String[] urlList = content.split(";");
         for (String url : urlList) {
             String transCode = ScriptSqlUtils.getTransCodeByWorkFlow(url);
@@ -167,7 +167,7 @@ public class CheckConfirmColumn {
                 if (index % 100 == 0) {
                     System.out.print(".");
                 }
-                List<String> contentList = FileUtils.readNormalFile(file.getPath(), true);
+                List<String> contentList = FileUtils.readNormalFileSkipAnnotation(file.getPath());
                 StringBuilder contentTemp = new StringBuilder();
                 for (String item : contentList) {
                     item = item.trim();
@@ -193,7 +193,7 @@ public class CheckConfirmColumn {
                 if (index % 100 == 0) {
                     System.out.print(".");
                 }
-                List<String> contentList = FileUtils.readNormalFile(file.getPath(), true);
+                List<String> contentList = FileUtils.readNormalFileSkipAnnotation(file.getPath());
                 StringBuilder contentTemp = new StringBuilder();
                 Map<String, Set<String>> configColumns = new LinkedHashMap<>();
                 Map<String, Set<String>> configButtons = new LinkedHashMap<>();
