@@ -1081,23 +1081,21 @@ public class HepTodoController extends BaseController implements Initializable {
                 weekTodoTask.add(item.getTaskNumber());
             }
 
-            if (!today) {
-                if (only.isSelected()) {
-                    if (existTask.contains(taskName)) {
-                        iterator.remove();
-                        continue;
-                    }
-                    existTask.add(taskName);
-                } else if (devCompleteHide.isSelected()) {
-                    if (taskName.contains(DEV_COMMIT_TAG)) {
-                        iterator.remove();
-                        continue;
-                    }
-                } else if (devCompleteShow.isSelected()) {
-                    if (!taskName.contains(DEV_COMMIT_TAG)) {
-                        iterator.remove();
-                        continue;
-                    }
+            if (only.isSelected()) {
+                if (existTask.contains(taskName)) {
+                    iterator.remove();
+                    continue;
+                }
+                existTask.add(taskName);
+            } else if (devCompleteHide.isSelected() && !today) {
+                if (taskName.contains(DEV_COMMIT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            } else if (devCompleteShow.isSelected()) {
+                if (!taskName.contains(DEV_COMMIT_TAG)) {
+                    iterator.remove();
+                    continue;
                 }
             }
 
