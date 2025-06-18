@@ -81,7 +81,7 @@ public class SvnUtils {
                             String modifyMsg = getSvnMsg(commitMessage, STR_1);
                             svnLogDto.setTaskNo(modifyMsg);
                             if (StringUtils.isNotBlank(modifyNo)) {
-                                if (!StringUtils.equals(modifyNo.trim(), modifyMsg.trim())) {
+                                if (!(modifyMsg.trim() + STR_COMMA).contains(modifyNo.trim() + STR_COMMA)) {
                                     continue;
                                 }
                             }
@@ -388,7 +388,7 @@ public class SvnUtils {
         String versionValueYear = version.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
         if (KEY_TRUNK.equals(version) || (versionValueYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 && !version.contains(KEY_VERSION_YEAR_2022))) {
             String url = appConfigDto.getSvnUrl().get(KEY_TRUNK);
-            if (!StringUtils.equals(KEY_TRUNK, version)) {
+            if (!StringUtils.equals(KEY_TRUNK, version) && !version.endsWith("000")) {
                 url = appConfigDto.getSvnUrl().get(KEY_GIT_BRANCHES);
             }
             LoggerUtils.info("git仓库地址为: " + url);
