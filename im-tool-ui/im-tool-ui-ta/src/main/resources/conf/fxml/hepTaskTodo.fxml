@@ -197,6 +197,12 @@
                                                                         <PropertyValueFactory property="customer"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
+                                                                <TableColumn id="sprintVersion" editable="false"
+                                                                             prefWidth="150" sortable="false" text="版本">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="sprintVersion"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
                                                                 <TableColumn id="taskMark" editable="false"
                                                                              prefWidth="65" sortable="false"
                                                                              style="-fx-alignment: center;" text="备注">
@@ -209,12 +215,6 @@
                                                                              style="-fx-alignment: center;" text="描述">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="taskLevel"/>
-                                                                    </cellValueFactory>
-                                                                </TableColumn>
-                                                                <TableColumn id="sprintVersion" editable="false"
-                                                                             prefWidth="150" sortable="false" text="版本">
-                                                                    <cellValueFactory>
-                                                                        <PropertyValueFactory property="sprintVersion"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="finishDate" editable="false"
