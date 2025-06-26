@@ -82,9 +82,9 @@ public class ScriptCompareSql {
     public ScriptCompareSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         try {
-            String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
+            String basePath = appConfigDto.getSystemToolCheckMenuFundBasePath();
             if (StringUtils.isBlank(basePath)) {
-                throw new Exception("请配置参数【system.tool.check.menu.base.path】\n");
+                throw new Exception("请配置参数【system.tool.check.menu.fund.base.path】\n");
             }
             String resPath = appConfigDto.getSystemToolCheckMenuResultPath();
             if (StringUtils.isBlank(resPath)) {

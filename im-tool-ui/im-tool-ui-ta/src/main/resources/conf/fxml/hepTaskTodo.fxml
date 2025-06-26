@@ -190,17 +190,17 @@
                                                                         <PropertyValueFactory property="statusName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
+                                                                <TableColumn id="sprintVersion" editable="false"
+                                                                             prefWidth="150" sortable="false" text="版本">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="sprintVersion"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
                                                                 <TableColumn id="customer" editable="false"
                                                                              prefWidth="105" sortable="false"
                                                                              text="客户名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="customer"/>
-                                                                    </cellValueFactory>
-                                                                </TableColumn>
-                                                                <TableColumn id="sprintVersion" editable="false"
-                                                                             prefWidth="150" sortable="false" text="版本">
-                                                                    <cellValueFactory>
-                                                                        <PropertyValueFactory property="sprintVersion"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="taskMark" editable="false"

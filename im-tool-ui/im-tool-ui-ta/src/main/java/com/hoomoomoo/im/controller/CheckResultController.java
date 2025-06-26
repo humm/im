@@ -56,19 +56,19 @@ public class CheckResultController implements Initializable {
                 initTab(functionConfig.getLogFolder(), functionConfig.getName());
             }
         } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_OLD_MENU_LOG.equals(pageType)) {
-            String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
+            String basePath = appConfigDto.getSystemToolCheckMenuFundBasePath();
             String check = basePath + ScriptSqlUtils.baseMenu.replace(FILE_TYPE_SQL, FILE_TYPE_CHECK_SQL);
             String res = basePath + ScriptSqlUtils.baseMenu.replace(FILE_TYPE_SQL, FILE_TYPE_RES_SQL);
             initTabByFile(check, NAME_ERROR_INFO);
             initTabByFile(res, NAME_SCRIPT_DETAIL);
         } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_NEW_MENU_LOG.equals(pageType)) {
-            String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
+            String basePath = appConfigDto.getSystemToolCheckMenuFundBasePath();
             String check = basePath + ScriptSqlUtils.newUedPage.replace(FILE_TYPE_SQL, FILE_TYPE_CHECK_SQL);
             String res = basePath + ScriptSqlUtils.newUedPage.replace(FILE_TYPE_SQL, FILE_TYPE_RES_SQL);
             initTabByFile(check, NAME_ERROR_INFO);
             initTabByFile(res, NAME_SCRIPT_DETAIL);
         } else if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_WORK_FLOW_LOG.equals(pageType)) {
-            String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
+            String basePath = appConfigDto.getSystemToolCheckMenuFundBasePath();
             String check = basePath + ScriptSqlUtils.workFlow.replace(FILE_TYPE_SQL, FILE_TYPE_CHECK_SQL);
             String res = basePath + ScriptSqlUtils.workFlow.replace(FILE_TYPE_SQL, FILE_TYPE_RES_SQL);
             initTabByFile(check, NAME_ERROR_INFO);

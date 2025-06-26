@@ -307,7 +307,7 @@ public class ChangeToolController implements Initializable {
             base = ScriptSqlUtils.newUedPage;
             paramValue = STR_1;
         }
-        String basePath = appConfigDto.getSystemToolCheckMenuBasePath() + base;
+        String basePath = appConfigDto.getSystemToolCheckMenuFundBasePath() + base;
         List<String> res = new ArrayList<>();
         res.add("-- " + taskType);
         res.add("-- 更新系统参数");
@@ -316,6 +316,7 @@ public class ChangeToolController implements Initializable {
         String resFilePath = FileUtils.getFilePath(FILE_CHANGE_MENU);
         FileUtils.deleteFile(new File(resFilePath));
         FileUtils.writeFile(resFilePath, res);
+        res.clear();
         if (CollectionUtils.isNotEmpty(sqlList)) {
             int size = sqlList.size();
             OutputUtils.info(logs, "执行中...");

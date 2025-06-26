@@ -500,6 +500,7 @@ public class HepTodoController extends BaseController implements Initializable {
             doShowVersion();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("查看成功"));
         } catch (Exception e) {
+            LoggerUtils.info(e);
             String msg = e.getMessage();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
             CommonUtils.showTipsByError(msg);

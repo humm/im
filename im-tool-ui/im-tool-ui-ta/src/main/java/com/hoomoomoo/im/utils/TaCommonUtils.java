@@ -19,6 +19,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
@@ -599,9 +600,18 @@ public class TaCommonUtils {
                         if (StringUtils.isBlank(version) || version.contains("TA6.0-PRO") || version.contains("TA6.0-PHFUND") || version.contains("beta")) {
                             continue;
                         }
-                        String devCloseDate = String.valueOf(ele.get(KEY_DEV_CLOSE_DATE)).split(STR_SPACE)[0];
-                        String publishCloseDate = String.valueOf(ele.get(KEY_PUBLISH_CLOSE_DATE)).split(STR_SPACE)[0];
-                        String endDayTime = String.valueOf(ele.get(KEY_END_DAY_TIME)).split(STR_SPACE)[0];
+                        String devCloseDate = ele.get(KEY_DEV_CLOSE_DATE) == null ? STR_DATE_20991231 : String.valueOf(ele.get(KEY_DEV_CLOSE_DATE)).split(STR_SPACE)[0];
+                        if (StringUtils.isBlank(devCloseDate)) {
+                            devCloseDate = STR_DATE_20991231;
+                        }
+                        String publishCloseDate = ele.get(KEY_PUBLISH_CLOSE_DATE) == null ? STR_DATE_20991231 : String.valueOf(ele.get(KEY_PUBLISH_CLOSE_DATE)).split(STR_SPACE)[0];
+                        if (StringUtils.isBlank(publishCloseDate)) {
+                            publishCloseDate = STR_DATE_20991231;
+                        }
+                        String endDayTime = ele.get(KEY_END_DAY_TIME) == null ? STR_DATE_20991231 : String.valueOf(ele.get(KEY_END_DAY_TIME)).split(STR_SPACE)[0];
+                        if (StringUtils.isBlank(endDayTime)) {
+                            endDayTime = STR_DATE_20991231;
+                        }
                         item.setLength(0);
                         item.append(version).append(STR_SEMICOLON).append(devCloseDate).append(STR_SEMICOLON).append(publishCloseDate).append(STR_SEMICOLON).append(endDayTime).append(STR_SEMICOLON);
                         res.add(item.toString());

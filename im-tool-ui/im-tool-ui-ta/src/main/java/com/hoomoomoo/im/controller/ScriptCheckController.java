@@ -116,7 +116,7 @@ public class ScriptCheckController implements Initializable {
     void showRepairOldMenuLog(ActionEvent event) throws Exception {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            String check = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu.replace(".sql", ".check.sql");
+            String check = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.baseMenu.replace(".sql", ".check.sql");
             File checkFile = new File(check);
             if (!checkFile.exists()) {
                 OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "未找到错误日志文件"));
@@ -134,7 +134,7 @@ public class ScriptCheckController implements Initializable {
     void showRepairNewMenuLog(ActionEvent event) throws Exception {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            String check = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.newUedPage.replace(".sql", ".check.sql");
+            String check = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.newUedPage.replace(".sql", ".check.sql");
             File checkFile = new File(check);
             if (!checkFile.exists()) {
                 OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "未找到错误日志文件"));
@@ -269,7 +269,7 @@ public class ScriptCheckController implements Initializable {
     void repairWorkFlowLog(ActionEvent event) throws Exception {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            String check = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.workFlow.replace(".sql", ".check.sql");
+            String check = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.workFlow.replace(".sql", ".check.sql");
             File checkFile = new File(check);
             if (!checkFile.exists()) {
                 OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, "未找到错误日志文件"));

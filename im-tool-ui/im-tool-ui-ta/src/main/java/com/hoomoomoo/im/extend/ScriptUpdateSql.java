@@ -20,9 +20,9 @@ public class ScriptUpdateSql {
     private static final String endLine = "结束 *************************************************************************";
     public ScriptUpdateSql() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
+        String basePath = appConfigDto.getSystemToolCheckMenuFundBasePath();
         if (StringUtils.isBlank(basePath)) {
-            throw new Exception("请配置参数【system.tool.check.menu.base.path】\n");
+            throw new Exception("请配置参数【system.tool.check.menu.fund.base.path】\n");
         }
         String resPath = appConfigDto.getSystemToolCheckMenuResultPath();
         if (StringUtils.isBlank(resPath)) {
@@ -48,9 +48,9 @@ public class ScriptUpdateSql {
             throw new Exception("请配置参数【system.tool.script.change.menu.path】\n");
         }
         resPath += "\\";
-        String basePath = appConfigDto.getSystemToolCheckMenuBasePath();
+        String basePath = appConfigDto.getSystemToolCheckMenuFundBasePath();
         if (StringUtils.isBlank(basePath)) {
-            throw new Exception("请配置参数【system.tool.check.menu.base.path】\n");
+            throw new Exception("请配置参数【system.tool.check.menu.fund.base.path】\n");
         }
         newUedPage = basePath + ScriptSqlUtils.newUedPage;
         List<String> sqlList = FileUtils.readNormalFile(newUedPage);

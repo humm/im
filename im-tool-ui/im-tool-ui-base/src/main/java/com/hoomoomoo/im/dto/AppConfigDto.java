@@ -240,11 +240,13 @@ public class AppConfigDto extends BaseDto {
 
     private List<String> weekPublishVersion;
 
-    private String systemToolCheckMenuBasePath;
-
-    private String systemToolCheckMenuPubPath;
-
     private String systemToolCheckMenuResultPath;
+
+    private String systemToolCheckMenuFundBasePath;
+
+    private String systemToolCheckMenuPubBasePath;
+
+    private String systemToolCheckMenuFundExtPath;
 
     private String systemToolCheckMenuEndFlag;
 

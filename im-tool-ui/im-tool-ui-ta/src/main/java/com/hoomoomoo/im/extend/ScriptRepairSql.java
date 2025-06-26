@@ -63,7 +63,7 @@ public class ScriptRepairSql {
                     transCode = trans[0];
                     subTransCode = trans[1].trim().split(STR_SPACE)[0];
                     // 全量脚本
-                    addSubTransExt(transCode, subTransCode, null,appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu);
+                    addSubTransExt(transCode, subTransCode, null,appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.baseMenu);
                 } else {
                     transCode = STR_BLANK;
                     subTransCode = STR_BLANK;
@@ -108,7 +108,7 @@ public class ScriptRepairSql {
                     subTransCode = other[0].trim();
                     opDir = other[2].trim();
                     // 全量脚本
-                    updateSubTransExt(transCode, subTransCode, opDir,appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu);
+                    updateSubTransExt(transCode, subTransCode, opDir,appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.baseMenu);
                 } else {
                     transCode = STR_BLANK;
                     subTransCode = STR_BLANK;
@@ -227,7 +227,7 @@ public class ScriptRepairSql {
     public static void repairExt() throws Exception {
         repairFileNum = 0;
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        File fileExt = new File(appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.basePathExt);
+        File fileExt = new File(appConfigDto.getSystemToolCheckMenuFundExtPath() + ScriptSqlUtils.basePathExt);
         Set<String> skip = ScriptSqlUtils.initRepairExtSkip();
         for (File file : fileExt.listFiles()) {
             repairExtByFile(appConfigDto, file, skip);
@@ -329,7 +329,7 @@ public class ScriptRepairSql {
     }
     public static void repairWorkFlow() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        String workFlowPath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.workFlow;
+        String workFlowPath = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.workFlow;
         List<String> workFlow = FileUtils.readNormalFile(workFlowPath);
         StringBuilder content = new StringBuilder();
         for (String ele : workFlow) {
@@ -364,7 +364,7 @@ public class ScriptRepairSql {
             }
         }
 
-        File fileExt = new File(appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.basePathExt);
+        File fileExt = new File(appConfigDto.getSystemToolCheckMenuFundExtPath() + ScriptSqlUtils.basePathExt);
         for (File file : fileExt.listFiles()) {
             getWorkFlowByFile(appConfigDto, file);
         }
@@ -402,7 +402,7 @@ public class ScriptRepairSql {
             }
         }
 
-        String basePath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu;
+        String basePath = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.baseMenu;
         List<String> menuList = FileUtils.readNormalFile(basePath);
         StringBuilder menu = new StringBuilder();
         Map<String, String> menuGroupTitle = new LinkedHashMap();
@@ -581,13 +581,13 @@ public class ScriptRepairSql {
 
     public static void repairNewMenu() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        String basePath = appConfigDto.getSystemToolCheckMenuPubPath();
+        String basePath = appConfigDto.getSystemToolCheckMenuPubBasePath();
         if (StringUtils.isBlank(basePath)) {
-            throw new Exception("请配置参数【system.tool.check.menu.pub.path】\n");
+            throw new Exception("请配置参数【system.tool.check.menu.pub.base.path】\n");
         }
         File baseFile = new File(basePath);
         if (!baseFile.exists()) {
-            throw new Exception("请检查参数路径是否存在【system.tool.check.menu.pub.path】\n");
+            throw new Exception("请检查参数路径是否存在【system.tool.check.menu.pub.base.path】\n");
         }
 
         Map<String, String> newUedMenu = new LinkedHashMap<>();
@@ -619,7 +619,7 @@ public class ScriptRepairSql {
                 }
             }
         }
-        String newUedPage = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.newUedPage;
+        String newUedPage = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.newUedPage;
         List<String> newUedMenuInfo = ScriptSqlUtils.getSqlByFile(newUedPage);
         for (String item : newUedMenuInfo) {
             String menuCode = ScriptSqlUtils.getMenuCode(item);
@@ -827,7 +827,7 @@ public class ScriptRepairSql {
         res.add("delete from tsys_subtrans_ext where trans_code like 'fund%';");
         res.add(STR_NEXT_LINE);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        String basePath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.baseMenu;
+        String basePath = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.baseMenu;
         List<String> menuList = FileUtils.readNormalFile(basePath);
         StringBuilder menu = new StringBuilder();
         for (int i=7; i<menuList.size(); i++) {
@@ -920,7 +920,7 @@ public class ScriptRepairSql {
             }
         }
 
-        String menuConditionPath = appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.menuCondition;
+        String menuConditionPath = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.menuCondition;
         List<String> menuConditionList = FileUtils.readNormalFile(menuConditionPath);
         StringBuilder menuCondition = new StringBuilder();
         for (int i=0; i<menuConditionList.size(); i++) {
@@ -1491,7 +1491,7 @@ public class ScriptRepairSql {
 
     private static Map<String, List<String>> initMenuExt(AppConfigDto appConfigDto) throws IOException {
         Map<String, List<String>> res = new HashMap<>();
-        File fileExt = new File(appConfigDto.getSystemToolCheckMenuBasePath() + ScriptSqlUtils.basePathExt);
+        File fileExt = new File(appConfigDto.getSystemToolCheckMenuFundExtPath() + ScriptSqlUtils.basePathExt);
         initMenuByFile(res, fileExt);
         return res;
     }
