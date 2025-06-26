@@ -8,9 +8,10 @@ import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.io.File;
 import java.util.*;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 public class ScriptUpdateSql {
 
@@ -78,6 +79,10 @@ public class ScriptUpdateSql {
             res.add(ele);
         }
         FileUtils.writeFile(resPath + BaseConst.SQL_FilE_TYPE.UPDATE_CHANGE_MENU.getFileName(), res);
+        // 文件拷贝
+        String extPath = appConfigDto.getSystemToolCheckMenuFundExtPath();
+        FileUtils.copyFile(new File(newUedPage), new File( extPath + KEY_UED + ScriptSqlUtils.newUedPage));
+        FileUtils.copyFile(new File(basePath + ScriptSqlUtils.newUedHome), new File( extPath + KEY_UED + ScriptSqlUtils.newUedHome));
     }
 
     public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {
@@ -224,6 +229,9 @@ public class ScriptUpdateSql {
     }
 
     public static String[] handleValue(int len, String[] value) {
+        if (len != value.length) {
+            return new String[]{STR_BLANK};
+        }
         String[] res = new String[len];
         int index = 0;
         String val = "";

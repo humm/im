@@ -15,10 +15,11 @@ import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.LEGAL_EXT_MENU;
 public class ScriptSqlUtils {
 
     public static String basePathExt = "";
-    public static String basePathRouter = "\\front\\HUI1.0\\console-fund-ta-vue\\router\\modules\\";
+    public static String basePathRouter = "\\";
     public static String baseMenu = "\\07console-fund-ta-vue-menu.sql";
     public static String workFlow = "\\workflow\\tbworkflowsubtrans-fund.sql";
     public static String newUedPage = "\\07console-fund-ta-vue-menu-new-ued.sql";
+    public static String newUedHome = "\\07console-fund-ta-vue-menu-new-ued-home.sql";
     public static String menuCondition = "\\07console-fund-ta-vue-tbmenucondition.sql";
 
     public static String getSubTransCodeOpDir(String subTransCode, String defaultValue) {

@@ -107,6 +107,7 @@ public class BaseConst {
     public static final String KEY_FUND = "FUND";
     public static final String KEY_SOURCES_TA_FUND = "/Sources/ta/fund";
     public static final String KEY_TEMP = "temp/";
+    public static final String KEY_UED = "/UED/";
     public static final String KEY_GIT_FILE_PREFIX = "a/";
 
     public final static String KEY_LOG_DEBUG = "debug";
@@ -183,6 +184,7 @@ public class BaseConst {
     public final static String KEY_UNIT_MB = "MB";
     public final static String KEY_TA5 = "TA5";
     public final static String KEY_TA6 = "TA6";
+    public final static String KEY_LOG_MENU = "xxx";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 

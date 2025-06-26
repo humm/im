@@ -86,12 +86,20 @@ public class ScriptCompareSql {
             if (StringUtils.isBlank(basePath)) {
                 throw new Exception("请配置参数【system.tool.check.menu.fund.base.path】\n");
             }
+            String extPath = appConfigDto.getSystemToolCheckMenuFundExtPath();
+            if (StringUtils.isBlank(extPath)) {
+                throw new Exception("请配置参数【system.tool.check.menu.fund.ext.path】\n");
+            }
+            String baseRouterPath = appConfigDto.getSystemToolCheckMenuFundBaseRouterPath();
+            if (StringUtils.isBlank(baseRouterPath)) {
+                throw new Exception("请配置参数【system.tool.check.menu.fund.base.router.path】\n");
+            }
             String resPath = appConfigDto.getSystemToolCheckMenuResultPath();
             if (StringUtils.isBlank(resPath)) {
                 throw new Exception("请配置参数【system.tool.check.menu.result.path】\n");
             }
-            basePathExt = basePath + ScriptSqlUtils.basePathExt;
-            basePathRouter = basePath + ScriptSqlUtils.basePathRouter;
+            basePathExt = extPath + ScriptSqlUtils.basePathExt;
+            basePathRouter = baseRouterPath + ScriptSqlUtils.basePathRouter;
             baseMenu = basePath + ScriptSqlUtils.baseMenu;
             newUedPage = basePath + ScriptSqlUtils.newUedPage;
             menuCondition = basePath + ScriptSqlUtils.menuCondition;

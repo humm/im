@@ -752,7 +752,6 @@ public class ScriptRepairSql {
             }
         }
         res.add(STR_BLANK);
-        res.add("commit;");
 
         List<String> error = new ArrayList<>();
         if (MapUtils.isNotEmpty(newUedMenu)) {
@@ -763,7 +762,13 @@ public class ScriptRepairSql {
                 if (excludeFundMenu.contains(menuCode)) {
                     continue;
                 }
-                subError.add(formatSql(newUedMenu.get(menuCode), true));
+                String sql = formatSql(newUedMenu.get(menuCode), true);
+                if (StringUtils.equals(ScriptSqlUtils.getParentCode(sql), KEY_LOG_MENU)) {
+                    res.add(formatSqlAddDelete(sql, true));
+                    res.add(STR_BLANK);
+                    continue;
+                }
+                subError.add(sql);
                 subError.add(STR_BLANK);
             }
             if (CollectionUtils.isNotEmpty(subError)) {
@@ -780,8 +785,12 @@ public class ScriptRepairSql {
             List<String> subError = new ArrayList<>();
             while (iterator.hasNext()) {
                 String menuCode = iterator.next();
-                subError.add(formatSql(trans.get(menuCode), true));
-                subError.add(STR_BLANK);
+                String transCode = formatSql(trans.get(menuCode), true);
+                if (StringUtils.isNotBlank(transCode)) {
+                    subError.add(transCode);
+                    subError.add(STR_BLANK);
+
+                }
             }
             if (CollectionUtils.isNotEmpty(subError)) {
                 error.add(String.format(MENU_TIPS, "未匹配交易码: " + subError.size() / 2));
@@ -798,6 +807,7 @@ public class ScriptRepairSql {
                 file.delete();
             }
         }
+        res.add("commit;");
         String resFile = newUedPage.replace(".sql", ".res.sql");
         if (CollectionUtils.isNotEmpty(error)) {
             FileUtils.writeFile(resFile, res);
@@ -1568,6 +1578,10 @@ public class ScriptRepairSql {
     }
 
     private static String formatSql(String sql, boolean last, boolean annotation) {
+        String endStr = STR_SEMICOLON;
+        if (sql.trim().endsWith(endStr)) {
+            endStr = STR_BLANK;
+        }
         int index = sql.indexOf(")");
         if (index != -1) {
             String insert = sql.substring(0, index + 1).trim();
@@ -1580,12 +1594,11 @@ public class ScriptRepairSql {
                 insert = insert.replaceFirst(ANNOTATION_NORMAL, STR_BLANK).trim();
                 value = value.replaceFirst(ANNOTATION_NORMAL, STR_BLANK).trim();
             }
-            sql = insert + STR_NEXT_LINE + value + STR_SEMICOLON;
+            sql = insert + STR_NEXT_LINE + value + endStr;
         }
         if (!last) {
             sql += STR_NEXT_LINE;
         }
-
         return sql;
     }
 
