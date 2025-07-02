@@ -951,6 +951,7 @@ public class HepTodoController extends BaseController implements Initializable {
         int mergerNum = 0;
         Iterator<HepTaskDto> iterator = res.listIterator();
         Set<String> existTask = new HashSet<>();
+        Set<String> sameAssigneeIdReviewerId = new HashSet<>();
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String taskName = item.getName().replaceAll(STR_NEXT_LINE, STR_BLANK);
@@ -962,6 +963,9 @@ public class HepTodoController extends BaseController implements Initializable {
             String demandNo = item.getDemandNo();
             if (StringUtils.isBlank(demandNo)) {
                 demandNo = taskNumberIn;
+            }
+            if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
+                sameAssigneeIdReviewerId.add(taskNumberIn);
             }
             boolean commitTag = false;
             if (!taskName.contains(COMMIT_TAG) && taskSubmitStatus.containsKey(taskNumberIn)) {
@@ -1141,14 +1145,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
 
-            /*if (StringUtils.equals(appConfigDto.getHepTaskUserName(), item.getCreatorName())) {
-                item.setCreatorName(STR_SPACE);
-            }
-
-            if (StringUtils.equals(appConfigDto.getHepTaskUserName(), item.getReviewerName())) {
-                item.setReviewerName(STR_SPACE);
-            }*/
-
             if (StringUtils.isBlank(status)) {
                 hasBlank = true;
                 taskTotal++;
@@ -1208,6 +1204,15 @@ public class HepTodoController extends BaseController implements Initializable {
         finishDateError.addAll(finishDateOver);
         infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError);
         taskList.setDisable(false);
+        if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
+            String msg = "开发人员和审核人员为同一人，请检查" + STR_NEXT_LINE + sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_NEXT_LINE));
+            LoggerUtils.info(msg);
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            Platform.runLater(() -> {
+                CommonUtils.showTipsByError(msg, 300 * 1000);
+            });
+        }
+        return;
     }
 
     private void setTaskLevel(HepTaskDto item, String taskLevel) {

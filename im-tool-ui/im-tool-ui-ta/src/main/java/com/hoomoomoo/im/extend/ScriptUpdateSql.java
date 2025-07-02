@@ -57,6 +57,9 @@ public class ScriptUpdateSql {
         List<String> sqlList = FileUtils.readNormalFile(newUedPage);
         List<String> res = new ArrayList<>();
         for (String ele : sqlList) {
+            if (ele.equals("commit;")) {
+                continue;
+            }
             if (ele.startsWith("-- ") && (ele.contains("delete") || ele.contains("insert") || ele.contains("values"))) {
                 ele = ele.replace("-- ", "");
             }
@@ -78,11 +81,11 @@ public class ScriptUpdateSql {
             }
             res.add(ele);
         }
+
+        List<String> uedHome = FileUtils.readNormalFile(basePath + ScriptSqlUtils.newUedHome);
+        res.add(STR_BLANK);
+        res.addAll(uedHome);
         FileUtils.writeFile(resPath + BaseConst.SQL_FilE_TYPE.UPDATE_CHANGE_MENU.getFileName(), res);
-        // 文件拷贝
-        String extPath = appConfigDto.getSystemToolCheckMenuFundExtPath();
-        FileUtils.copyFile(new File(newUedPage), new File( extPath + KEY_UED + ScriptSqlUtils.newUedPage));
-        FileUtils.copyFile(new File(basePath + ScriptSqlUtils.newUedHome), new File( extPath + KEY_UED + ScriptSqlUtils.newUedHome));
     }
 
     public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {
