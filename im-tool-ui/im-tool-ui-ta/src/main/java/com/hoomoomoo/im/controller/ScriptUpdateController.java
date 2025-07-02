@@ -374,12 +374,24 @@ public class ScriptUpdateController extends BaseController implements Initializa
                 // 组装sql语句
                 for (int i = 0; i < items.size(); i++) {
                     String sqlKey = items.get(i).trim();
-                    String sql = items.get(i).replaceAll(" values", "values").replaceAll(" insert", "insert").trim();
+                    String sql = items.get(i).trim();
                     if (sql.equals(BaseConst.STR_BLANK)) {
                         continue;
                     }
                     if (sql.toLowerCase().startsWith(BaseConst.KEY_DELETE)) {
                         continue;
+                    }
+                    String valuesIndex = STR_BLANK;
+                    if (sql.contains(KEY_VALUES)) {
+                        valuesIndex = KEY_VALUES;
+                    } else if (sql.contains(KEY_VALUES.toUpperCase())) {
+                        valuesIndex = KEY_VALUES.toUpperCase();
+                    }
+                    if (StringUtils.isNotBlank(valuesIndex)) {
+                        String[] ele = sql.split(valuesIndex);
+                        if (ele.length == 2) {
+                            sql = ele[0].toLowerCase() + KEY_VALUES + ele[1];
+                        }
                     }
                     // 参数处理
                     if (StringUtils.isNotEmpty(paramControl)) {
