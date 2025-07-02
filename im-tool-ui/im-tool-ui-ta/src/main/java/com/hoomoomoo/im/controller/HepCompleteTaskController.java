@@ -247,13 +247,13 @@ public class HepCompleteTaskController extends BaseController implements Initial
         hepTaskDto.setSelfTestDesc(selfTestDesc);
         HepTodoController hep = JvmCache.getHepTodoController();
         hep.execute(OPERATE_COMPLETE, hepTaskDto);
+        appConfigDto.getChildStage().close();
+        appConfigDto.setChildStage(null);
         if (!OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
             JSONArray res = hep.execute(OPERATE_COMPLETE_QUERY, hepTaskDto);
             hep.dealTaskList(res, true);
             addTaskDesc(hepTaskDto, editDescription, suggestion, selfTestDesc);
         }
-        appConfigDto.getChildStage().close();
-        appConfigDto.setChildStage(null);
     }
 
     private void addTaskDesc(HepTaskDto hepTaskDto, String editDescription, String suggestion, String selfTestDesc) throws IOException {

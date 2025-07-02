@@ -239,16 +239,22 @@
                                                                                 property="oriPublishDate"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="creatorName" editable="false" prefWidth="65"
-                                                                             sortable="false" text="创建人">
+                                                                <TableColumn id="assigneeName" editable="false" prefWidth="65"
+                                                                             sortable="false" text="经办人">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="creatorName"/>
+                                                                        <PropertyValueFactory property="assigneeName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="reviewerName" editable="false" prefWidth="65"
                                                                              sortable="false" text="审核人">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="reviewerName"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="creatorName" editable="false" prefWidth="75"
+                                                                             sortable="false" text="创建人">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="creatorName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="minCompleteBySort" editable="false"

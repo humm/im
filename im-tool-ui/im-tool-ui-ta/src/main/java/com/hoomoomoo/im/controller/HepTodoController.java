@@ -1205,14 +1205,14 @@ public class HepTodoController extends BaseController implements Initializable {
         infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError);
         taskList.setDisable(false);
         if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
-            String msg = "开发人员和审核人员为同一人，请检查" + STR_NEXT_LINE + sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_NEXT_LINE));
+            String msg = "开发人员和审核人员为同一人，请检查" + STR_NEXT_LINE_2 + sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_NEXT_LINE));
             LoggerUtils.info(msg);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
             Platform.runLater(() -> {
                 CommonUtils.showTipsByError(msg, 300 * 1000);
             });
         }
-        return;
+        controlTableColumns();
     }
 
     private void setTaskLevel(HepTaskDto item, String taskLevel) {
@@ -1614,6 +1614,17 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             ((TableColumn)taskList.getColumns().get(0)).setPrefWidth(width);
             taskSplitPane.setDividerPositions(positions);
+        });
+    }
+
+    private void controlTableColumns() {
+        Platform.runLater(() -> {
+            ObservableList<TableColumn> columns = taskList.getColumns();
+            for (TableColumn tableColumn : columns) {
+                if (StringUtils.equals(tableColumn.getId(), "assigneeName")) {
+                    tableColumn.setVisible(PAGE_USER.equals(EXTEND_USER_FRONT_CODE));
+                }
+            }
         });
     }
 

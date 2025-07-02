@@ -1069,9 +1069,6 @@ public class CommonUtils {
             alert.setContentText(detail);
         }
         if (autoClose) {
-            if (detail == null) {
-                alert.setContentText((millis / 1000) + "秒后将自动关闭");
-            }
             Service<Void> service = getCloseInfoService(millis);
             service.setOnSucceeded(e -> alert.hide());
             service.start();
