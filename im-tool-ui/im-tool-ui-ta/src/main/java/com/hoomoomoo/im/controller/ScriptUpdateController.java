@@ -387,7 +387,6 @@ public class ScriptUpdateController extends BaseController implements Initializa
                         int index = sql.lastIndexOf(BaseConst.STR_BRACKETS_RIGHT);
                         sql = sql.substring(0, index) + paramSql;
                     }
-                    String updateSql = generateUpdate(sqlKey, deleteSqlMap.get(sqlKey), true);
                     if (sql.toLowerCase().startsWith("insert") && !STR_3.equals(appConfigDto.getScriptUpdateGenerateType())) {
                         if (target != null) {
                             OutputUtils.info(target, deleteSqlMap.get(sqlKey) + STR_NEXT_LINE);
@@ -399,15 +398,16 @@ public class ScriptUpdateController extends BaseController implements Initializa
                     }
                     if (STR_2.equals(appConfigDto.getScriptUpdateGenerateType())) {
                         if (target != null) {
-                            OutputUtils.info(target, sql + BaseConst.STR_SEMICOLON + STR_NEXT_LINE);
+                            OutputUtils.info(target, sql + BaseConst.STR_SEMICOLON + STR_NEXT_LINE_2);
                         } else {
                             result.add(sql + BaseConst.STR_SEMICOLON + STR_NEXT_LINE);
                         }
                         logList.add(sql.replace(STR_NEXT_LINE, BaseConst.STR_SPACE) + BaseConst.STR_SEMICOLON);
-                        scriptList.add(sql + BaseConst.STR_SEMICOLON + STR_NEXT_LINE);
+                        scriptList.add(sql + BaseConst.STR_SEMICOLON + STR_NEXT_LINE_2);
+                        String updateSql = generateUpdate(sqlKey, deleteSqlMap.get(sqlKey), true);
                         if (StringUtils.isNotEmpty(updateSql)) {
                             if (target != null) {
-                                OutputUtils.info(target, updateSql + STR_NEXT_LINE);
+                                OutputUtils.info(target, updateSql + STR_NEXT_LINE_2);
                             } else {
                                 result.add(updateSql + STR_NEXT_LINE);
                             }
@@ -416,6 +416,9 @@ public class ScriptUpdateController extends BaseController implements Initializa
                         }
                     } else if (STR_3.equals(appConfigDto.getScriptUpdateGenerateType())) {
                         String ele = generateUpdate(sqlKey, deleteSqlMap.get(sqlKey), false);
+                        if (ele.contains("tbmenuconditionuser")) {
+                            ele = ele.replaceAll("tbmenuconditionuser", "tbmenucondition") + (target != null ? STR_NEXT_LINE_2 : STR_NEXT_LINE) + ele;
+                        }
                         if (target != null) {
                             OutputUtils.info(target, ele + STR_NEXT_LINE_2);
                         } else {

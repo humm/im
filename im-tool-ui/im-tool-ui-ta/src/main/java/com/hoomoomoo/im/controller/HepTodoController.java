@@ -977,9 +977,6 @@ public class HepTodoController extends BaseController implements Initializable {
             if (!taskName.contains(DEV_COMMIT_TAG) && (taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn)) && !taskCancelDevSubmit.containsKey(taskNumberIn)) {
                 taskName = DEV_COMMIT_TAG + taskName;
             }
-            if (PAGE_USER.equals(EXTEND_USER_FRONT_CODE)) {
-                taskName = String.format("【%s】", item.getAssigneeName()) + taskName;
-            }
             item.setName(taskName);
             if (taskName.contains(DEV_COMMIT_TAG)) {
                 mergerNum++;
@@ -1212,7 +1209,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 CommonUtils.showTipsByError(msg, 300 * 1000);
             });
         }
-        controlTableColumns();
+        // controlTableColumns();
     }
 
     private void setTaskLevel(HepTaskDto item, String taskLevel) {
@@ -1609,7 +1606,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 positions = 1;
                 sideBarBtn.setText("显示侧边栏");
             } else {
-                width = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth() - 320;
+                width = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth() - 255;
                 sideBarBtn.setText("隐藏侧边栏");
             }
             ((TableColumn)taskList.getColumns().get(0)).setPrefWidth(width);
