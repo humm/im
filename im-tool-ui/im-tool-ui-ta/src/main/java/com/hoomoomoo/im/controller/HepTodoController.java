@@ -927,10 +927,10 @@ public class HepTodoController extends BaseController implements Initializable {
             ele.put(KEY_ORI_PUBLISH_DATE, oriPublishDate);
             ele.put(KEY_ORDER_NO, STR_0);
             if (todayDate.equals(oriCloseDate)) {
-                dayCloseVersion.append(versionCode).append(STR_SPACE);
+                dayCloseVersion.append(versionCode).append(STR_SPACE_2);
             }
             if (todayDate.equals(oriPublishDate)) {
-                dayVersion.append(versionCode).append(STR_SPACE);
+                dayVersion.append(versionCode).append(STR_SPACE_2);
             }
 
             if (todayDate.equals(oriCloseDate) || todayDate.equals(oriPublishDate)) {
@@ -938,11 +938,11 @@ public class HepTodoController extends BaseController implements Initializable {
             }
 
             if (weekDay.compareTo(oriCloseDate) >= 0 && todayDate.compareTo(oriCloseDate) <= 0) {
-                weekCloseVersion.append(versionCode).append(STR_SPACE);
+                weekCloseVersion.append(versionCode).append(STR_SPACE_2);
             }
 
             if (weekDay.compareTo(oriPublishDate) >= 0 && todayDate.compareTo(oriPublishDate) <= 0) {
-                weekVersion.append(versionCode).append(STR_SPACE);
+                weekVersion.append(versionCode).append(STR_SPACE_2);
             }
             version.put(versionCode, ele);
         }
