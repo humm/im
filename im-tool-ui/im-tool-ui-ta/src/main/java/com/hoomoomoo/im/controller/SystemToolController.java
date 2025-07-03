@@ -394,20 +394,32 @@ public class SystemToolController implements Initializable {
         if (CollectionUtils.isNotEmpty(demandList)) {
             String demandPath = FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT);
             if (new File(demandPath).exists()) {
-                demandList.addAll(FileUtils.readNormalFile(demandPath));
+                handleDemand(FileUtils.readNormalFile(demandPath), demandList);
             }
             List<String> demandRes = new ArrayList<>(demandList);
-            Iterator<String> iterator = demandRes.listIterator();
+            /*Iterator<String> iterator = demandRes.listIterator();
             while (iterator.hasNext()) {
                 String item = iterator.next();
                 String key = item.split(STR_SEMICOLON)[0];
                 if (!effectiveDemandList.contains(key)) {
                     iterator.remove();
                 }
-            }
+            }*/
             FileUtils.writeFile(demandPath, demandRes);
         }
         LoggerUtils.info("同步任务信息结束");
+    }
+
+    private void handleDemand(List<String> demandRes, Set<String> demandList) {
+        Set<String> keys = new HashSet<>();
+        for (String item : demandList) {
+            keys.add(item.split(STR_SEMICOLON)[0]);
+        }
+        for (String item : demandRes) {
+            if (!keys.contains(item.split(STR_SEMICOLON)[0])) {
+                demandList.add(item);
+            }
+        }
     }
 
     public void syncVersion(AppConfigDto appConfigDto) throws Exception {
