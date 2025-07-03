@@ -120,7 +120,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static String STYLE_BLACK_COLOR = "-fx-text-background-color: #000000;-fx-font-weight: bold;";
 
     private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
-        put("完成日期超期", new String[] {"-fx-text-background-color: #7b00ff;"});
+        put("完成日期超期", new String[] {"-fx-text-background-color: #ff0090;"});
         put("今天待提交", new String[] {"-fx-text-background-color: #ff0000;"});
         put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;"});
         put("默认", new String[] {"-fx-text-background-color: #000000;"});
@@ -649,7 +649,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     public JSONArray execute(String operateType, HepTaskDto hepTaskDto) throws Exception {
-        if (PAGE_USER.equals(EXTEND_USER_FRONT_CODE)) {
+        if (frontPage()) {
             dealTask = false;
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String userExtend = appConfigDto.getHepTaskUserExtend();
@@ -1073,12 +1073,12 @@ public class HepTodoController extends BaseController implements Initializable {
             }
 
             boolean today = todayDate.equals(finishDate);
-            if (dayVersion.toString().contains(sprintVersion + STR_SPACE) || dayCloseVersion.toString().contains(sprintVersion + STR_SPACE) || today) {
+            if (today) {
                 dayVersionNum++;
                 dayTodoTask.add(item.getTaskNumber());
             }
             boolean week = today || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
-            if (weekVersion.toString().contains(sprintVersion + STR_SPACE) || weekCloseVersion.toString().contains(sprintVersion + STR_SPACE) || week) {
+            if (week) {
                 weekVersionNum++;
                 weekTodoTask.add(item.getTaskNumber());
             }
@@ -1209,7 +1209,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 CommonUtils.showTipsByError(msg, 300 * 1000);
             });
         }
-        // controlTableColumns();
+        printTaskInfo(res);
     }
 
     private void setTaskLevel(HepTaskDto item, String taskLevel) {
@@ -1327,7 +1327,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (CollectionUtils.isEmpty(task)) {
             return;
         }
-        if (StringUtils.equals(PAGE_USER, EXTEND_USER_FRONT_CODE)) {
+        if (frontPage()) {
             return;
         }
         Map<String, String> tags = new LinkedHashMap<>();
@@ -1614,15 +1614,11 @@ public class HepTodoController extends BaseController implements Initializable {
         });
     }
 
-    private void controlTableColumns() {
-        Platform.runLater(() -> {
-            ObservableList<TableColumn> columns = taskList.getColumns();
-            for (TableColumn tableColumn : columns) {
-                if (StringUtils.equals(tableColumn.getId(), "assigneeName")) {
-                    tableColumn.setVisible(PAGE_USER.equals(EXTEND_USER_FRONT_CODE));
-                }
-            }
-        });
+    private void printTaskInfo(List<HepTaskDto> taskList) {
+        if (frontPage() && CollectionUtils.isNotEmpty(taskList) && (devCompleteHide.isSelected() || devCompleteShow.isSelected())) {
+            String printType = devCompleteShow.isSelected() ? "分支已完成" : "任务未完成";
+            logs.add(printType + STR_SPACE + (taskList.stream().map(HepTaskDto::getDemandNo).collect(Collectors.joining(STR_COMMA))));
+;        }
     }
 
     private void setFrontTips(boolean visible) {
@@ -1846,7 +1842,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (StringUtils.isBlank(PAGE_USER)) {
             PAGE_USER = CURRENT_USER_ID;
         }
-        if (PAGE_USER.equals(EXTEND_USER_FRONT_CODE)) {
+        if (frontPage()) {
             CURRENT_USER_ID = EXTEND_USER_FRONT_CODE;
         }
         String user = String.format("当前用户: %s", CURRENT_USER_ID);
@@ -1856,9 +1852,12 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
+    private boolean frontPage() {
+        return PAGE_USER.equals(EXTEND_USER_FRONT_CODE);
+    }
     private boolean isExtendUser() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        return !CURRENT_USER_ID.equals(appConfigDto.getHepTaskUser()) || StringUtils.equals(PAGE_USER, EXTEND_USER_FRONT_CODE);
+        return !CURRENT_USER_ID.equals(appConfigDto.getHepTaskUser()) || frontPage();
     }
 
     private void showExtendTask(boolean changeTab) throws Exception {
