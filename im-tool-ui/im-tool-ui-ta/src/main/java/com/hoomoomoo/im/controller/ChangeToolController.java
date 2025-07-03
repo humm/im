@@ -79,6 +79,8 @@ public class ChangeToolController implements Initializable {
     private static final String AUTO_MODE_TIPS = "***参数提示***";
 
     private Set<String> autoModeSet = new LinkedHashSet<String>(){{
+        add(AUTO_MODE_TIPS);
+
         add(AUTO_MODE_JJHY);
         add(AUTO_MODE_JSJJ);
 
@@ -92,7 +94,6 @@ public class ChangeToolController implements Initializable {
         add(AUTO_MODE_ZJ);
         add(AUTO_MODE_GJDF);
 
-        add(AUTO_MODE_TIPS);
     }};
 
     private Set<String> menuModeSet = new LinkedHashSet<String>(){{
