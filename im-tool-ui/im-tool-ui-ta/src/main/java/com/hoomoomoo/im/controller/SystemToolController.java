@@ -389,6 +389,9 @@ public class SystemToolController implements Initializable {
         }
         if (CollectionUtils.isNotEmpty(taskList)) {
             String taskPath = FileUtils.getFilePath(PATH_TASK_STAT);
+            if (new File(taskPath).exists()) {
+                handleDemand(FileUtils.readNormalFile(taskPath), taskList);
+            }
             FileUtils.writeFile(taskPath, new ArrayList<>(taskList));
         }
         if (CollectionUtils.isNotEmpty(demandList)) {
@@ -396,7 +399,6 @@ public class SystemToolController implements Initializable {
             if (new File(demandPath).exists()) {
                 handleDemand(FileUtils.readNormalFile(demandPath), demandList);
             }
-            List<String> demandRes = new ArrayList<>(demandList);
             /*Iterator<String> iterator = demandRes.listIterator();
             while (iterator.hasNext()) {
                 String item = iterator.next();
@@ -405,7 +407,7 @@ public class SystemToolController implements Initializable {
                     iterator.remove();
                 }
             }*/
-            FileUtils.writeFile(demandPath, demandRes);
+            FileUtils.writeFile(demandPath, new ArrayList<>(demandList));
         }
         LoggerUtils.info("同步任务信息结束");
     }
