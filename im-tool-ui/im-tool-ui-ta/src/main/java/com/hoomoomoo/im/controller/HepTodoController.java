@@ -1616,8 +1616,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void printTaskInfo(List<HepTaskDto> taskList) {
         if (frontPage() && CollectionUtils.isNotEmpty(taskList) && (devCompleteHide.isSelected() || devCompleteShow.isSelected())) {
-            String printType = devCompleteShow.isSelected() ? "分支已完成" : "任务未完成";
-            logs.add(printType + STR_SPACE + (taskList.stream().map(HepTaskDto::getDemandNo).collect(Collectors.joining(STR_COMMA))));
+            String printType = devCompleteShow.isSelected() ? "分支已完成: " : "任务未完成: ";
+            logs.add(printType + (taskList.stream().filter(hepTaskDto -> StringUtils.isNotBlank(hepTaskDto.getDemandNo()))
+                    .map(HepTaskDto::getDemandNo).collect(Collectors.joining(STR_COMMA))).trim());
 ;        }
     }
 

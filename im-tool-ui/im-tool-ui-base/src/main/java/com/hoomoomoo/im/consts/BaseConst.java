@@ -184,7 +184,8 @@ public class BaseConst {
     public final static String KEY_UNIT_MB = "MB";
     public final static String KEY_TA5 = "TA5";
     public final static String KEY_TA6 = "TA6";
-    public final static String KEY_LOG_MENU = "xxx";
+    public final static String KEY_LOG_PARENT_CODE = "xxx";
+    public final static String KEY_LOG_MENU_CODE = "ifmCQsglAutoClearLog";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 

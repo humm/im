@@ -763,7 +763,7 @@ public class ScriptRepairSql {
                     continue;
                 }
                 String sql = formatSql(newUedMenu.get(menuCode), true);
-                if (StringUtils.equals(ScriptSqlUtils.getParentCode(sql), KEY_LOG_MENU)) {
+                if (StringUtils.equals(ScriptSqlUtils.getParentCode(sql), KEY_LOG_PARENT_CODE)) {
                     res.add(formatSqlAddDelete(sql, true));
                     res.add(STR_BLANK);
                     continue;
@@ -1164,7 +1164,11 @@ public class ScriptRepairSql {
             subTransExt.add(STR_BLANK);
         }
         res.addAll(account);
-
+        if (otherMenu.containsKey(KEY_LOG_MENU_CODE)) {
+            res.add(formatSqlAddDelete(otherMenu.get(KEY_LOG_MENU_CODE), true));
+            res.add(STR_BLANK);
+            otherMenu.remove(KEY_LOG_MENU_CODE);
+        }
         res.add(STR_BLANK);
         res.add(BLOCK_LINE_INDEX);
         res.add(String.format(BLOCK_LINE_INDEX_TIPS, "  交易码  tsys_trans  "));
@@ -1608,6 +1612,8 @@ public class ScriptRepairSql {
         String menuCode = ScriptSqlUtils.getMenuCode(sql);
         if (sql.toLowerCase().contains("tsys_menu_std")) {
             delete = "delete from tsys_menu_std where menu_code = '" + menuCode + "';" + STR_NEXT_LINE;
+        } else if (sql.toLowerCase().contains("tsys_menu")) {
+            delete = "delete from tsys_menu where menu_code = '" + menuCode + "';" + STR_NEXT_LINE;
         } else if (sql.toLowerCase().contains("tsys_trans")) {
             delete = "delete from tsys_trans where trans_code = '" + menuCode + "';" + STR_NEXT_LINE;
         }
