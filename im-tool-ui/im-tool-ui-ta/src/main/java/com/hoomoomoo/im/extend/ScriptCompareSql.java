@@ -318,8 +318,11 @@ public class ScriptCompareSql {
             if (skipNewMenuCache.contains(menuCode)) {
                 continue;
             }
-            menuCodeList.add(buildMenuInfo(menuCode));
-            needAddUedMenuNum++;
+            String menuInfo = buildMenuInfo(menuCode);
+            if (!skipMenu(menuCode, menuInfo)) {
+                menuCodeList.add(buildMenuInfo(menuCode));
+                needAddUedMenuNum++;
+            }
         }
         if (CollectionUtils.isNotEmpty(menuCodeList)) {
             writeFile(menuCodeList, LACK_NEW_MENU_ALL.getName() + STR_SPACE_2 + "extend.sql");
@@ -706,14 +709,14 @@ public class ScriptCompareSql {
             menuInfo.addAll(menuNameNotStartByFund);
         }
 
-        // 存在合并后菜单不存在系统间合并
+        // 存在菜单合并不存在合并后菜单
         Iterator<String> iterator = newMenuElementCache.keySet().iterator();
         List<String> reserve1List = new ArrayList<>();
         while (iterator.hasNext()) {
             String menuCode = iterator.next();
             String menuName = newMenuElementCache.get(menuCode)[0];
             String menuReserve = newMenuElementCache.get(menuCode)[1];
-            if (StringUtils.isBlank(menuReserve.trim()) || !STR_0.equals(menuReserve)) {
+            if (!STR_0.equals(menuReserve)) {
                 continue;
             }
             Iterator<String> iteratorTmp = newMenuElementCache.keySet().iterator();
@@ -742,47 +745,9 @@ public class ScriptCompareSql {
         }
         total += reserve1List.size();
         if (CollectionUtils.isNotEmpty(reserve1List)) {
-            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, "存在合并后菜单不存在系统间合并"));
+            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, "存在菜单合并不存在合并后菜单"));
             menuInfo.add(String.format(MSG_WAIT_HANDLE_NUM, reserve1List.size()));
             menuInfo.addAll(reserve1List);
-        }
-
-        // 存在系统间合并不存在合并后菜单
-        Iterator<String> iteratorReserve2 = newMenuElementCache.keySet().iterator();
-        List<String> reserve2List = new ArrayList<>();
-        while (iteratorReserve2.hasNext()) {
-            String menuCode = iteratorReserve2.next();
-            String menuReserve = newMenuElementCache.get(menuCode)[1];
-            if (StringUtils.isBlank(menuReserve.trim()) || STR_0.equals(menuReserve)) {
-                continue;
-            }
-            String[] menuReserveList = menuReserve.split(STR_COMMA);
-            for (String item : menuReserveList) {
-                Iterator<String> iteratorTmp = newMenuElementCache.keySet().iterator();
-                boolean flag = false;
-                while (iteratorTmp.hasNext()) {
-                    String menuCodeTmp = iteratorTmp.next();
-                    if (menuCode.equals(menuCodeTmp)) {
-                        continue;
-                    }
-                    String menuReserveTmp = newMenuElementCache.get(menuCodeTmp)[1];
-                    if (item.equals(menuCodeTmp) && STR_0.equals(menuReserveTmp)) {
-                        flag = true;
-                        break;
-                    }
-                }
-                if (!flag) {
-                    String menu = item + "   " + getMenuNameByCache(item);
-                    reserve2List.add(menu);
-                }
-            }
-        }
-
-        total += reserve2List.size();
-        if (CollectionUtils.isNotEmpty(reserve2List)) {
-            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, "存在系统间合并不存在合并后菜单"));
-            menuInfo.add(String.format(MSG_WAIT_HANDLE_NUM, reserve2List.size()));
-            menuInfo.addAll(reserve2List);
         }
 
         // 注释内容不存在开始结束标识
@@ -877,12 +842,19 @@ public class ScriptCompareSql {
         while (extendIterator.hasNext()) {
             String menuCode = extendIterator.next();
             if (!skipNewMenuCache.contains(menuCode)) {
-                menuCodeList.add(buildMenuInfo(menuCode));
-                needAddUedMenuNum++;
+                String menuInfo = buildMenuInfo(menuCode);
+                if (!skipMenu(menuCode, menuInfo)) {
+                    menuCodeList.add(menuInfo);
+                    needAddUedMenuNum++;
+                }
             }
         }
         totalMenu.addAll(menuMap);
         writeFile(menuCodeList, fileName);
+    }
+
+    private boolean skipMenu(String menuCode, String menuInfo) {
+        return StringUtils.equals((menuCode + STR_NEXT_LINE), menuInfo);
     }
 
     private void writeFile(List<String> menuCodeList, String fileName) throws Exception {
@@ -1067,7 +1039,7 @@ public class ScriptCompareSql {
             if (!fileName.endsWith(FILE_TYPE_SQL)) {
                 return;
             }
-            if (filePath.contains("/extradata/special/") || filePath.contains("\\extradata\\special\\") || filePath.contains("\\extradata\\UED\\")) {
+            if (filePath.contains("\\001initdata\\special\\") || filePath.contains("\\001initdata\\UED\\")) {
                 return;
             }
             List<String> content = FileUtils.readNormalFile(file.getPath());
