@@ -8,6 +8,7 @@ import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -86,15 +87,22 @@ public class ScriptUpdateSql {
 
         res.add(STR_BLANK);
         res.add("-- 补充tsys_trans tsys_subtrans tsys_subtrans_ext数据");
-        Set<String> copyMenuCode = new HashSet<>(Arrays.asList("fundCacheRefreshQuery"));
+        Map<String, String[]> copyMenuCode = new LinkedHashMap<String, String[]>(){{
+            put("fundCacheRefreshQuery", new String[]{"add", "bizCacheRefresh"});
+        }};
         String baseMenuContents = FileUtils.readNormalFileToString(basePath + ScriptSqlUtils.baseMenu, true);
         if (StringUtils.isNotBlank(baseMenuContents)) {
             List<String> sql = Arrays.asList(baseMenuContents.split(STR_SEMICOLON));
             for (String item : sql) {
                 if (item.contains("tsys_trans") || item.contains("tsys_subtrans") || item.contains("tsys_subtrans_ext")) {
                     String menuCode = ScriptSqlUtils.getMenuCode(item);
-                    if (copyMenuCode.contains(menuCode)) {
+                    String[] copyConfig = copyMenuCode.get(menuCode);
+                    if (item.contains("tsys_subtrans ") && copyConfig != null) {
                         res.add(ScriptRepairSql.formatSqlAddDelete(item, false));
+                        if (item.contains("tsys_subtrans ")) {
+                            res.add(buildUserRoleRight(item, "tsys_user_right", menuCode, copyConfig));
+                            res.add(buildUserRoleRight(item, "tsys_role_right", menuCode, copyConfig));
+                        }
                     }
                 }
             }
@@ -104,6 +112,20 @@ public class ScriptUpdateSql {
         res.addAll(uedHome);
 
         FileUtils.writeFile(resPath + BaseConst.SQL_FilE_TYPE.UPDATE_CHANGE_MENU.getFileName(), res);
+    }
+
+    private static String buildUserRoleRight(String item, String tableName, String transCode, String[] copyConfig) {
+        StringBuilder res = new StringBuilder();
+        String subTransCode = ScriptSqlUtils.getSubTransCodeBySubTrans(item);
+        String fieldCode = StringUtils.equals("tsys_user_right", tableName) ? "user_id" : "role_code";
+        if ("add".equals(copyConfig[0])) {
+            res.append("insert into %s (trans_code, sub_trans_code, %s, create_by, create_date, begin_date, end_date, right_flag)\n");
+            res.append("select '%s', '%s', %s, create_by, create_date, begin_date, end_date, right_flag\n");
+            res.append("  from %s a\n");
+            res.append("where a.trans_code = '%s'\n");
+            res.append("and not exists (select 1 from tsys_user_right b where b.trans_code = '%s' and b.sub_trans_code = '%s');\n");
+        }
+        return String.format(res.toString(), tableName, fieldCode, transCode, subTransCode, fieldCode, tableName, copyConfig[1], transCode, subTransCode);
     }
 
     public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {
