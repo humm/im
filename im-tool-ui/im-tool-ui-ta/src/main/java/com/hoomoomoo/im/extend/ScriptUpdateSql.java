@@ -1,11 +1,13 @@
 package com.hoomoomoo.im.extend;
 
+import cn.hutool.db.sql.SqlUtil;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import com.hoomoomoo.im.utils.LoggerUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
@@ -82,9 +84,25 @@ public class ScriptUpdateSql {
             res.add(ele);
         }
 
+        res.add(STR_BLANK);
+        res.add("-- 补充tsys_trans tsys_subtrans tsys_subtrans_ext数据");
+        Set<String> copyMenuCode = new HashSet<>(Arrays.asList("fundCacheRefreshQuery"));
+        String baseMenuContents = FileUtils.readNormalFileToString(basePath + ScriptSqlUtils.baseMenu, true);
+        if (StringUtils.isNotBlank(baseMenuContents)) {
+            List<String> sql = Arrays.asList(baseMenuContents.split(STR_SEMICOLON));
+            for (String item : sql) {
+                if (item.contains("tsys_trans") || item.contains("tsys_subtrans") || item.contains("tsys_subtrans_ext")) {
+                    String menuCode = ScriptSqlUtils.getMenuCode(item);
+                    if (copyMenuCode.contains(menuCode)) {
+                        res.add(ScriptRepairSql.formatSqlAddDelete(item, false));
+                    }
+                }
+            }
+        }
         List<String> uedHome = FileUtils.readNormalFile(basePath + ScriptSqlUtils.newUedHome);
         res.add(STR_BLANK);
         res.addAll(uedHome);
+
         FileUtils.writeFile(resPath + BaseConst.SQL_FilE_TYPE.UPDATE_CHANGE_MENU.getFileName(), res);
     }
 

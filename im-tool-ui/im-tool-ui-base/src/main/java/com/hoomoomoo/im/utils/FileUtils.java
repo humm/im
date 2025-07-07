@@ -95,7 +95,7 @@ public class FileUtils {
      * @date: 2021/04/23
      * @return:
      */
-    private static String readNormalFileToString(String filePath, boolean skipAnnotation) throws IOException {
+    public static String readNormalFileToString(String filePath, boolean skipAnnotation) throws IOException {
         List<String> config = (List<String>) readFile(filePath, FILE_TYPE_NORMAL, skipAnnotation);
         StringBuilder content = new StringBuilder();
         if (CollectionUtils.isNotEmpty(config)) {

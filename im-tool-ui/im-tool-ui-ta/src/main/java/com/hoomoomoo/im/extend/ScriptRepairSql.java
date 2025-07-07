@@ -1606,7 +1606,7 @@ public class ScriptRepairSql {
         return sql;
     }
 
-    private static String formatSqlAddDelete(String sql, boolean last) {
+    public static String formatSqlAddDelete(String sql, boolean last) {
         String res = formatSql(sql, last);
         String delete = STR_BLANK;
         String menuCode = ScriptSqlUtils.getMenuCode(sql);
@@ -1616,6 +1616,12 @@ public class ScriptRepairSql {
             delete = "delete from tsys_menu where menu_code = '" + menuCode + "';" + STR_NEXT_LINE;
         } else if (sql.toLowerCase().contains("tsys_trans")) {
             delete = "delete from tsys_trans where trans_code = '" + menuCode + "';" + STR_NEXT_LINE;
+        } else if (sql.toLowerCase().contains("tsys_subtrans_ext")) {
+            String subTransCode = ScriptSqlUtils.getSubTransCodeBySubTrans(sql);
+            delete = "delete from tsys_subtrans_ext where trans_code = '" + menuCode + "' and sub_trans_code = '" + subTransCode + "';" + STR_NEXT_LINE;
+        } else if (sql.toLowerCase().contains("tsys_subtrans")) {
+            String subTransCode = ScriptSqlUtils.getSubTransCodeBySubTrans(sql);
+            delete = "delete from tsys_subtrans where trans_code = '" + menuCode + "' and sub_trans_code = '" + subTransCode + "';" + STR_NEXT_LINE;
         }
         if (res.startsWith(ANNOTATION_NORMAL)) {
             delete = ANNOTATION_NORMAL + STR_SPACE + delete;
