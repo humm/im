@@ -580,6 +580,8 @@ public class ScriptCompareSql {
         resMap.put("tsys_subtrans_ext", new LinkedHashSet<>());
         resMap.put("tbworkflowsubtrans", new LinkedHashSet<>());
         resMap.put("tbworkflowsubtransext", new LinkedHashSet<>());
+        resMap.put("add_report_field", new LinkedHashSet<>());
+        resMap.put("add_report", new LinkedHashSet<>());
         File fileExt = new File(basePathExt);
         Set<String> skip = ScriptSqlUtils.initExtLegalSkip();
         for (File file : fileExt.listFiles()) {
@@ -625,7 +627,11 @@ public class ScriptCompareSql {
             List<String> content = FileUtils.readNormalFile(filePath);
             for (String ele : content) {
                 ele = CommonUtils.trimStrToSpace(ele).toLowerCase();
-                if (!ele.contains("insert into")) {
+                if (ele.contains("call") && ele.contains("add_report_field")) {
+                    res.get("add_report_field").add(filePath);
+                } else if (ele.contains("call") && ele.contains("add_report")) {
+                    res.get("add_report").add(filePath);
+                } else if (!ele.contains("insert into")) {
                     continue;
                 } else if (ele.contains("tsys_trans ") || ele.contains("tsys_trans(") ) {
                     res.get("tsys_trans").add(filePath);
@@ -1248,7 +1254,7 @@ public class ScriptCompareSql {
                     endFlag = false;
                 }
                 if (!endFlag && item.trim().endsWith(";")) {
-                    if (ScriptSqlUtils.getMenuValueLen(item) != 7) {
+                    if (ScriptSqlUtils.getMenuValueLen(item) < 7) {
                         continue;
                     }
                     String transCode = ScriptSqlUtils.getSubTransCodeByWhole(item);
