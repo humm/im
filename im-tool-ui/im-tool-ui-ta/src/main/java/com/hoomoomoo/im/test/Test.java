@@ -13,6 +13,11 @@ import java.net.URL;
 public class Test {
 
     public static void main(String[] args) throws Exception {
-
+        int second = 150 * 1000 / 1000;
+        int minute = second / 60;
+        if (minute > 0) {
+            second = second % 60;
+        }
+        System.out.println(minute + " " + second);
     }
 }

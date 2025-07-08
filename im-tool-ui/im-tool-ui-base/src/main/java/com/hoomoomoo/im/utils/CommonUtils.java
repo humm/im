@@ -1069,6 +1069,15 @@ public class CommonUtils {
             alert.setContentText(detail);
         }
         if (autoClose) {
+            if (detail == null) {
+                int second = millis / 1000;
+                int minute = second / 60;
+                if (minute > 0) {
+                    second = second % 60;
+                }
+                String time = (minute > 0 ? minute + "分" : STR_BLANK) + second + "秒";
+                alert.setContentText(time + "后将自动关闭");
+            }
             Service<Void> service = getCloseInfoService(millis);
             service.setOnSucceeded(e -> alert.hide());
             service.start();
