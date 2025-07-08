@@ -920,7 +920,6 @@ public class CommonUtils {
                     } catch (Exception e) {
                         LoggerUtils.info(e);
                     }
-
                 }
             });
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_INIT, NAME_CONFIG_VIEW));
