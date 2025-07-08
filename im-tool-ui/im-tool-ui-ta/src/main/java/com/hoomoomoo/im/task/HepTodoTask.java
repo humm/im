@@ -1,12 +1,14 @@
 package com.hoomoomoo.im.task;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.controller.HepTodoController;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.JvmCache;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import javafx.application.Platform;
 
 import java.io.FileNotFoundException;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import static com.hoomoomoo.im.consts.BaseConst.NAME_NO_AUTH;
@@ -39,7 +41,10 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
                     long start = System.currentTimeMillis();
                     hepTodoTaskParam.getHepTodoController().syncTask.setDisable(true);
                     JvmCache.getSystemToolController().executeSyncTaskInfo();
-                    hepTodoTaskParam.getHepTodoController().doExecuteQuery();
+                    Map<String, HepTodoController> controllerMap = JvmCache.getHepTodoControllerMap();
+                    for (HepTodoController hepTodoController : controllerMap.values()) {
+                        hepTodoController.doExecuteQuery();
+                    }
                     long end = System.currentTimeMillis();
                     Platform.runLater(() -> {
                         CommonUtils.showTipsByInfo(String.format("同步任务信息成功，耗时%s秒", (end - start) / 1000), 30 * 1000);

@@ -324,6 +324,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 JvmCache.setHepTodoController(this);
                 syncFile();
             }
+            JvmCache.setHepTodoControllerMap(appConfigDto.getActivateFunction(), this);
             addTaskMenu(appConfigDto, this);
             initComponentStatus();
             executeQuery(null);

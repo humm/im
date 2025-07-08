@@ -2,26 +2,28 @@ package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.controller.*;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 
 public class JvmCache {
 
+    private static Map<String, HepTodoController> hepTodoControllerMap = new LinkedHashMap<>();
     private static HepTodoController hepTodoController;
     private static HepTodoController activeHepTodoController;
     private static SystemToolController systemToolController;
     private static ScriptUpdateController scriptUpdateController;
-    private static TaStarterController taStarterController;
     private static ScriptCheckController scriptCheckController;
+    private static TaStarterController taStarterController;
 
-    public static ScriptCheckController getScriptCheckController() {
-        if (scriptCheckController == null) {
-            scriptCheckController = new ScriptCheckController();
-        }
-        return scriptCheckController;
+    public static void setHepTodoControllerMap(String tabCode, HepTodoController hepTodoController) {
+        hepTodoControllerMap.put(tabCode, hepTodoController);
     }
 
-    public static void setScriptCheckController(ScriptCheckController checkController) {
-        scriptCheckController = checkController;
+    public static Map<String, HepTodoController> getHepTodoControllerMap() {
+        return hepTodoControllerMap;
     }
+
 
     public static HepTodoController getHepTodoController() {
         if (hepTodoController == null) {
@@ -65,6 +67,17 @@ public class JvmCache {
 
     public static void setScriptUpdateController(ScriptUpdateController updateController) {
         scriptUpdateController = updateController;
+    }
+
+    public static ScriptCheckController getScriptCheckController() {
+        if (scriptCheckController == null) {
+            scriptCheckController = new ScriptCheckController();
+        }
+        return scriptCheckController;
+    }
+
+    public static void setScriptCheckController(ScriptCheckController checkController) {
+        scriptCheckController = checkController;
     }
 
     public static TaStarterController getTaStarterController() {
