@@ -415,10 +415,12 @@ public class SystemToolController implements Initializable {
     private void handleDemand(List<String> demandRes, Set<String> demandList) {
         Set<String> keys = new HashSet<>();
         for (String item : demandList) {
-            keys.add(item.split(STR_SEMICOLON)[0]);
+            String key = item.split(STR_SEMICOLON)[0].trim() + STR_SEMICOLON;
+            keys.add(key);
         }
         for (String item : demandRes) {
-            if (!keys.contains(item.split(STR_SEMICOLON)[0])) {
+            String key = item.split(STR_SEMICOLON)[0].trim() + STR_SEMICOLON;
+            if (!keys.contains(key)) {
                 demandList.add(item);
             }
         }
