@@ -1074,7 +1074,7 @@ public class CommonUtils {
                 if (minute > 0) {
                     second = second % 60;
                 }
-                String time = (minute > 0 ? minute + "分" : STR_BLANK) + second + "秒";
+                String time = (minute > 0 ? minute + "分" : STR_BLANK) + (second > 0 ? second + "秒" : STR_BLANK);
                 alert.setContentText(time + "后将自动关闭");
             }
             Service<Void> service = getCloseInfoService(millis);
