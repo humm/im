@@ -360,7 +360,7 @@ public class CommonUtils {
         LocalDate nextWeekDay = currentDate.with(TemporalAdjusters.nextOrSame(dayOfWeek));
         String nextWeekDayStr = nextWeekDay.toString().replaceAll(STR_HYPHEN, STR_BLANK);
         String weekLastDay = getLastDayByWeek().replaceAll(STR_HYPHEN, STR_BLANK);
-        if (weekLastDay.compareTo(nextWeekDayStr) > 0) {
+        if (weekLastDay.compareTo(nextWeekDayStr) >= 0) {
             nextWeekDayStr = nextWeekDay.with(TemporalAdjusters.next(dayOfWeek)).toString().replaceAll(STR_HYPHEN, STR_BLANK);
         }
         return nextWeekDayStr;
