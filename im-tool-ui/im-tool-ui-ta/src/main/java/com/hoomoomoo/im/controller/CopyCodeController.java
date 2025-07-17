@@ -154,6 +154,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                 String[] fileList = filePathConfig.split(STR_NEXT_LINE);
                 if (fileList != null && fileList.length != 0) {
                     for (int i=0; i<fileList.length; i++) {
+                        fileLocation = STR_BLANK;
                         String item = fileList[i].trim();
                         if (StringUtils.isBlank(item) || item.startsWith(ANNOTATION_NORMAL)) {
                             skipNum++;
@@ -187,8 +188,10 @@ public class CopyCodeController extends BaseController implements Initializable 
                         String targetVersionSelected = (String)targetVersion.getSelectionModel().getSelectedItem();
                         String sourceVersionSelected = (String)sourceVersion.getSelectionModel().getSelectedItem();
                         String targetVersionYear = targetVersionSelected.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
+                        String sourceVersionYear = sourceVersionSelected.replaceAll(STR_VERSION_PREFIX, STR_BLANK).split("\\.")[0];
                         String subDir = STR_BLANK;
-                        if (targetVersionYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 || StringUtils.equals(targetVersionSelected, KEY_TRUNK)) {
+                        if (targetVersionYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 || StringUtils.equals(targetVersionSelected, KEY_TRUNK)
+                            || sourceVersionYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 || StringUtils.equals(sourceVersionSelected, KEY_TRUNK)) {
                             File sourceFile = new File(source);
                             if (sourceFile.isDirectory()) {
                                 File[] sourceFileList = sourceFile.listFiles();
