@@ -1143,7 +1143,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
 
-            if (!StringUtils.equals(appConfigDto.getHepTaskUser(), item.getCreatorId())) {
+            if (StringUtils.equals(appConfigDto.getHepTaskUser(), item.getCreatorId())) {
                 item.setCreatorName(STR_SPACE);
             }
             if (StringUtils.isBlank(status)) {
@@ -1210,7 +1210,7 @@ public class HepTodoController extends BaseController implements Initializable {
             LoggerUtils.info(msg);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
             Platform.runLater(() -> {
-                CommonUtils.showTipsByError(msg, 60 * 1000);
+                CommonUtils.showTipsByError(msg, 30 * 1000);
             });
         }
         printTaskInfo(res);
