@@ -1143,6 +1143,9 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
 
+            if (!StringUtils.equals(appConfigDto.getHepTaskUser(), item.getCreatorId())) {
+                item.setCreatorName(STR_SPACE);
+            }
             if (StringUtils.isBlank(status)) {
                 hasBlank = true;
                 taskTotal++;
@@ -1203,11 +1206,11 @@ public class HepTodoController extends BaseController implements Initializable {
         infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError);
         taskList.setDisable(false);
         if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
-            String msg = "开发人员和审核人员为同一人，请检查" + STR_NEXT_LINE_2 + sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_NEXT_LINE));
+            String msg = "开发人员和审核人员为同一人，请检查" + STR_NEXT_LINE_2 + sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
             LoggerUtils.info(msg);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
             Platform.runLater(() -> {
-                CommonUtils.showTipsByError(msg, 300 * 1000);
+                CommonUtils.showTipsByError(msg, 60 * 1000);
             });
         }
         printTaskInfo(res);
@@ -1283,7 +1286,6 @@ public class HepTodoController extends BaseController implements Initializable {
                         try {
                             super.updateItem(item, empty);
                             if (item != null && getIndex() > -1) {
-                                String taskName = item.getName();
                                 String taskNumber = item.getTaskNumber();
                                 String[] taskColor;
                                 if (dayTodoTask.contains(taskNumber)) {
