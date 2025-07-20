@@ -20,13 +20,13 @@
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="108.0">
                                  <children>
                                      <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="脚本检查" />
-                                     <Button layoutX="130.0" layoutY="15" mnemonicParsing="false" onAction="#checkMenu" prefWidth="100.0" text="检查">
+                                     <Button layoutX="130.0" layoutY="15" mnemonicParsing="false" onAction="#checkMenu" prefWidth="130.0" text="检查">
                                          <padding>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                          </padding>
                                      </Button>
 
-                                     <Button layoutX="260.0" layoutY="15" mnemonicParsing="false" onAction="#showCheckResult" prefWidth="100.0" text="查看结果">
+                                     <Button layoutX="290.0" layoutY="15" mnemonicParsing="false" onAction="#showCheckResult" prefWidth="130.0" text="查看结果">
                                          <padding>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                          </padding>
@@ -88,12 +88,12 @@
                                      </Button>
 
                                      <Label layoutX="20.0" layoutY="485.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="检查结果修正" />
-                                     <Button layoutX="130.0" layoutY="480" mnemonicParsing="false" onAction="#repairLackLog" prefWidth="100.0" text="修正缺少日志">
+                                     <Button layoutX="130.0" layoutY="480" mnemonicParsing="false" onAction="#repairLackLog" prefWidth="130.0" text="修正缺少日志">
                                          <padding>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                          </padding>
                                      </Button>
-                                     <Button layoutX="260.0" layoutY="480" mnemonicParsing="false" onAction="#repairErrorLog" prefWidth="100.0" text="修正错误日志">
+                                     <Button layoutX="290.0" layoutY="480" mnemonicParsing="false" onAction="#repairErrorLog" prefWidth="130.0" text="修正错误日志">
                                          <padding>
                                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                          </padding>
@@ -188,7 +188,7 @@
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
                                                  </Button>
-                                                 <Button layoutX="260.0" layoutY="600" mnemonicParsing="false" onAction="#showUpdateResult" prefWidth="100.0" text="查看结果">
+                                                 <Button layoutX="290.0" layoutY="600" mnemonicParsing="false" onAction="#showUpdateResult" prefWidth="100.0" text="查看结果">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>
