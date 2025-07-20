@@ -19,116 +19,85 @@
                           <items>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="108.0">
                                  <children>
-                                    <SplitPane dividerPositions="0.7" layoutX="-4.0" layoutY="99.0" orientation="VERTICAL" prefHeight="398.4" prefWidth="151.2" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                      <items>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                             <children>
-                                                 <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="菜单脚本检查" />
-                                                 <Button layoutX="130.0" layoutY="15" mnemonicParsing="false" onAction="#checkMenu" prefWidth="100.0" text="检查">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="脚本检查" />
+                                     <Button layoutX="130.0" layoutY="15" mnemonicParsing="false" onAction="#checkMenu" prefWidth="100.0" text="检查">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Button layoutX="260.0" layoutY="15" mnemonicParsing="false" onAction="#showCheckResult" prefWidth="100.0" text="查看结果">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Button layoutX="260.0" layoutY="15" mnemonicParsing="false" onAction="#showCheckResult" prefWidth="100.0" text="查看结果">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Label layoutX="20.0" layoutY="80.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="设置忽略检查" />
-                                                 <Button layoutX="130.0" layoutY="75" mnemonicParsing="false" onAction="#skipNewMenu" prefWidth="130.0" text="缺少新版全量">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Label layoutX="20.0" layoutY="80.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="忽略检查项" />
+                                     <Button layoutX="130.0" layoutY="75" mnemonicParsing="false" onAction="#skipNewMenu" prefWidth="130.0" text="缺少新版全量">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Button layoutX="290.0" layoutY="75" mnemonicParsing="false" onAction="#skipOldMenu" prefWidth="130.0" text="缺少老版全量">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Button layoutX="290.0" layoutY="75" mnemonicParsing="false" onAction="#skipOldMenu" prefWidth="130.0" text="缺少老版全量">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Button layoutX="130.0" layoutY="135" mnemonicParsing="false" onAction="#skipNewDiff" prefWidth="130.0" text="新版全量开通不同">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="0.0" right="0.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Button layoutX="130.0" layoutY="135" mnemonicParsing="false" onAction="#skipNewDiff" prefWidth="130.0" text="新版全量开通不同">
+                                         <padding>
+                                             <Insets bottom="5.0" left="0.0" right="0.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Button layoutX="290.0" layoutY="135" mnemonicParsing="false" onAction="#skipOldDiff" prefWidth="130.0" text="老版全量开通不同">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="0.0" right="0.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Button layoutX="290.0" layoutY="135" mnemonicParsing="false" onAction="#skipOldDiff" prefWidth="130.0" text="老版全量开通不同">
+                                         <padding>
+                                             <Insets bottom="5.0" left="0.0" right="0.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Button layoutX="130.0" layoutY="195" mnemonicParsing="false" onAction="#skipLog" prefWidth="130.0" text="缺少日志">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Button layoutX="130.0" layoutY="195" mnemonicParsing="false" onAction="#skipLog" prefWidth="130.0" text="缺少日志">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Button layoutX="290.0" layoutY="195" mnemonicParsing="false" onAction="#skipErrorLog" prefWidth="130.0" text="错误日志">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Button layoutX="290.0" layoutY="195" mnemonicParsing="false" onAction="#skipErrorLog" prefWidth="130.0" text="错误日志">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Button layoutX="130.0" layoutY="255" mnemonicParsing="false" onAction="#skipRouter" prefWidth="130.0" text="缺少路由">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Button layoutX="130.0" layoutY="255" mnemonicParsing="false" onAction="#skipRouter" prefWidth="130.0" text="缺少路由">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Button layoutX="290.0" layoutY="255" mnemonicParsing="false" onAction="#skipNewLegal" prefWidth="130.0" text="新版合法性">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Button layoutX="290.0" layoutY="255" mnemonicParsing="false" onAction="#skipNewLegal" prefWidth="130.0" text="新版合法性">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Button layoutX="130.0" layoutY="315" mnemonicParsing="false" onAction="#skipExtLegal" prefWidth="130.0" text="开通脚本合法性">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
+                                     <Button layoutX="130.0" layoutY="315" mnemonicParsing="false" onAction="#skipExtLegal" prefWidth="130.0" text="开通脚本合法性">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
 
-                                                 <Label layoutX="20.0" layoutY="385.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="检查结果修复" />
-                                                 <Button layoutX="130.0" layoutY="380" mnemonicParsing="false" onAction="#repairLackLog" prefWidth="100.0" text="修复缺少日志">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
-                                                 <Button layoutX="260.0" layoutY="380" mnemonicParsing="false" onAction="#repairErrorLog" prefWidth="100.0" text="修复错误日志">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
-
-                                             </children>
-                                          </AnchorPane>
-                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
-                                             <children>
-                                                 <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="新版全量升级" />
-                                                 <Button layoutX="130.0" layoutY="15" mnemonicParsing="false" onAction="#updateMenu" prefWidth="100.0" text="执行">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
-                                                 <Button layoutX="260.0" layoutY="15" mnemonicParsing="false" onAction="#showUpdateResult" prefWidth="100.0" text="查看结果">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
-
-                                                 <Label layoutX="20.0" layoutY="80.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="老版切换新版" />
-                                                 <Button layoutX="130.0" layoutY="75" mnemonicParsing="false" onAction="#updateChangeMenu" prefWidth="100.0" text="执行">
-                                                     <padding>
-                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                                     </padding>
-                                                 </Button>
-                                             </children>
-                                          </AnchorPane>
-                                      </items>
-                                    </SplitPane>
+                                     <Label layoutX="20.0" layoutY="485.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="检查结果修正" />
+                                     <Button layoutX="130.0" layoutY="480" mnemonicParsing="false" onAction="#repairLackLog" prefWidth="100.0" text="修正缺少日志">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
+                                     <Button layoutX="260.0" layoutY="480" mnemonicParsing="false" onAction="#repairErrorLog" prefWidth="100.0" text="修正错误日志">
+                                         <padding>
+                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                         </padding>
+                                     </Button>
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="157.0">
@@ -137,7 +106,7 @@
                                       <items>
                                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="175.0" prefWidth="182.0">
                                              <children>
-                                                 <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="全局脚本修正" />
+                                                 <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="脚本修正" />
 
                                                  <Button layoutX="130.0" layoutY="15" mnemonicParsing="false" onAction="#repairOldMenu" prefWidth="100.0" text="修正老版全量">
                                                      <padding>
@@ -185,6 +154,41 @@
                                                      </padding>
                                                  </Button>
                                                  <Button layoutX="260.0" layoutY="195" mnemonicParsing="false" onAction="#skipRepairExt" prefWidth="100.0" text="忽略开通脚本">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+
+                                                 <Button layoutX="130.0" layoutY="255" mnemonicParsing="false" onAction="#updateChangeMenu" prefWidth="100.0" text="老版切换新版">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+
+                                                 <Button layoutX="130.0" layoutY="315" mnemonicParsing="false" onAction="#repairReport" prefWidth="100.0" text="修正报表脚本">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+
+
+
+
+
+
+
+
+
+
+
+
+                                                 <Label layoutX="20.0" layoutY="605.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="新版全量升级" />
+                                                 <Button layoutX="130.0" layoutY="600" mnemonicParsing="false" onAction="#updateMenu" prefWidth="100.0" text="执行">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+                                                 <Button layoutX="260.0" layoutY="600" mnemonicParsing="false" onAction="#showUpdateResult" prefWidth="100.0" text="查看结果">
                                                      <padding>
                                                          <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                                      </padding>

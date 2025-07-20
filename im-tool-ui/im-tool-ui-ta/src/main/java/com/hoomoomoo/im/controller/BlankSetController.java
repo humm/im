@@ -142,7 +142,7 @@ public class BlankSetController implements Initializable {
             if (PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG.equals(appConfigDto.getPageType())) {
                 String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
                 confPath = resultPath + "\\" + ERROR_LOG.getFileName();
-                submit.setText("修复");
+                submit.setText(NAME_REPAIR);
             } else {
                 for (SQL_CHECK_TYPE item : checkType) {
                     String index = String.valueOf(item.getIndex());

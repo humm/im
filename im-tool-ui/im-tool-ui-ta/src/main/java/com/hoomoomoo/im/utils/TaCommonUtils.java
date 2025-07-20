@@ -403,7 +403,10 @@ public class TaCommonUtils {
     }
 
     public static String getMsgContainDate(String msg) {
-        return CommonUtils.getCurrentDateTime1() + STR_SPACE + msg;
+        if (StringUtils.isBlank(msg)) {
+            return CommonUtils.getCurrentDateTime14();
+        }
+        return CommonUtils.getCurrentDateTime14() + STR_SPACE + msg;
     }
 
     public static String getMsgContainTime(String msg) {

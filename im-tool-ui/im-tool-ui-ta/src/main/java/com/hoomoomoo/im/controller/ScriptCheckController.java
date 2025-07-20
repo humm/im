@@ -3,10 +3,7 @@ package com.hoomoomoo.im.controller;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.extend.ScriptCompareSql;
-import com.hoomoomoo.im.extend.ScriptRepairSql;
-import com.hoomoomoo.im.extend.ScriptSqlUtils;
-import com.hoomoomoo.im.extend.ScriptUpdateSql;
+import com.hoomoomoo.im.extend.*;
 import com.hoomoomoo.im.task.ScriptCheckTask;
 import com.hoomoomoo.im.task.ScriptCheckTaskParam;
 import com.hoomoomoo.im.utils.*;
@@ -61,7 +58,7 @@ public class ScriptCheckController implements Initializable {
     void checkMenu(ActionEvent event) throws Exception {
         closeCheckResultStage();
         if (executeFlag) {
-            OutputUtils.info(logs, getCheckMenuMsg("检查中 ··· 请稍后 ···"));
+            OutputUtils.info(logs, getCommonMsg(NAME_CHECK_MENU, "检查中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
@@ -70,22 +67,22 @@ public class ScriptCheckController implements Initializable {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_CHECK_MENU)));
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
+            OutputUtils.info(logs, getCommonMsg(NAME_CHECK_MENU, e.getMessage()));
             executeFlag = false;
         }
     }
 
     public void doCheckMenu() {
         try {
-            OutputUtils.info(logs, getCheckMenuMsg("检查开始"));
+            OutputUtils.info(logs, getCommonMsg(NAME_CHECK_MENU, "检查开始"));
             showScheduleInfo(NAME_CHECK_MENU, "检查");
             new ScriptCompareSql().check();
-            OutputUtils.info(logs, getCheckMenuMsg("检查结束"));
+            OutputUtils.info(logs, getCommonMsg(NAME_CHECK_MENU, "检查结束"));
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_CHECK_MENU);
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCheckMenuMsg(e.getMessage()));
+            OutputUtils.info(logs, getCommonMsg(NAME_CHECK_MENU, e.getMessage()));
         } finally {
             executeFlag = false;
         }
@@ -126,7 +123,7 @@ public class ScriptCheckController implements Initializable {
             addLog("查看修正老版全量错误信息");
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCheckMenuMsg("查看修正老版全量错误信息"));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "查看修正老版全量错误信息"));
         }
     }
 
@@ -144,7 +141,7 @@ public class ScriptCheckController implements Initializable {
             addLog("查看修正新版全量错误信息");
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCheckMenuMsg("查看修正新版全量错误信息"));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "查看修正新版全量错误信息"));
         }
     }
 
@@ -204,14 +201,14 @@ public class ScriptCheckController implements Initializable {
             addLog("检查结果");
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCheckMenuMsg("请检查结果文件是否存在"));
+            OutputUtils.info(logs, getCommonMsg(NAME_SHOW_RESULT, "请检查结果文件是否存在"));
         }
     }
 
     @FXML
     void repairLackLog(ActionEvent event) throws Exception {
         if (executeFlag) {
-            OutputUtils.info(logs, getRepairLackExt("修复中 ··· 请稍后 ···"));
+            OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
@@ -220,7 +217,7 @@ public class ScriptCheckController implements Initializable {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_LACK_EXT)));
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getRepairLackExt(e.getMessage()));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, e.getMessage()));
             executeFlag = false;
         }
     }
@@ -234,15 +231,15 @@ public class ScriptCheckController implements Initializable {
                 OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, "未找到缺少日志文件"));
                 return;
             }
-            OutputUtils.info(logs, getRepairLackExt("修复开始"));
-            showScheduleInfo(NAME_REPAIR_LACK_EXT, "修复");
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, NAME_REPAIR_START));
+            showScheduleInfo(NAME_REPAIR_LACK_EXT, NAME_REPAIR);
             ScriptRepairSql.repairLackLog();
-            OutputUtils.info(logs, getRepairLackExt("修复结束"));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, NAME_REPAIR_END));
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_LACK_EXT);
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getRepairLackExt(e.getMessage()));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, e.getMessage()));
         } finally {
             executeFlag = false;
         }
@@ -251,7 +248,7 @@ public class ScriptCheckController implements Initializable {
     @FXML
     void repairWorkFlow(ActionEvent event) throws Exception {
         if (executeFlag) {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, "修复中 ··· 请稍后 ···"));
+            OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
@@ -279,16 +276,16 @@ public class ScriptCheckController implements Initializable {
             addLog("查看修正复核信息错误信息");
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getCheckMenuMsg("查看修正新版全量错误信息"));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, "查看修正新版全量错误信息"));
         }
     }
 
     public void doRepairWorkFlow() {
         try {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, "修复开始"));
-            showScheduleInfo(NAME_REPAIR_WORK_FLOW, "修复");
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, NAME_REPAIR_START));
+            showScheduleInfo(NAME_REPAIR_WORK_FLOW, NAME_REPAIR);
             ScriptRepairSql.repairWorkFlow();
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, "修复结束"));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, NAME_REPAIR_END));
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_WORK_FLOW);
         } catch (Exception e) {
@@ -309,7 +306,7 @@ public class ScriptCheckController implements Initializable {
     @FXML
     void repairExt(ActionEvent event) throws Exception {
         if (executeFlag) {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, "修复中 ··· 请稍后 ···"));
+            OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
@@ -325,10 +322,10 @@ public class ScriptCheckController implements Initializable {
 
     public void doRepairExt() {
         try {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, "修复开始"));
-            showScheduleInfo(NAME_REPAIR_EXT, "修复");
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, NAME_REPAIR_START));
+            showScheduleInfo(NAME_REPAIR_EXT, NAME_REPAIR);
             ScriptRepairSql.repairExt();
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, "修复结束"));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, NAME_REPAIR_END));
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_EXT);
         } catch (Exception e) {
@@ -342,7 +339,7 @@ public class ScriptCheckController implements Initializable {
     @FXML
     void repairOldMenu(ActionEvent event) throws Exception {
         if (executeFlag) {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "修复中 ··· 请稍后 ···"));
+            OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
@@ -358,10 +355,10 @@ public class ScriptCheckController implements Initializable {
 
     public void doRepairOldMenu() {
         try {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "修复开始"));
-            showScheduleInfo(NAME_REPAIR_OLD_MENU, "修复");
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, NAME_REPAIR_START));
+            showScheduleInfo(NAME_REPAIR_OLD_MENU, NAME_REPAIR);
             ScriptRepairSql.repairOldMenu();
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "修复结束"));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, NAME_REPAIR_END));
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_OLD_MENU);
         } catch (Exception e) {
@@ -375,7 +372,7 @@ public class ScriptCheckController implements Initializable {
     @FXML
     void repairNewMenu(ActionEvent event) throws Exception {
         if (executeFlag) {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "修复中 ··· 请稍后 ···"));
+            OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
@@ -391,10 +388,10 @@ public class ScriptCheckController implements Initializable {
 
     public void doRepairNewMenu() {
         try {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "修复开始"));
-            showScheduleInfo(NAME_REPAIR_NEW_MENU, "修复");
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, NAME_REPAIR_START));
+            showScheduleInfo(NAME_REPAIR_NEW_MENU, NAME_REPAIR);
             ScriptRepairSql.repairNewMenu();
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "修复结束"));
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, NAME_REPAIR_END));
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_NEW_MENU);
         } catch (Exception e) {
@@ -415,7 +412,7 @@ public class ScriptCheckController implements Initializable {
             return;
         }
         if (appConfigDto.getExecute()) {
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复中 ··· 请稍后 ···"));
+            OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
             return;
         }
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG, NAME_REPAIR_ERROR_EXT);
@@ -437,12 +434,12 @@ public class ScriptCheckController implements Initializable {
                     startFlag = true;
                 }
                 if (!executeFlag && execute) {
-                    OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复开始"));
-                    showScheduleInfo(NAME_REPAIR_ERROR_EXT, "修复");
+                    OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, NAME_REPAIR_START));
+                    showScheduleInfo(NAME_REPAIR_ERROR_EXT, NAME_REPAIR);
                     executeFlag = true;
                 }
                 if (executeFlag && startFlag && !execute) {
-                    OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, "修复结束"));
+                    OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, NAME_REPAIR_END));
                     OutputUtils.info(logs, STR_NEXT_LINE);
                     addLog(NAME_REPAIR_ERROR_EXT);
                     break;
@@ -467,7 +464,7 @@ public class ScriptCheckController implements Initializable {
             addLog("升级脚本");
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getUpdateMenuMsg("请检查结果文件是否不存在"));
+            OutputUtils.info(logs, getCommonMsg(NAME_SHOW_RESULT, "请检查结果文件是否不存在"));
         }
     }
 
@@ -478,7 +475,7 @@ public class ScriptCheckController implements Initializable {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, KEY_UPDATE_MENU)));
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
+            OutputUtils.info(logs, getCommonMsg(KEY_UPDATE_MENU, e.getMessage()));
         }
     }
 
@@ -488,13 +485,50 @@ public class ScriptCheckController implements Initializable {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, KEY_UPDATE_CHANGE_MENU)));
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
+            OutputUtils.info(logs, getCommonMsg(KEY_UPDATE_CHANGE_MENU, e.getMessage()));
+        }
+    }
+
+    @FXML
+    void repairReport(ActionEvent event) {
+        try {
+            TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_REPORT)));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT, e.getMessage()));
+        }
+    }
+
+    public void doRepairReport() {
+        try {
+            if (executeFlag) {
+                OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
+                return;
+            }
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT,"执行开始"));
+            executeFlag = true;
+            showScheduleInfo(NAME_REPAIR_REPORT, NAME_REPAIR);
+            new ReportRepairSql().repair(ConfigCache.getAppConfigDtoCache());
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT,"执行结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_REPAIR_REPORT);
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT, e.getMessage()));
+        } finally {
+            executeFlag = false;
         }
     }
 
     public void doUpdateChangeMenu() {
         try {
+            if (executeFlag) {
+                OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
+                return;
+            }
             OutputUtils.info(logs, getCommonMsg(NAME_OLD_TO_NEW_MENU,"执行开始"));
+            executeFlag = true;
+            showScheduleInfo(NAME_OLD_TO_NEW_MENU, NAME_REPAIR);
             new ScriptUpdateSql().generateChangeMenuSql();
             OutputUtils.info(logs, getCommonMsg(NAME_OLD_TO_NEW_MENU,"执行结束"));
             OutputUtils.info(logs, STR_NEXT_LINE);
@@ -502,38 +536,30 @@ public class ScriptCheckController implements Initializable {
         } catch (Exception e) {
             LoggerUtils.info(e);
             OutputUtils.info(logs, getCommonMsg(NAME_OLD_TO_NEW_MENU, e.getMessage()));
+        } finally {
+            executeFlag = false;
         }
     }
 
     public void doUpdateMenu() {
         try {
-            // 设置颜色
-            // logs.setStyle("-fx-text-fill: green;");
-            OutputUtils.info(logs, getUpdateMenuMsg("执行开始"));
+            OutputUtils.info(logs, getCommonMsg(NAME_UPDATE_MENU, "执行开始"));
             new ScriptUpdateSql().generateSql();
-            OutputUtils.info(logs, getUpdateMenuMsg("执行结束"));
+            OutputUtils.info(logs, getCommonMsg(NAME_UPDATE_MENU, "执行结束"));
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog("菜单升级脚本");
         } catch (Exception e) {
             LoggerUtils.info(e);
-            OutputUtils.info(logs, getUpdateMenuMsg(e.getMessage()));
+            OutputUtils.info(logs, getCommonMsg(NAME_UPDATE_MENU, e.getMessage()));
         }
-    }
-
-    public static String getCheckMenuMsg (String msg) {
-        return TaCommonUtils.getMsgContainDate("【"+ NAME_CHECK_MENU + "】") + STR_SPACE + msg + STR_NEXT_LINE;
-    }
-
-    public static String getRepairLackExt (String msg) {
-        return TaCommonUtils.getMsgContainDate("【"+ NAME_REPAIR_LACK_EXT + "】") + STR_SPACE + msg + STR_NEXT_LINE;
-    }
-
-    public static String getUpdateMenuMsg (String msg) {
-        return TaCommonUtils.getMsgContainDate("【"+ NAME_UPDATE_MENU + "】") + STR_SPACE + msg + STR_NEXT_LINE;
     }
 
     public static String getCommonMsg (String functionName, String msg) {
         return TaCommonUtils.getMsgContainDate("【"+ functionName + "】") + STR_SPACE + msg + STR_NEXT_LINE;
+    }
+
+    public static String getCommonMsg (String msg) {
+        return TaCommonUtils.getMsgContainDate(STR_BLANK) + STR_SPACE + msg + STR_NEXT_LINE;
     }
 
     public static void addLog(String msg) {
@@ -553,7 +579,7 @@ public class ScriptCheckController implements Initializable {
             }
         } catch (Exception e) {
             LoggerUtils.info(e);
-            LoggerUtils.info(getCheckMenuMsg(e.getMessage()));
+            LoggerUtils.info(getCommonMsg(NAME_SHOW_RESULT, e.getMessage()));
         }
     }
 

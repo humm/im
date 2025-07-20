@@ -85,7 +85,9 @@ public class BaseConst {
     public static final String KEY_CLASSES = "classes";
     public static final String KEY_NOTICE = "notice";
     public static final String KEY_VALUES = "values";
+    public static final String KEY_COMMIT = "commit";
     public static final String KEY_CONF = "conf";
+    public static final String KEY_CALL = "call";
     public static final String KEY_FILE_SLASH = "file:/";
     public static final String KEY_FILE = "file:";
     public static final String KEY_APP_LOG = "appLog";
@@ -233,18 +235,23 @@ public class BaseConst {
     public static final String NAME_SCRIPT_DETAIL = "脚本详情";
     public static final String NAME_SYSTEM_LOG = "系统日志";
     public static final String NAME_INNER_CUSTOMER = "内部客户";
+    public static final String NAME_REPAIR = "修正";
+    public static final String NAME_REPAIR_START = "修正开始";
+    public static final String NAME_REPAIR_END = "修正结束";
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
     public static final String NAME_UPDATE_VERSION = "同步发版时间";
     public static final String NAME_CHECK_MENU = "配置脚本检查";
     public static final String NAME_UPDATE_MENU = "新版全量升级";
     public static final String NAME_OLD_TO_NEW_MENU = "老版切换新版";
-    public static final String NAME_REPAIR_LACK_EXT = "修复缺少日志";
-    public static final String NAME_REPAIR_ERROR_EXT = "修复错误日志";
+    public static final String NAME_REPAIR_LACK_EXT = "修正缺少日志";
+    public static final String NAME_SHOW_RESULT = "查看结果";
+    public static final String NAME_REPAIR_ERROR_EXT = "修正错误日志";
     public static final String NAME_REPAIR_WORK_FLOW = "修正复核信息";
     public static final String NAME_REPAIR_OLD_MENU = "修正老版全量";
     public static final String NAME_REPAIR_NEW_MENU = "修正新版全量";
     public static final String NAME_REPAIR_EXT = "修正开通脚本";
+    public static final String NAME_REPAIR_REPORT = "修正报表脚本";
     public static final String NAME_CLEAR_LOG = "系统日志";
     public static final String NAME_SYNC_CODE = "同步源码";
 

@@ -2,9 +2,9 @@ package com.hoomoomoo.im.main;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.STR_COMMA;
 import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
@@ -19,13 +19,15 @@ public class BuildMutualExclusionConfig {
         config.put("A", "A名称");
         config.put("B", "B名称");
         config.put("C", "C名称");
-        String mutexMessage = config.values().stream().collect(Collectors.joining(STR_COMMA));
-        for (String item : config.keySet()) {
+        Iterator<String> iterator = config.keySet().iterator();
+        while (iterator.hasNext()) {
+            String item = iterator.next();
             for (String ele : config.keySet()) {
                 if (!StringUtils.equals(item, ele)) {
-                    buildConfig(item, ele, mutexMessage);
+                    buildConfig(item, ele, config.get(item) + STR_COMMA + config.get(ele));
                 }
             }
+            iterator.remove();
         }
     }
 
