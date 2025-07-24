@@ -627,7 +627,6 @@ public class TaCommonUtils {
 
     public static Map<String, Set<String>> getTaskStatus(String task) {
         Set<String> taskList = new HashSet<>();
-        Set<String> demandList = new HashSet<>();
         if (StringUtils.isNotBlank(task)) {
             Map<String, Object> resMap = JSON.parseObject(task, Map.class);
             JSONObject data = (JSONObject)resMap.get(KEY_DATA);
@@ -644,7 +643,6 @@ public class TaCommonUtils {
                         for (String single : demandNoList) {
                             demandInfo.setLength(0);
                             taskList.add(demandInfo.append(taskNumber).append(STR_SEMICOLON).append(customerNames).append(STR_SEMICOLON).append(single).toString());
-                            demandList.add(single);
                         }
                     }
                 }
@@ -652,7 +650,6 @@ public class TaCommonUtils {
         }
         Map<String, Set<String>> res = new HashMap<>(2);
         res.put(KEY_TASK, taskList);
-        res.put(KEY_DEMAND, demandList);
         return res;
     }
 }

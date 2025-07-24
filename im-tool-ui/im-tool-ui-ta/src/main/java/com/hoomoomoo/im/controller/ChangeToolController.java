@@ -215,7 +215,24 @@ public class ChangeToolController implements Initializable {
         if (StringUtils.isBlank(dbNumIn)) {
             OutputUtils.infoContainBr(logs, "分库数量 不能为空");
         }
-        int codeValue = Integer.parseInt(codeIn.substring(codeIn.length() -8));
+        codeIn = codeIn.substring(codeIn.length() -8);
+        int hash = 0;
+        int len = codeIn.length();
+        int accChar;
+        int charNum;
+        for (int i=0; i<len; ++i) {
+            accChar = codeIn.charAt(i);
+            charNum = 0;
+            if (Character.isDigit(accChar)) {
+                charNum = accChar - '0';
+            } else if (Character.isUpperCase(accChar)) {
+                charNum = (accChar - 'A') % 10;
+            } else if (Character.isLowerCase(accChar)) {
+                charNum =(accChar -'a') % 10;
+            }
+            hash = hash * 10 + charNum;
+        }
+        int codeValue = Math.abs(hash);
         int dbNumValue = Integer.parseInt(dbNumIn);
         OutputUtils.infoContainBr(logs, "分库号: " + ((codeValue % dbNumValue) + 1));
         OutputUtils.infoContainBr(logs, "分表号: " + ((codeValue / dbNumValue) % 16 + 1));

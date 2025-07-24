@@ -241,7 +241,7 @@ public class BaseConst {
 
     public static final String NAME_SHAKE_MOUSE = "模拟鼠标移动";
     public static final String NAME_UPDATE_VERSION = "同步发版时间";
-    public static final String NAME_CHECK_MENU = "配置脚本检查";
+    public static final String NAME_CHECK_MENU = "脚本检查";
     public static final String NAME_UPDATE_MENU = "新版全量升级";
     public static final String NAME_OLD_TO_NEW_MENU = "老版切换新版";
     public static final String NAME_REPAIR_LACK_EXT = "修正缺少日志";
@@ -277,7 +277,7 @@ public class BaseConst {
     public final static String STR_NUMBER_SIGN = "#";
     public final static String STR_AND = "&";
     public final static String STR_EQUAL = "=";
-    public final static String STR_EQUAL_5 = "=====";
+    public final static String STR_SPLIT = "@@@_@@@";
     public final static String STR_SPACE = " ";
     public final static String STR_SPACE_2 = "  ";
     public final static String STR_SPACE_3 = "   ";

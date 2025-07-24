@@ -369,10 +369,9 @@ public class SystemToolController implements Initializable {
         }};
         Set<String> demandList = new HashSet<>();
         Set<String> taskList = new HashSet<>();
-        Set<String> effectiveDemandList = new HashSet<>();
         if (CollectionUtils.isNotEmpty(response)) {
             for (String item : response) {
-                String[] element = item.split(STR_EQUAL_5);
+                String[] element = item.split(STR_SPLIT);
                 if (element.length == 2) {
                     String key = element[0];
                     String value = element[1];
@@ -380,13 +379,12 @@ public class SystemToolController implements Initializable {
                         demandList.addAll(TaCommonUtils.getDemandStatus(value));
                     } else if (task.contains(key)) {
                         Map<String, Set<String>> taskMap = TaCommonUtils.getTaskStatus(value);
-                        effectiveDemandList = taskMap.get(KEY_DEMAND);
                         taskList.addAll(taskMap.get(KEY_TASK));
                     }
-
                 }
             }
         }
+        LoggerUtils.info("同步获取任务数量: " + taskList.size());
         if (CollectionUtils.isNotEmpty(taskList)) {
             String taskPath = FileUtils.getFilePath(PATH_TASK_STAT);
             if (new File(taskPath).exists()) {
@@ -394,19 +392,12 @@ public class SystemToolController implements Initializable {
             }
             FileUtils.writeFile(taskPath, new ArrayList<>(taskList));
         }
+        LoggerUtils.info("同步获取需求数量: " + demandList.size());
         if (CollectionUtils.isNotEmpty(demandList)) {
             String demandPath = FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT);
             if (new File(demandPath).exists()) {
                 handleDemand(FileUtils.readNormalFile(demandPath), demandList);
             }
-            /*Iterator<String> iterator = demandRes.listIterator();
-            while (iterator.hasNext()) {
-                String item = iterator.next();
-                String key = item.split(STR_SEMICOLON)[0];
-                if (!effectiveDemandList.contains(key)) {
-                    iterator.remove();
-                }
-            }*/
             FileUtils.writeFile(demandPath, new ArrayList<>(demandList));
         }
         LoggerUtils.info("同步任务信息结束");
@@ -454,9 +445,8 @@ public class SystemToolController implements Initializable {
         List<String> versionList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(response)) {
             for (String item : response) {
-                String[] element = item.split(STR_EQUAL_5);
+                String[] element = item.split(STR_SPLIT);
                 if (element.length == 2) {
-                    String key = element[0];
                     String value = element[1];
                     versionList.addAll(TaCommonUtils.getVersionInfo(value));
                 }
