@@ -652,4 +652,8 @@ public class TaCommonUtils {
         res.put(KEY_TASK, taskList);
         return res;
     }
+
+    public static String getDemandTaskKey(String item) {
+        return item.split(STR_SEMICOLON)[0].trim() + STR_SEMICOLON;
+    }
 }

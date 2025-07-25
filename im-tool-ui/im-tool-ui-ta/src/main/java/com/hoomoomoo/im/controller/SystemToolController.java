@@ -4,8 +4,6 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import com.hoomoomoo.im.task.ScriptCheckTask;
-import com.hoomoomoo.im.task.ScriptCheckTaskParam;
 import com.hoomoomoo.im.task.SystemToolTask;
 import com.hoomoomoo.im.task.SystemToolTaskParam;
 import com.hoomoomoo.im.utils.*;
@@ -16,7 +14,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
@@ -388,31 +385,31 @@ public class SystemToolController implements Initializable {
         if (CollectionUtils.isNotEmpty(taskList)) {
             String taskPath = FileUtils.getFilePath(PATH_TASK_STAT);
             if (new File(taskPath).exists()) {
-                handleDemand(FileUtils.readNormalFile(taskPath), taskList);
+                mergeData(FileUtils.readNormalFile(taskPath), taskList);
             }
             FileUtils.writeFile(taskPath, new ArrayList<>(taskList));
         }
         LoggerUtils.info("同步获取需求数量: " + demandList.size());
         if (CollectionUtils.isNotEmpty(demandList)) {
-            String demandPath = FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT);
+            String demandPath = FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT);
             if (new File(demandPath).exists()) {
-                handleDemand(FileUtils.readNormalFile(demandPath), demandList);
+                mergeData(FileUtils.readNormalFile(demandPath), demandList);
             }
             FileUtils.writeFile(demandPath, new ArrayList<>(demandList));
         }
         LoggerUtils.info("同步任务信息结束");
     }
 
-    private void handleDemand(List<String> demandRes, Set<String> demandList) {
+    private void mergeData(List<String> dataRes, Set<String> dataList) {
         Set<String> keys = new HashSet<>();
-        for (String item : demandList) {
-            String key = item.split(STR_SEMICOLON)[0].trim() + STR_SEMICOLON;
+        for (String item : dataList) {
+            String key = TaCommonUtils.getDemandTaskKey(item);
             keys.add(key);
         }
-        for (String item : demandRes) {
-            String key = item.split(STR_SEMICOLON)[0].trim() + STR_SEMICOLON;
+        for (String item : dataRes) {
+            String key = TaCommonUtils.getDemandTaskKey(item);
             if (!keys.contains(key)) {
-                demandList.add(item);
+                dataList.add(item);
             }
         }
     }

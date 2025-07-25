@@ -365,11 +365,14 @@ public class BaseConst {
     public static final String APP_MODE_NAME_APP = "工厂模式";
     public static final String APP_MODE_NAME_JAR = "Jar模式";
 
-    public static final String CONFIG_PREFIX = "#################### ";
+    public static final String CONF_FUNCTION_PREFIX = "####################";
+    public static final String CONFIG_PREFIX = CONF_FUNCTION_PREFIX + STR_SPACE;
 
     public static final String CMD_KILL_APP = "taskill /f /t /im %s";
 
     public static final String FILE_GIT_PULL_BAT = "git-pull.bat";
+
+    public static final String ERROR_CODE_FILE_NOT_EXIST = "999999";
 
     public static final String DEFAULT_FOLDER = "/extend/scriptUpdate";
     public static final String PATH_APP = "/conf/app.conf";
@@ -409,17 +412,16 @@ public class BaseConst {
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/extend/version/version.stat";
+    public static final String PATH_DEFINE_DEMAND_STAT = "/extend/task/demand.stat";
     public static final String PATH_TASK_STAT = "/extend/task/task.stat";
-    public static final String PATH_DEMAND_STAT = "/demand.stat";
-    public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
-    public static final String PATH_SYNC_TASK_STAT = "/task";
-    public static final String PATH_SYNC_VERSION_STAT = "/version";
     public static final String PATH_DEFINE_TASK_DEV_EXTEND_STAT = "/extend/task/taskDevExtend.stat";
     public static final String PATH_DEFINE_TASK_EXTEND_STAT = "/extend/task/taskExtend.stat";
     public static final String PATH_DEFINE_TASK_LEVEL_EXTEND_STAT = "/extend/task/taskLevelExtend.stat";
-    public static final String PATH_DEFINE_DEMAND_SYNC_STAT = "/extend/task/demand.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";
+    public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
+    public static final String PATH_SYNC_TASK_STAT = "/task";
+    public static final String PATH_SYNC_VERSION_STAT = "/version";
     public static final String PATH_GIT_PULL = "/conf/bat/git-pull.bat";
     public static final String PATH_APP_START = "run-silence.bat";
 
@@ -478,8 +480,6 @@ public class BaseConst {
     public static final String STYLE_BOLD_RED = "-fx-font-weight: bold; -fx-text-background-color: red;";
     public static final String STYLE_BOLD = "-fx-font-weight: bold;";
     public static final String STYLE_NORMAL = "-fx-font-weight: normal;";
-
-    public static final String CONF_FUNCTION_PREFIX = "####################";
 
     public enum SQL_CHECK_TYPE {
         CHECK_RESULT_SUMMARY(100, "结果汇总", "100.结果汇总.sql", ""),

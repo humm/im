@@ -46,7 +46,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -950,6 +949,8 @@ public class HepTodoController extends BaseController implements Initializable {
         int dayVersionNum = 0;
         int weekVersionNum = 0;
         int mergerNum = 0;
+        Set<String> taskNoList = new LinkedHashSet<>();
+        Set<String> demandNoList = new LinkedHashSet<>();
         Iterator<HepTaskDto> iterator = res.listIterator();
         Set<String> existTask = new HashSet<>();
         Set<String> sameAssigneeIdReviewerId = new HashSet<>();
@@ -965,6 +966,8 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.isBlank(demandNo)) {
                 demandNo = taskNumberIn;
             }
+            taskNoList.add(taskNumberIn);
+            demandNoList.add(demandNo);
             if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
                 sameAssigneeIdReviewerId.add(taskNumberIn);
             }
@@ -1214,6 +1217,38 @@ public class HepTodoController extends BaseController implements Initializable {
             });
         }
         printTaskInfo(res);
+        updateHepStatFile(taskNoList, demandNoList);
+    }
+
+    private void updateHepStatFile(Set<String> taskNoList, Set<String> demandNoList) throws IOException {
+        List<String> demandStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT));
+        List<String> taskStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_STAT));
+        List<String> taskExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT));
+        List<String> taskDevExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT));
+        List<String> taskLevelExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT));
+        updateFile(demandStat, demandNoList, PATH_DEFINE_DEMAND_STAT);
+        updateFile(taskStat, taskNoList, PATH_TASK_STAT);
+        updateFile(taskExtendStat, taskNoList, PATH_DEFINE_TASK_EXTEND_STAT);
+        updateFile(taskDevExtendStat, taskNoList, PATH_DEFINE_TASK_DEV_EXTEND_STAT);
+        taskNoList.addAll(demandNoList);
+        updateFile(taskLevelExtendStat, taskNoList, PATH_DEFINE_TASK_LEVEL_EXTEND_STAT);
+    }
+
+    private void updateFile(List<String> content, Set<String> keys, String path) throws IOException {
+        if (CollectionUtils.isEmpty(content)) {
+            return;
+        }
+        int oriLength = content.size();
+        Iterator<String> iterator = content.listIterator();
+        while (iterator.hasNext()) {
+            String item = iterator.next();
+            if (!keys.contains(TaCommonUtils.getDemandTaskKey(item))) {
+                iterator.remove();
+            }
+        }
+        if (oriLength != content.size()) {
+            FileUtils.writeFile(FileUtils.getFilePath(path), new ArrayList<>(content));
+        }
     }
 
     private void setTaskLevel(HepTaskDto item, String taskLevel) {
@@ -2061,7 +2096,7 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getDemandInfo() {
         Map<String, String> demand = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_SYNC_STAT));
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT));
             taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT)));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {

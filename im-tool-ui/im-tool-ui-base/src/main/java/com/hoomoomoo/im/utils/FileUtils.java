@@ -314,10 +314,7 @@ public class FileUtils {
         List<String> fileContent = new LinkedList();
         LinkedHashMap<String, String> fileContentMap = new LinkedHashMap<>(16);
         File file = new File(filePath);
-        if (!file.exists()) {
-            LoggerUtils.info("文件不存在,请检查: " + filePath);
-            throw new IOException("文件不存在,请检查: " + filePath);
-        } else {
+        if (file.exists()) {
             String fileEncode = getFileEncode(filePath);
             FileInputStream fileInputStream = new FileInputStream(filePath);
             InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, fileEncode);
@@ -333,6 +330,8 @@ public class FileUtils {
             bufferedReader.close();
             inputStreamReader.close();
             fileInputStream.close();
+        } else {
+            LoggerUtils.info("文件不存在,请检查: " + filePath);
         }
         return FILE_TYPE_NORMAL.equals(fileType) ? fileContent : fileContentMap;
     }

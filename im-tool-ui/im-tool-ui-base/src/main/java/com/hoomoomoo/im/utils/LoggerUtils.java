@@ -48,6 +48,7 @@ public class LoggerUtils {
             log.append(CommonUtils.getCurrentDateTime1(new Date()) + STR_SPACE);
         }
         log.append(msg).append(STR_NEXT_LINE);
+        System.out.print(log);
         writeAppLog(msg, includeDate);
     }
 
