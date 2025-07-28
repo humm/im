@@ -52,9 +52,14 @@ public class ScriptUpdateSql {
         if (StringUtils.isBlank(basePath)) {
             throw new Exception("请配置参数【system.tool.check.menu.fund.base.path】\n");
         }
+        List<String> res = new ArrayList<>();
+        res.add("-- 仅适用于从老版ued升级到新版ued使用");
+        res.add("-- 如果环境部署时候则为新版ued无需执行");
+        res.add("-- 此且录脚本无需手动维护");
+        res.add("-- 需与平台新版ued脚本一起使用");
+        res.add(STR_BLANK);
         newUedPage = basePath + ScriptSqlUtils.newUedPage;
         List<String> sqlList = FileUtils.readNormalFile(newUedPage);
-        List<String> res = new ArrayList<>();
         for (String ele : sqlList) {
             if (ele.equals("commit;")) {
                 continue;
@@ -74,7 +79,15 @@ public class ScriptUpdateSql {
                     continue;
                 }
                 String menuCode = ScriptSqlUtils.getMenuCode(ele);
-                ele = ele.replace("values (", "select ").replace(");", " from (select count(1) param_exists from tsys_menu t where t.menu_code = '" + menuCode + "') a where a.param_exists = 1;");
+                String condition = "t.menu_code = '" + menuCode + "'";
+                if (StringUtils.equals(menuCode, "bizInterestRateSet")) {
+                    condition = "t.menu_code in ('fundInterestInfoSet', 'bizInterestRateSet')";
+                } else if (StringUtils.equals(menuCode, "bizBlackInfoSet")) {
+                    condition = "t.menu_code in ('fundBlackListSet', 'bizBlackInfoSet')";
+                } else if (StringUtils.equals(menuCode, "fundClerkList")) {
+                    condition = "t.menu_code in ('fundClerkList', 'bizClerkInfoSet')";
+                }
+                ele = ele.replace("values (", "select ").replace(");", " from (select count(1) param_exists from tsys_menu t where " + condition + ") a where a.param_exists = 1;");
                 res.add(ele);
                 continue;
             }
