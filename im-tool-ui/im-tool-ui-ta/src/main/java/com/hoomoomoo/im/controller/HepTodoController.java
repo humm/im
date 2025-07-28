@@ -1221,17 +1221,19 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void updateHepStatFile(Set<String> taskNoList, Set<String> demandNoList) throws IOException {
-        List<String> demandStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT));
-        List<String> taskStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_STAT));
-        List<String> taskExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT));
-        List<String> taskDevExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT));
-        List<String> taskLevelExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT));
-        updateFile(demandStat, demandNoList, PATH_DEFINE_DEMAND_STAT);
-        updateFile(taskStat, taskNoList, PATH_TASK_STAT);
-        updateFile(taskExtendStat, taskNoList, PATH_DEFINE_TASK_EXTEND_STAT);
-        updateFile(taskDevExtendStat, taskNoList, PATH_DEFINE_TASK_DEV_EXTEND_STAT);
-        taskNoList.addAll(demandNoList);
-        updateFile(taskLevelExtendStat, taskNoList, PATH_DEFINE_TASK_LEVEL_EXTEND_STAT);
+        if (frontPage()) {
+            List<String> demandStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT));
+            List<String> taskStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_STAT));
+            List<String> taskExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT));
+            List<String> taskDevExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT));
+            List<String> taskLevelExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT));
+            updateFile(demandStat, demandNoList, PATH_DEFINE_DEMAND_STAT);
+            updateFile(taskStat, taskNoList, PATH_TASK_STAT);
+            updateFile(taskExtendStat, taskNoList, PATH_DEFINE_TASK_EXTEND_STAT);
+            updateFile(taskDevExtendStat, taskNoList, PATH_DEFINE_TASK_DEV_EXTEND_STAT);
+            taskNoList.addAll(demandNoList);
+            updateFile(taskLevelExtendStat, taskNoList, PATH_DEFINE_TASK_LEVEL_EXTEND_STAT);
+        }
     }
 
     private void updateFile(List<String> content, Set<String> keys, String path) throws IOException {
@@ -1242,11 +1244,14 @@ public class HepTodoController extends BaseController implements Initializable {
         Iterator<String> iterator = content.listIterator();
         while (iterator.hasNext()) {
             String item = iterator.next();
-            if (!keys.contains(TaCommonUtils.getDemandTaskKey(item))) {
+            if (!keys.contains(TaCommonUtils.getDemandTaskKey(item, false))) {
                 iterator.remove();
             }
         }
         if (oriLength != content.size()) {
+            if (CollectionUtils.isEmpty(content)) {
+                content.add(STR_BLANK);
+            }
             FileUtils.writeFile(FileUtils.getFilePath(path), new ArrayList<>(content));
         }
     }
@@ -1735,7 +1740,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     clearFile(new File(fileSyncTarget), ver);
                 }
-                checkCommitNotPush(appConfigDto, "轮询时间: " +  CommonUtils.getCurrentDateTime14());
+                checkCommitNotPush(appConfigDto, String.format("轮询时间(%s): %s", authVersion.size(), CommonUtils.getCurrentDateTime14()));
                 outputMemory();
             }
         };

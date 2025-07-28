@@ -403,11 +403,11 @@ public class SystemToolController implements Initializable {
     private void mergeData(List<String> dataRes, Set<String> dataList) {
         Set<String> keys = new HashSet<>();
         for (String item : dataList) {
-            String key = TaCommonUtils.getDemandTaskKey(item);
+            String key = TaCommonUtils.getDemandTaskKey(item, true);
             keys.add(key);
         }
         for (String item : dataRes) {
-            String key = TaCommonUtils.getDemandTaskKey(item);
+            String key = TaCommonUtils.getDemandTaskKey(item, true);
             if (!keys.contains(key)) {
                 dataList.add(item);
             }

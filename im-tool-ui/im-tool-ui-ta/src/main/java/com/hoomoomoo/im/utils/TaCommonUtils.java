@@ -653,7 +653,11 @@ public class TaCommonUtils {
         return res;
     }
 
-    public static String getDemandTaskKey(String item) {
-        return item.split(STR_SEMICOLON)[0].trim() + STR_SEMICOLON;
+    public static String getDemandTaskKey(String item, boolean semicolon) {
+        if (semicolon) {
+            return item.split(STR_SEMICOLON)[0].trim() + STR_SEMICOLON;
+        } else {
+            return item.split(STR_SEMICOLON)[0].trim();
+        }
     }
 }
