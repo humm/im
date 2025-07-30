@@ -1242,18 +1242,24 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         int oriLength = content.size();
         Iterator<String> iterator = content.listIterator();
+        Set<String> deleteData = new LinkedHashSet<>();
         while (iterator.hasNext()) {
             String item = iterator.next();
-            if (!keys.contains(TaCommonUtils.getDemandTaskKey(item, false))) {
+            String taskKey = TaCommonUtils.getDemandTaskKey(item, false);
+            if (!keys.contains(taskKey)) {
                 iterator.remove();
+                deleteData.add(item);
             }
         }
         if (oriLength != content.size()) {
             if (CollectionUtils.isEmpty(content)) {
                 content.add(STR_BLANK);
             }
-            FileUtils.writeFile(FileUtils.getFilePath(path), new ArrayList<>(content));
+            //FileUtils.writeFile(FileUtils.getFilePath(path), new ArrayList<>(content));
         }
+        List tips = new ArrayList();
+        tips.add(String.format("文件【%s】原始数据【%s】更新后【%s】剔除数据【%s】", path, oriLength, content.size(), deleteData.stream().collect(Collectors.joining(STR_POINT_3))));
+        LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), tips);
     }
 
     private void setTaskLevel(HepTaskDto item, String taskLevel) {
@@ -1659,8 +1665,8 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void printTaskInfo(List<HepTaskDto> taskList) {
         if (frontPage() && CollectionUtils.isNotEmpty(taskList) && (devCompleteHide.isSelected() || devCompleteShow.isSelected())) {
-            String printType = devCompleteShow.isSelected() ? "分支已完成: " : "任务未完成: ";
-            logs.add(printType + (taskList.stream().filter(hepTaskDto -> StringUtils.isNotBlank(hepTaskDto.getDemandNo()))
+            String printType = devCompleteShow.isSelected() ? "分支已完成" : "未完成: ";
+            logs.add(String.format(printType + "需求(%s):", taskList.size()) + (taskList.stream().filter(hepTaskDto -> StringUtils.isNotBlank(hepTaskDto.getDemandNo()))
                     .map(HepTaskDto::getDemandNo).collect(Collectors.joining(STR_COMMA))).trim());
 ;        }
     }
@@ -1899,6 +1905,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private boolean frontPage() {
         return PAGE_USER.equals(EXTEND_USER_FRONT_CODE);
     }
+
     private boolean isExtendUser() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         return !CURRENT_USER_ID.equals(appConfigDto.getHepTaskUser()) || frontPage();
