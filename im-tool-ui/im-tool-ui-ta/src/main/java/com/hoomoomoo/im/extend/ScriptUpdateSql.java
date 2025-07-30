@@ -54,8 +54,8 @@ public class ScriptUpdateSql {
         }
         List<String> res = new ArrayList<>();
         res.add("-- 仅适用于从老版ued升级到新版ued使用");
-        res.add("-- 如果环境部署时候则为新版ued无需执行");
-        res.add("-- 此且录脚本无需手动维护");
+        res.add("-- 如果环境部署时候为新版ued则无需执行");
+        res.add("-- 此脚本无需手动维护");
         res.add("-- 需与平台新版ued脚本一起使用");
         res.add(STR_BLANK);
         newUedPage = basePath + ScriptSqlUtils.newUedPage;
@@ -84,7 +84,7 @@ public class ScriptUpdateSql {
                     condition = "t.menu_code in ('fundInterestInfoSet', 'bizInterestRateSet')";
                 } else if (StringUtils.equals(menuCode, "bizBlackInfoSet")) {
                     condition = "t.menu_code in ('fundBlackListSet', 'bizBlackInfoSet')";
-                } else if (StringUtils.equals(menuCode, "fundClerkList")) {
+                } else if (StringUtils.equals(menuCode, "bizClerkInfoSet")) {
                     condition = "t.menu_code in ('fundClerkList', 'bizClerkInfoSet')";
                 }
                 ele = ele.replace("values (", "select ").replace(");", " from (select count(1) param_exists from tsys_menu t where " + condition + ") a where a.param_exists = 1;");

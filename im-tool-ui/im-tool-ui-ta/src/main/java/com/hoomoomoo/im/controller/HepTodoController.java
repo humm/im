@@ -1988,6 +1988,9 @@ public class HepTodoController extends BaseController implements Initializable {
         List<VersionDto> versionDtoList = new ArrayList<>();
         if (CollectionUtils.isNotEmpty(versionList)) {
             for (String item : versionList) {
+                if (StringUtils.isBlank(item)) {
+                    continue;
+                }
                 String[] elements = item.split(STR_SEMICOLON);
                 VersionDto versionDto = new VersionDto();
                 String versionCode = elements[0];
@@ -2012,6 +2015,9 @@ public class HepTodoController extends BaseController implements Initializable {
             List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
+                    if (StringUtils.isBlank(item)) {
+                        continue;
+                    }
                     String[] elementList = item.split(STR_SEMICOLON);
                     customerName.put(elementList[0], elementList[1]);
                     demandNo.put(elementList[0], elementList[2]);
@@ -2031,6 +2037,9 @@ public class HepTodoController extends BaseController implements Initializable {
             List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
+                    if (StringUtils.isBlank(item)) {
+                        continue;
+                    }
                     String[] elementList = item.split(STR_SEMICOLON);
                     if (STR_FALSE.equals(elementList[1])) {
                         task.put(elementList[0], elementList[1]);
@@ -2052,6 +2061,9 @@ public class HepTodoController extends BaseController implements Initializable {
             List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
+                    if (StringUtils.isBlank(item)) {
+                        continue;
+                    }
                     String[] elementList = item.split(STR_SEMICOLON);
                     String level = elementList[1];
                     switch (level) {
@@ -2105,6 +2117,9 @@ public class HepTodoController extends BaseController implements Initializable {
             taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT)));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
+                    if (StringUtils.isBlank(item)) {
+                        continue;
+                    }
                     String[] elementList = item.split(STR_SEMICOLON);
                     if (STR_TRUE.equals(elementList[1])) {
                         demand.put(elementList[0], elementList[1]);
@@ -2126,6 +2141,9 @@ public class HepTodoController extends BaseController implements Initializable {
             List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
+                    if (StringUtils.isBlank(item)) {
+                        continue;
+                    }
                     String[] elementList = item.split(STR_SEMICOLON);
                     if (STR_TRUE.equals(elementList[1])) {
                         task.put(elementList[0], elementList[1]);
