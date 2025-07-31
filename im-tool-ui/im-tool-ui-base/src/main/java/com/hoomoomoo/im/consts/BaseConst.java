@@ -115,6 +115,7 @@ public class BaseConst {
     public final static String KEY_LOG_DEBUG = "debug";
 
     public final static String KEY_APP_ID = "app_id";
+    public final static String KEY_MD5 = "MD5";
     public final static String KEY_APP_KEY = "app_key";
     public final static String KEY_MESSAGE = "message";
     public final static String KEY_CODE = "code";

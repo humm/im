@@ -314,5 +314,7 @@ public class AppConfigDto extends BaseDto {
         this.initScanLog = true;
         this.scanLogTipsIndex = new LinkedHashMap<>();
         tooltip = new Tooltip();
+        tooltip.setStyle("-fx-background-color: black; -fx-font-size: 16");
+        tooltip.setAutoHide(true);
     }
 }

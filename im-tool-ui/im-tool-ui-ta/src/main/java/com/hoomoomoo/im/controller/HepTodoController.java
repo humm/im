@@ -1202,10 +1202,12 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.clearLog(waitMergerNum);
         OutputUtils.info(waitMergerNum, String.valueOf(mergerNum));
 
-        if (waitTaskSync) {
-            OutputUtils.info(taskTips, "请同步任务信息");
-        } else {
-            OutputUtils.info(taskTips, STR_BLANK);
+        if (!isExtendUser()) {
+            if (waitTaskSync) {
+                OutputUtils.info(taskTips, "请同步任务信息");
+            } else {
+                OutputUtils.info(taskTips, STR_BLANK);
+            }
         }
 
         if (dayVersionNum > 0) {
@@ -1223,14 +1225,14 @@ public class HepTodoController extends BaseController implements Initializable {
         finishDateError.addAll(finishDateOver);
         infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError);
         taskList.setDisable(false);
+        String msg = STR_BLANK;
+        boolean show = false;
         if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
-            String msg = "开发人员和审核人员为同一人，请检查" + STR_NEXT_LINE_2 + sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
+            show = true;
+            msg = "开发人员和审核人员为同一人，请检查" + STR_NEXT_LINE_2 + sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)) + STR_NEXT_LINE_2;
             LoggerUtils.info(msg);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
-            Platform.runLater(() -> {
-                CommonUtils.showTipsByError(msg, 30 * 1000);
-            });
         }
+        controlTooltip(appConfigDto, show, msg, 100, 175);
         printTaskInfo(res);
         updateHepStatFile(taskNoList, demandNoList);
     }
@@ -1514,13 +1516,13 @@ public class HepTodoController extends BaseController implements Initializable {
     private HttpResponse sendPost(Map<String, Object> param) throws Exception {
         param.put(KEY_APP_ID, APP_ID);
         param.put(KEY_APP_KEY, APP_KEY);
-        param.put(KEY_CHARSET, "utf-8");
-        param.put(KEY_FORMAT, "MD5");
+        param.put(KEY_CHARSET, ENCODING_UTF8.toLowerCase());
+        param.put(KEY_FORMAT, KEY_MD5);
         param.put(KEY_TIMESTAMP, System.currentTimeMillis());
         cn.hutool.json.JSONObject jsonObject = new cn.hutool.json.JSONObject();
         initRequest(param, jsonObject);
         DigestAlgorithm digestAlgorithm = DigestAlgorithm.MD5;
-        String sign = SecureUtil.signParams(digestAlgorithm, jsonObject, "&", "=", true, new String[0]).toUpperCase();
+        String sign = SecureUtil.signParams(digestAlgorithm, jsonObject, STR_AND, STR_EQUAL, true, new String[0]).toUpperCase();
         jsonObject.set(KEY_SIGN, sign);
         if (!CommonUtils.proScene()) {
             return null;
@@ -2211,17 +2213,26 @@ public class HepTodoController extends BaseController implements Initializable {
         return msg;
     }
 
-    private void addTaskMenu(AppConfigDto appConfigDto, HepTodoController hepTodoController) throws Exception {
+    private void controlTooltip(AppConfigDto appConfigDto, boolean show, String msg, double x, double y) {
+        Platform.runLater(() -> {
+            Tooltip tooltip = appConfigDto.getTooltip();
+            tooltip.hide();
+            tooltip.setText(msg);
+            if (show) {
+                tooltip.show(todoTitle, x, y);
+            }
+        });
+
+    }
+
+    private void addTaskMenu(AppConfigDto appConfigDto, HepTodoController hepTodoController) {
         taskList.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
-                Tooltip tooltip = appConfigDto.getTooltip();
-                tooltip.hide();
                 if (newValue instanceof HepTaskDto) {
                     HepTaskDto val = (HepTaskDto) newValue;
+                    String msg = STR_BLANK;
+                    boolean show = false;
                     if (val != null) {
-                        tooltip.setText(STR_BLANK);
-                        String msg = STR_BLANK;
-
                         String version = val.getSprintVersion();
                         if (StringUtils.isNotBlank(version) && version.length() > 16) {
                             msg = version;
@@ -2237,11 +2248,10 @@ public class HepTodoController extends BaseController implements Initializable {
                             msg = getTipsMsg(msg, reviewerName);
                         }
                         if (StringUtils.isNotBlank(msg)) {
-                            tooltip.setText(msg);
-                            tooltip.show(taskList, 1400, 255);
-                            tooltip.setAutoHide(true);
+                            show = true;
                         }
                     }
+                    controlTooltip(appConfigDto, show, msg, 1400, 255);
                 }
             }
         });
@@ -2341,6 +2351,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     break;
                 case 6:
                     item.put("sprint_version", "TA6.0-FUND.V202304.04.002");
+                    item.put("reviewer_name", "abc,def,abc,def,abc,def,abc,def,abc,def,abc,def");
                     break;
                 default:
                     break;
