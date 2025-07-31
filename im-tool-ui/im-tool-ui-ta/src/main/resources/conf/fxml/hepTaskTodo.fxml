@@ -47,23 +47,23 @@
                         <Label layoutX="410.0" layoutY="105.0" style="-fx-font-weight: bold;" text="待合并："/>
                         <Label fx:id="waitMergerNum" layoutX="465.0" layoutY="105.0" style="-fx-font-weight: bold;"/>
 
-                        <Label layoutX="20.0" layoutY="150.0" style="-fx-font-weight: bold;" text="同步文件："/>
+                        <Label fx:id="fileTipsFileTitle" layoutX="20.0" layoutY="150.0" style="-fx-font-weight: bold;" text="同步文件："/>
                         <Label fx:id="fileTipsFile" layoutX="90.0" layoutY="150.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                        <Label layoutX="450.0" layoutY="150.0" style="-fx-font-weight: bold;" text="同步时间："/>
+                        <Label fx:id="fileTipsFileTimeTitle" layoutX="450.0" layoutY="150.0" style="-fx-font-weight: bold;" text="同步时间："/>
                         <Label fx:id="fileTipsFileTime" layoutX="520.0" layoutY="150.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                        <Label layoutX="620.0" layoutY="150.0" style="-fx-font-weight: bold;" text="同步状态："/>
+                        <Label fx:id="fileTipsFileStatusTitle" layoutX="620.0" layoutY="150.0" style="-fx-font-weight: bold;" text="同步状态："/>
                         <Label fx:id="fileTipsFileStatus" layoutX="690.0" layoutY="150.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                        <Label layoutX="760.0" layoutY="150.0" style="-fx-font-weight: bold;" text="操作类型："/>
+                        <Label fx:id="fileTipsFileOperateTitle" layoutX="760.0" layoutY="150.0" style="-fx-font-weight: bold;" text="操作类型："/>
                         <Label fx:id="fileTipsFileOperate" layoutX="830.0" layoutY="150.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                        <Label layoutX="900.0" layoutY="150.0" style="-fx-font-weight: bold;" text="同步版本："/>
+                        <Label fx:id="fileTipsVersionTitle" layoutX="900.0" layoutY="150.0" style="-fx-font-weight: bold;" text="同步版本："/>
                         <Label fx:id="fileTipsVersion" layoutX="970.0" layoutY="150.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
@@ -144,7 +144,7 @@
 
                         <Label fx:id="memoryTips" layoutX="550" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="scrollTips" layoutX="800.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="syncTips" layoutX="800.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
                         <Label fx:id="taskTips" layoutX="1070.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="frontTips" layoutX="1250.0" layoutY="180.0"

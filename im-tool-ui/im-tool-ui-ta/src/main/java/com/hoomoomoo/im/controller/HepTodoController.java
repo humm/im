@@ -253,7 +253,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label memoryTips;
 
     @FXML
-    private Label scrollTips;
+    private Label syncTips;
 
     @FXML
     private Label fileTipsVersion;
@@ -269,6 +269,21 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     private Label fileTipsFileTime;
+
+    @FXML
+    private Label fileTipsVersionTitle;
+
+    @FXML
+    private Label fileTipsFileTitle;
+
+    @FXML
+    private Label fileTipsFileOperateTitle;
+
+    @FXML
+    private Label fileTipsFileStatusTitle;
+
+    @FXML
+    private Label fileTipsFileTimeTitle;
 
     @FXML
     private Label frontTipsSideBar;
@@ -316,10 +331,9 @@ public class HepTodoController extends BaseController implements Initializable {
             defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
             devCompleteHide.setSelected(true);
             if (isExtendUser()) {
-                extendUser.setVisible(false);
-                syncTask.setVisible(false);
-                syncFileBtn.setVisible(false);
+                controlComponent(false, false, false);
             } else {
+                initColorDesc();
                 JvmCache.setHepTodoController(this);
                 syncFile();
             }
@@ -327,7 +341,6 @@ public class HepTodoController extends BaseController implements Initializable {
             addTaskMenu(appConfigDto, this);
             initComponentStatus();
             executeQuery(null);
-            initColorDesc();
             buildTestData();
             showExtendUserTask();
         } catch (Exception e) {
@@ -343,7 +356,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (timer != null) {
             CommonUtils.stopHepToDoSyncFile(appConfigDto);
             syncFileBtn.setText("启动文件同步");
-            OutputUtils.info(scrollTips, STR_BLANK);
+            OutputUtils.info(syncTips, STR_BLANK);
             OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
         } else {
             OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("启动文件同步"));
@@ -408,14 +421,16 @@ public class HepTodoController extends BaseController implements Initializable {
         String clickType = event.getButton().toString();
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         appConfigDto.setHepTaskDto(item);
-        String ver = item.getSprintVersion();
-        String verYear = ver.split("\\.")[0];
-        ver = TaCommonUtils.changeVersion(appConfigDto, ver) + STR_COMMA;
-        String authVer = appConfigDto.getFileSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
-        if (authVer.contains(ver) || verYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 || verYear.compareTo(KEY_VERSION_202202) == 0) {
-            setFrontTips(false);
-        } else {
-            setFrontTips(true);
+        if (!isExtendUser()) {
+            String ver = item.getSprintVersion();
+            String verYear = ver.split("\\.")[0];
+            ver = TaCommonUtils.changeVersion(appConfigDto, ver) + STR_COMMA;
+            String authVer = appConfigDto.getFileSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
+            if (authVer.contains(ver) || verYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 || verYear.compareTo(KEY_VERSION_202202) == 0) {
+                setFrontTips(false);
+            } else {
+                setFrontTips(true);
+            }
         }
 
         if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
@@ -1257,9 +1272,8 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             //FileUtils.writeFile(FileUtils.getFilePath(path), new ArrayList<>(content));
         }
-        List tips = new ArrayList();
-        tips.add(String.format("文件【%s】原始数据【%s】更新后【%s】剔除数据【%s】", path, oriLength, content.size(), deleteData.stream().collect(Collectors.joining(STR_POINT_3))));
-        LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), tips);
+        logs.add(String.format("文件【%s】原始数据【%s】更新后数据【%s】剔除数据【%s】剔除数据详情【%s】", path, oriLength, content.size(), deleteData.size(),
+                deleteData.stream().collect(Collectors.joining(STR_SPACE_3))));
     }
 
     private void setTaskLevel(HepTaskDto item, String taskLevel) {
@@ -1678,7 +1692,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void initComponentStatus() {
         memoryTips.setVisible(false);
-        scrollTips.setVisible(false);
+        syncTips.setVisible(false);
         setFrontTips(false);
         setSideBar();
     }
@@ -1716,6 +1730,7 @@ public class HepTodoController extends BaseController implements Initializable {
         });
         List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
         TimerTask timerTask = new TimerTask() {
+            @SneakyThrows
             @Override
             public void run() {
                 OutputUtils.clearLog(noticeSync);
@@ -1773,16 +1788,19 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         }
         if (push) {
-            scrollTips.setStyle(STYLE_BOLD_RED);
-            scrollTips.setVisible(true);
+            syncTips.setStyle(STYLE_BOLD_RED);
+            syncTips.setVisible(true);
         } else {
-            scrollTips.setStyle(STYLE_NORMAL);
-            scrollTips.setVisible(colorList.get(0).isVisible());
+            syncTips.setStyle(STYLE_NORMAL);
+            syncTips.setVisible(colorList.get(0).isVisible());
         }
-        OutputUtils.info(scrollTips, threadMsg);
+        OutputUtils.info(syncTips, threadMsg);
     }
 
-    private void outputMemory() {
+    private void outputMemory() throws Exception {
+        if (isExtendUser()) {
+            return;
+        }
         String[] memoryInfo = CommonUtils.getMemoryInfo();
         OutputUtils.info(memoryTips, "内存使用: " + memoryInfo[0]);
         if (Integer.valueOf(memoryInfo[1]) > 1024 || Integer.valueOf(memoryInfo[2]) > 1024) {
@@ -1906,6 +1924,26 @@ public class HepTodoController extends BaseController implements Initializable {
         return PAGE_USER.equals(EXTEND_USER_FRONT_CODE);
     }
 
+    private void controlComponent(boolean syncComponent, boolean checkFileComponent, boolean syncTaskComponent) {
+        fileTipsFile.setVisible(syncComponent);
+        fileTipsFileTitle.setVisible(syncComponent);
+        fileTipsFileTime.setVisible(syncComponent);
+        fileTipsFileTimeTitle.setVisible(syncComponent);
+        fileTipsFileStatus.setVisible(syncComponent);
+        fileTipsFileStatusTitle.setVisible(syncComponent);
+        fileTipsFileOperate.setVisible(syncComponent);
+        fileTipsFileOperateTitle.setVisible(syncComponent);
+        fileTipsVersion.setVisible(syncComponent);
+        fileTipsVersionTitle.setVisible(syncComponent);
+
+        scriptCheck.setVisible(checkFileComponent);
+        scriptShow.setVisible(checkFileComponent);
+
+        extendUser.setVisible(syncTaskComponent);
+        syncTask.setVisible(syncTaskComponent);
+        syncFileBtn.setVisible(syncTaskComponent);
+    }
+
     private boolean isExtendUser() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         return !CURRENT_USER_ID.equals(appConfigDto.getHepTaskUser()) || frontPage();
@@ -1961,7 +1999,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 ele.setVisible(visible);
             }
             memoryTips.setVisible(visible);
-            scrollTips.setVisible(visible);
+            syncTips.setVisible(visible);
         });
         String boldStyle = STYLE_NORMAL;
         label.setStyle(STYLE_BOLD);
