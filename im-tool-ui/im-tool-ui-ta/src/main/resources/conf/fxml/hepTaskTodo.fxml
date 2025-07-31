@@ -86,31 +86,43 @@
                             </padding>
                         </Button>
 
-                        <Label layoutX="1520.0" layoutY="22.0" text="发版计划"/>
-                        <Button fx:id="updateVersion" layoutX="1590.0" layoutY="15.0" mnemonicParsing="false"
-                                onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="55.0" text="同步">
+                        <Button fx:id="syncFileBtn" layoutX="1360.0" layoutY="15.0" mnemonicParsing="false"
+                                onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="暂停文件同步">
                             <padding>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
-                            </padding>
-                        </Button>
-                        <Button fx:id="showVersion" layoutX="1650.0" layoutY="15.0" mnemonicParsing="false"
-                                onAction="#showVersion" prefHeight="30.0" prefWidth="55.0" text="查看">
-                            <padding>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Label layoutX="1520.0" layoutY="60.0" text="检查文件"/>
-                        <Button fx:id="scriptCheck" layoutX="1590.0" layoutY="55.0" mnemonicParsing="false"
-                                onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="55.0" text="检查">
+                        <Button fx:id="updateVersion" layoutX="1480.0" layoutY="15.0" mnemonicParsing="false"
+                                onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="100.0" text="同步发版计划">
                             <padding>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="10.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
-                        <Button fx:id="scriptShow" layoutX="1650.0" layoutY="55.0" mnemonicParsing="false"
-                                onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="55.0" text="查看">
+                        <Button fx:id="showVersion" layoutX="1600.0" layoutY="15.0" mnemonicParsing="false"
+                                onAction="#showVersion" prefHeight="30.0" prefWidth="100.0" text="查看发版计划">
                             <padding>
-                                <Insets bottom="5.0" left="10.0" right="10.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
+                        <Button fx:id="extendUser" layoutX="1360.0" layoutY="55.0" mnemonicParsing="false"
+                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联用户任务">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
+                        <Button fx:id="scriptCheck" layoutX="1480.0" layoutY="55.0" mnemonicParsing="false"
+                                onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="100.0" text="检查配置脚本">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+                        <Button fx:id="scriptShow" layoutX="1600.0" layoutY="55.0" mnemonicParsing="false"
+                                onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="100.0" text="查看检查结果">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
@@ -121,22 +133,8 @@
                             </padding>
                         </Button>
 
-                        <Button fx:id="extendUser" layoutX="1590.0" layoutY="100.0" mnemonicParsing="false"
-                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="115.0" text="关联用户任务">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-
-                        <Button fx:id="syncFileBtn" layoutX="1480.0" layoutY="145.0" mnemonicParsing="false"
-                                onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="暂停文件同步">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-
-                        <Button fx:id="sideBarBtn" layoutX="1590.0" layoutY="145.0" mnemonicParsing="false"
-                                onAction="#sideBarStatus" prefHeight="30.0" prefWidth="115.0" text="隐藏侧边栏">
+                        <Button fx:id="sideBarBtn" layoutX="1600.0" layoutY="100.0" mnemonicParsing="false"
+                                onAction="#sideBarStatus" prefHeight="30.0" prefWidth="100.0" text="隐藏侧边栏">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
