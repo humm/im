@@ -96,7 +96,7 @@
                         <Button fx:id="updateVersion" layoutX="1480.0" layoutY="15.0" mnemonicParsing="false"
                                 onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="100.0" text="同步发版计划">
                             <padding>
-                                <Insets bottom="5.0" left="10.0" right="5.0" top="5.0"/>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
                         <Button fx:id="showVersion" layoutX="1600.0" layoutY="15.0" mnemonicParsing="false"
@@ -147,8 +147,8 @@
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="frontTips" layoutX="1250.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;" text="front未实时同步"/>
-                        <TextField fx:id="demandNo" layoutX="1415.0" layoutY="177.0" editable="false" style="-fx-background-color: transparent;"/>
-                        <TextField fx:id="taskNo" layoutX="1565.0" layoutY="177.0" editable="false" style="-fx-background-color: transparent;"/>
+                        <TextField fx:id="demandNo" layoutX="1405.0" layoutY="160.0" editable="false" style="-fx-background-color: transparent; -fx-font-size: 16"/>
+                        <TextField fx:id="taskNo" layoutX="1560.0" layoutY="160.0" editable="false" style="-fx-background-color: transparent; -fx-font-size: 16"/>
 
                     </children>
                 </AnchorPane>
