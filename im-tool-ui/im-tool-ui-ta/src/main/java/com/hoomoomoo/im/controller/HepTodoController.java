@@ -657,6 +657,9 @@ public class HepTodoController extends BaseController implements Initializable {
             LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<>(logs));
             logs.clear();
             syncTaskLog.clear();
+            if (frontPage()) {
+                ConfigCache.getAppConfigDtoCache().setQueryUpdateTaskFileByCondition(false);
+            }
             setProgress(1);
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -916,7 +919,7 @@ public class HepTodoController extends BaseController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
-        filterTask(res);
+        filterTask(appConfigDto, res);
         boolean hasBlank = false;
         int taskTotal = 0;
         Map<String, Map<String, String>> version = new HashMap<>();
@@ -1255,7 +1258,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void updateHepStatFile(AppConfigDto appConfigDto, Set<String> taskNoList, Set<String> demandNoList) throws IOException {
         if (frontPage()) {
-            if (appConfigDto.getQueryUpdateTaskFile()) {
+            if (appConfigDto.getQueryUpdateTaskFile() || appConfigDto.getQueryUpdateTaskFileByCondition()) {
                 return;
             }
             appConfigDto.setQueryUpdateTaskFile(true);
@@ -1524,11 +1527,16 @@ public class HepTodoController extends BaseController implements Initializable {
         return x > 240 ? 60 : x;
     }
 
-    public void filterTask(List<HepTaskDto> task) {
+    public void filterTask(AppConfigDto appConfigDto, List<HepTaskDto> task) {
         Iterator<HepTaskDto> iterator = task.iterator();
         String taskNumberQ = CommonUtils.getComponentValue(taskNumberQuery);
         String nameQ = CommonUtils.getComponentValue(nameQuery);
         String sprintVersionQ = CommonUtils.getComponentValue(sprintVersionQuery);
+        if (frontPage()) {
+            if (StringUtils.isNotBlank(taskNumberQ) || StringUtils.isNotBlank(nameQ) || StringUtils.isNotBlank(sprintVersionQ)) {
+                appConfigDto.setQueryUpdateTaskFileByCondition(true);
+            }
+        }
         Set<String> currentTaskVersion = new HashSet<>();
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();

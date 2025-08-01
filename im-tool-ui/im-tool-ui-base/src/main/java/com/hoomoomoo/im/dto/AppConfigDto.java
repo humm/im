@@ -288,6 +288,8 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean queryUpdateTaskFile;
 
+    private Boolean queryUpdateTaskFileByCondition;
+
     public AppConfigDto() {
         this.execute = false;
         this.appLogEnable = false;
@@ -319,5 +321,6 @@ public class AppConfigDto extends BaseDto {
         tooltip.setStyle("-fx-font-size: 16");
         tooltip.setAutoHide(true);
         this.queryUpdateTaskFile = false;
+        this.queryUpdateTaskFileByCondition = false;
     }
 }

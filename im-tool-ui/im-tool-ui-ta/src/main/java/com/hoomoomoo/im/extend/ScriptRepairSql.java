@@ -742,6 +742,10 @@ public class ScriptRepairSql {
                     for (int i=0; i<subFourthMenu.size(); i++) {
                         generateMenuInfo(i, subFourthMenu.get(i), subFourthMenu, newUedMenu, trans, partMenu, menuTransitionDto);
                     }
+                    if (menuTransitionDto.hasMerger) {
+                        partMenu.add("-- " + menuTransitionDto.getMergerMenuName() + " 结束");
+                        menuTransitionDto.setHasMerger(false);
+                    }
                     if (CollectionUtils.isNotEmpty(partMenu)) {
                         res.add(String.format(MENU_TIPS, firstMenuCode + "|" + firstMenuName + " " + secondMenuCode + "|" + secondMenuName + " " + thirdMenuCode + "|" + thirdMenuName + " 开始"));
                         res.addAll(partMenu);
@@ -753,6 +757,7 @@ public class ScriptRepairSql {
         }
         res.add(STR_BLANK);
 
+        boolean logMenuStart = false;
         List<String> error = new ArrayList<>();
         if (MapUtils.isNotEmpty(newUedMenu)) {
             Iterator<String> iterator = newUedMenu.keySet().iterator();
@@ -764,6 +769,10 @@ public class ScriptRepairSql {
                 }
                 String sql = formatSql(newUedMenu.get(menuCode), true);
                 if (StringUtils.equals(ScriptSqlUtils.getParentCode(sql), KEY_LOG_PARENT_CODE)) {
+                    if (!logMenuStart) {
+                        logMenuStart = true;
+                        res.add(String.format(MENU_TIPS, "清算流程记录日志 开始"));
+                    }
                     res.add(formatSqlAddDelete(sql, true));
                     res.add(STR_BLANK);
                     continue;
@@ -807,6 +816,13 @@ public class ScriptRepairSql {
                 file.delete();
             }
         }
+        String lastLine = res.get(res.size() - 1);
+        if (StringUtils.isBlank(lastLine)) {
+            res.set(res.size() - 1, String.format(MENU_TIPS, "清算流程记录日志 结束"));
+        } else {
+            res.add(String.format(MENU_TIPS, "清算流程记录日志 结束"));
+        }
+        res.add(STR_BLANK);
         res.add("commit;");
         String resFile = newUedPage.replace(".sql", ".res.sql");
         if (CollectionUtils.isNotEmpty(error)) {
