@@ -383,7 +383,7 @@ public class SystemToolController implements Initializable {
         }
         LoggerUtils.info("同步获取任务数量: " + taskList.size());
         if (CollectionUtils.isNotEmpty(taskList)) {
-            String taskPath = FileUtils.getFilePath(PATH_TASK_STAT);
+            String taskPath = FileUtils.getFilePath(PATH_TASK_INFO_STAT);
             if (new File(taskPath).exists()) {
                 mergeData(FileUtils.readNormalFile(taskPath), taskList);
             }
@@ -391,7 +391,7 @@ public class SystemToolController implements Initializable {
         }
         LoggerUtils.info("同步获取需求数量: " + demandList.size());
         if (CollectionUtils.isNotEmpty(demandList)) {
-            String demandPath = FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT);
+            String demandPath = FileUtils.getFilePath(PATH_DEMAND_STATUS_STAT);
             if (new File(demandPath).exists()) {
                 mergeData(FileUtils.readNormalFile(demandPath), demandList);
             }

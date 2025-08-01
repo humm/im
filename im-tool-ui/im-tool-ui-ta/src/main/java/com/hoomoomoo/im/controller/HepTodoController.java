@@ -149,12 +149,16 @@ public class HepTodoController extends BaseController implements Initializable {
     }};
 
     private List<String> logs = new ArrayList<>();
+    private List<String> syncTaskLog = new ArrayList<>();
 
     @FXML
     private AnchorPane hep;
 
     @FXML
     private AnchorPane todoTitle;
+
+    @FXML
+    private AnchorPane sideBar;
 
     @FXML
     private Label weekPublish;
@@ -652,6 +656,7 @@ public class HepTodoController extends BaseController implements Initializable {
             execute(OPERATE_QUERY, null);
             LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<>(logs));
             logs.clear();
+            syncTaskLog.clear();
             setProgress(1);
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -1232,28 +1237,50 @@ public class HepTodoController extends BaseController implements Initializable {
             msg = "开发人员和审核人员为同一人，请检查" + STR_NEXT_LINE_2 + sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)) + STR_NEXT_LINE_2;
             LoggerUtils.info(msg);
         }
-        controlTooltip(appConfigDto, show, msg, 100, 175);
+        controlTooltip(appConfigDto, show, msg, getTipsLocation(sameAssigneeIdReviewerId.size()), 175);
         printTaskInfo(res);
-        updateHepStatFile(taskNoList, demandNoList);
+        updateHepStatFile(appConfigDto, taskNoList, demandNoList);
     }
 
-    private void updateHepStatFile(Set<String> taskNoList, Set<String> demandNoList) throws IOException {
+    private double getTipsLocation(int num) {
+        double x = 800;
+        if (num > 2) {
+            x = 800 - (num - 2) * 65;
+        }
+        if (x < 100) {
+            x = 100;
+        }
+        return x;
+    }
+
+    private void updateHepStatFile(AppConfigDto appConfigDto, Set<String> taskNoList, Set<String> demandNoList) throws IOException {
         if (frontPage()) {
-            List<String> demandStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT));
-            List<String> taskStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_STAT));
-            List<String> taskExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT));
-            List<String> taskDevExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT));
-            List<String> taskLevelExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT));
-            updateFile(demandStat, demandNoList, PATH_DEFINE_DEMAND_STAT);
-            updateFile(taskStat, taskNoList, PATH_TASK_STAT);
-            updateFile(taskExtendStat, taskNoList, PATH_DEFINE_TASK_EXTEND_STAT);
-            updateFile(taskDevExtendStat, taskNoList, PATH_DEFINE_TASK_DEV_EXTEND_STAT);
+            if (appConfigDto.getQueryUpdateTaskFile()) {
+                return;
+            }
+            appConfigDto.setQueryUpdateTaskFile(true);
+            int taskNum = taskNoList.size();
+            int demandNum = demandNoList.size();
+            List<String> demandStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEMAND_STATUS_STAT));
+            List<String> taskStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_INFO_STAT));
+            List<String> taskExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_STATUS_STAT));
+            List<String> taskDevExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_STAT));
+            List<String> taskLevelExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_STAT));
+            updateFile(demandStat, demandNoList, PATH_DEMAND_STATUS_STAT, demandNum, taskNum);
+            updateFile(taskStat, taskNoList, PATH_TASK_INFO_STAT, demandNum, taskNum);
+            updateFile(taskExtendStat, taskNoList, PATH_DEFINE_TASK_STATUS_STAT, demandNum, taskNum);
+            updateFile(taskDevExtendStat, taskNoList, PATH_DEFINE_TASK_DEV_STAT, demandNum, taskNum);
             taskNoList.addAll(demandNoList);
-            updateFile(taskLevelExtendStat, taskNoList, PATH_DEFINE_TASK_LEVEL_EXTEND_STAT);
+            updateFile(taskLevelExtendStat, taskNoList, PATH_DEFINE_TASK_LEVEL_STAT, demandNum, taskNum);
+            if (CollectionUtils.isNotEmpty(syncTaskLog)) {
+                syncTaskLog.add(String.format("需求总数【%s】任务总数【%s】", demandNum, taskNum));
+                controlTooltip(appConfigDto, true, syncTaskLog.stream().collect(Collectors.joining(STR_NEXT_LINE)), 500, 150);
+            }
+            appConfigDto.setQueryUpdateTaskFile(false);
         }
     }
 
-    private void updateFile(List<String> content, Set<String> keys, String path) throws IOException {
+    private void updateFile(List<String> content, Set<String> keys, String path, int demandNum, int taskNum ) throws IOException {
         if (CollectionUtils.isEmpty(content)) {
             return;
         }
@@ -1268,14 +1295,40 @@ public class HepTodoController extends BaseController implements Initializable {
                 deleteData.add(item);
             }
         }
-        if (oriLength != content.size()) {
+        int lastLength = content.size();
+        int deleteLength = deleteData.size();
+        String fileName = STR_BLANK;
+        String errorMessage = STR_BLANK;
+        if (path.endsWith(PATH_DEMAND_STATUS_STAT)) {
+            fileName = "需求状态";
+            if (lastLength < demandNum) {
+                // errorMessage = "...... 需求状态更新异常 ... 请检查 ......";
+            }
+        } else if (path.endsWith(PATH_TASK_INFO_STAT)) {
+            fileName = "任务信息";
+            if (lastLength < taskNum) {
+                errorMessage = "...... 任务信息更新异常 ... 请检查 ......";
+            }
+        } else if (path.endsWith(PATH_DEFINE_TASK_STATUS_STAT)) {
+            fileName = "任务状态";
+        } else if (path.endsWith(PATH_DEFINE_TASK_DEV_STAT)) {
+            fileName = "分支状态";
+        } else if (path.endsWith(PATH_DEFINE_TASK_LEVEL_STAT)) {
+            fileName = "任务描述";
+        }
+
+        if (oriLength != lastLength && StringUtils.isBlank(errorMessage)) {
             if (CollectionUtils.isEmpty(content)) {
                 content.add(STR_BLANK);
             }
-            //FileUtils.writeFile(FileUtils.getFilePath(path), new ArrayList<>(content));
+            FileUtils.writeFile(FileUtils.getFilePath(path), new ArrayList<>(content));
         }
-        logs.add(String.format("文件【%s】原始数据【%s】更新后数据【%s】剔除数据【%s】剔除数据详情【%s】", path, oriLength, content.size(), deleteData.size(),
-                deleteData.stream().collect(Collectors.joining(STR_SPACE_3))));
+        String tipTitle = fileName + "【%s】原始数据【%s】删除数据【%s】最终数据【%s】";
+        syncTaskLog.add(String.format(tipTitle, path, oriLength, deleteLength, lastLength));
+        if (StringUtils.isNotBlank(errorMessage)) {
+            syncTaskLog.add(errorMessage);
+        }
+        logs.add(String.format(tipTitle + "剔除数据详情【%s】", path, oriLength, deleteLength, lastLength, deleteData.stream().collect(Collectors.joining(STR_SPACE_3))));
     }
 
     private void setTaskLevel(HepTaskDto item, String taskLevel) {
@@ -1681,9 +1734,11 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void printTaskInfo(List<HepTaskDto> taskList) {
         if (frontPage() && CollectionUtils.isNotEmpty(taskList) && (devCompleteHide.isSelected() || devCompleteShow.isSelected())) {
-            String printType = devCompleteShow.isSelected() ? "分支已完成" : "未完成: ";
-            logs.add(String.format(printType + "需求(%s):", taskList.size()) + (taskList.stream().filter(hepTaskDto -> StringUtils.isNotBlank(hepTaskDto.getDemandNo()))
-                    .map(HepTaskDto::getDemandNo).collect(Collectors.joining(STR_COMMA))).trim());
+            String printType = devCompleteShow.isSelected() ? "分支已完成: " : "未完成: ";
+            String detail = taskList.stream().filter(hepTaskDto ->
+                    StringUtils.isNotBlank(hepTaskDto.getDemandNo())).map(HepTaskDto::getDemandNo).distinct().collect(Collectors.joining(STR_COMMA)
+            );
+            logs.add(String.format(printType + "需求(%s): %s", taskList.size(), detail).trim());
 ;        }
     }
 
@@ -2059,7 +2114,7 @@ public class HepTodoController extends BaseController implements Initializable {
         Map<String, String> customerName = new HashMap<>();
         Map<String, String> demandNo = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_STAT));
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_INFO_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     if (StringUtils.isBlank(item)) {
@@ -2081,7 +2136,7 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getCancelDevSubmitTaskInfo() {
         Map<String, String> task = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT));
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     if (StringUtils.isBlank(item)) {
@@ -2105,7 +2160,7 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getTaskLevelInfo() {
         Map<String, String> task = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT));
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     if (StringUtils.isBlank(item)) {
@@ -2160,8 +2215,8 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getDemandInfo() {
         Map<String, String> demand = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_DEMAND_STAT));
-            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT)));
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEMAND_STATUS_STAT));
+            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_STAT)));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     if (StringUtils.isBlank(item)) {
@@ -2185,7 +2240,7 @@ public class HepTodoController extends BaseController implements Initializable {
     public Map<String,String> getTaskStatusInfo() {
         Map<String, String> task = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT));
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_STATUS_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     if (StringUtils.isBlank(item)) {
@@ -2219,7 +2274,7 @@ public class HepTodoController extends BaseController implements Initializable {
             tooltip.hide();
             tooltip.setText(msg);
             if (show) {
-                tooltip.show(todoTitle, x, y);
+                tooltip.show(sideBar, x, y);
             }
         });
 

@@ -86,9 +86,6 @@
                             </padding>
                         </Button>
 
-                        <!--锚点占位-->
-                        <Label  layoutX="1350" layoutY="100.0"/>
-
                         <Button fx:id="syncFileBtn" layoutX="1360.0" layoutY="15.0" mnemonicParsing="false"
                                 onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="暂停文件同步">
                             <padding>
@@ -276,7 +273,7 @@
                                         </SplitPane>
                                     </children>
                                 </AnchorPane>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="342.0">
+                                <AnchorPane fx:id="sideBar" minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="342.0">
                                     <children>
                                         <SplitPane
                                                 dividerPositions="0.3676617038783742, 0.7297015167350199, 0.85"

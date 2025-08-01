@@ -9,6 +9,4 @@ for /f %%F in ('dir /b /o-d /a-d "%searchDir%\%fileType%"') do (
     goto :over
 )
 :over
-tool-ui-ta -jar %startFile%
-
-:: tool-ui-ta -jar im-tool-ui-ta-1.0.0.0.jar
+im-tool-ui-ta -jar %startFile%

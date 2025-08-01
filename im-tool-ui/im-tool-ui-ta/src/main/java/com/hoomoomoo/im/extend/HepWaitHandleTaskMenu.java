@@ -243,7 +243,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         String taskNumber = item.getTaskNumber();
         String eleValue = taskNumber + STR_SEMICOLON + type;
         String eleIndex = taskNumber + STR_SEMICOLON;
-        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_EXTEND_STAT);
+        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_STAT);
         File demandExtendStat = new File(path);
         if (!demandExtendStat.exists()) {
             demandExtendStat.createNewFile();
@@ -273,7 +273,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         String taskNumber = item.getTaskNumber();
         String eleValue = taskNumber + STR_SEMICOLON + type;
         String eleIndex = taskNumber + STR_SEMICOLON;
-        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_EXTEND_STAT);
+        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_STATUS_STAT);
         File taskExtendStat = new File(path);
         if (!taskExtendStat.exists()) {
             taskExtendStat.createNewFile();
@@ -303,7 +303,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         String taskNumber = item.getTaskNumber();
         String eleValue = taskNumber + STR_SEMICOLON + type;
         String eleIndex = taskNumber + STR_SEMICOLON;
-        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_EXTEND_STAT);
+        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_STAT);
         File taskExtendStat = new File(path);
         if (!taskExtendStat.exists()) {
             taskExtendStat.createNewFile();

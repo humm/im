@@ -14,8 +14,8 @@ import static com.hoomoomoo.im.consts.BaseConst.*;
 
 public class ScriptUpdateSql {
 
-    private String resultPath = "";
-    private String newUedPage = "";
+    private String resultPath = STR_BLANK;
+    private String newUedPage = STR_BLANK;
 
     private static final String endLine = "结束 *************************************************************************";
     public ScriptUpdateSql() throws Exception {
@@ -65,7 +65,7 @@ public class ScriptUpdateSql {
                 continue;
             }
             if (ele.startsWith("-- ") && (ele.contains("delete") || ele.contains("insert") || ele.contains("values"))) {
-                ele = ele.replace("-- ", "");
+                ele = ele.replace("-- ", STR_BLANK);
             }
             if (ele.startsWith("values (")) {
                 String reserve = ScriptSqlUtils.getMenuReserve(ele);
@@ -73,7 +73,7 @@ public class ScriptUpdateSql {
                     res.add(ele);
                     continue;
                 }
-                boolean isMenu = ele.split(",").length > 10;
+                boolean isMenu = ele.split(STR_COMMA).length > 10;
                 if (!isMenu) {
                     res.add(ele);
                     continue;
@@ -140,7 +140,7 @@ public class ScriptUpdateSql {
     public static List<String> getUpdateSql(AppConfigDto appConfigDto, List<String> config) throws Exception {
         List<String> sql = new ArrayList<>();
         Set<String> deleteMenuCode = getNeedDeleteMenuCode(config);
-        String ele = "";
+        String ele = STR_BLANK;
         boolean nextFlag = false;
         boolean head = true;
         for(int i = 0; i < config.size(); ++i) {
@@ -160,12 +160,12 @@ public class ScriptUpdateSql {
                     continue;
                 }
                 if (!item.contains("开始") && !item.contains("结束")) {
-                    ele = ele + item + "\n";
-                    if (ele.contains(";")) {
+                    ele = ele + item + STR_NEXT_LINE;
+                    if (ele.contains(STR_SEMICOLON)) {
                         String menuCode = getMenuCode(ele);
                         if (deleteMenuCode.contains(menuCode)) {
                             if (!ele.contains("values")) {
-                                ele = ele.replace("\n", "");
+                                ele = ele.replace(STR_NEXT_LINE, STR_BLANK);
                             }
                             sql.add(ele);
                             nextFlag = true;
@@ -177,7 +177,7 @@ public class ScriptUpdateSql {
                                 sql.add(generateUpdate(ele, "where menu_code = '" + menuCode + "';", false));
                             }
                         }
-                        ele = "";
+                        ele = STR_BLANK;
                     }
                     if (item.contains(appConfigDto.getSystemToolCheckMenuEndFlag())) {
                         break;
@@ -218,13 +218,13 @@ public class ScriptUpdateSql {
     }
 
     private static String getMenuCode(String sql) {
-        String menuCode = "";
+        String menuCode = STR_BLANK;
         if (sql.contains("delete")) {
-            menuCode = sql.split("where")[1].split("=")[1].trim();
+            menuCode = sql.split("where")[1].split(STR_EQUAL)[1].trim();
         } else if (sql.contains("values")) {
-            menuCode = sql.split("values")[1].split(",")[0].trim();
+            menuCode = sql.split("values")[1].split(STR_COMMA)[0].trim();
         }
-        return menuCode.replaceAll("'", "").replaceAll("\\(", "").replaceAll(";", "");
+        return menuCode.replaceAll(STR_QUOTES_SINGLE, STR_BLANK).replaceAll("\\(", STR_BLANK).replaceAll(STR_SEMICOLON, STR_BLANK);
     }
 
     private static String generateUpdate(String item, String updateKey, boolean generate) throws Exception {
@@ -237,19 +237,19 @@ public class ScriptUpdateSql {
             int length = updateItem.length;
             for(int i = 0; i < length; i++) {
                 String ele = sql[i];
-                keyColumn.add(ele.split("=")[0].trim());
+                keyColumn.add(ele.split(STR_EQUAL)[0].trim());
             }
         }
         StringBuilder updateSql = new StringBuilder();
         if (generate && !item.toLowerCase().contains("tbmenucondition")) {
-            return "";
+            return STR_BLANK;
         } else {
             if (item.toLowerCase().contains("tbmenucondition")) {
                 updateSql.append("update tbmenuconditionuser set ");
             } else {
                 updateSql.append("update " + ScriptSqlUtils.getTableName(item) + " set ");
             }
-            updateSql.append("\n");
+            updateSql.append(STR_NEXT_LINE);
             item = CommonUtils.trimStrToBlank(item);
             sql = item.split("values");
             if (sql.length != 2) {
@@ -258,22 +258,46 @@ public class ScriptUpdateSql {
                     throw new Exception("sql语句未包含或者包含多个values\n" + item);
                 }
             }
+            String columnStr = sql[0];
+            String valueStr = sql[1];
             try {
-                String[] column = sql[0].substring(sql[0].indexOf("(") + 1, sql[0].indexOf(")")).split(",");
-                String[] value = handleValue(column.length, sql[1].substring(sql[1].indexOf("(") + 1, sql[1].lastIndexOf(")")).split(","));
+                String[] column = columnStr.substring(columnStr.indexOf("(") + 1, columnStr.indexOf(")")).split(STR_COMMA);
+                boolean hasTabSubTransCodes = false;
+                if (column.length == 19 && StringUtils.equals(column[18], "tab_sub_trans_codes")) {
+                    hasTabSubTransCodes = true;
+                }
+                String[] value;
+                valueStr = valueStr.substring(valueStr.indexOf("(") + 1, valueStr.lastIndexOf(")"));
+
+                if (hasTabSubTransCodes) {
+                    int index = valueStr.substring(0, valueStr.length() - 1).lastIndexOf(STR_QUOTES_SINGLE);
+                    if (index != -1) {
+                        String[] valueTmp = valueStr.split(STR_QUOTES_SINGLE);
+                        String tabSubTransCodes = valueTmp[valueTmp.length - 1];
+                        valueStr = valueStr.substring(0, index);
+                        List<String> valueTmpList = new ArrayList<>(Arrays.asList(valueStr.split(STR_COMMA)));
+                        valueTmpList.add(STR_QUOTES_SINGLE + tabSubTransCodes + STR_QUOTES_SINGLE);
+                        value = handleValue(column.length, valueTmpList.toArray(new String[valueTmpList.size()]));
+                    } else {
+                        value = handleValue(column.length, valueStr.split(STR_COMMA));
+                    }
+                } else {
+                    value = handleValue(column.length, valueStr.split(STR_COMMA));
+                }
+
                 for(int i = 0; i < column.length; ++i) {
                     if (!keyColumn.contains(column[i])) {
                         updateSql.append("  ");
                         updateSql.append(column[i] + " = " + ("''".equals(value[i]) ? "' '" : value[i]));
                         if (i != column.length - 1) {
-                            updateSql.append(",").append("\n");
+                            updateSql.append(STR_COMMA).append(STR_NEXT_LINE);
                         }
                     }
                 }
-                updateSql.append("\nwhere " + updateKey + "\n");
+                updateSql.append("\nwhere " + updateKey + STR_NEXT_LINE);
             }catch (Exception e){
-                LoggerUtils.info(sql[0]);
-                LoggerUtils.info(sql[1]);
+                LoggerUtils.info(columnStr);
+                LoggerUtils.info(valueStr);
                 LoggerUtils.info(e);
             }
             return updateSql.toString();
@@ -286,29 +310,29 @@ public class ScriptUpdateSql {
         }
         String[] res = new String[len];
         int index = 0;
-        String val = "";
+        String val = STR_BLANK;
         String[] temp = value;
         int length = value.length;
         for(int i = 0; i < length; i++) {
             String item = temp[i].trim();
-            if (item.startsWith("'") && item.endsWith("'")) {
+            if (item.startsWith(STR_QUOTES_SINGLE) && item.endsWith(STR_QUOTES_SINGLE)) {
                 res[index] = item;
                 index++;
-            } else if (!item.contains("'")) {
+            } else if (!item.contains(STR_QUOTES_SINGLE)) {
                 if (StringUtils.isNotBlank(val)) {
-                    val = val + item + ",";
+                    val = val + item + STR_COMMA;
                 } else {
                     res[index] = item;
                     index++;
                 }
-            } else if (item.startsWith("'") || item.endsWith("'")) {
-                val = val + item + ",";
-                if (item.endsWith("'")) {
-                    if (val.endsWith(",")) {
+            } else if (item.startsWith(STR_QUOTES_SINGLE) || item.endsWith(STR_QUOTES_SINGLE)) {
+                val = val + item + STR_COMMA;
+                if (item.endsWith(STR_QUOTES_SINGLE)) {
+                    if (val.endsWith(STR_COMMA)) {
                         val = val.substring(0, val.length() - 1);
                     }
                     res[index] = val;
-                    val = "";
+                    val = STR_BLANK;
                     index++;
                 }
             }

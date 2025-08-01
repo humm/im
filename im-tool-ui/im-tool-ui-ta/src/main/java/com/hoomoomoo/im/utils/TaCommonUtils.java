@@ -567,7 +567,12 @@ public class TaCommonUtils {
                                     String code = entry.getKey();
                                     String value = entry.getValue();
                                     if (STR_1.equals(status) && demandStatus.contains(value)) {
-                                        int ver = Integer.valueOf(code.substring(code.length() - 1)) + 1;
+                                        int ver = 1;
+                                        try {
+                                            ver = Integer.valueOf(code.substring(code.length() - 1)) + 1;
+                                        } catch (NumberFormatException e) {
+                                            LoggerUtils.info("获取版本序号异常: " + code);
+                                        }
                                         String nextVer = code.substring(0, code.length() - 1) + ver;
                                         if (versionList.containsKey(nextVer) && !demandStatus.contains(versionList.get(nextVer))) {
                                             status = STR_0;

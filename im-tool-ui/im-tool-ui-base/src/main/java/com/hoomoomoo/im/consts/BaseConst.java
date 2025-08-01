@@ -413,11 +413,11 @@ public class BaseConst {
     public static final String PATH_BLANK_SET_FXML = "/conf/fxml/blankSet.fxml";
     public static final String PATH_BLANK_CHECK_RESULT_FXML = "/conf/fxml/checkResult.fxml";
     public static final String PATH_VERSION_STAT = "/extend/version/version.stat";
-    public static final String PATH_DEFINE_DEMAND_STAT = "/extend/task/demand.stat";
-    public static final String PATH_TASK_STAT = "/extend/task/task.stat";
-    public static final String PATH_DEFINE_TASK_DEV_EXTEND_STAT = "/extend/task/taskDevExtend.stat";
-    public static final String PATH_DEFINE_TASK_EXTEND_STAT = "/extend/task/taskExtend.stat";
-    public static final String PATH_DEFINE_TASK_LEVEL_EXTEND_STAT = "/extend/task/taskLevelExtend.stat";
+    public static final String PATH_DEMAND_STATUS_STAT = "/extend/task/demandStatus.stat";
+    public static final String PATH_TASK_INFO_STAT = "/extend/task/taskInfo.stat";
+    public static final String PATH_DEFINE_TASK_DEV_STAT = "/extend/task/taskDev.stat";
+    public static final String PATH_DEFINE_TASK_STATUS_STAT = "/extend/task/taskStatus.stat";
+    public static final String PATH_DEFINE_TASK_LEVEL_STAT = "/extend/task/taskLevel.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
