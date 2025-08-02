@@ -1173,7 +1173,11 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.setCustomer(customer);
                 }
                 if (customer.length() > 6) {
-                    item.setCustomer(customer.substring(0, 6));
+                    customer = customer.substring(0, 6);
+                    if (!customer.endsWith("证券") && !customer.endsWith("基金")) {
+                        customer = customer.substring(0, 4);
+                    }
+                    item.setCustomer(customer);
                 }
             }
 
@@ -2366,7 +2370,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             show = true;
                         }
                     }
-                    controlTooltip(appConfigDto, show, msg, 1400, 255);
+                    controlTooltip(appConfigDto, show, msg, 1200, 255);
                 }
             }
         });
