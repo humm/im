@@ -29,9 +29,11 @@ public class ScriptSqlUtils {
             return STR_0;
         } else if (subTransCode.endsWith("ReEdt") || subTransCode.endsWith("Sync") || subTransCode.endsWith("Deal")
                 || subTransCode.endsWith("Check") || subTransCode.endsWith("Config") || subTransCode.endsWith("Configure")
-                || subTransCode.endsWith("Effect") || subTransCode.endsWith("Effective") || subTransCode.endsWith("Invalid")) {
+                || subTransCode.endsWith("Effect") || subTransCode.endsWith("Effective") || subTransCode.endsWith("Invalid")
+                || subTransCode.endsWith("Select") || subTransCode.endsWith("Execute") || subTransCode.endsWith("Process")
+                || subTransCode.endsWith("Enable") || subTransCode.endsWith("Cancel") || subTransCode.endsWith("Push")) {
             return STR_3;
-        }  else if (subTransCode.endsWith("Import") || subTransCode.endsWith("Imp") || subTransCode.endsWith("ImportEdit")) {
+        }  else if (subTransCode.endsWith("Import") || subTransCode.endsWith("Imp")) {
             return STR_6;
         } else if (subTransCode.endsWith("Edit") || subTransCode.endsWith("Edt") || subTransCode.endsWith("Update")) {
             return STR_1;

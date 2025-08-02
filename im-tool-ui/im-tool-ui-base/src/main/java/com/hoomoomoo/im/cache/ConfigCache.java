@@ -333,6 +333,30 @@ public class ConfigCache {
         if (StringUtils.isBlank(appConfigDto.getScriptUpdateGeneratePath())) {
             appConfigDto.setScriptUpdateGeneratePath(FileUtils.getFilePath(DEFAULT_FOLDER));
         }
+
+        // 孤版客户
+        String hepTaskOnlySelf = appConfigDto.getHepTaskOnlySelf();
+        if (StringUtils.isNotBlank(hepTaskOnlySelf)) {
+            String[] onlySelf = hepTaskOnlySelf.split(STR_COMMA);
+            for (String ele : onlySelf) {
+                String[] eleList = ele.split(STR_COLON);
+                if (eleList.length == 2) {
+                    appConfigDto.getHepTaskOnlySelfMap().put(eleList[0], eleList[1]);
+                }
+            }
+        }
+
+        // 主版本指定版本
+        String hepTaskAppointVersion = appConfigDto.getHepTaskAppointVersion();
+        if (StringUtils.isNotBlank(hepTaskAppointVersion)) {
+            String[] appointVersion = hepTaskAppointVersion.split(STR_COMMA);
+            for (String ele : appointVersion) {
+                String[] eleList = ele.split(STR_COLON);
+                if (eleList.length == 2) {
+                    appConfigDto.getHepTaskAppointVersionMap().put(eleList[0], eleList[1]);
+                }
+            }
+        }
     }
 
     private static String getFunctionName(String item) {

@@ -18,6 +18,7 @@ public class HepTaskDto extends BaseDto{
     private String oriTaskName;
     private String productName;
     private String sprintVersion;
+    private String sprintVersionFull;
     private String status;
     private String statusName;
     // yyyy-MM-dd HH:mm:ss
@@ -51,6 +52,8 @@ public class HepTaskDto extends BaseDto{
 
     private String customer;
 
+    private String customerFull;
+
     private String description;
 
     private String assigneeName;
@@ -70,6 +73,7 @@ public class HepTaskDto extends BaseDto{
 
     // 审核人
     private String reviewerId;
+
     private String reviewerName;
 
 }

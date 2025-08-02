@@ -180,6 +180,14 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskTodoDetailSymbol;
 
+    private String hepTaskOnlySelf;
+
+    private Map<String, String> hepTaskOnlySelfMap;
+
+    private String hepTaskAppointVersion;
+
+    private Map<String, String> hepTaskAppointVersionMap;
+
     private String systemToolShakeMouseTimer;
 
     private String systemToolShakeMouseStep;
@@ -291,6 +299,7 @@ public class AppConfigDto extends BaseDto {
     private Boolean queryUpdateTaskFileByCondition;
 
     public AppConfigDto() {
+        initTooltip();
         this.execute = false;
         this.appLogEnable = false;
         this.svnDefaultAppendBiz = false;
@@ -317,10 +326,15 @@ public class AppConfigDto extends BaseDto {
         this.timerMap = new ConcurrentHashMap<>();
         this.initScanLog = true;
         this.scanLogTipsIndex = new LinkedHashMap<>();
+        this.queryUpdateTaskFile = false;
+        this.queryUpdateTaskFileByCondition = false;
+        this.hepTaskOnlySelfMap = new LinkedHashMap<>(16);
+        this.hepTaskAppointVersionMap = new LinkedHashMap<>(16);
+    }
+
+    private void initTooltip() {
         tooltip = new Tooltip();
         tooltip.setStyle("-fx-font-size: 16");
         tooltip.setAutoHide(true);
-        this.queryUpdateTaskFile = false;
-        this.queryUpdateTaskFileByCondition = false;
     }
 }

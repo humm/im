@@ -106,14 +106,14 @@ public class HepTodoController extends BaseController implements Initializable {
 
     List<Label> colorList = new ArrayList<>();
 
+    private boolean dealTask = true;
+
+    private String PAGE_USER = "";
     private final static String EXTEND_USER_FRONT_CODE = "front";
     private final static Map<String, String> extendUserInfoCodeToName = new HashMap();
     private final static Map<String, String> extendUserInfoNameToCode = new HashMap();
-
     private final static Map<String, String> dayCompleteTipsInfo = new HashMap();
 
-    private String PAGE_USER = "";
-    private boolean dealTask = true;
 
     private final static String STYLE_RED_COLOR = "-fx-text-background-color: red;-fx-font-weight: bold;";
     private final static String STYLE_BLACK_COLOR = "-fx-text-background-color: #000000;-fx-font-weight: bold;";
@@ -249,6 +249,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     private Label waitMergerNum;
+
+    @FXML
+    private Label checkScriptTips;
 
     @FXML
     private Label taskTips;
@@ -882,11 +885,14 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         dayCompleteTipsInfo.clear();
-        dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.THURSDAY), "周四");
+        // 格式 yyyyMMdd
+        String thursday = CommonUtils.getWeekDayYmd(DayOfWeek.THURSDAY);
+        String today = CommonUtils.getCurrentDateTime3();
+        dayCompleteTipsInfo.put(thursday, "周四");
         dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.FRIDAY), "周五");
         dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.SATURDAY), "周六");
         dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.SUNDAY), "周天");
-        dayCompleteTipsInfo.put(CommonUtils.getCurrentDateTime3(), "今天");
+        dayCompleteTipsInfo.put(today, "今天");
         dayCompleteTipsInfo.put(CommonUtils.getTomorrowDateTime(), "明天");
         dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(2), "后天");
         String nextMonday = CommonUtils.getNextWeekDayYmd(DayOfWeek.MONDAY);
@@ -927,8 +933,8 @@ public class HepTodoController extends BaseController implements Initializable {
         StringBuilder weekCloseVersion = new StringBuilder();
         StringBuilder dayVersion = new StringBuilder();
         StringBuilder dayCloseVersion = new StringBuilder();
-        String todayDateYmd = CommonUtils.getCurrentDateTime3();
-        String todayDate = CommonUtils.getCurrentDate(todayDateYmd);
+        // 格式 yyyy-MM-dd
+        String todayDate = CommonUtils.getCurrentDateTime4();
         String lastDayByWeek = CommonUtils.getLastDayByWeek();
         String weekDay = CommonUtils.getLastDayByWeekYmd();
         List<String> versionList = getTaskVersionInfo();
@@ -1042,7 +1048,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 Map<String, String> versionInfo = version.get(sprintVersion);
                 item.setOriCloseDate(CommonUtils.getCurrentDate(versionInfo.get(KEY_ORI_CLOSE_DATE)));
                 item.setOriPublishDate(CommonUtils.getCurrentDate(versionInfo.get(KEY_ORI_PUBLISH_DATE)));
-                item.setCustomer(versionInfo.get(KEY_CUSTOMER));
             }
 
             String taskNameTag = getTaskNameTag(taskName);
@@ -1099,12 +1104,12 @@ public class HepTodoController extends BaseController implements Initializable {
                 taskMinCompleteDate.put(taskName, taskMin);
             }
 
-            boolean today = todayDate.equals(finishDate);
-            if (today) {
+            boolean todayComplete = todayDate.equals(finishDate);
+            if (todayComplete) {
                 dayVersionNum++;
                 dayTodoTask.add(item.getTaskNumber());
             }
-            boolean week = today || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
+            boolean week = todayComplete || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
             if (week) {
                 weekVersionNum++;
                 weekTodoTask.add(item.getTaskNumber());
@@ -1116,7 +1121,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     continue;
                 }
                 existTask.add(taskName);
-            } else if (devCompleteHide.isSelected() && !today) {
+            } else if (devCompleteHide.isSelected() && !todayComplete) {
                 if (taskName.contains(DEV_COMMIT_TAG)) {
                     iterator.remove();
                     continue;
@@ -1146,17 +1151,20 @@ public class HepTodoController extends BaseController implements Initializable {
                 setTaskLevel(item, "缺陷");
             }
 
+            item.setSprintVersionFull(item.getSprintVersion());
             item.setSprintVersion(formatVersion(item.getSprintVersion()));
+
             if (taskCustomerName.containsKey(taskNumberIn)) {
                 String name = taskCustomerName.get(taskNumberIn);
-                item.setCustomer(StringUtils.isBlank(name) ? NAME_INNER_CUSTOMER : name);
+                item.setCustomerFull(StringUtils.isBlank(name) ? NAME_INNER_CUSTOMER : name);
             } else {
-                if (StringUtils.isBlank(item.getCustomer()) && taskName.contains(DEFECT_TAG)) {
-                    item.setCustomer(NAME_INNER_CUSTOMER);
+                if (StringUtils.isBlank(item.getCustomerFull()) && taskName.contains(DEFECT_TAG)) {
+                    item.setCustomerFull(NAME_INNER_CUSTOMER);
                 } else {
                     waitTaskSync = true;
                 }
             }
+            item.setCustomer(item.getCustomerFull());
 
             String customer = item.getCustomer();
             if (StringUtils.isNotBlank(customer)) {
@@ -1168,6 +1176,10 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.setCustomer(customer.substring(0, 6));
                 }
             }
+
+            controlHepTaskOnlySelfTips(appConfigDto, item);
+
+            controlHepTaskAppointVersionTips(appConfigDto, item);
 
             if (StringUtils.equals(appConfigDto.getHepTaskUser(), item.getCreatorId())) {
                 item.setCreatorName(STR_SPACE);
@@ -1240,9 +1252,45 @@ public class HepTodoController extends BaseController implements Initializable {
             msg = "开发人员和审核人员为同一人，请检查" + STR_NEXT_LINE_2 + sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)) + STR_NEXT_LINE_2;
             LoggerUtils.info(msg);
         }
-        controlTooltip(appConfigDto, show, msg, getTipsLocation(sameAssigneeIdReviewerId.size()), 175);
         printTaskInfo(res);
+        controlTooltip(appConfigDto, show, msg, getTipsLocation(sameAssigneeIdReviewerId.size()), 175);
+        controlCheckScriptTips(StringUtils.equals(today, thursday));
         updateHepStatFile(appConfigDto, taskNoList, demandNoList);
+    }
+
+    private void controlHepTaskOnlySelfTips (AppConfigDto appConfigDto, HepTaskDto hepTaskDto) {
+        Map<String, String> hepTaskOnlySelfMap = appConfigDto.getHepTaskOnlySelfMap();
+        String customerFull = hepTaskDto.getCustomerFull();
+        if (hepTaskOnlySelfMap.containsKey(customerFull)) {
+            if (!hepTaskDto.getSprintVersionFull().startsWith(hepTaskOnlySelfMap.get(customerFull))) {
+                setTaskLevel(hepTaskDto, "孤版");
+            }
+        }
+    }
+
+    private void controlHepTaskAppointVersionTips (AppConfigDto appConfigDto, HepTaskDto hepTaskDto) {
+        Map<String, String> hepTaskAppointVersionMap = appConfigDto.getHepTaskAppointVersionMap();
+        String customerFull = hepTaskDto.getCustomerFull();
+        if (hepTaskAppointVersionMap.containsKey(customerFull)) {
+            String taskVersion = hepTaskDto.getSprintVersionFull();
+            String version = hepTaskAppointVersionMap.get(customerFull);
+            String ver = version.substring(0, 18);
+            if (taskVersion.startsWith(ver) && !StringUtils.equals(version, taskVersion)) {
+                setTaskLevel(hepTaskDto, "错版");
+            }
+        }
+    }
+
+    private void controlCheckScriptTips(boolean checkDate) throws Exception {
+        if (checkDate) {
+            if (taskUserPage()) {
+                checkScriptTips.setVisible(true);
+            } else {
+                checkScriptTips.setVisible(false);
+            }
+        } else {
+            checkScriptTips.setVisible(false);
+        }
     }
 
     private double getTipsLocation(int num) {
@@ -1987,6 +2035,10 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private boolean frontPage() {
         return PAGE_USER.equals(EXTEND_USER_FRONT_CODE);
+    }
+
+    private boolean taskUserPage() throws Exception {
+        return PAGE_USER.equals(ConfigCache.getAppConfigDtoCache().getHepTaskUser());
     }
 
     private void controlComponent(boolean syncComponent, boolean checkFileComponent, boolean syncTaskComponent) {
