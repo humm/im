@@ -1172,10 +1172,10 @@ public class HepTodoController extends BaseController implements Initializable {
                     customer = customer.split(STR_COMMA)[0];
                     item.setCustomer(customer);
                 }
-                if (customer.length() > 6) {
-                    customer = customer.substring(0, 6);
-                    if (!customer.endsWith("证券") && !customer.endsWith("基金")) {
-                        customer = customer.substring(0, 4);
+                if (customer.length() > 4) {
+                    customer = customer.substring(0, 4);
+                    if (StringUtils.equals("中信中证", customer)) {
+                        customer = "中信托管";
                     }
                     item.setCustomer(customer);
                 }
