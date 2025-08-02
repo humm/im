@@ -24,43 +24,27 @@ public class ScriptSqlUtils {
     public static String extReport = "\\Report";
 
     public static String getSubTransCodeOpDir(String subTransCode, String defaultValue) {
-        // 0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入
+        // 0:新增 1:修改 2:删除 3:其他 4:查询 5:下载 6:导入 7:审批 8:接口 9:复制
         if (subTransCode.endsWith("Add")) {
             return STR_0;
-        }
-        if (subTransCode.endsWith("Edit") || subTransCode.endsWith("Edt")) {
-            return STR_1;
-        }
-        if (subTransCode.endsWith("Delete") || subTransCode.endsWith("Del")) {
-            return STR_2;
-        }
-        if (subTransCode.endsWith("Query") || subTransCode.endsWith("Qry")) {
-            return STR_4;
-        }
-        if (subTransCode.endsWith("Export") || subTransCode.endsWith("Exp") || subTransCode.endsWith("Download") || subTransCode.endsWith("Dwn")) {
-            return STR_5;
-        }
-        if (subTransCode.endsWith("Import") || subTransCode.endsWith("Imp")) {
+        } else if (subTransCode.endsWith("ReEdt") || subTransCode.endsWith("Sync") || subTransCode.endsWith("Deal")
+                || subTransCode.endsWith("Check") || subTransCode.endsWith("Config") || subTransCode.endsWith("Configure")
+                || subTransCode.endsWith("Effect") || subTransCode.endsWith("Effective") || subTransCode.endsWith("Invalid")) {
+            return STR_3;
+        }  else if (subTransCode.endsWith("Import") || subTransCode.endsWith("Imp") || subTransCode.endsWith("ImportEdit")) {
             return STR_6;
+        } else if (subTransCode.endsWith("Edit") || subTransCode.endsWith("Edt") || subTransCode.endsWith("Update")) {
+            return STR_1;
+        } else if (subTransCode.endsWith("Delete") || subTransCode.endsWith("Del")) {
+            return STR_2;
+        } else if (subTransCode.endsWith("Query") || subTransCode.endsWith("Qry")) {
+            return STR_4;
+        } else if (subTransCode.endsWith("Export") || subTransCode.endsWith("Exp") || subTransCode.endsWith("Download") || subTransCode.endsWith("Dwn")) {
+            return STR_5;
+        } else if (subTransCode.endsWith("Copy")) {
+            return STR_9;
         }
         return defaultValue;
-    }
-
-    public static String getTransCodeByDeleteSql(String sql) {
-        String[] trans = sql.split("where")[1].split("and")[0].split("=");
-        if (trans.length == 2) {
-            return trans[1].replaceAll(STR_QUOTES_SINGLE, STR_BLANK).replaceAll(STR_SEMICOLON, STR_BLANK).trim();
-        }
-        return null;
-    }
-
-    public static String getSubTransCodeByDeleteSql(String sql) {
-        String[] trans = sql.split("where")[1].split("and");
-        if (trans.length == 2) {
-            trans = trans[1].split("=");
-            return trans[1].replaceAll(STR_QUOTES_SINGLE, STR_BLANK).replaceAll(STR_SEMICOLON, STR_BLANK).trim();
-        }
-        return null;
     }
 
     public static String getTransCode(String sql) {
@@ -77,22 +61,6 @@ public class ScriptSqlUtils {
             return null;
         }
         return trans[1].replaceAll(STR_QUOTES_SINGLE, STR_BLANK).trim();
-    }
-
-    public static String getSubTransName(String sql) {
-        String[] trans = getTrans(sql);
-        if (trans == null) {
-            return null;
-        }
-        return trans[2].replaceAll(STR_QUOTES_SINGLE, STR_BLANK).trim();
-    }
-
-    public static String getSubTransOpDir(String sql) {
-        String[] trans = getTrans(sql);
-        if (trans == null) {
-            return null;
-        }
-        return trans[2].replaceAll(STR_QUOTES_SINGLE, STR_BLANK).trim();
     }
 
     public static String[] getTrans(String sql) {

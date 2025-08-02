@@ -23,7 +23,7 @@ public class ScriptRepairSql {
     private static String TSYS_SUB_TRANS_EXT_END_LINE_INDEX = "-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *";
     private static String BLOCK_LINE_INDEX = "-- ************************************************************************************************************************************************************************************";
     private static String BLOCK_LINE_INDEX_TIPS = "-- ****************************************************************************** %s ******************************************************************************";
-    private static String BLOCK_LINE_SUB_TRANS_EXT_INDEX_TIPS = "-- ***************************************************************** %s *****************************************************************";
+    private static String BLOCK_LINE_SUB_TRANS_EXT_INDEX_TIPS = "-- ******************************************************** %s ********************************************************";
     private static String MENU_TIPS = "-- ************************************************************************* %s *************************************************************************";
     private static String MENU_TIPS_PART = "-- *************************************************************************";
     private static String TRANS_TIPS = "-- **************************************** %s ****************************************";
@@ -1243,8 +1243,8 @@ public class ScriptRepairSql {
 
         res.add(STR_BLANK);
         res.add(BLOCK_LINE_INDEX);
-        res.add(String.format(BLOCK_LINE_SUB_TRANS_EXT_INDEX_TIPS, "              日志 tsys_subtrans_ext            "));
-        res.add(String.format(BLOCK_LINE_SUB_TRANS_EXT_INDEX_TIPS, "0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入"));
+        res.add(String.format(BLOCK_LINE_SUB_TRANS_EXT_INDEX_TIPS, "                      日志 tsys_subtrans_ext                     "));
+        res.add(String.format(BLOCK_LINE_SUB_TRANS_EXT_INDEX_TIPS, "0:新增 1:修改 2:删除 3:其他 4:查询 5:下载 6:导入 7:审批 8:接口 9:复制"));
         res.add(BLOCK_LINE_INDEX);
         if (CollectionUtils.isNotEmpty(subTransExt)) {
             subTransExt = subTransExt.subList(0, subTransExt.size() - 1);

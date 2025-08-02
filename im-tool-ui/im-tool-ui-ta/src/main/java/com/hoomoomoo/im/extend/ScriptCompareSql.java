@@ -489,7 +489,13 @@ public class ScriptCompareSql {
         Iterator<String> iteratorLack = lackRouter.iterator();
         while (iteratorLack.hasNext()) {
             String menuCode = iteratorLack.next();
-            menuCodeList.add(buildMenuInfo(menuCode));
+            String menu = buildMenuInfo(menuCode);
+            // 文件类型忽略检查
+            if (skipItem(skipRouterCache, menu)) {
+                iteratorLack.remove();
+                continue;
+            }
+            menuCodeList.add(menu);
         }
         menuCodeList.add(0, String.format(MSG_WAIT_HANDLE_NUM, lackRouter.size()));
         menuCodeList.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LACK_ROUTER.getName()));
@@ -540,7 +546,7 @@ public class ScriptCompareSql {
             }
         }
         subTransExtErrorList.add(0, String.format(MSG_WAIT_HANDLE_NUM, subTransExtErrorList.size()));
-        subTransExtErrorList.add(0, "-- *************************************  0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入  *************************************");
+        subTransExtErrorList.add(0, "-- *************************************  0:新增 1:修改 2:删除 3:其他 4:查询 5:下载 6:导入 7:审批 8:接口 9:复制  *************************************");
         subTransExtErrorList.add(0, String.format(MSG_WAIT_HANDLE_EVENT, ERROR_LOG.getName()));
         FileUtils.writeFile(resultPath + ERROR_LOG.getFileName(), subTransExtErrorList);
     }
@@ -1034,6 +1040,19 @@ public class ScriptCompareSql {
         extFileNum++;
     }
 
+    private boolean skipItem(Set<String> skipConfig, String message) {
+        message = message.trim();
+        if (StringUtils.isBlank(message)) {
+            return true;
+        }
+        for (String conf : skipConfig) {
+            if (message.endsWith(conf)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private void initMenuByFile(File file) throws Exception {
         if (file.isDirectory()) {
             for (File item : file.listFiles()) {
@@ -1280,7 +1299,7 @@ public class ScriptCompareSql {
     }
 
     private static String handleOpDir(String opDir) {
-        // 0-新增 1-修改 2-删除 3-其他 4-查询 5-下载 6-导入
+        // 0:新增 1:修改 2:删除 3:其他 4:查询 5:下载 6:导入 7:审批 8:接口 9:复制
         switch (opDir) {
             case STR_0:
                 opDir = "0 新增";
@@ -1307,14 +1326,6 @@ public class ScriptCompareSql {
                 break;
         }
         return opDir;
-    }
-
-    private String getMenuNameByCache(String menuCode) {
-        List<String> menu = menuCache.get(menuCode);
-        if (CollectionUtils.isNotEmpty(menu)) {
-            return menu.get(0);
-        }
-        return STR_BLANK;
     }
 
     private static boolean addFilePath(String path) {
