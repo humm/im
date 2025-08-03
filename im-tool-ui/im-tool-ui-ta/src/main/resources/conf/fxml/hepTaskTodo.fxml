@@ -200,7 +200,7 @@
                                                                 </TableColumn>
                                                                 <TableColumn id="customer" editable="false"
                                                                              prefWidth="105" sortable="false"
-                                                                             text="客户名称">
+                                                                             style="-fx-alignment: center;" text="客户名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="customer"/>
                                                                     </cellValueFactory>
@@ -242,19 +242,19 @@
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="creatorName" editable="false" prefWidth="65"
-                                                                             sortable="false" text="创建人">
+                                                                             style="-fx-alignment: center;" sortable="false" text="创建人">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="creatorName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="assigneeName" editable="false" prefWidth="65"
-                                                                             sortable="false" text="经办人">
+                                                                             style="-fx-alignment: center;" sortable="false" text="经办人">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="assigneeName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="reviewerName" editable="false" prefWidth="65"
-                                                                             sortable="false" text="审核人">
+                                                                             style="-fx-alignment: center;" sortable="false" text="审核人">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="reviewerName"/>
                                                                     </cellValueFactory>
@@ -278,7 +278,7 @@
                                 <AnchorPane fx:id="sideBar" minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="342.0">
                                     <children>
                                         <SplitPane
-                                                dividerPositions="0.3676617038783742, 0.7297015167350199, 0.85"
+                                                dividerPositions="0.45, 0.65"
                                                 orientation="VERTICAL" prefHeight="318.4" prefWidth="191.0"
                                                 AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                                 AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -310,33 +310,14 @@
                                                     <TextField fx:id="nameQuery" layoutX="60.0" layoutY="90.0"
                                                                prefWidth="240"/>
                                                     <Label layoutX="15.0" layoutY="135.0" text="版本"/>
-                                                    <ComboBox fx:id="sprintVersionQuery" layoutX="60.0" layoutY="130.0"
-                                                              onAction="#selectSprintVersion" prefWidth="240"/>
-                                                    <Label layoutX="15.0" layoutY="175.0" text="标签"/>
+                                                    <ComboBox fx:id="sprintVersionQuery" layoutX="60.0" layoutY="130.0" prefWidth="240"/>
+                                                    <Label layoutX="15.0" layoutY="175.0" text="描述"/>
+                                                    <ComboBox fx:id="taskLevelQuery" layoutX="60.0" layoutY="170.0" prefWidth="240"/>
+
+                                                    <Label layoutX="15.0" layoutY="215.0" text="标签"/>
 
                                                     <TextField layoutX="60.0" layoutY="500.0" prefWidth="240"
                                                                text="光标默认聚焦点"/>
-                                                </AnchorPane>
-                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="168.0"
-                                                            prefWidth="287.0">
-                                                    <Label layoutX="15.0" layoutY="10.0"
-                                                           style="-fx-font-weight: bold; -fx-font-size: 15;"
-                                                           text="任务单信息"/>
-                                                    <Label fx:id="frontTipsSideBar" layoutX="190.0" layoutY="10.0"
-                                                           style="-fx-font-weight: bold; -fx-font-size: 15; -fx-text-background-color: red;"
-                                                           text="front未实时同步"/>
-                                                    <Label layoutX="15.0" layoutY="55.0" text="需求编号"/>
-                                                    <TextField fx:id="TaskDemandNo" layoutX="85.0" layoutY="47.0"
-                                                               prefWidth="220"/>
-                                                    <Label layoutX="15.0" layoutY="95.0" text="任务单号"/>
-                                                    <TextField fx:id="taskNumber" layoutX="85.0" layoutY="90.0"
-                                                               prefWidth="220"/>
-                                                    <Label layoutX="15.0" layoutY="135.0" text="任务名称"/>
-                                                    <TextField fx:id="name" layoutX="85.0" layoutY="130.0"
-                                                               prefWidth="220"/>
-                                                    <Label layoutX="15.0" layoutY="175.0" text="任务版本"/>
-                                                    <TextField fx:id="sprintVersion" layoutX="85.0" layoutY="170.0"
-                                                               prefWidth="220"/>
                                                 </AnchorPane>
                                                 <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
                                                             prefHeight="114.0" prefWidth="108.0">

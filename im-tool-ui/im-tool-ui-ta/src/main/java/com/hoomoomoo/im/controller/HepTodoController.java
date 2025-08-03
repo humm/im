@@ -104,6 +104,8 @@ public class HepTodoController extends BaseController implements Initializable {
     Map<String, HepTaskDto> taskMinCompleteDate = new HashMap<>();
     Map<String, String> sortCodeCache = new HashMap<>();
 
+    List<String> taskLevelDict = new ArrayList<>();
+
     List<Label> colorList = new ArrayList<>();
 
     private boolean dealTask = true;
@@ -173,28 +175,16 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label dayClose;
 
     @FXML
-    private TextField taskNumber;
-
-    @FXML
     private TextField taskNumberQuery;
-
-    @FXML
-    private TextField name;
 
     @FXML
     private TextField nameQuery;
 
     @FXML
-    private TextField sprintVersion;
-
-    @FXML
     private ComboBox sprintVersionQuery;
 
     @FXML
-    private TextField TaskDemandNo;
-
-    @FXML
-    private TextField id;
+    private ComboBox taskLevelQuery;
 
     @FXML
     public TextArea notice;
@@ -291,9 +281,6 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     private Label fileTipsFileTimeTitle;
-
-    @FXML
-    private Label frontTipsSideBar;
 
     @FXML
     private Label frontTips;
@@ -416,11 +403,6 @@ public class HepTodoController extends BaseController implements Initializable {
     void showTaskInfo(MouseEvent event) throws Exception {
         HepTaskDto item = (HepTaskDto) taskList.getSelectionModel().getSelectedItem();
         item.setOperateType(STR_BLANK);
-        OutputUtils.repeatInfo(taskNumber, item.getTaskNumber());
-        OutputUtils.repeatInfo(name, item.getName());
-        OutputUtils.repeatInfo(sprintVersion, item.getSprintVersion());
-        OutputUtils.repeatInfo(TaskDemandNo, item.getDemandNo());
-        OutputUtils.repeatInfo(id, item.getId());
 
         OutputUtils.repeatInfo(demandNo, item.getDemandNo());
         OutputUtils.repeatInfo(taskNo, item.getTaskNumber());
@@ -598,14 +580,11 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     @FXML
-    void selectSprintVersion(ActionEvent event) throws Exception {
-    }
-
-    @FXML
     void executeReset(ActionEvent event) throws Exception {
         OutputUtils.clearLog(taskNumberQuery);
         OutputUtils.clearLog(nameQuery);
         OutputUtils.clearLog(sprintVersionQuery);
+        OutputUtils.clearLog(taskLevelQuery);
         executeQuery(null);
     }
 
@@ -660,6 +639,7 @@ public class HepTodoController extends BaseController implements Initializable {
             LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<>(logs));
             logs.clear();
             syncTaskLog.clear();
+            taskLevelDict.clear();
             if (frontPage()) {
                 ConfigCache.getAppConfigDtoCache().setQueryUpdateTaskFileByCondition(false);
             }
@@ -925,7 +905,7 @@ public class HepTodoController extends BaseController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
-        filterTask(appConfigDto, res);
+        initVersionTask(res);
         boolean hasBlank = false;
         int taskTotal = 0;
         Map<String, Map<String, String>> version = new HashMap<>();
@@ -945,6 +925,9 @@ public class HepTodoController extends BaseController implements Initializable {
         Map<String, String> taskDemandStatus = getDemandInfo();
         Map<String, String> taskSubmitStatus = getTaskStatusInfo();
         Map<String, String> taskCancelDevSubmit = getCancelDevSubmitTaskInfo();
+        List<String> cancelOnlySelf = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT));
+        List<String> cancelErrorVersion = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT));
+        String taskLevelQ = CommonUtils.getComponentValue(taskLevelQuery);
         boolean waitTaskSync = false;
         for (String item : versionList) {
             String[] elements = item.split(STR_SEMICOLON);
@@ -1039,6 +1022,26 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setFinishDate(finishDate);
             item.setFinishTime(finishTime);
 
+            boolean todayComplete = todayDate.equals(finishDate);
+
+            if (only.isSelected()) {
+                if (existTask.contains(taskName)) {
+                    iterator.remove();
+                    continue;
+                }
+                existTask.add(taskName);
+            } else if (devCompleteHide.isSelected() && !todayComplete) {
+                if (taskName.contains(DEV_COMMIT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            } else if (devCompleteShow.isSelected()) {
+                if (!taskName.contains(DEV_COMMIT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            }
+
             String sprintVersion = item.getSprintVersion();
             if (sprintVersion.startsWith(KEY_TA5) || (sprintVersion.contains(KEY_TA6) && !sprintVersion.contains(KEY_FUND) && !sprintVersion.contains(KEY_VERSION_YEAR_2022))) {
                 iterator.remove();
@@ -1104,35 +1107,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 taskMinCompleteDate.put(taskName, taskMin);
             }
 
-            boolean todayComplete = todayDate.equals(finishDate);
-            if (todayComplete) {
-                dayVersionNum++;
-                dayTodoTask.add(item.getTaskNumber());
-            }
-            boolean week = todayComplete || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
-            if (week) {
-                weekVersionNum++;
-                weekTodoTask.add(item.getTaskNumber());
-            }
-
-            if (only.isSelected()) {
-                if (existTask.contains(taskName)) {
-                    iterator.remove();
-                    continue;
-                }
-                existTask.add(taskName);
-            } else if (devCompleteHide.isSelected() && !todayComplete) {
-                if (taskName.contains(DEV_COMMIT_TAG)) {
-                    iterator.remove();
-                    continue;
-                }
-            } else if (devCompleteShow.isSelected()) {
-                if (!taskName.contains(DEV_COMMIT_TAG)) {
-                    iterator.remove();
-                    continue;
-                }
-            }
-
             if (dayCompleteTipsInfo.containsKey(minCompleteByMarkYmd)) {
                 item.setTaskMark(dayCompleteTipsInfo.get(minCompleteByMarkYmd));
             }
@@ -1181,9 +1155,26 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
 
-            controlHepTaskOnlySelfTips(appConfigDto, item);
+            controlHepTaskOnlySelfTips(appConfigDto, item, cancelOnlySelf);
 
-            controlHepTaskAppointVersionTips(appConfigDto, item);
+            controlHepTaskAppointVersionTips(appConfigDto, item, cancelErrorVersion);
+
+            initTaskLevelDict(taskLevelQ);
+
+            if (filterTaskForRemove(appConfigDto, item, taskLevelQ)) {
+                iterator.remove();
+                continue;
+            }
+
+            if (todayComplete) {
+                dayVersionNum++;
+                dayTodoTask.add(item.getTaskNumber());
+            }
+            boolean week = todayComplete || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
+            if (week) {
+                weekVersionNum++;
+                weekTodoTask.add(item.getTaskNumber());
+            }
 
             if (StringUtils.equals(appConfigDto.getHepTaskUser(), item.getCreatorId())) {
                 item.setCreatorName(STR_SPACE);
@@ -1262,9 +1253,12 @@ public class HepTodoController extends BaseController implements Initializable {
         updateHepStatFile(appConfigDto, taskNoList, demandNoList);
     }
 
-    private void controlHepTaskOnlySelfTips (AppConfigDto appConfigDto, HepTaskDto hepTaskDto) {
-        Map<String, String> hepTaskOnlySelfMap = appConfigDto.getHepTaskOnlySelfMap();
+    private void controlHepTaskOnlySelfTips (AppConfigDto appConfigDto, HepTaskDto hepTaskDto, List<String> cancelOnlySelf) {
+        if (CollectionUtils.isNotEmpty(cancelOnlySelf) && cancelOnlySelf.contains(hepTaskDto.getTaskNumber())) {
+            return;
+        }
         String customerFull = hepTaskDto.getCustomerFull();
+        Map<String, String> hepTaskOnlySelfMap = appConfigDto.getHepTaskOnlySelfMap();
         if (hepTaskOnlySelfMap.containsKey(customerFull)) {
             if (!hepTaskDto.getSprintVersionFull().startsWith(hepTaskOnlySelfMap.get(customerFull))) {
                 setTaskLevel(hepTaskDto, "孤版");
@@ -1272,9 +1266,12 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    private void controlHepTaskAppointVersionTips (AppConfigDto appConfigDto, HepTaskDto hepTaskDto) {
-        Map<String, String> hepTaskAppointVersionMap = appConfigDto.getHepTaskAppointVersionMap();
+    private void controlHepTaskAppointVersionTips (AppConfigDto appConfigDto, HepTaskDto hepTaskDto, List<String> cancelErrorVersion) {
+        if (CollectionUtils.isNotEmpty(cancelErrorVersion) && cancelErrorVersion.contains(hepTaskDto.getTaskNumber())) {
+            return;
+        }
         String customerFull = hepTaskDto.getCustomerFull();
+        Map<String, String> hepTaskAppointVersionMap = appConfigDto.getHepTaskAppointVersionMap();
         if (hepTaskAppointVersionMap.containsKey(customerFull)) {
             String taskVersion = hepTaskDto.getSprintVersionFull();
             String version = hepTaskAppointVersionMap.get(customerFull);
@@ -1328,7 +1325,7 @@ public class HepTodoController extends BaseController implements Initializable {
             taskNoList.addAll(demandNoList);
             updateFile(taskLevelExtendStat, taskNoList, PATH_DEFINE_TASK_LEVEL_STAT, demandNum, taskNum);
             if (CollectionUtils.isNotEmpty(syncTaskLog)) {
-                syncTaskLog.add(String.format("需求总数【%s】任务总数【%s】", demandNum, taskNum));
+                syncTaskLog.add(String.format(STR_NEXT_LINE + "需求总数【%s】任务总数【%s】", demandNum, taskNum));
                 controlTooltip(appConfigDto, true, syncTaskLog.stream().collect(Collectors.joining(STR_NEXT_LINE)), 500, 150);
             }
             appConfigDto.setQueryUpdateTaskFile(false);
@@ -1377,21 +1374,42 @@ public class HepTodoController extends BaseController implements Initializable {
                 content.add(STR_BLANK);
             }
             FileUtils.writeFile(FileUtils.getFilePath(path), new ArrayList<>(content));
+            String tipTitle = fileName + "【%s】原始数据【%s】删除数据【%s】最终数据【%s】";
+            syncTaskLog.add(String.format(tipTitle, path, oriLength, deleteLength, lastLength));
+            if (StringUtils.isNotBlank(errorMessage)) {
+                syncTaskLog.add(errorMessage);
+            }
+            logs.add(String.format(tipTitle + "剔除数据详情【%s】", path, oriLength, deleteLength, lastLength, deleteData.stream().collect(Collectors.joining(STR_SPACE_3))));
         }
-        String tipTitle = fileName + "【%s】原始数据【%s】删除数据【%s】最终数据【%s】";
-        syncTaskLog.add(String.format(tipTitle, path, oriLength, deleteLength, lastLength));
-        if (StringUtils.isNotBlank(errorMessage)) {
-            syncTaskLog.add(errorMessage);
-        }
-        logs.add(String.format(tipTitle + "剔除数据详情【%s】", path, oriLength, deleteLength, lastLength, deleteData.stream().collect(Collectors.joining(STR_SPACE_3))));
     }
 
     private void setTaskLevel(HepTaskDto item, String taskLevel) {
+        if (!taskLevelDict.contains(taskLevel)) {
+            taskLevelDict.add(taskLevel);
+        }
         item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? taskLevel : taskLevel + "/" + item.getTaskLevel() );
     }
 
     private String formatVersion(String ver) {
         return CommonUtils.getSimpleVer(ver);
+    }
+
+    private void initTaskLevelDict(String taskLevelQ) {
+        Collections.sort(taskLevelDict, new Comparator<String>(){
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+        ObservableList taskLevel = taskLevelQuery.getItems();
+        taskLevel.clear();
+        if (CollectionUtils.isNotEmpty(taskLevelDict)) {
+            Iterator<String> ver = taskLevelDict.iterator();
+            while (ver.hasNext()) {
+                taskLevel.add(ver.next());
+            }
+        }
+        taskLevel.add(STR_SPACE);
     }
 
     private void initVersion(Set<String> currentTaskVersion, String sprintVersionQ) {
@@ -1500,9 +1518,6 @@ public class HepTodoController extends BaseController implements Initializable {
         if (CollectionUtils.isEmpty(task)) {
             return;
         }
-        if (frontPage()) {
-            return;
-        }
         Map<String, String> tags = new LinkedHashMap<>();
         for (HepTaskDto item : task) {
             String taskName = item.getName();
@@ -1541,12 +1556,12 @@ public class HepTodoController extends BaseController implements Initializable {
         });
         Iterator<String> iterator = tags.keySet().iterator();
         double layoutX = 60;
-        double layoutY = 175;
+        double layoutY = 215;
         while (iterator.hasNext()) {
             String tagName = iterator.next();
             layoutX = buildTag(tagName, layoutX, layoutY);
             if (layoutX == 60) {
-                layoutY = 200;
+                layoutY = 240;
             }
         }
     }
@@ -1579,37 +1594,44 @@ public class HepTodoController extends BaseController implements Initializable {
         return x > 240 ? 60 : x;
     }
 
-    public void filterTask(AppConfigDto appConfigDto, List<HepTaskDto> task) {
+    public void initVersionTask(List<HepTaskDto> task) {
         Iterator<HepTaskDto> iterator = task.iterator();
+        String sprintVersionQ = CommonUtils.getComponentValue(sprintVersionQuery);
+        Set<String> currentTaskVersion = new HashSet<>();
+        while (iterator.hasNext()) {
+            HepTaskDto item = iterator.next();
+            String sprintVersion = item.getSprintVersion();
+            currentTaskVersion.add(sprintVersion);
+        }
+        initVersion(currentTaskVersion, sprintVersionQ);
+    }
+
+    public boolean filterTaskForRemove(AppConfigDto appConfigDto, HepTaskDto task, String taskLevelQ) {
         String taskNumberQ = CommonUtils.getComponentValue(taskNumberQuery);
         String nameQ = CommonUtils.getComponentValue(nameQuery);
         String sprintVersionQ = CommonUtils.getComponentValue(sprintVersionQuery);
         if (frontPage()) {
-            if (StringUtils.isNotBlank(taskNumberQ) || StringUtils.isNotBlank(nameQ) || StringUtils.isNotBlank(sprintVersionQ)) {
+            if (StringUtils.isNotBlank(taskNumberQ) || StringUtils.isNotBlank(nameQ) || StringUtils.isNotBlank(sprintVersionQ) || StringUtils.isNotBlank(taskLevelQ)) {
                 appConfigDto.setQueryUpdateTaskFileByCondition(true);
             }
         }
-        Set<String> currentTaskVersion = new HashSet<>();
-        while (iterator.hasNext()) {
-            HepTaskDto item = iterator.next();
-            String taskNumber = item.getTaskNumber();
-            String taskName = item.getName();
-            String sprintVersion = item.getSprintVersion();
-            currentTaskVersion.add(sprintVersion);
-            if (StringUtils.isNotBlank(taskNumberQ) && !taskNumber.contains(taskNumberQ)) {
-                iterator.remove();
-                continue;
-            }
-            if (StringUtils.isNotBlank(nameQ) && !taskName.contains(nameQ)) {
-                iterator.remove();
-                continue;
-            }
-            if (StringUtils.isNotBlank(sprintVersionQ) && !sprintVersion.contains(sprintVersionQ)) {
-                iterator.remove();
-                continue;
-            }
+        String taskNumber = task.getTaskNumber();
+        String taskName = task.getName();
+        String sprintVersion = task.getSprintVersion();
+        String taskLevel = task.getTaskLevel() == null ? STR_BLANK : task.getTaskLevel();
+        if (StringUtils.isNotBlank(taskNumberQ) && !taskNumber.contains(taskNumberQ)) {
+           return true;
         }
-        initVersion(currentTaskVersion, sprintVersionQ);
+        if (StringUtils.isNotBlank(nameQ) && !taskName.contains(nameQ)) {
+            return true;
+        }
+        if (StringUtils.isNotBlank(sprintVersionQ) && !sprintVersion.contains(sprintVersionQ)) {
+            return true;
+        }
+        if (StringUtils.isNotBlank(taskLevelQ) && !taskLevel.contains(taskLevelQ)) {
+            return true;
+        }
+        return false;
     }
 
     private static String getTaskNameTag(String taskName) {
@@ -1803,7 +1825,6 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void setFrontTips(boolean visible) {
-        frontTipsSideBar.setVisible(visible);
         frontTips.setVisible(visible);
     }
 
@@ -2234,16 +2255,16 @@ public class HepTodoController extends BaseController implements Initializable {
                     String level = elementList[1];
                     switch (level) {
                         case STR_0:
-                            level = NAME_MENU_TASK_LEVEL_SIMPLE.split(STR_NUMBER_SIGN)[1];
+                            level = NAME_MENU_TASK_LEVEL_SIMPLE.split(STR_RIGHT_FACING)[1];
                             break;
                         case STR_1:
-                            level = NAME_MENU_TASK_LEVEL_GENERAL.split(STR_NUMBER_SIGN)[1];
+                            level = NAME_MENU_TASK_LEVEL_GENERAL.split(STR_RIGHT_FACING)[1];
                             break;
                         case STR_2:
-                            level = NAME_MENU_TASK_LEVEL_DIFFICULTY.split(STR_NUMBER_SIGN)[1];
+                            level = NAME_MENU_TASK_LEVEL_DIFFICULTY.split(STR_RIGHT_FACING)[1];
                             break;
                         case STR_3:
-                            level = NAME_MENU_TASK_LEVEL_QUESTION.split(STR_NUMBER_SIGN)[1];
+                            level = NAME_MENU_TASK_LEVEL_QUESTION.split(STR_RIGHT_FACING)[1];
                             break;
                         case STR_4:
                             level = STR_SPACE;

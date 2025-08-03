@@ -256,21 +256,24 @@ public class BaseConst {
     public static final String NAME_CLEAR_LOG = "系统日志";
     public static final String NAME_SYNC_CODE = "同步源码";
 
-    public static final String NAME_MENU_UPDATE = "更新任务";
-    public static final String NAME_MENU_COPY = "复制提交描述";
-    public static final String NAME_MENU_SIMPLE_COPY = "复制提交描述不包含需求描述";
-    public static final String NAME_MENU_DETAIL = "查看任务详情";
-    public static final String NAME_MENU_SCRIPT = "复制升级脚本提交摘要";
-    public static final String NAME_MENU_TASK_NO = "复制任务单号";
-    public static final String NAME_MENU_MARK_DEV = "标记分支任务已完成";
-    public static final String NAME_MENU_CANCEL_DEV = "取消标记分支任务已完成";
-    public static final String NAME_MENU_MARK_SUBMIT = "标记当前任务已提交";
-    public static final String NAME_MENU_CANCEL_SUBMIT = "取消标记当前任务已提交";
-    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记任务描述#简单";
-    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记任务描述#一般";
-    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记任务描述#复杂";
-    public static final String NAME_MENU_TASK_LEVEL_QUESTION = "标记任务描述#待明确";
-    public static final String NAME_MENU_TASK_LEVEL_CLEAR = "标记任务描述#清除标记";
+    public final static String STR_RIGHT_FACING= " --> ";
+    public static final String NAME_MENU_COPY = "复制" + STR_RIGHT_FACING + "提交描述";
+    public static final String NAME_MENU_SIMPLE_COPY = "复制" + STR_RIGHT_FACING + "提交描述不含需求描述";
+    public static final String NAME_MENU_SCRIPT_COPY = "复制" + STR_RIGHT_FACING + "升级脚本提交摘要";
+    public static final String NAME_MENU_TASK_NO_COPY = "复制" + STR_RIGHT_FACING + "任务单号";
+    public static final String NAME_MENU_DETAIL = "任务" + STR_RIGHT_FACING + "查看详情";
+    public static final String NAME_MENU_UPDATE = "任务" + STR_RIGHT_FACING + "数据更新";
+    public static final String NAME_MENU_MARK_DEV = "分支任务" + STR_RIGHT_FACING + "标记已完成";
+    public static final String NAME_MENU_CANCEL_DEV = "分支任务" + STR_RIGHT_FACING + "取消标记已完成";
+    public static final String NAME_MENU_MARK_SUBMIT = "当前任务" + STR_RIGHT_FACING + "标记已提交";
+    public static final String NAME_MENU_CANCEL_SUBMIT = "当前任务" + STR_RIGHT_FACING + "取消标记已提交";
+    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记任务描述" + STR_RIGHT_FACING + "简单";
+    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记任务描述" + STR_RIGHT_FACING + "一般";
+    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记任务描述" + STR_RIGHT_FACING + "复杂";
+    public static final String NAME_MENU_TASK_LEVEL_QUESTION = "标记任务描述" + STR_RIGHT_FACING + "待明确";
+    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ERROR_VERSION = "标记任务描述" + STR_RIGHT_FACING + "取消标记错版";
+    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ONLY_SELF = "标记任务描述" + STR_RIGHT_FACING + "取消标记孤版";
+    public static final String NAME_MENU_TASK_LEVEL_CLEAR = "标记任务描述" + STR_RIGHT_FACING + "清除标记";
 
     public final static String SECURITY_FLAG = "+++";
 
@@ -401,7 +404,7 @@ public class BaseConst {
     public static final String CANCEL_LEVEL_SIMPLE_ICON = "/conf/image/simple.png";
     public static final String CANCEL_LEVEL_GENERAL_ICON = "/conf/image/general.png";
     public static final String CANCEL_LEVEL_DIFFICULTY_ICON = "/conf/image/difficulty.png";
-    public static final String CANCEL_LEVEL_QUESTION_ICON = "/conf/image/question.png";
+    public static final String CANCEL_LEVEL_ICON = "/conf/image/level.png";
     public static final String CANCEL_LEVEL_CLEAR_ICON = "/conf/image/clear.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
     public static final String DETAIL_ICON = "/conf/image/detail.png";
@@ -418,6 +421,8 @@ public class BaseConst {
     public static final String PATH_DEFINE_TASK_DEV_STAT = "/extend/task/taskDev.stat";
     public static final String PATH_DEFINE_TASK_STATUS_STAT = "/extend/task/taskStatus.stat";
     public static final String PATH_DEFINE_TASK_LEVEL_STAT = "/extend/task/taskLevel.stat";
+    public static final String PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT = "/extend/task/taskLevelError.stat";
+    public static final String PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT = "/extend/task/taskLevelOnlySelf.stat";
     public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
