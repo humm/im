@@ -11,7 +11,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -60,14 +63,17 @@ public class ChangeToolController implements Initializable {
     private static final String executeMenu = "1";
     private static final String executeMode = "2";
 
-    private static String TA_CODE = "";
+    private static String TA_CODE = "00";
 
     private static final String MENU_MODE_NEW = "新版";
     private static final String MENU_MODE_OLD = "老版";
     private static final String MENU_MODE_OLD_ALL = "老版(全部)";
 
+    private static final String AUTO_MODE_TIPS = "***参数提示***";
     private static final String AUTO_MODE_JJHY = "***基金行业***";
     private static final String AUTO_MODE_JSJJ = "嘉实基金";
+    private static final String AUTO_MODE_JXJJ = "建信基金";
+    private static final String AUTO_MODE_TKJJ = "泰康基金";
     private static final String AUTO_MODE_ZQHY = "***证券行业***";
     private static final String AUTO_MODE_GTHT = "国泰海通";
     private static final String AUTO_MODE_DFZQ = "东方证券";
@@ -76,23 +82,52 @@ public class ChangeToolController implements Initializable {
     private static final String AUTO_MODE_XY = "兴业证券";
     private static final String AUTO_MODE_ZJ = "中金公司";
     private static final String AUTO_MODE_GJDF = "国金道富";
-    private static final String AUTO_MODE_TIPS = "***参数提示***";
+
+    // TA代码 gm, zx, xy, zj, gjdf, gtht, sm
+    Map<String, String[]> paramValue = new LinkedHashMap<>();
 
     private Set<String> autoModeSet = new LinkedHashSet<String>(){{
         add(AUTO_MODE_TIPS);
+        paramValue.put(AUTO_MODE_TIPS, new String[]{});
 
         add(AUTO_MODE_JJHY);
+        paramValue.put(AUTO_MODE_JJHY, new String[]{TA_CODE, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+
         add(AUTO_MODE_JSJJ);
+        paramValue.put(AUTO_MODE_JSJJ, new String[]{"07", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+
+        add(AUTO_MODE_JXJJ);
+        paramValue.put(AUTO_MODE_JXJJ, new String[]{"53", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+
+        add(AUTO_MODE_TKJJ);
+        paramValue.put(AUTO_MODE_TKJJ, new String[]{"4C", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+
 
         add(AUTO_MODE_ZQHY);
+        paramValue.put(AUTO_MODE_ZQHY, new String[]{TA_CODE, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1});
+
         add(AUTO_MODE_GTHT);
+        paramValue.put(AUTO_MODE_GTHT, new String[]{"JA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1});
+
         add(AUTO_MODE_DFZQ);
+        paramValue.put(AUTO_MODE_DFZQ, new String[]{"SD", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1});
+
         add(AUTO_MODE_SWHY);
+        paramValue.put(AUTO_MODE_SWHY, new String[]{"SA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1});
+
 
         add(AUTO_MODE_ZX);
+        paramValue.put(AUTO_MODE_ZX, new String[]{"S5", STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0});
+
         add(AUTO_MODE_XY);
+        paramValue.put(AUTO_MODE_XY, new String[]{"XY", STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0});
+
         add(AUTO_MODE_ZJ);
+        paramValue.put(AUTO_MODE_ZJ, new String[]{"SM", STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0});
+
         add(AUTO_MODE_GJDF);
+        paramValue.put(AUTO_MODE_GJDF, new String[]{"NB", STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0});
+
 
     }};
 
@@ -367,65 +402,29 @@ public class ChangeToolController implements Initializable {
     }
 
     public void buildAutoModeSql(String taskType) throws Exception {
-        TA_CODE = STR_SPACE;
-        switch (taskType) {
-            case AUTO_MODE_JJHY:
-                buildAutoModeSql(taskType, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0);
-                break;
-            case AUTO_MODE_JSJJ:
-                TA_CODE = "07";
-                buildAutoModeSql(taskType, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0);
-                break;
-            case AUTO_MODE_ZQHY:
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1);
-                break;
-            case AUTO_MODE_GTHT:
-                TA_CODE = "JA";
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1);
-                break;
-            case AUTO_MODE_DFZQ:
-                TA_CODE = "SD";
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1);
-                break;
-            case AUTO_MODE_SWHY:
-                TA_CODE = "SA";
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1);
-                break;
-            case AUTO_MODE_ZX:
-                TA_CODE = "S5";
-                buildAutoModeSql(taskType, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0);
-                break;
-            case AUTO_MODE_XY:
-                TA_CODE = "XY";
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0);
-                break;
-            case AUTO_MODE_ZJ:
-                TA_CODE = "SM";
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0);
-                break;
-            case AUTO_MODE_GJDF:
-                TA_CODE = "NB";
-                buildAutoModeSql(taskType, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0);
-                break;
-            case AUTO_MODE_TIPS:
-                buildTips();
-                break;
-            default:
+        if (StringUtils.equals(taskType, AUTO_MODE_TIPS)) {
+            buildTips();
+        } else {
+            String[] param = paramValue.get(taskType);
+            if (param == null) {
                 new Exception("未匹配执行方法，请检查");
+            }
+            TA_CODE = param[0];
+            buildAutoModeSql(taskType, param[1], param[2], param[3], param[4], param[5], param[6], param[7]);
         }
     }
 
     /**
      *
-     * @param ssbf 公募
+     * @param gm 公募
      * @param zx 中信
      * @param xy 兴业
      * @param zj 中金
      * @param gjdf 国金道富
-     * @param gtja 国泰君安
-     * @param fcp 分产品自动化
+     * @param gtht 国泰海通
+     * @param sm 分产品自动化
      */
-    public void buildAutoModeSql(String taskType, String ssbf, String zx, String xy, String zj, String gjdf, String gtja, String fcp) throws Exception {
+    public void buildAutoModeSql(String taskType, String gm, String zx, String xy, String zj, String gjdf, String gtht, String sm) throws Exception {
         boolean xyMode =  STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gjdf);
         executeStart(taskType);
         OutputUtils.info(logs, "执行中...");
@@ -433,7 +432,7 @@ public class ChangeToolController implements Initializable {
         res.add("-- " + taskType + "\n");
 
         res.add("-- 开通实时并发清算功能(基金行业)");
-        res.add("update tbparam set param_value = '" + ssbf + "' where param_id = 'fund_MultiProcessesLiqDeal';\n");
+        res.add("update tbparam set param_value = '" + gm + "' where param_id = 'fund_MultiProcessesLiqDeal';\n");
 
         res.add("-- 按照产品日切清算(中信自动化清算模式)");
         if (STR_1.equals(zx) || xyMode) {
@@ -460,17 +459,17 @@ public class ChangeToolController implements Initializable {
         }
 
         res.add("-- 开通分产品自动化清算功能(证券行业)");
-        res.add("update tbparam set param_value = '" + fcp + "' where param_id = 'fund_AutoLiqByPrd';\n");
+        res.add("update tbparam set param_value = '" + sm + "' where param_id = 'fund_AutoLiqByPrd';\n");
 
         res.add("-- 分产品自动化清算行情导入方式");
-        if (STR_1.equals(gtja) || STR_0.equals(fcp)) {
+        if (STR_1.equals(gtht) || STR_0.equals(sm)) {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_autoLiqImpNavType';\n");
         } else {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_autoLiqImpNavType';\n");
         }
 
-        res.add("-- 国泰君安特殊处理功能(国君特有功能)");
-        if (STR_1.equals(gtja)) {
+        res.add("-- 国泰海通特殊处理功能(国君特有功能)");
+        if (STR_1.equals(gtht)) {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_JaSpecialDeal';\n");
         } else {
             res.add("update tbparam set param_value = '0' where param_id = 'fund_JaSpecialDeal';\n");
@@ -485,14 +484,14 @@ public class ChangeToolController implements Initializable {
         res.add(STR_SPACE);
         String groupCode = STR_BLANK;
         String groupName = "1主流程";
-        if (STR_1.equals(ssbf)) {
+        if (STR_1.equals(gm)) {
             groupCode = "fund_daily_virtual_multi";
         } else if (STR_1.equals(zx)) {
             groupCode = "fund_daily_t1_multi";
         } else if (xyMode) {
             groupCode = "fund_daily_xyt1_multi";
             groupName = "1自动化清算";
-        } else if (STR_1.equals(fcp)) {
+        } else if (STR_1.equals(sm)) {
             groupCode = "fund_daily_auto_liq_byprd";
         }
         StringBuilder group = new StringBuilder();

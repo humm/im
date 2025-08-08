@@ -1159,8 +1159,6 @@ public class HepTodoController extends BaseController implements Initializable {
 
             controlHepTaskAppointVersionTips(appConfigDto, item, cancelErrorVersion);
 
-            initTaskLevelDict(taskLevelQ);
-
             if (filterTaskForRemove(appConfigDto, item, taskLevelQ)) {
                 iterator.remove();
                 continue;
@@ -1192,6 +1190,8 @@ public class HepTodoController extends BaseController implements Initializable {
         if (tagFlag) {
             initTag(res);
         }
+
+        initTaskLevelDict(taskLevelQ);
 
         OutputUtils.clearLog(dayTodo);
         OutputUtils.info(dayTodo, String.valueOf(dayVersionNum));
@@ -1359,7 +1359,7 @@ public class HepTodoController extends BaseController implements Initializable {
         } else if (path.endsWith(PATH_TASK_INFO_STAT)) {
             fileName = "任务信息";
             if (lastLength < taskNum) {
-                errorMessage = "...... 任务信息更新异常 ... 请检查 ......";
+                // errorMessage = "...... 任务信息更新异常 ... 请检查 ......";
             }
         } else if (path.endsWith(PATH_DEFINE_TASK_STATUS_STAT)) {
             fileName = "任务状态";
@@ -2391,7 +2391,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             show = true;
                         }
                     }
-                    controlTooltip(appConfigDto, show, msg, 1200, 255);
+                    controlTooltip(appConfigDto, show, msg, 1200, 155);
                 }
             }
         });

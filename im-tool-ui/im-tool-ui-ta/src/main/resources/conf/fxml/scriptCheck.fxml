@@ -87,17 +87,6 @@
                                          </padding>
                                      </Button>
 
-                                     <Label layoutX="20.0" layoutY="485.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 14;" text="检查结果修正" />
-                                     <Button layoutX="130.0" layoutY="480" mnemonicParsing="false" onAction="#repairLackLog" prefWidth="130.0" text="修正缺少日志">
-                                         <padding>
-                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                         </padding>
-                                     </Button>
-                                     <Button layoutX="290.0" layoutY="480" mnemonicParsing="false" onAction="#repairErrorLog" prefWidth="130.0" text="修正错误日志">
-                                         <padding>
-                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                         </padding>
-                                     </Button>
                                  </children>
                               </AnchorPane>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="398.0" prefWidth="157.0">
@@ -171,7 +160,17 @@
                                                      </padding>
                                                  </Button>
 
+                                                 <Button layoutX="130.0" layoutY="375" mnemonicParsing="false" onAction="#repairLackLog" prefWidth="100.0" text="修正缺少日志">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
 
+                                                 <Button layoutX="130.0" layoutY="435" mnemonicParsing="false" onAction="#repairErrorLog" prefWidth="100.0" text="修正错误日志">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
 
 
 
