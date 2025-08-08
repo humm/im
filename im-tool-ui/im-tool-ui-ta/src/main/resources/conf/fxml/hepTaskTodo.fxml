@@ -86,6 +86,8 @@
                             </padding>
                         </Button>
 
+                        <Label fx:id="focusVersionTips" layoutX="20.0" layoutY="150.0" text="5555555555"/>
+
                         <Label fx:id="checkScriptTips" layoutX="1210.0" layoutY="40.0" style="-fx-font-weight: bold; -fx-text-background-color: red;" text="请周频检查配置脚本"/>
 
                         <Button fx:id="syncFileBtn" layoutX="1360.0" layoutY="15.0" mnemonicParsing="false"

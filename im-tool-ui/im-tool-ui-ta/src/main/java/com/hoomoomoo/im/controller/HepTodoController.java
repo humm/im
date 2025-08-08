@@ -152,6 +152,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private List<String> logs = new ArrayList<>();
     private List<String> syncTaskLog = new ArrayList<>();
+    private Map<String, Map<String, Integer>> focusVersion = new HashMap<>();
 
     @FXML
     private AnchorPane hep;
@@ -173,6 +174,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     private Label dayClose;
+
+    @FXML
+    private Label focusVersionTips;
 
     @FXML
     private TextField taskNumberQuery;
@@ -638,6 +642,7 @@ public class HepTodoController extends BaseController implements Initializable {
             execute(OPERATE_QUERY, null);
             LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<>(logs));
             logs.clear();
+            focusVersion.clear();
             syncTaskLog.clear();
             taskLevelDict.clear();
             if (frontPage()) {
@@ -1125,8 +1130,24 @@ public class HepTodoController extends BaseController implements Initializable {
                 setTaskLevel(item, "缺陷");
             }
 
-            item.setSprintVersionFull(item.getSprintVersion());
-            item.setSprintVersion(formatVersion(item.getSprintVersion()));
+            item.setSprintVersionFull(sprintVersion);
+            item.setSprintVersion(formatVersion(sprintVersion));
+
+            if (frontPage() && appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
+                String assigneeName = item.getAssigneeName();
+                if (focusVersion.containsKey(sprintVersion)) {
+                    Map<String, Integer> userStat = focusVersion.get(sprintVersion);
+                    if (userStat.containsKey(assigneeName)) {
+                        userStat.put(assigneeName, userStat.get(assigneeName) + 1);
+                    } else {
+                        userStat.put(assigneeName, 1);
+                    }
+                } else {
+                    Map<String, Integer> userStat = new HashMap<>();
+                    userStat.put(assigneeName, 1);
+                    focusVersion.put(sprintVersion, userStat);
+                }
+            }
 
             if (taskCustomerName.containsKey(taskNumberIn)) {
                 String name = taskCustomerName.get(taskNumberIn);
@@ -1192,6 +1213,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
 
         initTaskLevelDict(taskLevelQ);
+        controlFocusVersionTips(appConfigDto);
 
         OutputUtils.clearLog(dayTodo);
         OutputUtils.info(dayTodo, String.valueOf(dayVersionNum));
@@ -1262,6 +1284,38 @@ public class HepTodoController extends BaseController implements Initializable {
         if (hepTaskOnlySelfMap.containsKey(customerFull)) {
             if (!hepTaskDto.getSprintVersionFull().startsWith(hepTaskOnlySelfMap.get(customerFull))) {
                 setTaskLevel(hepTaskDto, "孤版");
+            }
+        }
+    }
+
+    private void controlFocusVersionTips(AppConfigDto appConfigDto) {
+        if (frontPage()) {
+            int total = 0;
+            int totalStat = 0;
+            StringBuilder message = new StringBuilder();
+            StringBuilder versionMsg = new StringBuilder();
+            List<String> user = new ArrayList<>(extendUserInfoCodeToName.values());
+            for (Map.Entry<String, Map<String, Integer>> entry : focusVersion.entrySet()) {
+                total = 0;
+                versionMsg.setLength(0);
+                String version = entry.getKey();
+                Map<String, Integer> stat = entry.getValue();
+                for (int i=0; i<user.size() - 1; i++) {
+                    String item = user.get(i);
+                    int num = stat.get(item) == null ? 0 : stat.get(item);
+                    total += num;
+                    versionMsg.append(String.format(" %s(%s)", item, num));
+                }
+                totalStat += total;
+                message.append(String.format("重点关注版本【%s】任务统计(%s) --> ", version, total));
+                message.append(versionMsg);
+                message.append(STR_NEXT_LINE);
+            }
+            OutputUtils.repeatInfo(focusVersionTips, message.toString());
+            if (totalStat > 0) {
+                focusVersionTips.setVisible(true);
+            } else {
+                focusVersionTips.setVisible(false);
             }
         }
     }

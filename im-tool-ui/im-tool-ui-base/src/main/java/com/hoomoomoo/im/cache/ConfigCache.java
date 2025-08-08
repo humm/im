@@ -357,6 +357,15 @@ public class ConfigCache {
                 }
             }
         }
+
+        // 重点关注版本
+        String hepTaskFocusVersion = appConfigDto.getHepTaskFocusVersion();
+        if (StringUtils.isNotBlank(hepTaskFocusVersion)) {
+            String[] focusVersion = hepTaskFocusVersion.split(STR_COMMA);
+            for (String ele : focusVersion) {
+                appConfigDto.getHepTaskFocusVersionMap().add(ele);
+            }
+        }
     }
 
     private static String getFunctionName(String item) {
