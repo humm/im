@@ -109,7 +109,6 @@ public class InitConfigUtils {
      */
     public static void updateConfig(String appCode) throws Exception {
         Map<String, String> keys = new LinkedHashMap<>();
-        keys.put("app.about.detail", "false");
         switch (appCode) {
             case APP_CODE_TA:
                 updateConfigByTa(keys);

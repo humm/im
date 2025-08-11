@@ -129,7 +129,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String mode = appConfigDto.getScriptUpdateGenerateMode();
             String type = appConfigDto.getScriptUpdateGenerateType();
-            if (!appConfigDto.getScriptUpdateGenerateFile()) {
+            if (StringUtils.equals(appConfigDto.getScriptUpdateGenerateFile(), STR_FALSE)) {
                 rewrite.setDisable(true);
                 append.setDisable(true);
             }
@@ -321,7 +321,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
                             for (String cloumnItem : cloumn) {
                                 getConnect(deleteSql);
                                 if ("null".equals(sqlInfo.get(cloumnItem.toLowerCase()))) {
-                                    if (!appConfigDto.getScriptUpdateSkip()) {
+                                    if (StringUtils.equals(appConfigDto.getScriptUpdateSkip(), STR_FALSE)) {
                                         deleteSql.append(cloumnItem.toLowerCase() + " is null");
                                     } else {
                                         deleteSql.append("1=1");
@@ -496,7 +496,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
 
             // 写日志文件
             LoggerUtils.writeScriptUpdateInfo(date, logList);
-            if (appConfigDto.getScriptUpdateGenerateFile()) {
+            if (StringUtils.equals(appConfigDto.getScriptUpdateGenerateFile(), STR_TRUE)) {
                 String path = new URL("file:" + appConfigDto.getScriptUpdateGeneratePath() + "/script.sql").getFile();
                 if (STR_1.equals(appConfigDto.getScriptUpdateGenerateMode())) {
                     FileUtils.writeFileAppend(path, scriptList);

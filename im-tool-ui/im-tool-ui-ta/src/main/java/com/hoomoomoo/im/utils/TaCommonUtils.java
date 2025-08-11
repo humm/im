@@ -73,7 +73,7 @@ public class TaCommonUtils {
             }
         }
         if (functionCode.equals(MenuFunctionConfig.FunctionConfig.SCRIPT_UPDATE.getCode())) {
-            if (appConfigDto.getScriptUpdateGenerateFile()) {
+            if (StringUtils.equals(appConfigDto.getScriptUpdateGenerateFile(), STR_TRUE)) {
                 if (StringUtils.isBlank(appConfigDto.getScriptUpdateGeneratePath())) {
                     OutputUtils.info(log, MSG_SCRIPT_UPDATE_GENERATE_PATH + STR_NEXT_LINE);
                     flag = false;

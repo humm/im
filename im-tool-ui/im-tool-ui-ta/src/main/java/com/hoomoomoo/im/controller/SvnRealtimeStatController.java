@@ -12,11 +12,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.URL;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.KEY_NOTICE;
+import static com.hoomoomoo.im.consts.BaseConst.STR_TRUE;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SVN_REALTIME_STAT;
 
 /**
@@ -77,7 +79,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
                         startDate = CommonUtils.getCurrentDateTime6("00:00:00");
                     }
                     Date date = new Date();
-                    if (appConfigDto.getSvnStatReset()) {
+                    if (StringUtils.equals(appConfigDto.getSvnStatReset(), STR_TRUE)) {
                         if (!CommonUtils.getCurrentDateTime9(startDate).equals(CommonUtils.getCurrentDateTime9(date))) {
                             svnStat.clear();
                             LoggerUtils.writeSvnRealtimeStatInfo();

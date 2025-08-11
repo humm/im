@@ -8,7 +8,7 @@ import lombok.Data;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
  * @author humm23693
@@ -36,7 +36,7 @@ public class AppConfigDto extends BaseDto {
 
     private String svnDeletePrefix;
 
-    private Boolean appLogEnable;
+    private String appLogEnable;
 
     private int appLogSaveDay;
 
@@ -58,7 +58,7 @@ public class AppConfigDto extends BaseDto {
 
     private String processTaCode;
 
-    private Boolean svnDefaultAppendBiz;
+    private String svnDefaultAppendBiz;
 
     private String svnDefaultAppendPath;
 
@@ -68,9 +68,9 @@ public class AppConfigDto extends BaseDto {
 
     private LicenseDto license;
 
-    private Boolean scriptUpdateSkip;
+    private String scriptUpdateSkip;
 
-    private Boolean scriptUpdateGenerateFile;
+    private String scriptUpdateGenerateFile;
 
     private String scriptUpdateGenerateMode;
 
@@ -84,7 +84,7 @@ public class AppConfigDto extends BaseDto {
 
     private Integer svnStatInterval;
 
-    private Boolean svnStatReset;
+    private String svnStatReset;
 
     private LinkedHashMap<String, String> svnStatUser;
 
@@ -304,14 +304,15 @@ public class AppConfigDto extends BaseDto {
     public AppConfigDto() {
         initTooltip();
         this.execute = false;
-        this.appLogEnable = false;
-        this.svnDefaultAppendBiz = false;
-        this.scriptUpdateSkip = false;
-        this.scriptUpdateGenerateFile = false;
+        this.appLogEnable = STR_FALSE;
+        this.svnDefaultAppendBiz = STR_FALSE;
+        this.scriptUpdateSkip = STR_FALSE;
+        this.scriptUpdateGenerateFile = STR_FALSE;
+        this.systemToolShakeMouseAuto = STR_FALSE;
         this.svnUpdatePath = new ArrayList<>(16);
         this.scriptUpdateTable = new ArrayList<>(16);
         this.svnStatUser = new LinkedHashMap<>(16);
-        this.svnStatReset = true;
+        this.svnStatReset = STR_TRUE;
         this.svnStatInterval = 0;
         this.copyCodeVersion = new LinkedHashMap(16);
         this.svnUrl = new LinkedHashMap(16);

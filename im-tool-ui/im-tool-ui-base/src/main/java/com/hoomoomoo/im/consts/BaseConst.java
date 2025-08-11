@@ -31,29 +31,15 @@ public class BaseConst {
     public static final String STR_7 = "7";
     public static final String STR_8 = "8";
     public static final String STR_9 = "9";
-    public static final String STR_10 = "10";
-    public static final String STR_11 = "11";
-    public static final String STR_12 = "12";
-    public static final String STR_13 = "13";
-    public static final String STR_14 = "14";
-    public static final String STR_15 = "15";
     public static final String STR_16 = "16";
-    public static final String STR_17 = "17";
-    public static final String STR_18 = "18";
-    public static final String STR_19 = "19";
-    public static final String STR_20 = "20";
-    public static final String STR_69 = "69";
-    public static final String STR_99 = "99";
-    public static final String STR_00 = "00";
-    public static final String STR_99999999 = "99999999";
     public static final String STR_20991231 = "20991231";
     public static final String STR_DATE_20991231 = "2099-12-31";
 
     public static final int DEFAULT_AUTO_CLOSE_MILLIS = 1000;
 
     public static final String STR_TRUE = "1";
-    public static final String STR_SUCCESS_CODE = "200";
     public static final String STR_FALSE = "0";
+    public static final String STR_SUCCESS_CODE = "200";
 
     public final static String ENCODING_UTF8 = "UTF-8";
     public final static String ENCODING_GBK = "GBK";
@@ -126,7 +112,6 @@ public class BaseConst {
     public final static String KEY_ITEMS = "items";
     public final static String KEY_NUMBER = "number";
     public final static String KEY_STATUS = "status";
-    public final static String KEY_CREATE_TIME = "create_time";
     public final static String KEY_CUSTOMER_NAMES = "customer_names";
     public final static String KEY_STORY_NUMBERS = "story_numbers";
     public final static String KEY_STORY_VERSION_LIST = "story_version_list";
@@ -160,11 +145,9 @@ public class BaseConst {
     public final static String KEY_DATA_PRECISION = "data_precision";
     public final static String KEY_DATA_SCALE = "data_scale";
     public final static String KEY_DATA_DEFAULT = "data_default";
-    public final static String KEY_PRIMARY = "primary";
     public final static String KEY_CLOSE_DATE = "closeDate";
     public final static String KEY_ORI_CLOSE_DATE = "oriCloseDate";
     public final static String KEY_ORI_PUBLISH_DATE = "oriPublishDate";
-    public final static String KEY_PUBLISH_DATE = "publishDate";
     public final static String KEY_CUSTOMER = "customer";
     public final static String KEY_ORDER_NO = "orderNo";
     public final static String KEY_MENU_EXTEND = "menuExtend";
@@ -178,12 +161,10 @@ public class BaseConst {
     public final static String KEY_UPDATE_CHANGE_MENU = "updateChangeMenu";
     public final static String KEY_SCHEDULE = "schedule";
     public final static String KEY_TASK = "task";
-    public final static String KEY_DEMAND = "demand";
     public final static String KEY_GIT_LOG_FILE = "diff --git";
     public final static String KEY_HTTPS = "https://";
     public final static String KEY_FILE_SYNC_TIMER = "fileSyncTimer";
     public final static String KEY_LOG_TIMER = "logTimer";
-    public final static String KEY_COMPLETE_TASK_TIMER = "completeTaskTimer";
     public final static String KEY_UNIT_MB = "MB";
     public final static String KEY_TA5 = "TA5";
     public final static String KEY_TA6 = "TA6";
@@ -278,7 +259,6 @@ public class BaseConst {
     public final static String SECURITY_FLAG = "+++";
 
     public final static String STR_BLANK = "";
-    public final static String STR_NUMBER_SIGN = "#";
     public final static String STR_AND = "&";
     public final static String STR_EQUAL = "=";
     public final static String STR_SPLIT = "@@@_@@@";
@@ -354,8 +334,6 @@ public class BaseConst {
     public static final String MSG_LICENSE_NOT_EXIST = "加载证书信息失败,请检查证书文件【 license.init 】";
     public static final String MSG_LICENSE_EXPIRE = "授权证书已过期,授权截止【 %s 】";
     public static final String MSG_LICENSE_EXPIRE_TIPS = "距离授权截止日期还有【 %s 】天";
-    public static final String MSG_LICENSE_NOT_AUTH = "功能【 %s 】未授权";
-    public static final String MSG_LICENSE_NOT_USE = "未启用【 %s 】功能";
     public static final String MSG_DIVIDE_LINE = "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * ";
     public static final String MSG_TASK_DIVIDE_LINE = "=========================================================";
     public static final String MSG_SVN_REALTIME_STAT = "%s  %s  %s  %s";
@@ -367,16 +345,11 @@ public class BaseConst {
 
     public static final String APP_MODE_NAME = "模式";
     public static final String APP_MODE_NAME_APP = "工厂模式";
-    public static final String APP_MODE_NAME_JAR = "Jar模式";
 
     public static final String CONF_FUNCTION_PREFIX = "####################";
     public static final String CONFIG_PREFIX = CONF_FUNCTION_PREFIX + STR_SPACE;
 
     public static final String CMD_KILL_APP = "taskill /f /t /im %s";
-
-    public static final String FILE_GIT_PULL_BAT = "git-pull.bat";
-
-    public static final String ERROR_CODE_FILE_NOT_EXIST = "999999";
 
     public static final String DEFAULT_FOLDER = "/extend/scriptUpdate";
     public static final String PATH_APP = "/conf/app.conf";
@@ -394,16 +367,8 @@ public class BaseConst {
     public static final String PATH_SYNC_ICON = "/conf/image/syncIcon.png";
     public static final String FACTORY_ICON = "/conf/image/factory.png";
     public static final String COPY_ICON = "/conf/image/copy.png";
-    public static final String COPY_SIMPLE_ICON = "/conf/image/copySimple.png";
-    public static final String ABSTRACT_ICON = "/conf/image/abstract.png";
-    public static final String TASK_NO_ICON = "/conf/image/code.png";
     public static final String COMPLETE_ICON = "/conf/image/complete.png";
     public static final String CANCEL_ICON = "/conf/image/cancel.png";
-    public static final String SUBMIT_ICON = "/conf/image/submit.png";
-    public static final String CANCEL_SUBMIT_ICON = "/conf/image/submitCancel.png";
-    public static final String CANCEL_LEVEL_SIMPLE_ICON = "/conf/image/simple.png";
-    public static final String CANCEL_LEVEL_GENERAL_ICON = "/conf/image/general.png";
-    public static final String CANCEL_LEVEL_DIFFICULTY_ICON = "/conf/image/difficulty.png";
     public static final String CANCEL_LEVEL_ICON = "/conf/image/level.png";
     public static final String CANCEL_LEVEL_CLEAR_ICON = "/conf/image/clear.png";
     public static final String UPDATE_ICON = "/conf/image/update.png";
@@ -428,8 +393,6 @@ public class BaseConst {
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
     public static final String PATH_SYNC_TASK_STAT = "/task";
     public static final String PATH_SYNC_VERSION_STAT = "/version";
-    public static final String PATH_GIT_PULL = "/conf/bat/git-pull.bat";
-    public static final String PATH_APP_START = "run-silence.bat";
 
     public static final String SERVER_HTTP = "http://127.0.0.1";
     public static final String SERVER_URL = "/tool/im";

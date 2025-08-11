@@ -223,7 +223,7 @@ public class SvnLogController extends BaseController implements Initializable {
                         }
                     }
                     OutputUtils.info(fileLog, fileList);
-                    if (appConfigDto.getSvnDefaultAppendBiz() && StringUtils.isNotBlank(appConfigDto.getSvnDefaultAppendPath())) {
+                    if (StringUtils.equals(appConfigDto.getSvnDefaultAppendBiz(), STR_TRUE) && StringUtils.isNotBlank(appConfigDto.getSvnDefaultAppendPath())) {
                         for (String file : fileList) {
                             if (file.trim().endsWith(FILE_TYPE_VUE)) {
                                 String prefix = file.substring(0, file.indexOf(appConfigDto.getSvnStartPrefix()));

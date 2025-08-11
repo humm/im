@@ -5,6 +5,7 @@ import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.LogDto;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -98,7 +99,7 @@ public class LoggerUtils {
 
             // 写日志文件
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            if (!appConfigDto.getAppLogEnable()) {
+            if (StringUtils.equals(appConfigDto.getAppLogEnable(), STR_FALSE)) {
                 return;
             }
             Date endDate = new Date();
@@ -162,7 +163,7 @@ public class LoggerUtils {
             writeStatFile(statFilePath);
 
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            if (!appConfigDto.getAppLogEnable()) {
+            if (StringUtils.equals(appConfigDto.getAppLogEnable(), STR_FALSE)) {
                 return;
             }
             // 写日志文件
@@ -194,7 +195,7 @@ public class LoggerUtils {
             writeStatFile(statFilePath);
 
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            if (!appConfigDto.getAppLogEnable()) {
+            if (StringUtils.equals(appConfigDto.getAppLogEnable(), STR_FALSE)) {
                 return;
             }
             FileUtils.writeFile(filePath, logs);

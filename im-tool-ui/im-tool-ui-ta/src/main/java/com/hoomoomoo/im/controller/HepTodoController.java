@@ -873,10 +873,12 @@ public class HepTodoController extends BaseController implements Initializable {
         // 格式 yyyyMMdd
         String thursday = CommonUtils.getWeekDayYmd(DayOfWeek.THURSDAY);
         String today = CommonUtils.getCurrentDateTime3();
+        String saturday = CommonUtils.getWeekDayYmd(DayOfWeek.SATURDAY);
+        String sunday = CommonUtils.getWeekDayYmd(DayOfWeek.SUNDAY);
         dayCompleteTipsInfo.put(thursday, "周四");
         dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.FRIDAY), "周五");
-        dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.SATURDAY), "周六");
-        dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.SUNDAY), "周天");
+        dayCompleteTipsInfo.put(saturday, "周六");
+        dayCompleteTipsInfo.put(sunday, "周天");
         dayCompleteTipsInfo.put(today, "今天");
         dayCompleteTipsInfo.put(CommonUtils.getTomorrowDateTime(), "明天");
         dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(2), "后天");
@@ -1271,7 +1273,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         printTaskInfo(res);
         controlTooltip(appConfigDto, show, msg, getTipsLocation(sameAssigneeIdReviewerId.size()), 175);
-        controlCheckScriptTips(StringUtils.equals(today, thursday));
+        controlCheckScriptTips(StringUtils.equalsAny(today, saturday, sunday));
         updateHepStatFile(appConfigDto, taskNoList, demandNoList);
     }
 
@@ -1898,10 +1900,6 @@ public class HepTodoController extends BaseController implements Initializable {
         if (isExtendUser()) {
             return;
         }
-        Map<String,String> syncFileVersion = appConfigDto.getFileSyncVersionMap();
-        if (MapUtils.isEmpty(syncFileVersion)) {
-            return;
-        }
         Timer timer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
         String timerId = CommonUtils.getCurrentDateTime2();
         if (timer == null) {
@@ -1911,20 +1909,24 @@ public class HepTodoController extends BaseController implements Initializable {
             timer.cancel();
             return;
         }
-        String fileSyncAuthVersion = appConfigDto.getFileSyncAuthVersion();
-        if (StringUtils.isBlank(fileSyncAuthVersion)) {
-            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("未配置授权同步版本信息"));
-            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
-            return;
-        }
         Platform.runLater(() -> {
             syncFileBtn.setText("停止文件同步");
         });
-        List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
         TimerTask timerTask = new TimerTask() {
             @SneakyThrows
             @Override
             public void run() {
+                Map<String,String> syncFileVersion = appConfigDto.getFileSyncVersionMap();
+                if (MapUtils.isEmpty(syncFileVersion)) {
+                    return;
+                }
+                String fileSyncAuthVersion = appConfigDto.getFileSyncAuthVersion();
+                if (StringUtils.isBlank(fileSyncAuthVersion)) {
+                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("未配置授权同步版本信息"));
+                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
+                    return;
+                }
+                List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
                 OutputUtils.clearLog(noticeSync);
                 String threadMsg = "轮询线程: " + timerId;
                 OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContain(threadMsg));

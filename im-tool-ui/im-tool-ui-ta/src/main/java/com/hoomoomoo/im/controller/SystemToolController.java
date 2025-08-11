@@ -79,7 +79,7 @@ public class SystemToolController implements Initializable {
         JvmCache.setSystemToolController(this);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         moveStep = Integer.valueOf(appConfigDto.getSystemToolShakeMouseStep());
-        if (Boolean.valueOf(appConfigDto.getSystemToolShakeMouseAuto())) {
+        if (StringUtils.equals(appConfigDto.getSystemToolShakeMouseAuto(), STR_TRUE)) {
             shakeMouse(null);
             addLog(NAME_SHAKE_MOUSE);
         }
