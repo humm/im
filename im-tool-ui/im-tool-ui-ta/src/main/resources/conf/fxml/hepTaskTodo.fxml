@@ -86,8 +86,6 @@
                             </padding>
                         </Button>
 
-                        <Label fx:id="focusVersionTips" layoutX="20.0" layoutY="140.0"/>
-
                         <Label fx:id="checkScriptTips" layoutX="1210.0" layoutY="22.0" style="-fx-font-weight: bold; -fx-text-background-color: red;" text="请检查配置脚本"/>
 
                         <Button fx:id="syncFileBtn" layoutX="1360.0" layoutY="15.0" mnemonicParsing="false"
@@ -145,6 +143,8 @@
                         </Button>
 
                         <Label fx:id="syncFileTime" layoutX="1200.0" layoutY="60.0"/>
+
+                        <Label fx:id="focusVersionTips" layoutX="20.0" layoutY="140.0"/>
                         <Label fx:id="memoryTips" layoutX="550" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="codePushTips" layoutX="800.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
@@ -188,6 +188,20 @@
                                                                         <PropertyValueFactory property="name"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
+                                                                <TableColumn id="taskLevel" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="描述">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="taskLevel"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="taskMark" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="备注">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="taskMark"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
                                                                 <TableColumn id="statusName" editable="false"
                                                                              prefWidth="90" sortable="false"
                                                                              style="-fx-alignment: center;" text="状态">
@@ -206,20 +220,6 @@
                                                                              style="-fx-alignment: center;" text="客户名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="customer"/>
-                                                                    </cellValueFactory>
-                                                                </TableColumn>
-                                                                <TableColumn id="taskMark" editable="false"
-                                                                             prefWidth="65" sortable="false"
-                                                                             style="-fx-alignment: center;" text="备注">
-                                                                    <cellValueFactory>
-                                                                        <PropertyValueFactory property="taskMark"/>
-                                                                    </cellValueFactory>
-                                                                </TableColumn>
-                                                                <TableColumn id="taskLevel" editable="false"
-                                                                             prefWidth="65" sortable="false"
-                                                                             style="-fx-alignment: center;" text="描述">
-                                                                    <cellValueFactory>
-                                                                        <PropertyValueFactory property="taskLevel"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="finishDate" editable="false"

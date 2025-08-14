@@ -1319,8 +1319,39 @@ public class HepTodoController extends BaseController implements Initializable {
             OutputUtils.repeatInfo(focusVersionTips, message.toString());
             if (totalStat > 0) {
                 focusVersionTips.setVisible(true);
+                controlColorDesc(false);
             } else {
                 focusVersionTips.setVisible(false);
+                controlColorDesc(true);
+            }
+        } else {
+            String userName = extendUserInfoCodeToName.get(CURRENT_USER_ID);
+            if (StringUtils.isBlank(userName)) {
+                return;
+            }
+            int num = 0;
+            StringBuilder message = new StringBuilder();
+            for (Map.Entry<String, Map<String, Integer>> entry : focusVersion.entrySet()) {
+                String version = entry.getKey();
+                Map<String, Integer> stat = entry.getValue();
+                if (stat.containsKey(userName)) {
+                    int numVer = stat.get(userName);
+                    if (numVer > 0) {
+                        num = numVer;
+                        message.append(String.format("重点关注版本【%s】任务统计(%s)", version, num));
+                        break;
+                    }
+
+                }
+            }
+            OutputUtils.repeatInfo(focusVersionTips, message.toString());
+            if (num > 0) {
+                focusVersionTips.setLayoutY(180);
+                focusVersionTips.setVisible(true);
+                controlColorDesc(false);
+            } else {
+                focusVersionTips.setVisible(false);
+                controlColorDesc(true);
             }
         }
     }
@@ -1342,7 +1373,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void controlCheckScriptTips(boolean checkDate) throws Exception {
-        if (true) {
+        if (checkDate) {
             if (taskUserPage()) {
                 checkScriptTips.setVisible(true);
             } else {
@@ -1888,7 +1919,6 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initComponentStatus() {
-        memoryTips.setVisible(false);
         codePushTips.setVisible(false);
         setSyncFrontVersionTips(false);
         setSideBar();
@@ -1959,7 +1989,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     clearFile(new File(fileSyncTarget), ver);
                 }
                 checkCommitNotPush(appConfigDto);
-                OutputUtils.info(syncFileTime, String.format("轮询时间(%s): %s", authVersion.size(), CommonUtils.getCurrentDateTime14()));
+                OutputUtils.info(syncFileTime, String.format("轮询时间(%s) %s", authVersion.size(), CommonUtils.getCurrentDateTime14()));
                 outputMemory();
             }
         };
@@ -1979,8 +2009,10 @@ public class HepTodoController extends BaseController implements Initializable {
                         String path = item.getAbsolutePath();
                         String content = CmdUtils.exe(path, "git status");
                         if (notPush(content)) {
-                            CmdUtils.exe(path, "git push");
                             threadMsg = item.getName() + " 自动推送仓库";
+                            LoggerUtils.info(threadMsg + " 开始");
+                            CmdUtils.exe(path, "git push");
+                            LoggerUtils.info(threadMsg + " 结束");
                             content = CmdUtils.exe(path, "git status");
                             if (notPush(content)) {
                                 threadMsg = item.getName() + " 未推送仓库";
@@ -2015,10 +2047,8 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.info(memoryTips, "内存使用: " + memoryInfo[0]);
         if (Integer.valueOf(memoryInfo[1]) > 1024 || Integer.valueOf(memoryInfo[2]) > 1024) {
             memoryTips.setStyle(STYLE_BOLD_RED);
-            memoryTips.setVisible(true);
         } else {
             memoryTips.setStyle(STYLE_NORMAL);
-            memoryTips.setVisible(colorList.get(0).isVisible());
         }
     }
 
@@ -2199,27 +2229,25 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
+    private void controlColorDesc(boolean visible) {
+        if (CollectionUtils.isNotEmpty(colorList)) {
+            for (Label label : colorList) {
+                label.setVisible(visible);
+            }
+        }
+    }
+
     private void initColorDesc() {
         double step = 15;
         double x = 20;
         double y = 180;
         Label label = new Label("颜色说明:");
-        label.setOnMouseClicked(event -> {
-            if (CollectionUtils.isEmpty(colorList)) {
-                return;
-            }
-            boolean visible = !colorList.get(0).isVisible();
-            for (Label ele : colorList) {
-                ele.setVisible(visible);
-            }
-            memoryTips.setVisible(visible);
-            codePushTips.setVisible(visible);
-        });
         String boldStyle = STYLE_NORMAL;
         label.setStyle(STYLE_BOLD);
         label.setLayoutX(x);
         label.setLayoutY(y);
         todoTitle.getChildren().add(label);
+        colorList.add(label);
         int prevLen = 4;
         int diff = 0;
         for (Map.Entry<String, String[]> entry : color.entrySet()) {
