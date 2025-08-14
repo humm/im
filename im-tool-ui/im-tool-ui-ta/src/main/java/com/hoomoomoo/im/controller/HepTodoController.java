@@ -248,13 +248,16 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label checkScriptTips;
 
     @FXML
-    private Label taskTips;
+    private Label syncTaskTips;
 
     @FXML
     private Label memoryTips;
 
     @FXML
-    private Label syncTips;
+    private Label codePushTips;
+
+    @FXML
+    private Label syncFileTime;
 
     @FXML
     private Label fileTipsVersion;
@@ -287,7 +290,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label fileTipsFileTimeTitle;
 
     @FXML
-    private Label frontTips;
+    private Label syncFrontVersionTips;
 
     @FXML
     private RadioButton all;
@@ -354,7 +357,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (timer != null) {
             CommonUtils.stopHepToDoSyncFile(appConfigDto);
             syncFileBtn.setText("启动文件同步");
-            OutputUtils.info(syncTips, STR_BLANK);
+            OutputUtils.info(codePushTips, STR_BLANK);
             OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
         } else {
             OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("启动文件同步"));
@@ -420,9 +423,9 @@ public class HepTodoController extends BaseController implements Initializable {
             ver = TaCommonUtils.changeVersion(appConfigDto, ver) + STR_COMMA;
             String authVer = appConfigDto.getFileSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
             if (authVer.contains(ver) || verYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 || verYear.compareTo(KEY_VERSION_202202) == 0) {
-                setFrontTips(false);
+                setSyncFrontVersionTips(false);
             } else {
-                setFrontTips(true);
+                setSyncFrontVersionTips(true);
             }
         }
 
@@ -1243,9 +1246,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
         if (!isExtendUser()) {
             if (waitTaskSync) {
-                OutputUtils.info(taskTips, "请同步任务信息");
+                OutputUtils.info(syncTaskTips, "请同步任务信息");
             } else {
-                OutputUtils.info(taskTips, STR_BLANK);
+                OutputUtils.info(syncTaskTips, STR_BLANK);
             }
         }
 
@@ -1339,7 +1342,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void controlCheckScriptTips(boolean checkDate) throws Exception {
-        if (checkDate) {
+        if (true) {
             if (taskUserPage()) {
                 checkScriptTips.setVisible(true);
             } else {
@@ -1872,22 +1875,22 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void printTaskInfo(List<HepTaskDto> taskList) {
         if (frontPage() && CollectionUtils.isNotEmpty(taskList) && (devCompleteHide.isSelected() || devCompleteShow.isSelected())) {
-            String printType = devCompleteShow.isSelected() ? "分支已完成: " : "未完成: ";
+            String printType = devCompleteShow.isSelected() ? "分支已完成" : "未完成";
             String detail = taskList.stream().filter(hepTaskDto ->
                     StringUtils.isNotBlank(hepTaskDto.getDemandNo())).map(HepTaskDto::getDemandNo).distinct().collect(Collectors.joining(STR_COMMA)
             );
-            logs.add(String.format(printType + "需求(%s): %s", taskList.size(), detail).trim());
+            logs.add(String.format(printType + "需求(%s) %s", taskList.size(), detail).trim());
 ;        }
     }
 
-    private void setFrontTips(boolean visible) {
-        frontTips.setVisible(visible);
+    private void setSyncFrontVersionTips(boolean visible) {
+        syncFrontVersionTips.setVisible(visible);
     }
 
     private void initComponentStatus() {
         memoryTips.setVisible(false);
-        syncTips.setVisible(false);
-        setFrontTips(false);
+        codePushTips.setVisible(false);
+        setSyncFrontVersionTips(false);
         setSideBar();
     }
 
@@ -1955,25 +1958,33 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     clearFile(new File(fileSyncTarget), ver);
                 }
-                checkCommitNotPush(appConfigDto, String.format("轮询时间(%s): %s", authVersion.size(), CommonUtils.getCurrentDateTime14()));
+                checkCommitNotPush(appConfigDto);
+                OutputUtils.info(syncFileTime, String.format("轮询时间(%s): %s", authVersion.size(), CommonUtils.getCurrentDateTime14()));
                 outputMemory();
             }
         };
         timer.schedule(timerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
     }
 
-    private void checkCommitNotPush(AppConfigDto appConfigDto, String threadMsg) {
+    private void checkCommitNotPush(AppConfigDto appConfigDto) {
         Map<String, String> svnRep = appConfigDto.getSvnUrl();
         String trunk = svnRep.get(KEY_TRUNK);
         boolean push = false;
+        String threadMsg = STR_BLANK;
         if (StringUtils.isNotBlank(trunk)) {
             File[] file = new File(trunk).listFiles();
             if (file != null) {
                 for (File item : file) {
                     if (FileUtils.isSuffixDirectory(item, BaseConst.FILE_TYPE_GIT, false, true)) {
-                        String content = CmdUtils.exe(item.getAbsolutePath(), "git status");
-                        if (StringUtils.isNotBlank(content) && content.toLowerCase().contains("your branch is ahead of")) {
-                            threadMsg = item.getName() + " 未推送仓库";
+                        String path = item.getAbsolutePath();
+                        String content = CmdUtils.exe(path, "git status");
+                        if (notPush(content)) {
+                            CmdUtils.exe(path, "git push");
+                            threadMsg = item.getName() + " 自动推送仓库";
+                            content = CmdUtils.exe(path, "git status");
+                            if (notPush(content)) {
+                                threadMsg = item.getName() + " 未推送仓库";
+                            }
                             push = true;
                             break;
                         }
@@ -1982,13 +1993,18 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         }
         if (push) {
-            syncTips.setStyle(STYLE_BOLD_RED);
-            syncTips.setVisible(true);
+            codePushTips.setStyle(STYLE_BOLD_RED);
+            codePushTips.setVisible(true);
+            CommonUtils.showTipsByError(threadMsg, 30 * 1000);
         } else {
-            syncTips.setStyle(STYLE_NORMAL);
-            syncTips.setVisible(colorList.get(0).isVisible());
+            codePushTips.setStyle(STYLE_NORMAL);
+            codePushTips.setVisible(false);
         }
-        OutputUtils.info(syncTips, threadMsg);
+        OutputUtils.info(codePushTips, threadMsg);
+    }
+
+    private boolean notPush(String content) {
+        return StringUtils.isNotBlank(content) && content.toLowerCase().contains("your branch is ahead of");
     }
 
     private void outputMemory() throws Exception {
@@ -2197,7 +2213,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 ele.setVisible(visible);
             }
             memoryTips.setVisible(visible);
-            syncTips.setVisible(visible);
+            codePushTips.setVisible(visible);
         });
         String boldStyle = STYLE_NORMAL;
         label.setStyle(STYLE_BOLD);
