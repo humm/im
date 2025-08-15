@@ -130,7 +130,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         }
         String taskDesc = STR_BLANK;
         try {
-            String fileName = hepTaskDto.getOriTaskName().replaceAll(STR_COLON, STR_BLANK) + FILE_TYPE_STAT;
+            String fileName = getFileName(hepTaskDto);
             String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
             taskDesc = FileUtils.readNormalFileToString(path);
         } catch (Exception e) {
@@ -257,7 +257,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
     }
 
     private void addTaskDesc(HepTaskDto hepTaskDto, String editDescription, String suggestion, String selfTestDesc) throws IOException {
-        String fileName = hepTaskDto.getOriTaskName().replaceAll(STR_COLON, STR_BLANK) + FILE_TYPE_STAT;
+        String fileName = getFileName(hepTaskDto);
         String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
         String desc = (String)override.getSelectionModel().getSelectedItem();
         if (new File(path).exists() && StringUtils.equals("原值", desc)) {
@@ -272,6 +272,10 @@ public class HepCompleteTaskController extends BaseController implements Initial
         taskDesc.add(MSG_TASK_DIVIDE_LINE);
         taskDesc.add(selfTestDesc);
         FileUtils.writeFile(path, taskDesc);
+    }
+
+    private static String getFileName(HepTaskDto hepTaskDto) {
+        return hepTaskDto.getOriTaskName().replaceAll(STR_COLON, STR_BLANK).replaceAll(STR_SLASH, STR_HYPHEN) + FILE_TYPE_STAT;
     }
 
     @Override

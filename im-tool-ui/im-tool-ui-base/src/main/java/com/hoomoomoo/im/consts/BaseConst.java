@@ -114,12 +114,15 @@ public class BaseConst {
     public final static String KEY_STATUS = "status";
     public final static String KEY_CUSTOMER_NAMES = "customer_names";
     public final static String KEY_STORY_NUMBERS = "story_numbers";
+    public final static String KEY_STORY_NUMBER = "story_number";
     public final static String KEY_STORY_VERSION_LIST = "story_version_list";
+    public final static String KEY_STORY_VERSION_STATUS = "story_version_status";
     public final static String KEY_ESTIMATE_FINISH_TIME = "estimate_finish_time";
     public final static String KEY_NAME = "name";
     public final static String KEY_SPRINT_VERSION = "sprint_version";
     public final static String KEY_STORY_STATUS = "story_status";
     public final static String KEY_TASK_NUMBER = "task_number";
+    public final static String KEY_RELATION_DTO_LIST = "relation_dtolist";
     public final static String KEY_CURRENT_USER_ID = "current_user_id";
     public final static String KEY_CHARSET = "charset";
     public final static String KEY_FORMAT = "format";
@@ -161,6 +164,7 @@ public class BaseConst {
     public final static String KEY_UPDATE_CHANGE_MENU = "updateChangeMenu";
     public final static String KEY_SCHEDULE = "schedule";
     public final static String KEY_TASK = "task";
+    public final static String KEY_DEMAND = "demand";
     public final static String KEY_GIT_LOG_FILE = "diff --git";
     public final static String KEY_HTTPS = "https://";
     public final static String KEY_FILE_SYNC_TIMER = "fileSyncTimer";
@@ -237,13 +241,16 @@ public class BaseConst {
     public static final String NAME_CLEAR_LOG = "系统日志";
     public static final String NAME_SYNC_CODE = "同步源码";
 
+    public static final String NAME_TASK_DEV_COMPLETE = "分支已完成";
+    public static final String NAME_TASK_NOT_COMPLETE = "未完成";
+
     public final static String STR_RIGHT_FACING= " --> ";
     public static final String NAME_MENU_COPY = "复制" + STR_RIGHT_FACING + "提交描述";
     public static final String NAME_MENU_SIMPLE_COPY = "复制" + STR_RIGHT_FACING + "提交描述不含需求描述";
     public static final String NAME_MENU_SCRIPT_COPY = "复制" + STR_RIGHT_FACING + "升级脚本提交摘要";
     public static final String NAME_MENU_TASK_NO_COPY = "复制" + STR_RIGHT_FACING + "任务单号";
     public static final String NAME_MENU_DETAIL = "任务" + STR_RIGHT_FACING + "查看详情";
-    public static final String NAME_MENU_UPDATE = "任务" + STR_RIGHT_FACING + "数据更新";
+    public static final String NAME_MENU_UPDATE = "任务" + STR_RIGHT_FACING + "更新任务信息";
     public static final String NAME_MENU_MARK_DEV = "分支任务" + STR_RIGHT_FACING + "标记已完成";
     public static final String NAME_MENU_CANCEL_DEV = "分支任务" + STR_RIGHT_FACING + "取消标记已完成";
     public static final String NAME_MENU_MARK_SUBMIT = "当前任务" + STR_RIGHT_FACING + "标记已提交";

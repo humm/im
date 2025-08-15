@@ -631,14 +631,17 @@ public class TaCommonUtils {
     }
 
     public static Map<String, Set<String>> getTaskStatus(String task) {
+        // 8:已发布 16:已发放 25:测试中 27:待发布
+        Set<String> demandConfigStatus = new HashSet<>(Arrays.asList("8", "16", "25", "27"));
         Set<String> taskList = new HashSet<>();
+        Set<String> demandList = new HashSet<>();
         if (StringUtils.isNotBlank(task)) {
             Map<String, Object> resMap = JSON.parseObject(task, Map.class);
             JSONObject data = (JSONObject)resMap.get(KEY_DATA);
             if (data != null) {
                 JSONArray items = data.getJSONArray(KEY_ITEMS);
                 if (items != null) {
-                    StringBuilder demandInfo = new StringBuilder();
+                    StringBuilder taskInfo = new StringBuilder();
                     for (int i=0; i<items.size(); i++) {
                         JSONObject ele = items.getJSONObject(i);
                         String taskNumber = String.valueOf(ele.get(KEY_TASK_NUMBER));
@@ -646,8 +649,8 @@ public class TaCommonUtils {
                         String storyNumbers = ele.get(KEY_STORY_NUMBERS) == null ? STR_SPACE: String.valueOf(ele.get(KEY_STORY_NUMBERS));
                         String[] demandNoList = storyNumbers.split(STR_COMMA);
                         for (String single : demandNoList) {
-                            demandInfo.setLength(0);
-                            taskList.add(demandInfo.append(taskNumber).append(STR_SEMICOLON).append(customerNames).append(STR_SEMICOLON).append(single).toString());
+                            taskInfo.setLength(0);
+                            taskList.add(taskInfo.append(taskNumber).append(STR_SEMICOLON).append(customerNames).append(STR_SEMICOLON).append(single).toString());
                         }
                     }
                 }
@@ -655,6 +658,7 @@ public class TaCommonUtils {
         }
         Map<String, Set<String>> res = new HashMap<>(2);
         res.put(KEY_TASK, taskList);
+        res.put(KEY_DEMAND, demandList);
         return res;
     }
 

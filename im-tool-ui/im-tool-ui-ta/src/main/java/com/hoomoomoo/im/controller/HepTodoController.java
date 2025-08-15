@@ -29,6 +29,10 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -41,12 +45,15 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.time.DayOfWeek;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -112,8 +119,8 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private String PAGE_USER = "";
     private final static String EXTEND_USER_FRONT_CODE = "front";
-    private final static Map<String, String> extendUserInfoCodeToName = new HashMap();
-    private final static Map<String, String> extendUserInfoNameToCode = new HashMap();
+    private final static Map<String, String> extendUserInfoCodeToName = new LinkedHashMap<>();
+    private final static Map<String, String> extendUserInfoNameToCode = new LinkedHashMap();
     private final static Map<String, String> dayCompleteTipsInfo = new HashMap();
 
 
@@ -127,6 +134,8 @@ public class HepTodoController extends BaseController implements Initializable {
         put("重点关注", new String[] {"-fx-text-background-color: #b700ff;"});
         put("默认", new String[] {"-fx-text-background-color: #000000;"});
     }};
+
+    Map<String, String> FRONT_QUERY_DEMAND_CACHE = new HashMap<>(2);
 
     // 字段顺序不可调整 与约定接口保持顺序一致
     private static Set<String> field = new LinkedHashSet<String>(){{
@@ -217,6 +226,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     private AnchorPane condition;
+
+    @FXML
+    public Button showDemand;
 
     @FXML
     public Button syncTask;
@@ -339,6 +351,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 initColorDesc();
                 JvmCache.setHepTodoController(this);
                 syncFile();
+            }
+            if (frontPage()) {
+                showDemand.setVisible(true);
+            } else {
+                showDemand.setVisible(false);
             }
             JvmCache.setHepTodoControllerMap(appConfigDto.getActivateFunction(), this);
             addTaskMenu(appConfigDto, this);
@@ -595,6 +612,12 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.clearLog(sprintVersionQuery);
         OutputUtils.clearLog(taskLevelQuery);
         executeQuery(null);
+    }
+
+    @FXML
+    void showDemandInfo (ActionEvent event) throws Exception {
+        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(FRONT_QUERY_DEMAND_CACHE.get(NAME_TASK_NOT_COMPLETE)), null);
+        CommonUtils.showTipsByInfo("需求单号复制完成");
     }
 
     @FXML
@@ -1447,14 +1470,8 @@ public class HepTodoController extends BaseController implements Initializable {
         String errorMessage = STR_BLANK;
         if (path.endsWith(PATH_DEMAND_STATUS_STAT)) {
             fileName = "需求状态";
-            if (lastLength < demandNum) {
-                // errorMessage = "...... 需求状态更新异常 ... 请检查 ......";
-            }
         } else if (path.endsWith(PATH_TASK_INFO_STAT)) {
             fileName = "任务信息";
-            if (lastLength < taskNum) {
-                // errorMessage = "...... 任务信息更新异常 ... 请检查 ......";
-            }
         } else if (path.endsWith(PATH_DEFINE_TASK_STATUS_STAT)) {
             fileName = "任务状态";
         } else if (path.endsWith(PATH_DEFINE_TASK_DEV_STAT)) {
@@ -1912,10 +1929,11 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void printTaskInfo(List<HepTaskDto> taskList) {
         if (frontPage() && CollectionUtils.isNotEmpty(taskList) && (devCompleteHide.isSelected() || devCompleteShow.isSelected())) {
-            String printType = devCompleteShow.isSelected() ? "分支已完成" : "未完成";
+            String printType = devCompleteShow.isSelected() ? NAME_TASK_DEV_COMPLETE : NAME_TASK_NOT_COMPLETE;
             String detail = taskList.stream().filter(hepTaskDto ->
                     StringUtils.isNotBlank(hepTaskDto.getDemandNo())).map(HepTaskDto::getDemandNo).distinct().collect(Collectors.joining(STR_COMMA)
             );
+            FRONT_QUERY_DEMAND_CACHE.put(printType, detail);
             logs.add(String.format(printType + "需求(%s) %s", taskList.size(), detail).trim());
 ;        }
     }
@@ -2187,7 +2205,7 @@ public class HepTodoController extends BaseController implements Initializable {
         scriptShow.setVisible(checkFileComponent);
 
         extendUser.setVisible(syncTaskComponent);
-        syncTask.setVisible(syncTaskComponent);
+        syncTask.setVisible(syncTaskComponent || frontPage());
         syncFileBtn.setVisible(syncTaskComponent);
     }
 
@@ -2528,14 +2546,6 @@ public class HepTodoController extends BaseController implements Initializable {
                     HepTaskDto hepTaskDto = (HepTaskDto) taskList.getSelectionModel().getSelectedItem();
                     hepWaitHandleTaskMenu.getItems().forEach((item) -> {
                         if (NAME_MENU_UPDATE.equals(item.getText())) {
-                            try {
-                                if (isExtendUser()) {
-                                    item.setVisible(false);
-                                    return;
-                                }
-                            } catch (Exception e) {
-                                // 无需处理异常
-                            }
                             if (STATUS_DEV.equals(hepTaskDto.getStatus())) {
                                 item.setVisible(true);
                             } else {
