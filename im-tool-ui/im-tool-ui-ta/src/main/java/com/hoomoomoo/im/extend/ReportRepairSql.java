@@ -37,18 +37,17 @@ public class ReportRepairSql {
         String filePath = file.getAbsolutePath();
         List<String> contents = FileUtils.readNormalFile(filePath);
         boolean flag = false;
-
-        for(int i = 0; i < contents.size(); ++i) {
+        StringBuilder res = new StringBuilder();
+        for(int i = 0; i < contents.size(); i++) {
+            res.setLength(0);
             String item = contents.get(i);
             String itemLower = item.toLowerCase().trim();
             if (itemLower.contains(KEY_VALUES)) {
                 String[] values = getValues(item, 7, false);
                 if (values != null) {
                     if (values[3].contains(STR_QUOTES_SINGLE)) {
-                        break;
+                        continue;
                     }
-
-                    StringBuilder res = new StringBuilder();
                     String reportCode = values[0];
                     String fieldCode = values[1];
                     String fieldName = values[2];
@@ -56,7 +55,8 @@ public class ReportRepairSql {
                     String dataWidth = values[4];
                     String allowEdit = changeValue(values[5]);
                     String fieldNo = values[6];
-                    String insertValue = "values (%s, %s, %s, %s, %s, %s, %s);";
+                    String valuesCode = item.split("\\(")[0].trim();
+                    String insertValue = valuesCode + " (%s, %s, %s, %s, %s, %s, %s);";
                     String annotation = annotationInfo(item);
                     res.append(annotation + String.format(insertValue, reportCode, fieldCode, fieldName, visable, dataWidth, allowEdit, fieldNo));
                     contents.set(i, res.toString());
@@ -129,7 +129,6 @@ public class ReportRepairSql {
     }
 
     private static String changeToReport(String item) throws Exception {
-        boolean update = false;
         String[] values = getValuesByFunction(item);
         StringBuilder res = new StringBuilder();
         String reportCode = values[1];
@@ -139,22 +138,11 @@ public class ReportRepairSql {
         String templateName = values[5];
         String projectDesc = values[6];
         String annotation = annotationInfo(item);
-        if (!update) {
-            res.append(annotation + String.format("delete from tbfundreport where report_code = %s;\n", reportCode));
-        }
-
+        res.append(annotation + String.format("delete from tbfundreport where report_code = %s;\n", reportCode));
         res.append(annotation + "insert into tbfundreport (report_code, report_name, order_no, control_flag, template_name, project_desc, service_name, group_name, summary)\n");
         String insertValue;
-        if (update) {
-            insertValue = "select %s, %s, %s, %s, %s, %s, ' ', ' ', ' '\n\tfrom (select count(1) param_exists from tbfundreport t where t.report_code = %s) a\nwhere a.param_exists = 0;\n";
-            res.append(annotation + String.format(insertValue, reportCode, reportName, orderNo, controlFlag, templateName, projectDesc, reportCode));
-            String updateValue = "update tbfundreport set report_name = %s, order_no = %s, control_flag = %s,\n\ttemplate_name = %s, project_desc= %s\nwhere report_code = %s;\n";
-            res.append(annotation + String.format(updateValue, reportName, orderNo, controlFlag, templateName, projectDesc, reportCode));
-        } else {
-            insertValue = "values (%s, %s, %s, %s, %s, %s, ' ', ' ', ' ');\n";
-            res.append(annotation + String.format(insertValue, reportCode, reportName, orderNo, controlFlag, templateName, projectDesc));
-        }
-
+        insertValue = "values (%s, %s, %s, %s, %s, %s, ' ', ' ', ' ');\n";
+        res.append(annotation + String.format(insertValue, reportCode, reportName, orderNo, controlFlag, templateName, projectDesc));
         return res.toString();
     }
 
