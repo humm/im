@@ -117,13 +117,14 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static Map<String, String> dayCompleteTipsInfo = new HashMap();
 
 
-    private final static String STYLE_RED_COLOR = "-fx-text-background-color: red;-fx-font-weight: bold;";
-    private final static String STYLE_BLACK_COLOR = "-fx-text-background-color: #000000;-fx-font-weight: bold;";
+    private final static String STYLE_RED_COLOR = "-fx-text-background-color: red; -fx-font-weight: bold;";
+    private final static String STYLE_BLACK_COLOR = "-fx-text-background-color: #000000; -fx-font-weight: bold;";
 
     private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
         put("完成日期超期", new String[] {"-fx-text-background-color: #ff0090;"});
         put("今天待提交", new String[] {"-fx-text-background-color: #ff0000;"});
         put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;"});
+        put("重点关注", new String[] {"-fx-text-background-color: #b700ff;"});
         put("默认", new String[] {"-fx-text-background-color: #000000;"});
     }};
 
@@ -328,6 +329,7 @@ public class HepTodoController extends BaseController implements Initializable {
             LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             initUserInfo(appConfigDto);
+            initExtendUser(appConfigDto);
             defaultDividerPositions = taskSplitPane.getDividerPositions()[0];
             defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
             devCompleteHide.setSelected(true);
@@ -911,6 +913,7 @@ public class HepTodoController extends BaseController implements Initializable {
         Set<String> weekTodoTask = new HashSet<>();
         Set<String> finishDateError = new HashSet<>();
         Set<String> finishDateOver = new HashSet<>();
+        Set<String> focusVersionTask = new HashSet<>();
         taskList.setDisable(true);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
@@ -1138,7 +1141,8 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setSprintVersionFull(sprintVersion);
             item.setSprintVersion(formatVersion(sprintVersion));
 
-            if (frontPage() && appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
+            if (appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
+                focusVersionTask.add(taskNumberIn);
                 String assigneeName = item.getAssigneeName();
                 if (focusVersion.containsKey(sprintVersion)) {
                     Map<String, Integer> userStat = focusVersion.get(sprintVersion);
@@ -1265,7 +1269,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
         OutputUtils.clearLog(taskList);
         finishDateError.addAll(finishDateOver);
-        infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError);
+        infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask);
         taskList.setDisable(false);
         String msg = STR_BLANK;
         boolean show = false;
@@ -1526,7 +1530,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
+    private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError, Set<String> focusVersionTask) {
         if (taskListIn == null) {
             return;
         }
@@ -1536,7 +1540,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 formatData(hepTaskDto);
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
-                initRowStyle(taskListIn, dayTodoTask,  weekTodoTask, finishDateError);
+                initRowStyle(taskListIn, dayTodoTask,  weekTodoTask, finishDateError, focusVersionTask);
             }
             OutputUtils.setEnabled(taskListIn);
         });
@@ -1554,7 +1558,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    private void initRowStyle(TableView taskListIn, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError) {
+    private void initRowStyle(TableView taskListIn, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError, Set<String> focusVersionTask) {
         taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
             @Override
             public TableRow<HepTaskDto> call(TableView<HepTaskDto> param) {
@@ -1570,6 +1574,8 @@ public class HepTodoController extends BaseController implements Initializable {
                                     taskColor = color.get("今天待提交");
                                 } else if (finishDateError.contains(taskNumber)) {
                                     taskColor = color.get("完成日期超期");
+                                } else if (focusVersionTask.contains(taskNumber)) {
+                                    taskColor = color.get("重点关注");
                                 } else if (weekTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("本周待提交");
                                 } else {
@@ -1933,6 +1939,9 @@ public class HepTodoController extends BaseController implements Initializable {
         if (isExtendUser()) {
             return;
         }
+        Platform.runLater(() -> {
+            syncFileBtn.setText("停止文件同步");
+        });
         Timer timer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
         String timerId = CommonUtils.getCurrentDateTime2();
         if (timer == null) {
@@ -1942,14 +1951,11 @@ public class HepTodoController extends BaseController implements Initializable {
             timer.cancel();
             return;
         }
-        Platform.runLater(() -> {
-            syncFileBtn.setText("停止文件同步");
-        });
         TimerTask timerTask = new TimerTask() {
             @SneakyThrows
             @Override
             public void run() {
-                Map<String,String> syncFileVersion = appConfigDto.getFileSyncVersionMap();
+                Map<String, String> syncFileVersion = appConfigDto.getFileSyncVersionMap();
                 if (MapUtils.isEmpty(syncFileVersion)) {
                     return;
                 }
@@ -1990,7 +1996,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 checkCommitNotPush(appConfigDto);
                 OutputUtils.info(syncFileTime, String.format("轮询时间(%s) %s", authVersion.size(), CommonUtils.getCurrentDateTime14()));
-                outputMemory();
+                try {
+                    outputMemory();
+                } catch (Exception e) {
+                    LoggerUtils.info(e);
+                }
             }
         };
         timer.schedule(timerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
@@ -2009,14 +2019,7 @@ public class HepTodoController extends BaseController implements Initializable {
                         String path = item.getAbsolutePath();
                         String content = CmdUtils.exe(path, "git status");
                         if (notPush(content)) {
-                            threadMsg = item.getName() + " 自动推送仓库";
-                            LoggerUtils.info(threadMsg + " 开始");
-                            CmdUtils.exe(path, "git push");
-                            LoggerUtils.info(threadMsg + " 结束");
-                            content = CmdUtils.exe(path, "git status");
-                            if (notPush(content)) {
-                                threadMsg = item.getName() + " 未推送仓库";
-                            }
+                            threadMsg = item.getName() + " 未推送仓库";
                             push = true;
                             break;
                         }
@@ -2027,7 +2030,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (push) {
             codePushTips.setStyle(STYLE_BOLD_RED);
             codePushTips.setVisible(true);
-            CommonUtils.showTipsByError(threadMsg, 30 * 1000);
+            // CommonUtils.showTipsByError(threadMsg, 30 * 1000);
         } else {
             codePushTips.setStyle(STYLE_NORMAL);
             codePushTips.setVisible(false);
@@ -2193,22 +2196,36 @@ public class HepTodoController extends BaseController implements Initializable {
         return !CURRENT_USER_ID.equals(appConfigDto.getHepTaskUser()) || frontPage();
     }
 
-    private void showExtendTask(boolean changeTab) throws Exception {
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+    private void initExtendUser(AppConfigDto appConfigDto) {
+        if (MapUtils.isNotEmpty(extendUserInfoCodeToName)) {
+            return;
+        }
         String userExtend = appConfigDto.getHepTaskUserExtend();
         if (StringUtils.isNotBlank(userExtend)) {
             extendUserInfoCodeToName.put(appConfigDto.getHepTaskUser(), appConfigDto.getHepTaskUserName());
             extendUserInfoNameToCode.put(appConfigDto.getHepTaskUserName(), appConfigDto.getHepTaskUser());
             String[] user = userExtend.split(STR_COMMA);
-            Tab defaultTab = null;
             for (String extend : user) {
                 String[] extendInfo = extend.split(STR_COLON);
                 if (extendInfo.length == 2) {
                     extendUserInfoCodeToName.put(extendInfo[0], extendInfo[1]);
                     extendUserInfoNameToCode.put(extendInfo[1], extendInfo[0]);
                 }
+            }
+        }
+    }
+
+    private void showExtendTask(boolean changeTab) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String userExtend = appConfigDto.getHepTaskUserExtend();
+        if (StringUtils.isNotBlank(userExtend)) {
+            Tab defaultTab = null;
+            for (Map.Entry<String, String> entry : extendUserInfoCodeToName.entrySet()) {
                 MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.TASK_TODO;
-                String tabCode = extendInfo.length == 2 ? extendInfo[1] : extendInfo[0];
+                String tabCode = entry.getValue();
+                if (StringUtils.equals(tabCode, appConfigDto.getHepTaskUserName())) {
+                    continue;
+                }
                 String tabName = functionConfig.getName();
                 Tab openTab = CommonUtils.getOpenTab(AppCache.FUNCTION_TAB_CACHE, tabCode, tabName);
                 if (openTab == null) {
@@ -2565,6 +2582,7 @@ public class HepTodoController extends BaseController implements Initializable {
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
             item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
+            item.put("assignee_name", "胡毛毛");
             item.put(KEY_ESTIMATE_FINISH_TIME, "2024-09-02 22:59:59");
             item.put(KEY_CLOSE_DATE, "1");
             item.put(KEY_ORI_CLOSE_DATE, "2025-01-14");

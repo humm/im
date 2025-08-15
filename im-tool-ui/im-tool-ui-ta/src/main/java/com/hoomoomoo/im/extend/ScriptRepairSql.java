@@ -443,7 +443,6 @@ public class ScriptRepairSql {
         res.add("delete from tbworkflowsubtrans where trans_code like 'fund%';");
         res.add("delete from tbworkflowsubtransext where trans_code like 'fund%';");
         res.add(STR_BLANK);
-        res.add(STR_BLANK);
 
         Iterator<String> menuIterator = allMenu.keySet().iterator();
         String groupCode = STR_BLANK;
@@ -456,11 +455,18 @@ public class ScriptRepairSql {
             }
             String parentCode = ScriptSqlUtils.getParentCode(menuEle);
             String menuName = ScriptSqlUtils.getMenuName(menuEle);
+            if (StringUtils.isNotBlank(groupCode) && !groupCode.equals(parentCode)){
+                res.add(menuGroupTitle.get(groupCode));
+                groupCode = STR_BLANK;
+            }
             if (StringUtils.isBlank(groupCode)) {
                 groupCode = parentCode;
                 if (menuGroupTitle.containsKey(parentCode)) {
+                    res.add(STR_BLANK);
                     res.add(menuGroupTitle.get(parentCode).replace("结束", "开始"));
                 }
+            } else {
+                res.add(STR_BLANK);
             }
             res.add(ANNOTATION_NORMAL + STR_SPACE + menuName);
             buildWorkFlow(res, totalWorkFlow.get(transCode));
@@ -468,36 +474,36 @@ public class ScriptRepairSql {
                 res.add(STR_BLANK);
             }
             buildWorkFlow(res, totalWorkExtFlow.get(transCode));
-            if (!groupCode.equals(parentCode)){
-                groupCode = STR_BLANK;
-                res.add(menuGroupTitle.get(parentCode));
-            }
-            res.add(STR_BLANK);
             totalWorkFlow.remove(transCode);
         }
-
+        res.add(menuGroupTitle.get(groupCode));
         res.add(STR_BLANK);
-        res.add("commit;");
 
         List<String> error = new ArrayList<>();
         if (MapUtils.isNotEmpty(totalWorkFlow)) {
             Iterator<String> errorIterator = totalWorkFlow.keySet().iterator();
-            List<String> subError = new ArrayList<>();
             while (errorIterator.hasNext()) {
                 String menuCode = errorIterator.next();
                 Map<String, String> ele = totalWorkFlow.get(menuCode);
                 Iterator<String> eleIterator = ele.keySet().iterator();
                 while (eleIterator.hasNext()) {
                     String subTransCode = eleIterator.next();
-                    subError.add(formatSql(ele.get(subTransCode), true));
-                    subError.add(STR_BLANK);
+                    error.add(formatSql(ele.get(subTransCode), true, false));
+                    error.add(STR_BLANK);
                 }
             }
-            if (CollectionUtils.isNotEmpty(subError)) {
-                error.add(String.format(MENU_TIPS, "未匹配交易码: " + subError.size() / 2));
-                error.addAll(subError);
+            if (CollectionUtils.isNotEmpty(error)) {
+                // error.add(String.format(MENU_TIPS, "未匹配交易码: " + subError.size() / 2));
+                // 错误数据补充到最后面
+                res.add(String.format(MENU_TIPS, "自定义 开始"));
+                res.addAll(error.subList(0, error.size() - 1));
+                res.add(String.format(MENU_TIPS, "自定义 结束"));
+                error.clear();
             }
         }
+
+        res.add(STR_BLANK);
+        res.add("commit;");
 
         String checkFile = workFlowPath.replace(".sql", ".check.sql");
         if (CollectionUtils.isNotEmpty(error)) {

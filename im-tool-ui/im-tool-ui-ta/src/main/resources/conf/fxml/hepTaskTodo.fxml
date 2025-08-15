@@ -144,7 +144,8 @@
 
                         <Label fx:id="syncFileTime" layoutX="1200.0" layoutY="60.0"/>
 
-                        <Label fx:id="focusVersionTips" layoutX="20.0" layoutY="140.0"/>
+                        <Label fx:id="focusVersionTips" layoutX="20.0" layoutY="140.0"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="memoryTips" layoutX="550" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="codePushTips" layoutX="800.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
