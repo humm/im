@@ -721,7 +721,7 @@ public class ScriptCompareSql {
             menuInfo.addAll(menuNameNotStartByFund);
         }
 
-        // 存在菜单合并不存在合并后菜单
+        // 存在子菜单 不存在虚拟父菜单
         Iterator<String> iterator = newMenuElementCache.keySet().iterator();
         List<String> reserve1List = new ArrayList<>();
         while (iterator.hasNext()) {
@@ -757,9 +757,31 @@ public class ScriptCompareSql {
         }
         total += reserve1List.size();
         if (CollectionUtils.isNotEmpty(reserve1List)) {
-            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, "存在菜单合并不存在合并后菜单"));
+            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, "存在子菜单 不存在虚拟父菜单"));
             menuInfo.add(String.format(MSG_WAIT_HANDLE_NUM, reserve1List.size()));
             menuInfo.addAll(reserve1List);
+        }
+
+        // 存在虚拟父菜单 未配置子菜单
+        iterator = newMenuElementCache.keySet().iterator();
+        List<String> reserve2List = new ArrayList<>();
+        while (iterator.hasNext()) {
+            String menuCode = iterator.next();
+            String menuName = newMenuElementCache.get(menuCode)[0];
+            String menuReserve = newMenuElementCache.get(menuCode)[1];
+            if (StringUtils.isBlank(menuReserve) && newMenuTransExistCache.contains(menuCode)) {
+                if (StringUtils.isBlank(menuName)) {
+                    menuName = STR_BLANK;
+                }
+                String menu = menuCode + "   " + menuName;
+                reserve2List.add(menu);
+            }
+        }
+        total += reserve2List.size();
+        if (CollectionUtils.isNotEmpty(reserve2List)) {
+            menuInfo.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, "存在虚拟父菜单 未配置子菜单"));
+            menuInfo.add(String.format(MSG_WAIT_HANDLE_NUM, reserve2List.size()));
+            menuInfo.addAll(reserve2List);
         }
 
         // 注释内容不存在开始结束标识
