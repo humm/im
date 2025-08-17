@@ -2030,20 +2030,26 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void checkCommitNotPush(AppConfigDto appConfigDto) {
         Map<String, String> svnRep = appConfigDto.getSvnUrl();
-        String trunk = svnRep.get(KEY_TRUNK);
+        Set<String> checkVer = new LinkedHashSet<>(2);
+        checkVer.add(svnRep.get(KEY_TRUNK));
+        checkVer.add(svnRep.get(KEY_GIT_BRANCHES));
         boolean push = false;
         String threadMsg = STR_BLANK;
-        if (StringUtils.isNotBlank(trunk)) {
-            File[] file = new File(trunk).listFiles();
-            if (file != null) {
-                for (File item : file) {
-                    if (FileUtils.isSuffixDirectory(item, BaseConst.FILE_TYPE_GIT, false, true)) {
-                        String path = item.getAbsolutePath();
-                        String content = CmdUtils.exe(path, "git status");
-                        if (notPush(content)) {
-                            threadMsg = item.getName() + " 未推送仓库";
-                            push = true;
-                            break;
+        outer: for (String ver : checkVer) {
+            push = false;
+            threadMsg = STR_BLANK;
+            if (StringUtils.isNotBlank(ver)) {
+                File[] file = new File(ver).listFiles();
+                if (file != null) {
+                    for (File item : file) {
+                        if (FileUtils.isSuffixDirectory(item, BaseConst.FILE_TYPE_GIT, false, true)) {
+                            String path = item.getAbsolutePath();
+                            String content = CmdUtils.exe(path, "git status");
+                            if (notPush(content)) {
+                                threadMsg = item.getName() + " 未推送仓库";
+                                push = true;
+                                break outer;
+                            }
                         }
                     }
                 }
@@ -2052,7 +2058,6 @@ public class HepTodoController extends BaseController implements Initializable {
         if (push) {
             codePushTips.setStyle(STYLE_BOLD_RED);
             codePushTips.setVisible(true);
-            // CommonUtils.showTipsByError(threadMsg, 30 * 1000);
         } else {
             codePushTips.setStyle(STYLE_NORMAL);
             codePushTips.setVisible(false);
