@@ -1058,6 +1058,25 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setFinishDate(finishDate);
             item.setFinishTime(finishTime);
 
+            String sprintVersion = item.getSprintVersion();
+
+            if (appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
+                focusVersionTask.add(taskNumberIn);
+                String assigneeName = item.getAssigneeName();
+                if (focusVersion.containsKey(sprintVersion)) {
+                    Map<String, Integer> userStat = focusVersion.get(sprintVersion);
+                    if (userStat.containsKey(assigneeName)) {
+                        userStat.put(assigneeName, userStat.get(assigneeName) + 1);
+                    } else {
+                        userStat.put(assigneeName, 1);
+                    }
+                } else {
+                    Map<String, Integer> userStat = new HashMap<>();
+                    userStat.put(assigneeName, 1);
+                    focusVersion.put(sprintVersion, userStat);
+                }
+            }
+
             boolean todayComplete = todayDate.equals(finishDate);
 
             if (only.isSelected()) {
@@ -1066,7 +1085,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     continue;
                 }
                 existTask.add(taskName);
-            } else if (devCompleteHide.isSelected() && !todayComplete) {
+            } else if (devCompleteHide.isSelected() && !todayComplete && !focusVersionTask.contains(taskNumberIn)) {
                 if (taskName.contains(DEV_COMMIT_TAG)) {
                     iterator.remove();
                     continue;
@@ -1078,7 +1097,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
 
-            String sprintVersion = item.getSprintVersion();
             if (sprintVersion.startsWith(KEY_TA5) || (sprintVersion.contains(KEY_TA6) && !sprintVersion.contains(KEY_FUND) && !sprintVersion.contains(KEY_VERSION_YEAR_2022))) {
                 iterator.remove();
                 continue;
@@ -1163,23 +1181,6 @@ public class HepTodoController extends BaseController implements Initializable {
 
             item.setSprintVersionFull(sprintVersion);
             item.setSprintVersion(formatVersion(sprintVersion));
-
-            if (appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
-                focusVersionTask.add(taskNumberIn);
-                String assigneeName = item.getAssigneeName();
-                if (focusVersion.containsKey(sprintVersion)) {
-                    Map<String, Integer> userStat = focusVersion.get(sprintVersion);
-                    if (userStat.containsKey(assigneeName)) {
-                        userStat.put(assigneeName, userStat.get(assigneeName) + 1);
-                    } else {
-                        userStat.put(assigneeName, 1);
-                    }
-                } else {
-                    Map<String, Integer> userStat = new HashMap<>();
-                    userStat.put(assigneeName, 1);
-                    focusVersion.put(sprintVersion, userStat);
-                }
-            }
 
             if (taskCustomerName.containsKey(taskNumberIn)) {
                 String name = taskCustomerName.get(taskNumberIn);
@@ -1345,6 +1346,11 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             OutputUtils.repeatInfo(focusVersionTips, message.toString());
             if (totalStat > 0) {
+                if (focusVersion.size() > 1) {
+                    focusVersionTips.setLayoutY(140);
+                } else {
+                    focusVersionTips.setLayoutY(180);
+                }
                 focusVersionTips.setVisible(true);
                 controlColorDesc(false);
             } else {
@@ -1368,12 +1374,10 @@ public class HepTodoController extends BaseController implements Initializable {
                         message.append(String.format("重点关注版本【%s】任务统计(%s)", version, num));
                         break;
                     }
-
                 }
             }
             OutputUtils.repeatInfo(focusVersionTips, message.toString());
             if (num > 0) {
-                focusVersionTips.setLayoutY(180);
                 focusVersionTips.setVisible(true);
                 controlColorDesc(false);
             } else {

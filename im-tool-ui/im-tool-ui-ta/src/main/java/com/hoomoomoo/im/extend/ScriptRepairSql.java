@@ -862,7 +862,27 @@ public class ScriptRepairSql {
         String basePath = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.baseMenu;
         List<String> menuList = FileUtils.readNormalFile(basePath);
         StringBuilder menu = new StringBuilder();
-        for (int i=7; i<menuList.size(); i++) {
+
+        // 获取平台菜单
+        int indexForPub = 0;
+        for (int i=13; i<menuList.size(); i++) {
+            String item = menuList.get(i).trim();
+            if (item.contains("平台菜单")) {
+                res.add(item);
+                indexForPub++;
+                continue;
+            }
+            if (indexForPub == 2) {
+                break;
+            }
+            if (indexForPub == 1) {
+                res.add(item);
+            }
+        }
+
+        res.add(STR_NEXT_LINE);
+
+        for (int i=20; i<menuList.size(); i++) {
             String item = menuList.get(i).trim();
             String itemLower = item.toLowerCase();
             if (StringUtils.isBlank(item)) {
@@ -1267,7 +1287,7 @@ public class ScriptRepairSql {
             Iterator<String> otherIterator = otherMenu.keySet().iterator();
             while (otherIterator.hasNext()) {
                 String menuCode = otherIterator.next();
-                if (skipMenu.contains(menuCode)) {
+                if (skipMenu.contains(menuCode) || menuCode.startsWith("biz")) {
                     continue;
                 }
                 subError.add(formatSql(otherMenu.get(menuCode), true));
