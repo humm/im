@@ -69,15 +69,17 @@ public class ChangeToolController implements Initializable {
     private static final String MENU_MODE_OLD = "老版";
     private static final String MENU_MODE_OLD_ALL = "老版(全部)";
 
-    private static final String AUTO_MODE_TIPS = "***参数提示***";
-    private static final String AUTO_MODE_JJHY = "***基金行业***";
+    private static final String AUTO_MODE_TIPS = "**** 参数提示 ****";
+    private static final String AUTO_MODE_JJHY = "** 基金行业 ***";
     private static final String AUTO_MODE_JSJJ = "嘉实基金";
     private static final String AUTO_MODE_JXJJ = "建信基金";
     private static final String AUTO_MODE_TKJJ = "泰康基金";
-    private static final String AUTO_MODE_ZQHY = "***证券行业***";
+    private static final String AUTO_MODE_ZQHY = "*** 证券行业 ***";
     private static final String AUTO_MODE_GTHT = "国泰海通";
     private static final String AUTO_MODE_DFZQ = "东方证券";
     private static final String AUTO_MODE_SWHY = "申万宏源";
+    private static final String AUTO_MODE_GFZQ = "广发证券";
+    private static final String AUTO_MODE_LSMS = "*** 个性化 ***";
     private static final String AUTO_MODE_ZX = "中信证券";
     private static final String AUTO_MODE_XY = "兴业证券";
     private static final String AUTO_MODE_ZJ = "中金公司";
@@ -115,6 +117,11 @@ public class ChangeToolController implements Initializable {
         add(AUTO_MODE_SWHY);
         paramValue.put(AUTO_MODE_SWHY, new String[]{"SA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1});
 
+        add(AUTO_MODE_GFZQ);
+        paramValue.put(AUTO_MODE_GFZQ, new String[]{"87", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1});
+
+
+        add(AUTO_MODE_LSMS);
 
         add(AUTO_MODE_ZX);
         paramValue.put(AUTO_MODE_ZX, new String[]{"S5", STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0});
@@ -404,9 +411,13 @@ public class ChangeToolController implements Initializable {
     public void buildAutoModeSql(String taskType) throws Exception {
         if (StringUtils.equals(taskType, AUTO_MODE_TIPS)) {
             buildTips();
+        } else if (StringUtils.equals(taskType, AUTO_MODE_LSMS)) {
+            new Exception("分割线，请选择其他模式");
+            OutputUtils.repeatInfo(logs, "分割线，请选择其他模式");
         } else {
             String[] param = paramValue.get(taskType);
             if (param == null) {
+                OutputUtils.repeatInfo(logs, "未匹配执行方法，请检查");
                 new Exception("未匹配执行方法，请检查");
             }
             TA_CODE = param[0];
