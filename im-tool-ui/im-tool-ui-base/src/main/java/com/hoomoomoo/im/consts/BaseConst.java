@@ -168,6 +168,7 @@ public class BaseConst {
     public final static String KEY_GIT_LOG_FILE = "diff --git";
     public final static String KEY_HTTPS = "https://";
     public final static String KEY_FILE_SYNC_TIMER = "fileSyncTimer";
+    public final static String KEY_FILE_PUSH_TIMER = "filePushTimer";
     public final static String KEY_LOG_TIMER = "logTimer";
     public final static String KEY_UNIT_MB = "MB";
     public final static String KEY_TA5 = "TA5";

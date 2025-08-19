@@ -1964,16 +1964,26 @@ public class HepTodoController extends BaseController implements Initializable {
         Platform.runLater(() -> {
             syncFileBtn.setText("停止文件同步");
         });
-        Timer timer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
+        Timer fileSyncTimer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
         String timerId = CommonUtils.getCurrentDateTime2();
-        if (timer == null) {
-            timer = new Timer();
-            appConfigDto.getTimerMap().put(KEY_FILE_SYNC_TIMER, timer);
+        if (fileSyncTimer == null) {
+            fileSyncTimer = new Timer();
+            appConfigDto.getTimerMap().put(KEY_FILE_SYNC_TIMER, fileSyncTimer);
         } else {
-            timer.cancel();
+            fileSyncTimer.cancel();
             return;
         }
-        TimerTask timerTask = new TimerTask() {
+
+        Timer filePushTimer = appConfigDto.getTimerMap().get(KEY_FILE_PUSH_TIMER);
+        if (filePushTimer == null) {
+            filePushTimer = new Timer();
+            appConfigDto.getTimerMap().put(KEY_FILE_PUSH_TIMER, filePushTimer);
+        } else {
+            filePushTimer.cancel();
+            return;
+        }
+
+        TimerTask fileSyncTimerTask = new TimerTask() {
             @SneakyThrows
             @Override
             public void run() {
@@ -2016,8 +2026,16 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     clearFile(new File(fileSyncTarget), ver);
                 }
-                checkCommitNotPush(appConfigDto);
                 OutputUtils.info(syncFileTime, String.format("轮询时间(%s) %s", authVersion.size(), CommonUtils.getCurrentDateTime14()));
+            }
+        };
+        fileSyncTimer.schedule(fileSyncTimerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
+
+        TimerTask filePushTimerTask = new TimerTask() {
+            @SneakyThrows
+            @Override
+            public void run() {
+                checkCommitPush(appConfigDto);
                 try {
                     outputMemory();
                 } catch (Exception e) {
@@ -2025,10 +2043,10 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
         };
-        timer.schedule(timerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
+        filePushTimer.schedule(filePushTimerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
     }
 
-    private void checkCommitNotPush(AppConfigDto appConfigDto) {
+    private void checkCommitPush(AppConfigDto appConfigDto) {
         Map<String, String> svnRep = appConfigDto.getSvnUrl();
         Set<String> checkVer = new LinkedHashSet<>(2);
         checkVer.add(svnRep.get(KEY_TRUNK));
