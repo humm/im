@@ -152,6 +152,10 @@ public class AppConfigDto extends BaseDto {
 
     private int fileSyncTimer;
 
+    private int filePushTimer;
+
+    private Boolean filePushWin;
+
     private String fileSyncAuthVersion;
 
     private Map<String, String> fileSyncVersionMap;
@@ -329,6 +333,7 @@ public class AppConfigDto extends BaseDto {
         this.weekPublishVersion = new ArrayList<>(16);
         this.timerMap = new ConcurrentHashMap<>();
         this.initScanLog = true;
+        this.filePushWin = false;
         this.scanLogTipsIndex = new LinkedHashMap<>();
         this.queryUpdateTaskFile = false;
         this.queryUpdateTaskFileByCondition = false;

@@ -155,7 +155,7 @@
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="memoryTips" layoutX="550" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="codePushTips" layoutX="800.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
+                        <Label fx:id="filePushTips" layoutX="800.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
                         <Label fx:id="syncTaskTips" layoutX="1070.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="syncFrontVersionTips" layoutX="1250.0" layoutY="180.0"

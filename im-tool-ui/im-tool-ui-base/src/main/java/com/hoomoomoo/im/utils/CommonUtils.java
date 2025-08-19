@@ -1397,14 +1397,14 @@ public class CommonUtils {
         String[] res = new String[3];
         String totalMemoryUnit = formatMemoryInfo(totalMemory);
         String usedMemoryUnit = formatMemoryInfo(usedMemory);
-        res[0] = totalMemoryUnit + STR_SLASH + usedMemoryUnit;
+        res[0] = totalMemoryUnit + "(总)" + STR_SLASH + usedMemoryUnit + "(用)";
         res[1] = totalMemoryUnit.replace(KEY_UNIT_MB, STR_BLANK);
         res[2] = usedMemoryUnit.replace(KEY_UNIT_MB, STR_BLANK);;
         return res;
     }
 
     private static String formatMemoryInfo(long memory) {
-        return memory / (1024 * 1024) + KEY_UNIT_MB;
+        return String.valueOf(memory / (1024 * 1024));
     }
 
     public static String getRealDate(String oriDate) {

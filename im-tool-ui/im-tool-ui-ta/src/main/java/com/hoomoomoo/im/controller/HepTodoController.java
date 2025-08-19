@@ -267,7 +267,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label memoryTips;
 
     @FXML
-    private Label codePushTips;
+    private Label filePushTips;
 
     @FXML
     private Label syncFileTime;
@@ -376,7 +376,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (timer != null) {
             CommonUtils.stopHepToDoSyncFile(appConfigDto);
             syncFileBtn.setText("启动文件同步");
-            OutputUtils.info(codePushTips, STR_BLANK);
+            OutputUtils.info(filePushTips, STR_BLANK);
             OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
         } else {
             OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("启动文件同步"));
@@ -1947,7 +1947,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initComponentStatus() {
-        codePushTips.setVisible(false);
+        filePushTips.setVisible(false);
         setSyncFrontVersionTips(false);
         setSideBar();
     }
@@ -2043,7 +2043,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
         };
-        filePushTimer.schedule(filePushTimerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
+        filePushTimer.schedule(filePushTimerTask, 1000, appConfigDto.getFilePushTimer() * 1000);
     }
 
     private void checkCommitPush(AppConfigDto appConfigDto) {
@@ -2074,13 +2074,18 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         }
         if (push) {
-            codePushTips.setStyle(STYLE_BOLD_RED);
-            codePushTips.setVisible(true);
+            filePushTips.setStyle(STYLE_BOLD_RED);
+            filePushTips.setVisible(true);
+            if (!appConfigDto.getFilePushWin()) {
+                CommonUtils.showTipsByError(threadMsg, 10 * 1000);
+                appConfigDto.setFilePushWin(true);
+            }
         } else {
-            codePushTips.setStyle(STYLE_NORMAL);
-            codePushTips.setVisible(false);
+            filePushTips.setStyle(STYLE_NORMAL);
+            filePushTips.setVisible(false);
+            appConfigDto.setFilePushWin(false);
         }
-        OutputUtils.info(codePushTips, threadMsg);
+        OutputUtils.info(filePushTips, threadMsg);
     }
 
     private boolean notPush(String content) {
@@ -2092,8 +2097,8 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         String[] memoryInfo = CommonUtils.getMemoryInfo();
-        OutputUtils.info(memoryTips, "内存使用: " + memoryInfo[0]);
-        if (Integer.valueOf(memoryInfo[1]) > 1024 || Integer.valueOf(memoryInfo[2]) > 1024) {
+        OutputUtils.info(memoryTips, "内存(MB): " + memoryInfo[0]);
+        if (Integer.valueOf(memoryInfo[1]) > 2048 || Integer.valueOf(memoryInfo[2]) > 1024) {
             memoryTips.setStyle(STYLE_BOLD_RED);
         } else {
             memoryTips.setStyle(STYLE_NORMAL);
