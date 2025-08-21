@@ -110,23 +110,27 @@ public class BlankSetController implements Initializable {
         if (PAGE_TYPE_HEP_DETAIL.equals(pageType)) {
             if (hepTaskDto != null) {
                 info = hepTaskDto.getDescription();
-                if ("缺陷".equals(hepTaskDto.getTaskMark())) {
+                if ("缺陷".equals(hepTaskDto.getTaskLevel())) {
                     info = hepTaskDto.getName();
                 }
-                String hepTaskTodoDetailSymbol = appConfigDto.getHepTaskTodoDetailSymbol();
-                if (StringUtils.isNotBlank(hepTaskTodoDetailSymbol)) {
-                    String[] symbol = hepTaskTodoDetailSymbol.split(STR_$_SLASH);
-                    for (String item : symbol) {
-                        String[] ele = item.split(STR_COLON);
-                        if (ele.length == 1) {
-                            info = info.replaceAll(ele[0], STR_BLANK);
-                        } else if (ele.length == 2) {
-                            if (KEY_NEXT.equals(ele[1])) {
-                                ele[1] = STR_NEXT_LINE;
+                if (StringUtils.isNotBlank(info)) {
+                    String hepTaskTodoDetailSymbol = appConfigDto.getHepTaskTodoDetailSymbol();
+                    if (StringUtils.isNotBlank(hepTaskTodoDetailSymbol)) {
+                        String[] symbol = hepTaskTodoDetailSymbol.split(STR_$_SLASH);
+                        for (String item : symbol) {
+                            String[] ele = item.split(STR_COLON);
+                            if (ele.length == 1) {
+                                info = info.replaceAll(ele[0], STR_BLANK);
+                            } else if (ele.length == 2) {
+                                if (KEY_NEXT.equals(ele[1])) {
+                                    ele[1] = STR_NEXT_LINE;
+                                }
+                                info = info.replaceAll(ele[0], ele[1]);
                             }
-                            info = info.replaceAll(ele[0], ele[1]);
                         }
                     }
+                } else {
+                    info = "无任务详情";
                 }
             }
             info = StringUtils.isBlank(info) ? STR_BLANK : info;
