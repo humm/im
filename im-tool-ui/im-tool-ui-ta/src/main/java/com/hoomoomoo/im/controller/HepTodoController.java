@@ -1987,11 +1987,12 @@ public class HepTodoController extends BaseController implements Initializable {
             @SneakyThrows
             @Override
             public void run() {
-                Map<String, String> syncFileVersion = appConfigDto.getFileSyncVersionMap();
+                AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
+                Map<String, String> syncFileVersion = appConfig.getFileSyncVersionMap();
                 if (MapUtils.isEmpty(syncFileVersion)) {
                     return;
                 }
-                String fileSyncAuthVersion = appConfigDto.getFileSyncAuthVersion();
+                String fileSyncAuthVersion = appConfig.getFileSyncAuthVersion();
                 if (StringUtils.isBlank(fileSyncAuthVersion)) {
                     OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("未配置授权同步版本信息"));
                     OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
@@ -2001,16 +2002,19 @@ public class HepTodoController extends BaseController implements Initializable {
                 OutputUtils.clearLog(noticeSync);
                 String threadMsg = "轮询线程: " + timerId;
                 OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContain(threadMsg));
+                int num = authVersion.size();
                 for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
                     String ver = version.getKey();
                     if (!authVersion.contains(ver)) {
-                        OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(ver.toUpperCase() + " 未授权同步"));
+                        num--;
+                        OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver.toUpperCase() + " 未授权同步"));
                         continue;
                     }
                     ver = ver.toUpperCase();
                     String[] path = version.getValue().split(STR_COMMA);
                     if (path.length != 2) {
-                        OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
+                        num--;
+                        OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
                         continue;
                     }
                     String fileSyncSource = path[0];
@@ -2019,14 +2023,21 @@ public class HepTodoController extends BaseController implements Initializable {
                     OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
                     fileSyncSourceFile.clear();
                     try {
-                        sync(new File(fileSyncSource), fileSyncSource, fileSyncTarget, ver);
+                        File sourceFile = new File(fileSyncSource);
+                        if (!sourceFile.exists()) {
+                            num--;
+                            OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(String.format("文件同步源目录不存在 %s", ver)));
+                            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(fileSyncSource));
+                            continue;
+                        }
+                        sync(sourceFile, fileSyncSource, fileSyncTarget, ver);
                     } catch (IOException e) {
                         LoggerUtils.info(e);
                         OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
                     }
                     clearFile(new File(fileSyncTarget), ver);
                 }
-                OutputUtils.info(syncFileTime, String.format("轮询时间(%s) %s", authVersion.size(), CommonUtils.getCurrentDateTime14()));
+                OutputUtils.info(syncFileTime, String.format("轮询时间(%s) %s", num, CommonUtils.getCurrentDateTime14()));
             }
         };
         fileSyncTimer.schedule(fileSyncTimerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
@@ -2035,7 +2046,8 @@ public class HepTodoController extends BaseController implements Initializable {
             @SneakyThrows
             @Override
             public void run() {
-                checkCommitPush(appConfigDto);
+                AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
+                checkCommitPush(appConfig);
                 try {
                     outputMemory();
                 } catch (Exception e) {
