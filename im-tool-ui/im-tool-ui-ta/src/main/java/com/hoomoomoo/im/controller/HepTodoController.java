@@ -1956,11 +1956,38 @@ public class HepTodoController extends BaseController implements Initializable {
         TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "doSyncFile")));
     }
 
+    public void doFilePushCheck() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        Timer filePushTimer = appConfigDto.getTimerMap().get(KEY_FILE_PUSH_TIMER);
+        if (filePushTimer == null) {
+            filePushTimer = new Timer();
+            appConfigDto.getTimerMap().put(KEY_FILE_PUSH_TIMER, filePushTimer);
+        } else {
+            filePushTimer.cancel();
+            return;
+        }
+        TimerTask filePushTimerTask = new TimerTask() {
+            @SneakyThrows
+            @Override
+            public void run() {
+                AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
+                checkCommitPush(appConfig);
+                try {
+                    outputMemory();
+                } catch (Exception e) {
+                    LoggerUtils.info(e);
+                }
+            }
+        };
+        filePushTimer.schedule(filePushTimerTask, 1000, appConfigDto.getFilePushTimer() * 1000);
+    }
+
     public void doSyncFile() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (isExtendUser()) {
             return;
         }
+        doFilePushCheck();
         Platform.runLater(() -> {
             syncFileBtn.setText("停止文件同步");
         });
@@ -1971,15 +1998,6 @@ public class HepTodoController extends BaseController implements Initializable {
             appConfigDto.getTimerMap().put(KEY_FILE_SYNC_TIMER, fileSyncTimer);
         } else {
             fileSyncTimer.cancel();
-            return;
-        }
-
-        Timer filePushTimer = appConfigDto.getTimerMap().get(KEY_FILE_PUSH_TIMER);
-        if (filePushTimer == null) {
-            filePushTimer = new Timer();
-            appConfigDto.getTimerMap().put(KEY_FILE_PUSH_TIMER, filePushTimer);
-        } else {
-            filePushTimer.cancel();
             return;
         }
 
@@ -2041,21 +2059,6 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         };
         fileSyncTimer.schedule(fileSyncTimerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
-
-        TimerTask filePushTimerTask = new TimerTask() {
-            @SneakyThrows
-            @Override
-            public void run() {
-                AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
-                checkCommitPush(appConfig);
-                try {
-                    outputMemory();
-                } catch (Exception e) {
-                    LoggerUtils.info(e);
-                }
-            }
-        };
-        filePushTimer.schedule(filePushTimerTask, 1000, appConfigDto.getFilePushTimer() * 1000);
     }
 
     private void checkCommitPush(AppConfigDto appConfigDto) {
@@ -2066,6 +2069,7 @@ public class HepTodoController extends BaseController implements Initializable {
         boolean push = false;
         String threadMsg = STR_BLANK;
         outer: for (String ver : checkVer) {
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("扫描版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK)));
             push = false;
             threadMsg = STR_BLANK;
             if (StringUtils.isNotBlank(ver)) {
