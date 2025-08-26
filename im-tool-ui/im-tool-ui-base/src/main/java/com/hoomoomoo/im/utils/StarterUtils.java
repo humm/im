@@ -72,7 +72,11 @@ public class StarterUtils {
 
             Thread.setDefaultUncaughtExceptionHandler((thread, e) -> {
                 LoggerUtils.info("全局异常处理日志打印开始");
-                LoggerUtils.info(e);
+                if (e instanceof IllegalStateException) {
+                    LoggerUtils.info(e.getMessage(), false);
+                } else {
+                    LoggerUtils.info(e);
+                }
                 LoggerUtils.info("全局异常处理日志打印结束");
             });
 
