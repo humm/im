@@ -1966,20 +1966,22 @@ public class HepTodoController extends BaseController implements Initializable {
             filePushTimer.cancel();
             return;
         }
-        TimerTask filePushTimerTask = new TimerTask() {
-            @SneakyThrows
-            @Override
-            public void run() {
-                AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
-                checkCommitPush(appConfig);
-                try {
-                    outputMemory();
-                } catch (Exception e) {
-                    LoggerUtils.info(e);
+        Platform.runLater(() -> {
+            TimerTask filePushTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    AppConfigDto appConfig;
+                    try {
+                        appConfig = ConfigCache.getAppConfigDtoCache();
+                        checkCommitPush(appConfig);
+                        outputMemory();
+                    } catch (Exception e) {
+                        LoggerUtils.info(e);
+                    }
                 }
-            }
-        };
-        filePushTimer.schedule(filePushTimerTask, 1000, appConfigDto.getFilePushTimer() * 1000);
+            };
+            appConfigDto.getTimerMap().get(KEY_FILE_PUSH_TIMER).schedule(filePushTimerTask, 1000, appConfigDto.getFilePushTimer() * 1000);
+        });
     }
 
     public void doSyncFile() throws Exception {
@@ -2032,7 +2034,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     String[] path = version.getValue().split(STR_COMMA);
                     if (path.length != 2) {
                         num--;
-                        OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 扫描路径配置错误"));
+                        OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 同步路径配置错误"));
                         continue;
                     }
                     String fileSyncSource = path[0];
@@ -2069,7 +2071,6 @@ public class HepTodoController extends BaseController implements Initializable {
         boolean push = false;
         String threadMsg = STR_BLANK;
         outer: for (String ver : checkVer) {
-            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("扫描版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK)));
             push = false;
             threadMsg = STR_BLANK;
             if (StringUtils.isNotBlank(ver)) {
