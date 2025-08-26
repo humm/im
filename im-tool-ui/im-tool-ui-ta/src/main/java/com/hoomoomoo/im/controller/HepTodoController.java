@@ -932,13 +932,18 @@ public class HepTodoController extends BaseController implements Initializable {
         dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextSaturday, 7), "两周六");
         dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextSunday, 7), "两周天");
 
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+
         Set<String> dayTodoTask = new HashSet<>();
         Set<String> weekTodoTask = new HashSet<>();
         Set<String> finishDateError = new HashSet<>();
         Set<String> finishDateOver = new HashSet<>();
         Set<String> focusVersionTask = new HashSet<>();
+        List<String> focusDemand = new ArrayList<>();
+        if (StringUtils.isNotBlank(appConfigDto.getHepTaskFocusDemand())) {
+            focusDemand = Arrays.asList(appConfigDto.getHepTaskFocusDemand().split(STR_COMMA));
+        }
         taskList.setDisable(true);
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
         List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
         initVersionTask(res);
@@ -1129,7 +1134,11 @@ public class HepTodoController extends BaseController implements Initializable {
                     } else if (taskName.contains(TASK_NAME_SCENE)) {
                         item.setSortDate(getValue(STR_6));
                     } else {
-                        item.setSortDate(finishDate);
+                        if (focusDemand.contains(demandNo)) {
+                            item.setSortDate(getValue(STR_7).substring(0, 4) + finishDate.substring(4));
+                        } else {
+                            item.setSortDate(finishDate);
+                        }
                     }
                     break;
             }
@@ -1293,7 +1302,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
         OutputUtils.clearLog(taskList);
         finishDateError.addAll(finishDateOver);
-        infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask);
+        infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, focusDemand);
         taskList.setDisable(false);
         String msg = STR_BLANK;
         boolean show = false;
@@ -1551,7 +1560,8 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError, Set<String> focusVersionTask) {
+    private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError,
+                              Set<String> focusVersionTask, List<String> focusDemand) {
         if (taskListIn == null) {
             return;
         }
@@ -1561,7 +1571,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 formatData(hepTaskDto);
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
-                initRowStyle(taskListIn, dayTodoTask,  weekTodoTask, finishDateError, focusVersionTask);
+                initRowStyle(taskListIn, dayTodoTask,  weekTodoTask, finishDateError, focusVersionTask, focusDemand);
             }
             OutputUtils.setEnabled(taskListIn);
         });
@@ -1579,7 +1589,8 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    private void initRowStyle(TableView taskListIn, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError, Set<String> focusVersionTask) {
+    private void initRowStyle(TableView taskListIn, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError,
+                              Set<String> focusVersionTask, List<String> focusDemand) {
         taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
             @Override
             public TableRow<HepTaskDto> call(TableView<HepTaskDto> param) {
@@ -1590,12 +1601,13 @@ public class HepTodoController extends BaseController implements Initializable {
                             super.updateItem(item, empty);
                             if (item != null && getIndex() > -1) {
                                 String taskNumber = item.getTaskNumber();
+                                String demandNo = item.getDemandNo();
                                 String[] taskColor;
                                 if (dayTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("今天待提交");
                                 } else if (finishDateError.contains(taskNumber)) {
                                     taskColor = color.get("完成日期超期");
-                                } else if (focusVersionTask.contains(taskNumber)) {
+                                } else if (focusVersionTask.contains(taskNumber) || focusDemand.contains(demandNo)) {
                                     taskColor = color.get("重点关注");
                                 } else if (weekTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("本周待提交");
@@ -1872,7 +1884,7 @@ public class HepTodoController extends BaseController implements Initializable {
         } else if (STR_6.equals(type)) {
             return "1050-00-00";
         } else if (STR_7.equals(type)) {
-            return "9950-00-00";
+            return "1060-00-00";
         }
         return "9999-00-00";
     }
