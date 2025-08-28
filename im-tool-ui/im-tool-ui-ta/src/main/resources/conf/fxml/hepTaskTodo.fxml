@@ -196,11 +196,11 @@
                                                                         <PropertyValueFactory property="name"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="taskLevel" editable="false"
-                                                                             prefWidth="65" sortable="false"
-                                                                             style="-fx-alignment: center;" text="描述">
+                                                                <TableColumn id="customer" editable="false"
+                                                                             prefWidth="105" sortable="false"
+                                                                             style="-fx-alignment: center;" text="客户名称">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="taskLevel"/>
+                                                                        <PropertyValueFactory property="customer"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="taskMark" editable="false"
@@ -210,24 +210,24 @@
                                                                         <PropertyValueFactory property="taskMark"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="statusName" editable="false"
-                                                                             prefWidth="90" sortable="false"
-                                                                             style="-fx-alignment: center;" text="状态">
-                                                                    <cellValueFactory>
-                                                                        <PropertyValueFactory property="statusName"/>
-                                                                    </cellValueFactory>
-                                                                </TableColumn>
                                                                 <TableColumn id="sprintVersion" editable="false"
                                                                              prefWidth="150" sortable="false" text="版本">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="sprintVersion"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="customer" editable="false"
-                                                                             prefWidth="105" sortable="false"
-                                                                             style="-fx-alignment: center;" text="客户名称">
+                                                                <TableColumn id="taskLevel" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="描述">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="customer"/>
+                                                                        <PropertyValueFactory property="taskLevel"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="statusName" editable="false"
+                                                                             prefWidth="90" sortable="false"
+                                                                             style="-fx-alignment: center;" text="状态">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="statusName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="finishDate" editable="false"
