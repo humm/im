@@ -1982,14 +1982,14 @@ public class HepTodoController extends BaseController implements Initializable {
             TimerTask filePushTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    AppConfigDto appConfig;
-                    try {
-                        appConfig = ConfigCache.getAppConfigDtoCache();
-                        checkCommitPush(appConfig);
-                        outputMemory();
-                    } catch (Exception e) {
-                        LoggerUtils.info(e);
-                    }
+                AppConfigDto appConfig;
+                try {
+                    appConfig = ConfigCache.getAppConfigDtoCache();
+                    checkCommitPush(appConfig);
+                    outputMemory();
+                } catch (Exception e) {
+                    LoggerUtils.info(e);
+                }
                 }
             };
             appConfigDto.getTimerMap().get(KEY_FILE_PUSH_TIMER).schedule(filePushTimerTask, 1000, appConfigDto.getFilePushTimer() * 1000);
@@ -2105,14 +2105,9 @@ public class HepTodoController extends BaseController implements Initializable {
         if (push) {
             filePushTips.setStyle(STYLE_BOLD_RED);
             filePushTips.setVisible(true);
-            if (!appConfigDto.getFilePushWin()) {
-                CommonUtils.showTipsByError(threadMsg, 10 * 1000);
-                appConfigDto.setFilePushWin(true);
-            }
         } else {
             filePushTips.setStyle(STYLE_NORMAL);
             filePushTips.setVisible(false);
-            appConfigDto.setFilePushWin(false);
         }
         OutputUtils.info(filePushTips, threadMsg);
     }
