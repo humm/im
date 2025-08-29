@@ -7,5 +7,5 @@
 }
 
 .table-row-cell:filled:selected {
-    -fx-background-color: #d7e4f8;
+    -fx-background-color: rgb(118, 185, 185);
 }

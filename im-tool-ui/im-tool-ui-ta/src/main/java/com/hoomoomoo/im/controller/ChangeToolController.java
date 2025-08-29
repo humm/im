@@ -489,6 +489,33 @@ public class ChangeToolController implements Initializable {
         res.add("-- 开通中金模式自动化清算功能(中金特有功能)");
         res.add("update tbparam set param_value = '" + zj + "' where param_id = 'fund_ZjMultiProcessesPrivate';\n");
 
+        String gfzq = StringUtils.equals("87", TA_CODE) ? STR_1 : STR_0;
+
+        res.add("-- 开通自动化清算支持固定批次处理功能(广发证券特有功能)");
+        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AutoLiqSptFixedBatch';\n");
+
+        res.add("-- 开通自动化清算隐藏基金状态和账户处理节点功能(广发证券特有功能)");
+        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AutoLiqHideStatusSet';\n");
+
+        res.add("-- 开通自动化数据自动导入功能(广发证券特有功能)");
+        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_MultiProcessesDataAutoImp';\n");
+
+        res.add("-- 开通自动化清算支持T0产品清算功能(广发证券特有功能)");
+        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AutoLiqSptT0Deal';\n");
+
+        res.add("-- 开通自动化清算支持外部API稽核功能(广发证券特有功能)");
+        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AutoLiqSptApiAudit';\n");
+
+        res.add("-- 开通自动化清算根据交易列表处理功能(广发证券特有功能)");
+        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AutoLiqByTradeList';\n");
+
+        res.add("-- 开通资金清算只导出T0确认文件功能(广发证券特有功能)");
+        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_ZjqsExpT0CfmFile';\n");
+
+        res.add("-- 开通销售商预设批次导出功能(广发证券特有功能)");
+        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AgencyPreExport';\n");
+
+
         res.add("-- 更新TA代码");
         res.add("update tbparam set param_value = '" + TA_CODE + "' where param_id = 'BTACODE';\n");
 
