@@ -345,17 +345,13 @@ public class HepTodoController extends BaseController implements Initializable {
             defaultDividerPositions = taskSplitPane.getDividerPositions()[0];
             defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
             devCompleteHide.setSelected(true);
+            controlComponent();
             if (isExtendUser()) {
-                controlComponent(false, false, false);
+                controlComponentByExtendUser(false, false, false);
             } else {
                 initColorDesc();
                 JvmCache.setHepTodoController(this);
                 syncFile();
-            }
-            if (frontPage()) {
-                showDemand.setVisible(true);
-            } else {
-                showDemand.setVisible(false);
             }
             JvmCache.setHepTodoControllerMap(appConfigDto.getActivateFunction(), this);
             addTaskMenu(appConfigDto, this);
@@ -1283,9 +1279,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
         if (!isExtendUser()) {
             if (waitTaskSync) {
-                OutputUtils.info(syncTaskTips, "请同步任务信息");
+                syncTaskTips.setVisible(true);
             } else {
-                OutputUtils.info(syncTaskTips, STR_BLANK);
+                syncTaskTips.setVisible(false);
             }
         }
 
@@ -1456,7 +1452,7 @@ public class HepTodoController extends BaseController implements Initializable {
             updateFile(taskLevelExtendStat, taskNoList, PATH_DEFINE_TASK_LEVEL_STAT, demandNum, taskNum);
             if (CollectionUtils.isNotEmpty(syncTaskLog)) {
                 syncTaskLog.add(String.format(STR_NEXT_LINE + "需求总数【%s】任务总数【%s】", demandNum, taskNum));
-                controlTooltip(appConfigDto, true, syncTaskLog.stream().collect(Collectors.joining(STR_NEXT_LINE)), 500, 150);
+                //controlTooltip(appConfigDto, true, syncTaskLog.stream().collect(Collectors.joining(STR_NEXT_LINE)), 500, 150);
             }
             appConfigDto.setQueryUpdateTaskFile(false);
         }
@@ -2245,7 +2241,16 @@ public class HepTodoController extends BaseController implements Initializable {
         return PAGE_USER.equals(ConfigCache.getAppConfigDtoCache().getHepTaskUser());
     }
 
-    private void controlComponent(boolean syncComponent, boolean checkFileComponent, boolean syncTaskComponent) {
+    private void controlComponent() {
+        if (frontPage()) {
+            showDemand.setVisible(true);
+        } else {
+            showDemand.setVisible(false);
+        }
+        syncTaskTips.setVisible(false);
+    }
+
+    private void controlComponentByExtendUser(boolean syncComponent, boolean checkFileComponent, boolean syncTaskComponent) {
         fileTipsFile.setVisible(syncComponent);
         fileTipsFileTitle.setVisible(syncComponent);
         fileTipsFileTime.setVisible(syncComponent);

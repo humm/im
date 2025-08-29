@@ -67,6 +67,8 @@
                         <Label fx:id="fileTipsVersion" layoutX="970.0" layoutY="150.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
+                        <Label fx:id="syncFileTime" layoutX="1250.0" layoutY="150.0"/>
+
                         <ProgressIndicator fx:id="schedule" layoutX="600.0" layoutY="99.0" progress="0.0"/>
                         <Label fx:id="scheduleText" layoutX="635" layoutY="105.0" text="0%"/>
 
@@ -149,19 +151,17 @@
                             </padding>
                         </Button>
 
-                        <Label fx:id="syncFileTime" layoutX="1200.0" layoutY="60.0"/>
-
                         <Label fx:id="focusVersionTips" layoutX="20.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="memoryTips" layoutX="550" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <Label fx:id="filePushTips" layoutX="800.0" layoutY="180.0" style="-fx-font-weight: bold;"/>
                         <Label fx:id="syncTaskTips" layoutX="1070.0" layoutY="180.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;" text="请同步任务信息"/>
                         <Label fx:id="syncFrontVersionTips" layoutX="1250.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;" text="front未实时同步"/>
-                        <TextField fx:id="demandNo" layoutX="1405.0" layoutY="160.0" editable="false" style="-fx-background-color: transparent; -fx-font-size: 16"/>
-                        <TextField fx:id="taskNo" layoutX="1545.0" layoutY="160.0" editable="false" style="-fx-background-color: transparent; -fx-font-size: 16"/>
+                        <TextField fx:id="demandNo" layoutX="1405.0" layoutY="165.0" editable="false" style="-fx-background-color: transparent; -fx-font-size: 16"/>
+                        <TextField fx:id="taskNo" layoutX="1545.0" layoutY="165.0" editable="false" style="-fx-background-color: transparent; -fx-font-size: 16"/>
 
                     </children>
                 </AnchorPane>

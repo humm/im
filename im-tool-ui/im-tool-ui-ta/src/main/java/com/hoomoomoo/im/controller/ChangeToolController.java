@@ -293,31 +293,28 @@ public class ChangeToolController implements Initializable {
     private void executeStart(String taskMsg) {
         disableBtn();
         OutputUtils.clearLog(logs);
-        OutputUtils.infoContainBr(logs, taskMsg);
-        OutputUtils.infoContainBr(logs, "生成脚本 开始...");
+        OutputUtils.infoContainBr(logs, taskMsg + STR_NEXT_LINE);
+        OutputUtils.infoContainBr(logs, "生成脚本 开始 ...");
     }
 
     private void executeEnd(String resFilePath) throws Exception {
-        OutputUtils.infoContainBr(logs, "\n生成脚本 完成...");
+        OutputUtils.infoContainBr(logs, STR_NEXT_LINE + "生成脚本 完成 ..." + STR_NEXT_LINE);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (StringUtils.isNotBlank(appConfigDto.getDatabaseScriptUrl())) {
-            OutputUtils.infoContainBr(logs, "执行脚本 开始...");
+            OutputUtils.infoContainBr(logs, "执行脚本 开始 ...");
             String sql = STR_BLANK;
             try {
                 String[] sqlList = FileUtils.readNormalFileToStringSkipAnnotation(resFilePath).split(STR_SEMICOLON);
                 if (sqlList != null) {
                     int size = sqlList.length;
-                    if (executeType.equals(executeMenu)) {
-                        OutputUtils.info(logs, "执行中...");
-                    }
+                    OutputUtils.info(logs, "执行中 ...");
                     for (int i=0; i<size; i++) {
                         sql = sqlList[i].trim();
+                        if (i % 1000 == 0) {
+                            OutputUtils.info(logs, STR_POINT_3);
+                        }
                         if (executeType.equals(executeMode)) {
-                            OutputUtils.info(logs, (i == 0 ? STR_BLANK : STR_NEXT_LINE) + "执行sql: " + sql);
-                        } else {
-                            if (i % 1000 == 0) {
-                                OutputUtils.info(logs, STR_POINT_3);
-                            }
+                            // OutputUtils.info(logs, (i == 0 ? STR_BLANK : STR_NEXT_LINE) + "执行sql: " + sql);
                         }
                         DatabaseUtils.executeSql(sql, null);
                     }
@@ -328,14 +325,14 @@ public class ChangeToolController implements Initializable {
             } catch (Exception e) {
                 LoggerUtils.info(e);
                 OutputUtils.info(logs, STR_NEXT_LINE_2 + e.getMessage());
-                OutputUtils.info(logs, "\n执行异常sql: " + sql);
+                OutputUtils.info(logs, "执行异常sql: " + sql + STR_NEXT_LINE);
                 return;
             } finally {
                 DatabaseUtils.closeConnection();
                 enableBtn();
             }
-            OutputUtils.infoContainBr(logs, "\n执行脚本 完成...");
-            OutputUtils.infoContainBr(logs, "请刷新系统缓存...");
+            OutputUtils.infoContainBr(logs, STR_NEXT_LINE + "执行脚本 完成 ..." + STR_NEXT_LINE);
+            OutputUtils.infoContainBr(logs, "请刷新系统缓存 ...");
         } else {
             enableBtn();
         }
@@ -359,7 +356,7 @@ public class ChangeToolController implements Initializable {
     }
 
     public void buildMenuSql( String taskType, boolean newUd, boolean all) throws Exception {
-        executeStart("菜单模式 ... " + taskType);
+        executeStart(taskType);
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String base = ScriptSqlUtils.baseMenu;
         String paramValue = STR_0;
@@ -379,7 +376,7 @@ public class ChangeToolController implements Initializable {
         res.clear();
         if (CollectionUtils.isNotEmpty(sqlList)) {
             int size = sqlList.size();
-            OutputUtils.info(logs, "执行中...");
+            OutputUtils.info(logs, "执行中 ...");
             for (int i=0; i<size; i++) {
                 String sql = sqlList.get(i);
                 if (!all && sql.contains("交易码  tsys_trans")) {
@@ -389,6 +386,7 @@ public class ChangeToolController implements Initializable {
                 if (!all && !newUd && (sql.contains("tsys_trans") || sql.contains("tsys_subtrans"))) {
                     continue;
                 }
+
                 if (i % 1000 == 0) {
                     OutputUtils.info(logs, STR_POINT_3);
                     FileUtils.writeFileAppend(resFilePath, res);
@@ -440,7 +438,7 @@ public class ChangeToolController implements Initializable {
                                  String gtht, String sm, String navType) throws Exception {
         boolean xyMode =  STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gjdf);
         executeStart(taskType);
-        OutputUtils.info(logs, "执行中...");
+        OutputUtils.info(logs, "执行中 ...");
         List<String> res = new ArrayList<>();
         res.add("-- " + taskType + "\n");
 
@@ -515,6 +513,7 @@ public class ChangeToolController implements Initializable {
 
         res.add("-- 更新TA代码");
         res.add("update tbparam set param_value = '" + TA_CODE + "' where param_id = 'BTACODE';\n");
+
 
         res.add(STR_SPACE);
         String groupCode = STR_BLANK;
