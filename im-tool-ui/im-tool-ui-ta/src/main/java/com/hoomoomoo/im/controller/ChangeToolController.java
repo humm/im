@@ -11,11 +11,10 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -42,16 +41,13 @@ public class ChangeToolController implements Initializable {
     private AnchorPane autoModePane;
 
     @FXML
+    private AnchorPane menuModePane;
+
+    @FXML
     private Button autoModeBtn;
 
     @FXML
     private Button menuCodeBtn;
-
-    @FXML
-    private ComboBox autoMode;
-
-    @FXML
-    private ComboBox menuMode;
 
     @FXML
     private TextField code;
@@ -59,90 +55,29 @@ public class ChangeToolController implements Initializable {
     @FXML
     private ComboBox dbNum;
 
-    private static String executeType;
-    private static final String executeMenu = "1";
-    private static final String executeMode = "2";
-
     private static String TA_CODE = "00";
 
-    private static final String MENU_MODE_NEW = "新版";
-    private static final String MENU_MODE_OLD = "老版";
-    private static final String MENU_MODE_OLD_ALL = "老版(全部)";
+    /**
+     * hy 行业 0:参数提示 1:基金行业 2:证券行业 3:个性化行业
+     * taCode ta代码
+     * gm 公募
+     * zx 中信
+     * xy 兴业
+     * zj 中金
+     * gjdf 国金道富
+     * gtht 国泰海通
+     * sm 分产品自动化
+     * navType 分产品自动化清算行情导入方式
+     */
+    Map<String, String[]> autoModeValue = new LinkedHashMap<>();
+    List<RadioButton> buttonList = new ArrayList<>();
 
-    private static final String AUTO_MODE_TIPS = "**** 参数提示 ****";
-    private static final String AUTO_MODE_JJHY = "** 基金行业 ***";
-    private static final String AUTO_MODE_JSJJ = "嘉实基金";
-    private static final String AUTO_MODE_JXJJ = "建信基金";
-    private static final String AUTO_MODE_TKJJ = "泰康基金";
-    private static final String AUTO_MODE_ZQHY = "*** 证券行业 ***";
-    private static final String AUTO_MODE_GTHT = "国泰海通";
-    private static final String AUTO_MODE_DFZQ = "东方证券";
-    private static final String AUTO_MODE_SWHY = "申万宏源";
-    private static final String AUTO_MODE_GFZQ = "广发证券";
-    private static final String AUTO_MODE_LSMS = "*** 个性化 ***";
-    private static final String AUTO_MODE_ZX = "中信证券";
-    private static final String AUTO_MODE_XY = "兴业证券";
-    private static final String AUTO_MODE_ZJ = "中金公司";
-    private static final String AUTO_MODE_GJDF = "国金道富";
-
-    // TA代码 gm, zx, xy, zj, gjdf, gtht, sm
-    Map<String, String[]> paramValue = new LinkedHashMap<>();
-
-    private Set<String> autoModeSet = new LinkedHashSet<String>(){{
-        add(AUTO_MODE_TIPS);
-        paramValue.put(AUTO_MODE_TIPS, new String[]{});
-
-        add(AUTO_MODE_JJHY);
-        paramValue.put(AUTO_MODE_JJHY, new String[]{TA_CODE, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-
-        add(AUTO_MODE_JSJJ);
-        paramValue.put(AUTO_MODE_JSJJ, new String[]{"07", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-
-        add(AUTO_MODE_JXJJ);
-        paramValue.put(AUTO_MODE_JXJJ, new String[]{"53", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-
-        add(AUTO_MODE_TKJJ);
-        paramValue.put(AUTO_MODE_TKJJ, new String[]{"4C", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-
-
-        add(AUTO_MODE_ZQHY);
-        paramValue.put(AUTO_MODE_ZQHY, new String[]{TA_CODE, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
-
-        add(AUTO_MODE_GTHT);
-        paramValue.put(AUTO_MODE_GTHT, new String[]{"JA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
-
-        add(AUTO_MODE_DFZQ);
-        paramValue.put(AUTO_MODE_DFZQ, new String[]{"SD", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
-
-        add(AUTO_MODE_SWHY);
-        paramValue.put(AUTO_MODE_SWHY, new String[]{"SA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
-
-        add(AUTO_MODE_GFZQ);
-        paramValue.put(AUTO_MODE_GFZQ, new String[]{"87", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
-
-
-        add(AUTO_MODE_LSMS);
-
-        add(AUTO_MODE_ZX);
-        paramValue.put(AUTO_MODE_ZX, new String[]{"S5", STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-
-        add(AUTO_MODE_XY);
-        paramValue.put(AUTO_MODE_XY, new String[]{"XY", STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0});
-
-        add(AUTO_MODE_ZJ);
-        paramValue.put(AUTO_MODE_ZJ, new String[]{"SM", STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0});
-
-        add(AUTO_MODE_GJDF);
-        paramValue.put(AUTO_MODE_GJDF, new String[]{"NB", STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0});
-
-
-    }};
-
-    private Set<String> menuModeSet = new LinkedHashSet<String>(){{
-        add(MENU_MODE_NEW);
-        add(MENU_MODE_OLD);
-        add(MENU_MODE_OLD_ALL);
-    }};
+    /**
+     * newUd
+     * all
+     */
+    Map<String, Boolean[]> menuModeValue = new LinkedHashMap<>();
+    List<RadioButton> menuButtonList = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -151,46 +86,122 @@ public class ChangeToolController implements Initializable {
         LoggerUtils.writeLogInfo(CHANGE_FUNCTION_TOOL.getCode(), new Date(), new ArrayList<String>(){{
             add(msg);
         }});
-        ObservableList auto = autoMode.getItems();
-        if (CollectionUtils.isNotEmpty(autoModeSet)) {
-            Iterator<String> ver = autoModeSet.iterator();
-            while (ver.hasNext()) {
-                auto.add(ver.next());
+        initAutoMode();
+        initMenuMode();
+        initDb();
+    }
+
+    private void initAutoMode() {
+        autoModeValue.put("参数提示", new String[]{STR_0});
+
+        autoModeValue.put("基金行业", new String[]{STR_1, TA_CODE, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        autoModeValue.put("嘉实基金", new String[]{STR_1, "07", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        autoModeValue.put("建信基金", new String[]{STR_1, "53", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        autoModeValue.put("泰康基金", new String[]{STR_1, "4C", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+
+        autoModeValue.put("证券行业", new String[]{STR_2, TA_CODE, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
+        autoModeValue.put("国泰海通", new String[]{STR_2, "JA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
+        autoModeValue.put("东方证券", new String[]{STR_2, "SD", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
+        autoModeValue.put("申万宏源", new String[]{STR_2, "SA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
+        autoModeValue.put("广发证券", new String[]{STR_2, "87", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
+
+        autoModeValue.put("中信证券", new String[]{STR_3, "S5", STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        autoModeValue.put("兴业证券", new String[]{STR_3, "XY", STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0});
+        autoModeValue.put("中金公司", new String[]{STR_3, "SM", STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0});
+        autoModeValue.put("国金道富", new String[]{STR_3, "NB", STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0});
+
+        Map<String, Set<String>> group = new LinkedHashMap<>();
+        for (Map.Entry<String, String[]> entry : autoModeValue.entrySet()) {
+            String name = entry.getKey();
+            String hy = entry.getValue()[0];
+            if (group.containsKey(hy)) {
+                group.get(hy).add(name);
+            } else {
+                Set<String> select = new LinkedHashSet<>();
+                select.add(name);
+                group.put(hy, select);
             }
         }
-        autoMode.getSelectionModel().select(0);
 
-        ObservableList menu = menuMode.getItems();
-        if (CollectionUtils.isNotEmpty(menuModeSet)) {
-            Iterator<String> ver = menuModeSet.iterator();
-            while (ver.hasNext()) {
-                menu.add(ver.next());
+        double layoutY = 70;
+        ToggleGroup toggleGroup = new ToggleGroup();
+        for (Map.Entry<String, Set<String>> entry : group.entrySet()) {
+            String hyName = entry.getKey();
+            switch (entry.getKey()) {
+                case STR_0:
+                    hyName = "参数提示";
+                    break;
+                case STR_1:
+                    hyName = "基金行业";
+                    break;
+                case STR_2:
+                    hyName = "证券行业";
+                    break;
+                case STR_3:
+                    hyName = "个性化";
+                    break;
+                default:
+                    break;
             }
+            Label label = new Label(hyName);
+            label.setStyle(STYLE_BOLD);
+            label.setLayoutX(35);
+            label.setLayoutY(layoutY);
+            Set<String> select = entry.getValue();
+            HBox hBox = new HBox(10);
+            hBox.setLayoutX(110);
+            hBox.setLayoutY(layoutY);
+            layoutY += 30;
+            for (String buttonName : select) {
+                RadioButton button = new RadioButton(buttonName);
+                button.setToggleGroup(toggleGroup);
+                hBox.getChildren().add(button);
+                buttonList.add(button);
+            }
+            autoModePane.getChildren().addAll(label, hBox);
         }
-        menuMode.getSelectionModel().select(0);
+        buildTips();
+    }
 
+    private void initMenuMode() {
+        menuModeValue.put("新版", new Boolean[]{true, false});
+        menuModeValue.put("老版", new Boolean[]{false, false});
+        menuModeValue.put("老版(全部)", new Boolean[]{false, true});
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+        HBox hBox = new HBox(10);
+        hBox.setLayoutX(37);
+        hBox.setLayoutY(70);
+
+        for (Map.Entry<String, Boolean[]> entry: menuModeValue.entrySet()) {
+            RadioButton button = new RadioButton(entry.getKey());
+            button.setToggleGroup(toggleGroup);
+            hBox.getChildren().add(button);
+            menuButtonList.add(button);
+        }
+        menuModePane.getChildren().addAll(hBox);
+    }
+
+    private void initDb() {
         ObservableList db = dbNum.getItems();
         db.add(STR_2);
         db.add(STR_4);
         db.add(STR_8);
         db.add(STR_16);
         dbNum.getSelectionModel().select(0);
-
-        buildTips();
     }
 
     private void buildTips() {
         OutputUtils.clearLog(logs);
         StringBuilder tips = new StringBuilder();
-        tips.append(buildTipsMessage(AUTO_MODE_JJHY + " (实时并发清算)", "fund_MultiProcessesLiqDeal"));
-        tips.append(buildTipsMessage(AUTO_MODE_ZQHY + " (分产品自动化清算)", "fund_AutoLiqByPrd"));
-        tips.append(buildTipsMessage(AUTO_MODE_GTHT, "fund_JaSpecialDeal"));
-
-        tips.append(buildTipsMessage("***中信模式***", "fund_T1MultiProcessesLiqDeal"));
-        tips.append(buildTipsMessage(AUTO_MODE_ZX, "fund_ParamProcessesLiqDeal"));
-        tips.append(buildTipsMessage("***兴业模式***", "fund_XyMultiProcessesLiqDeal"));
-        tips.append(buildTipsMessage(AUTO_MODE_XY, "fund_XyMultiProcessesPrivate"));
-        tips.append(buildTipsMessage(AUTO_MODE_ZJ, "fund_ZjMultiProcessesPrivate"));
+        tips.append(buildTipsMessage("基金行业", "fund_MultiProcessesLiqDeal"));
+        tips.append(buildTipsMessage("证券行业", "fund_AutoLiqByPrd"));
+        tips.append(buildTipsMessage("国泰海通", "fund_JaSpecialDeal"));
+        tips.append(buildTipsMessage("中信模式", "fund_T1MultiProcessesLiqDeal"));
+        tips.append(buildTipsMessage("中信证券", "fund_ParamProcessesLiqDeal"));
+        tips.append(buildTipsMessage("兴业模式", "fund_XyMultiProcessesLiqDeal"));
+        tips.append(buildTipsMessage("兴业证券", "fund_XyMultiProcessesPrivate"));
+        tips.append(buildTipsMessage("中金公司", "fund_ZjMultiProcessesPrivate"));
         OutputUtils.info(logs, tips.toString());
     }
 
@@ -202,12 +213,17 @@ public class ChangeToolController implements Initializable {
     void executeAutoMode(ActionEvent event) {
         try {
             OutputUtils.clearLog(logs);
-            String mode = CommonUtils.getComponentValue(autoMode);
+            String mode = STR_BLANK;
+            for (RadioButton radioButton : buttonList) {
+                if (radioButton.isSelected()) {
+                    mode = radioButton.getText();
+                    break;
+                }
+            }
             if (StringUtils.isBlank(mode)) {
                 OutputUtils.info(logs,"请选择 自动化清算模式");
                 return;
             }
-            executeType = executeMode;
             TaskUtils.execute(new ChangeFunctionTask(new ChangeFunctionTaskParam(this, STR_1, mode)));
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -221,12 +237,17 @@ public class ChangeToolController implements Initializable {
     void executeMenuMode(ActionEvent event) {
         try {
             OutputUtils.clearLog(logs);
-            String menu = CommonUtils.getComponentValue(menuMode);
+            String menu = STR_BLANK;
+            for (RadioButton radioButton : menuButtonList) {
+                if (radioButton.isSelected()) {
+                    menu = radioButton.getText();
+                    break;
+                }
+            }
             if (StringUtils.isBlank(menu)) {
                 OutputUtils.info(logs,"请选择 菜单模式");
                 return;
             }
-            executeType = executeMenu;
             TaskUtils.execute(new ChangeFunctionTask(new ChangeFunctionTaskParam(this, STR_2, menu)));
         } catch (Exception e) {
             LoggerUtils.info(e);
@@ -313,9 +334,6 @@ public class ChangeToolController implements Initializable {
                         if (i % 1000 == 0) {
                             OutputUtils.info(logs, STR_POINT_3);
                         }
-                        if (executeType.equals(executeMode)) {
-                            // OutputUtils.info(logs, (i == 0 ? STR_BLANK : STR_NEXT_LINE) + "执行sql: " + sql);
-                        }
                         DatabaseUtils.executeSql(sql, null);
                     }
                 }
@@ -339,20 +357,12 @@ public class ChangeToolController implements Initializable {
     }
 
     public void buildMenuModeSql(String taskType) throws Exception {
-        switch (taskType) {
-            case MENU_MODE_NEW:
-                buildMenuSql(taskType,true, false);
-                break;
-            case MENU_MODE_OLD:
-                buildMenuSql(taskType,false, false);
-                break;
-            case MENU_MODE_OLD_ALL:
-                buildMenuSql(taskType,false, true);
-                break;
-            default:
-                new Exception("未匹配执行方法，请检查");
+        Boolean[] param = menuModeValue.get(taskType);
+        if (param == null) {
+            OutputUtils.repeatInfo(logs, "未匹配执行方法，请检查");
+            new Exception("未匹配执行方法，请检查");
         }
-
+        buildMenuSql(taskType, param[0], param[1]);
     }
 
     public void buildMenuSql( String taskType, boolean newUd, boolean all) throws Exception {
@@ -407,33 +417,19 @@ public class ChangeToolController implements Initializable {
     }
 
     public void buildAutoModeSql(String taskType) throws Exception {
-        if (StringUtils.equals(taskType, AUTO_MODE_TIPS)) {
+       String[] param = autoModeValue.get(taskType);
+        if (param == null) {
+            OutputUtils.repeatInfo(logs, "未匹配执行方法，请检查");
+            new Exception("未匹配执行方法，请检查");
+        }
+        if (param.length == 1) {
             buildTips();
-        } else if (StringUtils.equals(taskType, AUTO_MODE_LSMS)) {
-            new Exception("分割线，请选择其他模式");
-            OutputUtils.repeatInfo(logs, "分割线，请选择其他模式");
         } else {
-            String[] param = paramValue.get(taskType);
-            if (param == null) {
-                OutputUtils.repeatInfo(logs, "未匹配执行方法，请检查");
-                new Exception("未匹配执行方法，请检查");
-            }
-            TA_CODE = param[0];
-            buildAutoModeSql(taskType, param[1], param[2], param[3], param[4], param[5], param[6], param[7], param[8]);
+            TA_CODE = param[1];
+            buildAutoModeSql(taskType, param[2], param[3], param[4], param[5], param[6], param[7], param[8], param[9]);
         }
     }
 
-    /**
-     *
-     * @param gm 公募
-     * @param zx 中信
-     * @param xy 兴业
-     * @param zj 中金
-     * @param gjdf 国金道富
-     * @param gtht 国泰海通
-     * @param sm 分产品自动化
-     * @param navType 分产品自动化清算行情导入方式
-     */
     public void buildAutoModeSql(String taskType, String gm, String zx, String xy, String zj, String gjdf,
                                  String gtht, String sm, String navType) throws Exception {
         boolean xyMode =  STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gjdf);

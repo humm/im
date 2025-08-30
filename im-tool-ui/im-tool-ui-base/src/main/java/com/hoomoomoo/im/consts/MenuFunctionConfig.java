@@ -14,7 +14,7 @@ public class MenuFunctionConfig {
         MENU_SCRIPT("menuScript", "脚本", 200, "script"),
         MENU_FILE("menuFile", "文件", 300, "file"),
         MENU_HEP("menuHep", "效能", 400, "hep"),
-        MENU_OTHER("menuOther", "其他", 410, "other"),
+        MENU_OTHER("menuOther", "整备", 410, "other"),
         MENU_TOOL("menuTool", "系统", 450, "tool"),
         MENU_PARAM("menuParam", "参数", 500, "param"),
         MENU_HELP("menuHelp", "帮助", 600, "help");

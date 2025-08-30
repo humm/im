@@ -1078,7 +1078,8 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
 
-            boolean todayComplete = todayDate.equals(finishDate);
+            boolean todayComplete = todayDate.compareTo(finishDate) >= 0;
+            boolean needShow = todayComplete || focusVersionTask.contains(taskNumberIn);
 
             if (only.isSelected()) {
                 if (existTask.contains(taskName)) {
@@ -1086,7 +1087,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     continue;
                 }
                 existTask.add(taskName);
-            } else if (devCompleteHide.isSelected() && !todayComplete && !focusVersionTask.contains(taskNumberIn)) {
+            } else if (devCompleteHide.isSelected() && !needShow) {
                 if (taskName.contains(DEV_COMMIT_TAG)) {
                     iterator.remove();
                     continue;
