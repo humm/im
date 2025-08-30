@@ -18,7 +18,7 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane dividerPositions="0.3372807115142108, 0.6656189295283535" layoutX="174.0"
+                        <SplitPane dividerPositions="0.4172807115142108, 0.6656189295283535" layoutX="174.0"
                                    layoutY="76.0" prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
@@ -47,14 +47,14 @@
                                     <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0"
                                            style="-fx-font-weight: bold;-fx-font-size: 15;" text="菜单模式"/>
 
-                                    <Button fx:id="menuCodeBtn" layoutX="150.0" layoutY="225" mnemonicParsing="false"
+                                    <Button fx:id="menuCodeBtn" layoutX="100.0" layoutY="225" mnemonicParsing="false"
                                             onAction="#executeMenuMode" prefWidth="80.0" text="执行">
                                         <padding>
                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                         </padding>
                                     </Button>
 
-                                    <Button layoutX="270.0" layoutY="225" mnemonicParsing="false"
+                                    <Button layoutX="220.0" layoutY="225" mnemonicParsing="false"
                                             onAction="#showMenuResult" prefWidth="80.0" text="查看">
                                         <padding>
                                             <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

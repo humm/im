@@ -221,7 +221,7 @@ public class ChangeToolController implements Initializable {
                 }
             }
             if (StringUtils.isBlank(mode)) {
-                OutputUtils.info(logs,"请选择 自动化清算模式");
+                OutputUtils.info(logs,"请选择 自动化模式");
                 return;
             }
             TaskUtils.execute(new ChangeFunctionTask(new ChangeFunctionTaskParam(this, STR_1, mode)));
