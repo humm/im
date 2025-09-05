@@ -103,7 +103,7 @@ public class ChangeToolController implements Initializable {
         autoModeValue.put("国泰海通", new String[]{STR_2, "JA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
         autoModeValue.put("东方证券", new String[]{STR_2, "SD", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
         autoModeValue.put("申万宏源", new String[]{STR_2, "SA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
-        autoModeValue.put("广发证券", new String[]{STR_2, "87", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
+        autoModeValue.put("广发证券", new String[]{STR_2, "87", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
 
         autoModeValue.put("中信证券", new String[]{STR_3, "S5", STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
         autoModeValue.put("兴业证券", new String[]{STR_3, "XY", STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0});

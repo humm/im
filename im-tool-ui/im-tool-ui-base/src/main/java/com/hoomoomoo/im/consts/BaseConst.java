@@ -2,6 +2,8 @@ package com.hoomoomoo.im.consts;
 
 import java.util.regex.Pattern;
 
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_TODO;
+
 /**
  * @author humm23693
  * @description TODO
@@ -20,6 +22,8 @@ public class BaseConst {
     public static final String APP_MODE_SYNC = "sync";
 
     public static final int MAX_COMMON_FUNCTION_CODE = 3000;
+
+    public static final String FUNCTION_TASK_TODO = TASK_TODO.getCode();
 
     public static final String STR_0 = "0";
     public static final String STR_1 = "1";

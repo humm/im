@@ -240,7 +240,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         getItems().add(copyTaskSimple);
         getItems().add(menuScriptCopy);
         getItems().add(menuTaskNoCopy);
-        getItems().add(detailTask);
+        //getItems().add(detailTask);
         getItems().add(updateTask);
         getItems().add(menuMarkDev);
         getItems().add(menuCancelDev);

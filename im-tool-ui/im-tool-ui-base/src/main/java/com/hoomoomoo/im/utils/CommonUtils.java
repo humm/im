@@ -563,6 +563,9 @@ public class CommonUtils {
     }
 
     public static boolean isSuperUser() {
+        if (!FileUtils.startByJar()) {
+            return true;
+        }
         String[] mac = SecurityUtils.getDecryptString(SUPER_MAC_ADDRESS).split(STR_COMMA);
         String current = getMacAddress();
         for (String item : mac) {
@@ -576,20 +579,6 @@ public class CommonUtils {
     public static boolean isSyncMode() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         return StringUtils.equals(APP_MODE_SYNC, appConfigDto.getAppMode());
-    }
-
-    public static String initialUpper(String str) {
-        if (StringUtils.isEmpty(str)) {
-            return str;
-        }
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
-    }
-
-    public static String initialLower(String str) {
-        if (StringUtils.isEmpty(str)) {
-            return str;
-        }
-        return str.substring(0, 1).toLowerCase() + str.substring(1);
     }
 
     public static String lineToHump(String str) {
@@ -794,6 +783,29 @@ public class CommonUtils {
         }
     }
 
+    private static void getTaskTodoList(AppConfigDto appConfigDto, TabPane functionTab, String tabCode) throws IOException, InterruptedException {
+        if (StringUtils.equals(FUNCTION_TASK_TODO, tabCode)) {
+            MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.TASK_TODO;
+            String userExtend = appConfigDto.getHepTaskUserExtend();
+            if (StringUtils.isNotBlank(userExtend)) {
+                String[] user = userExtend.split(STR_COMMA);
+                String taskTodoPath = functionConfig.getPath();
+                String taskTodoName = functionConfig.getName();
+                for (String extend : user) {
+                    String[] extendInfo = extend.split(STR_COLON);
+                    if (extendInfo.length == 2) {
+                        String tabName = getMenuName(extendInfo[1], taskTodoName);
+                        appConfigDto.setActivateFunction(tabName);
+                        Tab openTab = CommonUtils.getFunctionTab(taskTodoPath, taskTodoName, extendInfo[1], taskTodoName);
+                        CommonUtils.setTabStyle(openTab, functionConfig);
+                        CommonUtils.bindTabEvent(openTab);
+                        functionTab.getTabs().add(openTab);
+                    }
+                }
+            }
+        }
+    }
+
     public static void setTabStyle(Tab tab, MenuFunctionConfig.FunctionConfig functionConfig) {
         tab.getStyleClass().add("tabClass");
         if (functionConfig == null) {
@@ -892,6 +904,7 @@ public class CommonUtils {
                     bindTabEvent(openTab);
                     functionTab.getTabs().add(openTab);
                     appConfigDto.setActivateFunction(openTab.getText());
+                    getTaskTodoList(appConfigDto, functionTab, tab);
                 }
             } else {
                 // 默认打开有权限的第一个功能

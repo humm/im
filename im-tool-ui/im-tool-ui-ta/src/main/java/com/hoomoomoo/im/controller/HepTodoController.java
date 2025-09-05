@@ -358,7 +358,7 @@ public class HepTodoController extends BaseController implements Initializable {
             initComponentStatus();
             executeQuery(null);
             buildTestData();
-            showExtendUserTask();
+            //showExtendUserTask();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
