@@ -88,7 +88,10 @@
                             </padding>
                         </Button>
 
-                        <Label fx:id="checkScriptTips" layoutX="1210.0" layoutY="22.0" style="-fx-font-weight: bold; -fx-text-background-color: red;" text="请检查配置脚本"/>
+                        <TextField fx:id="demandNo" layoutX="1000.0" layoutY="20.0" editable="false" style="-fx-background-color: transparent; -fx-font-weight: bold; -fx-font-size: 16"/>
+                        <TextField fx:id="taskNo" layoutX="1000.0" layoutY="45.0" editable="false" style="-fx-background-color: transparent; -fx-font-weight: bold; -fx-font-size: 16"/>
+
+                        <Label fx:id="checkScriptTips" layoutX="1210.0" layoutY="43.0" style="-fx-font-weight: bold; -fx-text-background-color: red;" text="请检查配置脚本"/>
 
                         <Button fx:id="syncFileBtn" layoutX="1360.0" layoutY="15.0" mnemonicParsing="false"
                                 onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="暂停文件同步">
@@ -160,9 +163,6 @@
                                style="-fx-font-weight: bold; -fx-text-background-color: red;" text="请同步任务信息"/>
                         <Label fx:id="syncFrontVersionTips" layoutX="1250.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;" text="front未实时同步"/>
-                        <TextField fx:id="demandNo" layoutX="1405.0" layoutY="165.0" editable="false" style="-fx-background-color: transparent; -fx-font-size: 16"/>
-                        <TextField fx:id="taskNo" layoutX="1545.0" layoutY="165.0" editable="false" style="-fx-background-color: transparent; -fx-font-size: 16"/>
-
                     </children>
                 </AnchorPane>
                 <AnchorPane fx:id="hep" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

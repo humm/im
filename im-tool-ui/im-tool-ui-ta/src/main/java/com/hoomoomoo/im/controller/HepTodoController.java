@@ -2589,7 +2589,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             show = true;
                         }
                     }
-                    controlTooltip(appConfigDto, show, msg, 1200, 155);
+                    controlTooltip(appConfigDto, show, msg, 1580, 265);
                 }
             }
         });
@@ -2654,6 +2654,7 @@ public class HepTodoController extends BaseController implements Initializable {
             Map<String, Object> item = new HashMap<>(16);
             item.put(KEY_ID, i);
             item.put(KEY_TASK_NUMBER, "T20230801000" + i);
+            item.put("demand_no", "20230801000" + i);
             item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
             item.put("assignee_name", "胡毛毛");
             item.put(KEY_ESTIMATE_FINISH_TIME, "2024-09-02 22:59:59");
