@@ -131,7 +131,7 @@ public class HepTodoController extends BaseController implements Initializable {
         put("完成日期超期", new String[] {"-fx-text-background-color: #ff0090;"});
         put("今天待提交", new String[] {"-fx-text-background-color: #ff0000;"});
         put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;"});
-        put("重点关注", new String[] {"-fx-text-background-color: #b700ff;"});
+        put("重点关注", new String[] {"-fx-text-background-color: #ff0073;"});
         put("默认", new String[] {"-fx-text-background-color: #000000;"});
     }};
 
@@ -2607,6 +2607,9 @@ public class HepTodoController extends BaseController implements Initializable {
                     Node node = event.getPickResult().getIntersectedNode();
                     HepWaitHandleTaskMenu hepWaitHandleTaskMenu = HepWaitHandleTaskMenu.getInstance();
                     HepTaskDto hepTaskDto = (HepTaskDto) taskList.getSelectionModel().getSelectedItem();
+                    if (hepTaskDto == null) {
+                        return;
+                    }
                     hepWaitHandleTaskMenu.getItems().forEach((item) -> {
                         if (NAME_MENU_UPDATE.equals(item.getText())) {
                             if (STATUS_DEV.equals(hepTaskDto.getStatus())) {
