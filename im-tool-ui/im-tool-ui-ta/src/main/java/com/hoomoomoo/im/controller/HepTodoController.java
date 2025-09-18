@@ -680,6 +680,7 @@ public class HepTodoController extends BaseController implements Initializable {
             query.setDisable(false);
             queryCondition.setDisable(false);
             reset.setDisable(false);
+            query.requestFocus();
         }
     }
 
@@ -1848,7 +1849,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 if (sortCodeCache.containsKey(cacheKey)) {
                     item.setSortCode(sortCodeCache.get(cacheKey));
                 } else {
-                    String sortCode = hepTaskDto.getMinCompleteBySort() + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskLevel();
+                    String minCompleteBySort = hepTaskDto.getMinCompleteBySort();
+                    if (taskName.contains(DEV_COMMIT_TAG)) {
+                        minCompleteBySort = getValue(STR_8);
+                    }
+                    String sortCode = minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskLevel();
                     item.setSortCode(sortCode);
                     sortCodeCache.put(cacheKey, sortCode);
                 }
@@ -1882,6 +1887,8 @@ public class HepTodoController extends BaseController implements Initializable {
             return "1050-00-00";
         } else if (STR_7.equals(type)) {
             return "1060-00-00";
+        } else if (STR_8.equals(type)) {
+            return "1070-00-00";
         }
         return "9999-00-00";
     }
