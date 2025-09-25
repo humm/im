@@ -534,8 +534,10 @@ public class ScriptRepairSql {
         Iterator<String> flowIterator =  flow.keySet().iterator();
         while (flowIterator.hasNext()) {
             String subTransCode = flowIterator.next();
-            String subFlow = formatSql(flow.get(subTransCode), false, false);
-            subFlow = subFlow.replaceAll(ANNOTATION_NORMAL, STR_BLANK).trim();
+            String subFlow = formatSql(flow.get(subTransCode), false, true);
+            if (!subFlow.contains("tbworkflowsubtransext")) {
+                subFlow = subFlow.replaceAll(ANNOTATION_NORMAL, STR_BLANK).trim();
+            }
             res.add(subFlow);
         }
     }
