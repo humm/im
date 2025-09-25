@@ -680,7 +680,6 @@ public class HepTodoController extends BaseController implements Initializable {
             query.setDisable(false);
             queryCondition.setDisable(false);
             reset.setDisable(false);
-            query.requestFocus();
         }
     }
 

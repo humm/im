@@ -1097,6 +1097,9 @@ public class ScriptCompareSql {
                 if (itemLower.contains("delete")) {
                     continue;
                 }
+                if (itemLower.contains("tsys_menu_mapping")) {
+                    continue;
+                }
                 if (itemLower.contains("tsys_menu_std") || itemLower.contains("tsys_menu_ext") || itemLower.contains("tbfundgranttablestmp")) {
                     continue;
                 }
@@ -1132,6 +1135,9 @@ public class ScriptCompareSql {
                 if (itemLower.contains("delete")) {
                     continue;
                 }
+                if (itemLower.contains("tsys_menu_mapping")) {
+                    continue;
+                }
                 if (itemLower.contains("tsys_menu_std") || itemLower.contains("tsys_menu_ext") || itemLower.contains("tbfundgranttablestmp")) {
                     continue;
                 }
@@ -1160,6 +1166,9 @@ public class ScriptCompareSql {
             for (String item : content) {
                 String itemLower = item.toLowerCase();
                 if (itemLower.contains("delete")) {
+                    continue;
+                }
+                if (itemLower.contains("tsys_menu_mapping")) {
                     continue;
                 }
                 if (itemLower.contains("tsys_menu ") || itemLower.contains("tsys_menu_ext") || itemLower.contains("tbfundgranttablestmp")) {
@@ -1246,6 +1255,9 @@ public class ScriptCompareSql {
             for (String item : content) {
                 String itemLower = item.toLowerCase();
                 if (itemLower.contains("delete")) {
+                    continue;
+                }
+                if (itemLower.contains("tsys_subtrans_mapping")) {
                     continue;
                 }
                 if (itemLower.contains("tbfundgranttablestmp")
