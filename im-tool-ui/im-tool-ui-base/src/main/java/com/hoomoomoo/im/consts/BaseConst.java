@@ -74,7 +74,6 @@ public class BaseConst {
     public static final String KEY_DEMO = "demo10000";
     public static final String KEY_CLASSES = "classes";
     public static final String KEY_NOTICE = "notice";
-    public static final String KEY_VALUES = "values";
     public static final String KEY_COMMIT = "commit";
     public static final String KEY_CONF = "conf";
     public static final String KEY_CALL = "call";
@@ -179,6 +178,13 @@ public class BaseConst {
     public final static String KEY_TA6 = "TA6";
     public final static String KEY_LOG_PARENT_CODE = "xxx";
     public final static String KEY_LOG_MENU_CODE = "ifmCQsglAutoClearLog";
+    public final static String KEY_INSERT_INTO = "insert into";
+    public final static String KEY_VALUES = "values";
+    public final static String KEY_TB_FUND_API_COMPONENT = "tbfundapicomponent";
+    public final static String KEY_TB_FUND_API_TAB = "tbfundapitab";
+    public final static String KEY_Y = "Y";
+    public final static String KEY_N = "N";
+    public final static String KEY_ADD = "add";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
@@ -248,6 +254,8 @@ public class BaseConst {
 
     public static final String NAME_TASK_DEV_COMPLETE = "分支已完成";
     public static final String NAME_TASK_NOT_COMPLETE = "未完成";
+
+    public static final String NAME_DESC_BEGIN_VALID_DATE = "特殊功能使用字段, 默认情况下无需传该字段";
 
     public final static String STR_RIGHT_FACING= " --> ";
     public static final String NAME_MENU_COPY = "复制" + STR_RIGHT_FACING + "提交描述";
@@ -400,8 +408,8 @@ public class BaseConst {
     public static final String PATH_DEFINE_TASK_LEVEL_STAT = "/extend/task/taskLevel.stat";
     public static final String PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT = "/extend/task/taskLevelError.stat";
     public static final String PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT = "/extend/task/taskLevelOnlySelf.stat";
-    public static final String FILE_CHANGE_MENU = "/extend/changeFunction/menu/changeMenu.sql";
-    public static final String FILE_CHANGE_MODE = "/extend/changeFunction/mode/changeMode.sql";
+    public static final String FILE_CHANGE_MENU = "/extend/change/menu/changeMenu.sql";
+    public static final String FILE_CHANGE_MODE = "/extend/change/mode/changeMode.sql";
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
     public static final String PATH_SYNC_TASK_STAT = "/task";
     public static final String PATH_SYNC_VERSION_STAT = "/version";

@@ -1018,7 +1018,7 @@ public class ScriptCompareSql {
 
     private static String getMenuDetail(int len, String item) throws Exception {
         String res = STR_BLANK;
-        item = ScriptSqlUtils.handleMenu(item);
+        item = ScriptSqlUtils.handleSqlForValues(item);
         if (item != null) {
             String[] value = ScriptUpdateSql.handleValue(len, item.substring(item.indexOf("(") + 1, item.lastIndexOf(")")).split(","));
             for (String ele : value) {

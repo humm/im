@@ -305,6 +305,10 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean queryUpdateTaskFileByCondition;
 
+    private String changeToolParamRealtimeSetPath;
+
+    private String changeToolBaseDictPath;
+
     public AppConfigDto() {
         initTooltip();
         this.execute = false;

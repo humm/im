@@ -499,6 +499,9 @@ public class InitConfigUtils {
         keys.put("file.sync.source", null);
         keys.put("file.sync.target", null);
 
+        keys.put("change.tool.base.dict.path", null);
+        keys.put("change.tool.paramRealtimeSet.path", null);
+
     }
 
     /**

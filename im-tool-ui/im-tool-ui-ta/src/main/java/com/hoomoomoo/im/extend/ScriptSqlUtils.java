@@ -72,7 +72,7 @@ public class ScriptSqlUtils {
         return sql.substring(sql.indexOf("(") + 1, sql.lastIndexOf(")")).split(",");
     }
 
-    public static String handleMenu(String item) {
+    public static String handleSqlForValues(String item) {
         if (item.contains("values") || item.contains("VALUES")) {
             if (item.split("values").length > 1) {
                 return item.split("values")[1];
@@ -81,6 +81,10 @@ public class ScriptSqlUtils {
             }
         }
         return null;
+    }
+
+    public static String getSqlFieldValue(String value) {
+        return value.replaceAll(STR_QUOTES_SINGLE, STR_BLANK).trim();
     }
 
     public static String getMenuCode(String item) {
@@ -97,7 +101,7 @@ public class ScriptSqlUtils {
 
     public static String getSubTransCodeByWhole(String item) {
         String transCode = null;
-        item = handleMenu(item);
+        item = handleSqlForValues(item);
         if (item != null) {
             String[] menuCodeInfo = item.split(",");
             transCode = menuCodeInfo[0];
@@ -142,7 +146,7 @@ public class ScriptSqlUtils {
 
     public static String getMenuElement(String ele, int index) {
         String menu = null;
-        String item = handleMenu(ele);
+        String item = handleSqlForValues(ele);
         try {
             if (item != null) {
                 String[] menuCodeInfo = item.split(",");
@@ -159,7 +163,7 @@ public class ScriptSqlUtils {
 
     public static String getMenuReserve(String item) {
         String menuReserve = STR_BLANK;
-        item = handleMenu(item);
+        item = handleSqlForValues(item);
         if (item != null) {
             String[] menuCodeInfo = item.split(",");
             if (menuCodeInfo.length >= 17) {
@@ -201,7 +205,7 @@ public class ScriptSqlUtils {
 
     public static String getTransCodeByWhole(String item) {
         String transCode = null;
-        item = handleMenu(item);
+        item = handleSqlForValues(item);
         if (item != null) {
             String[] menuCodeInfo = item.split(",");
             transCode = menuCodeInfo[0];
@@ -214,7 +218,7 @@ public class ScriptSqlUtils {
 
     public static String getSubTransNameByWhole(String item) {
         String transName = null;
-        item = handleMenu(item);
+        item = handleSqlForValues(item);
         if (item != null) {
             String[] menuCodeInfo = item.split(",");
             transName = menuCodeInfo[2];
@@ -227,7 +231,7 @@ public class ScriptSqlUtils {
 
     public static String getSubTransOpDirByWhole(String item) {
         String transName = null;
-        item = handleMenu(item);
+        item = handleSqlForValues(item);
         if (item != null) {
             String[] menuCodeInfo = item.split(",");
             transName = menuCodeInfo[2];

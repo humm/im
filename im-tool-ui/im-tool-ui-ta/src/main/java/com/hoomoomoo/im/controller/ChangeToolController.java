@@ -1,8 +1,10 @@
 package com.hoomoomoo.im.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
-import com.hoomoomoo.im.dto.AppConfigDto;
+import com.hoomoomoo.im.dto.*;
 import com.hoomoomoo.im.extend.ScriptSqlUtils;
 import com.hoomoomoo.im.task.ChangeFunctionTask;
 import com.hoomoomoo.im.task.ChangeFunctionTaskParam;
@@ -14,17 +16,25 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.streaming.SXSSFCell;
+import org.apache.poi.xssf.streaming.SXSSFRow;
+import org.apache.poi.xssf.streaming.SXSSFSheet;
+import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CHANGE_FUNCTION_TOOL;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CHANGE_TOOL;
 
 /**
  * @author humm23693
@@ -53,9 +63,22 @@ public class ChangeToolController implements Initializable {
     private TextField code;
 
     @FXML
+    private TextField baseDictPath;
+
+    @FXML
+    private TextField paramRealtimeSetPath;
+
+    @FXML
+    private Button executeRealtimeBtn;
+
+    @FXML
     private ComboBox dbNum;
 
     private static String TA_CODE = "00";
+
+    Map<String, Map<String, String>> configDictValue = new LinkedHashMap<>();
+    Map<String, String> configDictName = new LinkedHashMap<>();
+    Set<String> beginValidDateSpecial = new HashSet<>();
 
     /**
      * hy 行业 0:参数提示 1:基金行业 2:证券行业 3:个性化行业
@@ -79,16 +102,21 @@ public class ChangeToolController implements Initializable {
     Map<String, Boolean[]> menuModeValue = new LinkedHashMap<>();
     List<RadioButton> menuButtonList = new ArrayList<>();
 
+    @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        String msg = String.format(BaseConst.MSG_USE, CHANGE_FUNCTION_TOOL.getName());
+        String msg = String.format(BaseConst.MSG_USE, CHANGE_TOOL.getName());
         LoggerUtils.info(msg);
-        LoggerUtils.writeLogInfo(CHANGE_FUNCTION_TOOL.getCode(), new Date(), new ArrayList<String>(){{
+        LoggerUtils.writeLogInfo(CHANGE_TOOL.getCode(), new Date(), new ArrayList<String>(){{
             add(msg);
         }});
         initAutoMode();
         initMenuMode();
         initDb();
+
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        OutputUtils.info(baseDictPath, appConfigDto.getChangeToolBaseDictPath());
+        OutputUtils.info(paramRealtimeSetPath, appConfigDto.getChangeToolParamRealtimeSetPath());
     }
 
     private void initAutoMode() {
@@ -538,5 +566,535 @@ public class ChangeToolController implements Initializable {
             FileUtils.writeFileAppend(resFilePath, res);
         }
         executeEnd(resFilePath);
+    }
+
+    @FXML
+    void executeRealtime(ActionEvent event) {
+        OutputUtils.clearLog(logs);
+        try {
+            String dictPath = baseDictPath.getText();
+            if (StringUtils.isBlank(dictPath)) {
+                OutputUtils.info(logs, "请设置字典全量脚本文件");
+                return;
+            }
+            if (new File(dictPath).isDirectory()) {
+                OutputUtils.info(logs, "字典全量脚本文件必须为文件");
+                return;
+            }
+            String paramPath = paramRealtimeSetPath.getText();
+            if (StringUtils.isBlank(paramPath)) {
+                OutputUtils.info(logs, "参数电子化目录位置");
+                return;
+            }
+            if (!new File(paramPath).isDirectory()) {
+                OutputUtils.info(logs, "参数电子化目录必须为文件夹");
+                return;
+            }
+            TaskUtils.execute(new ChangeFunctionTask(new ChangeFunctionTaskParam(this, STR_3, dictPath, paramPath)));
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.infoContainBr(logs, e.getMessage());
+        }
+    }
+
+    public void executeRealtimeExe(String dictPath, String paramPath) {
+        try {
+            executeRealtimeBtn.setDisable(true);
+            OutputUtils.infoContainBr(logs, "初始化字典信息 开始");
+            initConfigInfo();
+            initBaseDict(dictPath);
+            initExtDict(paramPath);
+            OutputUtils.infoContainBr(logs, "初始化字典信息 结束");
+            OutputUtils.infoContainBr(logs, "生成文件 开始");
+            buildFile(paramPath);
+            OutputUtils.infoContainBr(logs, "生成文件 结束");
+        } catch (Exception e) {
+            LoggerUtils.info(e);
+            OutputUtils.infoContainBr(logs, e.getMessage());
+        } finally {
+            executeRealtimeBtn.setDisable(false);
+        }
+    }
+
+    private void initConfigInfo() {
+        beginValidDateSpecial.add("fundFeeRateInfo");
+        beginValidDateSpecial.add("fundProfitProjSet");
+        beginValidDateSpecial.add("fundProfitZoneSet");
+    }
+
+    private void initExtDict(String path) throws IOException {
+        File file = new File(path);
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File item : files) {
+                initExtDict(item.getAbsolutePath());
+            }
+        } else {
+            initBaseDict(path);
+        }
+    }
+
+    private void initBaseDict(String path) throws IOException {
+        String dict = FileUtils.readNormalFileToString(path);
+        dict = CommonUtils.formatStrToSingleSpace(dict);
+        if (StringUtils.isNotBlank(dict)) {
+            String[] element = dict.split(STR_SEMICOLON);
+            for (String ele : element) {
+                String eleLower = ele.toLowerCase();
+                if (eleLower.contains(KEY_INSERT_INTO) && eleLower.contains(KEY_VALUES)) {
+                    String eleAfter = ScriptSqlUtils.handleSqlForValues(ele);
+                    if (eleAfter != null) {
+                        String[] dictInfo = eleAfter.split("',");
+                        if (dictInfo.length < 4) {
+                            // LoggerUtils.info("数据字典格式化获取数据错误: " + eleAfter);
+                            continue;
+                        }
+                        String dictCode = ScriptSqlUtils.getSqlFieldValue(dictInfo[0].replace(STR_BRACKETS_LEFT, STR_BLANK));
+                        String dictName = ScriptSqlUtils.getSqlFieldValue(dictInfo[1]);
+                        String dictKey = ScriptSqlUtils.getSqlFieldValue(dictInfo[2]);
+                        String dictPrompt = ScriptSqlUtils.getSqlFieldValue(dictInfo[3]);
+                        if (configDictValue.containsKey(dictCode)) {
+                            Map<String, String> dictMap = configDictValue.get(dictCode);
+                            if (!dictMap.containsKey(dictKey)) {
+                                dictMap.put(dictKey, dictPrompt);
+                            }
+                        } else {
+                            Map<String, String> dictMap = new LinkedHashMap<>();
+                            dictMap.put(dictKey, dictPrompt);
+                            configDictValue.put(dictCode, dictMap);
+                            configDictName.put(dictCode, dictName);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private ParamRealtimeDto initTabComponent(String filePath) throws IOException {
+        String content = FileUtils.readNormalFileToStringSkipAnnotation(filePath);
+        content = CommonUtils.formatStrToSingleSpace(content);
+        ParamRealtimeDto paramRealtimeDto = new ParamRealtimeDto();
+        List<ParamRealtimeApiTabDto> paramRealtimeApiTabList = new ArrayList<>();
+        List<ParamRealtimeApiComponentDto> paramRealtimeApiComponentDtoList = new ArrayList<>();
+        paramRealtimeDto.setParamRealtimeApiTabList(paramRealtimeApiTabList);
+        paramRealtimeDto.setParamRealtimeApiComponentDtoList(paramRealtimeApiComponentDtoList);
+        if (StringUtils.isNotBlank(content)) {
+            String[] element = content.split("\\);");
+            for (String ele : element) {
+                String eleLower = ele.toLowerCase();
+                if (eleLower.contains(KEY_INSERT_INTO) && eleLower.contains(KEY_VALUES)) {
+                    String eleAfter = ScriptSqlUtils.handleSqlForValues(ele);
+                    if (eleAfter != null) {
+                        String[] sqlInfo = eleAfter.split("',");
+                        if (eleLower.contains(KEY_TB_FUND_API_TAB)) {
+                            if (sqlInfo.length < 6) {
+                                LoggerUtils.info("格式化获取数据错误: " + ele);
+                                continue;
+                            }
+                            ParamRealtimeApiTabDto paramRealtimeApiTab = new ParamRealtimeApiTabDto();
+                            paramRealtimeApiTabList.add(paramRealtimeApiTab);
+                            paramRealtimeApiTab.setMenuCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[0].replace(STR_BRACKETS_LEFT, STR_BLANK)));
+                            paramRealtimeApiTab.setTabCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[1]));
+                            paramRealtimeApiTab.setTabName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[2]));
+                            paramRealtimeApiTab.setServiceCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[3]));
+                            paramRealtimeApiTab.setOnSubmit(ScriptSqlUtils.getSqlFieldValue(sqlInfo[4]));
+                            paramRealtimeApiTab.setCheckName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
+                            if (sqlInfo.length == 9) {
+                                paramRealtimeApiTab.setFieldName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[6]));
+                                paramRealtimeApiTab.setDstScope(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7]));
+                                paramRealtimeApiTab.setTableCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[8].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
+                            }
+                        } else if (eleLower.contains(KEY_TB_FUND_API_COMPONENT)) {
+                            if (sqlInfo.length < 6) {
+                                LoggerUtils.info("格式化获取数据错误: " + ele);
+                                continue;
+                            }
+                            ParamRealtimeApiComponentDto paramRealtimeApiComponentDto = new ParamRealtimeApiComponentDto();
+                            paramRealtimeApiComponentDtoList.add(paramRealtimeApiComponentDto);
+                            paramRealtimeApiComponentDto.setTabCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[0].replace(STR_BRACKETS_LEFT, STR_BLANK)));
+                            paramRealtimeApiComponentDto.setFieldCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[1]));
+                            paramRealtimeApiComponentDto.setFieldName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[2]));
+                            paramRealtimeApiComponentDto.setTransType(ScriptSqlUtils.getSqlFieldValue(sqlInfo[3]));
+                            paramRealtimeApiComponentDto.setDictKey(ScriptSqlUtils.getSqlFieldValue(sqlInfo[4]));
+                            paramRealtimeApiComponentDto.setCheckRules(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
+                            if (sqlInfo.length == 8) {
+                                paramRealtimeApiComponentDto.setOrderField(ScriptSqlUtils.getSqlFieldValue(sqlInfo[6]));
+                                paramRealtimeApiComponentDto.setDefaultValue(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return paramRealtimeDto;
+    }
+
+    private void buildFile(String path) throws Exception {
+        File file = new File(path);
+        if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            for (File item : files) {
+                String absolutePath = item.getAbsolutePath();
+                if (absolutePath.contains("paramRealtimeSet")) {
+                    buildFile(absolutePath);
+                }
+            }
+        } else {
+            if (!path.endsWith(".sql")) {
+                return;
+            }
+            OutputUtils.infoContainBr(logs, "处理文件: " +  path);
+            buildExcel(path);
+        }
+    }
+
+    private void buildExcel(String filePath) throws Exception {
+        SXSSFWorkbook workbook = new SXSSFWorkbook();
+        ParamRealtimeDto paramRealtimeDto = initTabComponent(filePath);
+        if (CollectionUtils.isEmpty(paramRealtimeDto.getParamRealtimeApiTabList())) {
+            return;
+        }
+        buildInterfaceDesc(workbook);
+        buildRequestDesc(workbook, paramRealtimeDto);
+        buildComponentDesc(workbook, paramRealtimeDto);
+        buildDictDesc(workbook, paramRealtimeDto);
+        buildFile(workbook, paramRealtimeDto, filePath);
+    }
+
+    private void buildFile(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto, String filePath) throws IOException {
+        String excelFilePath = filePath.replace(".sql", ".xlsx");
+        String jsonFilePath = filePath.replace(".sql", ".json");
+        FileUtils.writeFile(jsonFilePath, paramRealtimeDto.getRequestContent());
+        FileOutputStream fileOutputStream = new FileOutputStream(excelFilePath);
+        workbook.write(fileOutputStream);
+        workbook.dispose();
+    }
+
+    private void buildComponentDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto) throws Exception {
+        List<ParamRealtimeApiComponentDto> paramRealtimeApiComponentDtoList = paramRealtimeDto.getParamRealtimeApiComponentDtoList();
+        List<ParamRealtimeApiTabDto> paramRealtimeApiTabDtoList = paramRealtimeDto.getParamRealtimeApiTabList();
+        for (ParamRealtimeApiTabDto paramRealtimeApiTabDto : paramRealtimeApiTabDtoList) {
+            String sheetName = "字段说明";
+            if (paramRealtimeApiTabDtoList.size() != 1) {
+                sheetName = paramRealtimeApiTabDto.getTabName();
+            }
+            String tabCode = paramRealtimeApiTabDto.getTabCode();
+            SXSSFSheet componentDesc = workbook.createSheet(sheetName);
+            CellStyle titleCellStyle = ExcelCommonUtils.getTitleCellStyle(workbook);
+
+            SXSSFRow rowTitle = componentDesc.createRow(0);
+            buildRowCell(rowTitle, titleCellStyle, 0, "字段代码");
+            buildRowCell(rowTitle, titleCellStyle, 1, "字段描述");
+            buildRowCell(rowTitle, titleCellStyle, 2, "数据字典");
+            buildRowCell(rowTitle, titleCellStyle, 3, "默认值");
+            buildRowCell(rowTitle, titleCellStyle, 4, "必填");
+            buildRowCell(rowTitle, titleCellStyle, 5, "校验规则");
+
+            componentDesc.setColumnWidth(0, 35 * 256);
+            componentDesc.setColumnWidth(1, 35 * 256);
+            componentDesc.setColumnWidth(2, 20 * 256);
+            componentDesc.setColumnWidth(3, 20 * 256);
+            componentDesc.setColumnWidth(4, 10 * 256);
+            componentDesc.setColumnWidth(5, 200 * 256);
+
+            CellStyle centerCellStyle = ExcelCommonUtils.getCenterCellStyle(workbook);
+            CellStyle wrapTextCellStyle = ExcelCommonUtils.getWrapTextCellStyle(workbook);
+
+            int rowIndex = 0;
+            for (ParamRealtimeApiComponentDto item : paramRealtimeApiComponentDtoList) {
+                boolean needAdd = StringUtils.isNotBlank(paramRealtimeApiTabDto.getFieldName()) && !beginValidDateSpecial.contains(paramRealtimeApiTabDto.getMenuCode());
+                if (StringUtils.equals(paramRealtimeApiTabDto.getFieldName(), item.getFieldCode()) && needAdd) {
+                    continue;
+                }
+                if (!StringUtils.equals(tabCode, item.getTabCode())) {
+                    continue;
+                }
+                SXSSFRow row = componentDesc.createRow(++rowIndex);
+                buildRowCell(row, null, 0, item.getFieldCode());
+                buildRowCell(row, null, 1, item.getFieldName());
+                if (StringUtils.equals(STR_0, item.getTransType()) && StringUtils.isNotBlank(item.getDictKey())) {
+                    buildRowCell(row, null, 2, item.getDictKey());
+                }
+                if (StringUtils.isNotBlank(item.getDefaultValue())) {
+                    buildRowCell(row, null, 3, item.getDefaultValue());
+                }
+                String checkRules = item.getCheckRules();
+                String required = KEY_N;
+                if (StringUtils.isNotBlank(checkRules.trim())) {
+                    StringBuilder rule = new StringBuilder();
+                    checkRules = checkRules.replaceAll("\\\\", STR_BLANK);
+                    JSONArray rules;
+                    try {
+                        rules = JSON.parseArray(checkRules);
+                    } catch (Exception e) {
+                        OutputUtils.infoContainBr(logs, checkRules);
+                        throw new Exception(e);
+                    }
+                    Iterator iterator = rules.iterator();
+                    while (iterator.hasNext()) {
+                        String ele = iterator.next().toString();
+                        if (ele.contains("\"required\"") && ele.contains("true")) {
+                            required = KEY_Y;
+                        } else if (ele.contains("\"checkIsRequired\"")) {
+                            required = KEY_Y;
+                        }
+                        rule.append(ele).append(STR_NEXT_LINE);
+                    }
+                    checkRules = rule.toString();
+                    if (StringUtils.isNotBlank(checkRules)) {
+                        checkRules = checkRules.substring(0, checkRules.length() - 1);
+                        buildRowCell(row, wrapTextCellStyle, 5, checkRules);
+                    }
+                }
+                buildRowCell(row, centerCellStyle, 4, required);
+                if (needAdd) {
+                    buildBeginValidDateLine(componentDesc, rowIndex, wrapTextCellStyle, centerCellStyle, paramRealtimeApiTabDto);
+                }
+            }
+        }
+    }
+
+    private void buildBeginValidDateLine(SXSSFSheet componentDesc, int rowIndex, CellStyle wrapTextCellStyle, CellStyle centerCellStyle, ParamRealtimeApiTabDto paramRealtimeApiTabDto) {
+        SXSSFRow row = componentDesc.createRow(++rowIndex);
+        buildRowCell(row, null, 0, paramRealtimeApiTabDto.getFieldName());
+        buildRowCell(row, null, 1, "有效起始日期");
+        buildRowCell(row, null, 2, NAME_DESC_BEGIN_VALID_DATE);
+        buildRowCell(row, centerCellStyle, 4, KEY_Y);
+        buildRowCell(row, wrapTextCellStyle, 5,"{\"required\":true,\"message\":\"有效起始日期必填\"}\n{\"validator\":\"isDate\",\"message\":\"日期格式不正确\"}");
+    }
+
+    private void buildDictDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto) {
+        List<ParamRealtimeApiComponentDto> paramRealtimeApiComponentDtoList = paramRealtimeDto.getParamRealtimeApiComponentDtoList();
+        Set<String> dict = new LinkedHashSet<>();
+        for (ParamRealtimeApiComponentDto paramRealtimeApiComponentDto : paramRealtimeApiComponentDtoList) {
+            if (StringUtils.equals(STR_0, paramRealtimeApiComponentDto.getTransType())) {
+                dict.add(paramRealtimeApiComponentDto.getDictKey());
+            }
+        }
+        SXSSFSheet dictDesc = workbook.createSheet("数据字典");
+        CellStyle titleCellStyle = ExcelCommonUtils.getTitleCellStyle(workbook);
+
+        SXSSFRow rowTitle = dictDesc.createRow(0);
+        buildRowCell(rowTitle, titleCellStyle, 0, "字典项");
+        buildRowCell(rowTitle, titleCellStyle, 1, "字典描述");
+        buildRowCell(rowTitle, titleCellStyle, 2, "选项值");
+        buildRowCell(rowTitle, titleCellStyle, 3, "选项描述");
+
+        dictDesc.setColumnWidth(0, 20 * 256);
+        dictDesc.setColumnWidth(1, 35 * 256);
+        dictDesc.setColumnWidth(2, 20 * 256);
+        dictDesc.setColumnWidth(3, 80 * 256);
+
+        int rowIndex = 0;
+        for (String item : dict) {
+            if (configDictValue.containsKey(item)) {
+                Map<String, String> ele = configDictValue.get(item);
+                for (Map.Entry<String, String> entry : ele.entrySet()) {
+                    SXSSFRow row = dictDesc.createRow(++rowIndex);
+                    buildRowCell(row, null, 0, item);
+                    buildRowCell(row, null, 1, configDictName.get(item));
+                    buildRowCell(row, null, 2, entry.getKey());
+                    buildRowCell(row, null, 3, entry.getValue());
+                }
+            }
+        }
+    }
+
+    private void buildRequestDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto) throws IOException {
+        List<ParamRealtimeApiTabDto> paramRealtimeApiTabList = paramRealtimeDto.getParamRealtimeApiTabList();
+        List<ParamRealtimeApiComponentDto> paramRealtimeApiComponentDtoList = paramRealtimeDto.getParamRealtimeApiComponentDtoList();
+        if (CollectionUtils.isNotEmpty(paramRealtimeApiTabList) && CollectionUtils.isNotEmpty(paramRealtimeApiComponentDtoList)) {
+            ParamRealtimeApiTabDto paramRealtimeApiTab = paramRealtimeApiTabList.get(0);
+            String sheetName = paramRealtimeApiTab.getTabName();
+            boolean product = StringUtils.equals("fundProductInfoSet", paramRealtimeApiTab.getMenuCode());
+            if (product) {
+                sheetName = "基金信息";
+            }
+            SXSSFSheet requestDesc = workbook.createSheet(sheetName + "接口");
+            CellStyle titleCellStyle = ExcelCommonUtils.getTitleCellStyle(workbook);
+            SXSSFRow rowTitle = requestDesc.createRow(0);
+            buildRowCell(rowTitle, titleCellStyle, 0, "字段");
+            buildRowCell(rowTitle, titleCellStyle, 1, "描述");
+            buildRowCell(rowTitle, titleCellStyle, 2, "备注");
+            buildRowCell(rowTitle, titleCellStyle, 3, "必填");
+            buildRowCell(rowTitle, titleCellStyle, 4, "类型");
+            buildRowCell(rowTitle, titleCellStyle, 5, "长度");
+            buildRowCell(rowTitle, titleCellStyle, 6, "格式");
+            requestDesc.setColumnWidth(0, 20 * 256);
+            requestDesc.setColumnWidth(1, 25 * 256);
+            requestDesc.setColumnWidth(2, 90 * 256);
+
+            List<ParamRealtimeRequestDescDto> paramRealtimeRequestDescList = new ArrayList<>();
+            paramRealtimeRequestDescList.add(
+                    new ParamRealtimeRequestDescDto("function", "接口名称", paramRealtimeApiTab.getMenuCode(), KEY_Y, "C", STR_BLANK, STR_BLANK)
+            );
+            paramRealtimeRequestDescList.add(
+                    new ParamRealtimeRequestDescDto("action", "操作类型", "add:新增; edit:修改", KEY_Y, "C", STR_BLANK, STR_BLANK)
+            );
+            paramRealtimeRequestDescList.add(
+                    new ParamRealtimeRequestDescDto("username", "用户名", "接口用户", KEY_Y, "C", STR_BLANK, STR_BLANK)
+            );
+            paramRealtimeRequestDescList.add(
+                    new ParamRealtimeRequestDescDto("sign", "签名", STR_BLANK, KEY_Y, "C", STR_BLANK, STR_BLANK)
+            );
+            paramRealtimeRequestDescList.add(
+                    new ParamRealtimeRequestDescDto("effectiveDate", "生效日期", STR_BLANK, KEY_N, "C", STR_BLANK, STR_BLANK)
+            );
+            paramRealtimeRequestDescList.add(
+                    new ParamRealtimeRequestDescDto("isOverWrite", "是否覆盖", "1:是; 0:否", KEY_Y, "C", STR_BLANK, STR_BLANK)
+            );
+            paramRealtimeRequestDescList.add(
+                    new ParamRealtimeRequestDescDto("data", "请求数据", "data中为参数的相关信息, 其为json格式, 主要数据由各个tab页中的数据组成", KEY_Y, "JSON", STR_BLANK, STR_BLANK)
+            );
+            CellStyle centerCellStyle = ExcelCommonUtils.getCenterCellStyle(workbook);
+            CellStyle wrapTextCellStyle = ExcelCommonUtils.getWrapTextCellStyle(workbook);
+            for (int i=0; i<paramRealtimeRequestDescList.size(); i++) {
+                SXSSFRow row = requestDesc.createRow(i + 1);
+                ParamRealtimeRequestDescDto paramRealtimeInterfaceDesc = paramRealtimeRequestDescList.get(i);
+                buildRowCell(row, null, 0, paramRealtimeInterfaceDesc.getCode());
+                buildRowCell(row, null, 1, paramRealtimeInterfaceDesc.getDesc());
+                buildRowCell(row, null, 2, paramRealtimeInterfaceDesc.getRemark());
+                buildRowCell(row, centerCellStyle, 3, paramRealtimeInterfaceDesc.getRequire());
+                buildRowCell(row, centerCellStyle, 4, paramRealtimeInterfaceDesc.getType());
+                buildRowCell(row, null, 5, paramRealtimeInterfaceDesc.getLength());
+                buildRowCell(row, null, 6, paramRealtimeInterfaceDesc.getFormat());
+            }
+
+            String beginValidDate = paramRealtimeApiTab.getFieldName();
+            int currentLine = paramRealtimeRequestDescList.size() + 3;
+            SXSSFRow rowUnique = requestDesc.createRow(currentLine);
+            buildRowCell(rowUnique, titleCellStyle, 0, sheetName + "唯一性约束");
+            requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine,0,6));
+
+            for (ParamRealtimeApiTabDto item : paramRealtimeApiTabList) {
+                String desc = "主键字段: ";
+                if (product) {
+                    desc = item.getTabName() + desc;
+                }
+                currentLine++;
+                SXSSFRow rowUniqueDesc = requestDesc.createRow(currentLine);
+                buildRowCell(rowUniqueDesc, null, 0, desc + item.getCheckName());
+                requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine,0,6));
+                if (!product) {
+                    break;
+                }
+            }
+
+            boolean needAdd = StringUtils.isNotBlank(paramRealtimeApiTab.getFieldName()) && !beginValidDateSpecial.contains(paramRealtimeApiTab.getMenuCode());
+
+            currentLine = currentLine + 3;
+            SXSSFRow rowContent = requestDesc.createRow(currentLine);
+            buildRowCell(rowContent, titleCellStyle, 0, "参考报文");
+            requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine,0,6));
+            currentLine++;
+            List<String> requestContent = new ArrayList<>();
+            requestContent.add("{");
+            requestContent.add("    \"function\": \"" + paramRealtimeApiTab.getMenuCode() + "\",");
+            requestContent.add("    \"action\": \"add\",");
+            requestContent.add("    \"username\": \"admin\",");
+            requestContent.add("    \"isOverWrite\": \"1\",");
+            requestContent.add("    \"effectiveDate\": \"20251010\",");
+            requestContent.add("    \"sign\": \"A20F83DADF6263CE5D8596F1F8C5DF37\",");
+            requestContent.add("    \"data\": {");
+            for (int j=0; j<paramRealtimeApiTabList.size(); j++) {
+                ParamRealtimeApiTabDto tab = paramRealtimeApiTabList.get(j);
+                requestContent.add("        \"" + tab.getTabCode() + "\": [");
+                requestContent.add("            {");
+                for (int i = 0; i< paramRealtimeApiComponentDtoList.size(); i++) {
+                    ParamRealtimeApiComponentDto item = paramRealtimeApiComponentDtoList.get(i);
+                    if (!StringUtils.equals(tab.getTabCode(), item.getTabCode())) {
+                        continue;
+                    }
+                    if (StringUtils.equals(beginValidDate, item.getFieldCode()) && needAdd) {
+                        continue;
+                    }
+                    String line = "\"" + item.getFieldCode() + "\"" + ": " + (StringUtils.isNotBlank(item.getDefaultValue()) ? "\"" + item.getDefaultValue() + "\"" : "\"\"");
+                    if (i != paramRealtimeApiComponentDtoList.size() - 1) {
+                        line += ",";
+                    }
+                    requestContent.add("                " + line);
+                }
+                if (needAdd) {
+                    int lastIndex = requestContent.size() - 1;
+                    String lastLine = requestContent.get(lastIndex);
+                    if (!lastLine.endsWith(STR_COMMA)) {
+                        lastLine += STR_COMMA;
+                    }
+                    lastLine += STR_NEXT_LINE + "                \"" + beginValidDate + "\": " + "\"20251010\"";
+                    lastLine += "    // " + NAME_DESC_BEGIN_VALID_DATE;
+                    requestContent.set(lastIndex, lastLine);
+                }
+                requestContent.add("            }");
+                if (j != paramRealtimeApiTabList.size() - 1) {
+                    requestContent.add("        ],");
+                } else {
+                    requestContent.add("        ]");
+                }
+                if (!product) {
+                    break;
+                }
+            }
+            requestContent.add("    }");
+            requestContent.add("}");
+            paramRealtimeDto.setRequestContent(requestContent.stream().collect(Collectors.joining(STR_NEXT_LINE)));
+            SXSSFRow row = requestDesc.createRow(currentLine);
+            buildRowCell(row, wrapTextCellStyle, 0, paramRealtimeDto.getRequestContent());
+            requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine + requestContent.size() - 1, 0, 6));
+        }
+    }
+
+    private void buildInterfaceDesc(SXSSFWorkbook workbook) {
+        SXSSFSheet interfaceDesc = workbook.createSheet("接口约定");
+        CellStyle titleCellStyle = ExcelCommonUtils.getTitleCellStyle(workbook);
+        interfaceDesc.setColumnWidth(0, 15 * 256);
+        interfaceDesc.setColumnWidth(1, 10 * 256);
+        interfaceDesc.setColumnWidth(2, 100 * 256);
+
+        SXSSFRow rowTitle = interfaceDesc.createRow(0);
+        buildRowCell(rowTitle, titleCellStyle, 0, "约定名称");
+        buildRowCell(rowTitle, titleCellStyle, 1, "编号");
+        buildRowCell(rowTitle, titleCellStyle, 2, "约定内容");
+
+        List<ParamRealtimeInterfaceDescDto> paramRealtimeInterfaceDescList = new ArrayList<>();
+        paramRealtimeInterfaceDescList.add(new ParamRealtimeInterfaceDescDto("接口约定", "1", "请求方式必须是post"));
+        paramRealtimeInterfaceDescList.add(new ParamRealtimeInterfaceDescDto(STR_BLANK, "2", "字符编码使用utf-8"));
+        paramRealtimeInterfaceDescList.add(new ParamRealtimeInterfaceDescDto(STR_BLANK, "3",
+                "请求头部必须增加属性\n" +
+                "    Content-Type=application/json\n" +
+                "    X-Requested-With=XMLHttpRequest"));
+        paramRealtimeInterfaceDescList.add(new ParamRealtimeInterfaceDescDto(STR_BLANK, "4",
+                "请求内容必须是json格式的内容\n" +
+                "    java示例:\n" +
+                "        DefaultHttpClient  httpClient = new DefaultHttpClient();\n" +
+                "        HttpPost method = new HttpPost();\n" +
+                "        method.setHeader(\"Content-type\", \"application/json; charset=utf-8\");\n" +
+                "        method.setHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
+                "        String jsonStr = \"{}\";\n" +
+                "        String uri = \"\";\n" +
+                "        StringEntity entity = new StringEntity(jsonStr, \"utf-8\");\n" +
+                "        entity.setContentEncoding(\"UTF-8\");\n" +
+                "        entity.setContentType(\"application/json\");\n" +
+                "        method.setURI(URI.create(uri));\n" +
+                "        method.setEntity(entity);\n" +
+                "        HttpResponse response = httpClient.execute(method);"));
+        CellStyle centerCellStyle = ExcelCommonUtils.getCenterCellStyle(workbook);
+        CellStyle wrapTextCellStyle = ExcelCommonUtils.getWrapTextCellStyle(workbook);
+        for (int i=0; i<paramRealtimeInterfaceDescList.size(); i++) {
+            SXSSFRow row = interfaceDesc.createRow(i + 1);
+            ParamRealtimeInterfaceDescDto paramRealtimeInterfaceDesc = paramRealtimeInterfaceDescList.get(i);
+            buildRowCell(row, centerCellStyle, 0, paramRealtimeInterfaceDesc.getAgreeName());
+            buildRowCell(row, centerCellStyle, 1, paramRealtimeInterfaceDesc.getAgreeIndex());
+            buildRowCell(row, wrapTextCellStyle, 2, paramRealtimeInterfaceDesc.getAgreeContent());
+        }
+
+        interfaceDesc.addMergedRegion(new CellRangeAddress(1,4,0,0));
+    }
+
+    private void buildRowCell(SXSSFRow row, CellStyle cellStyle, int rowIndex, String rowName) {
+        SXSSFCell cell = row.createCell(rowIndex);
+        if (cellStyle != null) {
+            cell.setCellStyle(cellStyle);
+        }
+        cell.setCellValue(rowName);
     }
 }

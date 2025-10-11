@@ -2,8 +2,7 @@ package com.hoomoomoo.im.task;
 
 import java.util.concurrent.Callable;
 
-import static com.hoomoomoo.im.consts.BaseConst.STR_1;
-import static com.hoomoomoo.im.consts.BaseConst.STR_2;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 public class ChangeFunctionTask implements Callable<CopyCodeTaskParam> {
 
@@ -23,6 +22,9 @@ public class ChangeFunctionTask implements Callable<CopyCodeTaskParam> {
                 break;
             case STR_2:
                 changeFunctionTaskParam.getChangeToolController().buildMenuModeSql(taskType);
+                break;
+            case STR_3:
+                changeFunctionTaskParam.getChangeToolController().executeRealtimeExe(changeFunctionTaskParam.getDictPath(), changeFunctionTaskParam.getParamPath());
                 break;
             default:
                 new Exception("未匹配执行方法，请检查");
