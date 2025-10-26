@@ -89,7 +89,7 @@
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="598.0">
                     <children>
-                        <SplitPane dividerPositions="0.25661245203997986" layoutX="181.0" layoutY="28.0"
+                        <SplitPane dividerPositions="0.2" layoutX="181.0" layoutY="28.0"
                                    orientation="VERTICAL" prefHeight="256.5818092838007" prefWidth="598.6908883288683"
                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

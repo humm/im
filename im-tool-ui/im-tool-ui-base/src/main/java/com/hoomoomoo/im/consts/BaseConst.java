@@ -467,7 +467,11 @@ public class BaseConst {
 
     public static final String STYLE_CENTER = "-fx-alignment: center;";
     public static final String STYLE_BOLD_RED = "-fx-font-weight: bold; -fx-text-background-color: red;";
+    public static final String STYLE_BOLD_RED_FOR_BUTTON = "-fx-font-weight: bold; -fx-text-fill: red;";
+    public static final String STYLE_SELECTED_FOR_BUTTON = "-fx-font-weight: bold; -fx-text-fill: blue;";
     public static final String STYLE_BOLD = "-fx-font-weight: bold;";
+    public static final String STYLE_NORMAL_FOR_BUTTON = "-fx-font-weight: normal; -fx-text-fill: 0x000000ff;";
+    public static final String STYLE_CANCEL_FOR_BUTTON = "-fx-font-weight: normal; -fx-text-fill: 0x000000ff;";
     public static final String STYLE_NORMAL = "-fx-font-weight: normal;";
 
     public enum SQL_CHECK_TYPE {

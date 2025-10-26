@@ -131,6 +131,8 @@ public class OutputUtils {
         Platform.runLater(() -> {
             if (obj instanceof RadioButton) {
                 ((RadioButton) obj).setSelected(selected);
+            } else {
+                LoggerUtils.info("组件类型不匹配,不支持非【RadioButton】组件");
             }
         });
     }

@@ -36,6 +36,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -258,12 +259,6 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label waitMergerNum;
 
     @FXML
-    private Label checkScriptTips;
-
-    @FXML
-    private Label syncTaskTips;
-
-    @FXML
     private Label memoryTips;
 
     @FXML
@@ -306,16 +301,16 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label syncFrontVersionTips;
 
     @FXML
-    private RadioButton all;
+    private Button  all;
 
     @FXML
-    private RadioButton only;
+    private Button  only;
 
     @FXML
-    private RadioButton devCompleteHide;
+    private Button  devCompleteHide;
 
     @FXML
-    private RadioButton devCompleteShow;
+    private Button  devCompleteShow;
 
     private Pane mask;
 
@@ -335,6 +330,10 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private double defaultTaskNameWidth;
 
+    private String queryType = STR_BLANK;
+
+    Set<Button> queryButtonSet = new HashSet<>();
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
@@ -342,9 +341,15 @@ public class HepTodoController extends BaseController implements Initializable {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             initUserInfo(appConfigDto);
             initExtendUser(appConfigDto);
+            queryButtonSet.add(all);
+            queryButtonSet.add(only);
+            queryButtonSet.add(devCompleteShow);
+            queryButtonSet.add(devCompleteHide);
+            queryButtonSet.add(query);
             defaultDividerPositions = taskSplitPane.getDividerPositions()[0];
             defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
-            devCompleteHide.setSelected(true);
+            queryType = devCompleteHide.getText();
+            controlQueryButtonColor(devCompleteHide);
             controlComponent();
             if (isExtendUser()) {
                 controlComponentByExtendUser(false, false, false);
@@ -387,37 +392,29 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     void selectAll(ActionEvent event) throws Exception {
-        OutputUtils.selected(all, true);
-        OutputUtils.selected(only, false);
-        OutputUtils.selected(devCompleteHide, false);
-        OutputUtils.selected(devCompleteShow, false);
+        queryType = all.getText();
+        controlQueryButtonColor(all);
         executeQuery(event);
     }
 
     @FXML
     void selectOnly(ActionEvent event) throws Exception {
-        OutputUtils.selected(only, true);
-        OutputUtils.selected(all, false);
-        OutputUtils.selected(devCompleteHide, false);
-        OutputUtils.selected(devCompleteShow, false);
+        queryType = only.getText();
+        controlQueryButtonColor(only);
         executeQuery(event);
     }
 
     @FXML
     void selectDevCompleteHide(ActionEvent event) throws Exception {
-        OutputUtils.selected(devCompleteHide, true);
-        OutputUtils.selected(devCompleteShow, false);
-        OutputUtils.selected(only, false);
-        OutputUtils.selected(all, false);
+        queryType = devCompleteHide.getText();
+        controlQueryButtonColor(devCompleteHide);
         executeQuery(event);
     }
 
     @FXML
     void selectDevCompleteShow(ActionEvent event) throws Exception {
-        OutputUtils.selected(devCompleteShow, true);
-        OutputUtils.selected(devCompleteHide, false);
-        OutputUtils.selected(only, false);
-        OutputUtils.selected(all, false);
+        queryType = devCompleteShow.getText();
+        controlQueryButtonColor(devCompleteShow);
         executeQuery(event);
     }
 
@@ -460,7 +457,7 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
-            String msg = String.format("开发人员和审核人员为同一人【%s】 请检查", item.getAssigneeId());
+            String msg = String.format("开发人员和审核人员为同一人,请检查【%s】", item.getAssigneeId());
             LoggerUtils.info(msg);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
             CommonUtils.showTipsByError(msg, 10 * 1000);
@@ -572,11 +569,9 @@ public class HepTodoController extends BaseController implements Initializable {
         try {
             new ScriptCompareSql().check();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("检查文件完成，请查看检查结果"));
-            CommonUtils.showTipsByInfo("检查文件完成，请查看检查结果");
         } catch (Exception e) {
             String msg = e.getMessage();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
-            CommonUtils.showTipsByError(msg);
         } finally {
             scriptCheck.setDisable(false);
         }
@@ -1081,18 +1076,18 @@ public class HepTodoController extends BaseController implements Initializable {
             boolean todayComplete = todayDate.compareTo(finishDate) >= 0;
             boolean needShow = todayComplete || focusVersionTask.contains(taskNumberIn);
 
-            if (only.isSelected()) {
+            if (StringUtils.equals(queryType, only.getText())) {
                 if (existTask.contains(taskName)) {
                     iterator.remove();
                     continue;
                 }
                 existTask.add(taskName);
-            } else if (devCompleteHide.isSelected() && !needShow) {
+            } else if (StringUtils.equals(queryType, devCompleteHide.getText()) && !needShow) {
                 if (taskName.contains(DEV_COMMIT_TAG)) {
                     iterator.remove();
                     continue;
                 }
-            } else if (devCompleteShow.isSelected()) {
+            } else if (StringUtils.equals(queryType, devCompleteShow.getText())) {
                 if (!taskName.contains(DEV_COMMIT_TAG)) {
                     iterator.remove();
                     continue;
@@ -1280,9 +1275,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
         if (!isExtendUser()) {
             if (waitTaskSync) {
-                syncTaskTips.setVisible(true);
+                syncTask.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
             } else {
-                syncTaskTips.setVisible(false);
+                syncTask.setStyle(STYLE_NORMAL_FOR_BUTTON);
             }
         }
 
@@ -1305,11 +1300,11 @@ public class HepTodoController extends BaseController implements Initializable {
         boolean show = false;
         if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
             show = true;
-            msg = "开发人员和审核人员为同一人，请检查" + STR_NEXT_LINE_2 + sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)) + STR_NEXT_LINE_2;
+            msg = String.format("开发人员和审核人员为同一人,请检查【%s】", sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)));
             LoggerUtils.info(msg);
         }
         printTaskInfo(res);
-        controlTooltip(appConfigDto, show, msg, getTipsLocation(sameAssigneeIdReviewerId.size()), 175);
+        controlTooltip(appConfigDto, show, msg.replace("【", STR_NEXT_LINE_2).replace("】", STR_BLANK), getTipsLocation(sameAssigneeIdReviewerId.size()), 175);
         controlCheckScriptTips(StringUtils.equalsAny(today, saturday, sunday));
         updateHepStatFile(appConfigDto, taskNoList, demandNoList);
     }
@@ -1412,12 +1407,17 @@ public class HepTodoController extends BaseController implements Initializable {
     private void controlCheckScriptTips(boolean checkDate) throws Exception {
         if (checkDate) {
             if (taskUserPage()) {
-                checkScriptTips.setVisible(true);
+                checkDate = true;
             } else {
-                checkScriptTips.setVisible(false);
+                checkDate = false;
             }
         } else {
-            checkScriptTips.setVisible(false);
+            checkDate = false;
+        }
+        if (checkDate) {
+            scriptCheck.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+        } else {
+            scriptCheck.setStyle(STYLE_NORMAL_FOR_BUTTON);
         }
     }
 
@@ -1453,7 +1453,6 @@ public class HepTodoController extends BaseController implements Initializable {
             updateFile(taskLevelExtendStat, taskNoList, PATH_DEFINE_TASK_LEVEL_STAT, demandNum, taskNum);
             if (CollectionUtils.isNotEmpty(syncTaskLog)) {
                 syncTaskLog.add(String.format(STR_NEXT_LINE + "需求总数【%s】任务总数【%s】", demandNum, taskNum));
-                //controlTooltip(appConfigDto, true, syncTaskLog.stream().collect(Collectors.joining(STR_NEXT_LINE)), 500, 150);
             }
             appConfigDto.setQueryUpdateTaskFile(false);
         }
@@ -1948,8 +1947,9 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void printTaskInfo(List<HepTaskDto> taskList) {
-        if (frontPage() && CollectionUtils.isNotEmpty(taskList) && (devCompleteHide.isSelected() || devCompleteShow.isSelected())) {
-            String printType = devCompleteShow.isSelected() ? NAME_TASK_DEV_COMPLETE : NAME_TASK_NOT_COMPLETE;
+        if (frontPage() && CollectionUtils.isNotEmpty(taskList) &&
+                (StringUtils.equals(queryType, devCompleteHide.getText()) || StringUtils.equals(queryType, devCompleteShow.getText()))) {
+            String printType = StringUtils.equals(queryType, devCompleteShow.getText()) ? NAME_TASK_DEV_COMPLETE : NAME_TASK_NOT_COMPLETE;
             String detail = taskList.stream().filter(hepTaskDto ->
                     StringUtils.isNotBlank(hepTaskDto.getDemandNo())).map(HepTaskDto::getDemandNo).distinct().collect(Collectors.joining(STR_COMMA)
             );
@@ -2255,7 +2255,6 @@ public class HepTodoController extends BaseController implements Initializable {
         } else {
             showDemand.setVisible(false);
         }
-        syncTaskTips.setVisible(false);
     }
 
     private void controlComponentByExtendUser(boolean syncComponent, boolean checkFileComponent, boolean syncTaskComponent) {
@@ -2344,7 +2343,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private void initColorDesc() {
         double step = 15;
         double x = 20;
-        double y = 180;
+        double y = 143;
         Label label = new Label("颜色说明:");
         String boldStyle = STYLE_NORMAL;
         label.setStyle(STYLE_BOLD);
@@ -2635,6 +2634,16 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private boolean requestStatus(HttpResponse response) {
         return !CommonUtils.proScene() || STATUS_200 == response.getStatus();
+    }
+
+    private void controlQueryButtonColor(Button button) {
+        for (Button item : queryButtonSet) {
+            if (StringUtils.equals(button.getText(), item.getText())) {
+                item.setStyle(STYLE_SELECTED_FOR_BUTTON);
+            } else {
+                item.setStyle(STYLE_CANCEL_FOR_BUTTON);
+            }
+        }
     }
 
     private void addMask() {
