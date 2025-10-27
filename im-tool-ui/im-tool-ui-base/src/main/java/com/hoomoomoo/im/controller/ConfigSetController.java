@@ -55,34 +55,9 @@ public class ConfigSetController implements Initializable {
         ConfigCache.getAppConfigDtoCache().setActivateFunction(activatePrevFunction);
         CommonUtils.showTipsByInfo(NAME_SAVE_SUCCESS);
         if (AppCache.FUNCTION_TAB_CACHE != null) {
-            // TaskUtils.execute(new ConfigSetTask(new ConfigSetTaskParam(this)));
-            doClose();
+            CommonUtils.closeTab(CONFIG_SET, true);
         }
         submit.setDisable(false);
-    }
-
-    public void doClose() throws Exception {
-        ObservableList<Tab> tabs = AppCache.FUNCTION_TAB_CACHE.getTabs();
-        Iterator<Tab> iterator = tabs.listIterator();
-        while (iterator.hasNext()) {
-            Tab tab = iterator.next();
-            if (tab.getText().equals(CommonUtils.getMenuName(CONFIG_SET.getCode(), CONFIG_SET.getName()))) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    LoggerUtils.info(e);
-                }
-                iterator.remove();
-                break;
-            }
-            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            String activateFunction = appConfigDto.getActivateFunction();
-            if (StringUtils.isNotBlank(activateFunction)) {
-                String tabCode = activateFunction.split(STR_COLON)[0];
-                String tabName = activateFunction.split(STR_COLON)[1];
-                AppCache.FUNCTION_TAB_CACHE.getSelectionModel().select(CommonUtils.getOpenTab(AppCache.FUNCTION_TAB_CACHE, tabCode, tabName));
-            }
-        }
     }
 
     @SneakyThrows

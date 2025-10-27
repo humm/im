@@ -1510,4 +1510,30 @@ public class CommonUtils {
         }
         return afterMap;
     }
+
+    public static void closeTab(MenuFunctionConfig.FunctionConfig functionConfig, boolean changeTab) throws Exception {
+        ObservableList<Tab> tabs = AppCache.FUNCTION_TAB_CACHE.getTabs();
+        Iterator<Tab> iterator = tabs.listIterator();
+        while (iterator.hasNext()) {
+            Tab tab = iterator.next();
+            if (tab.getText().equals(CommonUtils.getMenuName(functionConfig.getCode(), functionConfig.getName()))) {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    LoggerUtils.info(e);
+                }
+                iterator.remove();
+                break;
+            }
+            if (changeTab) {
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                String activateFunction = appConfigDto.getActivateFunction();
+                if (StringUtils.isNotBlank(activateFunction)) {
+                    String tabCode = activateFunction.split(STR_COLON)[0];
+                    String tabName = activateFunction.split(STR_COLON)[1];
+                    AppCache.FUNCTION_TAB_CACHE.getSelectionModel().select(CommonUtils.getOpenTab(AppCache.FUNCTION_TAB_CACHE, tabCode, tabName));
+                }
+            }
+        }
+    }
 }

@@ -1,6 +1,10 @@
 package com.hoomoomoo.im.task;
 
+import com.hoomoomoo.im.utils.CommonUtils;
+
 import java.util.concurrent.Callable;
+
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CONFIG_SET;
 
 public class ConfigSetTask implements Callable<ConfigSetTaskParam> {
 
@@ -12,7 +16,7 @@ public class ConfigSetTask implements Callable<ConfigSetTaskParam> {
 
     @Override
     public ConfigSetTaskParam call() throws Exception {
-        configSetTaskParam.getConfigSetController().doClose();
+        CommonUtils.closeTab(CONFIG_SET, true);
         return null;
     }
 }

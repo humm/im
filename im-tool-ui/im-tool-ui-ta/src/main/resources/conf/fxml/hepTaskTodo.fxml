@@ -31,10 +31,10 @@
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                         <Label layoutX="870.0" layoutY="5.0" style="-fx-font-weight: bold;" text="本周封版："/>
-                        <Label fx:id="weekClose" layoutX="930.0" layoutY="5.0"
+                        <Label fx:id="weekClose" layoutX="950.0" layoutY="5.0"
                                style="-fx-font-weight: bold;"/>
                         <Label layoutX="870.0" layoutY="30.0" style="-fx-font-weight: bold;" text="本周发版："/>
-                        <Label fx:id="weekPublish" layoutX="930.0" layoutY="30.0"
+                        <Label fx:id="weekPublish" layoutX="950.0" layoutY="30.0"
                                style="-fx-font-weight: bold;"/>
 
                         <Label fx:id="fileTipsFileTitle" layoutX="20.0" layoutY="55.0" style="-fx-font-weight: bold;" text="同步文件："/>
@@ -120,6 +120,12 @@
 
                         <Button fx:id="syncTask" layoutX="1060.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务信息">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+                        <Button fx:id="showLog" layoutX="1190.0" layoutY="105.0" mnemonicParsing="false"
+                                onAction="#showLogInfo" prefHeight="30.0" prefWidth="100.0" text="查看系统日志">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>

@@ -58,6 +58,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CONFIG_SET;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.TASK_TODO;
 
 /**
@@ -622,6 +623,18 @@ public class HepTodoController extends BaseController implements Initializable {
             CommonUtils.showTipsByError(msg);
         } finally {
             syncTask.setDisable(false);
+        }
+    }
+
+    @FXML
+    void showLogInfo(ActionEvent event) throws Exception {
+        try {
+            CommonUtils.closeTab(CONFIG_SET, false);
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG, "系统日志");
+        } catch (Exception e) {
+            String msg = e.getMessage();
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            CommonUtils.showTipsByError(msg);
         }
     }
 
