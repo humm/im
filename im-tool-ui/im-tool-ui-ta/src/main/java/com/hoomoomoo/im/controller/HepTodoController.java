@@ -2141,8 +2141,10 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.info(memoryTips, "内存(MB): " + memoryInfo[0]);
         if (Integer.valueOf(memoryInfo[1]) > 2048 || Integer.valueOf(memoryInfo[2]) > 1024) {
             memoryTips.setStyle(STYLE_BOLD_RED);
+            memoryTips.setVisible(true);
         } else {
             memoryTips.setStyle(STYLE_NORMAL);
+            memoryTips.setVisible(false);
         }
     }
 
@@ -2356,9 +2358,8 @@ public class HepTodoController extends BaseController implements Initializable {
     private void initColorDesc() {
         double step = 15;
         double x = 20;
-        double y = 143;
+        double y = 180;
         Label label = new Label("颜色说明:");
-        String boldStyle = STYLE_NORMAL;
         label.setStyle(STYLE_BOLD);
         label.setLayoutX(x);
         label.setLayoutY(y);
@@ -2375,7 +2376,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 len = prevLen;
             }
             x += step * len;
-            ele.setStyle(boldStyle + color.get(key)[0]);
+            ele.setStyle(STYLE_BOLD + color.get(key)[0]);
             ele.setLayoutX(x);
             ele.setLayoutY(y);
             colorList.add(ele);
@@ -2654,7 +2655,7 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.equals(button.getText(), item.getText())) {
                 item.setStyle(STYLE_SELECTED_FOR_BUTTON);
             } else {
-                item.setStyle(STYLE_CANCEL_FOR_BUTTON);
+                item.setStyle(STYLE_NORMAL_FOR_BUTTON);
             }
         }
     }

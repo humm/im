@@ -58,108 +58,113 @@
                         <Label fx:id="dayTodo" layoutX="105.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
                         <Label layoutX="150.0" layoutY="80.0" style="-fx-font-weight: bold;" text="本周待提交："/>
                         <Label fx:id="weekTodo" layoutX="235.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
-                        <Label layoutX="280.0" layoutY="80.0" style="-fx-font-weight: bold;" text="待提交："/>
-                        <Label fx:id="waitHandleTaskNum" layoutX="335.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
+                        <Label layoutX="290.0" layoutY="80.0" style="-fx-font-weight: bold;" text="待提交："/>
+                        <Label fx:id="waitHandleTaskNum" layoutX="345.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
                         <Label layoutX="410.0" layoutY="80.0" style="-fx-font-weight: bold;" text="待合并："/>
                         <Label fx:id="waitMergerNum" layoutX="465.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
 
-
-                        <Button fx:id="syncFileBtn" layoutX="20.0" layoutY="105.0" mnemonicParsing="false"
+                        <Label layoutX="20.0" layoutY="110.0" style="-fx-font-weight: bold;" text="操作类型："/>
+                        <Button fx:id="syncFileBtn" layoutX="100.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="停止文件同步">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="updateVersion" layoutX="150.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="updateVersion" layoutX="230.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="100.0" text="同步发版计划">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
-                        <Button fx:id="showVersion" layoutX="280.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="showVersion" layoutX="360.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#showVersion" prefHeight="30.0" prefWidth="100.0" text="查看发版计划">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="scriptCheck" layoutX="410.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="scriptCheck" layoutX="490.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="100.0" text="检查配置脚本">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
-                        <Button fx:id="scriptShow" layoutX="540.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="scriptShow" layoutX="620.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="100.0" text="查看检查结果">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="extendUser" layoutX="670.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="extendUser" layoutX="750.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联用户任务">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="sideBarBtn" layoutX="800.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="sideBarBtn" layoutX="880.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#sideBarStatus" prefHeight="30.0" prefWidth="100.0" text="隐藏侧边栏">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="showDemand" layoutX="930.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="showDemand" layoutX="1010.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#showDemandInfo" prefHeight="30.0" prefWidth="100.0" text="复制需求编号">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="syncTask" layoutX="1060.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="syncTask" layoutX="1140.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务信息">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
-                        <Button fx:id="showLog" layoutX="1190.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="showLog" layoutX="1270.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#showLogInfo" prefHeight="30.0" prefWidth="100.0" text="查看系统日志">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Label fx:id="focusVersionTips" layoutX="20.0" layoutY="143.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="memoryTips" layoutX="550" layoutY="143.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="filePushTips" layoutX="800.0" layoutY="143.0"
-                               style="-fx-font-weight: bold;"/>
-                        <Label fx:id="syncFrontVersionTips" layoutX="1070.0" layoutY="143.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;" text="front未实时同步"/>
-                        <TextField fx:id="demandNo" layoutX="1350.0" layoutY="143.0" editable="false"
-                                   style="-fx-background-color: transparent;"/>
-                        <TextField fx:id="taskNo" layoutX="1500.0" layoutY="143.0" editable="false"
-                                   style="-fx-background-color: transparent;"/>
-
-                        <Label layoutX="20" layoutY="175.0" text="查询类型："/>
-                        <Button fx:id="all" layoutX="100.0" layoutY="170.0" mnemonicParsing="false"
-                                     onAction="#selectAll" text="全部"/>
-                        <Button  fx:id="only" layoutX="180.0" layoutY="170.0" mnemonicParsing="false"
-                                     onAction="#selectOnly" text="去重"/>
-                        <Button  fx:id="devCompleteShow" layoutX="260.0" layoutY="170.0" mnemonicParsing="false"
-                                     onAction="#selectDevCompleteShow" text="显示分支已完成"/>
-                        <Button  fx:id="devCompleteHide" layoutX="410.0" layoutY="170.0" mnemonicParsing="false"
-                                     onAction="#selectDevCompleteHide" text="隐藏分支已完成"/>
-                        <Button fx:id="query" layoutX="560.0" layoutY="170.0" mnemonicParsing="false"
+                        <Label layoutX="20" layoutY="148.0" style="-fx-font-weight: bold;" text="查询类型："/>
+                        <Button fx:id="all" layoutX="100.0" layoutY="143.0" mnemonicParsing="false"
+                                onAction="#selectAll" prefHeight="30.0" prefWidth="100.0" text="全部">
+                        </Button>
+                        <Button  fx:id="only" layoutX="230.0" layoutY="143.0" mnemonicParsing="false"
+                                 onAction="#selectOnly" prefHeight="30.0" prefWidth="100.0" text="去重">
+                        </Button>
+                        <Button  fx:id="devCompleteShow" layoutX="360.0" layoutY="143.0" mnemonicParsing="false"
+                                 onAction="#selectDevCompleteShow" prefHeight="30.0" prefWidth="100.0" text="显示已完成">
+                        </Button>
+                        <Button  fx:id="devCompleteHide" layoutX="490.0" layoutY="143.0" mnemonicParsing="false"
+                                 onAction="#selectDevCompleteHide" prefHeight="30.0" prefWidth="100.0" text="隐藏已完成">
+                        </Button>
+                        <Button fx:id="query" layoutX="620.0" layoutY="143.0" mnemonicParsing="false"
                                 onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
                         </Button>
 
-                        <ProgressIndicator fx:id="schedule" layoutX="1000.0" layoutY="169.0" progress="0.0"
+                        <ProgressIndicator fx:id="schedule" layoutX="1000.0" layoutY="142.0" progress="0.0"
                                            style="-fx-scale-x: 0.8; -fx-scale-y: 0.8;"/>
-                        <Label fx:id="scheduleText" layoutX="1035" layoutY="175.0" text="0%"/>
+                        <Label fx:id="scheduleText" layoutX="1035" layoutY="148.0" text="0%"/>
+
+
+                        <Label fx:id="focusVersionTips" layoutX="20.0" layoutY="180.0"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                        <Label fx:id="memoryTips" layoutX="550" layoutY="180.0"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                        <Label fx:id="filePushTips" layoutX="800.0" layoutY="180.0"
+                               style="-fx-font-weight: bold;"/>
+                        <Label fx:id="syncFrontVersionTips" layoutX="1070.0" layoutY="180.0"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;" text="front未实时同步"/>
+                        <TextField fx:id="demandNo" layoutX="1350.0" layoutY="180.0" editable="false"
+                                   style="-fx-background-color: transparent;"/>
+                        <TextField fx:id="taskNo" layoutX="1500.0" layoutY="180.0" editable="false"
+                                   style="-fx-background-color: transparent;"/>
 
                     </children>
                 </AnchorPane>
