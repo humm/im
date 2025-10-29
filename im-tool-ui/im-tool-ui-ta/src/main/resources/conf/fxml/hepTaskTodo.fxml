@@ -161,11 +161,10 @@
                                style="-fx-font-weight: bold;"/>
                         <Label fx:id="syncFrontVersionTips" layoutX="1070.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;" text="front未实时同步"/>
-                        <TextField fx:id="demandNo" layoutX="1350.0" layoutY="180.0" editable="false"
+                        <TextField fx:id="demandNo" layoutX="1350.0" layoutY="175.0" editable="false"
                                    style="-fx-background-color: transparent;"/>
-                        <TextField fx:id="taskNo" layoutX="1500.0" layoutY="180.0" editable="false"
+                        <TextField fx:id="taskNo" layoutX="1500.0" layoutY="175.0" editable="false"
                                    style="-fx-background-color: transparent;"/>
-
                     </children>
                 </AnchorPane>
                 <AnchorPane fx:id="hep" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
