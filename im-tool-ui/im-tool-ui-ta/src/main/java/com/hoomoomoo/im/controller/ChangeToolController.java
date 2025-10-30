@@ -949,14 +949,14 @@ public class ChangeToolController implements Initializable {
                         buildRowCell(row, centerCellStyle, 2, fieldType);
                         buildRowCell(row, null, 3, fieldMaxLength);
                     } else {
-                        String msg = fileName + " 未获取到字段配置信息 " + paramRealtimeApiTabDto.getTabName() + STR_SPACE + tableCode + STR_SPACE + fieldCode;
+                        String msg = String.format("%s %s %s %s %s", fileName, paramRealtimeApiTabDto.getTabName(), "未获取到字段配置信息", tableCode, fieldCode);
                         if (!errorInfo.contains(msg)) {
                             errorInfo.add(msg);
                         }
                     }
                 } else {
                     if (StringUtils.isNotBlank(tabCode)) {
-                        String msg = fileName + " 未获取到字段配置信息 " + paramRealtimeApiTabDto.getTabName() + STR_SPACE + tableCode;
+                        String msg = String.format("%s %s %s %s", fileName, paramRealtimeApiTabDto.getTabName(), "未获取到字段配置信息", tableCode);
                         if (!errorInfo.contains(msg)) {
                             errorInfo.add(msg);
                         }
