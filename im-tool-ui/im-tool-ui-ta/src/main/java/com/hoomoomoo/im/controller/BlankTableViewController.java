@@ -49,7 +49,7 @@ public class BlankTableViewController implements Initializable {
         List<VersionDto> versionDtoList = appConfigDto.getVersionDtoList();
 
         TableColumn code = new TableColumn<>("版本编号");
-        code.setCellValueFactory(new PropertyValueFactory<>("code"));
+        code.setCellValueFactory(new PropertyValueFactory<>("name"));
         code.setPrefWidth(350);
 
         TableColumn closeDate = new TableColumn<>("封版日期");
@@ -81,10 +81,6 @@ public class BlankTableViewController implements Initializable {
         OutputUtils.clearLog(table);
         for (VersionDto versionDto : versionDtoList) {
             String code = versionDto.getCode();
-            String name = versionDto.getName();
-            if (StringUtils.isNotBlank(name)) {
-                versionDto.setCode(code + "(" + name + ")");
-            }
             StringBuilder customCode = new StringBuilder();
             for (int i=0; i<code.length(); i++) {
                 String ele = String.valueOf(code.charAt(i));

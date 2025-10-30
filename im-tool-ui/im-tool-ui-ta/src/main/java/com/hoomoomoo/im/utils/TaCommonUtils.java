@@ -622,13 +622,7 @@ public class TaCommonUtils {
                         }
                         String versionName = ele.get(KEY_NAME) == null ? STR_BLANK : String.valueOf(ele.get(KEY_NAME)).split(STR_SPACE)[0];
                         if (StringUtils.isBlank(endDayTime)) {
-                            versionName = STR_BLANK;
-                        } else {
-                            if (versionName.contains("(")) {
-                                versionName = versionName.split("\\(")[1].split("\\)")[0];
-                            } else {
-                                versionName = STR_BLANK;
-                            }
+                            versionName = STR_SPACE;
                         }
                         item.setLength(0);
                         item.append(version).append(STR_SEMICOLON).append(devCloseDate).append(STR_SEMICOLON).append(publishCloseDate)
