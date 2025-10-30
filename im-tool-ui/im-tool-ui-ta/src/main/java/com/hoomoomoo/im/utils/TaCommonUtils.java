@@ -620,8 +620,19 @@ public class TaCommonUtils {
                         if (StringUtils.isBlank(endDayTime)) {
                             endDayTime = STR_DATE_20991231;
                         }
+                        String versionName = ele.get(KEY_NAME) == null ? STR_BLANK : String.valueOf(ele.get(KEY_NAME)).split(STR_SPACE)[0];
+                        if (StringUtils.isBlank(endDayTime)) {
+                            versionName = STR_BLANK;
+                        } else {
+                            if (versionName.contains("(")) {
+                                versionName = versionName.split("\\(")[1].split("\\)")[0];
+                            } else {
+                                versionName = STR_BLANK;
+                            }
+                        }
                         item.setLength(0);
-                        item.append(version).append(STR_SEMICOLON).append(devCloseDate).append(STR_SEMICOLON).append(publishCloseDate).append(STR_SEMICOLON).append(endDayTime).append(STR_SEMICOLON);
+                        item.append(version).append(STR_SEMICOLON).append(devCloseDate).append(STR_SEMICOLON).append(publishCloseDate)
+                                .append(STR_SEMICOLON).append(endDayTime).append(STR_SEMICOLON).append(versionName).append(STR_SEMICOLON);
                         res.add(item.toString());
                     }
                 }

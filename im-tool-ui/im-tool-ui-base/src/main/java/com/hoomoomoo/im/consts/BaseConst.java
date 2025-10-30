@@ -86,6 +86,7 @@ public class BaseConst {
     public static final String KEY_DEV_CLOSE_DATE = "dev_close_date";
     public static final String KEY_PUBLISH_CLOSE_DATE = "publish_close_date";
     public static final String KEY_END_DAY_TIME = "end_day_time";
+    public static final String KEY_NAME = "name";
     public static final String KEY_TRUNK = "trunk";
     public static final String KEY_BRANCHES = "branches";
     public static final String KEY_GIT_BRANCHES = "git-branches";
@@ -121,7 +122,6 @@ public class BaseConst {
     public final static String KEY_STORY_VERSION_LIST = "story_version_list";
     public final static String KEY_STORY_VERSION_STATUS = "story_version_status";
     public final static String KEY_ESTIMATE_FINISH_TIME = "estimate_finish_time";
-    public final static String KEY_NAME = "name";
     public final static String KEY_SPRINT_VERSION = "sprint_version";
     public final static String KEY_STORY_STATUS = "story_status";
     public final static String KEY_TASK_NUMBER = "task_number";

@@ -71,59 +71,61 @@
                             </padding>
                         </Button>
 
-                        <Button fx:id="updateVersion" layoutX="230.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="100.0" text="同步发版计划">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-                        <Button fx:id="showVersion" layoutX="360.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#showVersion" prefHeight="30.0" prefWidth="100.0" text="查看发版计划">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-
-                        <Button fx:id="scriptCheck" layoutX="490.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="scriptCheck" layoutX="230.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="100.0" text="检查配置脚本">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
-                        <Button fx:id="scriptShow" layoutX="620.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="scriptShow" layoutX="360.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="100.0" text="查看检查结果">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="extendUser" layoutX="750.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="extendUser" layoutX="490.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联用户任务">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="sideBarBtn" layoutX="880.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="sideBarBtn" layoutX="620.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#sideBarStatus" prefHeight="30.0" prefWidth="100.0" text="隐藏侧边栏">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="showDemand" layoutX="1010.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="showDemand" layoutX="750.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#showDemandInfo" prefHeight="30.0" prefWidth="100.0" text="复制需求编号">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="syncTask" layoutX="1140.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="syncTask" layoutX="880.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务信息">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
+
+                        <Button fx:id="updateVersion" layoutX="1010.0" layoutY="105.0" mnemonicParsing="false"
+                                onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="100.0" text="同步发版计划">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
+                        <Button fx:id="showVersion" layoutX="1140.0" layoutY="105.0" mnemonicParsing="false"
+                                onAction="#showVersion" prefHeight="30.0" prefWidth="100.0" text="查看发版计划">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
                         <Button fx:id="showLog" layoutX="1270.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#showLogInfo" prefHeight="30.0" prefWidth="100.0" text="查看系统日志">
                             <padding>

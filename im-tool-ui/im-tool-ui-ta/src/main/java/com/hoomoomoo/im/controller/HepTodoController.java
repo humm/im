@@ -351,7 +351,7 @@ public class HepTodoController extends BaseController implements Initializable {
             defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
             queryType = devCompleteHide.getText();
             controlQueryButtonColor(devCompleteHide);
-            controlComponent();
+            //controlComponent();
             if (isExtendUser()) {
                 controlComponentByExtendUser(false, false, false);
             } else {
@@ -2401,7 +2401,9 @@ public class HepTodoController extends BaseController implements Initializable {
                 String oriCloseDate = elements[1];
                 String oriPublishDate = elements[2];
                 String endDate = elements[3];
+                String versionMame = elements[4];
                 versionDto.setCode(versionCode);
+                versionDto.setName(versionMame);
                 versionDto.setCloseDate(oriCloseDate);
                 versionDto.setPublishDate(oriPublishDate);
                 versionDto.setEndData(endDate);

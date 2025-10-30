@@ -12,6 +12,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -49,7 +50,7 @@ public class BlankTableViewController implements Initializable {
 
         TableColumn code = new TableColumn<>("版本编号");
         code.setCellValueFactory(new PropertyValueFactory<>("code"));
-        code.setPrefWidth(320);
+        code.setPrefWidth(350);
 
         TableColumn closeDate = new TableColumn<>("封版日期");
         closeDate.setCellValueFactory(new PropertyValueFactory<>("closeDate"));
@@ -80,6 +81,10 @@ public class BlankTableViewController implements Initializable {
         OutputUtils.clearLog(table);
         for (VersionDto versionDto : versionDtoList) {
             String code = versionDto.getCode();
+            String name = versionDto.getName();
+            if (StringUtils.isNotBlank(name)) {
+                versionDto.setCode(code + "(" + name + ")");
+            }
             StringBuilder customCode = new StringBuilder();
             for (int i=0; i<code.length(); i++) {
                 String ele = String.valueOf(code.charAt(i));

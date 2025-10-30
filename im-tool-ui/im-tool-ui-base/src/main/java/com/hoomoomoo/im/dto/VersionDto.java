@@ -6,6 +6,7 @@ import lombok.Data;
 public class VersionDto extends BaseDto{
 
     private String code;
+    private String name;
     private String closeDate;
     private String publishDate;
     private String endData;
