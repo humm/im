@@ -185,6 +185,7 @@ public class BaseConst {
     public final static String KEY_Y = "Y";
     public final static String KEY_N = "N";
     public final static String KEY_ADD = "add";
+    public final static String KEY_CONSTRAINT = "constraint";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 
@@ -464,6 +465,10 @@ public class BaseConst {
     public static final String COLUMN_TYPE_NUMBER = "number";
     public static final String COLUMN_TYPE_INTEGER = "integer";
     public static final String COLUMN_TYPE_CLOB = "clob";
+    public final static String COLUMN_TYPE_C = "C";
+    public final static String COLUMN_TYPE_I = "I";
+    public final static String COLUMN_TYPE_N = "N";
+    public final static String COLUMN_TYPE_JSON = "JSON";
 
     public static final String STYLE_CENTER = "-fx-alignment: center;";
     public static final String STYLE_BOLD_RED = "-fx-font-weight: bold; -fx-text-background-color: red;";

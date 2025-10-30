@@ -89,25 +89,32 @@
                 </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="598.0">
                     <children>
-                        <SplitPane dividerPositions="0.2" layoutX="181.0" layoutY="28.0"
+                        <SplitPane dividerPositions="0.25" layoutX="181.0" layoutY="28.0"
                                    orientation="VERTICAL" prefHeight="256.5818092838007" prefWidth="598.6908883288683"
                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                                     <children>
-                                        <Label layoutX="14.0" layoutY="14.0" prefHeight="15.0" prefWidth="150.0" text="字典全量脚本文件"/>
-                                        <TextField fx:id="baseDictPath" layoutX="150.0" layoutY="11.0" prefHeight="23.0" prefWidth="800.0"/>
+                                        <Label layoutX="14.0" layoutY="14.0" prefHeight="15.0" text="字典全量脚本文件"/>
+                                        <TextField fx:id="baseDictPath" layoutX="150.0" layoutY="11.0" prefHeight="23.0" prefWidth="920.0"/>
 
-                                        <Label layoutX="14.0" layoutY="54.0" prefHeight="15.0" prefWidth="100.0" text="开通脚本目录"/>
-                                        <TextField fx:id="paramRealtimeSetPath" layoutX="150.0" layoutY="51.0" prefHeight="23.0" prefWidth="800.0"/>
+                                        <Label layoutX="14.0" layoutY="55.0" prefHeight="15.0" text="开通脚本目录(最外层目录)"/>
+                                        <TextField fx:id="paramRealtimeSetPath" layoutX="200.0" layoutY="51.0" prefHeight="23.0" prefWidth="870.0"/>
 
-                                        <Button fx:id="executeRealtimeBtn" layoutX="1050.0" layoutY="30.0" mnemonicParsing="false"
+                                        <Label layoutX="14.0" layoutY="94.0" prefHeight="15.0" text="表结构目录(pub库oracle最里层目录)"/>
+                                        <TextField fx:id="tablePath" layoutX="270.0" layoutY="91.0" prefHeight="23.0" prefWidth="800.0"/>
+
+                                        <Button fx:id="executeRealtimeBtn" layoutX="1100.0" layoutY="50.0" mnemonicParsing="false"
                                                 onAction="#executeRealtime" prefHeight="30.0" prefWidth="100.0" text="执行">
                                             <padding>
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
                                             </padding>
                                         </Button>
+                                        <Label layoutX="1500" layoutY="55.0" prefHeight="15.0" text="参数设置中可配置路径默认值"/>
+                                        <Label fx:id="errorTips" layoutX="1300" layoutY="55.0" prefHeight="15.0" text="存在错误信息,请检查"
+                                               style="-fx-font-weight: bold; -fx-text-background-color: red;"
+                                        />
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

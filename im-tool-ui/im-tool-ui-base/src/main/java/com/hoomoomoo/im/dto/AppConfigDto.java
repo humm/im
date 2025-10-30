@@ -307,6 +307,8 @@ public class AppConfigDto extends BaseDto {
 
     private String changeToolParamRealtimeSetPath;
 
+    private String changeToolTablePath;
+
     private String changeToolBaseDictPath;
 
     public AppConfigDto() {
