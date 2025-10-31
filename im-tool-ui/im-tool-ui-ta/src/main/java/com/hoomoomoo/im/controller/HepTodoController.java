@@ -1316,7 +1316,7 @@ public class HepTodoController extends BaseController implements Initializable {
         infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, focusDemand);
         taskList.setDisable(false);
         if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
-            String msg = String.format("开发人员和审核人员为同一人,请检查【%s】", sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)));
+            String msg = sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
             OutputUtils.repeatInfo(someOneTips, msg);
             LoggerUtils.info(msg);
         } else {
@@ -2362,7 +2362,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initColorDesc() {
-        double step = 15;
+        double step = 13;
         double x = 20;
         double y = 180;
         Label label = new Label("颜色说明:");

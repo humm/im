@@ -169,7 +169,7 @@
                                    style="-fx-background-color: transparent;"/>
 
                         <Label layoutX="20" layoutY="205.0" style="-fx-font-weight: bold;" text="开发人审核人为同一人任务单："/>
-                        <Label fx:id="someOneTips" layoutX="220" layoutY="205.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                        <Label fx:id="someOneTips" layoutX="230" layoutY="205.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                     </children>
                 </AnchorPane>
