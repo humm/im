@@ -191,6 +191,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label focusVersionTips;
 
     @FXML
+    private Label focusVersionTipsLabel;
+
+    @FXML
     private TextField taskNumberQuery;
 
     @FXML
@@ -300,6 +303,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     private Label syncFrontVersionTips;
+
+    @FXML
+    private Label someOneTips;
 
     @FXML
     private Button  all;
@@ -1309,15 +1315,14 @@ public class HepTodoController extends BaseController implements Initializable {
         finishDateError.addAll(finishDateOver);
         infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, focusDemand);
         taskList.setDisable(false);
-        String msg = STR_BLANK;
-        boolean show = false;
         if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
-            show = true;
-            msg = String.format("开发人员和审核人员为同一人,请检查【%s】", sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)));
+            String msg = String.format("开发人员和审核人员为同一人,请检查【%s】", sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)));
+            OutputUtils.repeatInfo(someOneTips, msg);
             LoggerUtils.info(msg);
+        } else {
+            OutputUtils.repeatInfo(someOneTips, STR_BLANK);
         }
         printTaskInfo(res);
-        controlTooltip(appConfigDto, show, msg.replace("【", STR_NEXT_LINE_2).replace("】", STR_BLANK), getTipsLocation(sameAssigneeIdReviewerId.size()), 175);
         controlCheckScriptTips(StringUtils.equalsAny(today, saturday, sunday));
         updateHepStatFile(appConfigDto, taskNoList, demandNoList);
     }
@@ -1337,7 +1342,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void controlFocusVersionTips(AppConfigDto appConfigDto) {
         if (frontPage()) {
-            int total = 0;
+            int total;
             int totalStat = 0;
             StringBuilder message = new StringBuilder();
             StringBuilder versionMsg = new StringBuilder();
@@ -1354,21 +1359,16 @@ public class HepTodoController extends BaseController implements Initializable {
                     versionMsg.append(String.format(" %s(%s)", item, num));
                 }
                 totalStat += total;
-                message.append(String.format("重点关注版本【%s】任务统计(%s) --> ", version, total));
+                message.append(String.format("【%s】任务统计(%s) --> ", version, total));
                 message.append(versionMsg);
                 message.append(STR_NEXT_LINE);
             }
             OutputUtils.repeatInfo(focusVersionTips, message.toString());
             if (totalStat > 0) {
-                if (focusVersion.size() > 1) {
-                    focusVersionTips.setLayoutY(140);
-                } else {
-                    focusVersionTips.setLayoutY(180);
-                }
-                focusVersionTips.setVisible(true);
+                controlFocusVersionTips(true);
                 controlColorDesc(false);
             } else {
-                focusVersionTips.setVisible(false);
+                controlFocusVersionTips(false);
                 controlColorDesc(true);
             }
         } else {
@@ -1385,17 +1385,17 @@ public class HepTodoController extends BaseController implements Initializable {
                     int numVer = stat.get(userName);
                     if (numVer > 0) {
                         num = numVer;
-                        message.append(String.format("重点关注版本【%s】任务统计(%s)", version, num));
+                        message.append(String.format("【%s】任务统计(%s)", version, num));
                         break;
                     }
                 }
             }
             OutputUtils.repeatInfo(focusVersionTips, message.toString());
             if (num > 0) {
-                focusVersionTips.setVisible(true);
+                controlFocusVersionTips(true);
                 controlColorDesc(false);
             } else {
-                focusVersionTips.setVisible(false);
+                controlFocusVersionTips(false);
                 controlColorDesc(true);
             }
         }
@@ -1976,6 +1976,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initComponentStatus() {
+        controlFocusVersionTips(false);
         filePushTips.setVisible(false);
         setSyncFrontVersionTips(false);
         setSideBar();
@@ -2353,6 +2354,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 label.setVisible(visible);
             }
         }
+    }
+
+    private void controlFocusVersionTips(boolean visible) {
+        focusVersionTips.setVisible(visible);
+        focusVersionTipsLabel.setVisible(visible);
     }
 
     private void initColorDesc() {

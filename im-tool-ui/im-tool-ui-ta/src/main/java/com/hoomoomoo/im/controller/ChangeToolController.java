@@ -956,7 +956,7 @@ public class ChangeToolController implements Initializable {
                     }
                 } else {
                     if (StringUtils.isNotBlank(tabCode)) {
-                        String msg = String.format("%s %s %s %s", fileName, paramRealtimeApiTabDto.getTabName(), "未获取到字段配置信息", tableCode);
+                        String msg = String.format("%s %s %s %s", fileName, paramRealtimeApiTabDto.getTabName(), "未获取到表配置信息", tableCode);
                         if (!errorInfo.contains(msg)) {
                             errorInfo.add(msg);
                         }
