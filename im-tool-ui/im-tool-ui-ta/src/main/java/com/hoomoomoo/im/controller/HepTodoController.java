@@ -305,7 +305,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label syncFrontVersionTips;
 
     @FXML
-    private Label someOneTips;
+    private Button someOneTips;
 
     @FXML
     private Button  all;
@@ -1317,10 +1317,10 @@ public class HepTodoController extends BaseController implements Initializable {
         taskList.setDisable(false);
         if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
             String msg = sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
-            OutputUtils.repeatInfo(someOneTips, msg);
             LoggerUtils.info(msg);
+            someOneTips.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
         } else {
-            OutputUtils.repeatInfo(someOneTips, STR_BLANK);
+            someOneTips.setStyle(STYLE_NORMAL_FOR_BUTTON);
         }
         printTaskInfo(res);
         controlCheckScriptTips(StringUtils.equalsAny(today, saturday, sunday));

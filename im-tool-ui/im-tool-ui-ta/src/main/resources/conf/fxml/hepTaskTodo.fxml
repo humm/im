@@ -17,7 +17,7 @@
 <AnchorPane prefHeight="400.0" prefWidth="600.0"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.HepTodoController">
     <children>
-        <SplitPane dividerPositions="0.28" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
+        <SplitPane dividerPositions="0.25" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
                    prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <items>
@@ -133,6 +133,13 @@
                             </padding>
                         </Button>
 
+                        <Button fx:id="someOneTips" layoutX="1400.0" layoutY="105.0" mnemonicParsing="false"
+                                prefHeight="30.0" prefWidth="100.0" text="开发审核同人">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
                         <Label layoutX="20" layoutY="148.0" style="-fx-font-weight: bold;" text="查询类型："/>
                         <Button fx:id="all" layoutX="100.0" layoutY="143.0" mnemonicParsing="false"
                                 onAction="#selectAll" prefHeight="30.0" prefWidth="100.0" text="全部">
@@ -167,9 +174,6 @@
                                    style="-fx-background-color: transparent;"/>
                         <TextField fx:id="taskNo" layoutX="1500.0" layoutY="175.0" editable="false"
                                    style="-fx-background-color: transparent;"/>
-
-                        <Label layoutX="20" layoutY="205.0" style="-fx-font-weight: bold;" text="开发人审核人为同一人任务单："/>
-                        <Label fx:id="someOneTips" layoutX="230" layoutY="205.0" style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
                     </children>
                 </AnchorPane>
