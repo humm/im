@@ -349,7 +349,6 @@ public class AppConfigDto extends BaseDto {
 
     private void initTooltip() {
         tooltip = new Tooltip();
-        tooltip.setStyle("-fx-font-size: 16");
         tooltip.setAutoHide(true);
     }
 }
