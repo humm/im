@@ -91,8 +91,8 @@
                             </padding>
                         </Button>
 
-                        <Button fx:id="showDemand" layoutX="620.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#showDemandInfo" prefHeight="30.0" prefWidth="100.0" text="复制需求编号">
+                        <Button fx:id="showCopyDemand" layoutX="620.0" layoutY="105.0" mnemonicParsing="false"
+                                onAction="#showCopyDemandExe" prefHeight="30.0" prefWidth="100.0" text="复制需求编号">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
@@ -134,7 +134,7 @@
                         </Button>
 
                         <Button fx:id="someOneTips" layoutX="1400.0" layoutY="105.0" mnemonicParsing="false"
-                                prefHeight="30.0" prefWidth="100.0" text="开发审核同人">
+                                prefHeight="30.0" prefWidth="110.0" text="开审同人">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>

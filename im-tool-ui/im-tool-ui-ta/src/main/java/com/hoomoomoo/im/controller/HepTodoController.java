@@ -233,7 +233,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private AnchorPane condition;
 
     @FXML
-    public Button showDemand;
+    public Button showCopyDemand;
 
     @FXML
     public Button syncTask;
@@ -357,11 +357,11 @@ public class HepTodoController extends BaseController implements Initializable {
             defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
             queryType = devCompleteHide.getText();
             controlQueryButtonColor(devCompleteHide);
-            //controlComponent();
+            initColorDesc();
+            initCopyDemand();
             if (isExtendUser()) {
                 controlComponentByExtendUser(false, false, false);
             } else {
-                initColorDesc();
                 JvmCache.setHepTodoController(this);
                 syncFile();
             }
@@ -370,7 +370,6 @@ public class HepTodoController extends BaseController implements Initializable {
             initComponentStatus();
             executeQuery(null);
             buildTestData();
-            //showExtendUserTask();
         } catch (Exception e) {
             LoggerUtils.info(e);
         }
@@ -613,7 +612,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     @FXML
-    void showDemandInfo (ActionEvent event) throws Exception {
+    void showCopyDemandExe (ActionEvent event) throws Exception {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(FRONT_QUERY_DEMAND_CACHE.get(NAME_TASK_NOT_COMPLETE)), null);
         CommonUtils.showTipsByInfo("需求单号复制完成");
     }
@@ -1318,8 +1317,10 @@ public class HepTodoController extends BaseController implements Initializable {
         if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
             String msg = sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
             LoggerUtils.info(msg);
+            someOneTips.setText("开审同人(" + sameAssigneeIdReviewerId.size() + ")");
             someOneTips.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
         } else {
+            someOneTips.setText("开审同人(0)");
             someOneTips.setStyle(STYLE_NORMAL_FOR_BUTTON);
         }
         printTaskInfo(res);
@@ -1919,30 +1920,6 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户任务加载完成 . . ."));
     }
 
-    private void showExtendUserTask() throws Exception {
-        if (!isExtendUser()) {
-            Timer timer = new Timer();
-            TimerTask timerTask = new TimerTask() {
-                @Override
-                public void run() {
-                    Platform.runLater(() -> {
-                        try {
-                            showExtentUserTask(false);
-                            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-                            String tabName = CommonUtils.getMenuName(TASK_TODO.getCode(), TASK_TODO.getName());
-                            appConfigDto.setActivateFunction(tabName);
-                            Tab openTab = CommonUtils.getOpenTab(AppCache.FUNCTION_TAB_CACHE, TASK_TODO.getCode(), TASK_TODO.getName());
-                            AppCache.FUNCTION_TAB_CACHE.getSelectionModel().select(openTab);
-                        } catch (Exception e) {
-                            LoggerUtils.info(e);
-                        }
-                    });
-                }
-            };
-            timer.schedule(timerTask, 1);
-        }
-    }
-
     private void setSideBar() {
         Platform.runLater(() -> {
             double width = defaultTaskNameWidth;
@@ -2265,14 +2242,6 @@ public class HepTodoController extends BaseController implements Initializable {
         return PAGE_USER.equals(ConfigCache.getAppConfigDtoCache().getHepTaskUser());
     }
 
-    private void controlComponent() {
-        if (frontPage()) {
-            showDemand.setVisible(true);
-        } else {
-            showDemand.setVisible(false);
-        }
-    }
-
     private void controlComponentByExtendUser(boolean syncComponent, boolean checkFileComponent, boolean syncTaskComponent) {
         fileTipsFile.setVisible(syncComponent);
         fileTipsFileTitle.setVisible(syncComponent);
@@ -2359,6 +2328,14 @@ public class HepTodoController extends BaseController implements Initializable {
     private void controlFocusVersionTips(boolean visible) {
         focusVersionTips.setVisible(visible);
         focusVersionTipsLabel.setVisible(visible);
+    }
+
+    private void initCopyDemand() {
+        if (frontPage()) {
+            showCopyDemand.setVisible(true);
+        } else {
+            showCopyDemand.setVisible(false);
+        }
     }
 
     private void initColorDesc() {
@@ -2616,7 +2593,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             show = true;
                         }
                     }
-                    controlTooltip(appConfigDto, show, msg, 1580, 280);
+                    controlTooltip(appConfigDto, show, msg, 1580, 258);
                 }
             }
         });
