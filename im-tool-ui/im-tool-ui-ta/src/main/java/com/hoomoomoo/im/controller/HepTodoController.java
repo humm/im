@@ -1314,15 +1314,17 @@ public class HepTodoController extends BaseController implements Initializable {
         finishDateError.addAll(finishDateOver);
         infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, focusDemand);
         taskList.setDisable(false);
-        if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
-            String msg = sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
-            LoggerUtils.info(msg);
-            someOneTips.setText("开审同人(" + sameAssigneeIdReviewerId.size() + ")");
-            someOneTips.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
-        } else {
-            someOneTips.setText("开审同人(0)");
-            someOneTips.setStyle(STYLE_NORMAL_FOR_BUTTON);
-        }
+        Platform.runLater(() -> {
+            if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
+                String msg = sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
+                LoggerUtils.info(msg);
+                someOneTips.setText("开审同人(" + sameAssigneeIdReviewerId.size() + ")");
+                someOneTips.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+            } else {
+                someOneTips.setText("开审同人(0)");
+                someOneTips.setStyle(STYLE_NORMAL_FOR_BUTTON);
+            }
+        });
         printTaskInfo(res);
         controlCheckScriptTips(StringUtils.equalsAny(today, saturday, sunday));
         updateHepStatFile(appConfigDto, taskNoList, demandNoList);
