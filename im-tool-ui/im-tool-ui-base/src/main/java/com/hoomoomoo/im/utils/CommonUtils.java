@@ -1356,7 +1356,7 @@ public class CommonUtils {
         } else {
             show = true;
         }
-        if (show) {
+        if (show && !message.contains(SKIP_LOG_TIPS)) {
             scanLogTipsIndex.put(tipsType, tipsDate);
             if (!appConfigDto.getInitScanLog()) {
                 if (printImLog(message)) {

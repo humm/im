@@ -517,7 +517,7 @@ public class HepTodoController extends BaseController implements Initializable {
         } catch (Exception e) {
             String msg = e.getMessage();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
-            CommonUtils.showTipsByError(msg);
+            CommonUtils.showTipsByError(msg.replaceAll(SKIP_LOG_TIPS, STR_BLANK));
         } finally {
             updateVersion.setDisable(false);
         }
@@ -626,7 +626,7 @@ public class HepTodoController extends BaseController implements Initializable {
         } catch (Exception e) {
             String msg = e.getMessage();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
-            CommonUtils.showTipsByError(msg);
+            CommonUtils.showTipsByError(msg.replaceAll(SKIP_LOG_TIPS, STR_BLANK));
         } finally {
             syncTask.setDisable(false);
         }
