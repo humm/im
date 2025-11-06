@@ -359,6 +359,7 @@ public class HepTodoController extends BaseController implements Initializable {
             controlQueryButtonColor(devCompleteHide);
             initColorDesc();
             initCopyDemand();
+            controlSomeOneTips(0);
             if (isExtendUser()) {
                 controlComponentByExtendUser(false, false, false);
             } else {
@@ -1314,17 +1315,13 @@ public class HepTodoController extends BaseController implements Initializable {
         finishDateError.addAll(finishDateOver);
         infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, focusDemand);
         taskList.setDisable(false);
-        Platform.runLater(() -> {
-            if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
-                String msg = sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
-                LoggerUtils.info(msg);
-                someOneTips.setText("开审同人(" + sameAssigneeIdReviewerId.size() + ")");
-                someOneTips.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
-            } else {
-                someOneTips.setText("开审同人(0)");
-                someOneTips.setStyle(STYLE_NORMAL_FOR_BUTTON);
-            }
-        });
+        if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
+            String msg = sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
+            LoggerUtils.info(msg);
+            controlSomeOneTips(sameAssigneeIdReviewerId.size());
+        } else {
+            controlSomeOneTips(0);
+        }
         printTaskInfo(res);
         controlCheckScriptTips(StringUtils.equalsAny(today, saturday, sunday));
         updateHepStatFile(appConfigDto, taskNoList, demandNoList);
@@ -1341,6 +1338,20 @@ public class HepTodoController extends BaseController implements Initializable {
                 setTaskLevel(hepTaskDto, "孤版");
             }
         }
+    }
+
+    private void controlSomeOneTips(int num) {
+        Platform.runLater(() -> {
+            if (num > 0) {
+                someOneTips.setText("开审同人(" + num + ")");
+                someOneTips.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+                someOneTips.setVisible(true);
+            } else {
+                someOneTips.setText("开审同人(0)");
+                someOneTips.setStyle(STYLE_NORMAL_FOR_BUTTON);
+                someOneTips.setVisible(false);
+            }
+        });
     }
 
     private void controlFocusVersionTips(AppConfigDto appConfigDto) {
@@ -2590,6 +2601,10 @@ public class HepTodoController extends BaseController implements Initializable {
                         String reviewerName = val.getReviewerName();
                         if (StringUtils.isNotBlank(reviewerName) && reviewerName.contains(STR_COMMA)) {
                             msg = getTipsMsg(msg, reviewerName);
+                        }
+                        String assigneeName = val.getAssigneeName();
+                        if (StringUtils.equals(reviewerName, assigneeName)) {
+                            msg = getTipsMsg(msg, "同人");
                         }
                         if (StringUtils.isNotBlank(msg)) {
                             show = true;
