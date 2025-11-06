@@ -1031,9 +1031,6 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             taskNoList.add(taskNumberIn);
             demandNoList.add(demandNo);
-            if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
-                sameAssigneeIdReviewerId.add(taskNumberIn);
-            }
             boolean commitTag = false;
             if (!taskName.contains(COMMIT_TAG) && taskSubmitStatus.containsKey(taskNumberIn)) {
                 commitTag = true;
@@ -1197,6 +1194,11 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             if (taskName.contains(DEFECT_TAG)) {
                 setTaskLevel(item, "缺陷");
+            }
+
+            if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
+                sameAssigneeIdReviewerId.add(taskNumberIn);
+                setTaskLevel(item, "同人");
             }
 
             item.setSprintVersionFull(sprintVersion);
@@ -2601,10 +2603,6 @@ public class HepTodoController extends BaseController implements Initializable {
                         String reviewerName = val.getReviewerName();
                         if (StringUtils.isNotBlank(reviewerName) && reviewerName.contains(STR_COMMA)) {
                             msg = getTipsMsg(msg, reviewerName);
-                        }
-                        String assigneeName = val.getAssigneeName();
-                        if (StringUtils.equals(reviewerName, assigneeName)) {
-                            msg = getTipsMsg(msg, "同人");
                         }
                         if (StringUtils.isNotBlank(msg)) {
                             show = true;
