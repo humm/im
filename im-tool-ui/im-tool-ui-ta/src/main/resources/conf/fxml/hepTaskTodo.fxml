@@ -91,50 +91,50 @@
                             </padding>
                         </Button>
 
-                        <Button fx:id="showCopyDemand" layoutX="620.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#showCopyDemandExe" prefHeight="30.0" prefWidth="100.0" text="复制需求编号">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-
-                        <Button fx:id="sideBarBtn" layoutX="750.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#sideBarStatus" prefHeight="30.0" prefWidth="100.0" text="隐藏侧边栏">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-
-                        <Button fx:id="syncTask" layoutX="880.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="syncTask" layoutX="620.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务信息">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="updateVersion" layoutX="1010.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="updateVersion" layoutX="750.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="100.0" text="同步发版计划">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="showVersion" layoutX="1140.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="showVersion" layoutX="880.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#showVersion" prefHeight="30.0" prefWidth="100.0" text="查看发版计划">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="showLog" layoutX="1270.0" layoutY="105.0" mnemonicParsing="false"
+                        <Button fx:id="showLog" layoutX="1010.0" layoutY="105.0" mnemonicParsing="false"
                                 onAction="#showLogInfo" prefHeight="30.0" prefWidth="100.0" text="查看系统日志">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
+                        <Button fx:id="sideBarBtn" layoutX="1140.0" layoutY="105.0" mnemonicParsing="false"
+                                onAction="#sideBarStatus" prefHeight="30.0" prefWidth="100.0" text="隐藏侧边栏">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
+                        <Button fx:id="showCopyDemand" layoutX="1270.0" layoutY="105.0" mnemonicParsing="false"
+                                onAction="#showCopyDemandExe" prefHeight="30.0" prefWidth="100.0" text="复制需求编号">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+
                         <Button fx:id="someOneTips" layoutX="1400.0" layoutY="105.0" mnemonicParsing="false"
-                                prefHeight="30.0" prefWidth="110.0" text="开审同人">
+                                prefHeight="30.0" prefWidth="100.0" text="开审同人">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>

@@ -645,6 +645,8 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     void executeQuery(ActionEvent event) throws Exception {
+        OutputUtils.clearLog(demandNo);
+        OutputUtils.clearLog(taskNo);
         HepTodoTaskParam hepTodoTaskParam = new HepTodoTaskParam(this, "doQuery");
         hepTodoTaskParam.setEvent(event);
         TaskUtils.execute(new HepTodoTask(hepTodoTaskParam));
@@ -1344,11 +1346,11 @@ public class HepTodoController extends BaseController implements Initializable {
     private void controlSomeOneTips(int num) {
         Platform.runLater(() -> {
             if (num > 0) {
-                someOneTips.setText("开审同人(" + num + ")");
+                someOneTips.setText("开审同人 " + num);
                 someOneTips.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
                 someOneTips.setVisible(true);
             } else {
-                someOneTips.setText("开审同人(0)");
+                someOneTips.setText("开审同人");
                 someOneTips.setStyle(STYLE_NORMAL_FOR_BUTTON);
                 someOneTips.setVisible(false);
             }
