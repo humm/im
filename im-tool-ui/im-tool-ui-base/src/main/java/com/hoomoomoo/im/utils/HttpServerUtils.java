@@ -20,7 +20,7 @@ public class HttpServerUtils {
             server.start();
             LoggerUtils.info("服务器【" + serverUrl + "】" + " 端口【" + port + "】初始化成功......");
         } catch (IOException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 }

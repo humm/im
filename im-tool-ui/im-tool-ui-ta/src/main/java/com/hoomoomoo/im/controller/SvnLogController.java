@@ -147,9 +147,9 @@ public class SvnLogController extends BaseController implements Initializable {
             svnLogTaskParam.setType(type);
             TaskUtils.execute(new SvnLogTask(svnLogTaskParam));
         } catch (NumberFormatException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + e.getMessage());
         }
     }
@@ -237,7 +237,7 @@ public class SvnLogController extends BaseController implements Initializable {
             setProgress(1);
             LoggerUtils.writeSvnLogInfo(date, logDtoList);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + STR_SPACE + ExceptionMsgUtils.getMsg(e));
         } finally {
             svnSubmit.setDisable(false);
@@ -280,7 +280,7 @@ public class SvnLogController extends BaseController implements Initializable {
             svnVersion.getSelectionModel().select(KEY_TRUNK);
             maxVersionConfig = Integer.valueOf(appConfigDto.getSvnMaxRevision());
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 

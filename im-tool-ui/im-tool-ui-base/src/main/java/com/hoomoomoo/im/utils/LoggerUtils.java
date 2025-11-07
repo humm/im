@@ -36,11 +36,8 @@ public class LoggerUtils {
                 info(msg, true);
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
-    }
-    public static void info(String msg) {
-        info(msg, true);
     }
 
     public static void info(String msg, boolean includeDate) {
@@ -53,12 +50,24 @@ public class LoggerUtils {
         writeAppLog(msg, includeDate);
     }
 
-    public static void info(Throwable e) {
+    public static void info(String msg) {
+        info(msg, true);
+    }
+
+    public static void error(String msg) {
+        info(msg, true);
+    }
+
+    public static void error(String msg, boolean includeDate) {
+        info(msg, includeDate);
+    }
+
+    public static void error(Throwable e) {
         e.printStackTrace();
         writeAppLog(e.toString(), e.getStackTrace());
     }
 
-    public static void info(Exception e) {
+    public static void error(Exception e) {
         e.printStackTrace();
         writeAppLog(e.toString(), e.getStackTrace());
     }
@@ -127,7 +136,7 @@ public class LoggerUtils {
             String logFilePath = String.format(PATH_LOG, SVN_LOG.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
             FileUtils.writeFileAppend(FileUtils.getFilePath(logFilePath), log.toString());
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -183,7 +192,7 @@ public class LoggerUtils {
             String logFilePath = String.format(PATH_LOG, functionConfig.getLogFolder(), CommonUtils.getCurrentDateTime3() + FILE_TYPE_LOG);
             FileUtils.writeFileAppend(FileUtils.getFilePath(logFilePath), log.toString());
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -200,7 +209,7 @@ public class LoggerUtils {
             }
             FileUtils.writeFile(filePath, logs);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -210,7 +219,7 @@ public class LoggerUtils {
             String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, SVN_REALTIME_STAT.getLogFolder() + FILE_TYPE_STAT));
             writeStatFile(statFilePath);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -220,7 +229,7 @@ public class LoggerUtils {
             String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, SVN_HISTORY_STAT.getLogFolder() + FILE_TYPE_STAT));
             writeStatFile(statFilePath);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -231,7 +240,7 @@ public class LoggerUtils {
             String statFilePath = FileUtils.getFilePath(String.format(PATH_STAT, functionConfig.getLogFolder() + FILE_TYPE_STAT));
             writeStatFile(statFilePath);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 

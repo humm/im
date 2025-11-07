@@ -124,7 +124,7 @@ public class GenerateSqlController extends BaseController implements Initializab
             TaskUtils.execute(new GenerateSqlTask(new GenerateSqlTaskParam(this)));
             updateProgress();
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(sql, e.getMessage());
         }
     }
@@ -188,7 +188,7 @@ public class GenerateSqlController extends BaseController implements Initializab
             setProgress(1);
         } catch (Exception e) {
             setProgress(-1);
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(sql, e.getMessage());
         } finally {
             execute.setDisable(false);
@@ -240,7 +240,7 @@ public class GenerateSqlController extends BaseController implements Initializab
                 selectTruncate(null);
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(sql, e.getMessage());
         }
     }

@@ -225,7 +225,7 @@ public class SvnUtils {
                     startRevision = repository.getDatedRevision(start);
                     endRevision = repository.getDatedRevision(end);
                 } catch (Exception e) {
-                    LoggerUtils.info(e);
+                    LoggerUtils.error(e);
                     if (notice) {
                         svnStat.get(KEY_NOTICE).setNotice(CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
                     }
@@ -375,7 +375,7 @@ public class SvnUtils {
         try {
             version = svnUpdateClient.doUpdate(new File(workspace), SVNRevision.HEAD, SVNDepth.INFINITY, false, false);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(fileLog, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e) + STR_NEXT_LINE);
         }
         return version == null ? null : String.valueOf(version);

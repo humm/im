@@ -24,7 +24,7 @@ public class SystemToolTask implements Callable<SystemToolTaskParam> {
                     new Exception("未匹配执行方法，请检查");
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return null;
     }

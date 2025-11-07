@@ -89,7 +89,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
             updateProgress();
             TaskUtils.execute(new DatabaseScriptTask(new DatabaseScriptTaskParam(this)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         }
     }
@@ -179,7 +179,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
                                     }
                                     String errorMsg = e.getMessage().replaceAll("[\\t\\r\\n]", STR_BLANK);
                                     String errorSql = sql + STR_NEXT_LINE;
-                                    LoggerUtils.info(e);
+                                    LoggerUtils.error(e);
                                     OutputUtils.info(log, errorMsg + STR_NEXT_LINE);
                                     OutputUtils.info(log, errorSql + STR_NEXT_LINE);
                                     failSql.add(errorMsg);
@@ -202,14 +202,14 @@ public class DatabaseScriptController extends BaseController implements Initiali
                 OutputUtils.info(log, "请选择文件夹目录");
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         } finally {
             setProgress(1);
             try {
                 DatabaseUtils.closeConnection();
             } catch (SQLException e) {
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
                 OutputUtils.info(log, e.getMessage());
             }
             databaseExecute.setDisable(false);
@@ -245,7 +245,7 @@ public class DatabaseScriptController extends BaseController implements Initiali
             }
             logFilePath = FileUtils.getFilePath(String.format(PATH_LOG, DATABASE_SCRIPT.getLogFolder(), "error" + FILE_TYPE_SQL));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         }
     }

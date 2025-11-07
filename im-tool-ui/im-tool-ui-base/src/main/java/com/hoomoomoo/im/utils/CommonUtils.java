@@ -403,7 +403,7 @@ public class CommonUtils {
                 tips = String.format(MSG_LICENSE_EXPIRE_TIPS, endDate - curretDate);
             }
         } catch (ParseException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return tips;
     }
@@ -675,7 +675,7 @@ public class CommonUtils {
                 }
             }
         } catch (IOException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return version;
         /*String[] verList = version.split(STR_POINT_SLASH);
@@ -779,7 +779,7 @@ public class CommonUtils {
             }
             functionTab.getSelectionModel().select(tab);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -853,7 +853,7 @@ public class CommonUtils {
                         stopHepToDoSyncFile(appConfigDto);
                     }
                 } catch (Exception e) {
-                    LoggerUtils.info(e);
+                    LoggerUtils.error(e);
                 }
             }
         });
@@ -931,13 +931,13 @@ public class CommonUtils {
                         LoggerUtils.info(String.format("上次激活页签【%s】", activatePrevFunction));
                         LoggerUtils.info(String.format("当前激活页签【%s】", tabName));
                     } catch (Exception e) {
-                        LoggerUtils.info(e);
+                        LoggerUtils.error(e);
                     }
                 }
             });
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_INIT, NAME_CONFIG_VIEW));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -984,7 +984,7 @@ public class CommonUtils {
                 }
             }
         } catch (SocketException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return MAC_ADDRESS_CACHE;
     }
@@ -1129,7 +1129,7 @@ public class CommonUtils {
                                 appConfigDto.setErrorLogStage(null);
                             });
                         } catch (Exception e) {
-                            LoggerUtils.info(e);
+                            LoggerUtils.error(e);
                         }
                     }
                 });
@@ -1316,7 +1316,7 @@ public class CommonUtils {
                                             }
                                             cleanFile(content);
                                         } catch (Exception e) {
-                                            LoggerUtils.info(e);
+                                            LoggerUtils.error(e);
                                         }
                                     }
                                     cleanFile(files);
@@ -1441,7 +1441,7 @@ public class CommonUtils {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             return StringUtils.equals(KEY_LOG_DEBUG, appConfigDto.getAppLogLevel());
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return false;
     }
@@ -1520,7 +1520,7 @@ public class CommonUtils {
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
-                    LoggerUtils.info(e);
+                    LoggerUtils.error(e);
                 }
                 iterator.remove();
                 break;

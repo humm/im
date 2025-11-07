@@ -156,7 +156,7 @@ public class ScriptSqlUtils {
                 }
             }
         } catch (Exception e){
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return menu;
     }

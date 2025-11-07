@@ -47,7 +47,7 @@ public class AboutInfoController implements Initializable {
             try {
                 version = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION));
             } catch (IOException e) {
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
             }
             if (CollectionUtils.isNotEmpty(version)) {
                 for (String item : version) {
@@ -76,7 +76,7 @@ public class AboutInfoController implements Initializable {
             }
             LoggerUtils.writeLogInfo(ABOUT_INFO.getCode(), new Date(), new ArrayList<>());
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 

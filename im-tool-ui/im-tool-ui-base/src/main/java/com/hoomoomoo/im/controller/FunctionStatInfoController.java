@@ -49,7 +49,7 @@ public class FunctionStatInfoController implements Initializable {
         try {
             functionDtoList = CommonUtils.getAuthFunction();
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         if (CollectionUtils.isEmpty(functionDtoList)) {
             return;
@@ -80,7 +80,7 @@ public class FunctionStatInfoController implements Initializable {
                 if (e instanceof FileNotFoundException) {
                     continue;
                 }
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
             }
         }
         OutputUtils.info(title, "功能数量  " + functionDtoList.size());

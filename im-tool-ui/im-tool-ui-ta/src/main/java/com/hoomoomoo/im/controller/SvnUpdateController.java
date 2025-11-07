@@ -7,7 +7,6 @@ import com.hoomoomoo.im.dto.LogDto;
 import com.hoomoomoo.im.task.SvnUpdateTask;
 import com.hoomoomoo.im.task.SvnUpdateTaskParam;
 import com.hoomoomoo.im.utils.*;
-import com.sun.jna.platform.unix.solaris.LibKstat;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -71,7 +70,7 @@ public class SvnUpdateController extends BaseController implements Initializable
             updateProgress(0.01);
             TaskUtils.execute(new SvnUpdateTask(new SvnUpdateTaskParam(this)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(fileLogError, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + e.getMessage());
         }
     }
@@ -109,7 +108,7 @@ public class SvnUpdateController extends BaseController implements Initializable
                         if (FileUtils.isSuffixDirectory(updateFile, BaseConst.FILE_TYPE_SVN, true, false)) {
                             String version = SvnUtils.updateSvn(path, fileLogError);
                             if (version == null) {
-                                LoggerUtils.info("更新异常: " + name);
+                                LoggerUtils.error("更新异常: " + name);
                                 infoMsg(name, null, "更新异常");
                                 OutputUtils.info(failNum, String.valueOf(Integer.valueOf(failNum.getText()) + 1));
                                 OutputUtils.info(fileLogError, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + "更新【 " + name + " 】异常\n");
@@ -137,7 +136,7 @@ public class SvnUpdateController extends BaseController implements Initializable
             setProgress(1);
             LoggerUtils.writeSvnUpdateInfo(date, updatePath);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(fileLogError, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
         } finally {
             svnSubmit.setDisable(false);
@@ -157,7 +156,7 @@ public class SvnUpdateController extends BaseController implements Initializable
             OutputUtils.info(workspaceNum, String.valueOf(appConfigDto.getSvnUpdatePath().size()));
             OutputUtils.info(failNum, STR_0);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 

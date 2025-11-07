@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.Charset;
 
-import static com.hoomoomoo.im.consts.BaseConst.ENCODING_GBK;
 import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
 
 /**
@@ -43,7 +41,7 @@ public class CmdUtils {
             // 等待进程执行结束
             process.waitFor();
         } catch (IOException | InterruptedException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return content.toString();
     }
@@ -65,7 +63,7 @@ public class CmdUtils {
             // 等待命令执行完成
             process.waitFor();
         } catch (IOException | InterruptedException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return content.toString();
     }

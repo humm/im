@@ -66,7 +66,7 @@ public class ScriptCheckController implements Initializable {
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_CHECK_MENU)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_CHECK_MENU, e.getMessage()));
             executeFlag = false;
         }
@@ -81,7 +81,7 @@ public class ScriptCheckController implements Initializable {
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_CHECK_MENU);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_CHECK_MENU, e.getMessage()));
         } finally {
             executeFlag = false;
@@ -122,7 +122,7 @@ public class ScriptCheckController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_OLD_MENU_LOG, "修正老版全量错误信息");
             addLog("查看修正老版全量错误信息");
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "查看修正老版全量错误信息"));
         }
     }
@@ -140,7 +140,7 @@ public class ScriptCheckController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_NEW_MENU_LOG, "修正新版全量错误信息");
             addLog("查看修正新版全量错误信息");
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, "查看修正新版全量错误信息"));
         }
     }
@@ -200,7 +200,7 @@ public class ScriptCheckController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT, "检查结果");
             addLog("检查结果");
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_SHOW_RESULT, "请检查结果文件是否存在"));
         }
     }
@@ -216,7 +216,7 @@ public class ScriptCheckController implements Initializable {
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_LACK_EXT)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, e.getMessage()));
             executeFlag = false;
         }
@@ -238,7 +238,7 @@ public class ScriptCheckController implements Initializable {
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_LACK_EXT);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, e.getMessage()));
         } finally {
             executeFlag = false;
@@ -256,7 +256,7 @@ public class ScriptCheckController implements Initializable {
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_WORK_FLOW)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, e.getMessage()));
             executeFlag = false;
         }
@@ -275,7 +275,7 @@ public class ScriptCheckController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_WORK_FLOW_LOG, "修正复核信息错误信息");
             addLog("查看修正复核信息错误信息");
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, "查看修正新版全量错误信息"));
         }
     }
@@ -289,7 +289,7 @@ public class ScriptCheckController implements Initializable {
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_WORK_FLOW);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, e.getMessage()));
         } finally {
             executeFlag = false;
@@ -314,7 +314,7 @@ public class ScriptCheckController implements Initializable {
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_EXT)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, e.getMessage()));
             executeFlag = false;
         }
@@ -329,7 +329,7 @@ public class ScriptCheckController implements Initializable {
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_EXT);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_EXT, e.getMessage()));
         } finally {
             executeFlag = false;
@@ -347,7 +347,7 @@ public class ScriptCheckController implements Initializable {
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_OLD_MENU)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, e.getMessage()));
             executeFlag = false;
         }
@@ -362,7 +362,7 @@ public class ScriptCheckController implements Initializable {
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_OLD_MENU);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, e.getMessage()));
         } finally {
             executeFlag = false;
@@ -380,7 +380,7 @@ public class ScriptCheckController implements Initializable {
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_NEW_MENU)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, e.getMessage()));
             executeFlag = false;
         }
@@ -395,7 +395,7 @@ public class ScriptCheckController implements Initializable {
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_NEW_MENU);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU, e.getMessage()));
         } finally {
             executeFlag = false;
@@ -420,7 +420,7 @@ public class ScriptCheckController implements Initializable {
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_ERROR_EXT)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, e.getMessage()));
         }
     }
@@ -450,7 +450,7 @@ public class ScriptCheckController implements Initializable {
                 }
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ERROR_EXT, e.getMessage()));
         } finally {
             executeFlag = false;
@@ -463,7 +463,7 @@ public class ScriptCheckController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_UPDATE_RESULT, "升级脚本");
             addLog("升级脚本");
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_SHOW_RESULT, "请检查结果文件是否不存在"));
         }
     }
@@ -474,7 +474,7 @@ public class ScriptCheckController implements Initializable {
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, KEY_UPDATE_MENU)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(KEY_UPDATE_MENU, e.getMessage()));
         }
     }
@@ -484,7 +484,7 @@ public class ScriptCheckController implements Initializable {
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, KEY_UPDATE_CHANGE_MENU)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(KEY_UPDATE_CHANGE_MENU, e.getMessage()));
         }
     }
@@ -494,7 +494,7 @@ public class ScriptCheckController implements Initializable {
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_REPORT)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT, e.getMessage()));
         }
     }
@@ -513,7 +513,7 @@ public class ScriptCheckController implements Initializable {
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_REPAIR_REPORT);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT, e.getMessage()));
         } finally {
             executeFlag = false;
@@ -534,7 +534,7 @@ public class ScriptCheckController implements Initializable {
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog(NAME_OLD_TO_NEW_MENU);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_OLD_TO_NEW_MENU, e.getMessage()));
         } finally {
             executeFlag = false;
@@ -549,7 +549,7 @@ public class ScriptCheckController implements Initializable {
             OutputUtils.info(logs, STR_NEXT_LINE);
             addLog("菜单升级脚本");
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_UPDATE_MENU, e.getMessage()));
         }
     }
@@ -578,8 +578,8 @@ public class ScriptCheckController implements Initializable {
                 appConfigDto.setCheckResultStage(null);
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
-            LoggerUtils.info(getCommonMsg(NAME_SHOW_RESULT, e.getMessage()));
+            LoggerUtils.error(e);
+            LoggerUtils.error(getCommonMsg(NAME_SHOW_RESULT, e.getMessage()));
         }
     }
 

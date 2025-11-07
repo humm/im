@@ -53,7 +53,7 @@ public class SvnHistoryQueryController extends BaseController implements Initial
             TaskUtils.execute(new SvnHistoryQueryTask(new SvnHistoryQueryTaskParam(this)));
             LoggerUtils.writeSvnHistoryStatInfo();
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -75,13 +75,13 @@ public class SvnHistoryQueryController extends BaseController implements Initial
                 OutputUtils.info(notice, getOrderInfo(svnStatDtoList, appConfigDto));
             } catch (Exception e) {
                 OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
             } finally {
                 setProgress(1);
             }
         } catch (Exception e) {
             OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 

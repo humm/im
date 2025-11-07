@@ -92,7 +92,7 @@ public class CopyCodeController extends BaseController implements Initializable 
             }
             OutputUtils.info(sourcePath, path);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         }
     }
@@ -108,7 +108,7 @@ public class CopyCodeController extends BaseController implements Initializable 
             }
             OutputUtils.info(targetPath, path);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         }
     }
@@ -135,7 +135,7 @@ public class CopyCodeController extends BaseController implements Initializable 
             TaskUtils.execute(new CopyCodeTask(new CopyCodeTaskParam(this)));
             updateProgress();
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         }
     }
@@ -286,7 +286,7 @@ public class CopyCodeController extends BaseController implements Initializable 
             } else {
                 OutputUtils.info(log, e.getMessage());
             }
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } finally {
             setProgress(1);
             execute.setDisable(false);
@@ -366,7 +366,7 @@ public class CopyCodeController extends BaseController implements Initializable 
                 }
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         }
     }

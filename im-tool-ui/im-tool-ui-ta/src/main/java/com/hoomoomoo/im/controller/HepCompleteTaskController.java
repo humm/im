@@ -91,7 +91,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         } catch (Exception e) {
             notice.setStyle(STYLE_BOLD_RED);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("修改记录信息同步异常,请检查"));
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             sync.setDisable(false);
             execute.setDisable(false);
             return;
@@ -309,7 +309,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
                 syncSvn(null);
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 

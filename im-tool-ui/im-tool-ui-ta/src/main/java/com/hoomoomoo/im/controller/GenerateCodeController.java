@@ -188,7 +188,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             String pkName = getConfigTablePkInfo(tableName);
             showTableInfo(tableName, pkName, columnInfo);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         } finally {
             showTableCodeBtn.setDisable(false);
@@ -209,7 +209,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             String pkName = getConfigTablePkInfo(tableName);
             showTableInfo(tableName, pkName, columnInfo);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         } finally {
             showAsyTableCodeBtn.setDisable(false);
@@ -286,7 +286,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             }
 
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         }
     }
@@ -309,7 +309,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             setProgress(0);
             updateProgress();
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         }
     }
@@ -365,7 +365,7 @@ public class GenerateCodeController extends BaseController implements Initializa
             OutputUtils.info(tableCode, "tbfundproduct");
             OutputUtils.info(asyTableCode, "tbfundproductasy");
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         }
     }
@@ -434,7 +434,7 @@ public class GenerateCodeController extends BaseController implements Initializa
                 firstMenuItems.add(iterator.next());
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         } finally {
             refreshMenuBtn.setDisable(false);
@@ -519,7 +519,7 @@ public class GenerateCodeController extends BaseController implements Initializa
                 }
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage());
         }
         return pk;

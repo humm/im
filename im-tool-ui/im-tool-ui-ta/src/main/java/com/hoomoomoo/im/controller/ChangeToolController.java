@@ -265,7 +265,7 @@ public class ChangeToolController implements Initializable {
             }
             TaskUtils.execute(new ChangeFunctionTask(new ChangeFunctionTaskParam(this, STR_1, mode)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, e.getMessage());
         } finally {
             enableBtn();
@@ -289,7 +289,7 @@ public class ChangeToolController implements Initializable {
             }
             TaskUtils.execute(new ChangeFunctionTask(new ChangeFunctionTaskParam(this, STR_2, menu)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, e.getMessage());
         } finally {
             enableBtn();
@@ -377,10 +377,10 @@ public class ChangeToolController implements Initializable {
                     }
                 }
             } catch (IOException e) {
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
                 OutputUtils.info(logs, e.getMessage());
             } catch (Exception e) {
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
                 OutputUtils.info(logs, STR_NEXT_LINE_2 + e.getMessage());
                 OutputUtils.info(logs, "执行异常sql: " + sql + STR_NEXT_LINE);
                 return;
@@ -615,7 +615,7 @@ public class ChangeToolController implements Initializable {
             }
             TaskUtils.execute(new ChangeFunctionTask(new ChangeFunctionTaskParam(this, STR_3, dictPath, paramPath, path)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.infoContainBr(logs, e.getMessage());
         }
     }
@@ -645,7 +645,7 @@ public class ChangeToolController implements Initializable {
                 OutputUtils.infoContainBr(logs, "错误信息 结束");
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.infoContainBr(logs, e.getMessage());
         } finally {
             executeRealtimeBtn.setDisable(false);
@@ -755,7 +755,7 @@ public class ChangeToolController implements Initializable {
                     if (eleAfter != null) {
                         String[] dictInfo = eleAfter.split("',");
                         if (dictInfo.length < 4) {
-                            // LoggerUtils.info("数据字典格式化获取数据错误: " + eleAfter);
+                            // LoggerUtils.error("数据字典格式化获取数据错误: " + eleAfter);
                             continue;
                         }
                         String dictCode = ScriptSqlUtils.getSqlFieldValue(dictInfo[0].replace(STR_BRACKETS_LEFT, STR_BLANK));
@@ -797,7 +797,7 @@ public class ChangeToolController implements Initializable {
                         String[] sqlInfo = eleAfter.split("',");
                         if (eleLower.contains(KEY_TB_FUND_API_TAB)) {
                             if (sqlInfo.length < 6) {
-                                LoggerUtils.info("格式化获取数据错误: " + ele);
+                                LoggerUtils.error("格式化获取数据错误: " + ele);
                                 continue;
                             }
                             ParamRealtimeApiTabDto paramRealtimeApiTab = new ParamRealtimeApiTabDto();
@@ -815,7 +815,7 @@ public class ChangeToolController implements Initializable {
                             }
                         } else if (eleLower.contains(KEY_TB_FUND_API_COMPONENT)) {
                             if (sqlInfo.length < 6) {
-                                LoggerUtils.info("格式化获取数据错误: " + ele);
+                                LoggerUtils.error("格式化获取数据错误: " + ele);
                                 continue;
                             }
                             ParamRealtimeApiComponentDto paramRealtimeApiComponentDto = new ParamRealtimeApiComponentDto();

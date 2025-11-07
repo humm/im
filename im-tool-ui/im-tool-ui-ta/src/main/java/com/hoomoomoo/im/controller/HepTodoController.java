@@ -36,7 +36,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -372,7 +371,7 @@ public class HepTodoController extends BaseController implements Initializable {
             executeQuery(null);
             buildTestData();
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -488,7 +487,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 try {
                     execute(OPERATE_START, item);
                 } catch (Exception e) {
-                    LoggerUtils.info(e);
+                    LoggerUtils.error(e);
                     OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
                 }
             }
@@ -496,7 +495,7 @@ public class HepTodoController extends BaseController implements Initializable {
             try {
                 completeTask(item);
             } catch (Exception e) {
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
             }
         } else {
@@ -530,7 +529,7 @@ public class HepTodoController extends BaseController implements Initializable {
             doShowVersion();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("查看成功"));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             String msg = e.getMessage();
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
             CommonUtils.showTipsByError(msg);
@@ -667,7 +666,7 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "doExecuteQuery")));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
         }
     }
@@ -688,7 +687,7 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             setProgress(1);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ExceptionMsgUtils.getMsg(e)));
         } finally {
             query.setDisable(false);
@@ -834,7 +833,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     appConfigDto.setChildStage(null);
                 });
             } catch (Exception e) {
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
             }
         }
@@ -1643,7 +1642,7 @@ public class HepTodoController extends BaseController implements Initializable {
                                 setStyle(taskStyle);
                             }
                         } catch (Exception e) {
-                            LoggerUtils.info(e);
+                            LoggerUtils.error(e);
                         }
                     }
                 };
@@ -1789,17 +1788,23 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private static String getTaskNameTag(String taskName) {
-        int start = 0;
-        int end = taskName.length();
-        if (taskName.contains(DEFECT_TAG)) {
-            return DEFECT_TAG;
-        } else if (taskName.contains(STR_BRACKETS_3_LEFT) && taskName.contains(STR_BRACKETS_3_RIGHT)) {
-            return taskName.substring(taskName.indexOf(STR_BRACKETS_3_LEFT) , taskName.indexOf(STR_BRACKETS_3_RIGHT) + 1);
-        } else if (taskName.startsWith(STR_BRACKETS_2_LEFT) && taskName.contains(STR_BRACKETS_2_RIGHT)) {
-            start = taskName.indexOf(STR_BRACKETS_2_LEFT);
-            end = taskName.indexOf(STR_BRACKETS_2_RIGHT) + 1;
+        try {
+            int start = 0;
+            int end = taskName.length();
+            if (taskName.contains(DEFECT_TAG)) {
+                return DEFECT_TAG;
+            } else if (taskName.contains(STR_BRACKETS_3_LEFT) && taskName.contains(STR_BRACKETS_3_RIGHT) && !taskName.endsWith(STR_BRACKETS_3_RIGHT)) {
+                return taskName.substring(taskName.indexOf(STR_BRACKETS_3_LEFT) , taskName.indexOf(STR_BRACKETS_3_RIGHT) + 1);
+            } else if (taskName.startsWith(STR_BRACKETS_2_LEFT) && taskName.contains(STR_BRACKETS_2_RIGHT) && !taskName.endsWith(STR_BRACKETS_2_RIGHT)) {
+                start = taskName.indexOf(STR_BRACKETS_2_LEFT);
+                end = taskName.indexOf(STR_BRACKETS_2_RIGHT) + 1;
+            }
+            return taskName.substring(start, end);
+        } catch (Exception e) {
+            LoggerUtils.info("任务名称：" + taskName);
+            LoggerUtils.error(e);
         }
-        return taskName.substring(start, end);
+        return STR_BLANK;
     }
 
     private HttpResponse sendPost(Map<String, Object> param) throws Exception {
@@ -1998,7 +2003,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     checkCommitPush(appConfig);
                     outputMemory();
                 } catch (Exception e) {
-                    LoggerUtils.info(e);
+                    LoggerUtils.error(e);
                 }
                 }
             };
@@ -2074,7 +2079,7 @@ public class HepTodoController extends BaseController implements Initializable {
                         }
                         sync(sourceFile, fileSyncSource, fileSyncTarget, ver);
                     } catch (IOException e) {
-                        LoggerUtils.info(e);
+                        LoggerUtils.error(e);
                         OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
                     }
                     clearFile(new File(fileSyncTarget), ver);
@@ -2428,7 +2433,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
         } catch (IOException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         task.put(KEY_CUSTOMER, customerName);
         task.put(KEY_TASK, demandNo);
@@ -2452,9 +2457,9 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         } catch (IOException e) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return task;
     }
@@ -2494,9 +2499,9 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         } catch (IOException e) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return task;
     }
@@ -2507,9 +2512,9 @@ public class HepTodoController extends BaseController implements Initializable {
             versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT));
         } catch (IOException e) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return versionList;
     }
@@ -2532,9 +2537,9 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         } catch (IOException e) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return demand;
     }
@@ -2556,9 +2561,9 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         } catch (IOException e) {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         return task;
     }

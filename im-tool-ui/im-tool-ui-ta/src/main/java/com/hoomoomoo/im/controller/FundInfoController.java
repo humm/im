@@ -89,7 +89,7 @@ public class FundInfoController extends BaseController implements Initializable 
             updateProgress();
             TaskUtils.execute(new FundInfoTask(new FundInfoTaskParam(this)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(fundLog, e.getMessage());
         }
     }
@@ -103,7 +103,7 @@ public class FundInfoController extends BaseController implements Initializable 
                 OutputUtils.info(filePath, appConfigDto.getFundExcelPath());
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -261,7 +261,7 @@ public class FundInfoController extends BaseController implements Initializable 
             infoMsg("执行完成");
             schedule.setProgress(1);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             infoMsg(e.getMessage());
         } finally {
             setProgress(1);

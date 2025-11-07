@@ -3,7 +3,6 @@ package com.hoomoomoo.im.utils;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,10 +14,6 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 
@@ -71,13 +66,13 @@ public class StarterUtils {
             LoggerUtils.appStartInfo(String.format(BaseConst.MSG_CHECK, NAME_CONFIG_LICENSE_DATE));
 
             Thread.setDefaultUncaughtExceptionHandler((thread, e) -> {
-                LoggerUtils.info("全局异常处理日志打印开始");
+                LoggerUtils.error("全局异常处理日志打印开始");
                 if (e instanceof IllegalStateException) {
-                    LoggerUtils.info(e.getMessage(), false);
+                    LoggerUtils.error(e.getMessage(), false);
                 } else {
-                    LoggerUtils.info(e);
+                    LoggerUtils.error(e);
                 }
-                LoggerUtils.info("全局异常处理日志打印结束");
+                LoggerUtils.error("全局异常处理日志打印结束");
             });
 
             Parent root = new FXMLLoader().load(new FileInputStream(FileUtils.getFilePath(PATH_STARTER_FXML)));
@@ -126,7 +121,7 @@ public class StarterUtils {
                 }
             }).start();
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 

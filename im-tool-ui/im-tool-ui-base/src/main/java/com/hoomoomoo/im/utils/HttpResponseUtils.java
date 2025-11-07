@@ -46,14 +46,14 @@ public class HttpResponseUtils implements HttpHandler {
                 result += line;
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } finally {
             try {
                 if (in != null) {
                     in.close();
                 }
             } catch (Exception e2) {
-                LoggerUtils.info(e2);
+                LoggerUtils.error(e2);
             }
 
         }
@@ -74,7 +74,7 @@ public class HttpResponseUtils implements HttpHandler {
                     final String val = URLDecoder.decode(keyAndVal[1], ENCODING_GBK);
                     result.put(key, val);
                 } catch (UnsupportedEncodingException e) {
-                    LoggerUtils.info(e);
+                    LoggerUtils.error(e);
                 }
             }
         });

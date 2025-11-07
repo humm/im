@@ -571,7 +571,7 @@ public class TaCommonUtils {
                                         try {
                                             ver = Integer.valueOf(code.substring(code.length() - 1)) + 1;
                                         } catch (NumberFormatException e) {
-                                            LoggerUtils.info("获取版本序号异常: " + code);
+                                            LoggerUtils.error("获取版本序号异常: " + code);
                                         }
                                         String nextVer = code.substring(0, code.length() - 1) + ver;
                                         if (versionList.containsKey(nextVer) && !demandStatus.contains(versionList.get(nextVer))) {

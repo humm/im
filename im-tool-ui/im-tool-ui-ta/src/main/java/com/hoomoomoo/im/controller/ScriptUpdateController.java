@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
-import java.io.File;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -30,7 +29,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.LACK_NEW_MENU_ALL;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SCRIPT_UPDATE;
 
 /**
@@ -115,7 +113,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             updateProgress();
             TaskUtils.execute(new ScriptUpdateTask(new ScriptUpdateTaskParam(this, "execute")));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -148,7 +146,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             }
 
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -225,7 +223,7 @@ public class ScriptUpdateController extends BaseController implements Initializa
             String sourceScript = source.getText();
             generatesql(appConfigDto, sourceScript);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.clearLog(target);
             OutputUtils.info(target, e.toString());
         } finally {

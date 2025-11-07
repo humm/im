@@ -59,7 +59,7 @@ public class HttpRequestUtils {
                 result += line;
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
         finally {
             try {
@@ -70,7 +70,7 @@ public class HttpRequestUtils {
                     out.close();
                 }
             } catch (Exception e2) {
-                LoggerUtils.info(e2);
+                LoggerUtils.error(e2);
             }
         }
         return result;

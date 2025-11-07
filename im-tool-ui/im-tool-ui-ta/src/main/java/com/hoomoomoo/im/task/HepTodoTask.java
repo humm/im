@@ -1,13 +1,11 @@
 package com.hoomoomoo.im.task;
 
-import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.controller.HepTodoController;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.JvmCache;
 import com.hoomoomoo.im.utils.LoggerUtils;
 import javafx.application.Platform;
 
-import java.io.FileNotFoundException;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -47,10 +45,10 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
                     }
                     long end = System.currentTimeMillis();
                     Platform.runLater(() -> {
-                        CommonUtils.showTipsByInfo(String.format("同步任务信息成功，耗时%s秒", (end - start) / 1000), 30 * 1000);
+                        CommonUtils.showTipsByInfo(String.format("同步任务信息成功，耗时%s秒", (end - start) / 1000));
                     });
                 } catch (Exception e) {
-                    LoggerUtils.info(e);
+                    LoggerUtils.error(e);
                     Platform.runLater(() -> {
                         String msg = e.getMessage();
                         if (msg.contains("拒绝访问")) {

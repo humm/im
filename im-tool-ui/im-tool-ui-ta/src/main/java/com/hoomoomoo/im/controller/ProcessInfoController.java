@@ -97,7 +97,7 @@ public class ProcessInfoController extends BaseController implements Initializab
             updateProgress();
             TaskUtils.execute(new ProcessInfoTask(new ProcessInfoTaskParam(this)));
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage() + STR_NEXT_LINE);
         }
     }
@@ -115,7 +115,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                 OutputUtils.info(taCode, appConfigDto.getProcessTaCode());
             }
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage() + STR_NEXT_LINE);
         }
     }
@@ -251,7 +251,7 @@ public class ProcessInfoController extends BaseController implements Initializab
             LoggerUtils.writeProcessInfo(date, path);
             OutputUtils.info(log, "执行完成" + STR_NEXT_LINE);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(log, e.getMessage() + STR_NEXT_LINE);
         } finally {
             setProgress(1);

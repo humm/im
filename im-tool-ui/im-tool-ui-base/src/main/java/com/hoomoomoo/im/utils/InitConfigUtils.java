@@ -183,7 +183,7 @@ public class InitConfigUtils {
             FileUtils.writeFile(versionFilePathSource, statLog.toString().replace(currentVersion, nextVersion));
             updatePom(versionFilePath.substring(0, versionFilePath.indexOf("target")), nextVersion);
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -258,7 +258,7 @@ public class InitConfigUtils {
                 targetFile.getParentFile().mkdirs();
                 FileUtils.copyFile(new File(filePath), targetFile);
             } catch (Exception e) {
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
             }
         }
     }
@@ -327,7 +327,7 @@ public class InitConfigUtils {
                     itemIterator.set(item);
                 }
             } catch (Exception e) {
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
             }
         }
         return item;

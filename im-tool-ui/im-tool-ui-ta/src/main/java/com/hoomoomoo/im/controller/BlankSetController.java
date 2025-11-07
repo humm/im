@@ -18,8 +18,6 @@ import javafx.scene.control.TextArea;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 
-import java.awt.*;
-import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
@@ -94,7 +92,7 @@ public class BlankSetController implements Initializable {
             appConfigDto.setExecute(true);
             ScriptRepairSql.repairErrorLog();
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } finally {
             appConfigDto.setExecute(false);
         }

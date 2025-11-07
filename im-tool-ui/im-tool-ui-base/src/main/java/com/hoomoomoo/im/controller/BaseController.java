@@ -37,9 +37,9 @@ public class BaseController {
             baseTaskParam.setStep(step);
             TaskUtils.execute(new BaseTask(baseTaskParam));
         } catch (ExecutionException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } catch (InterruptedException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -56,7 +56,7 @@ public class BaseController {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
             }
         }
     }
@@ -82,7 +82,7 @@ public class BaseController {
                 //schedule.requestFocus();
             });
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 }

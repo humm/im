@@ -141,7 +141,7 @@ public class ScriptCompareSql {
             initConfigUedMenuCache();
             initConfigBaseMenuCache();
         } catch (IOException e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 

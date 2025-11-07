@@ -60,7 +60,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
             TaskUtils.execute(new SvnRealtimeStatTask(new SvnRealtimeStatTaskParam(this)));
             LoggerUtils.writeSvnRealtimeStatInfo();
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 
@@ -99,7 +99,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
                     OutputUtils.info(costTime, (System.currentTimeMillis() - date.getTime()) / 1000 + "秒");
                 } catch (Exception e) {
                     OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
-                    LoggerUtils.info(e);
+                    LoggerUtils.error(e);
                 } finally {
                     setProgress(1);
                 }
@@ -107,7 +107,7 @@ public class SvnRealtimeStatController extends BaseController implements Initial
             }
         } catch (Exception e) {
             OutputUtils.info(notice, CommonUtils.getCurrentDateTime1() + BaseConst.STR_SPACE + ExceptionMsgUtils.getMsg(e));
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         }
     }
 }

@@ -120,7 +120,7 @@ public class SystemToolController implements Initializable {
         try {
             executeUpdateVersion();
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, e.getMessage());
         } finally {
             updateVersionBtn.setDisable(false);
@@ -133,8 +133,8 @@ public class SystemToolController implements Initializable {
         try {
             JvmCache.getHepTodoController().doShowVersion();
         } catch (Exception e) {
-            LoggerUtils.info(e);
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, e.getMessage());
         } finally {
             showVersionBtn.setDisable(false);
@@ -148,7 +148,7 @@ public class SystemToolController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG, "系统日志");
             addLog("查看系统日志");
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCheckMenuMsg("查看系统日志错误"));
         }
     }
@@ -164,7 +164,7 @@ public class SystemToolController implements Initializable {
             OutputUtils.info(logs, getCommonMsg(NAME_CLEAR_LOG, "日志清除成功"));
             addLog("清除系统日志");
         } catch (Exception e) {
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
             OutputUtils.info(logs, getCheckMenuMsg("清除系统日志错误"));
         }
     }
@@ -196,7 +196,7 @@ public class SystemToolController implements Initializable {
             OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "同步源码结束"));
         } catch (Exception e) {
             OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, e.getMessage()));
-            LoggerUtils.info(e);
+            LoggerUtils.error(e);
         } finally {
             syncCodeBtn.setDisable(false);
         }
@@ -268,7 +268,7 @@ public class SystemToolController implements Initializable {
                 robot = new Robot();
             }
         } catch (AWTException e) {
-            LoggerUtils.info(getShakeMouseMsg(e.getMessage()));
+            LoggerUtils.error(getShakeMouseMsg(e.getMessage()));
             OutputUtils.info(baseLogs, getShakeMouseMsg(e.getMessage()));
         }
         Point pos = MouseInfo.getPointerInfo().getLocation();
@@ -330,8 +330,8 @@ public class SystemToolController implements Initializable {
                             }
                             LoggerUtils.info(String.format("读取文件【%s】结束", subFilePath));
                         } catch (IOException e) {
-                            LoggerUtils.info(e);
-                            LoggerUtils.info(String.format("读取文件【%s】异常", subFilePath));
+                            LoggerUtils.error(e);
+                            LoggerUtils.error(String.format("读取文件【%s】异常", subFilePath));
                             response.add(STR_BLANK);
                         }
                     }
@@ -420,8 +420,8 @@ public class SystemToolController implements Initializable {
                 response.addAll(res);
                 LoggerUtils.info(String.format("读取文件【%s】结束", subFilePath));
             } catch (IOException e) {
-                LoggerUtils.info(e);
-                LoggerUtils.info(String.format("读取文件【%s】异常", subFilePath));
+                LoggerUtils.error(e);
+                LoggerUtils.error(String.format("读取文件【%s】异常", subFilePath));
                 response.add(STR_BLANK);
             }
         }
@@ -545,7 +545,7 @@ public class SystemToolController implements Initializable {
                 }
                 addLog(logName);
             } catch (Exception e) {
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
                 throw new Exception(e.getMessage());
             } finally {
                 if (fileInputStream != null) {

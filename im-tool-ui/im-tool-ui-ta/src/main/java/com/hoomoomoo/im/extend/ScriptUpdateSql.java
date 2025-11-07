@@ -298,7 +298,7 @@ public class ScriptUpdateSql {
             }catch (Exception e){
                 LoggerUtils.info(columnStr);
                 LoggerUtils.info(valueStr);
-                LoggerUtils.info(e);
+                LoggerUtils.error(e);
             }
             return updateSql.toString();
         }
