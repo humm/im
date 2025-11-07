@@ -342,7 +342,7 @@ public class BaseConst {
     public static final String MSG_APP_TITLE = "   【%s: %s】";
 
 
-    public static final String SKIP_LOG_TIPS = " skip_log_tips ";
+    public static final String SKIP_LOG_TIPS = "skip_log_tips ";
 
     public static final String MSG_OPEN = "打开【 %s 】 功能界面";
     public static final String MSG_USE = "使用【 %s 】 功能";

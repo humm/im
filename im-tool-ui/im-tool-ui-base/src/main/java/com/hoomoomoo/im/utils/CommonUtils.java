@@ -1356,7 +1356,7 @@ public class CommonUtils {
         } else {
             show = true;
         }
-        if (show && !message.contains(SKIP_LOG_TIPS)) {
+        if (show) {
             scanLogTipsIndex.put(tipsType, tipsDate);
             if (!appConfigDto.getInitScanLog()) {
                 if (printImLog(message)) {
@@ -1372,7 +1372,7 @@ public class CommonUtils {
             return false;
         }
         String msg = message.stream().collect(Collectors.joining(STR_COMMA));
-        if (msg.contains(NAME_NO_AUTH) || msg.contains(KEY_ERROR_CODE_NO_AUTH_SERVICE)) {
+        if (msg.contains(NAME_NO_AUTH) || msg.contains(KEY_ERROR_CODE_NO_AUTH_SERVICE) || msg.contains(SKIP_LOG_TIPS)) {
             return false;
         }
         if (msg.contains(KEY_PACKAGE_IM)) {
