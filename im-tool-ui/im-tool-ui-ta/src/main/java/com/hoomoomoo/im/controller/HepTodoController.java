@@ -268,6 +268,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label filePushTips;
 
     @FXML
+    private Label syncFileTimeTitle;
+
+    @FXML
     private Label syncFileTime;
 
     @FXML
@@ -339,6 +342,8 @@ public class HepTodoController extends BaseController implements Initializable {
     private String queryType = STR_BLANK;
 
     Set<Button> queryButtonSet = new HashSet<>();
+
+    private long syncTime = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -2086,7 +2091,14 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     clearFile(new File(fileSyncTarget), ver);
                 }
-                OutputUtils.info(syncFileTime, String.format("轮询时间(%s) %s", num, CommonUtils.getCurrentDateTime14()));
+                syncTime++;
+                if (syncTime % 2 == 0) {
+                    syncFileTime.setStyle(STYLE_COLOR_GREEN);
+                } else {
+                    syncFileTime.setStyle(STYLE_COLOR_BLUE);
+                }
+                OutputUtils.info(syncFileTimeTitle, String.format("轮询时间(%s)：", num));
+                OutputUtils.info(syncFileTime, CommonUtils.getCurrentDateTime14());
             }
         };
         fileSyncTimer.schedule(fileSyncTimerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
@@ -2275,6 +2287,7 @@ public class HepTodoController extends BaseController implements Initializable {
         fileTipsFileOperateTitle.setVisible(syncComponent);
         fileTipsVersion.setVisible(syncComponent);
         fileTipsVersionTitle.setVisible(syncComponent);
+        syncFileTimeTitle.setVisible(syncComponent);
 
         scriptCheck.setVisible(checkFileComponent);
         scriptShow.setVisible(checkFileComponent);

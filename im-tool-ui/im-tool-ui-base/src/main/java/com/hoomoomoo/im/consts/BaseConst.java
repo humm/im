@@ -480,6 +480,11 @@ public class BaseConst {
     public static final String STYLE_NORMAL_FOR_BUTTON = "-fx-font-weight: normal; -fx-text-fill: 0x000000ff;";
     public static final String STYLE_NORMAL = "-fx-font-weight: normal;";
 
+    public static final String STYLE_COLOR_GREEN = "-fx-text-background-color: green;";
+    public static final String STYLE_COLOR_RED = "-fx-text-background-color: red;";
+    public static final String STYLE_COLOR_BLUE = "-fx-text-background-color: blue;";
+
+
     public enum SQL_CHECK_TYPE {
         CHECK_RESULT_SUMMARY(100, "结果汇总", "100.结果汇总.sql", ""),
         LACK_NEW_MENU_ALL(200, "缺少新版全量", "200.缺少新版全量.sql", "/extend/check/conf/skipNewMenu.conf"),

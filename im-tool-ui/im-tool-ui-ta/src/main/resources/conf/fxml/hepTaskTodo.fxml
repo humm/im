@@ -52,7 +52,8 @@
                         <Label fx:id="fileTipsVersionTitle" layoutX="950.0" layoutY="55.0" style="-fx-font-weight: bold;" text="同步版本："/>
                         <Label fx:id="fileTipsVersion" layoutX="1020.0" layoutY="55.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="syncFileTime" layoutX="1350.0" layoutY="55.0"/>
+                        <Label fx:id="syncFileTimeTitle" layoutX="1350.0" layoutY="55.0" style="-fx-font-weight: bold;" text="轮询时间："/>
+                        <Label fx:id="syncFileTime" layoutX="1440.0" layoutY="55.0"/>
 
                         <Label layoutX="20.0" layoutY="80.0" style="-fx-font-weight: bold;" text="今天待提交："/>
                         <Label fx:id="dayTodo" layoutX="105.0" layoutY="80.0" style="-fx-font-weight: bold;"/>

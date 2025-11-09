@@ -9,7 +9,7 @@ import javafx.application.Platform;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
-import static com.hoomoomoo.im.consts.BaseConst.NAME_NO_AUTH;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 public class HepTodoTask implements Callable<HepTodoTaskParam> {
 
@@ -50,11 +50,7 @@ public class HepTodoTask implements Callable<HepTodoTaskParam> {
                 } catch (Exception e) {
                     LoggerUtils.error(e);
                     Platform.runLater(() -> {
-                        String msg = e.getMessage();
-                        if (msg.contains("拒绝访问")) {
-                            msg = NAME_NO_AUTH;
-                        }
-                        CommonUtils.showTipsByError(msg, 5 * 1000);
+                        CommonUtils.showTipsByError(e.getMessage().replaceAll(SKIP_LOG_TIPS, STR_BLANK));
                     });
                 } finally {
                     hepTodoTaskParam.getHepTodoController().syncTask.setDisable(false);
