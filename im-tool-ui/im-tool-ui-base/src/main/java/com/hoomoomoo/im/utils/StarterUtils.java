@@ -81,6 +81,7 @@ public class StarterUtils {
             primaryStage.setTitle(appName);
             primaryStage.setScene(scene);
             primaryStage.setResizable(true);
+            //primaryStage.setMaximized(true);
             DisplayMode displayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
             int width = displayMode.getWidth();
             int height = displayMode.getHeight();
