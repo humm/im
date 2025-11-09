@@ -72,21 +72,21 @@
                             </padding>
                         </Button>
 
-                        <Button fx:id="scriptCheck" layoutX="230.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="100.0" text="检查配置脚本">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-                        <Button fx:id="scriptShow" layoutX="360.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="100.0" text="查看检查结果">
+                        <Button fx:id="extendUser" layoutX="230" layoutY="105.0" mnemonicParsing="false"
+                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联用户任务">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
                         </Button>
 
-                        <Button fx:id="extendUser" layoutX="490.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联用户任务">
+                        <Button fx:id="scriptCheck" layoutX="360" layoutY="105.0" mnemonicParsing="false"
+                                onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="100.0" text="检查配置脚本">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Button>
+                        <Button fx:id="scriptShow" layoutX="490.0" layoutY="105.0" mnemonicParsing="false"
+                                onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="100.0" text="查看检查结果">
                             <padding>
                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                             </padding>
