@@ -2361,7 +2361,15 @@ public class HepTodoController extends BaseController implements Initializable {
     private void controlColorDesc(boolean visible) {
         if (CollectionUtils.isNotEmpty(colorList)) {
             for (Label label : colorList) {
-                label.setVisible(visible);
+                if (visible) {
+                    if (label.getText().contains(NAME_DESC_COLOR)) {
+                        label.setVisible(true);
+                    } else {
+                        label.setVisible(false);
+                    }
+                } else {
+                    label.setVisible(false);
+                }
             }
         }
     }
@@ -2383,10 +2391,21 @@ public class HepTodoController extends BaseController implements Initializable {
         double step = 13;
         double x = 20;
         double y = 180;
-        Label label = new Label("颜色说明:");
+        Label label = new Label(NAME_DESC_COLOR);
         label.setStyle(STYLE_BOLD);
         label.setLayoutX(x);
         label.setLayoutY(y);
+        label.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                for (Label ele : colorList) {
+                    if (ele.getText().contains(NAME_DESC_COLOR)) {
+                        ele.setVisible(true);
+                        continue;
+                    }
+                    ele.setVisible(!ele.isVisible());
+                }
+            }
+        });
         todoTitle.getChildren().add(label);
         colorList.add(label);
         int prevLen = 4;
@@ -2400,7 +2419,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 len = prevLen;
             }
             x += step * len;
-            ele.setStyle(STYLE_BOLD + color.get(key)[0]);
+            ele.setStyle(color.get(key)[0]);
             ele.setLayoutX(x);
             ele.setLayoutY(y);
             colorList.add(ele);
