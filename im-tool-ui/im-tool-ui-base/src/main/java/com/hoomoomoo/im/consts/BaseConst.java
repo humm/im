@@ -480,8 +480,7 @@ public class BaseConst {
     public static final String STYLE_NORMAL_FOR_BUTTON = "-fx-font-weight: normal; -fx-text-fill: 0x000000ff;";
     public static final String STYLE_NORMAL = "-fx-font-weight: normal;";
 
-    public static final String STYLE_COLOR_GREEN = "-fx-text-background-color: green;";
-    public static final String STYLE_COLOR_RED = "-fx-text-background-color: red;";
+    public static final String STYLE_COLOR_BLACK = "-fx-text-background-color: black;";
     public static final String STYLE_COLOR_BLUE = "-fx-text-background-color: blue;";
 
 

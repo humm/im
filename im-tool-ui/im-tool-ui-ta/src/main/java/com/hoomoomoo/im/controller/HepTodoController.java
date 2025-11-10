@@ -2099,7 +2099,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 syncTime++;
                 if (syncTime % 2 == 0) {
-                    syncFileTime.setStyle(STYLE_COLOR_GREEN);
+                    syncFileTime.setStyle(STYLE_COLOR_BLACK);
                 } else {
                     syncFileTime.setStyle(STYLE_COLOR_BLUE);
                 }
