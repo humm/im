@@ -986,12 +986,18 @@ public class HepTodoController extends BaseController implements Initializable {
         List<String> cancelErrorVersion = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT));
         String taskLevelQ = CommonUtils.getComponentValue(taskLevelQuery);
         boolean waitTaskSync = false;
+        Map<String, String> hepTaskAppointVersionMap = appConfigDto.getHepTaskVersionOrderDateMap();
         for (String item : versionList) {
             String[] elements = item.split(STR_SEMICOLON);
             Map<String, String> ele = new HashMap<>();
+            String versionCode = elements[0];
             String oriCloseDate = elements[1];
             String oriPublishDate = elements[2];
-            String versionCode = elements[0];
+            if (hepTaskAppointVersionMap.containsKey(versionCode)) {
+                String orderDate = hepTaskAppointVersionMap.get(versionCode);
+                oriCloseDate = orderDate;
+                oriPublishDate = orderDate;
+            }
             ele.put(KEY_ORI_CLOSE_DATE, oriCloseDate);
             ele.put(KEY_ORI_PUBLISH_DATE, oriPublishDate);
             ele.put(KEY_ORDER_NO, STR_0);

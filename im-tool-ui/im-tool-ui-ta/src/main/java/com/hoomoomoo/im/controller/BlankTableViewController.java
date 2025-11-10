@@ -55,19 +55,19 @@ public class BlankTableViewController implements Initializable {
         TableColumn closeDate = new TableColumn<>("封版日期");
         closeDate.setCellValueFactory(new PropertyValueFactory<>("closeDate"));
         closeDate.setPrefWidth(150);
-        closeDate.setEditable(true);
+        closeDate.setEditable(false);
         closeDate.setStyle(STYLE_CENTER);
 
         TableColumn publishDate = new TableColumn<>("发版日期");
         publishDate.setCellValueFactory(new PropertyValueFactory<>("publishDate"));
         publishDate.setPrefWidth(150);
-        publishDate.setEditable(true);
+        publishDate.setEditable(false);
         publishDate.setStyle(STYLE_CENTER);
         
         TableColumn endData = new TableColumn<>("发放日期");
         endData.setCellValueFactory(new PropertyValueFactory<>("endData"));
         endData.setPrefWidth(150);
-        endData.setEditable(true);
+        endData.setEditable(false);
         endData.setStyle(STYLE_CENTER);
 
         table.getColumns().addAll(code, closeDate, publishDate, endData);

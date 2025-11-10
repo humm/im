@@ -482,6 +482,7 @@ public class InitConfigUtils {
         keys.put("hep.task.appoint.version", null);
         keys.put("hep.task.focus.version", null);
         keys.put("hep.task.focus.demand", null);
+        keys.put("hep.task.version.order.date", null);
 
         keys.put("system.tool.update.version.path", null);
         keys.put("hep.task.todo.end.date.version", null);

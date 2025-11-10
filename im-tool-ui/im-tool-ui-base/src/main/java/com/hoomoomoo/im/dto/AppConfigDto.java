@@ -189,11 +189,13 @@ public class AppConfigDto extends BaseDto {
     private String hepTaskAppointVersion;
     private Map<String, String> hepTaskAppointVersionMap;
 
-
     private String hepTaskFocusDemand;
 
     private String hepTaskFocusVersion;
     private Set<String> hepTaskFocusVersionMap;
+
+    private String hepTaskVersionOrderDate;
+    private Map<String, String> hepTaskVersionOrderDateMap;
 
     private String systemToolShakeMouseTimer;
 
@@ -345,6 +347,7 @@ public class AppConfigDto extends BaseDto {
         this.hepTaskOnlySelfMap = new LinkedHashMap<>(16);
         this.hepTaskAppointVersionMap = new LinkedHashMap<>(16);
         this.hepTaskFocusVersionMap = new LinkedHashSet<>(16);
+        this.hepTaskVersionOrderDateMap = new LinkedHashMap<>(16);
     }
 
     private void initTooltip() {

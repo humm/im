@@ -366,6 +366,18 @@ public class ConfigCache {
                 appConfigDto.getHepTaskFocusVersionMap().add(ele);
             }
         }
+
+        // 版本指定排序日期
+        String hepTaskVersionOrderDate = appConfigDto.getHepTaskVersionOrderDate();
+        if (StringUtils.isNotBlank(hepTaskVersionOrderDate)) {
+            String[] versionOrderDate = hepTaskVersionOrderDate.split(STR_COMMA);
+            for (String ele : versionOrderDate) {
+                String[] eleList = ele.split(STR_COLON);
+                if (eleList.length == 2) {
+                    appConfigDto.getHepTaskVersionOrderDateMap().put(eleList[0], eleList[1]);
+                }
+            }
+        }
     }
 
     private static String getFunctionName(String item) {
