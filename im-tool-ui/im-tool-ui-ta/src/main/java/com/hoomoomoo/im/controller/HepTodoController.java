@@ -124,16 +124,20 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static Map<String, String> extendUserInfoNameToCode = new LinkedHashMap();
     private final static Map<String, String> dayCompleteTipsInfo = new HashMap();
 
-
-    private final static String STYLE_RED_COLOR = "-fx-text-background-color: red; -fx-font-weight: bold;";
-    private final static String STYLE_BLACK_COLOR = "-fx-text-background-color: #000000; -fx-font-weight: bold;";
+    private final static String TIME_OVER_COLOR = "-fx-text-background-color: #778000;";
+    private final static String TODAY_COLOR = "-fx-text-background-color: #ff0000;";
+    private final static String WEEK_COLOR = "-fx-text-background-color: #0015ff;";
+    private final static String FOCUS_COLOR = "-fx-text-background-color: #c800ff;";
+    private final static String NEW_COLOR = "-fx-text-background-color: #000000; -fx-font-weight: bold;";
+    private final static String DEFAULT_COLOR = "-fx-text-background-color: #000000;";
 
     private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
-        put("完成日期超期", new String[] {"-fx-text-background-color: #ff0090;"});
-        put("今天待提交", new String[] {"-fx-text-background-color: #ff0000;"});
-        put("本周待提交", new String[] {"-fx-text-background-color: #0015ff;"});
-        put("重点关注", new String[] {"-fx-text-background-color: #ff0073;"});
-        put("默认", new String[] {"-fx-text-background-color: #000000;"});
+        put("完成日期超期", new String[] {TIME_OVER_COLOR});
+        put("今天待提交", new String[] {TODAY_COLOR});
+        put("本周待提交", new String[] {WEEK_COLOR});
+        put("重点关注", new String[] {FOCUS_COLOR});
+        put("新增任务", new String[] {NEW_COLOR});
+        put("默认", new String[] {DEFAULT_COLOR});
     }};
 
     Map<String, String> FRONT_QUERY_DEMAND_CACHE = new HashMap<>(2);
@@ -319,6 +323,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private Button  devCompleteHide;
 
     @FXML
+    private Button  newTask;
+
+    @FXML
     private Button  devCompleteShow;
 
     private Pane mask;
@@ -356,6 +363,7 @@ public class HepTodoController extends BaseController implements Initializable {
             queryButtonSet.add(only);
             queryButtonSet.add(devCompleteShow);
             queryButtonSet.add(devCompleteHide);
+            queryButtonSet.add(newTask);
             queryButtonSet.add(query);
             defaultDividerPositions = taskSplitPane.getDividerPositions()[0];
             defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
@@ -374,7 +382,7 @@ public class HepTodoController extends BaseController implements Initializable {
             addTaskMenu(appConfigDto, this);
             initComponentStatus();
             executeQuery(null);
-            buildTestData();
+            initTestData();
         } catch (Exception e) {
             LoggerUtils.error(e);
         }
@@ -419,6 +427,13 @@ public class HepTodoController extends BaseController implements Initializable {
     void selectDevCompleteHide(ActionEvent event) throws Exception {
         queryType = devCompleteHide.getText();
         controlQueryButtonColor(devCompleteHide);
+        executeQuery(event);
+    }
+
+    @FXML
+    void selectNewTask(ActionEvent event) throws Exception {
+        queryType = newTask.getText();
+        controlQueryButtonColor(newTask);
         executeQuery(event);
     }
 
@@ -955,6 +970,7 @@ public class HepTodoController extends BaseController implements Initializable {
         Set<String> finishDateError = new HashSet<>();
         Set<String> finishDateOver = new HashSet<>();
         Set<String> focusVersionTask = new HashSet<>();
+        Set<String> todayAddTask = new HashSet<>();
         List<String> focusDemand = new ArrayList<>();
         if (StringUtils.isNotBlank(appConfigDto.getHepTaskFocusDemand())) {
             focusDemand = Arrays.asList(appConfigDto.getHepTaskFocusDemand().split(STR_COMMA));
@@ -1083,7 +1099,6 @@ public class HepTodoController extends BaseController implements Initializable {
             item.setFinishTime(finishTime);
 
             String sprintVersion = item.getSprintVersion();
-
             if (appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
                 focusVersionTask.add(taskNumberIn);
                 String assigneeName = item.getAssigneeName();
@@ -1117,6 +1132,12 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             } else if (StringUtils.equals(queryType, devCompleteShow.getText())) {
                 if (!taskName.contains(DEV_COMMIT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            } else if (StringUtils.equals(queryType, newTask.getText())) {
+                String createTime = item.getCreateTime().split(STR_SPACE)[0];
+                if (!StringUtils.equals(todayDate, createTime)) {
                     iterator.remove();
                     continue;
                 }
@@ -1167,11 +1188,11 @@ public class HepTodoController extends BaseController implements Initializable {
 
             if (StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
                 if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0) {
-                    finishDateError.add(item.getTaskNumber());
+                    finishDateError.add(taskNumberIn);
                     minCompleteByMarkYmd = CommonUtils.getCurrentDateYmd(finishDate);
                 }
                 if (StringUtils.compare(todayDate, finishDate) > 0) {
-                    finishDateOver.add(item.getTaskNumber());
+                    finishDateOver.add(taskNumberIn);
                     minCompleteByMarkYmd = CommonUtils.getCurrentDateYmd(finishDate);
                 }
             }
@@ -1254,17 +1275,24 @@ public class HepTodoController extends BaseController implements Initializable {
 
             if (todayComplete) {
                 dayVersionNum++;
-                dayTodoTask.add(item.getTaskNumber());
+                dayTodoTask.add(taskNumberIn);
             }
             boolean week = todayComplete || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
             if (week) {
                 weekVersionNum++;
-                weekTodoTask.add(item.getTaskNumber());
+                weekTodoTask.add(taskNumberIn);
             }
 
-            if (StringUtils.equals(appConfigDto.getHepTaskUser(), item.getCreatorId())) {
+            String creatorId = item.getCreatorId();
+            if (StringUtils.equals(appConfigDto.getHepTaskUser(), creatorId)) {
                 item.setCreatorName(STR_SPACE);
+            } else {
+                String createTime = item.getCreateTime().split(STR_SPACE)[0];
+                if (StringUtils.equals(todayDate, createTime)) {
+                    todayAddTask.add(taskNumberIn);
+                }
             }
+
             if (StringUtils.isBlank(status)) {
                 hasBlank = true;
                 taskTotal++;
@@ -1315,19 +1343,19 @@ public class HepTodoController extends BaseController implements Initializable {
         }
 
         if (dayVersionNum > 0) {
-            dayTodo.setStyle(STYLE_RED_COLOR);
+            dayTodo.setStyle(STYLE_BOLD_RED);
         } else {
-            dayTodo.setStyle(STYLE_BLACK_COLOR);
+            dayTodo.setStyle(STYLE_BOLD_BLACK);
         }
         if (weekVersionNum > 0) {
-            weekTodo.setStyle(STYLE_RED_COLOR);
+            weekTodo.setStyle(STYLE_BOLD_RED);
         } else {
-            weekTodo.setStyle(STYLE_BLACK_COLOR);
+            weekTodo.setStyle(STYLE_BOLD_BLACK);
         }
 
         OutputUtils.clearLog(taskList);
         finishDateError.addAll(finishDateOver);
-        infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, focusDemand);
+        infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, todayAddTask, focusDemand);
         taskList.setDisable(false);
         if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
             String msg = sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
@@ -1598,7 +1626,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void infoTaskList(TableView taskListIn, List<HepTaskDto> res, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError,
-                              Set<String> focusVersionTask, List<String> focusDemand) {
+                              Set<String> focusVersionTask, Set<String> todayAddTask, List<String> focusDemand) {
         if (taskListIn == null) {
             return;
         }
@@ -1608,7 +1636,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 formatData(hepTaskDto);
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
-                initRowStyle(taskListIn, dayTodoTask,  weekTodoTask, finishDateError, focusVersionTask, focusDemand);
+                initRowStyle(taskListIn, dayTodoTask,  weekTodoTask, finishDateError, focusVersionTask, todayAddTask, focusDemand);
             }
             OutputUtils.setEnabled(taskListIn);
         });
@@ -1627,7 +1655,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initRowStyle(TableView taskListIn, Set<String> dayTodoTask, Set<String> weekTodoTask, Set<String> finishDateError,
-                              Set<String> focusVersionTask, List<String> focusDemand) {
+                              Set<String> focusVersionTask, Set<String> todayAddTask, List<String> focusDemand) {
         taskListIn.setRowFactory(new Callback<TableView<HepTaskDto>, TableRow<HepTaskDto>>() {
             @Override
             public TableRow<HepTaskDto> call(TableView<HepTaskDto> param) {
@@ -1640,7 +1668,9 @@ public class HepTodoController extends BaseController implements Initializable {
                                 String taskNumber = item.getTaskNumber();
                                 String demandNo = item.getDemandNo();
                                 String[] taskColor;
-                                if (dayTodoTask.contains(taskNumber)) {
+                                if (todayAddTask.contains(taskNumber)) {
+                                    taskColor = color.get("新增任务");
+                                }  else if (dayTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("今天待提交");
                                 } else if (finishDateError.contains(taskNumber)) {
                                     taskColor = color.get("完成日期超期");
@@ -1651,6 +1681,7 @@ public class HepTodoController extends BaseController implements Initializable {
                                 } else {
                                     taskColor = color.get("默认");
                                 }
+                                taskColor = initTestDataColor(taskColor);
                                 String taskStyle = taskColor[0];
                                 setStyle(taskStyle);
                             }
@@ -1899,6 +1930,9 @@ public class HepTodoController extends BaseController implements Initializable {
                         minCompleteBySort = getValue(STR_8);
                     }
                     String sortCode = minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskLevel();
+                    if (StringUtils.equals(queryType, newTask.getText())) {
+                        sortCode = item.getAssigneeId() + item.getCreatorId() + minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskLevel();
+                    }
                     item.setSortCode(sortCode);
                     sortCodeCache.put(cacheKey, sortCode);
                 }
@@ -1982,6 +2016,7 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void setSyncFrontVersionTips(boolean visible) {
+        OutputUtils.info(syncFrontVersionTips, "front未实时同步");
         syncFrontVersionTips.setVisible(visible);
     }
 
@@ -2141,8 +2176,8 @@ public class HepTodoController extends BaseController implements Initializable {
             filePushTips.setStyle(STYLE_BOLD_RED);
             filePushTips.setVisible(true);
         } else {
-            filePushTips.setStyle(STYLE_NORMAL);
-            filePushTips.setVisible(false);
+           filePushTips.setStyle(STYLE_NORMAL);
+           filePushTips.setVisible(false);
         }
         OutputUtils.info(filePushTips, threadMsg);
     }
@@ -2376,6 +2411,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void controlFocusVersionTips(boolean visible) {
         focusVersionTips.setVisible(visible);
+        OutputUtils.info(focusVersionTipsLabel, "重点关注版本：");
         focusVersionTipsLabel.setVisible(visible);
     }
 
@@ -2722,11 +2758,30 @@ public class HepTodoController extends BaseController implements Initializable {
         mask.setVisible(false);
     }
 
-    private void buildTestData() throws Exception {
+    private static int currentDataNum = 0;
+
+    private String[] initTestDataColor(String[] item) {
+        String[] taskColor = item;
+        if (!CommonUtils.proScene()) {
+            taskColor = new ArrayList<>(color.values()).get(currentDataNum % (color.size()));
+            currentDataNum++;
+            if (currentDataNum == 0) {
+                todoTitle.setStyle(TIME_OVER_COLOR);
+                todoTitle.setStyle(TODAY_COLOR);
+                todoTitle.setStyle(WEEK_COLOR);
+                todoTitle.setStyle(FOCUS_COLOR);
+                todoTitle.setStyle(NEW_COLOR);
+                todoTitle.setStyle(DEFAULT_COLOR);
+            }
+        }
+        return taskColor;
+    }
+
+    private void initTestData() throws Exception {
         if (CommonUtils.proScene()) {
             return;
         }
-        JSONArray req = new JSONArray();
+        JSONArray test = new JSONArray();
         for (int i = 0; i < 10; i++) {
             Map<String, Object> item = new HashMap<>(16);
             item.put(KEY_ID, i);
@@ -2735,6 +2790,7 @@ public class HepTodoController extends BaseController implements Initializable {
             item.put("product_name", "HUNDSUN基金登记过户系统软件V6.0");
             item.put("assignee_name", "胡毛毛");
             item.put(KEY_ESTIMATE_FINISH_TIME, "2024-09-02 22:59:59");
+            item.put("create_time", "2024-09-02 22:59:59");
             item.put(KEY_CLOSE_DATE, "1");
             item.put(KEY_ORI_CLOSE_DATE, "2025-01-14");
             switch (i % 7) {
@@ -2794,9 +2850,9 @@ public class HepTodoController extends BaseController implements Initializable {
                 default:
                     break;
             }
-            req.add(item);
+            test.add(item);
         }
-        dealTaskList(req, true);
+        dealTaskList(test, true);
         OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("查询成功"));
     }
 

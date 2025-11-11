@@ -154,23 +154,26 @@
                         <Button  fx:id="devCompleteHide" layoutX="490.0" layoutY="143.0" mnemonicParsing="false"
                                  onAction="#selectDevCompleteHide" prefHeight="30.0" prefWidth="100.0" text="隐藏已完成">
                         </Button>
-                        <Button fx:id="query" layoutX="620.0" layoutY="143.0" mnemonicParsing="false"
+                        <Button  fx:id="newTask" layoutX="620.0" layoutY="143.0" mnemonicParsing="false"
+                                 onAction="#selectNewTask" prefHeight="30.0" prefWidth="100.0" text="今日新增">
+                        </Button>
+                        <Button fx:id="query" layoutX="750.0" layoutY="143.0" mnemonicParsing="false"
                                 onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
                         </Button>
 
-                        <ProgressIndicator fx:id="schedule" layoutX="1000.0" layoutY="142.0" progress="0.0"
+                        <ProgressIndicator fx:id="schedule" layoutX="1020.0" layoutY="142.0" progress="0.0"
                                            style="-fx-scale-x: 0.8; -fx-scale-y: 0.8;"/>
-                        <Label fx:id="scheduleText" layoutX="1035" layoutY="148.0" text="0%"/>
+                        <Label fx:id="scheduleText" layoutX="1055" layoutY="148.0" text="0%"/>
 
-                        <Label fx:id="focusVersionTipsLabel" layoutX="20" layoutY="180.0" style="-fx-font-weight: bold;" text="重点关注版本："/>
+                        <Label fx:id="focusVersionTipsLabel" layoutX="20" layoutY="180.0" style="-fx-font-weight: bold;"/>
                         <Label fx:id="focusVersionTips" layoutX="120.0" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="memoryTips" layoutX="550" layoutY="180.0"
+                        <Label fx:id="memoryTips" layoutX="650" layoutY="180.0"
                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="filePushTips" layoutX="800.0" layoutY="180.0"
+                        <Label fx:id="filePushTips" layoutX="900.0" layoutY="180.0"
                                style="-fx-font-weight: bold;"/>
-                        <Label fx:id="syncFrontVersionTips" layoutX="1070.0" layoutY="180.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;" text="front未实时同步"/>
+                        <Label fx:id="syncFrontVersionTips" layoutX="1150.0" layoutY="180.0"
+                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
                         <TextField fx:id="demandNo" layoutX="1350.0" layoutY="175.0" editable="false"
                                    style="-fx-background-color: transparent;"/>
                         <TextField fx:id="taskNo" layoutX="1500.0" layoutY="175.0" editable="false"

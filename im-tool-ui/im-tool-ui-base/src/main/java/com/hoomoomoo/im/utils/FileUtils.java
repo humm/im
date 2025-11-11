@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.utils;
 
 import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.BaseDto;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
@@ -437,17 +438,6 @@ public class FileUtils {
     }
 
     /**
-     * jar启动
-     *
-     * @author: humm23693
-     * @date: 2021/06/03
-     * @return:
-     */
-    public static boolean startByJar() {
-        return getPathFolder().contains(START_MODE_JAR);
-    }
-
-    /**
      * 获取jar名称
      *
      * @author: humm23693
@@ -470,7 +460,7 @@ public class FileUtils {
      * @return:
      */
     public static void unJar(String path) throws Exception {
-       if (!startByJar()) {
+       if (!CommonUtils.proScene()) {
             return;
         }
         String url = getFilePath(path);

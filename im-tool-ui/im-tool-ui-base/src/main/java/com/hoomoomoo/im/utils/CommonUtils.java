@@ -563,7 +563,7 @@ public class CommonUtils {
     }
 
     public static boolean isSuperUser() {
-        if (!FileUtils.startByJar()) {
+        if (!CommonUtils.proScene()) {
             return true;
         }
         String[] mac = SecurityUtils.getDecryptString(SUPER_MAC_ADDRESS).split(STR_COMMA);
@@ -1196,7 +1196,7 @@ public class CommonUtils {
     }
 
     public static void deleteVersionFile(String appCode) {
-        if (!FileUtils.startByJar()) {
+        if (!CommonUtils.proScene()) {
             return;
         }
         String path = FileUtils.getPathFolder().replace(KEY_FILE_SLASH, STR_BLANK).split(START_MODE_JAR)[0];
@@ -1447,7 +1447,7 @@ public class CommonUtils {
     }
 
     public static boolean proScene() {
-        return FileUtils.startByJar();
+        return FileUtils.getPathFolder().contains(START_MODE_JAR);
     }
 
     /**

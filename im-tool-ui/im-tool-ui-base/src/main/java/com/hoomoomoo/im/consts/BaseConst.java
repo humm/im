@@ -475,6 +475,7 @@ public class BaseConst {
 
     public static final String STYLE_CENTER = "-fx-alignment: center;";
     public static final String STYLE_BOLD_RED = "-fx-font-weight: bold; -fx-text-background-color: red;";
+    public static final String STYLE_BOLD_BLACK = "-fx-font-weight: bold; -fx-text-background-color: #000000;";
     public static final String STYLE_BOLD_RED_FOR_BUTTON = "-fx-font-weight: bold; -fx-text-fill: red;";
     public static final String STYLE_SELECTED_FOR_BUTTON = "-fx-font-weight: bold; -fx-text-fill: green;";
     public static final String STYLE_BOLD = "-fx-font-weight: bold;";

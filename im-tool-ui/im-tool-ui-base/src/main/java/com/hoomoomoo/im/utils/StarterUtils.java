@@ -34,7 +34,7 @@ public class StarterUtils {
             LoggerUtils.appStartInfo(String.format(MSG_UPDATE, NAME_CONFIG_FILE));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String appName = getAppName(appConfigDto.getAppName()) + STR_SPACE_2;
-            if (!FileUtils.startByJar()) {
+            if (!CommonUtils.proScene()) {
                 appName += String.format(MSG_APP_TITLE, APP_MODE_NAME, APP_MODE_NAME_APP);
                 String pathFolder = FileUtils.getPathFolder().replace(APP_CODE_BASE, appCode);
                 String sourceIcon = pathFolder + PATH_ICON;
@@ -96,7 +96,7 @@ public class StarterUtils {
             primaryStage.setOnCloseRequest(event -> {
                 try {
                     primaryStage.close();
-                    if (FileUtils.startByJar()) {
+                    if (CommonUtils.proScene()) {
                         String processName = FileUtils.getJarName().replace(FILE_TYPE_JAR, FILE_TYPE_EXE);
                         processName = processName.substring(processName.lastIndexOf(STR_SLASH) + 1);
                         Runtime.getRuntime().exec(String.format(CMD_KILL_APP, processName));
