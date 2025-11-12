@@ -206,7 +206,7 @@
                                                                    AnchorPane.rightAnchor="0.0"
                                                                    AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn id="name" editable="false" prefWidth="810"
+                                                                <TableColumn id="name" editable="false" prefWidth="800"
                                                                              sortable="false" text="任务名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="name"/>
@@ -227,7 +227,7 @@
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="sprintVersion" editable="false"
-                                                                             prefWidth="150" sortable="false" text="版本">
+                                                                             prefWidth="160" sortable="false" text="版本">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="sprintVersion"/>
                                                                     </cellValueFactory>
