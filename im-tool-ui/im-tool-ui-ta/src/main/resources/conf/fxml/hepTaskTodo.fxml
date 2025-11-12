@@ -295,7 +295,7 @@
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="createTime" editable="false"
-                                                                             prefWidth="155" sortable="false"
+                                                                             prefWidth="190" sortable="false"
                                                                              style="-fx-alignment: center;" text="创建时间">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory
