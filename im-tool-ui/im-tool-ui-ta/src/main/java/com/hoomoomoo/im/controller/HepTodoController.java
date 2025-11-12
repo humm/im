@@ -124,10 +124,10 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static Map<String, String> extendUserInfoNameToCode = new LinkedHashMap();
     private final static Map<String, String> dayCompleteTipsInfo = new HashMap();
 
-    private final static String TIME_OVER_COLOR = "-fx-text-background-color: #778000;";
-    private final static String TODAY_COLOR = "-fx-text-background-color: #ff0000;";
-    private final static String WEEK_COLOR = "-fx-text-background-color: #0015ff;";
-    private final static String FOCUS_COLOR = "-fx-text-background-color: #c800ff;";
+    private final static String TIME_OVER_COLOR = "-fx-text-background-color: #6f8000; -fx-font-weight: bold;";
+    private final static String TODAY_COLOR = "-fx-text-background-color: #ff0000; -fx-font-weight: bold;";
+    private final static String WEEK_COLOR = "-fx-text-background-color: #0015ff; -fx-font-weight: bold;";
+    private final static String FOCUS_COLOR = "-fx-text-background-color: #c800ff; -fx-font-weight: bold;";
     private final static String NEW_COLOR = "-fx-text-background-color: #000000; -fx-font-weight: bold;";
     private final static String DEFAULT_COLOR = "-fx-text-background-color: #000000;";
 
