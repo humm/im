@@ -193,6 +193,7 @@ public class AppConfigDto extends BaseDto {
 
     private String hepTaskFocusDemand;
 
+    private int hepTaskFocusTimer;
     private String hepTaskFocusVersion;
     private Set<String> hepTaskFocusVersionMap;
 

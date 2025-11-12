@@ -2037,7 +2037,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                 }
             };
-            appConfigDto.getTimerMap().get(timerKey).schedule(filePushTimerTask, 3000, appConfigDto.getFileDefaultTimer() * 1000);
+            appConfigDto.getTimerMap().get(timerKey).schedule(filePushTimerTask, 3000, appConfigDto.getHepTaskFocusTimer() * 1000);
         });
     }
 
