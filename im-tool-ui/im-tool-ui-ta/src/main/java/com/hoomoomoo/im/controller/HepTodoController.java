@@ -116,6 +116,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
     List<Label> colorList = new ArrayList<>();
 
+    private List<String> focusVersionMessage = new ArrayList<>();
+    private int focusExecuteTimes = 0;
+
     private boolean dealTask = true;
 
     private String PAGE_USER = "";
@@ -381,6 +384,7 @@ public class HepTodoController extends BaseController implements Initializable {
             JvmCache.setHepTodoControllerMap(appConfigDto.getActivateFunction(), this);
             addTaskMenu(appConfigDto, this);
             initComponentStatus();
+            initFocusVersionTimer(appConfigDto);
             executeQuery(null);
             initTestData();
         } catch (Exception e) {
@@ -1397,10 +1401,10 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void controlFocusVersionTips(AppConfigDto appConfigDto) {
+        focusVersionMessage.clear();
         if (frontPage()) {
             int total;
             int totalStat = 0;
-            StringBuilder message = new StringBuilder();
             StringBuilder versionMsg = new StringBuilder();
             List<String> user = new ArrayList<>(extendUserInfoCodeToName.values());
             for (Map.Entry<String, Map<String, Integer>> entry : focusVersion.entrySet()) {
@@ -1408,32 +1412,22 @@ public class HepTodoController extends BaseController implements Initializable {
                 versionMsg.setLength(0);
                 String version = entry.getKey();
                 Map<String, Integer> stat = entry.getValue();
-                for (int i=0; i<user.size() - 1; i++) {
+                for (int i=0; i<user.size(); i++) {
                     String item = user.get(i);
                     int num = stat.get(item) == null ? 0 : stat.get(item);
                     total += num;
                     versionMsg.append(String.format(" %s(%s)", item, num));
                 }
                 totalStat += total;
-                message.append(String.format("【%s】任务统计(%s) --> ", version, total));
-                message.append(versionMsg);
-                message.append(STR_NEXT_LINE);
+                focusVersionMessage.add(String.format("【%s】任务统计(%s) --> %s", version, total, versionMsg));
             }
-            OutputUtils.repeatInfo(focusVersionTips, message.toString());
-            if (totalStat > 0) {
-                controlFocusVersionTips(true);
-                controlColorDesc(false);
-            } else {
-                controlFocusVersionTips(false);
-                controlColorDesc(true);
-            }
+            outputFocusVersionTipsColorDesc(totalStat, focusVersionMessage);
         } else {
             String userName = extendUserInfoCodeToName.get(CURRENT_USER_ID);
             if (StringUtils.isBlank(userName)) {
                 return;
             }
             int num = 0;
-            StringBuilder message = new StringBuilder();
             for (Map.Entry<String, Map<String, Integer>> entry : focusVersion.entrySet()) {
                 String version = entry.getKey();
                 Map<String, Integer> stat = entry.getValue();
@@ -1441,19 +1435,23 @@ public class HepTodoController extends BaseController implements Initializable {
                     int numVer = stat.get(userName);
                     if (numVer > 0) {
                         num = numVer;
-                        message.append(String.format("【%s】任务统计(%s)", version, num));
-                        break;
+                        focusVersionMessage.add(String.format("【%s】任务统计(%s)", version, num));
                     }
                 }
             }
-            OutputUtils.repeatInfo(focusVersionTips, message.toString());
-            if (num > 0) {
-                controlFocusVersionTips(true);
-                controlColorDesc(false);
-            } else {
-                controlFocusVersionTips(false);
-                controlColorDesc(true);
-            }
+            outputFocusVersionTipsColorDesc(num, focusVersionMessage);
+        }
+    }
+
+    private void outputFocusVersionTipsColorDesc(int num, List<String> message) {
+        if (num > 0) {
+            OutputUtils.repeatInfo(focusVersionTips, message.get(0));
+            controlFocusVersionTips(true);
+            controlColorDesc(false);
+        } else {
+            OutputUtils.repeatInfo(focusVersionTips, STR_BLANK);
+            controlFocusVersionTips(false);
+            controlColorDesc(true);
         }
     }
 
@@ -2018,6 +2016,29 @@ public class HepTodoController extends BaseController implements Initializable {
     private void setSyncFrontVersionTips(boolean visible) {
         OutputUtils.info(syncFrontVersionTips, "front未实时同步");
         syncFrontVersionTips.setVisible(visible);
+    }
+
+    private void initFocusVersionTimer(AppConfigDto appConfigDto) {
+        String timerKey = KEY_FOCUS_VERSION_TIMER + CURRENT_USER_ID;
+        Timer focusVersionTimer = appConfigDto.getTimerMap().get(timerKey);
+        if (focusVersionTimer == null) {
+            focusVersionTimer = new Timer();
+            appConfigDto.getTimerMap().put(timerKey, focusVersionTimer);
+        } else {
+            return;
+        }
+        Platform.runLater(() -> {
+            TimerTask filePushTimerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    if (CollectionUtils.isNotEmpty(focusVersionMessage) && focusVersionMessage.size() > 1) {
+                        focusExecuteTimes++;
+                        outputFocusVersionTipsColorDesc(1, Arrays.asList(focusVersionMessage.get(focusExecuteTimes % focusVersionMessage.size())));
+                    }
+                }
+            };
+            appConfigDto.getTimerMap().get(timerKey).schedule(filePushTimerTask, 3000, appConfigDto.getFileDefaultTimer() * 1000);
+        });
     }
 
     private void initComponentStatus() {

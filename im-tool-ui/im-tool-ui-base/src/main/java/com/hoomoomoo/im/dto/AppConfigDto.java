@@ -154,6 +154,8 @@ public class AppConfigDto extends BaseDto {
 
     private int filePushTimer;
 
+    private int fileDefaultTimer;
+
     private String fileSyncAuthVersion;
 
     private Map<String, String> fileSyncVersionMap;
