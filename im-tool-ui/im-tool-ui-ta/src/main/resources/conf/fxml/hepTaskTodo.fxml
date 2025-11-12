@@ -155,7 +155,7 @@
                                  onAction="#selectDevCompleteHide" prefHeight="30.0" prefWidth="100.0" text="隐藏已完成">
                         </Button>
                         <Button  fx:id="newTask" layoutX="620.0" layoutY="143.0" mnemonicParsing="false"
-                                 onAction="#selectNewTask" prefHeight="30.0" prefWidth="100.0" text="今日新增">
+                                 onAction="#selectNewTask" prefHeight="30.0" prefWidth="100.0" text="今天新增">
                         </Button>
                         <Button fx:id="query" layoutX="750.0" layoutY="143.0" mnemonicParsing="false"
                                 onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
@@ -292,6 +292,14 @@
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory
                                                                                 property="minCompleteBySort"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="createTime" editable="false"
+                                                                             prefWidth="155" sortable="false"
+                                                                             style="-fx-alignment: center;" text="创建时间">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory
+                                                                                property="createTime"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                             </columns>

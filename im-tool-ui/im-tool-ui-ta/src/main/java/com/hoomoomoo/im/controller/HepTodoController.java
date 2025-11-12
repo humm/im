@@ -1136,8 +1136,8 @@ public class HepTodoController extends BaseController implements Initializable {
                     continue;
                 }
             } else if (StringUtils.equals(queryType, newTask.getText())) {
-                String createTime = item.getCreateTime().split(STR_SPACE)[0];
-                if (!StringUtils.equals(todayDate, createTime)) {
+                String createDate = item.getCreateTime().split(STR_SPACE)[0];
+                if (!StringUtils.equals(todayDate, createDate)) {
                     iterator.remove();
                     continue;
                 }
@@ -1287,8 +1287,8 @@ public class HepTodoController extends BaseController implements Initializable {
             if (StringUtils.equals(appConfigDto.getHepTaskUser(), creatorId)) {
                 item.setCreatorName(STR_SPACE);
             } else {
-                String createTime = item.getCreateTime().split(STR_SPACE)[0];
-                if (StringUtils.equals(todayDate, createTime)) {
+                String createDate = item.getCreateTime().split(STR_SPACE)[0];
+                if (StringUtils.equals(todayDate, createDate)) {
                     todayAddTask.add(taskNumberIn);
                 }
             }

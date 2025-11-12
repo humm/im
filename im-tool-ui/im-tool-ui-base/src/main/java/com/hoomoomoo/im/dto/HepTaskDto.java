@@ -34,6 +34,8 @@ public class HepTaskDto extends BaseDto{
     private String operateType;
 
     // yyyy-MM-dd
+    private String createDate;
+    // yyyy-MM-dd HH:mm:ss
     private String createTime;
     // HH:mm:ss
     private String finishTime;
