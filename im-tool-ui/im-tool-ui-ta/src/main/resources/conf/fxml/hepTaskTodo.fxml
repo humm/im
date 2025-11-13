@@ -206,7 +206,7 @@
                                                                    AnchorPane.rightAnchor="0.0"
                                                                    AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn id="name" editable="false" prefWidth="800"
+                                                                <TableColumn id="name" editable="false" prefWidth="765"
                                                                              sortable="false" text="任务名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="name"/>
@@ -217,6 +217,13 @@
                                                                              style="-fx-alignment: center;" text="客户名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="customer"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="taskLevel" editable="false"
+                                                                             prefWidth="100" sortable="false"
+                                                                             style="-fx-alignment: center;" text="描述">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="taskLevel"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="taskMark" editable="false"
@@ -230,13 +237,6 @@
                                                                              prefWidth="160" sortable="false" text="版本">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="sprintVersion"/>
-                                                                    </cellValueFactory>
-                                                                </TableColumn>
-                                                                <TableColumn id="taskLevel" editable="false"
-                                                                             prefWidth="65" sortable="false"
-                                                                             style="-fx-alignment: center;" text="描述">
-                                                                    <cellValueFactory>
-                                                                        <PropertyValueFactory property="taskLevel"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="statusName" editable="false"

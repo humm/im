@@ -130,8 +130,8 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static String TIME_OVER_COLOR = "-fx-text-background-color: #6f8000;";
     private final static String TODAY_COLOR = "-fx-text-background-color: #ff0000;";
     private final static String WEEK_COLOR = "-fx-text-background-color: #7b00ff;";
-    private final static String FOCUS_COLOR = "-fx-text-background-color: #460232;";
-    private final static String NEW_COLOR = "-fx-text-background-color: #7a5757;";
+    private final static String FOCUS_COLOR = "-fx-text-background-color: #f50d90;";
+    private final static String NEW_COLOR = "-fx-text-background-color: #6d0e86;";
     private final static String DEFAULT_COLOR = "-fx-text-background-color: #000000;";
 
     private Map<String, String[]> color = new LinkedHashMap<String, String[]>(){{
@@ -139,7 +139,7 @@ public class HepTodoController extends BaseController implements Initializable {
         put("今天待提交", new String[] {TODAY_COLOR});
         put("本周待提交", new String[] {WEEK_COLOR});
         put("重点关注", new String[] {FOCUS_COLOR});
-        put("新增任务", new String[] {NEW_COLOR});
+        put("今天新增", new String[] {NEW_COLOR});
         put("默认", new String[] {DEFAULT_COLOR});
     }};
 
@@ -1104,6 +1104,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
             String sprintVersion = item.getSprintVersion();
             if (appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
+                setTaskLevel(item, "关注");
                 focusVersionTask.add(taskNumberIn);
                 String assigneeName = item.getAssigneeName();
                 if (focusVersion.containsKey(sprintVersion)) {
@@ -1290,11 +1291,12 @@ public class HepTodoController extends BaseController implements Initializable {
             String creatorId = item.getCreatorId();
             if (StringUtils.equals(appConfigDto.getHepTaskUser(), creatorId)) {
                 item.setCreatorName(STR_SPACE);
-            } else {
-                String createDate = item.getCreateTime().split(STR_SPACE)[0];
-                if (StringUtils.equals(todayDate, createDate)) {
-                    todayAddTask.add(taskNumberIn);
-                }
+            }
+
+            String createDate = item.getCreateTime().split(STR_SPACE)[0];
+            if (StringUtils.equals(todayDate, createDate)) {
+                todayAddTask.add(taskNumberIn);
+                setTaskLevel(item, "今增");
             }
 
             if (StringUtils.isBlank(status)) {
@@ -1667,7 +1669,7 @@ public class HepTodoController extends BaseController implements Initializable {
                                 String demandNo = item.getDemandNo();
                                 String[] taskColor;
                                 if (todayAddTask.contains(taskNumber)) {
-                                    taskColor = color.get("新增任务");
+                                    taskColor = color.get("今天新增");
                                 }  else if (dayTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("今天待提交");
                                 } else if (finishDateError.contains(taskNumber)) {
