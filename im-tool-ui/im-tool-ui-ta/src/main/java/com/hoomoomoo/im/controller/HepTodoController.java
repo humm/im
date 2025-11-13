@@ -1421,7 +1421,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     versionMsg.append(String.format(" %s(%s)", item, num));
                 }
                 totalStat += total;
-                focusVersionMessage.add(String.format("【%s】任务统计(%s) --> %s", version, total, versionMsg));
+                focusVersionMessage.add(String.format("%s 任务统计(%s) -> %s", version, total, versionMsg));
             }
             outputFocusVersionTipsColorDesc(totalStat, focusVersionMessage);
         } else {
@@ -2045,6 +2045,18 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void initComponentStatus() {
         controlFocusVersionTips(false);
+        focusVersionTipsLabel.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                focusVersionTips.setVisible(!focusVersionTips.isVisible());
+                for (Label ele : colorList) {
+                    if (ele.getText().contains(NAME_DESC_COLOR)) {
+                        ele.setVisible(false);
+                        continue;
+                    }
+                    ele.setVisible(!ele.isVisible());
+                }
+            }
+        });
         filePushTips.setVisible(false);
         setSyncFrontVersionTips(false);
         setSideBar();
@@ -2467,6 +2479,7 @@ public class HepTodoController extends BaseController implements Initializable {
         });
         todoTitle.getChildren().add(label);
         colorList.add(label);
+        x += 20;
         int prevLen = 4;
         int diff = 0;
         for (Map.Entry<String, String[]> entry : color.entrySet()) {

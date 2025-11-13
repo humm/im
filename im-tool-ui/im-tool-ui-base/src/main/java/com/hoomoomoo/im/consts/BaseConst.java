@@ -258,7 +258,7 @@ public class BaseConst {
     public static final String NAME_TASK_NOT_COMPLETE = "未完成";
 
     public static final String NAME_DESC_BEGIN_VALID_DATE = "特殊功能使用字段, 默认情况下无需传该字段";
-    public static final String NAME_DESC_COLOR = "颜色说明:";
+    public static final String NAME_DESC_COLOR = "颜色标识说明:";
 
     public final static String STR_RIGHT_FACING= " --> ";
     public static final String NAME_MENU_COPY = "复制" + STR_RIGHT_FACING + "提交描述";
