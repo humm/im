@@ -414,7 +414,7 @@ public class TaCommonUtils {
     }
 
     public static String getMsgContainTimeContainBr(String msg) {
-        return STR_NEXT_LINE + getMsgContainTimeContain(msg);
+        return getMsgContainTimeContain(msg) + STR_NEXT_LINE;
     }
 
     public static String getMsgContainTimeContain(String msg) {

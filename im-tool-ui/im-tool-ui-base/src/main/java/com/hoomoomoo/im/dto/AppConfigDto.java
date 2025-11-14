@@ -138,6 +138,8 @@ public class AppConfigDto extends BaseDto {
 
     private Stage checkResultStage;
 
+    private Stage primaryStage;
+
     private String pageType;
 
     private String databaseScriptUrl;

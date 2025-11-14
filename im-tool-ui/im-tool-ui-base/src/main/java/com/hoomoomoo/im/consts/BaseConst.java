@@ -279,6 +279,9 @@ public class BaseConst {
     public static final String NAME_MENU_TASK_LEVEL_CANCEL_ONLY_SELF = "标记任务描述" + STR_RIGHT_FACING + "取消标记孤版";
     public static final String NAME_MENU_TASK_LEVEL_CLEAR = "标记任务描述" + STR_RIGHT_FACING + "清除标记";
 
+
+    public static final String NAME_TODAY_ADD = "今增";
+
     public final static String SECURITY_FLAG = "+++";
 
     public final static String STR_BLANK = "";

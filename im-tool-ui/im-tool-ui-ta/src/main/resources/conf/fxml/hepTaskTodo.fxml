@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressIndicator?>
-<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -14,176 +13,216 @@
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.hoomoomoo.im.controller.HepTodoController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.hoomoomoo.im.controller.HepTodoController">
     <children>
-        <SplitPane dividerPositions="0.25" layoutX="98.0" layoutY="100.0" orientation="VERTICAL"
-                   prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <SplitPane dividerPositions="0.28" layoutX="98.0" layoutY="100.0" orientation="VERTICAL" prefHeight="400.0"
+                   prefWidth="600.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="0.0">
             <items>
-                <AnchorPane fx:id="todoTitle" minHeight="0.0" minWidth="0.0" prefHeight="164.0" prefWidth="599.0">
-                    <children>
-                        <Label layoutX="20.0" layoutY="5.0" style="-fx-font-weight: bold;" text="今天封版："/>
-                        <Label fx:id="dayClose" layoutX="100.0" layoutY="5.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label layoutX="20.0" layoutY="30.0" style="-fx-font-weight: bold;" text="今天发版："/>
-                        <Label fx:id="dayPublish" layoutX="100.0" layoutY="30.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                <SplitPane dividerPositions="0.85">
+                    <items>
+                        <AnchorPane fx:id="headPane" minHeight="0.0" minWidth="0.0" prefHeight="97.0"
+                                    prefWidth="322.0">
+                            <children>
+                                <Label layoutX="20.0" layoutY="5.0" style="-fx-font-weight: bold;" text="今天封版："/>
+                                <Label fx:id="dayClose" layoutX="100.0" layoutY="5.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                <Label layoutX="20.0" layoutY="30.0" style="-fx-font-weight: bold;" text="今天发版："/>
+                                <Label fx:id="dayPublish" layoutX="100.0" layoutY="30.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                        <Label layoutX="870.0" layoutY="5.0" style="-fx-font-weight: bold;" text="本周封版："/>
-                        <Label fx:id="weekClose" layoutX="950.0" layoutY="5.0"
-                               style="-fx-font-weight: bold;"/>
-                        <Label layoutX="870.0" layoutY="30.0" style="-fx-font-weight: bold;" text="本周发版："/>
-                        <Label fx:id="weekPublish" layoutX="950.0" layoutY="30.0"
-                               style="-fx-font-weight: bold;"/>
+                                <Label layoutX="870.0" layoutY="5.0" style="-fx-font-weight: bold;" text="本周封版："/>
+                                <Label fx:id="weekClose" layoutX="950.0" layoutY="5.0" style="-fx-font-weight: bold;"/>
+                                <Label layoutX="870.0" layoutY="30.0" style="-fx-font-weight: bold;" text="本周发版："/>
+                                <Label fx:id="weekPublish" layoutX="950.0" layoutY="30.0"
+                                       style="-fx-font-weight: bold;"/>
 
-                        <Label fx:id="fileTipsFileTitle" layoutX="20.0" layoutY="55.0" style="-fx-font-weight: bold;" text="同步文件："/>
-                        <Label fx:id="fileTipsFile" layoutX="90.0" layoutY="55.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="fileTipsFileTimeTitle" layoutX="450.0" layoutY="55.0" style="-fx-font-weight: bold;" text="同步时间："/>
-                        <Label fx:id="fileTipsFileTime" layoutX="520.0" layoutY="55.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="fileTipsFileStatusTitle" layoutX="620.0" layoutY="55.0" style="-fx-font-weight: bold;" text="同步状态："/>
-                        <Label fx:id="fileTipsFileStatus" layoutX="690.0" layoutY="55.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="fileTipsFileOperateTitle" layoutX="760.0" layoutY="55.0" style="-fx-font-weight: bold;" text="操作类型："/>
-                        <Label fx:id="fileTipsFileOperate" layoutX="830.0" layoutY="55.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="fileTipsVersionTitle" layoutX="950.0" layoutY="55.0" style="-fx-font-weight: bold;" text="同步版本："/>
-                        <Label fx:id="fileTipsVersion" layoutX="1020.0" layoutY="55.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="syncFileTimeTitle" layoutX="1350.0" layoutY="55.0" style="-fx-font-weight: bold;" text="轮询时间："/>
-                        <Label fx:id="syncFileTime" layoutX="1450.0" layoutY="55.0"/>
+                                <Label fx:id="fileTipsFileTitle" layoutX="20.0" layoutY="55.0"
+                                       style="-fx-font-weight: bold;" text="同步文件："/>
+                                <Label fx:id="fileTipsFile" layoutX="90.0" layoutY="55.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsFileTimeTitle" layoutX="450.0" layoutY="55.0"
+                                       style="-fx-font-weight: bold;" text="同步时间："/>
+                                <Label fx:id="fileTipsFileTime" layoutX="520.0" layoutY="55.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsFileStatusTitle" layoutX="620.0" layoutY="55.0"
+                                       style="-fx-font-weight: bold;" text="同步状态："/>
+                                <Label fx:id="fileTipsFileStatus" layoutX="690.0" layoutY="55.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsFileOperateTitle" layoutX="760.0" layoutY="55.0"
+                                       style="-fx-font-weight: bold;" text="操作类型："/>
+                                <Label fx:id="fileTipsFileOperate" layoutX="830.0" layoutY="55.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsVersionTitle" layoutX="950.0" layoutY="55.0"
+                                       style="-fx-font-weight: bold;" text="同步版本："/>
+                                <Label fx:id="fileTipsVersion" layoutX="1020.0" layoutY="55.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                        <Label layoutX="20.0" layoutY="80.0" style="-fx-font-weight: bold;" text="今天待提交："/>
-                        <Label fx:id="dayTodo" layoutX="105.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
-                        <Label layoutX="150.0" layoutY="80.0" style="-fx-font-weight: bold;" text="本周待提交："/>
-                        <Label fx:id="weekTodo" layoutX="235.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
-                        <Label layoutX="290.0" layoutY="80.0" style="-fx-font-weight: bold;" text="待提交："/>
-                        <Label fx:id="waitHandleTaskNum" layoutX="345.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
-                        <Label layoutX="410.0" layoutY="80.0" style="-fx-font-weight: bold;" text="待合并："/>
-                        <Label fx:id="waitMergerNum" layoutX="465.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
+                                <Label layoutX="20.0" layoutY="80.0" style="-fx-font-weight: bold;" text="今天待提交："/>
+                                <Label fx:id="dayTodo" layoutX="105.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
+                                <Label layoutX="150.0" layoutY="80.0" style="-fx-font-weight: bold;" text="本周待提交："/>
+                                <Label fx:id="weekTodo" layoutX="235.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
+                                <Label layoutX="290.0" layoutY="80.0" style="-fx-font-weight: bold;" text="待提交："/>
+                                <Label fx:id="waitHandleTaskNum" layoutX="345.0" layoutY="80.0"
+                                       style="-fx-font-weight: bold;"/>
+                                <Label layoutX="410.0" layoutY="80.0" style="-fx-font-weight: bold;" text="待合并："/>
+                                <Label fx:id="waitMergerNum" layoutX="465.0" layoutY="80.0"
+                                       style="-fx-font-weight: bold;"/>
 
-                        <Label layoutX="20.0" layoutY="110.0" style="-fx-font-weight: bold;" text="操作类型："/>
-                        <Button fx:id="syncFileBtn" layoutX="100.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="停止文件同步">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                                <Label layoutX="20.0" layoutY="110.0" style="-fx-font-weight: bold;" text="操作类型："/>
+                                <Button fx:id="syncFileBtn" layoutX="100.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="停止文件同步">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
 
-                        <Button fx:id="extendUser" layoutX="230" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联用户任务">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                                <Button fx:id="extendUser" layoutX="230" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联用户任务">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
 
-                        <Button fx:id="scriptCheck" layoutX="360" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="100.0" text="检查配置脚本">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
-                        <Button fx:id="scriptShow" layoutX="490.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="100.0" text="查看检查结果">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                                <Button fx:id="scriptCheck" layoutX="360" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="100.0" text="检查配置脚本">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+                                <Button fx:id="scriptShow" layoutX="490.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="100.0" text="查看检查结果">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
 
-                        <Button fx:id="syncTask" layoutX="620.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务信息">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                                <Button fx:id="syncTask" layoutX="620.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务信息">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
 
-                        <Button fx:id="updateVersion" layoutX="750.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="100.0" text="同步发版计划">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                                <Button fx:id="updateVersion" layoutX="750.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="100.0"
+                                        text="同步发版计划">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
 
-                        <Button fx:id="showVersion" layoutX="880.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#showVersion" prefHeight="30.0" prefWidth="100.0" text="查看发版计划">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                                <Button fx:id="showVersion" layoutX="880.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#showVersion" prefHeight="30.0" prefWidth="100.0" text="查看发版计划">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
 
-                        <Button fx:id="showLog" layoutX="1010.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#showLogInfo" prefHeight="30.0" prefWidth="100.0" text="查看系统日志">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                                <Button fx:id="showLog" layoutX="1010.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#showLogInfo" prefHeight="30.0" prefWidth="100.0" text="查看系统日志">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
 
-                        <Button fx:id="sideBarBtn" layoutX="1140.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#sideBarStatus" prefHeight="30.0" prefWidth="100.0" text="隐藏侧边栏">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                                <Button fx:id="showCopyDemand" layoutX="1140.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#showCopyDemandExe" prefHeight="30.0" prefWidth="100.0" text="复制需求编号">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
 
-                        <Button fx:id="showCopyDemand" layoutX="1270.0" layoutY="105.0" mnemonicParsing="false"
-                                onAction="#showCopyDemandExe" prefHeight="30.0" prefWidth="100.0" text="复制需求编号">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                                <Button fx:id="someOneTips" layoutX="1400.0" layoutY="105.0" mnemonicParsing="false"
+                                        prefHeight="30.0" prefWidth="100.0" text="开审同人">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
 
-                        <Button fx:id="someOneTips" layoutX="1400.0" layoutY="105.0" mnemonicParsing="false"
-                                prefHeight="30.0" prefWidth="100.0" text="开审同人">
-                            <padding>
-                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                            </padding>
-                        </Button>
+                                <Label layoutX="20" layoutY="148.0" style="-fx-font-weight: bold;" text="查询类型："/>
+                                <Button fx:id="all" layoutX="100.0" layoutY="143.0" mnemonicParsing="false"
+                                        onAction="#selectAll" prefHeight="30.0" prefWidth="100.0" text="全部">
+                                </Button>
+                                <Button fx:id="only" layoutX="230.0" layoutY="143.0" mnemonicParsing="false"
+                                        onAction="#selectOnly" prefHeight="30.0" prefWidth="100.0" text="去重">
+                                </Button>
+                                <Button fx:id="devCompleteShow" layoutX="360.0" layoutY="143.0" mnemonicParsing="false"
+                                        onAction="#selectDevCompleteShow" prefHeight="30.0" prefWidth="100.0"
+                                        text="显示已完成">
+                                </Button>
+                                <Button fx:id="devCompleteHide" layoutX="490.0" layoutY="143.0" mnemonicParsing="false"
+                                        onAction="#selectDevCompleteHide" prefHeight="30.0" prefWidth="100.0"
+                                        text="隐藏已完成">
+                                </Button>
+                                <Button fx:id="newTask" layoutX="620.0" layoutY="143.0" mnemonicParsing="false"
+                                        onAction="#selectNewTask" prefHeight="30.0" prefWidth="100.0" text="今天新增">
+                                </Button>
 
-                        <Label layoutX="20" layoutY="148.0" style="-fx-font-weight: bold;" text="查询类型："/>
-                        <Button fx:id="all" layoutX="100.0" layoutY="143.0" mnemonicParsing="false"
-                                onAction="#selectAll" prefHeight="30.0" prefWidth="100.0" text="全部">
-                        </Button>
-                        <Button  fx:id="only" layoutX="230.0" layoutY="143.0" mnemonicParsing="false"
-                                 onAction="#selectOnly" prefHeight="30.0" prefWidth="100.0" text="去重">
-                        </Button>
-                        <Button  fx:id="devCompleteShow" layoutX="360.0" layoutY="143.0" mnemonicParsing="false"
-                                 onAction="#selectDevCompleteShow" prefHeight="30.0" prefWidth="100.0" text="显示已完成">
-                        </Button>
-                        <Button  fx:id="devCompleteHide" layoutX="490.0" layoutY="143.0" mnemonicParsing="false"
-                                 onAction="#selectDevCompleteHide" prefHeight="30.0" prefWidth="100.0" text="隐藏已完成">
-                        </Button>
-                        <Button  fx:id="newTask" layoutX="620.0" layoutY="143.0" mnemonicParsing="false"
-                                 onAction="#selectNewTask" prefHeight="30.0" prefWidth="100.0" text="今天新增">
-                        </Button>
-                        <Button fx:id="query" layoutX="750.0" layoutY="143.0" mnemonicParsing="false"
-                                onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
-                        </Button>
+                                <Label layoutX="20" layoutY="186.0" style="-fx-font-weight: bold;" text="查询条件："/>
+                                <ComboBox fx:id="sprintVersionQuery" layoutX="100.0" layoutY="183.0" prefWidth="230"/>
+                                <TextField fx:id="taskConditionQuery" layoutX="360.0" layoutY="183.0" prefHeight="25.0" prefWidth="360.0"/>
 
-                        <ProgressIndicator fx:id="schedule" layoutX="1020.0" layoutY="142.0" progress="0.0"
-                                           style="-fx-scale-x: 0.8; -fx-scale-y: 0.8;"/>
-                        <Label fx:id="scheduleText" layoutX="1055" layoutY="148.0" text="0%"/>
+                                <Button fx:id="query" layoutX="750.0" layoutY="183.0" mnemonicParsing="false"
+                                        onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
+                                </Button>
+                                <Button fx:id="reset" layoutX="880.0" layoutY="183.0" mnemonicParsing="false"
+                                        onAction="#executeReset" prefHeight="30.0" prefWidth="100.0" text="重置">
+                                </Button>
+                                <ProgressIndicator fx:id="schedule" layoutX="1020.0" layoutY="182.0" progress="0.0"
+                                                   style="-fx-scale-x: 0.8; -fx-scale-y: 0.8;"/>
+                                <Label fx:id="scheduleText" layoutX="1055" layoutY="188.0" text="0%"/>
 
-                        <Label fx:id="focusVersionTipsLabel" layoutX="20" layoutY="180.0" style="-fx-font-weight: bold;"/>
-                        <Label fx:id="focusVersionTips" layoutX="120.0" layoutY="180.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="memoryTips" layoutX="650" layoutY="180.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <Label fx:id="filePushTips" layoutX="900.0" layoutY="180.0"
-                               style="-fx-font-weight: bold;"/>
-                        <Label fx:id="syncFrontVersionTips" layoutX="1150.0" layoutY="180.0"
-                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                        <TextField fx:id="demandNo" layoutX="1350.0" layoutY="175.0" editable="false"
-                                   style="-fx-background-color: transparent;"/>
-                        <TextField fx:id="taskNo" layoutX="1500.0" layoutY="175.0" editable="false"
-                                   style="-fx-background-color: transparent;"/>
+                                <Label fx:id="focusVersionTipsLabel" layoutX="20" layoutY="220.0"
+                                       style="-fx-font-weight: bold;"/>
+                                <Label fx:id="focusVersionTips" layoutX="120.0" layoutY="220.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                <Label fx:id="memoryTips" layoutX="650" layoutY="220.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                <Label fx:id="filePushTips" layoutX="850.0" layoutY="220.0"
+                                       style="-fx-font-weight: bold;"/>
+                                <Label fx:id="syncFrontVersionTips" layoutX="1080.0" layoutY="220.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                <TextField fx:id="demandNo" editable="false" layoutX="1250.0" layoutY="215.0"
+                                           style="-fx-background-color: transparent;"/>
+                                <TextField fx:id="taskNo" editable="false" layoutX="1400.0" layoutY="215.0"
+                                           style="-fx-background-color: transparent;"/>
 
-                    </children>
-                </AnchorPane>
+                            </children>
+                        </AnchorPane>
+                        <SplitPane prefHeight="97.0" prefWidth="67.0">
+                            <SplitPane dividerPositions="0.35, 0.65" orientation="VERTICAL" prefHeight="318.4"
+                                       prefWidth="191.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                       AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <items>
+                                    <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
+                                                prefHeight="114.0" prefWidth="108.0">
+                                        <children>
+                                            <TextArea fx:id="notice" editable="false" prefHeight="75.05454285172401"
+                                                      prefWidth="108.21817806527648" AnchorPane.bottomAnchor="0.0"
+                                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                      AnchorPane.topAnchor="0.0"/>
+                                        </children>
+                                    </AnchorPane>
+                                    <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
+                                                prefHeight="62.0" prefWidth="108.0">
+                                        <children>
+                                            <TextArea fx:id="noticeSync" editable="false" prefHeight="75.05454285172401"
+                                                      prefWidth="108.21817806527648" AnchorPane.bottomAnchor="0.0"
+                                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                      AnchorPane.topAnchor="0.0"/>
+                                        </children>
+                                    </AnchorPane>
+                                </items>
+                            </SplitPane>
+                        </SplitPane>
+                    </items>
+                </SplitPane>
                 <AnchorPane fx:id="hep" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                     <children>
-                        <SplitPane fx:id="taskSplitPane" dividerPositions="0.81" layoutX="174.0" layoutY="76.0"
+                        <SplitPane fx:id="taskSplitPane" layoutX="174.0" layoutY="76.0"
                                    prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
                                    AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
@@ -268,20 +307,23 @@
                                                                                 property="oriPublishDate"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="assigneeName" editable="false" prefWidth="65"
-                                                                             style="-fx-alignment: center;" sortable="false" text="经办人">
+                                                                <TableColumn id="assigneeName" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="经办人">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="assigneeName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="reviewerName" editable="false" prefWidth="65"
-                                                                             style="-fx-alignment: center;" sortable="false" text="审核人">
+                                                                <TableColumn id="reviewerName" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="审核人">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="reviewerName"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="creatorName" editable="false" prefWidth="65"
-                                                                             style="-fx-alignment: center;" sortable="false" text="创建人">
+                                                                <TableColumn id="creatorName" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="创建人">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="creatorName"/>
                                                                     </cellValueFactory>
@@ -298,84 +340,11 @@
                                                                              prefWidth="190" sortable="false"
                                                                              style="-fx-alignment: center;" text="创建时间">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory
-                                                                                property="createTime"/>
+                                                                        <PropertyValueFactory property="createTime"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                             </columns>
                                                         </TableView>
-                                                    </children>
-                                                </AnchorPane>
-                                            </items>
-                                        </SplitPane>
-                                    </children>
-                                </AnchorPane>
-                                <AnchorPane fx:id="sideBar" minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="342.0">
-                                    <children>
-                                        <SplitPane
-                                                dividerPositions="0.45, 0.65"
-                                                orientation="VERTICAL" prefHeight="318.4" prefWidth="191.0"
-                                                AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
-                                                AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                            <items>
-                                                <AnchorPane fx:id="condition" minHeight="0.0" minWidth="0.0"
-                                                            prefHeight="100.0" prefWidth="160.0">
-                                                    <Label layoutX="15.0" layoutY="15.0"
-                                                           style="-fx-font-weight: bold; -fx-font-size: 15;"
-                                                           text="查询条件"/>
-                                                    <Button fx:id="queryCondition" layoutX="100.0" layoutY="8.0"
-                                                            mnemonicParsing="false" onAction="#executeQuery"
-                                                            prefHeight="20.0" prefWidth="80.0" text="查询">
-                                                        <padding>
-                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                                                        </padding>
-                                                    </Button>
-                                                    <Button fx:id="reset" layoutX="200.0" layoutY="8.0"
-                                                            mnemonicParsing="false" onAction="#executeReset"
-                                                            prefHeight="20.0" prefWidth="80.0" text="重置">
-                                                        <padding>
-                                                            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                                                        </padding>
-                                                    </Button>
-
-                                                    <Label layoutX="15.0" layoutY="55.0" text="单号"/>
-                                                    <TextField fx:id="taskNumberQuery" layoutX="60.0" layoutY="47.0"
-                                                               prefWidth="240"/>
-                                                    <Label layoutX="15.0" layoutY="95.0" text="名称"/>
-                                                    <TextField fx:id="nameQuery" layoutX="60.0" layoutY="90.0"
-                                                               prefWidth="240"/>
-                                                    <Label layoutX="15.0" layoutY="135.0" text="版本"/>
-                                                    <ComboBox fx:id="sprintVersionQuery" layoutX="60.0" layoutY="130.0" prefWidth="240"/>
-                                                    <Label layoutX="15.0" layoutY="175.0" text="描述"/>
-                                                    <ComboBox fx:id="taskLevelQuery" layoutX="60.0" layoutY="170.0" prefWidth="240"/>
-
-                                                    <Label layoutX="15.0" layoutY="215.0" text="标签"/>
-
-                                                    <TextField layoutX="60.0" layoutY="500.0" prefWidth="240"
-                                                               text="光标默认聚焦点"/>
-                                                </AnchorPane>
-                                                <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
-                                                            prefHeight="114.0" prefWidth="108.0">
-                                                    <children>
-                                                        <TextArea fx:id="notice" editable="false"
-                                                                  prefHeight="75.05454285172401"
-                                                                  prefWidth="108.21817806527648"
-                                                                  AnchorPane.bottomAnchor="0.0"
-                                                                  AnchorPane.leftAnchor="0.0"
-                                                                  AnchorPane.rightAnchor="0.0"
-                                                                  AnchorPane.topAnchor="0.0"/>
-                                                    </children>
-                                                </AnchorPane>
-                                                <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
-                                                            prefHeight="62.0" prefWidth="108.0">
-                                                    <children>
-                                                        <TextArea fx:id="noticeSync" editable="false"
-                                                                  prefHeight="75.05454285172401"
-                                                                  prefWidth="108.21817806527648"
-                                                                  AnchorPane.bottomAnchor="0.0"
-                                                                  AnchorPane.leftAnchor="0.0"
-                                                                  AnchorPane.rightAnchor="0.0"
-                                                                  AnchorPane.topAnchor="0.0"/>
                                                     </children>
                                                 </AnchorPane>
                                             </items>

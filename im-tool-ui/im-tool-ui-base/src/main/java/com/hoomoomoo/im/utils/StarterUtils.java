@@ -4,9 +4,11 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.StringUtils;
 
@@ -33,6 +35,7 @@ public class StarterUtils {
             FileUtils.unJar(PATH_APP);
             LoggerUtils.appStartInfo(String.format(MSG_UPDATE, NAME_CONFIG_FILE));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            appConfigDto.setPrimaryStage(primaryStage);
             String appName = getAppName(appConfigDto.getAppName()) + STR_SPACE_2;
             if (!CommonUtils.proScene()) {
                 appName += String.format(MSG_APP_TITLE, APP_MODE_NAME, APP_MODE_NAME_APP);
@@ -80,8 +83,15 @@ public class StarterUtils {
             scene.getStylesheets().add(FileUtils.getFileUrl(PATH_STARTER_CSS).toExternalForm());
             primaryStage.setTitle(appName);
             primaryStage.setScene(scene);
-            primaryStage.setResizable(true);
-            //primaryStage.setMaximized(true);
+            primaryStage.setResizable(false);
+
+            // 最大化（保留任务栏）
+            Rectangle2D rectangle = Screen.getPrimary().getVisualBounds();
+            primaryStage.setX(rectangle.getMinX());
+            primaryStage.setY(rectangle.getMinY());
+            primaryStage.setWidth(rectangle.getWidth());
+            primaryStage.setHeight(rectangle.getHeight());
+
             DisplayMode displayMode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
             int width = displayMode.getWidth();
             int height = displayMode.getHeight();

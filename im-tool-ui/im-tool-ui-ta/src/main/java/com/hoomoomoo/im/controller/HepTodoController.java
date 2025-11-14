@@ -41,6 +41,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.SneakyThrows;
+import org.apache.commons.collections.BagUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -112,9 +113,9 @@ public class HepTodoController extends BaseController implements Initializable {
     Map<String, HepTaskDto> taskMinCompleteDate = new HashMap<>();
     Map<String, String> sortCodeCache = new HashMap<>();
 
-    List<String> taskLevelDict = new ArrayList<>();
-
     List<Label> colorList = new ArrayList<>();
+
+    Map<String, Button> queryButtonList = new HashMap<>();
 
     private List<String> focusVersionMessage = new ArrayList<>();
     private int focusExecuteTimes = 0;
@@ -176,10 +177,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private AnchorPane hep;
 
     @FXML
-    private AnchorPane todoTitle;
-
-    @FXML
-    private AnchorPane sideBar;
+    private AnchorPane headPane;
 
     @FXML
     private Label weekPublish;
@@ -200,16 +198,10 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label focusVersionTipsLabel;
 
     @FXML
-    private TextField taskNumberQuery;
-
-    @FXML
-    private TextField nameQuery;
+    private TextField taskConditionQuery;
 
     @FXML
     private ComboBox sprintVersionQuery;
-
-    @FXML
-    private ComboBox taskLevelQuery;
 
     @FXML
     public TextArea notice;
@@ -230,13 +222,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private Button extendUser;
 
     @FXML
-    private Button queryCondition;
-
-    @FXML
     private Button reset;
-
-    @FXML
-    private AnchorPane condition;
 
     @FXML
     public Button showCopyDemand;
@@ -273,12 +259,6 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     private Label filePushTips;
-
-    @FXML
-    private Label syncFileTimeTitle;
-
-    @FXML
-    private Label syncFileTime;
 
     @FXML
     private Label fileTipsVersion;
@@ -337,23 +317,14 @@ public class HepTodoController extends BaseController implements Initializable {
     private SplitPane taskSplitPane;
 
     @FXML
-    private Button sideBarBtn;
-
-    @FXML
     private TextField demandNo;
 
     @FXML
     private TextField taskNo;
 
-    private double defaultDividerPositions;
-
-    private double defaultTaskNameWidth;
-
     private String queryType = STR_BLANK;
 
     Set<Button> queryButtonSet = new HashSet<>();
-
-    private long syncTime = 0;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -368,8 +339,6 @@ public class HepTodoController extends BaseController implements Initializable {
             queryButtonSet.add(devCompleteHide);
             queryButtonSet.add(newTask);
             queryButtonSet.add(query);
-            defaultDividerPositions = taskSplitPane.getDividerPositions()[0];
-            defaultTaskNameWidth = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth();
             queryType = devCompleteHide.getText();
             controlQueryButtonColor(devCompleteHide);
             initColorDesc();
@@ -387,6 +356,19 @@ public class HepTodoController extends BaseController implements Initializable {
             initFocusVersionTimer(appConfigDto);
             executeQuery(null);
             initTestData();
+
+            Platform.runLater(() -> {
+                appConfigDto.getPrimaryStage().getScene().setOnKeyPressed(e -> {
+                    if (e.getCode() == javafx.scene.input.KeyCode.ENTER) {
+                        try {
+                            executeQuery(null);
+                        } catch (Exception ex) {
+                            LoggerUtils.error(ex);
+                        }
+                        e.consume();
+                    }
+                });
+            });
         } catch (Exception e) {
             LoggerUtils.error(e);
         }
@@ -406,11 +388,6 @@ public class HepTodoController extends BaseController implements Initializable {
             OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("启动文件同步"));
             syncFile();
         }
-    }
-
-    @FXML
-    void sideBarStatus(ActionEvent event) throws Exception {
-        setSideBar();
     }
 
     @FXML
@@ -628,10 +605,8 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     void executeReset(ActionEvent event) throws Exception {
-        OutputUtils.clearLog(taskNumberQuery);
-        OutputUtils.clearLog(nameQuery);
+        OutputUtils.clearLog(taskConditionQuery);
         OutputUtils.clearLog(sprintVersionQuery);
-        OutputUtils.clearLog(taskLevelQuery);
         executeQuery(null);
     }
 
@@ -669,6 +644,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     void executeQuery(ActionEvent event) throws Exception {
+        OutputUtils.clearLog(notice);
         OutputUtils.clearLog(demandNo);
         OutputUtils.clearLog(taskNo);
         HepTodoTaskParam hepTodoTaskParam = new HepTodoTaskParam(this, "doQuery");
@@ -700,14 +676,12 @@ public class HepTodoController extends BaseController implements Initializable {
     public void doExecuteQuery() {
         try {
             query.setDisable(true);
-            queryCondition.setDisable(true);
             reset.setDisable(true);
             execute(OPERATE_QUERY, null);
             LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<>(logs));
             logs.clear();
             focusVersion.clear();
             syncTaskLog.clear();
-            taskLevelDict.clear();
             if (frontPage()) {
                 ConfigCache.getAppConfigDtoCache().setQueryUpdateTaskFileByCondition(false);
             }
@@ -717,7 +691,6 @@ public class HepTodoController extends BaseController implements Initializable {
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ExceptionMsgUtils.getMsg(e)));
         } finally {
             query.setDisable(false);
-            queryCondition.setDisable(false);
             reset.setDisable(false);
         }
     }
@@ -1004,7 +977,6 @@ public class HepTodoController extends BaseController implements Initializable {
         Map<String, String> taskCancelDevSubmit = getCancelDevSubmitTaskInfo();
         List<String> cancelOnlySelf = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT));
         List<String> cancelErrorVersion = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT));
-        String taskLevelQ = CommonUtils.getComponentValue(taskLevelQuery);
         boolean waitTaskSync = false;
         Map<String, String> hepTaskAppointVersionMap = appConfigDto.getHepTaskVersionOrderDateMap();
         for (String item : versionList) {
@@ -1124,30 +1096,6 @@ public class HepTodoController extends BaseController implements Initializable {
             boolean todayComplete = todayDate.compareTo(finishDate) >= 0;
             boolean needShow = todayComplete || focusVersionTask.contains(taskNumberIn);
 
-            if (StringUtils.equals(queryType, only.getText())) {
-                if (existTask.contains(taskName)) {
-                    iterator.remove();
-                    continue;
-                }
-                existTask.add(taskName);
-            } else if (StringUtils.equals(queryType, devCompleteHide.getText()) && !needShow) {
-                if (taskName.contains(DEV_COMMIT_TAG)) {
-                    iterator.remove();
-                    continue;
-                }
-            } else if (StringUtils.equals(queryType, devCompleteShow.getText())) {
-                if (!taskName.contains(DEV_COMMIT_TAG)) {
-                    iterator.remove();
-                    continue;
-                }
-            } else if (StringUtils.equals(queryType, newTask.getText())) {
-                String createDate = item.getCreateTime().split(STR_SPACE)[0];
-                if (!StringUtils.equals(todayDate, createDate)) {
-                    iterator.remove();
-                    continue;
-                }
-            }
-
             if (sprintVersion.startsWith(KEY_TA5) || (sprintVersion.contains(KEY_TA6) && !sprintVersion.contains(KEY_FUND) && !sprintVersion.contains(KEY_VERSION_YEAR_2022))) {
                 iterator.remove();
                 continue;
@@ -1239,6 +1187,12 @@ public class HepTodoController extends BaseController implements Initializable {
                 setTaskLevel(item, "同人");
             }
 
+            String createDate = item.getCreateTime().split(STR_SPACE)[0];
+            if (StringUtils.equals(todayDate, createDate)) {
+                todayAddTask.add(taskNumberIn);
+                setTaskLevel(item, NAME_TODAY_ADD);
+            }
+
             item.setSprintVersionFull(sprintVersion);
             item.setSprintVersion(formatVersion(sprintVersion));
 
@@ -1273,7 +1227,37 @@ public class HepTodoController extends BaseController implements Initializable {
 
             controlHepTaskAppointVersionTips(appConfigDto, item, cancelErrorVersion);
 
-            if (filterTaskForRemove(appConfigDto, item, taskLevelQ)) {
+            if (StringUtils.equals(queryType, only.getText())) {
+                if (existTask.contains(taskName)) {
+                    iterator.remove();
+                    continue;
+                }
+                existTask.add(taskName);
+            } else if (StringUtils.equals(queryType, devCompleteHide.getText()) && !needShow) {
+                if (taskName.contains(DEV_COMMIT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            } else if (StringUtils.equals(queryType, devCompleteShow.getText())) {
+                if (!taskName.contains(DEV_COMMIT_TAG)) {
+                    iterator.remove();
+                    continue;
+                }
+            } else if (StringUtils.equals(queryType, newTask.getText())) {
+                if (!StringUtils.equals(todayDate, createDate)) {
+                    iterator.remove();
+                    continue;
+                }
+            } else if (StringUtils.isNotBlank(queryType) && queryButtonList.containsKey(queryType)) {
+                String level = item.getTaskLevel() == null ? STR_BLANK : item.getTaskLevel();
+                String mark = item.getTaskMark() == null ? STR_BLANK : item.getTaskMark();
+                if (!level.contains(queryType) && !mark.contains(queryType)) {
+                    iterator.remove();
+                    continue;
+                }
+            }
+
+            if (filterTaskForRemove(appConfigDto, item)) {
                 iterator.remove();
                 continue;
             }
@@ -1293,12 +1277,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 item.setCreatorName(STR_SPACE);
             }
 
-            String createDate = item.getCreateTime().split(STR_SPACE)[0];
-            if (StringUtils.equals(todayDate, createDate)) {
-                todayAddTask.add(taskNumberIn);
-                setTaskLevel(item, "今增");
-            }
-
             if (StringUtils.isBlank(status)) {
                 hasBlank = true;
                 taskTotal++;
@@ -1313,7 +1291,6 @@ public class HepTodoController extends BaseController implements Initializable {
             initTag(res);
         }
 
-        initTaskLevelDict(taskLevelQ);
         controlFocusVersionTips(appConfigDto);
 
         OutputUtils.clearLog(dayTodo);
@@ -1421,7 +1398,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     versionMsg.append(String.format(" %s(%s)", item, num));
                 }
                 totalStat += total;
-                focusVersionMessage.add(String.format("%s 任务统计(%s) -> %s", version, total, versionMsg));
+                focusVersionMessage.add(String.format(" %s 任务统计(%s) -> %s", version, total, versionMsg));
             }
             outputFocusVersionTipsColorDesc(totalStat, focusVersionMessage);
         } else {
@@ -1437,7 +1414,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     int numVer = stat.get(userName);
                     if (numVer > 0) {
                         num = numVer;
-                        focusVersionMessage.add(String.format("【%s】任务统计(%s)", version, num));
+                        focusVersionMessage.add(String.format(" %s 任务统计(%s)", version, num));
                     }
                 }
             }
@@ -1573,32 +1550,11 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void setTaskLevel(HepTaskDto item, String taskLevel) {
-        if (!taskLevelDict.contains(taskLevel)) {
-            taskLevelDict.add(taskLevel);
-        }
-        item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? taskLevel : taskLevel + "/" + item.getTaskLevel() );
+        item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? taskLevel : taskLevel + STR_COMMA + item.getTaskLevel() );
     }
 
     private String formatVersion(String ver) {
         return CommonUtils.getSimpleVer(ver);
-    }
-
-    private void initTaskLevelDict(String taskLevelQ) {
-        Collections.sort(taskLevelDict, new Comparator<String>(){
-            @Override
-            public int compare(String o1, String o2) {
-                return o1.compareTo(o2);
-            }
-        });
-        ObservableList taskLevel = taskLevelQuery.getItems();
-        taskLevel.clear();
-        if (CollectionUtils.isNotEmpty(taskLevelDict)) {
-            Iterator<String> ver = taskLevelDict.iterator();
-            while (ver.hasNext()) {
-                taskLevel.add(ver.next());
-            }
-        }
-        taskLevel.add(STR_SPACE);
     }
 
     private void initVersion(Set<String> currentTaskVersion, String sprintVersionQ) {
@@ -1715,80 +1671,52 @@ public class HepTodoController extends BaseController implements Initializable {
         if (CollectionUtils.isEmpty(task)) {
             return;
         }
-        Map<String, String> tags = new LinkedHashMap<>();
-        for (HepTaskDto item : task) {
-            String taskName = item.getName();
-            if (taskName.contains(STR_BRACKETS_3_RIGHT)) {
-                String taskNameTmp = taskName.substring(taskName.indexOf(STR_BRACKETS_3_LEFT) + 1, taskName.indexOf(STR_BRACKETS_3_RIGHT));
-                if (taskNameTmp.contains(DEV_COMMIT_TAG)) {
-                    if (!tags.containsKey(DEV_COMMIT_TAG)) {
-                        tags.put(DEV_COMMIT_TAG, DEV_COMMIT_TAG);
-                    }
+        Platform.runLater(() -> {
+            Set<String> buttonConfig = new HashSet<>();
+            for (HepTaskDto hepTaskDto : task) {
+                if (StringUtils.isNotBlank(hepTaskDto.getTaskLevel())) {
+                    buttonConfig.addAll(Arrays.asList(hepTaskDto.getTaskLevel().split(STR_COMMA)));
                 }
-                if (taskNameTmp.contains(DEFECT_TAG) || taskName.startsWith(STR_BRACKETS_3_LEFT)) {
-                    if (taskNameTmp.contains(STR_COLON)) {
-                        taskNameTmp = taskNameTmp.split(STR_COLON)[0];
-                    }
-                    if (!tags.containsKey(taskNameTmp)) {
-                        tags.put(taskNameTmp, taskNameTmp);
-                    }
-                }
-            } else if (taskName.contains(STR_BRACKETS_2_RIGHT)) {
-                taskName = taskName.substring(1, taskName.indexOf(STR_BRACKETS_2_RIGHT));
-                if (!tags.containsKey(taskName)) {
-                    tags.put(taskName, taskName);
+                buttonConfig.remove(NAME_TODAY_ADD);
+            }
+            for (Map.Entry<String, Button> entry : queryButtonList.entrySet()) {
+                entry.getValue().setVisible(false);
+            }
+            for (String buttonName : buttonConfig) {
+                if (queryButtonList.containsKey(buttonName)) {
+                    queryButtonList.get(buttonName).setVisible(true);
+                } else {
+                    Button button = new Button(buttonName);
+                    queryButtonSet.add(button);
+                    headPane.getChildren().add(button);
+                    button.setOnMouseClicked(
+                        event -> {
+                            queryType = button.getText();
+                            controlQueryButtonColor(button);
+                            try {
+                                executeQuery(new ActionEvent());
+                            } catch (Exception e) {
+                                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+                                LoggerUtils.error(e);
+                            }
+                        }
+                    );
+                    queryButtonList.put(buttonName, button);
                 }
             }
-        }
-        Platform.runLater(() -> {
-            ObservableList<Node> nodeObservableList = condition.getChildren();
-            Iterator<Node> nodeIterator = nodeObservableList.iterator();
-            while (nodeIterator.hasNext()) {
-                Node node = nodeIterator.next();
-                String nodeId = node.getId();
-                if (StringUtils.isNotBlank(nodeId) && nodeId.contains("tag")) {
-                    nodeIterator.remove();
-                }
+
+            double x = newTask.getLayoutX();
+            double y = 143;
+            double step = 130;
+            int buttonNum = 1;
+            for (Map.Entry<String, Button> entry : queryButtonList.entrySet()) {
+                Button button = entry.getValue();
+                button.setLayoutX(x + step * buttonNum);
+                button.setLayoutY(y);
+                button.setPrefWidth(100);
+                buttonNum++;
             }
         });
-        Iterator<String> iterator = tags.keySet().iterator();
-        double layoutX = 60;
-        double layoutY = 215;
-        while (iterator.hasNext()) {
-            String tagName = iterator.next();
-            layoutX = buildTag(tagName, layoutX, layoutY);
-            if (layoutX == 60) {
-                layoutY = 240;
-            }
-        }
-    }
-
-    private double buildTag(String tagName, final double layoutX, final double layoutY) {
-        Platform.runLater(() -> {
-            Label label = new Label();
-            label.setId("tag" + layoutX);
-            label.setLayoutX(layoutX);
-            label.setLayoutY(layoutY);
-            label.setText(tagName);
-            label.setTextFill(Color.GRAY);
-            condition.getChildren().add(label);
-            label.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    String tag = ((Label) event.getSource()).getText();
-                    nameQuery.setText(tag);
-                    JSONArray res = null;
-                    try {
-                        res = execute(OPERATE_COMPLETE_QUERY, null);
-                    } catch (Exception e) {
-
-                    }
-                    dealTaskList(res, false);
-                }
-            });
-        });
-        double x = layoutX + 20 * tagName.length();
-        return x > 240 ? 60 : x;
     }
 
     public void initVersionTask(List<HepTaskDto> task) {
@@ -1803,29 +1731,23 @@ public class HepTodoController extends BaseController implements Initializable {
         initVersion(currentTaskVersion, sprintVersionQ);
     }
 
-    public boolean filterTaskForRemove(AppConfigDto appConfigDto, HepTaskDto task, String taskLevelQ) {
-        String taskNumberQ = CommonUtils.getComponentValue(taskNumberQuery);
-        String nameQ = CommonUtils.getComponentValue(nameQuery);
-        String sprintVersionQ = CommonUtils.getComponentValue(sprintVersionQuery);
+    public boolean filterTaskForRemove(AppConfigDto appConfigDto, HepTaskDto task) {
+        String taskCondition = CommonUtils.getComponentValue(taskConditionQuery);
+        String versionQuery = CommonUtils.getComponentValue(sprintVersionQuery);
         if (frontPage()) {
-            if (StringUtils.isNotBlank(taskNumberQ) || StringUtils.isNotBlank(nameQ) || StringUtils.isNotBlank(sprintVersionQ) || StringUtils.isNotBlank(taskLevelQ)) {
+            if (StringUtils.isNotBlank(taskCondition) || StringUtils.isNotBlank(versionQuery)) {
                 appConfigDto.setQueryUpdateTaskFileByCondition(true);
             }
         }
-        String taskNumber = task.getTaskNumber();
-        String taskName = task.getName();
-        String sprintVersion = task.getSprintVersion();
         String taskLevel = task.getTaskLevel() == null ? STR_BLANK : task.getTaskLevel();
-        if (StringUtils.isNotBlank(taskNumberQ) && !taskNumber.contains(taskNumberQ)) {
+        String taskMark = task.getTaskMark() == null ? STR_BLANK : task.getTaskMark();
+        boolean query = !task.getName().contains(taskCondition) && !taskLevel.contains(taskCondition) && !taskMark.contains(taskCondition);
+        if (StringUtils.isNotBlank(taskCondition) && query) {
            return true;
         }
-        if (StringUtils.isNotBlank(nameQ) && !taskName.contains(nameQ)) {
-            return true;
-        }
-        if (StringUtils.isNotBlank(sprintVersionQ) && !sprintVersion.contains(sprintVersionQ)) {
-            return true;
-        }
-        if (StringUtils.isNotBlank(taskLevelQ) && !taskLevel.contains(taskLevelQ)) {
+
+        String sprintVersion = task.getSprintVersion();
+        if (StringUtils.isNotBlank(versionQuery) && !StringUtils.equals(versionQuery, sprintVersion)) {
             return true;
         }
         return false;
@@ -1987,22 +1909,6 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户任务加载完成 . . ."));
     }
 
-    private void setSideBar() {
-        Platform.runLater(() -> {
-            double width = defaultTaskNameWidth;
-            double positions = defaultDividerPositions;
-            if (StringUtils.equals(sideBarBtn.getText(), "隐藏侧边栏")) {
-                positions = 1;
-                sideBarBtn.setText("显示侧边栏");
-            } else {
-                width = ((TableColumn)taskList.getColumns().get(0)).getPrefWidth() - 255;
-                sideBarBtn.setText("隐藏侧边栏");
-            }
-            ((TableColumn)taskList.getColumns().get(0)).setPrefWidth(width);
-            taskSplitPane.setDividerPositions(positions);
-        });
-    }
-
     private void printTaskInfo(List<HepTaskDto> taskList) {
         if (frontPage() && CollectionUtils.isNotEmpty(taskList) &&
                 (StringUtils.equals(queryType, devCompleteHide.getText()) || StringUtils.equals(queryType, devCompleteShow.getText()))) {
@@ -2059,7 +1965,6 @@ public class HepTodoController extends BaseController implements Initializable {
         });
         filePushTips.setVisible(false);
         setSyncFrontVersionTips(false);
-        setSideBar();
     }
 
     private void syncFile() throws Exception {
@@ -2131,7 +2036,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
                 OutputUtils.clearLog(noticeSync);
                 String threadMsg = "轮询线程: " + timerId;
-                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContain(threadMsg));
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
                 int num = authVersion.size();
                 for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
                     String ver = version.getKey();
@@ -2167,14 +2072,6 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     clearFile(new File(fileSyncTarget), ver);
                 }
-                syncTime++;
-                if (syncTime % 2 == 0) {
-                    syncFileTime.setStyle(STYLE_COLOR_BLACK);
-                } else {
-                    syncFileTime.setStyle(STYLE_COLOR_BLUE);
-                }
-                OutputUtils.info(syncFileTimeTitle, String.format("轮询时间(%s)：", num));
-                OutputUtils.info(syncFileTime, CommonUtils.getCurrentDateTime14());
             }
         };
         fileSyncTimer.schedule(fileSyncTimerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
@@ -2363,7 +2260,6 @@ public class HepTodoController extends BaseController implements Initializable {
         fileTipsFileOperateTitle.setVisible(syncComponent);
         fileTipsVersion.setVisible(syncComponent);
         fileTipsVersionTitle.setVisible(syncComponent);
-        syncFileTimeTitle.setVisible(syncComponent);
 
         scriptCheck.setVisible(checkFileComponent);
         scriptShow.setVisible(checkFileComponent);
@@ -2461,7 +2357,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private void initColorDesc() {
         double step = 13;
         double x = 20;
-        double y = 180;
+        double y = 220;
         Label label = new Label(NAME_DESC_COLOR);
         label.setStyle(STYLE_BOLD);
         label.setLayoutX(x);
@@ -2477,9 +2373,9 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
         });
-        todoTitle.getChildren().add(label);
+        headPane.getChildren().add(label);
         colorList.add(label);
-        x += 20;
+        x += 25;
         int prevLen = 4;
         int diff = 0;
         for (Map.Entry<String, String[]> entry : color.entrySet()) {
@@ -2495,7 +2391,7 @@ public class HepTodoController extends BaseController implements Initializable {
             ele.setLayoutX(x);
             ele.setLayoutY(y);
             colorList.add(ele);
-            todoTitle.getChildren().add(ele);
+            headPane.getChildren().add(ele);
             prevLen = len;
             x -= step * diff;
             x += 20;
@@ -2693,7 +2589,7 @@ public class HepTodoController extends BaseController implements Initializable {
             tooltip.hide();
             tooltip.setText(msg);
             if (show) {
-                tooltip.show(sideBar, x, y);
+                tooltip.show(headPane, x, y);
             }
         });
 
@@ -2802,12 +2698,12 @@ public class HepTodoController extends BaseController implements Initializable {
             taskColor = new ArrayList<>(color.values()).get(currentDataNum % (color.size()));
             currentDataNum++;
             if (currentDataNum == 0) {
-                todoTitle.setStyle(TIME_OVER_COLOR);
-                todoTitle.setStyle(TODAY_COLOR);
-                todoTitle.setStyle(WEEK_COLOR);
-                todoTitle.setStyle(FOCUS_COLOR);
-                todoTitle.setStyle(NEW_COLOR);
-                todoTitle.setStyle(DEFAULT_COLOR);
+                headPane.setStyle(TIME_OVER_COLOR);
+                headPane.setStyle(TODAY_COLOR);
+                headPane.setStyle(WEEK_COLOR);
+                headPane.setStyle(FOCUS_COLOR);
+                headPane.setStyle(NEW_COLOR);
+                headPane.setStyle(DEFAULT_COLOR);
             }
         }
         return taskColor;
