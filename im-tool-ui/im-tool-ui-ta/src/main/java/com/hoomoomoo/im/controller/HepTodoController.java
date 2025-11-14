@@ -594,7 +594,7 @@ public class HepTodoController extends BaseController implements Initializable {
     void executeReset(ActionEvent event) throws Exception {
         OutputUtils.clearLog(taskConditionQuery);
         OutputUtils.clearLog(sprintVersionQuery);
-        executeQuery(null);
+        selectDevCompleteHide(null);
     }
 
     @FXML
