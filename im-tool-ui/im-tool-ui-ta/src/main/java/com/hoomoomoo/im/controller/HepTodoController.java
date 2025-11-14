@@ -1666,7 +1666,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 buttonConfig.remove(NAME_TODAY_ADD);
             }
-            if (!queryButtonList.containsKey(queryType)) {
+            if (!queryButtonList.containsKey(queryType) && !StringUtils.equals(queryType, newTask.getText())) {
                 for (Map.Entry<String, Button> entry : queryButtonList.entrySet()) {
                     entry.getValue().setVisible(false);
                 }
@@ -1700,6 +1700,9 @@ public class HepTodoController extends BaseController implements Initializable {
             int buttonNum = 1;
             for (Map.Entry<String, Button> entry : queryButtonList.entrySet()) {
                 Button button = entry.getValue();
+                if (!button.isVisible()) {
+                    continue;
+                }
                 button.setLayoutX(x + step * buttonNum);
                 button.setLayoutY(y);
                 button.setPrefWidth(100);
