@@ -158,6 +158,8 @@ public class AppConfigDto extends BaseDto {
 
     private int fileDefaultTimer;
 
+    private String fileHepTodoEndTime;
+
     private String fileSyncAuthVersion;
 
     private Map<String, String> fileSyncVersionMap;

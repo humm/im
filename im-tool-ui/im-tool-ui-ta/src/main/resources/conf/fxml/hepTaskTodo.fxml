@@ -185,9 +185,9 @@
                                        style="-fx-font-weight: bold;"/>
                                 <Label fx:id="syncFrontVersionTips" layoutX="1080.0" layoutY="220.0"
                                        style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                                <TextField fx:id="demandNo" editable="false" layoutX="1250.0" layoutY="215.0"
+                                <TextField fx:id="demandNo" editable="false" layoutX="1230.0" layoutY="215.0"
                                            style="-fx-background-color: transparent;"/>
-                                <TextField fx:id="taskNo" editable="false" layoutX="1400.0" layoutY="215.0"
+                                <TextField fx:id="taskNo" editable="false" layoutX="1380.0" layoutY="215.0"
                                            style="-fx-background-color: transparent;"/>
 
                             </children>
