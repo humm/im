@@ -64,7 +64,7 @@ public class BaseConst {
     public static final String KEY_COPY_CODE_LOCATION_REPLACE_TARGET = "copy.code.location.replace.target.";
     public static final String KEY_SVN_URL = "svn.url.";
     public static final String KEY_FIELD_TRANSLATE = "generate.code.field.translate.";
-    public static final String KEY_FILE_SYNC_VERSION = "file.sync.version.";
+    public static final String KEY_FILE_SYNC_VERSION = "hep.task.sync.version.";
     public static final String KEY_PACKAGE_IM = "com.hoomoomoo.im";
     public static final String KEY_ERROR_CODE_NO_AUTH_SERVICE = "absent: item of the same name is already scheduled for addition";
 
@@ -170,8 +170,8 @@ public class BaseConst {
     public final static String KEY_DEMAND = "demand";
     public final static String KEY_GIT_LOG_FILE = "diff --git";
     public final static String KEY_HTTPS = "https://";
-    public final static String KEY_FILE_SYNC_TIMER = "fileSyncTimer";
-    public final static String KEY_FILE_PUSH_TIMER = "filePushTimer";
+    public final static String KEY_HEP_TASK_SYNC_VERSION_TIMER = "hepTaskSyncVersionTimer";
+    public final static String KEY_HEP_TASK_PUSH_TIMER = "hepTaskPushTimer";
     public final static String KEY_FOCUS_VERSION_TIMER = "focusVersion";
     public final static String KEY_LOG_TIMER = "logTimer";
     public final static String KEY_UNIT_MB = "MB";

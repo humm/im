@@ -202,7 +202,7 @@ public class ConfigCache {
                     String name = item.substring(index + 1);
                     if (StringUtils.isNotBlank(name)) {
                         if (!KEY_DEMO.equalsIgnoreCase(code)) {
-                            appConfigDto.getFileSyncVersionMap().put(code.toLowerCase(), name);
+                            appConfigDto.getHepTaskSyncVersionMap().put(code.toLowerCase(), name);
                         }
                     }
                 }

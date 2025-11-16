@@ -850,7 +850,7 @@ public class CommonUtils {
                 try {
                     AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
                     if (tab.getText().equals(getMenuName(TASK_TODO.getCode(), TASK_TODO.getName()))) {
-                        stopHepToDoSyncFile(appConfigDto);
+                        // todo
                     }
                 } catch (Exception e) {
                     LoggerUtils.error(e);
@@ -859,11 +859,11 @@ public class CommonUtils {
         });
     }
 
-    public static void stopHepToDoSyncFile(AppConfigDto appConfigDto) {
-        Timer timer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
+    public static void stopTimer(AppConfigDto appConfigDto, String timerId) {
+        Timer timer = appConfigDto.getTimerMap().get(timerId);
         if (timer != null) {
             timer.cancel();
-            appConfigDto.getTimerMap().remove(KEY_FILE_SYNC_TIMER);
+            appConfigDto.getTimerMap().remove(timerId);
         }
     }
 

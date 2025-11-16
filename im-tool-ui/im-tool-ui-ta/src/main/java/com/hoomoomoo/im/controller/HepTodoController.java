@@ -37,11 +37,9 @@ import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import lombok.SneakyThrows;
-import org.apache.commons.collections.BagUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -365,9 +363,8 @@ public class HepTodoController extends BaseController implements Initializable {
     @FXML
     void syncOrSuspend(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        Timer timer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
+        Timer timer = appConfigDto.getTimerMap().get(KEY_HEP_TASK_SYNC_VERSION_TIMER);
         if (timer != null) {
-            CommonUtils.stopHepToDoSyncFile(appConfigDto);
             Platform.runLater(() -> {
                 syncFileBtn.setText("启动文件同步");
                 syncFileBtn.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
@@ -434,7 +431,7 @@ public class HepTodoController extends BaseController implements Initializable {
             String ver = item.getSprintVersion();
             String verYear = ver.split("\\.")[0];
             ver = TaCommonUtils.changeVersion(appConfigDto, ver) + STR_COMMA;
-            String authVer = appConfigDto.getFileSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
+            String authVer = appConfigDto.getHepTaskSyncAuthVersion().replaceAll(STR_VERSION_PREFIX, STR_BLANK) + STR_COMMA;
             if (authVer.contains(ver) || verYear.compareTo(KEY_GIT_VERSION_YEAR) >= 0 || verYear.compareTo(KEY_VERSION_202202) == 0) {
                 setSyncFrontVersionTips(false);
             } else {
@@ -1972,10 +1969,10 @@ public class HepTodoController extends BaseController implements Initializable {
 
     public void doFilePushCheck() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        Timer filePushTimer = appConfigDto.getTimerMap().get(KEY_FILE_PUSH_TIMER);
+        Timer filePushTimer = appConfigDto.getTimerMap().get(KEY_HEP_TASK_PUSH_TIMER);
         if (filePushTimer == null) {
-            filePushTimer = new Timer();
-            appConfigDto.getTimerMap().put(KEY_FILE_PUSH_TIMER, filePushTimer);
+            filePushTimer = new Timer(KEY_HEP_TASK_PUSH_TIMER);
+            appConfigDto.getTimerMap().put(KEY_HEP_TASK_PUSH_TIMER, filePushTimer);
         } else {
             filePushTimer.cancel();
             return;
@@ -1994,7 +1991,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 }
             };
-            appConfigDto.getTimerMap().get(KEY_FILE_PUSH_TIMER).schedule(filePushTimerTask, 1000, appConfigDto.getFilePushTimer() * 1000);
+            appConfigDto.getTimerMap().get(KEY_HEP_TASK_PUSH_TIMER).schedule(filePushTimerTask, 1000, appConfigDto.getHepTaskPushTimer() * 1000);
         });
     }
 
@@ -2004,11 +2001,11 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         doFilePushCheck();
-        Timer fileSyncTimer = appConfigDto.getTimerMap().get(KEY_FILE_SYNC_TIMER);
+        Timer fileSyncTimer = appConfigDto.getTimerMap().get(KEY_HEP_TASK_SYNC_VERSION_TIMER);
         String timerId = CommonUtils.getCurrentDateTime2();
         if (fileSyncTimer == null) {
-            fileSyncTimer = new Timer();
-            appConfigDto.getTimerMap().put(KEY_FILE_SYNC_TIMER, fileSyncTimer);
+            fileSyncTimer = new Timer(KEY_HEP_TASK_SYNC_VERSION_TIMER);
+            appConfigDto.getTimerMap().put(KEY_HEP_TASK_SYNC_VERSION_TIMER, fileSyncTimer);
         } else {
             fileSyncTimer.cancel();
             return;
@@ -2019,19 +2016,11 @@ public class HepTodoController extends BaseController implements Initializable {
             @Override
             public void run() {
                 AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
-                String endTime = appConfig.getFileHepTodoEndTime();
-                if (StringUtils.isNotBlank(endTime)) {
-                    if (CommonUtils.getCurrentDateTime13().compareTo(endTime) >= 0) {
-                        OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("超过截止时间,停止同步"));
-                        syncOrSuspend(null);
-                        return;
-                    }
-                }
-                Map<String, String> syncFileVersion = appConfig.getFileSyncVersionMap();
+                Map<String, String> syncFileVersion = appConfig.getHepTaskSyncVersionMap();
                 if (MapUtils.isEmpty(syncFileVersion)) {
                     return;
                 }
-                String fileSyncAuthVersion = appConfig.getFileSyncAuthVersion();
+                String fileSyncAuthVersion = appConfig.getHepTaskSyncAuthVersion();
                 if (StringUtils.isBlank(fileSyncAuthVersion)) {
                     OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("未配置授权同步版本信息"));
                     OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
@@ -2077,7 +2066,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTime("轮询版本数量：" + times));
             }
         };
-        fileSyncTimer.schedule(fileSyncTimerTask, 1000, appConfigDto.getFileSyncTimer() * 1000);
+        fileSyncTimer.schedule(fileSyncTimerTask, 1000, appConfigDto.getHepTaskSyncTimer() * 1000);
     }
 
     private void checkCommitPush(AppConfigDto appConfigDto) {

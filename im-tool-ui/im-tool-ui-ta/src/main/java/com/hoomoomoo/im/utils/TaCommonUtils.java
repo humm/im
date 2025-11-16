@@ -130,36 +130,6 @@ public class TaCommonUtils {
         return flag;
     }
 
-    public static boolean checkConfig(Label log, String functionCode) throws Exception {
-        boolean flag = true;
-        OutputUtils.clearLog(log);
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (functionCode.equals(SVN_REALTIME_STAT.getCode()) || functionCode.equals(SVN_HISTORY_STAT.getCode())) {
-            if (StringUtils.isBlank(appConfigDto.getSvnUsername())) {
-                OutputUtils.info(log, MSG_SVN_USERNAME + STR_NEXT_LINE);
-                flag = false;
-            }
-            if (StringUtils.isBlank(appConfigDto.getSvnPassword())) {
-                OutputUtils.info(log, MSG_SVN_PASSWORD + STR_NEXT_LINE);
-                flag = false;
-            }
-            if (MapUtils.isEmpty(appConfigDto.getSvnUrl())) {
-                OutputUtils.info(log, MSG_SVN_URL + STR_NEXT_LINE);
-                flag = false;
-            }
-            if (appConfigDto.getSvnStatUser().size() == 0) {
-                OutputUtils.info(log, MSG_SVN_STAT_USER + STR_NEXT_LINE);
-                flag = false;
-            }
-            if (appConfigDto.getSvnStatInterval() < 10) {
-                OutputUtils.info(log, MSG_SVN_STAT_INTERVAL + STR_NEXT_LINE);
-                flag = false;
-            }
-        }
-        return flag;
-    }
-
-
 
     public static boolean checkConfigGenerateCode(TextArea log, AppConfigDto appConfigDto) throws Exception {
         boolean flag = true;

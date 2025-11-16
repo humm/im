@@ -416,7 +416,7 @@ public class InitConfigUtils {
                     iterator.remove();
                 } else {
                     fileSyncVersion = true;
-                    iterator.set("file.sync.version.trunk.demo=");
+                    iterator.set("hep.task.sync.version.demo=");
                 }
             }
         }

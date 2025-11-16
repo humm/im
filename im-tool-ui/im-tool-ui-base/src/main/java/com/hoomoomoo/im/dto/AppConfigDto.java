@@ -152,17 +152,13 @@ public class AppConfigDto extends BaseDto {
 
     private Map<String, String> fieldTranslateMap;
 
-    private int fileSyncTimer;
+    private int hepTaskSyncTimer;
 
-    private int filePushTimer;
+    private int hepTaskPushTimer;
 
-    private int fileDefaultTimer;
+    private String hepTaskSyncAuthVersion;
 
-    private String fileHepTodoEndTime;
-
-    private String fileSyncAuthVersion;
-
-    private Map<String, String> fileSyncVersionMap;
+    private Map<String, String> hepTaskSyncVersionMap;
 
     private HepTaskDto hepTaskDto;
 
@@ -339,7 +335,7 @@ public class AppConfigDto extends BaseDto {
         this.replaceTargetUrl = new LinkedHashMap(16);
         this.cookieMap = new LinkedHashMap<>(16);
         this.fieldTranslateMap = new LinkedHashMap<>(16);
-        this.fileSyncVersionMap = new LinkedHashMap(16);
+        this.hepTaskSyncVersionMap = new LinkedHashMap(16);
         this.executeType = STR_BLANK;
         this.appUser = STR_BLANK;
         this.configColumnList = new ArrayList<>(16);
