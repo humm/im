@@ -1606,10 +1606,10 @@ public class HepTodoController extends BaseController implements Initializable {
                                 String taskNumber = item.getTaskNumber();
                                 String demandNo = item.getDemandNo();
                                 String[] taskColor;
-                                if (todayAddTask.contains(taskNumber)) {
-                                    taskColor = color.get("今天新增");
-                                }  else if (dayTodoTask.contains(taskNumber)) {
+                                if (dayTodoTask.contains(taskNumber)) {
                                     taskColor = color.get("今天待提交");
+                                } else if (todayAddTask.contains(taskNumber)) {
+                                    taskColor = color.get("今天新增");
                                 } else if (finishDateError.contains(taskNumber)) {
                                     taskColor = color.get("完成日期超期");
                                 } else if (focusVersionTask.contains(taskNumber) || focusDemand.contains(demandNo)) {
