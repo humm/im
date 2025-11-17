@@ -64,7 +64,9 @@ public class HepTaskDto extends BaseDto{
 
     private String demandNo;
 
-    private String taskMark;
+    private String deadLine;
+
+    private String taskDesc;
 
     private String taskLevel;
 

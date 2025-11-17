@@ -245,10 +245,24 @@
                                                                    AnchorPane.rightAnchor="0.0"
                                                                    AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn id="name" editable="false" prefWidth="865"
+                                                                <TableColumn id="name" editable="false" prefWidth="890"
                                                                              sortable="false" text="任务名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="name"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="taskLevel" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="级别">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="taskLevel"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="deadLine" editable="false"
+                                                                             prefWidth="70" sortable="false"
+                                                                             style="-fx-alignment: center;" text="截止日">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="deadLine"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="customer" editable="false"
@@ -258,18 +272,11 @@
                                                                         <PropertyValueFactory property="customer"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="taskLevel" editable="false"
+                                                                <TableColumn id="taskDesc" editable="false"
                                                                              prefWidth="100" sortable="false"
                                                                              style="-fx-alignment: center;" text="描述">
                                                                     <cellValueFactory>
-                                                                        <PropertyValueFactory property="taskLevel"/>
-                                                                    </cellValueFactory>
-                                                                </TableColumn>
-                                                                <TableColumn id="taskMark" editable="false"
-                                                                             prefWidth="65" sortable="false"
-                                                                             style="-fx-alignment: center;" text="备注">
-                                                                    <cellValueFactory>
-                                                                        <PropertyValueFactory property="taskMark"/>
+                                                                        <PropertyValueFactory property="taskDesc"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="sprintVersion" editable="false"

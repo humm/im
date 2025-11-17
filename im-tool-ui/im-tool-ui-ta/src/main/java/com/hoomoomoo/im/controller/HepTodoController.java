@@ -1069,7 +1069,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
             String sprintVersion = item.getSprintVersion();
             if (appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
-                setTaskLevel(item, "关注");
+                setTaskDesc(item, "关注");
                 focusVersionTask.add(taskNumberIn);
                 String assigneeName = item.getAssigneeName();
                 if (focusVersion.containsKey(sprintVersion)) {
@@ -1158,32 +1158,32 @@ public class HepTodoController extends BaseController implements Initializable {
             }
 
             if (dayCompleteTipsInfo.containsKey(minCompleteByMarkYmd)) {
-                item.setTaskMark(dayCompleteTipsInfo.get(minCompleteByMarkYmd));
+                item.setDeadLine(dayCompleteTipsInfo.get(minCompleteByMarkYmd));
             }
-            if (StringUtils.isBlank(item.getTaskMark()) && weekTodoTask.contains(taskNumberIn)) {
-                item.setTaskMark("本周");
+            if (StringUtils.isBlank(item.getDeadLine()) && weekTodoTask.contains(taskNumberIn)) {
+                item.setDeadLine("本周");
             }
             if (commitTag) {
-                setTaskLevel(item, "已提交");
+                setTaskDesc(item, "已提交");
             }
             if (finishDateError.contains(taskNumberIn)) {
-                setTaskLevel(item, "超期");
+                setTaskDesc(item, "超期");
             } else if (finishDateOver.contains(taskNumberIn)) {
-                setTaskLevel(item, "已超期");
+                setTaskDesc(item, "已超期");
             }
             if (taskName.contains(DEFECT_TAG)) {
-                setTaskLevel(item, "缺陷");
+                setTaskDesc(item, "缺陷");
             }
 
             if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
                 sameAssigneeIdReviewerId.add(taskNumberIn);
-                setTaskLevel(item, "同人");
+                setTaskDesc(item, "同人");
             }
 
             String createDate = item.getCreateTime().split(STR_SPACE)[0];
             if (StringUtils.equals(todayDate, createDate)) {
                 todayAddTask.add(taskNumberIn);
-                setTaskLevel(item, NAME_TODAY_ADD);
+                setTaskDesc(item, NAME_TODAY_ADD);
             }
 
             item.setSprintVersionFull(sprintVersion);
@@ -1242,8 +1242,8 @@ public class HepTodoController extends BaseController implements Initializable {
                     continue;
                 }
             } else if (StringUtils.isNotBlank(queryType) && queryButtonList.containsKey(queryType)) {
-                String level = item.getTaskLevel() == null ? STR_BLANK : item.getTaskLevel();
-                String mark = item.getTaskMark() == null ? STR_BLANK : item.getTaskMark();
+                String level = item.getTaskDesc() == null ? STR_BLANK : item.getTaskDesc();
+                String mark = item.getDeadLine() == null ? STR_BLANK : item.getDeadLine();
                 if (!level.contains(queryType) && !mark.contains(queryType)) {
                     iterator.remove();
                     continue;
@@ -1353,7 +1353,7 @@ public class HepTodoController extends BaseController implements Initializable {
         Map<String, String> hepTaskOnlySelfMap = appConfigDto.getHepTaskOnlySelfMap();
         if (hepTaskOnlySelfMap.containsKey(customerFull)) {
             if (!hepTaskDto.getSprintVersionFull().startsWith(hepTaskOnlySelfMap.get(customerFull))) {
-                setTaskLevel(hepTaskDto, "孤版");
+                setTaskDesc(hepTaskDto, "孤版");
             }
         }
     }
@@ -1438,7 +1438,7 @@ public class HepTodoController extends BaseController implements Initializable {
             String version = hepTaskAppointVersionMap.get(customerFull);
             String ver = version.substring(0, 18);
             if (taskVersion.startsWith(ver) && !StringUtils.equals(version, taskVersion)) {
-                setTaskLevel(hepTaskDto, "错版");
+                setTaskDesc(hepTaskDto, "错版");
             }
         }
     }
@@ -1458,17 +1458,6 @@ public class HepTodoController extends BaseController implements Initializable {
         } else {
             scriptCheck.setStyle(STYLE_NORMAL_FOR_BUTTON);
         }
-    }
-
-    private double getTipsLocation(int num) {
-        double x = 800;
-        if (num > 2) {
-            x = 800 - (num - 2) * 65;
-        }
-        if (x < 100) {
-            x = 100;
-        }
-        return x;
     }
 
     private void updateHepStatFile(AppConfigDto appConfigDto, Set<String> taskNoList, Set<String> demandNoList) throws IOException {
@@ -1542,8 +1531,8 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    private void setTaskLevel(HepTaskDto item, String taskLevel) {
-        item.setTaskLevel(StringUtils.isBlank(item.getTaskLevel()) ? taskLevel : taskLevel + STR_COMMA + item.getTaskLevel() );
+    private void setTaskDesc(HepTaskDto item, String taskDesc) {
+        item.setTaskDesc(StringUtils.isBlank(item.getTaskDesc()) ? taskDesc : taskDesc + STR_COMMA + item.getTaskDesc() );
     }
 
     private String formatVersion(String ver) {
@@ -1667,8 +1656,8 @@ public class HepTodoController extends BaseController implements Initializable {
         Platform.runLater(() -> {
             Set<String> buttonConfig = new HashSet<>();
             for (HepTaskDto hepTaskDto : task) {
-                if (StringUtils.isNotBlank(hepTaskDto.getTaskLevel())) {
-                    buttonConfig.addAll(Arrays.asList(hepTaskDto.getTaskLevel().split(STR_COMMA)));
+                if (StringUtils.isNotBlank(hepTaskDto.getTaskDesc())) {
+                    buttonConfig.addAll(Arrays.asList(hepTaskDto.getTaskDesc().split(STR_COMMA)));
                 }
                 buttonConfig.remove(NAME_TODAY_ADD);
             }
@@ -1737,9 +1726,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 appConfigDto.setQueryUpdateTaskFileByCondition(true);
             }
         }
-        String taskLevel = task.getTaskLevel() == null ? STR_BLANK : task.getTaskLevel();
-        String taskMark = task.getTaskMark() == null ? STR_BLANK : task.getTaskMark();
-        boolean query = !task.getName().contains(taskCondition) && !taskLevel.contains(taskCondition) && !taskMark.contains(taskCondition);
+        String taskDesc = task.getTaskDesc() == null ? STR_BLANK : task.getTaskDesc();
+        String deadLine = task.getDeadLine() == null ? STR_BLANK : task.getDeadLine();
+        String taskLevel = task.getDeadLine() == null ? STR_BLANK : task.getTaskLevel();
+        boolean query = !task.getName().contains(taskCondition) && !taskDesc.contains(taskCondition)
+                && !deadLine.contains(taskCondition) && !taskLevel.contains(taskCondition);
         if (StringUtils.isNotBlank(taskCondition) && query) {
            return true;
         }
@@ -1849,9 +1840,9 @@ public class HepTodoController extends BaseController implements Initializable {
                     if (taskName.contains(DEV_COMMIT_TAG)) {
                         minCompleteBySort = getValue(STR_8);
                     }
-                    String sortCode = minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskLevel();
+                    String sortCode = minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskDesc();
                     if (StringUtils.equals(queryType, newTask.getText())) {
-                        sortCode = item.getAssigneeId() + item.getCreatorId() + minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskLevel();
+                        sortCode = item.getAssigneeId() + item.getCreatorId() + minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskDesc();
                     }
                     item.setSortCode(sortCode);
                     sortCodeCache.put(cacheKey, sortCode);
@@ -2584,7 +2575,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private String getTipsMsg(String ori, String msg) {
         if (StringUtils.isNotBlank(ori)) {
-            return ori + STR_SPACE_2 + msg;
+            return ori + STR_SPACE_3 + msg;
         }
         return msg;
     }
@@ -2614,8 +2605,8 @@ public class HepTodoController extends BaseController implements Initializable {
                             msg = version;
                         }
 
-                        String level = val.getTaskLevel();
-                        if (StringUtils.isNotBlank(level) && level.contains(STR_SLASH)) {
+                        String level = val.getTaskDesc();
+                        if (StringUtils.isNotBlank(level) && level.contains(STR_COMMA)) {
                             msg = getTipsMsg(msg, level);
                         }
 
@@ -2627,7 +2618,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             show = true;
                         }
                     }
-                    controlTooltip(appConfigDto, show, msg, 1580, 258);
+                    controlTooltip(appConfigDto, show, msg, 500, 320);
                 }
             }
         });
@@ -2762,7 +2753,7 @@ public class HepTodoController extends BaseController implements Initializable {
             item.put("status", i % 2 == 0 ? 0 : 4);
             item.put("status_name", i % 2 == 0 ? "待启动" : "开发中");
             item.put("description", i % 2 == 0 ? "洛洛洛</p>洛洛洛" : "开发中");
-            item.put("taskMark", i % 2 == 0 ? "已提交" : "");
+            item.put("taskMark", i % 2 == 0 ? "本周二" : "");
             switch (i % 7) {
                 case 0:
                     item.put(KEY_NAME, "「需求」" + i);
