@@ -1261,7 +1261,7 @@ public class CommonUtils {
     public static void scanLog() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         Map<String, Long> fileTime = new HashMap<>();
-        Timer timer = new Timer();
+        Timer timer = new Timer(SYSTEM_TOOL_LOG_SCAN_TIMER);
         TimerTask timerTask =  new TimerTask() {
             @Override
             public void run() {
@@ -1342,7 +1342,7 @@ public class CommonUtils {
             }
         };
         timer.schedule(timerTask, 5000, appConfigDto.getSystemToolLogScanTimer() * 1000);
-        appConfigDto.getTimerMap().put(KEY_LOG_TIMER, timer);
+        appConfigDto.getTimerMap().put(SYSTEM_TOOL_LOG_SCAN_TIMER, timer);
     }
 
     private static void showErrorMessage(AppConfigDto appConfigDto, String tipsType, String tipsDate, String fileName, List<String> message) {

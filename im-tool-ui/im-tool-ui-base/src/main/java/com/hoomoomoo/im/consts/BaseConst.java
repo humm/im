@@ -170,10 +170,6 @@ public class BaseConst {
     public final static String KEY_DEMAND = "demand";
     public final static String KEY_GIT_LOG_FILE = "diff --git";
     public final static String KEY_HTTPS = "https://";
-    public final static String KEY_HEP_TASK_SYNC_VERSION_TIMER = "hepTaskSyncVersionTimer";
-    public final static String KEY_HEP_TASK_PUSH_TIMER = "hepTaskPushTimer";
-    public final static String KEY_FOCUS_VERSION_TIMER = "focusVersion";
-    public final static String KEY_LOG_TIMER = "logTimer";
     public final static String KEY_UNIT_MB = "MB";
     public final static String KEY_TA5 = "TA5";
     public final static String KEY_TA6 = "TA6";
@@ -187,6 +183,12 @@ public class BaseConst {
     public final static String KEY_N = "N";
     public final static String KEY_ADD = "add";
     public final static String KEY_CONSTRAINT = "constraint";
+
+    public final static String HEP_TASK_SYNC_VERSION_TIMER = "hepTaskSyncVersionTimer";
+    public final static String HEP_TASK_PUSH_TIMER = "hepTaskPushTimer";
+    public final static String FOCUS_VERSION_TIMER = "hepTaskFocusTimer";
+    public final static String SYSTEM_TOOL_SHAKE_MOUSE_TIMER = "systemToolShakeMouseTimer";
+    public final static String SYSTEM_TOOL_LOG_SCAN_TIMER = "systemToolLogScanTimer";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 

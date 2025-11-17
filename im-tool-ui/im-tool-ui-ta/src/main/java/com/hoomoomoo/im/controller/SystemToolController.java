@@ -15,20 +15,13 @@ import javafx.scene.control.TextArea;
 import lombok.SneakyThrows;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.awt.*;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.SYSTEM_TOOL;
@@ -92,7 +85,8 @@ public class SystemToolController implements Initializable {
         shakeMouseBtn.setDisable(true);
         cancelShakeMouseBtn.setDisable(false);
         if (shakeMouseTimer == null) {
-            shakeMouseTimer = new Timer();
+            shakeMouseTimer = new Timer(SYSTEM_TOOL_SHAKE_MOUSE_TIMER);
+            appConfigDto.getTimerMap().put(SYSTEM_TOOL_SHAKE_MOUSE_TIMER, shakeMouseTimer);
         }
         shakeMouseTimer.scheduleAtFixedRate(new TimerTask() {
             @Override

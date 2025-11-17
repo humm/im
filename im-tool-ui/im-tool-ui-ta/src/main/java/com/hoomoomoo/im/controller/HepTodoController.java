@@ -363,8 +363,9 @@ public class HepTodoController extends BaseController implements Initializable {
     @FXML
     void syncOrSuspend(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        Timer timer = appConfigDto.getTimerMap().get(KEY_HEP_TASK_SYNC_VERSION_TIMER);
+        Timer timer = appConfigDto.getTimerMap().get(HEP_TASK_SYNC_VERSION_TIMER);
         if (timer != null) {
+            CommonUtils.stopTimer(appConfigDto, HEP_TASK_SYNC_VERSION_TIMER);
             Platform.runLater(() -> {
                 syncFileBtn.setText("启动文件同步");
                 syncFileBtn.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
@@ -1923,10 +1924,10 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initFocusVersionTimer(AppConfigDto appConfigDto) {
-        String timerKey = KEY_FOCUS_VERSION_TIMER + CURRENT_USER_ID;
+        String timerKey = FOCUS_VERSION_TIMER + CURRENT_USER_ID;
         Timer focusVersionTimer = appConfigDto.getTimerMap().get(timerKey);
         if (focusVersionTimer == null) {
-            focusVersionTimer = new Timer();
+            focusVersionTimer = new Timer(timerKey);
             appConfigDto.getTimerMap().put(timerKey, focusVersionTimer);
         } else {
             return;
@@ -1969,10 +1970,10 @@ public class HepTodoController extends BaseController implements Initializable {
 
     public void doFilePushCheck() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        Timer filePushTimer = appConfigDto.getTimerMap().get(KEY_HEP_TASK_PUSH_TIMER);
+        Timer filePushTimer = appConfigDto.getTimerMap().get(HEP_TASK_PUSH_TIMER);
         if (filePushTimer == null) {
-            filePushTimer = new Timer(KEY_HEP_TASK_PUSH_TIMER);
-            appConfigDto.getTimerMap().put(KEY_HEP_TASK_PUSH_TIMER, filePushTimer);
+            filePushTimer = new Timer(HEP_TASK_PUSH_TIMER);
+            appConfigDto.getTimerMap().put(HEP_TASK_PUSH_TIMER, filePushTimer);
         } else {
             filePushTimer.cancel();
             return;
@@ -1991,7 +1992,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 }
             };
-            appConfigDto.getTimerMap().get(KEY_HEP_TASK_PUSH_TIMER).schedule(filePushTimerTask, 1000, appConfigDto.getHepTaskPushTimer() * 1000);
+            appConfigDto.getTimerMap().get(HEP_TASK_PUSH_TIMER).schedule(filePushTimerTask, 1000, appConfigDto.getHepTaskPushTimer() * 1000);
         });
     }
 
@@ -2001,11 +2002,11 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         doFilePushCheck();
-        Timer fileSyncTimer = appConfigDto.getTimerMap().get(KEY_HEP_TASK_SYNC_VERSION_TIMER);
+        Timer fileSyncTimer = appConfigDto.getTimerMap().get(HEP_TASK_SYNC_VERSION_TIMER);
         String timerId = CommonUtils.getCurrentDateTime2();
         if (fileSyncTimer == null) {
-            fileSyncTimer = new Timer(KEY_HEP_TASK_SYNC_VERSION_TIMER);
-            appConfigDto.getTimerMap().put(KEY_HEP_TASK_SYNC_VERSION_TIMER, fileSyncTimer);
+            fileSyncTimer = new Timer(HEP_TASK_SYNC_VERSION_TIMER);
+            appConfigDto.getTimerMap().put(HEP_TASK_SYNC_VERSION_TIMER, fileSyncTimer);
         } else {
             fileSyncTimer.cancel();
             return;
