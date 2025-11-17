@@ -8,6 +8,7 @@ import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.hoomoomoo.im.dto.LicenseDto;
+import com.hoomoomoo.im.timer.ImTimer;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -19,6 +20,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -26,6 +32,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
+import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,6 +45,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -67,6 +75,10 @@ public class CommonUtils {
     private static String MAC_ADDRESS_CACHE = "";
 
     private static Pattern LINE_PATTERN = Pattern.compile("_(\\w)");
+
+    private static String SCAN_CURRENT_POSITION = "";
+    private static long SCAN_CURRENT_POSITION_TIMES = 0;
+    private static boolean SCAN_TIPS = true;
 
     /**
      * 获取当前系统时间
@@ -756,7 +768,7 @@ public class CommonUtils {
      */
     public static void openMenu(ActionEvent event, TabPane functionTab) {
         try {
-            String menuId = ((MenuItem)event.getSource()).getId();
+            String menuId = ((MenuItem) event.getSource()).getId();
             MenuFunctionConfig.FunctionConfig functionConfig = null;
             for (MenuFunctionConfig.FunctionConfig item : MenuFunctionConfig.FunctionConfig.values()) {
                 if (item.getMenuId().equals(menuId)) {
@@ -832,15 +844,15 @@ public class CommonUtils {
         image.setPreserveRatio(true);
         image.setFitHeight(size);
         if (element instanceof MenuItem) {
-            ((MenuItem)element).setGraphic(image);
+            ((MenuItem) element).setGraphic(image);
         } else if (element instanceof Menu) {
-            ((Menu)element).setGraphic(image);
+            ((Menu) element).setGraphic(image);
         } else if (element instanceof Tab) {
-            ((Tab)element).setGraphic(image);
+            ((Tab) element).setGraphic(image);
         }
     }
 
-    public static void bindTabEvent (Tab tab) {
+    public static void bindTabEvent(Tab tab) {
         if (tab == null) {
             return;
         }
@@ -949,9 +961,9 @@ public class CommonUtils {
         if (obj instanceof TextArea) {
             ((TextArea) obj).getText().trim();
         } else if (obj instanceof TextField) {
-            return ((TextField)obj).getText().trim();
+            return ((TextField) obj).getText().trim();
         } else if (obj instanceof ComboBox) {
-            return (String)((ComboBox)obj).getSelectionModel().getSelectedItem();
+            return (String) ((ComboBox) obj).getSelectionModel().getSelectedItem();
         }
         return STR_BLANK;
     }
@@ -1038,22 +1050,23 @@ public class CommonUtils {
     }
 
     public static void showTipsByInfo(String msg) {
-        showTips(STR_1, msg, null,null,true, false, DEFAULT_AUTO_CLOSE_MILLIS);
+        showTips(STR_1, msg, null, null, true, false, DEFAULT_AUTO_CLOSE_MILLIS);
     }
 
     public static void showTipsByInfo(String msg, int millis) {
-        showTips(STR_1, msg, null,null,true, false, millis);
+        showTips(STR_1, msg, null, null, true, false, millis);
     }
 
     public static void showTipsByError(String msg) {
-        showTips(STR_0, msg, null, null,true, false, DEFAULT_AUTO_CLOSE_MILLIS);
+        showTips(STR_0, msg, null, null, true, false, DEFAULT_AUTO_CLOSE_MILLIS);
     }
 
     public static void showTipsByError(String msg, int millis) {
-        showTips(STR_0, msg, null, null,true, false, millis);
+        showTips(STR_0, msg, null, null, true, false, millis);
     }
+
     public static void showTipsByError(String msg, boolean autoClose) {
-        showTips(STR_0, msg, null, null,autoClose, false, DEFAULT_AUTO_CLOSE_MILLIS);
+        showTips(STR_0, msg, null, null, autoClose, false, DEFAULT_AUTO_CLOSE_MILLIS);
     }
 
     public static void showTipsByErrorNotAutoClose(String msg, List<String> detail) {
@@ -1068,7 +1081,7 @@ public class CommonUtils {
         showTips(STR_0, msg, detail.stream().map(Object::toString).collect(Collectors.joining()), all, false, showDetail, DEFAULT_AUTO_CLOSE_MILLIS);
     }
 
-    public static void showTips(String tipsType, String msg, String detail,String all, boolean autoClose, boolean showDetail, int millis) {
+    public static void showTips(String tipsType, String msg, String detail, String all, boolean autoClose, boolean showDetail, int millis) {
         Alert alert;
         if (STR_0.equals(tipsType)) {
             alert = new Alert(Alert.AlertType.ERROR);
@@ -1095,8 +1108,8 @@ public class CommonUtils {
             service.start();
         }
         if (showDetail) {
-            ButtonType detailBtn = new ButtonType ("详情");
-            ButtonType closeBtn = new ButtonType ("关闭");
+            ButtonType detailBtn = new ButtonType("详情");
+            ButtonType closeBtn = new ButtonType("关闭");
             alert.getButtonTypes().clear();
             alert.getButtonTypes().addAll(detailBtn, closeBtn);
             alert.show();
@@ -1258,87 +1271,114 @@ public class CommonUtils {
         }
     }
 
+    public static void scanTimer() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        ImTimer timer = new ImTimer(SYSTEM_TOOL_TIMER_SCAN_TIMER);
+        TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                Point pos = MouseInfo.getPointerInfo().getLocation();
+                String currentPosition = pos.x + " * " + pos.y;
+                if (StringUtils.equals(currentPosition, SCAN_CURRENT_POSITION)) {
+                    SCAN_CURRENT_POSITION_TIMES++;
+                } else {
+                    SCAN_CURRENT_POSITION = currentPosition;
+                    SCAN_CURRENT_POSITION_TIMES = 0;
+                }
+            }
+        };
+        timer.schedule(timerTask, 5000, appConfigDto.getSystemToolTimerScanTimer() * 1000);
+        appConfigDto.getTimerMap().put(SYSTEM_TOOL_TIMER_SCAN_TIMER, timer);
+    }
+
+    public static boolean stopScan() {
+        if (SCAN_CURRENT_POSITION_TIMES >= 100) {
+            return true;
+        }
+        return false;
+    }
+
     public static void scanLog() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         Map<String, Long> fileTime = new HashMap<>();
-        Timer timer = new Timer(SYSTEM_TOOL_LOG_SCAN_TIMER);
-        TimerTask timerTask =  new TimerTask() {
+        ImTimer timer = new ImTimer(SYSTEM_TOOL_LOG_SCAN_TIMER);
+        TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
                 long start = System.currentTimeMillis();
-                while (true) {
-                    Platform.runLater(() -> {
-                        File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
-                        if (log.exists()) {
-                            File[] subLog = log.listFiles();
-                            for (File item : subLog) {
-                                if (item.isDirectory()) {
-                                    List<File> files = Arrays.asList(item.listFiles());
-                                    if (CollectionUtils.isNotEmpty(files)) {
-                                        Collections.sort(files, new Comparator<File>() {
-                                            @Override
-                                            public int compare(File o1, File o2) {
-                                                return Long.valueOf(o2.lastModified() - o1.lastModified()).intValue();
-                                            }
-                                        });
-                                        File file = files.get(0);
-                                        String name = file.getAbsolutePath();
-                                        Long modify = file.lastModified();
-                                        Long modifyExist = fileTime.get(name);
-                                        if (modifyExist != null && modify.compareTo(modifyExist) == 0) {
-                                            continue;
+                if ((System.currentTimeMillis() - start) / 1000 > appConfigDto.getSystemToolGarbageCollectionTimer()) {
+                    start = System.currentTimeMillis();
+                    LoggerUtils.info("请求垃圾回收");
+                    System.gc();
+                }
+                if (CommonUtils.stopScan()) {
+                    if (SCAN_TIPS) {
+                        LoggerUtils.info("长时间未活动，日志扫描略过");
+                        SCAN_TIPS = false;
+                    }
+                    return;
+                }
+                SCAN_TIPS = true;
+                Platform.runLater(() -> {
+                    File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
+                    if (log.exists()) {
+                        File[] subLog = log.listFiles();
+                        for (File item : subLog) {
+                            if (item.isDirectory()) {
+                                List<File> files = Arrays.asList(item.listFiles());
+                                if (CollectionUtils.isNotEmpty(files)) {
+                                    Collections.sort(files, new Comparator<File>() {
+                                        @Override
+                                        public int compare(File o1, File o2) {
+                                            return Long.valueOf(o2.lastModified() - o1.lastModified()).intValue();
                                         }
-                                        fileTime.put(name, modify);
-                                        try {
-                                            List<String> content = FileUtils.readNormalFile(file.getAbsolutePath());
-                                            ArrayList errorMessage = new ArrayList();
-                                            String tipsDate = STR_0;
-                                            for (int i=0; i<content.size(); i++) {
-                                                String line = content.get(i).trim();
-                                                String tipsType = item.getName();
-                                                if (line.startsWith(getCurrentDateTime4()) && CollectionUtils.isNotEmpty(errorMessage)) {
+                                    });
+                                    File file = files.get(0);
+                                    String name = file.getAbsolutePath();
+                                    Long modify = file.lastModified();
+                                    Long modifyExist = fileTime.get(name);
+                                    if (modifyExist != null && modify.compareTo(modifyExist) == 0) {
+                                        continue;
+                                    }
+                                    fileTime.put(name, modify);
+                                    try {
+                                        List<String> content = FileUtils.readNormalFile(file.getAbsolutePath());
+                                        ArrayList errorMessage = new ArrayList();
+                                        String tipsDate = STR_0;
+                                        for (int i = 0; i < content.size(); i++) {
+                                            String line = content.get(i).trim();
+                                            String tipsType = item.getName();
+                                            if (line.startsWith(getCurrentDateTime4()) && CollectionUtils.isNotEmpty(errorMessage)) {
+                                                showErrorMessage(appConfigDto, tipsType, tipsDate, file.getAbsolutePath(), errorMessage);
+                                            }
+                                            if (line.contains("Exception") || CollectionUtils.isNotEmpty(errorMessage)) {
+                                                if (CollectionUtils.isEmpty(errorMessage)) {
+                                                    String date = content.get(i - 1);
+                                                    if (date.length() == 19) {
+                                                        tipsDate = date;
+                                                    }
+                                                }
+                                                if (!StringUtils.equals(MSG_DIVIDE_LINE.trim(), line)) {
+                                                    errorMessage.add(line + STR_NEXT_LINE);
+                                                }
+                                                if (i == content.size() - 1) {
                                                     showErrorMessage(appConfigDto, tipsType, tipsDate, file.getAbsolutePath(), errorMessage);
                                                 }
-                                                if (line.contains("Exception") || CollectionUtils.isNotEmpty(errorMessage)) {
-                                                    if (CollectionUtils.isEmpty(errorMessage)) {
-                                                        String date = content.get(i - 1);
-                                                        if (date.length() == 19) {
-                                                            tipsDate = date;
-                                                        }
-                                                    }
-                                                    if (!StringUtils.equals(MSG_DIVIDE_LINE.trim(), line)) {
-                                                        errorMessage.add(line + STR_NEXT_LINE);
-                                                    }
-                                                    if (i == content.size() -1) {
-                                                        showErrorMessage(appConfigDto, tipsType, tipsDate, file.getAbsolutePath(), errorMessage);
-                                                    }
-                                                }
                                             }
-                                            cleanFile(content);
-                                        } catch (Exception e) {
-                                            LoggerUtils.error(e);
                                         }
+                                        cleanFile(content);
+                                    } catch (Exception e) {
+                                        LoggerUtils.error(e);
                                     }
-                                    cleanFile(files);
                                 }
-                                cleanFile(item);
+                                cleanFile(files);
                             }
-                            appConfigDto.setInitScanLog(false);
+                            cleanFile(item);
                         }
-                        cleanFile(log);
-                    });
-                    try {
-                        Thread.sleep( appConfigDto.getSystemToolLogScanTimer() * 1000);
-                    } catch (InterruptedException e) {
-                        LoggerUtils.info("停止系统日志扫描");
-                        break;
+                        appConfigDto.setInitScanLog(false);
                     }
-                    if ((System.currentTimeMillis() - start) / 1000 > appConfigDto.getSystemToolGarbageCollectionTimer()) {
-                        start = System.currentTimeMillis();
-                        LoggerUtils.info("请求垃圾回收");
-                        System.gc();
-                    }
-                }
+                    cleanFile(log);
+                });
             }
         };
         timer.schedule(timerTask, 5000, appConfigDto.getSystemToolLogScanTimer() * 1000);
@@ -1383,7 +1423,7 @@ public class CommonUtils {
 
     private static String getSpecialString(int num, String content) {
         StringBuilder val = new StringBuilder();
-        for (int i=0; i<num; i++) {
+        for (int i = 0; i < num; i++) {
             val.append(content);
         }
         return val.toString();
@@ -1412,7 +1452,8 @@ public class CommonUtils {
         String usedMemoryUnit = formatMemoryInfo(usedMemory);
         res[0] = totalMemoryUnit + STR_SLASH + usedMemoryUnit;
         res[1] = totalMemoryUnit.replace(KEY_UNIT_MB, STR_BLANK);
-        res[2] = usedMemoryUnit.replace(KEY_UNIT_MB, STR_BLANK);;
+        res[2] = usedMemoryUnit.replace(KEY_UNIT_MB, STR_BLANK);
+        ;
         return res;
     }
 

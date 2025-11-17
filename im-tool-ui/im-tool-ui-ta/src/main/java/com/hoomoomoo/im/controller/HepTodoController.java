@@ -17,6 +17,7 @@ import com.hoomoomoo.im.extend.HepWaitHandleTaskMenu;
 import com.hoomoomoo.im.extend.ScriptCompareSql;
 import com.hoomoomoo.im.task.HepTodoTask;
 import com.hoomoomoo.im.task.HepTodoTaskParam;
+import com.hoomoomoo.im.timer.ImTimer;
 import com.hoomoomoo.im.utils.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
@@ -1924,10 +1925,10 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void initFocusVersionTimer(AppConfigDto appConfigDto) {
-        String timerKey = FOCUS_VERSION_TIMER + CURRENT_USER_ID;
-        Timer focusVersionTimer = appConfigDto.getTimerMap().get(timerKey);
+        String timerKey = FOCUS_VERSION_TIMER + STR_HYPHEN + CURRENT_USER_ID;
+        ImTimer focusVersionTimer = appConfigDto.getTimerMap().get(timerKey);
         if (focusVersionTimer == null) {
-            focusVersionTimer = new Timer(timerKey);
+            focusVersionTimer = new ImTimer(timerKey);
             appConfigDto.getTimerMap().put(timerKey, focusVersionTimer);
         } else {
             return;
@@ -1936,6 +1937,10 @@ public class HepTodoController extends BaseController implements Initializable {
             TimerTask filePushTimerTask = new TimerTask() {
                 @Override
                 public void run() {
+                    if (CommonUtils.stopScan()) {
+                        OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("长时间未活动，重点关注版本扫描略过"));
+                        return;
+                    }
                     if (CollectionUtils.isNotEmpty(focusVersionMessage) && focusVersionMessage.size() > 1) {
                         focusExecuteTimes++;
                         outputFocusVersionTipsColorDesc(1, Arrays.asList(focusVersionMessage.get(focusExecuteTimes % focusVersionMessage.size())));
@@ -1970,9 +1975,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
     public void doFilePushCheck() throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        Timer filePushTimer = appConfigDto.getTimerMap().get(HEP_TASK_PUSH_TIMER);
+        ImTimer filePushTimer = appConfigDto.getTimerMap().get(HEP_TASK_PUSH_TIMER);
         if (filePushTimer == null) {
-            filePushTimer = new Timer(HEP_TASK_PUSH_TIMER);
+            filePushTimer = new ImTimer(HEP_TASK_PUSH_TIMER);
             appConfigDto.getTimerMap().put(HEP_TASK_PUSH_TIMER, filePushTimer);
         } else {
             filePushTimer.cancel();
@@ -1982,6 +1987,10 @@ public class HepTodoController extends BaseController implements Initializable {
             TimerTask filePushTimerTask = new TimerTask() {
                 @Override
                 public void run() {
+                if (CommonUtils.stopScan()) {
+                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("长时间未活动，文件提交扫描略过"));
+                    return;
+                }
                 AppConfigDto appConfig;
                 try {
                     appConfig = ConfigCache.getAppConfigDtoCache();
@@ -2002,10 +2011,10 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         doFilePushCheck();
-        Timer fileSyncTimer = appConfigDto.getTimerMap().get(HEP_TASK_SYNC_VERSION_TIMER);
+        ImTimer fileSyncTimer = appConfigDto.getTimerMap().get(HEP_TASK_SYNC_VERSION_TIMER);
         String timerId = CommonUtils.getCurrentDateTime2();
         if (fileSyncTimer == null) {
-            fileSyncTimer = new Timer(HEP_TASK_SYNC_VERSION_TIMER);
+            fileSyncTimer = new ImTimer(HEP_TASK_SYNC_VERSION_TIMER);
             appConfigDto.getTimerMap().put(HEP_TASK_SYNC_VERSION_TIMER, fileSyncTimer);
         } else {
             fileSyncTimer.cancel();
@@ -2016,6 +2025,11 @@ public class HepTodoController extends BaseController implements Initializable {
             @SneakyThrows
             @Override
             public void run() {
+                OutputUtils.clearLog(noticeSync);
+                if (CommonUtils.stopScan()) {
+                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("长时间未活动，文件同步扫描略过"));
+                    return;
+                }
                 AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
                 Map<String, String> syncFileVersion = appConfig.getHepTaskSyncVersionMap();
                 if (MapUtils.isEmpty(syncFileVersion)) {
@@ -2028,7 +2042,6 @@ public class HepTodoController extends BaseController implements Initializable {
                     return;
                 }
                 List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
-                OutputUtils.clearLog(noticeSync);
                 String threadMsg = "轮询线程: " + timerId;
                 OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
                 int times = 0;
@@ -2064,7 +2077,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     clearFile(new File(fileSyncTarget), ver);
                 }
-                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTime("轮询版本数量：" + times));
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("轮询版本数量：" + times));
             }
         };
         fileSyncTimer.schedule(fileSyncTimerTask, 1000, appConfigDto.getHepTaskSyncTimer() * 1000);

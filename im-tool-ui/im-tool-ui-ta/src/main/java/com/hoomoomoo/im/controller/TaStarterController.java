@@ -1,12 +1,11 @@
 package com.hoomoomoo.im.controller;
 
-import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.JvmCache;
-import com.hoomoomoo.im.utils.TaCommonUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.TabPane;
 import lombok.SneakyThrows;
 
 import java.net.URL;
@@ -34,6 +33,7 @@ public class TaStarterController implements Initializable {
         CommonUtils.initialize(location, resources, functionTab, menuBar);
         CommonUtils.scanLog();
         CommonUtils.clearLog();
+        CommonUtils.scanTimer();
         //TaCommonUtils.startRestPlan();
     }
 

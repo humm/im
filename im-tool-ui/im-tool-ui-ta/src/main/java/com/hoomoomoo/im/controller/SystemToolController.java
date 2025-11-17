@@ -6,6 +6,7 @@ import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.task.SystemToolTask;
 import com.hoomoomoo.im.task.SystemToolTaskParam;
+import com.hoomoomoo.im.timer.ImTimer;
 import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -55,7 +56,7 @@ public class SystemToolController implements Initializable {
     @FXML
     private Button syncCodeBtn;
 
-    private Timer shakeMouseTimer;
+    private ImTimer shakeMouseTimer;
 
     private Robot robot;
 
@@ -85,7 +86,7 @@ public class SystemToolController implements Initializable {
         shakeMouseBtn.setDisable(true);
         cancelShakeMouseBtn.setDisable(false);
         if (shakeMouseTimer == null) {
-            shakeMouseTimer = new Timer(SYSTEM_TOOL_SHAKE_MOUSE_TIMER);
+            shakeMouseTimer = new ImTimer(SYSTEM_TOOL_SHAKE_MOUSE_TIMER);
             appConfigDto.getTimerMap().put(SYSTEM_TOOL_SHAKE_MOUSE_TIMER, shakeMouseTimer);
         }
         shakeMouseTimer.scheduleAtFixedRate(new TimerTask() {

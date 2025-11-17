@@ -189,6 +189,7 @@ public class BaseConst {
     public final static String FOCUS_VERSION_TIMER = "hepTaskFocusTimer";
     public final static String SYSTEM_TOOL_SHAKE_MOUSE_TIMER = "systemToolShakeMouseTimer";
     public final static String SYSTEM_TOOL_LOG_SCAN_TIMER = "systemToolLogScanTimer";
+    public final static String SYSTEM_TOOL_TIMER_SCAN_TIMER = "systemToolTimerScanTimer";
 
     public static final String OPERATE_TYPE_DELETE = "D";
 

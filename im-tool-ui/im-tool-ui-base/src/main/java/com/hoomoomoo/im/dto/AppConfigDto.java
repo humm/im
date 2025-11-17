@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.dto;
 
+import com.hoomoomoo.im.timer.ImTimer;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Stage;
@@ -282,6 +283,8 @@ public class AppConfigDto extends BaseDto {
 
     private int systemToolLogScanTimer;
 
+    private int systemToolTimerScanTimer;
+
     private String systemToolSyncCodeSource;
 
     private String systemToolSyncCodeTarget;
@@ -298,7 +301,7 @@ public class AppConfigDto extends BaseDto {
 
     private String errorLogDetail;
 
-    private ConcurrentHashMap<String, Timer> timerMap;
+    private ConcurrentHashMap<String, ImTimer> timerMap;
 
     private Boolean initScanLog;
 
