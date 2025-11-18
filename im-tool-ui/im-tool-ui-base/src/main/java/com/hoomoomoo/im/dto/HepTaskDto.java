@@ -82,4 +82,6 @@ public class HepTaskDto extends BaseDto{
 
     private String reviewerName;
 
+    private String estimateWorkload;
+
 }

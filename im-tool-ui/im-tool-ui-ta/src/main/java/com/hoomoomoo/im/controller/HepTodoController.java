@@ -1334,7 +1334,7 @@ public class HepTodoController extends BaseController implements Initializable {
         infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, todayAddTask, focusDemand);
         taskList.setDisable(false);
         if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
-            String msg = sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA));
+            String msg = String.format("开发人员和审核人员为同一人,请检查【%s】", sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)));
             LoggerUtils.info(msg);
             controlSomeOneTips(sameAssigneeIdReviewerId.size());
         } else {

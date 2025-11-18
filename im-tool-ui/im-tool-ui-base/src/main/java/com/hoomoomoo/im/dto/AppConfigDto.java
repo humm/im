@@ -165,8 +165,6 @@ public class AppConfigDto extends BaseDto {
 
     private HepTaskComponentDto hepTaskComponentDto;
 
-    private String hepTaskTodoCostTime;
-
     private String hepTaskUser;
 
     private String hepTaskUserName;

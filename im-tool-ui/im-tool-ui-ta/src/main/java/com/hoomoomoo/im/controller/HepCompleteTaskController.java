@@ -288,7 +288,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
             OutputUtils.clearLog(suggestion);
             OutputUtils.repeatInfo(id, hepTaskDto.getId());
             OutputUtils.repeatInfo(taskNumber, hepTaskDto.getTaskNumber());
-            OutputUtils.repeatInfo(realWorkload, appConfigDto.getHepTaskTodoCostTime());
+            OutputUtils.repeatInfo(realWorkload, hepTaskDto.getEstimateWorkload());
             realFinishTime.setValue(LocalDate.now());
             if (OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
                 realFinishTime.setDisable(true);
