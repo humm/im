@@ -636,6 +636,18 @@ public class ChangeToolController implements Initializable {
             OutputUtils.infoContainBr(logs, "生成文件 开始");
             buildFile(paramPath);
             OutputUtils.infoContainBr(logs, "生成文件 结束");
+            // 忽略提示信息
+            Iterator<String> iterator = errorInfo.listIterator();
+            while (iterator.hasNext()) {
+                String msg = iterator.next();
+                if (msg.contains("tbfundprdendproj") && msg.contains("duration_prd_flag")) {
+                    iterator.remove();
+                } else if (msg.contains("tbfundfarebelong_date") && msg.contains("effective_flag")) {
+                    iterator.remove();
+                } else if (msg.contains("tbfundidtypebizlimit") && msg.contains("busin_type")) {
+                    iterator.remove();
+                }
+            }
             if (CollectionUtils.isNotEmpty(errorInfo)) {
                 errorTips.setVisible(true);
                 OutputUtils.infoContainBr(logs, "错误信息 开始");
@@ -692,6 +704,9 @@ public class ChangeToolController implements Initializable {
                     }
                     if (ele.contains("(")) {
                         String[] fieldInfo = (ele.split("\\("));
+                        if (fieldInfo.length == 0) {
+                            continue;
+                        }
                         if (fieldInfo.length == 1) {
                             fieldCode = eleConfig[j + 1];
                             fieldType = eleConfig[j + 2];
@@ -700,6 +715,8 @@ public class ChangeToolController implements Initializable {
                             fieldType = eleConfig[j + 1];
                         }
                         break;
+                    } else if (StringUtils.equals(tableName, ele)) {
+                      continue;
                     } else {
                         fieldCode = ele;
                         fieldType = eleConfig[j+1];

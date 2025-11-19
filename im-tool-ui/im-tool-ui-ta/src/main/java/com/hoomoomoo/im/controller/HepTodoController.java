@@ -1728,7 +1728,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         String taskDesc = task.getTaskDesc() == null ? STR_BLANK : task.getTaskDesc();
         String deadLine = task.getDeadLine() == null ? STR_BLANK : task.getDeadLine();
-        String taskLevel = task.getDeadLine() == null ? STR_BLANK : task.getTaskLevel();
+        String taskLevel = task.getTaskLevel() == null ? STR_BLANK : task.getTaskLevel();
         boolean query = !task.getName().contains(taskCondition) && !taskDesc.contains(taskCondition)
                 && !deadLine.contains(taskCondition) && !taskLevel.contains(taskCondition);
         if (StringUtils.isNotBlank(taskCondition) && query) {

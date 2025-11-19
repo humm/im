@@ -117,8 +117,12 @@ public class HepCompleteTaskController extends BaseController implements Initial
                     modifiedFileValue.append(STR_NEXT_LINE);
                 }
                 modifiedFileValue.append(file);
-                if (file.contains("extradata") && file.endsWith(FILE_TYPE_SQL)) {
-                    extFile.append(STR_SLASH_T + "执行脚本 " + file.substring(file.lastIndexOf("/") + 1)).append(STR_NEXT_LINE);
+                if (file.contains("extradata")) {
+                    if (file.endsWith(FILE_TYPE_SQL)) {
+                        extFile.append(STR_SLASH_T + "执行脚本 " + file.substring(file.lastIndexOf("/") + 1)).append(STR_NEXT_LINE);
+                    } else if (file.endsWith(FILE_TYPE_RPX)) {
+                        extFile.append(STR_SLASH_T + "替换文件 " + file.substring(file.lastIndexOf("/") + 1)).append(STR_NEXT_LINE);
+                    }
                 }
             }
             String msg = TaCommonUtils.formatText(item.getMsg().trim(), false);
