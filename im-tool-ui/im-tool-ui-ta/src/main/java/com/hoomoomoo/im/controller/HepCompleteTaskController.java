@@ -104,6 +104,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
         });
         StringBuilder modifiedFileValue = new StringBuilder();
         StringBuilder editDescriptionValue = new StringBuilder();
+        StringBuilder extFile = new StringBuilder();
         for (int i=0; i<logDtoList.size(); i++) {
             LogDto item = logDtoList.get(i);
             List<String> fileList = item.getFile();
@@ -116,6 +117,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
                     modifiedFileValue.append(STR_NEXT_LINE);
                 }
                 modifiedFileValue.append(file);
+                if (file.contains("extradata") && file.endsWith(FILE_TYPE_SQL)) {
+                    extFile.append(STR_SLASH_T + "执行脚本 " + file.substring(file.lastIndexOf("/") + 1)).append(STR_NEXT_LINE);
+                }
             }
             String msg = TaCommonUtils.formatText(item.getMsg().trim(), false);
             if (editDescriptionValue.indexOf(msg) != -1) {
@@ -134,6 +138,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
             String path = FileUtils.getFilePath(PATH_DEFINE_HEP_STAT + fileName);
             taskDesc = FileUtils.readNormalFileToString(path);
         } catch (Exception e) {
+            LoggerUtils.error(e);
         }
         if (StringUtils.isNotBlank(taskDesc)) {
             String[] parts = taskDesc.split(MSG_TASK_DIVIDE_LINE);
@@ -149,15 +154,15 @@ public class HepCompleteTaskController extends BaseController implements Initial
                     OutputUtils.repeatInfo(suggestion,  TaCommonUtils.formatText(suggestionIn));
                     OutputUtils.repeatInfo(selfTestDesc,  TaCommonUtils.formatText(selfTestDescIn));
                 } else {
-                    setDefaultTaskDesc(editDescriptionValue.toString());
+                    setDefaultTaskDesc(editDescriptionValue.toString(), STR_BLANK);
                 }
             } else {
                 notice.setStyle(STYLE_BOLD_RED);
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("已提交任务信息格式错误"));
-                setDefaultTaskDesc(editDescriptionValue.toString());
+                setDefaultTaskDesc(editDescriptionValue.toString(), STR_BLANK);
             }
         } else {
-            setDefaultTaskDesc(editDescriptionValue.toString());
+            setDefaultTaskDesc(editDescriptionValue.toString(), extFile.toString());
         }
         if (StringUtils.isBlank(modifiedFileValue)) {
             notice.setStyle(STYLE_BOLD_RED);
@@ -170,11 +175,14 @@ public class HepCompleteTaskController extends BaseController implements Initial
         execute.setDisable(false);
     }
 
-    private void setDefaultTaskDesc(String editDescriptionValue) {
+    private void setDefaultTaskDesc(String editDescriptionValue, String testPlan) {
         StringBuilder suggestionMsg = new StringBuilder();
         suggestionMsg.append("【功能入口】\n");
         suggestionMsg.append("\t\n");
         suggestionMsg.append("【测试准备】\n");
+        if (StringUtils.isNotBlank(testPlan)) {
+            suggestionMsg.append(testPlan);
+        }
         suggestionMsg.append("\t更新ta-web-manager-fund-core等前台相关包及console包，执行升级脚本\n");
         suggestionMsg.append("\t清除浏览器缓存，刷新系统内存\n");
         suggestionMsg.append("【测试场景及预期结果】\n");
