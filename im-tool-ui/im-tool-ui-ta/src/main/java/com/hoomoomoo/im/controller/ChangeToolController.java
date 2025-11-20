@@ -1004,7 +1004,7 @@ public class ChangeToolController implements Initializable {
                         if (ele.contains("\"required\"") && ele.contains("true")) {
                             required = KEY_Y;
                         } else if (ele.contains("\"checkIsRequired\"")) {
-                            required = KEY_Y;
+                            required = KEY_N;
                         }
                         rule.append(ele).append(STR_NEXT_LINE);
                     }
