@@ -97,9 +97,6 @@ public class HepTodoController extends BaseController implements Initializable {
 
     public final static String OPERATE_TYPE_CUSTOM_UPDATE = "update";
 
-    public final static String DEV_COMMIT_TAG = "【分支已完成】";
-    public final static String COMMIT_TAG = "【已提交】";
-    public final static String UPDATE_TAG = "【已修改】";
     public final static String SELF_BUILD_TAG = "【自建任务】";
     public final static String SELF_TEST_TAG = "【自测问题】";
     public final static String DEFECT_TAG = "【缺陷:FUNDTAVI";
@@ -1017,6 +1014,7 @@ public class HepTodoController extends BaseController implements Initializable {
         while (iterator.hasNext()) {
             HepTaskDto item = iterator.next();
             String taskName = item.getName().replaceAll(STR_NEXT_LINE, STR_BLANK);
+            item.setName(taskName);
             item.setOriTaskName(taskName);
             String taskNumberIn = item.getTaskNumber();
             if (taskDemandNo.containsKey(taskNumberIn)) {
@@ -1029,17 +1027,15 @@ public class HepTodoController extends BaseController implements Initializable {
             taskNoList.add(taskNumberIn);
             demandNoList.add(demandNo);
             boolean commitTag = false;
-            if (!taskName.contains(COMMIT_TAG) && taskSubmitStatus.containsKey(taskNumberIn)) {
+            boolean completeTag = false;
+            if (taskSubmitStatus.containsKey(taskNumberIn)) {
                 commitTag = true;
-                if (!taskName.contains(DEV_COMMIT_TAG)) {
-                    taskName = DEV_COMMIT_TAG + taskName;
-                }
+                completeTag = true;
             }
-            if (!taskName.contains(DEV_COMMIT_TAG) && (taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn)) && !taskCancelDevSubmit.containsKey(taskNumberIn)) {
-                taskName = DEV_COMMIT_TAG + taskName;
+            if ((taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn)) && !taskCancelDevSubmit.containsKey(taskNumberIn)) {
+                completeTag = true;
             }
-            item.setName(taskName);
-            if (taskName.contains(DEV_COMMIT_TAG)) {
+            if (completeTag) {
                 mergerNum++;
             }
 
@@ -1050,7 +1046,7 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             String status = item.getStatus();
             if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
-                if (taskName.contains(DEV_COMMIT_TAG)) {
+                if (completeTag) {
                     mergerNum--;
                 }
                 iterator.remove();
@@ -1110,9 +1106,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 case SELF_BUILD_TAG:
                     item.setSortDate(getValue(STR_3));
                     break;
-                case COMMIT_TAG:
-                case DEV_COMMIT_TAG:
-                case UPDATE_TAG:
                 default:
                     if (AUDIT_FAIL.equals(item.getStatusName())) {
                         item.setSortDate(getValue(STR_4));
@@ -1165,6 +1158,8 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             if (commitTag) {
                 setTaskDesc(item, "已提交");
+            } else if (completeTag) {
+                setTaskDesc(item, "待合并");
             }
             if (finishDateError.contains(taskNumberIn)) {
                 setTaskDesc(item, "超期");
@@ -1227,12 +1222,12 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 existTask.add(taskName);
             } else if (StringUtils.equals(queryType, devCompleteHide.getText()) && !needShow) {
-                if (taskName.contains(DEV_COMMIT_TAG)) {
+                if (completeTag) {
                     iterator.remove();
                     continue;
                 }
             } else if (StringUtils.equals(queryType, devCompleteShow.getText())) {
-                if (!taskName.contains(DEV_COMMIT_TAG)) {
+                if (!completeTag) {
                     iterator.remove();
                     continue;
                 }
@@ -1732,8 +1727,9 @@ public class HepTodoController extends BaseController implements Initializable {
         String taskDesc = task.getTaskDesc() == null ? STR_BLANK : task.getTaskDesc();
         String deadLine = task.getDeadLine() == null ? STR_BLANK : task.getDeadLine();
         String taskLevel = task.getTaskLevel() == null ? STR_BLANK : task.getTaskLevel();
+        String customer = task.getCustomer() == null ? STR_BLANK : task.getCustomer();
         boolean query = !task.getName().contains(taskCondition) && !taskDesc.contains(taskCondition)
-                && !deadLine.contains(taskCondition) && !taskLevel.contains(taskCondition);
+                && !deadLine.contains(taskCondition) && !taskLevel.contains(taskCondition) && !customer.contains(taskCondition);
         if (StringUtils.isNotBlank(taskCondition) && query) {
            return true;
         }
@@ -1834,15 +1830,13 @@ public class HepTodoController extends BaseController implements Initializable {
         task = task.stream().peek(item -> {
             String taskName = item.getName();
             String cacheKey = taskName + STR_HYPHEN + item.getSprintVersion();
+            System.out.println(cacheKey + " = " + taskMinCompleteDate.containsKey(taskName));
             if (taskMinCompleteDate.containsKey(taskName)) {
                 HepTaskDto hepTaskDto = taskMinCompleteDate.get(taskName);
                 if (sortCodeCache.containsKey(cacheKey)) {
                     item.setSortCode(sortCodeCache.get(cacheKey));
                 } else {
                     String minCompleteBySort = hepTaskDto.getMinCompleteBySort();
-                    if (taskName.contains(DEV_COMMIT_TAG)) {
-                        minCompleteBySort = getValue(STR_8);
-                    }
                     String sortCode = minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskDesc();
                     if (StringUtils.equals(queryType, newTask.getText())) {
                         sortCode = item.getAssigneeId() + item.getCreatorId() + minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskDesc();
@@ -2050,7 +2044,9 @@ public class HepTodoController extends BaseController implements Initializable {
             List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
             OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("轮询线程: " + timerId));
             OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("轮询版本数量：" + syncFileVersion.size()));
+            int current = 0;
             for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
+                current++;
                 String ver = version.getKey();
                 if (!authVersion.contains(ver)) {
                     OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver.toUpperCase() + " 未授权同步"));
@@ -2065,7 +2061,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 String fileSyncSource = path[0];
                 String fileSyncTarget = path[1];
                 String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
-                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
+                if (current == syncFileVersion.size()) {
+                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTime(versionMsg));
+                } else {
+                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
+                }
                 fileSyncSourceFile.clear();
                 try {
                     File sourceFile = new File(fileSyncSource);
@@ -2782,10 +2782,10 @@ public class HepTodoController extends BaseController implements Initializable {
                     item.put(KEY_NAME, "「开发任务」" + i);
                     break;
                 case 3:
-                    item.put(KEY_NAME, "「开发」已修改 问题" + i);
+                    item.put(KEY_NAME, "「开发 问题" + i);
                     break;
                 case 4:
-                    item.put(KEY_NAME, "「开发」【分支已完成】 问题" + i);
+                    item.put(KEY_NAME, "「开发」问题" + i);
                     break;
                 case 5:
                     item.put(KEY_NAME, "「自测问题」问题" + i);
