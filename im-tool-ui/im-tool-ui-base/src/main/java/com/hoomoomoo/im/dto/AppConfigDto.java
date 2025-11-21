@@ -283,6 +283,8 @@ public class AppConfigDto extends BaseDto {
 
     private int systemToolTimerScanTimer;
 
+    private int systemToolTimerScanTimes;
+
     private String systemToolSyncCodeSource;
 
     private String systemToolSyncCodeTarget;
@@ -317,8 +319,11 @@ public class AppConfigDto extends BaseDto {
 
     private String changeToolBaseDictPath;
 
+    private Boolean scanTips;
+
     public AppConfigDto() {
         initTooltip();
+        this.scanTips = true;
         this.execute = false;
         this.appLogEnable = STR_FALSE;
         this.svnDefaultAppendBiz = STR_FALSE;

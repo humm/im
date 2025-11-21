@@ -78,7 +78,6 @@ public class CommonUtils {
 
     private static String SCAN_CURRENT_POSITION = "";
     private static long SCAN_CURRENT_POSITION_TIMES = 0;
-    private static boolean SCAN_TIPS = true;
 
     /**
      * 获取当前系统时间
@@ -1291,8 +1290,8 @@ public class CommonUtils {
         appConfigDto.getTimerMap().put(SYSTEM_TOOL_TIMER_SCAN_TIMER, timer);
     }
 
-    public static boolean stopScan() {
-        if (SCAN_CURRENT_POSITION_TIMES >= 100) {
+    public static boolean stopScan(AppConfigDto appConfigDto) {
+        if (SCAN_CURRENT_POSITION_TIMES >= appConfigDto.getSystemToolTimerScanTimes()) {
             return true;
         }
         return false;
@@ -1311,14 +1310,14 @@ public class CommonUtils {
                     LoggerUtils.info("请求垃圾回收");
                     System.gc();
                 }
-                if (CommonUtils.stopScan()) {
-                    if (SCAN_TIPS) {
+                if (CommonUtils.stopScan(appConfigDto)) {
+                    if (appConfigDto.getScanTips()) {
                         LoggerUtils.info("长时间未活动，日志扫描略过");
-                        SCAN_TIPS = false;
+                        appConfigDto.setScanTips(false);
                     }
                     return;
                 }
-                SCAN_TIPS = true;
+                appConfigDto.setScanTips(true);
                 Platform.runLater(() -> {
                     File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
                     if (log.exists()) {

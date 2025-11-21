@@ -1386,6 +1386,9 @@ public class HepTodoController extends BaseController implements Initializable {
                 Map<String, Integer> stat = entry.getValue();
                 for (int i=0; i<user.size(); i++) {
                     String item = user.get(i);
+                    if (StringUtils.equals(extendUserInfoNameToCode.get(item), EXTEND_USER_FRONT_CODE)) {
+                        continue;
+                    }
                     int num = stat.get(item) == null ? 0 : stat.get(item);
                     total += num;
                     versionMsg.append(String.format(" %s(%s)", item, num));
@@ -1928,9 +1931,15 @@ public class HepTodoController extends BaseController implements Initializable {
             TimerTask filePushTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-                    if (CommonUtils.stopScan()) {
+                    if (CommonUtils.stopScan(appConfigDto)) {
                         OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("长时间未活动，重点关注版本扫描略过"));
+                        if (appConfigDto.getScanTips()) {
+                            LoggerUtils.info("长时间未活动，重点关注版本扫描略过");
+                        }
                         return;
+                    }
+                    if (!taskUserPage()) {
+                        OutputUtils.clearLog(noticeSync);
                     }
                     if (CollectionUtils.isNotEmpty(focusVersionMessage) && focusVersionMessage.size() > 1) {
                         focusExecuteTimes++;
@@ -1978,8 +1987,11 @@ public class HepTodoController extends BaseController implements Initializable {
             TimerTask filePushTimerTask = new TimerTask() {
                 @Override
                 public void run() {
-                if (CommonUtils.stopScan()) {
+                if (CommonUtils.stopScan(appConfigDto)) {
                     OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("长时间未活动，文件提交扫描略过"));
+                    if (appConfigDto.getScanTips()) {
+                        LoggerUtils.info("长时间未活动，文件提交扫描略过");
+                    }
                     return;
                 }
                 AppConfigDto appConfig;
@@ -2016,59 +2028,59 @@ public class HepTodoController extends BaseController implements Initializable {
             @SneakyThrows
             @Override
             public void run() {
-                OutputUtils.clearLog(noticeSync);
-                if (CommonUtils.stopScan()) {
-                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("长时间未活动，文件同步扫描略过"));
-                    return;
+            OutputUtils.clearLog(noticeSync);
+            if (CommonUtils.stopScan(appConfigDto)) {
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("长时间未活动，文件同步扫描略过"));
+                if (appConfigDto.getScanTips()) {
+                    LoggerUtils.info("长时间未活动，文件同步扫描略过");
                 }
-                AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
-                Map<String, String> syncFileVersion = appConfig.getHepTaskSyncVersionMap();
-                if (MapUtils.isEmpty(syncFileVersion)) {
-                    return;
+                return;
+            }
+            AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
+            Map<String, String> syncFileVersion = appConfig.getHepTaskSyncVersionMap();
+            if (MapUtils.isEmpty(syncFileVersion)) {
+                return;
+            }
+            String fileSyncAuthVersion = appConfig.getHepTaskSyncAuthVersion();
+            if (StringUtils.isBlank(fileSyncAuthVersion)) {
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("未配置授权同步版本信息"));
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
+                return;
+            }
+            List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("轮询线程: " + timerId));
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("轮询版本数量：" + syncFileVersion.size()));
+            for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
+                String ver = version.getKey();
+                if (!authVersion.contains(ver)) {
+                    OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver.toUpperCase() + " 未授权同步"));
+                    continue;
                 }
-                String fileSyncAuthVersion = appConfig.getHepTaskSyncAuthVersion();
-                if (StringUtils.isBlank(fileSyncAuthVersion)) {
-                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("未配置授权同步版本信息"));
-                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
-                    return;
+                ver = ver.toUpperCase();
+                String[] path = version.getValue().split(STR_COMMA);
+                if (path.length != 2) {
+                    OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 同步路径配置错误"));
+                    continue;
                 }
-                List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
-                String threadMsg = "轮询线程: " + timerId;
-                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(threadMsg));
-                int times = 0;
-                for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
-                    String ver = version.getKey();
-                    if (!authVersion.contains(ver)) {
-                        OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver.toUpperCase() + " 未授权同步"));
+                String fileSyncSource = path[0];
+                String fileSyncTarget = path[1];
+                String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
+                fileSyncSourceFile.clear();
+                try {
+                    File sourceFile = new File(fileSyncSource);
+                    if (!sourceFile.exists()) {
+                        OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(String.format("文件同步源目录不存在 %s", ver)));
+                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(fileSyncSource));
                         continue;
                     }
-                    ver = ver.toUpperCase();
-                    String[] path = version.getValue().split(STR_COMMA);
-                    if (path.length != 2) {
-                        OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 同步路径配置错误"));
-                        continue;
-                    }
-                    String fileSyncSource = path[0];
-                    String fileSyncTarget = path[1];
-                    String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
-                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
-                    fileSyncSourceFile.clear();
-                    try {
-                        File sourceFile = new File(fileSyncSource);
-                        if (!sourceFile.exists()) {
-                            OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(String.format("文件同步源目录不存在 %s", ver)));
-                            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(fileSyncSource));
-                            continue;
-                        }
-                        times++;
-                        sync(sourceFile, fileSyncSource, fileSyncTarget, ver);
-                    } catch (IOException e) {
-                        LoggerUtils.error(e);
-                        OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
-                    }
-                    clearFile(new File(fileSyncTarget), ver);
+                    sync(sourceFile, fileSyncSource, fileSyncTarget, ver);
+                } catch (IOException e) {
+                    LoggerUtils.error(e);
+                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
                 }
-                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("轮询版本数量：" + times));
+                clearFile(new File(fileSyncTarget), ver);
+            }
             }
         };
         fileSyncTimer.schedule(fileSyncTimerTask, 1000, appConfigDto.getHepTaskSyncTimer() * 1000);
@@ -2242,8 +2254,13 @@ public class HepTodoController extends BaseController implements Initializable {
         return PAGE_USER.equals(EXTEND_USER_FRONT_CODE);
     }
 
-    private boolean taskUserPage() throws Exception {
-        return PAGE_USER.equals(ConfigCache.getAppConfigDtoCache().getHepTaskUser());
+    private boolean taskUserPage() {
+        try {
+            return PAGE_USER.equals(ConfigCache.getAppConfigDtoCache().getHepTaskUser());
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            return false;
+        }
     }
 
     private void controlComponentByExtendUser(boolean syncComponent, boolean checkFileComponent, boolean syncTaskComponent) {
