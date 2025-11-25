@@ -549,6 +549,9 @@ public class ChangeToolController implements Initializable {
         res.add("-- 开通OTC登记托管功能(广发证券特有功能)");
         res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_OTCTransferAgent';\n");
 
+        res.add("-- 开通TA5系统特性(广发证券特有功能)");
+        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_Ta5Features';\n");
+
         res.add("-- 更新TA代码");
         res.add("update tbparam set param_value = '" + TA_CODE + "' where param_id = 'BTACODE';\n");
 
