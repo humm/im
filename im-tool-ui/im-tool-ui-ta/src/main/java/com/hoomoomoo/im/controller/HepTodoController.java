@@ -82,14 +82,13 @@ public class HepTodoController extends BaseController implements Initializable {
      * 0:待启动,4:开发中,5:开发待集成,8:待集成,14:集成失败,16:开发集成失败,17:待审核,18:审核不通过,6:开发集成成功
      */
     private final static String STATUS_LIST = "0,4,5,8,14,16,17,18,6";
+    private final static Set<String> SKIP_STATUS_LIST = new HashSet<>(Arrays.asList("8", "17"));
     private final static String OPERATE_TYPE_START = "1";
     private final static String OPERATE_TYPE_UPDATE = "2";
     private final static String OPERATE_TYPE_COMPLETE = "3";
     private final static String STATUS_WAIT_START = "0";
     private final static String STATUS_AUDIT_FAIL = "18";
     private final static String STATUS_DEV = "4";
-    private final static String STATUS_WAIT_INTEGRATE = "8";
-    private final static String STATUS_WAIT_CHECK = "17";
     private final static String OPERATE_QUERY = "1";
     public final static String OPERATE_COMPLETE_QUERY = "4";
     private final static String OPERATE_START = "2";
@@ -454,10 +453,10 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
-            String msg = String.format("开发人员和审核人员为同一人,请检查【%s】", item.getAssigneeId());
+            String msg = String.format("开发人员和审核人员为同一人,请检查【%s】", item.getAssigneeName());
             LoggerUtils.info(msg);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
-            CommonUtils.showTipsByError(msg, 10 * 1000);
+            CommonUtils.showTipsByError(msg, 1 * 1000);
             return;
         }
         String status = item.getStatus();
@@ -597,6 +596,7 @@ public class HepTodoController extends BaseController implements Initializable {
     void executeReset(ActionEvent event) throws Exception {
         OutputUtils.clearLog(taskConditionQuery);
         OutputUtils.clearLog(sprintVersionQuery);
+        sortCodeCache.clear();
         selectDevCompleteHide(null);
     }
 
@@ -1045,7 +1045,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 item.setTaskLevel(taskLevel.get(taskNumberIn));
             }
             String status = item.getStatus();
-            if (STATUS_WAIT_INTEGRATE.equals(status) || STATUS_WAIT_CHECK.equals(status)) {
+            if (SKIP_STATUS_LIST.contains(status)) {
                 if (completeTag) {
                     mergerNum--;
                 }
@@ -1830,7 +1830,6 @@ public class HepTodoController extends BaseController implements Initializable {
         task = task.stream().peek(item -> {
             String taskName = item.getName();
             String cacheKey = taskName + STR_HYPHEN + item.getSprintVersion();
-            System.out.println(cacheKey + " = " + taskMinCompleteDate.containsKey(taskName));
             if (taskMinCompleteDate.containsKey(taskName)) {
                 HepTaskDto hepTaskDto = taskMinCompleteDate.get(taskName);
                 if (sortCodeCache.containsKey(cacheKey)) {
