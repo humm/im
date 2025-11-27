@@ -990,8 +990,12 @@ public class ChangeToolController implements Initializable {
                 if (StringUtils.isNotBlank(item.getDefaultValue())) {
                     buildRowCell(row, null, 5, item.getDefaultValue());
                 }
-                String checkRules = item.getCheckRules();
                 String required = KEY_N;
+                List<String> primaryKey = paramRealtimeDto.getPrimaryKey().get(tabCode);
+                if (CollectionUtils.isNotEmpty(primaryKey) && primaryKey.contains(fieldCode)) {
+                    required = KEY_Y;
+                }
+                String checkRules = item.getCheckRules();
                 if (StringUtils.isNotBlank(checkRules.trim())) {
                     StringBuilder rule = new StringBuilder();
                     checkRules = checkRules.replaceAll("\\\\", STR_BLANK);
@@ -1005,10 +1009,12 @@ public class ChangeToolController implements Initializable {
                     Iterator iterator = rules.iterator();
                     while (iterator.hasNext()) {
                         String ele = iterator.next().toString();
-                        if (ele.contains("\"required\"") && ele.contains("true")) {
-                            required = KEY_Y;
-                        } else if (ele.contains("\"checkIsRequired\"")) {
-                            required = KEY_N;
+                        if (StringUtils.equals(required, KEY_N)) {
+                            if (ele.contains("\"required\"") && ele.contains("true")) {
+                                required = KEY_Y;
+                            } else if (ele.contains("\"checkIsRequired\"")) {
+                                required = KEY_N;
+                            }
                         }
                         rule.append(ele).append(STR_NEXT_LINE);
                     }
@@ -1143,13 +1149,17 @@ public class ChangeToolController implements Initializable {
             requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine,0,6));
 
             for (ParamRealtimeApiTabDto item : paramRealtimeApiTabList) {
+                String keyStr = item.getCheckName();
+                if (StringUtils.isNotBlank(keyStr)) {
+                    paramRealtimeDto.getPrimaryKey().put(item.getTabCode(), Arrays.asList(keyStr.split(STR_COMMA)));
+                }
                 String desc = "主键字段: ";
                 if (product) {
                     desc = item.getTabName() + desc;
                 }
                 currentLine++;
                 SXSSFRow rowUniqueDesc = requestDesc.createRow(currentLine);
-                buildRowCell(rowUniqueDesc, null, 0, desc + item.getCheckName());
+                buildRowCell(rowUniqueDesc, null, 0, desc + keyStr);
                 requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine,0,6));
                 if (!product) {
                     break;
