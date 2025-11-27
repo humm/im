@@ -31,6 +31,9 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -891,12 +894,19 @@ public class ChangeToolController implements Initializable {
     }
 
     private void buildFile(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto, String filePath) throws IOException {
-        String excelFilePath = filePath.replace(".sql", ".xlsx");
+        String excelFileBakPath = filePath.replace(".sql", KEY_BACKUP + ".xlsx");
         String jsonFilePath = filePath.replace(".sql", ".json");
         FileUtils.writeFile(jsonFilePath, paramRealtimeDto.getRequestContent());
-        FileOutputStream fileOutputStream = new FileOutputStream(excelFilePath);
+        FileOutputStream fileOutputStream = new FileOutputStream(excelFileBakPath);
         workbook.write(fileOutputStream);
         workbook.dispose();
+        String excelFilePath = excelFileBakPath.replace(KEY_BACKUP, STR_BLANK);
+        if (ExcelComparatorUtils.compareExcel(excelFileBakPath, excelFilePath)) {
+            FileUtils.deleteFile(excelFileBakPath);
+        } else {
+            FileUtils.deleteFile(excelFilePath);
+            Files.move(Paths.get(excelFileBakPath),  Paths.get(excelFilePath), StandardCopyOption.ATOMIC_MOVE);
+        }
     }
 
     private void buildComponentDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto, String fileName) throws Exception {

@@ -685,6 +685,18 @@ public class FileUtils {
     /**
      * 删除文件
      *
+     * @param filePath
+     * @author: humm23693
+     * @date: 2021/04/26
+     * @return:
+     */
+    public static void deleteFile(String filePath) {
+        deleteFile(new File(filePath));
+    }
+
+    /**
+     * 删除文件
+     *
      * @param file
      * @author: humm23693
      * @date: 2021/04/26
@@ -702,7 +714,9 @@ public class FileUtils {
                 file.delete();
             }
         } else {
-            file.delete();
+            if (file.exists()) {
+                file.delete();
+            }
         }
     }
 

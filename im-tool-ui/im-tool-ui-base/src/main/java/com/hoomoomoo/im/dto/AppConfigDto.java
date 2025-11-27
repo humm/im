@@ -321,8 +321,15 @@ public class AppConfigDto extends BaseDto {
 
     private Boolean scanTips;
 
+    private String appServerUrl;
+
+    private String appServerPort;
+
+    private Boolean checkVersion;
+
     public AppConfigDto() {
         initTooltip();
+        this.checkVersion = false;
         this.scanTips = true;
         this.execute = false;
         this.appLogEnable = STR_FALSE;

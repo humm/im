@@ -13,12 +13,12 @@ import java.net.InetSocketAddress;
  */
 public class HttpServerUtils {
 
-    public static void initServer(String serverUrl, int port) {
+    public static void initServer(String serverName, int port) {
         try {
             HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-            server.createContext(serverUrl, new HttpResponseUtils());
+            server.createContext(serverName, new HttpResponseUtils());
             server.start();
-            LoggerUtils.info("服务器【" + serverUrl + "】" + " 端口【" + port + "】初始化成功......");
+            LoggerUtils.info("服务【" + serverName.substring(1) + "】" + " 端口【" + port + "】初始化成功 ......");
         } catch (IOException e) {
             LoggerUtils.error(e);
         }

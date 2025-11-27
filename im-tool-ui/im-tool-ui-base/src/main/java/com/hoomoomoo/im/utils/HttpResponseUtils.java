@@ -2,6 +2,7 @@ package com.hoomoomoo.im.utils;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.net.URLDecoder;
@@ -23,12 +24,24 @@ public class HttpResponseUtils implements HttpHandler {
     public void handle(HttpExchange exchange) throws IOException {
         Map<String, String> requestParam = paramGet(exchange);
         requestParam.putAll(paramPost(exchange));
-        LoggerUtils.info("请求版本: " + requestParam.get(KEY_VERSION));
+        String requestVer = requestParam.get(KEY_VERSION);
+        String ipAddress = exchange.getRemoteAddress().toString().substring(1);
+        LoggerUtils.info(ipAddress + " 请求版本校验,请求版本信息: " + requestVer);
+        String[] requestVerInfo = requestVer.split(STR_POINT_SLASH);
+        String[] finalVerInfo = CommonUtils.getVersion().split(STR_POINT_SLASH);
+        String finalVer = STR_1;
+        if (!StringUtils.equals(requestVerInfo[0], finalVerInfo[0])) {
+            finalVer = STR_0;
+        } else {
+            if (Integer.parseInt(finalVerInfo[1]) != Integer.parseInt(requestVerInfo[1])) {
+                finalVer = STR_0;
+            }
+        }
         exchange.sendResponseHeaders(200, 0);
         OutputStream outputStream = exchange.getResponseBody();
-        String responseMsg = ("返回版本: " + CommonUtils.getVersion());
+        String responseMsg = finalVer;
         outputStream.write(responseMsg.getBytes(ENCODING_GBK));
-        LoggerUtils.info(responseMsg);
+        LoggerUtils.info(ipAddress + " 校验完成," + (StringUtils.equals(finalVer, STR_1) ? "当前版本为最新版本" : "当前版本非最新版本,请更新版本"));
         outputStream.close();
     }
 

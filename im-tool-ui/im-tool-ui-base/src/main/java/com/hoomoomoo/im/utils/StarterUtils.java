@@ -3,6 +3,7 @@ package com.hoomoomoo.im.utils;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.AppConfigDto;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
@@ -116,21 +117,11 @@ public class StarterUtils {
             });
 
             CommonUtils.deleteVersionFile(appCode);
-
-            if (true) {
-                return;
+            String appServerName = STR_SLASH + APP_CODE_TA;
+            int appServerPort = Integer.parseInt(appConfigDto.getAppServerPort());
+            if (CommonUtils.isSuperUser()) {
+                HttpServerUtils.initServer(appServerName, appServerPort);
             }
-            // 启用服务器
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (CommonUtils.isSuperUser()) {
-                        HttpServerUtils.initServer(SERVER_URL, SERVER_PORT);
-                    } else {
-                        LoggerUtils.info(HttpRequestUtils.sendPost(SERVER_HTTP + STR_COLON + SERVER_PORT + SERVER_URL, KEY_VERSION + STR_EQUAL + CommonUtils.getVersion()));
-                    }
-                }
-            }).start();
         } catch (Exception e) {
             LoggerUtils.error(e);
         }

@@ -425,10 +425,6 @@ public class BaseConst {
     public static final String PATH_SYNC_TASK_STAT = "/task";
     public static final String PATH_SYNC_VERSION_STAT = "/version";
 
-    public static final String SERVER_HTTP = "http://127.0.0.1";
-    public static final String SERVER_URL = "/tool/im";
-    public static final Integer SERVER_PORT = 13579;
-
     public static final Integer SECOND_CLICKED = 2;
     public static final String RIGHT_CLICKED = "SECONDARY";
     public static final String LEFT_CLICKED = "PRIMARY";

@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.net.URL;
+import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
@@ -1319,6 +1320,7 @@ public class CommonUtils {
                 }
                 appConfigDto.setScanTips(true);
                 Platform.runLater(() -> {
+                    checkVersion(appConfigDto);
                     File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
                     if (log.exists()) {
                         File[] subLog = log.listFiles();
@@ -1575,5 +1577,53 @@ public class CommonUtils {
                 }
             }
         }
+    }
+
+    public static void checkVersion(AppConfigDto appConfigDto) {
+        if (isSuperUser() || appConfigDto.getCheckVersion()) {
+            return;
+        }
+        try {
+            appConfigDto.setCheckVersion(true);
+            String appServerUrl = appConfigDto.getAppServerUrl();
+            String appServerName = STR_SLASH + APP_CODE_TA;
+            int appServerPort = Integer.parseInt(appConfigDto.getAppServerPort());
+            String finalVer = HttpRequestUtils.sendPost(appServerUrl + STR_COLON + appServerPort + appServerName, KEY_VERSION + STR_EQUAL + CommonUtils.getVersion());
+            if (StringUtils.equals(finalVer, STR_0)) {
+                CommonUtils.showTipsByError("当前版本非最新版本,请及时更新", 60 * 1000);
+            }
+        } catch (Exception e) {
+
+        }
+    }
+
+    /**
+     * 适用文本文件比较
+     *
+     * @param filePath
+     * @return
+     */
+    public static String getFileMD5(String filePath) {
+        try {
+            FileInputStream fis = new FileInputStream(filePath);
+            MessageDigest md = MessageDigest.getInstance(KEY_MD5);
+            byte[] buffer = new byte[8192];
+            int len;
+            while ((len = fis.read(buffer)) != -1) {
+                md.update(buffer, 0, len);
+            }
+            fis.close();
+
+            // 转换为16进制字符串
+            byte[] digest = md.digest();
+            StringBuilder str = new StringBuilder();
+            for (byte b : digest) {
+                str.append(String.format("%02x", b));
+            }
+            return str.toString();
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+        }
+        return STR_SPACE;
     }
 }
