@@ -931,6 +931,7 @@ public class ChangeToolController implements Initializable {
             componentDesc.setColumnWidth(7, 200 * 256);
 
             CellStyle centerCellStyle = ExcelCommonUtils.getCenterCellStyle(workbook);
+            CellStyle redCenterCellStyle = ExcelCommonUtils.getRedCenterCellStyle(workbook);
             CellStyle wrapTextCellStyle = ExcelCommonUtils.getWrapTextCellStyle(workbook);
             String tableCode = changeToLower(paramRealtimeApiTabDto.getTableCode());
             int rowIndex = 0;
@@ -1017,7 +1018,11 @@ public class ChangeToolController implements Initializable {
                         buildRowCell(row, wrapTextCellStyle, 7, checkRules);
                     }
                 }
-                buildRowCell(row, centerCellStyle, 6, required);
+                if (StringUtils.equals(required, KEY_Y)) {
+                    buildRowCell(row, redCenterCellStyle, 6, required);
+                } else {
+                    buildRowCell(row, centerCellStyle, 6, required);
+                }
                 if (needAdd) {
                     buildBeginValidDateLine(componentDesc, rowIndex, wrapTextCellStyle, centerCellStyle, paramRealtimeApiTabDto);
                 }
@@ -1030,8 +1035,8 @@ public class ChangeToolController implements Initializable {
         buildRowCell(row, null, 0, paramRealtimeApiTabDto.getFieldName());
         buildRowCell(row, null, 1, "有效起始日期");
         buildRowCell(row, null, 2, NAME_DESC_BEGIN_VALID_DATE);
-        buildRowCell(row, centerCellStyle, 4, KEY_Y);
-        buildRowCell(row, wrapTextCellStyle, 5,"{\"required\":true,\"message\":\"有效起始日期必填\"}\n{\"validator\":\"isDate\",\"message\":\"日期格式不正确\"}");
+        buildRowCell(row, centerCellStyle, 6, KEY_N);
+        buildRowCell(row, wrapTextCellStyle, 7,"{\"required\":true,\"message\":\"有效起始日期必填\"}\n{\"validator\":\"isDate\",\"message\":\"日期格式不正确\"}");
     }
 
     private void buildDictDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto) {
