@@ -20,17 +20,17 @@ public class ExcelComparatorUtils {
      *
      * @param filePath1 第一个Excel文件路径
      * @param filePath2 第二个Excel文件路径
-     * @return true=一致，false=不一致；差异信息可通过getDiffList()获取
+     * @return true=一致,false=不一致；差异信息可通过getDiffList()获取
      */
     public static boolean compareExcel(String filePath1, String filePath2) {
         // 清空历史差异
         DIFF_LIST.clear();
         if (!new File(filePath1).exists()) {
-            LoggerUtils.info(filePath1 + " 文件不存在，不比较");
+            LoggerUtils.info(filePath1 + " 文件1不存在,不比较");
             return false;
         }
         if (!new File(filePath2).exists()) {
-            LoggerUtils.info(filePath2 + " 文件不存在，不比较");
+            LoggerUtils.info(filePath2 + " 文件2不存在,不比较");
             return false;
         }
         try {
@@ -40,7 +40,7 @@ public class ExcelComparatorUtils {
             Workbook workbook2 = getWorkbook(fis2, filePath2);
             // 1. 校验工作表数量
             if (workbook1.getNumberOfSheets() != workbook2.getNumberOfSheets()) {
-                DIFF_LIST.add("工作表数量不一致：文件1=" + workbook1.getNumberOfSheets() + "，文件2=" + workbook2.getNumberOfSheets());
+                DIFF_LIST.add("工作表数量不一致: 文件1=" + workbook1.getNumberOfSheets() + ",文件2=" + workbook2.getNumberOfSheets());
                 return false;
             }
 
@@ -53,7 +53,7 @@ public class ExcelComparatorUtils {
                 String sheetName1 = workbook1.getSheetName(sheetIndex);
                 String sheetName2 = workbook2.getSheetName(sheetIndex);
                 if (!sheetName1.equals(sheetName2)) {
-                    DIFF_LIST.add("工作表名称不一致：索引" + sheetIndex + "，文件1=" + sheetName1 + "，文件2=" + sheetName2);
+                    DIFF_LIST.add("工作表名称不一致: 索引" + sheetIndex + ",文件1=" + sheetName1 + ",文件2=" + sheetName2);
                 }
 
                 // 3. 逐行对比
@@ -65,14 +65,14 @@ public class ExcelComparatorUtils {
 
                     // 校验行是否存在
                     if (row1 == null && row2 == null) {
-                        continue; // 两行都为空，跳过
+                        continue; // 两行都为空,跳过
                     }
                     if (row1 == null) {
-                        DIFF_LIST.add("工作表[" + sheetName1 + "]行[" + rowIndex + "]：文件1无此行，文件2有");
+                        DIFF_LIST.add("工作表[" + sheetName1 + "]行[" + rowIndex + "]: 文件1无此行,文件2有");
                         continue;
                     }
                     if (row2 == null) {
-                        DIFF_LIST.add("工作表[" + sheetName1 + "]行[" + rowIndex + "]：文件1有此行，文件2无");
+                        DIFF_LIST.add("工作表[" + sheetName1 + "]行[" + rowIndex + "]: 文件1有此行,文件2无");
                         continue;
                     }
 
@@ -88,7 +88,7 @@ public class ExcelComparatorUtils {
 
                         // 校验单元格值
                         if (!cellValue1.equals(cellValue2)) {
-                            DIFF_LIST.add("工作表[" + sheetName1 + "]行[" + rowIndex + "]列[" + cellIndex + "]值不一致：" + "文件1=" + cellValue1 + "，文件2=" + cellValue2);
+                            DIFF_LIST.add("工作表[" + sheetName1 + "]行[" + rowIndex + "]列[" + cellIndex + "]值不一致: " + "文件1=" + cellValue1 + ",文件2=" + cellValue2);
                         }
                     }
                 }
@@ -111,12 +111,12 @@ public class ExcelComparatorUtils {
         } else if (filePath.endsWith(".xls")) {
             return new HSSFWorkbook(fis); // 2003格式
         } else {
-            throw new IllegalArgumentException("不支持的Excel格式：" + filePath);
+            throw new IllegalArgumentException("不支持的Excel格式: " + filePath);
         }
     }
 
     /**
-     * 获取单元格值（统一转为字符串，避免类型差异）
+     * 获取单元格值（统一转为字符串,避免类型差异）
      */
     private static String getCellValue(Cell cell) {
         if (cell == null) {
@@ -125,7 +125,7 @@ public class ExcelComparatorUtils {
 
         // 设置日期格式（避免日期转为数字）
         DataFormatter formatter = new DataFormatter();
-        return formatter.formatCellValue(cell).trim(); // 去除首尾空格，避免空格导致的误判
+        return formatter.formatCellValue(cell).trim(); // 去除首尾空格,避免空格导致的误判
     }
 
     /**

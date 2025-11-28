@@ -62,32 +62,183 @@ public class MenuFunctionConfig {
 
     public enum FunctionConfig {
         // TA工具组件 0-999
-        SVN_LOG("100", "提交记录", "用户信息,提交记录", "/conf/fxml/svnLog.fxml", "svnLog", "menuRepository", "0"),
-        SVN_UPDATE("110", "文件更新", "用户信息,文件更新", "/conf/fxml/svnUpdate.fxml", "svnUpdate", "menuRepository", "0"),
+        SVN_LOG(
+                "100",
+                "提交记录",
+                "用户信息,提交记录",
+                "/conf/fxml/svnLog.fxml",
+                "svnLog",
+                "menuRepository",
+                "0",
+                ""
+        ),
+        SVN_UPDATE(
+                "110",
+                "文件更新",
+                "用户信息,文件更新",
+                "/conf/fxml/svnUpdate.fxml",
+                "svnUpdate",
+                "menuRepository",
+                "0",
+                ""
+        ),
 
-        SCRIPT_UPDATE("200", "升级脚本", "升级脚本", "/conf/fxml/scriptUpdate.fxml", "scriptUpdate", "menuScript", "0"),
-        PROCESS_INFO("210", "流程信息", "流程信息", "/conf/fxml/processInfo.fxml", "processInfo", "menuScript", "0"),
-        FUND_INFO("220", "基金信息", "基金信息", "/conf/fxml/fundInfo.fxml", "fundInfo", "menuScript", "0"),
-        DATABASE_SCRIPT("230", "执行脚本", "执行脚本", "/conf/fxml/databaseScript.fxml", "databaseScript", "menuScript", "0"),
-        GENERATE_SQL("240", "分库分表", "分库分表", "/conf/fxml/generateSql.fxml", "generateSql", "menuScript", "0"),
+        SCRIPT_UPDATE(
+                "200",
+                "升级脚本",
+                "升级脚本",
+                "/conf/fxml/scriptUpdate.fxml",
+                "scriptUpdate",
+                "menuScript",
+                "0",
+                ""
+        ),
+        PROCESS_INFO(
+                "210",
+                "流程信息",
+                "流程信息",
+                "/conf/fxml/processInfo.fxml",
+                "processInfo",
+                "menuScript",
+                "0",
+                ""
+        ),
+        FUND_INFO(
+                "220",
+                "基金信息",
+                "基金信息",
+                "/conf/fxml/fundInfo.fxml",
+                "fundInfo",
+                "menuScript",
+                "0",
+                ""
+        ),
+        DATABASE_SCRIPT(
+                "230",
+                "执行脚本",
+                "执行脚本",
+                "/conf/fxml/databaseScript.fxml",
+                "databaseScript",
+                "menuScript",
+                "0",
+                ""
+        ),
+        GENERATE_SQL(
+                "240",
+                "分库分表",
+                "分库分表",
+                "/conf/fxml/generateSql.fxml",
+                "generateSql",
+                "menuScript",
+                "0",
+                ""
+        ),
 
-        COPY_CODE("300", "复制文件", "复制文件", "/conf/fxml/copyCode.fxml", "copyCode", "menuFile", "0"),
-        FILE_SYNC("420", "同步文件", "同步文件", "/conf/fxml/fileSync.fxml", "fileSync", "menuFile", "1"),
-        SCRIPT_CHECK("500", "检查文件", "检查文件", "/conf/fxml/scriptCheck.fxml", "scriptCheck", "menuFile", "0"),
-        GENERATE_CODE("310", "生成代码", "生成代码", "/conf/fxml/generateCode.fxml", "generateCode", "menuFile", "1"),
+        COPY_CODE("300",
+                "复制文件",
+                "复制文件",
+                "/conf/fxml/copyCode.fxml",
+                "copyCode",
+                "menuFile",
+                "0",
+                ""
+        ),
+        FILE_SYNC("420",
+                "同步文件",
+                "同步文件",
+                "/conf/fxml/fileSync.fxml",
+                "fileSync",
+                "menuFile",
+                "1",
+                ""
+        ),
+        SCRIPT_CHECK(
+                "500",
+                "检查文件",
+                "检查文件",
+                "/conf/fxml/scriptCheck.fxml",
+                "scriptCheck",
+                "menuFile",
+                "0",
+                ""
+        ),
+        GENERATE_CODE(
+                "310",
+                "生成代码",
+                "生成代码",
+                "/conf/fxml/generateCode.fxml",
+                "generateCode",
+                "menuFile",
+                "1",
+                ""
+        ),
 
-        TASK_TODO("400", "开发任务", "开发任务", "/conf/fxml/hepTaskTodo.fxml", "hepTaskTodo", "menuHep", "0"),
+        TASK_TODO(
+                "400",
+                "开发任务",
+                "开发任务",
+                "/conf/fxml/hepTaskTodo.fxml",
+                "hepTaskTodo",
+                "menuHep",
+                "0",
+                ""
+        ),
 
-        CHANGE_TOOL("600", "整备环境", "整备环境", "/conf/fxml/changeTool.fxml", "changeTool", "menuOther", "0"),
+        CHANGE_TOOL(
+                "600",
+                "整备环境",
+                "整备环境",
+                "/conf/fxml/changeTool.fxml",
+                "changeTool",
+                "menuOther",
+                "0",
+                "ChangeToolController.java,changeTool.fxml"
+        ),
 
-        SYSTEM_TOOL("700", "系统工具", "系统工具", "/conf/fxml/systemTool.fxml", "systemTool", "menuTool", "0"),
+        SYSTEM_TOOL(
+                "700",
+                "系统工具",
+                "系统工具",
+                "/conf/fxml/systemTool.fxml",
+                "systemTool",
+                "menuTool",
+                "0",
+                ""
+        ),
 
         // 公共组件 3000-9999
-        CONFIG_SET("9999", "参数设置", "应用信息", "/conf/fxml/configSet.fxml", "configSet", "menuParam", "0"),
+        CONFIG_SET(
+                "9999",
+                "参数设置",
+                "应用信息",
+                "/conf/fxml/configSet.fxml",
+                "configSet",
+                "menuParam",
+                "0",
+                ""
+        ),
 
-        FUNCTION_STAT_INFO("3000", "使用统计", "使用统计", "/conf/fxml/functionStatInfo.fxml", "functionStatInfo", "menuHelp", "0"),
-        ABOUT_INFO("3100", "关于", "关于", "/conf/fxml/aboutInfo.fxml", "aboutInfo", "menuHelp", "0");
+        FUNCTION_STAT_INFO(
+                "3000",
+                "使用统计",
+                "使用统计",
+                "/conf/fxml/functionStatInfo.fxml",
+                "functionStatInfo",
+                "menuHelp",
+                "0",
+                ""
+        ),
 
+        ABOUT_INFO(
+                "3100",
+                "关于",
+                "关于",
+                "/conf/fxml/aboutInfo.fxml",
+                "aboutInfo",
+                "menuHelp",
+                "0",
+                ""
+        );
 
         private String code;
 
@@ -103,7 +254,9 @@ public class MenuFunctionConfig {
 
         private String hide;
 
-        FunctionConfig(String code, String name, String titleConf, String path, String menuId, String parentMenuId, String hide) {
+        private String relateFile;
+
+        FunctionConfig(String code, String name, String titleConf, String path, String menuId, String parentMenuId, String hide, String relateFile) {
             this.code = code;
             this.name = name;
             this.titleConf = titleConf;
@@ -111,6 +264,7 @@ public class MenuFunctionConfig {
             this.menuId = menuId;
             this.parentMenuId = parentMenuId;
             this.hide = hide;
+            this.relateFile = relateFile;
         }
 
         public String getCode() {
@@ -121,12 +275,39 @@ public class MenuFunctionConfig {
             return name;
         }
 
+        public static String getName(String code) {
+            for (FunctionConfig tab : FunctionConfig.values()) {
+                if (tab.getCode().equals(code)) {
+                    return tab.name;
+                }
+            }
+            return null;
+        }
+
         public String getPath() {
             return path;
         }
 
+        public static String getPath(String code) {
+            for (FunctionConfig tab : FunctionConfig.values()) {
+                if (tab.getCode().equals(code)) {
+                    return tab.path;
+                }
+            }
+            return null;
+        }
+
         public String getLogFolder() {
             return menuId;
+        }
+
+        public static String getLogFolder(String code) {
+            for (FunctionConfig tab : FunctionConfig.values()) {
+                if (tab.getCode().equals(code)) {
+                    return tab.menuId;
+                }
+            }
+            return null;
         }
 
         public String getMenuId() {
@@ -145,37 +326,23 @@ public class MenuFunctionConfig {
             return hide;
         }
 
-        public static String getName(String code) {
-            for (FunctionConfig tab : FunctionConfig.values()) {
-                if (tab.getCode().equals(code)) {
-                    return tab.name;
-                }
-            }
-            return null;
-        }
-
-        public static String getPath(String code) {
-            for (FunctionConfig tab : FunctionConfig.values()) {
-                if (tab.getCode().equals(code)) {
-                    return tab.path;
-                }
-            }
-            return null;
-        }
-
-        public static String getLogFolder(String code) {
-            for (FunctionConfig tab : FunctionConfig.values()) {
-                if (tab.getCode().equals(code)) {
-                    return tab.menuId;
-                }
-            }
-            return null;
-        }
-
         public static String getHide(String code) {
             for (FunctionConfig tab : FunctionConfig.values()) {
                 if (tab.getCode().equals(code)) {
                     return tab.hide;
+                }
+            }
+            return null;
+        }
+
+        public String getRelateFile() {
+            return relateFile;
+        }
+
+        public static String getRelateFile(String code) {
+            for (FunctionConfig tab : FunctionConfig.values()) {
+                if (tab.getCode().equals(code)) {
+                    return tab.relateFile;
                 }
             }
             return null;

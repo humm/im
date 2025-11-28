@@ -38,6 +38,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.text.ParseException;
@@ -475,7 +476,7 @@ public class CommonUtils {
         return functionDtoList;
     }
 
-    public static void showAuthFunction(MenuBar menuBar, TabPane functionTab) throws Exception {
+    public static List<FunctionDto> getRealAuthFunction() throws Exception {
         String appCode = ConfigCache.getAppCodeCache();
         List<FunctionDto> functionDtoList = getAuthFunction();
         if (isSuperUser()) {
@@ -484,6 +485,11 @@ public class CommonUtils {
         if (isSyncMode()) {
             functionDtoList = functionDtoList.stream().filter(item -> item.getFunctionCode().equals(CONFIG_SET.getCode())).collect(Collectors.toList());
         }
+        return functionDtoList;
+    }
+
+    public static void showAuthFunction(MenuBar menuBar, TabPane functionTab) throws Exception {
+        List<FunctionDto> functionDtoList = getRealAuthFunction();
         if (CollectionUtils.isEmpty(functionDtoList)) {
             return;
         }
@@ -1320,7 +1326,7 @@ public class CommonUtils {
                 }
                 appConfigDto.setScanTips(true);
                 Platform.runLater(() -> {
-                    checkVersion(appConfigDto);
+                    checkVersion(appConfigDto, false);
                     File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
                     if (log.exists()) {
                         File[] subLog = log.listFiles();
@@ -1579,8 +1585,11 @@ public class CommonUtils {
         }
     }
 
-    public static void checkVersion(AppConfigDto appConfigDto) {
-        if (isSuperUser() || appConfigDto.getCheckVersion()) {
+    public static void checkVersion(AppConfigDto appConfigDto, boolean mustCheck) {
+        if (isSuperUser()) {
+            return;
+        }
+        if (!mustCheck && appConfigDto.getCheckVersion()) {
             return;
         }
         try {
@@ -1588,12 +1597,39 @@ public class CommonUtils {
             String appServerUrl = appConfigDto.getAppServerUrl();
             String appServerName = STR_SLASH + APP_CODE_TA;
             int appServerPort = Integer.parseInt(appConfigDto.getAppServerPort());
-            String finalVer = HttpRequestUtils.sendPost(appServerUrl + STR_COLON + appServerPort + appServerName, KEY_VERSION + STR_EQUAL + CommonUtils.getVersion());
-            if (StringUtils.equals(finalVer, STR_0)) {
-                CommonUtils.showTipsByError("当前版本非最新版本,请及时更新", 60 * 1000);
+            List<String> content = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_FILE));
+            if (CollectionUtils.isEmpty(content)) {
+                return;
+            }
+            List<FunctionDto> functionDtoList = getRealAuthFunction();
+            if (CollectionUtils.isEmpty(functionDtoList)) {
+                return;
+            }
+            Set<String> relateFile = new HashSet<>();
+            for (FunctionDto functionDto : functionDtoList) {
+                MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
+                String file = functionConfig.getRelateFile();
+                if (StringUtils.isNotBlank(file)) {
+                    relateFile.addAll(Arrays.asList(file.split(STR_COMMA)));
+                }
+            }
+            List<String> checkFile = new ArrayList<>();
+            for (String item : content) {
+                String fileName = item.split(STR_SPACE)[0];
+                if (relateFile.contains(fileName)) {
+                    checkFile.add(item);
+                }
+            }
+            String param = KEY_VERSION + STR_EQUAL + CommonUtils.getVersion();
+            param += STR_AND + KEY_CHECK_FILE + STR_EQUAL + checkFile.stream().collect(Collectors.joining(STR_COMMA));
+            String finalVer = HttpRequestUtils.sendPost(appServerUrl + STR_COLON + appServerPort + appServerName, param);
+            if (finalVer.contains("请及时更新")) {
+                CommonUtils.showTipsByError(finalVer, 60 * 1000);
             }
         } catch (Exception e) {
-
+            if (!(e instanceof SocketTimeoutException)) {
+                LoggerUtils.error(e);
+            }
         }
     }
 

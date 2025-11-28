@@ -94,4 +94,12 @@ public class InitConfigTest {
         InitConfigUtils.cleanFile(APP_CODE_TA);
     }
 
+    /**
+     * 生成文件修改时间清单
+     */
+    @Test
+    public void build_07() {
+        InitConfigUtils.buildFileTime(APP_CODE_TA);
+    }
+
 }

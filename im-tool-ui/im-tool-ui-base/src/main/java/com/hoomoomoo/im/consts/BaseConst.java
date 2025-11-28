@@ -21,6 +21,8 @@ public class BaseConst {
 
     public static final String APP_MODE_SYNC = "sync";
 
+    public static final String APP_USER_LEVEL_NORMAL = "normal";
+
     public static final int MAX_COMMON_FUNCTION_CODE = 3000;
 
     public static final String FUNCTION_TASK_TODO = TASK_TODO.getCode();
@@ -83,6 +85,7 @@ public class BaseConst {
     public static final String KEY_DELETE = "delete";
     public static final String KEY_LIB = "/lib";
     public static final String KEY_VERSION = "version";
+    public static final String KEY_CHECK_FILE = "checkFile";
     public static final String KEY_DEV_CLOSE_DATE = "dev_close_date";
     public static final String KEY_PUBLISH_CLOSE_DATE = "publish_close_date";
     public static final String KEY_END_DAY_TIME = "end_day_time";
@@ -202,6 +205,7 @@ public class BaseConst {
     public static final String FILE_TYPE_VUE = ".vue";
     public static final String FILE_TYPE_STAT = ".stat";
     public static final String FILE_TYPE_JAVA = ".java";
+    public static final String FILE_TYPE_XML = ".xml";
     public static final String FILE_TYPE_CLASS = ".class";
     public static final String FILE_TYPE_SQL = ".sql";
     public static final String FILE_TYPE_CONF = ".conf";
@@ -388,6 +392,7 @@ public class BaseConst {
     public static final String PATH_AUTH = "/conf/auth/auth.conf";
     public static final String PATH_LICENSE = "/conf/init/license.init";
     public static final String PATH_VERSION = "/conf/init/version.init";
+    public static final String PATH_FILE = "/conf/init/file.init";
     public static final String PATH_FXML = "/conf/fxml";
     public static final String PATH_STYLE = "/conf/style";
     public static final String PATH_LOG = "/logs/%s/%s";

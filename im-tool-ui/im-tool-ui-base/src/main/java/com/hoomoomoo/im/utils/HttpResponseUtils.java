@@ -2,12 +2,14 @@ package com.hoomoomoo.im.utils;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
 import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -27,21 +29,33 @@ public class HttpResponseUtils implements HttpHandler {
         String requestVer = requestParam.get(KEY_VERSION);
         String ipAddress = exchange.getRemoteAddress().toString().substring(1);
         LoggerUtils.info(ipAddress + " 请求版本校验,请求版本信息: " + requestVer);
-        String[] requestVerInfo = requestVer.split(STR_POINT_SLASH);
-        String[] finalVerInfo = CommonUtils.getVersion().split(STR_POINT_SLASH);
         String finalVer = STR_1;
-        if (!StringUtils.equals(requestVerInfo[0], finalVerInfo[0])) {
-            finalVer = STR_0;
-        } else {
-            if (Integer.parseInt(finalVerInfo[1]) != Integer.parseInt(requestVerInfo[1])) {
-                finalVer = STR_0;
+        String checkFile = requestParam.get(KEY_CHECK_FILE);
+        if (StringUtils.isNotBlank(checkFile)) {
+            List<String> content = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_FILE));
+            String[] fileList = checkFile.split(STR_COMMA);
+            boolean same = false;
+            for (String file : fileList) {
+                same = false;
+                if (CollectionUtils.isNotEmpty(content)) {
+                    for (String item : content) {
+                        if (item.trim().contains(file.trim())) {
+                            same = true;
+                            break;
+                        }
+                    }
+                }
+                if (!same) {
+                    finalVer = STR_0;
+                    break;
+                }
             }
         }
         exchange.sendResponseHeaders(200, 0);
         OutputStream outputStream = exchange.getResponseBody();
-        String responseMsg = finalVer;
+        String responseMsg = (StringUtils.equals(finalVer, STR_1) ? "当前版本为最新版本" : "最新版本为" + CommonUtils.getVersion() + ",请及时更新");
         outputStream.write(responseMsg.getBytes(ENCODING_GBK));
-        LoggerUtils.info(ipAddress + " 校验完成," + (StringUtils.equals(finalVer, STR_1) ? "当前版本为最新版本" : "当前版本非最新版本,请更新版本"));
+        LoggerUtils.info(ipAddress + " 校验完成," + responseMsg);
         outputStream.close();
     }
 

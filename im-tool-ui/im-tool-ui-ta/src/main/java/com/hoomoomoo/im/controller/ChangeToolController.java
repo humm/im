@@ -9,6 +9,7 @@ import com.hoomoomoo.im.extend.ScriptSqlUtils;
 import com.hoomoomoo.im.task.ChangeFunctionTask;
 import com.hoomoomoo.im.task.ChangeFunctionTaskParam;
 import com.hoomoomoo.im.utils.*;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -30,6 +31,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -590,6 +592,15 @@ public class ChangeToolController implements Initializable {
 
     @FXML
     void executeRealtime(ActionEvent event) {
+        Platform.runLater(() -> {
+            try {
+                CommonUtils.checkVersion(ConfigCache.getAppConfigDtoCache(), true);
+            } catch (Exception e) {
+                if (!(e instanceof SocketTimeoutException)) {
+                    LoggerUtils.error(e);
+                }
+            }
+        });
         OutputUtils.clearLog(logs);
         try {
             String dictPath = baseDictPath.getText();

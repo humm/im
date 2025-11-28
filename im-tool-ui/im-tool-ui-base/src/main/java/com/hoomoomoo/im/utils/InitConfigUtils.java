@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.utils;
 
+import cn.hutool.log.Log;
 import com.alibaba.fastjson.JSON;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
@@ -434,6 +435,7 @@ public class InitConfigUtils {
         keys.put("app.tab.show", "200");
         keys.put("app.log.level", "info");
         keys.put("app.mode", null);
+        keys.put("app.user.level", null);
 
         keys.put("svn.username", null);
         keys.put("svn.password", null);
@@ -522,5 +524,38 @@ public class InitConfigUtils {
         String pathLogs = CommonUtils.dealFilePath(FileUtils.getFilePath("/logs"), appCode);
         FileUtils.deleteFile(new File(pathAuth).getParentFile());
         FileUtils.deleteFile(new File(pathLogs));
+    }
+
+    /**
+     * 生成文件修改清单
+     *
+     */
+    public static List<String> fileTime = new ArrayList<>();
+    public static void buildFileTime(String appCode) {
+        ConfigCache.initAppCodeCache(appCode);
+        String pathFile = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_FILE), appCode);
+        System.out.println(pathFile);
+        File file = new File(pathFile.substring(0, pathFile.indexOf("target")));
+        readFile(file);
+        try {
+            FileUtils.writeFile(pathFile, fileTime);
+        } catch (IOException e) {
+            LoggerUtils.error(e);
+        }
+
+    }
+
+    public static void readFile(File file) {
+        if (file.isDirectory()) {
+            File[] fileList = file.listFiles();
+            for (File item : fileList) {
+                readFile(item);
+            }
+        } else {
+            String fileName = file.getName();
+            if (fileName.endsWith(FILE_TYPE_JAVA) || fileName.endsWith(FILE_TYPE_XML)) {
+                fileTime.add(file.getName() + STR_SPACE + file.lastModified());
+            }
+        }
     }
 }

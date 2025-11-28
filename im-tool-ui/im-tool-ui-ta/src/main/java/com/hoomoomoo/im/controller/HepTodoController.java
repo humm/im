@@ -4,6 +4,7 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.log.Log;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.AppCache;

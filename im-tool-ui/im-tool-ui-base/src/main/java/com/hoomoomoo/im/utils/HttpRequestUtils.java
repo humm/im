@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.utils;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
@@ -22,15 +23,15 @@ public class HttpRequestUtils {
     private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)";
     private static final Integer TIME_OUT = 3 * 1000;
 
-    public static String sendGet(String url, String param) {
+    public static String sendGet(String url, String param) throws IOException {
         return send(url, param, false);
     }
 
-    public static String sendPost(String url, String param) {
+    public static String sendPost(String url, String param) throws IOException {
         return send(url, param, true);
     }
 
-    public static String send(String url, String param, boolean post){
+    public static String send(String url, String param, boolean post) throws IOException {
         String result = STR_BLANK;
         BufferedReader in = null;
         PrintWriter out = null;
@@ -58,10 +59,9 @@ public class HttpRequestUtils {
             while ((line = in.readLine()) != null) {
                 result += line;
             }
-        } catch (Exception e) {
-            LoggerUtils.error(e);
-        }
-        finally {
+        } catch (IOException e) {
+            throw e;
+        } finally {
             try {
                 if (in != null) {
                     in.close();
