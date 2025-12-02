@@ -2133,12 +2133,10 @@ public class HepTodoController extends BaseController implements Initializable {
         }
         String[] memoryInfo = CommonUtils.getMemoryInfo();
         OutputUtils.info(memoryTips, "内存(MB): " + memoryInfo[0]);
-        if (Integer.valueOf(memoryInfo[1]) > 2048 || Integer.valueOf(memoryInfo[2]) > 1024) {
+        if (Integer.valueOf(memoryInfo[1]) > 1024 || Integer.valueOf(memoryInfo[2]) > 512) {
             memoryTips.setStyle(STYLE_BOLD_RED);
-            memoryTips.setVisible(true);
         } else {
             memoryTips.setStyle(STYLE_NORMAL);
-            memoryTips.setVisible(false);
         }
     }
 
