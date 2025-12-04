@@ -292,6 +292,7 @@ public class BaseConst {
     public static final String NAME_BUTTON_ALL = "全部";
     public static final String NAME_BUTTON_ONLY = "去重";
     public static final String NAME_BUTTON_WAIT_DEV = "待开发";
+    public static final String NAME_BUTTON_TASK_SYNC = "同步任务";
 
     public final static String SECURITY_FLAG = "+++";
 

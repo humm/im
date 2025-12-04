@@ -961,7 +961,7 @@ public class HepTodoController extends BaseController implements Initializable {
             Map<String, String> taskCancelDevSubmit = getCancelDevSubmitTaskInfo();
             List<String> cancelOnlySelf = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT));
             List<String> cancelErrorVersion = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT));
-            boolean waitTaskSync = false;
+            int waitTaskSync = 0;
             Map<String, String> hepTaskAppointVersionMap = appConfigDto.getHepTaskVersionOrderDateMap();
             for (String item : versionList) {
                 String[] elements = item.split(STR_SEMICOLON);
@@ -1176,7 +1176,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     if (StringUtils.isBlank(item.getCustomerFull()) && taskName.contains(DEFECT_TAG)) {
                         item.setCustomerFull(NAME_INNER_CUSTOMER);
                     } else {
-                        waitTaskSync = true;
+                        waitTaskSync++;
                     }
                 }
                 item.setCustomer(item.getCustomerFull());
@@ -1281,10 +1281,12 @@ public class HepTodoController extends BaseController implements Initializable {
             OutputUtils.info(weekClose, formatVersion(weekCloseVersion.toString()));
 
             if (!isExtendUser()) {
-                if (waitTaskSync) {
+                if (waitTaskSync > 0) {
                     syncTask.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+                    syncTask.setText(NAME_BUTTON_TASK_SYNC + STR_SPACE + waitTaskSync);
                 } else {
                     syncTask.setStyle(STYLE_NORMAL_FOR_BUTTON);
+                    syncTask.setText(NAME_BUTTON_TASK_SYNC);
                 }
             }
 
