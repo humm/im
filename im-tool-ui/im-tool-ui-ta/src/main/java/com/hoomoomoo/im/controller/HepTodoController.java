@@ -176,6 +176,18 @@ public class HepTodoController extends BaseController implements Initializable {
     Set<Button> queryButtonSet = new ConcurrentHashSet<>();
 
     Map<String, Integer> taskDescTotal = new ConcurrentHashMap<>();
+    Map<String, Integer> taskDescSort = new HashMap(){{
+        put("已提交", 10);
+        put("待合并", 20);
+        put("关注", 30);
+        put("今增", 40);
+        put("缺陷", 50);
+        put("已超期", 60);
+        put("超期", 70);
+        put("同人", 80);
+        put("孤版", 90);
+        put("错版", 100);
+    }};
     Map<String, Integer> fixedButtonTotal = new ConcurrentHashMap<>();
 
     @FXML
@@ -1650,10 +1662,18 @@ public class HepTodoController extends BaseController implements Initializable {
             return;
         }
         Platform.runLater(() -> {
-            Set<String> buttonConfig = new HashSet<>();
+            List<String> buttonConfig = new ArrayList<>();
             for (String button : taskDescTotal.keySet()) {
                 buttonConfig.add(button);
             }
+            Collections.sort(buttonConfig, (o1, o2) -> {
+                Integer index1 = taskDescSort.get(o1);
+                Integer index2 = taskDescSort.get(o2);
+                if (index1 == null || index2 == null) {
+                    return 0;
+                }
+                return index1 - index2;
+            });
             double x = waitDev.getLayoutX();
             double y = 143;
             double step = 130;
