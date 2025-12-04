@@ -369,13 +369,13 @@ public class HepTodoController extends BaseController implements Initializable {
                 syncFileBtn.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
             });
             OutputUtils.info(filePushTips, STR_BLANK);
-            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("停止文件同步"));
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBeforeBr("停止文件同步"));
         } else {
             Platform.runLater(() -> {
                 syncFileBtn.setText("停止文件同步");
                 syncFileBtn.setStyle(STYLE_NORMAL_FOR_BUTTON);
             });
-            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("启动文件同步"));
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBeforeBr("启动文件同步"));
             syncFile();
         }
     }
@@ -426,7 +426,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
         if (LEFT_CLICKED.equals(clickType) && event.getClickCount() == SECOND_CLICKED) {
             if (isExtendUser()) {
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户不支持此操作"));
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("关联用户不支持此操作"));
                 CommonUtils.showTipsByError("关联用户不支持此操作", 3 * 1000);
                 return;
             }
@@ -442,7 +442,7 @@ public class HepTodoController extends BaseController implements Initializable {
         if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
             String msg = String.format("开发人员和审核人员为同一人,请检查【%s】", item.getAssigneeName());
             LoggerUtils.info(msg);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
             CommonUtils.showTipsByError(msg, 1 * 1000);
             return;
         }
@@ -465,7 +465,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     execute(OPERATE_START, item);
                 } catch (Exception e) {
                     LoggerUtils.error(e);
-                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
                 }
             }
         } else if (STATUS_DEV.equals(status) || STATUS_AUDIT_FAIL.equals(status)) {
@@ -473,11 +473,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 completeTask(item);
             } catch (Exception e) {
                 LoggerUtils.error(e);
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
             }
         } else {
             LoggerUtils.info("不支持的操作类型");
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("不支持的操作类型"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("不支持的操作类型"));
             CommonUtils.showTipsByError("不支持的操作类型");
         }
     }
@@ -487,12 +487,12 @@ public class HepTodoController extends BaseController implements Initializable {
         updateVersion.setDisable(true);
         try {
             JvmCache.getSystemToolController().executeUpdateVersion();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("版本同步成功"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("版本同步成功"));
             CommonUtils.showTipsByInfo("版本同步成功");
             executeQuery(null);
         } catch (Exception e) {
             String msg = e.getMessage();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
             CommonUtils.showTipsByError(msg.replaceAll(SKIP_LOG_TIPS, STR_BLANK));
         } finally {
             updateVersion.setDisable(false);
@@ -504,11 +504,11 @@ public class HepTodoController extends BaseController implements Initializable {
         showVersion.setDisable(true);
         try {
             doShowVersion();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("查看成功"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("查看成功"));
         } catch (Exception e) {
             LoggerUtils.error(e);
             String msg = e.getMessage();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
             CommonUtils.showTipsByError(msg);
         } finally {
             showVersion.setDisable(false);
@@ -551,10 +551,10 @@ public class HepTodoController extends BaseController implements Initializable {
         scriptCheck.setDisable(true);
         try {
             new ScriptCompareSql().check();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("检查文件完成，请查看检查结果"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("检查文件完成，请查看检查结果"));
         } catch (Exception e) {
             String msg = e.getMessage();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
         } finally {
             scriptCheck.setDisable(false);
         }
@@ -567,7 +567,7 @@ public class HepTodoController extends BaseController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_CHECK_RESULT, "检查结果");
         } catch (Exception e) {
             String msg = e.getMessage();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
             CommonUtils.showTipsByError(msg);
         } finally {
             scriptShow.setDisable(false);
@@ -600,7 +600,7 @@ public class HepTodoController extends BaseController implements Initializable {
             TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "syncTaskInfo")));
         } catch (Exception e) {
             String msg = e.getMessage();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
             CommonUtils.showTipsByError(msg.replaceAll(SKIP_LOG_TIPS, STR_BLANK));
         } finally {
             syncTask.setDisable(false);
@@ -614,7 +614,7 @@ public class HepTodoController extends BaseController implements Initializable {
             TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG, "系统日志");
         } catch (Exception e) {
             String msg = e.getMessage();
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
             CommonUtils.showTipsByError(msg);
         }
     }
@@ -633,7 +633,7 @@ public class HepTodoController extends BaseController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         initUserInfo(appConfigDto);
         if (StringUtils.isBlank(CURRENT_USER_ID)) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请配置【 hep.task.user 】"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("请配置【 hep.task.user 】"));
             return;
         }
         try {
@@ -646,7 +646,7 @@ public class HepTodoController extends BaseController implements Initializable {
             TaskUtils.execute(new HepTodoTask(new HepTodoTaskParam(this, "doExecuteQuery")));
         } catch (Exception e) {
             LoggerUtils.error(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
         }
     }
 
@@ -666,7 +666,7 @@ public class HepTodoController extends BaseController implements Initializable {
             setProgress(1);
         } catch (Exception e) {
             LoggerUtils.error(e);
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(ExceptionMsgUtils.getMsg(e)));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(ExceptionMsgUtils.getMsg(e)));
         } finally {
             query.setDisable(false);
             reset.setDisable(false);
@@ -687,7 +687,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     CURRENT_USER_ID = item;
                     String userInfo = String.format("查询用户: %s", CURRENT_USER_ID);
-                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(userInfo));
+                    OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(userInfo));
                     if (!logs.contains(userInfo)) {
                         logs.add(userInfo);
                     }
@@ -719,7 +719,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 tipMsg = "更新成功 . . .";
             }
         } else {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("不支持的操作类型"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("不支持的操作类型"));
             CommonUtils.showTipsByError("不支持的操作类型");
             throw new Exception("不支持的操作类型");
         }
@@ -751,7 +751,7 @@ public class HepTodoController extends BaseController implements Initializable {
             if (notice == null) {
                 notice = JvmCache.getHepTodoController().notice;
             }
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(message));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(message));
         }
         return items;
     }
@@ -813,7 +813,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 });
             } catch (Exception e) {
                 LoggerUtils.error(e);
-                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
             }
         }
     }
@@ -1700,7 +1700,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             try {
                                 executeQuery(new ActionEvent());
                             } catch (Exception e) {
-                                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+                                OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
                                 LoggerUtils.error(e);
                             }
                         }
@@ -1889,16 +1889,16 @@ public class HepTodoController extends BaseController implements Initializable {
     private void showExtentUserTask(boolean changeTab) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (StringUtils.isBlank(appConfigDto.getHepTaskUserExtend())) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("请设置关联用户信息【hep.task.user.extend】"));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("请设置关联用户信息【hep.task.user.extend】"));
         }
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户任务加载开始 . . ."));
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("关联用户任务加载开始 . . ."));
         try {
             extendUser.setDisable(true);
             showExtendTask(changeTab);
         } finally {
             extendUser.setDisable(false);
         }
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("关联用户任务加载完成 . . ."));
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("关联用户任务加载完成 . . ."));
     }
 
     private void printTaskInfo(List<HepTaskDto> taskList) {
@@ -1932,7 +1932,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 @Override
                 public void run() {
                     if (CommonUtils.stopScan(appConfigDto)) {
-                        OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("长时间未活动，重点关注版本扫描略过"));
+                        OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainAfterBr("长时间未活动，重点关注版本扫描略过"));
                         if (appConfigDto.getScanTips()) {
                             LoggerUtils.info("长时间未活动，重点关注版本扫描略过");
                         }
@@ -1988,7 +1988,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 @Override
                 public void run() {
                 if (CommonUtils.stopScan(appConfigDto)) {
-                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("长时间未活动，文件提交扫描略过"));
+                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainAfterBr("长时间未活动，文件提交扫描略过"));
                     if (appConfigDto.getScanTips()) {
                         LoggerUtils.info("长时间未活动，文件提交扫描略过");
                     }
@@ -2030,7 +2030,7 @@ public class HepTodoController extends BaseController implements Initializable {
             public void run() {
             OutputUtils.clearLog(noticeSync);
             if (CommonUtils.stopScan(appConfigDto)) {
-                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("长时间未活动，文件同步扫描略过"));
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainAfterBr("长时间未活动，文件同步扫描略过"));
                 if (appConfigDto.getScanTips()) {
                     LoggerUtils.info("长时间未活动，文件同步扫描略过");
                 }
@@ -2043,47 +2043,41 @@ public class HepTodoController extends BaseController implements Initializable {
             }
             String fileSyncAuthVersion = appConfig.getHepTaskSyncAuthVersion();
             if (StringUtils.isBlank(fileSyncAuthVersion)) {
-                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("未配置授权同步版本信息"));
-                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("请检查参数【file.sync.auth.version】"));
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBeforeBr("未配置授权同步版本信息"));
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBeforeBr("请检查参数【file.sync.auth.version】"));
                 return;
             }
             List<String> authVersion = Arrays.asList(fileSyncAuthVersion.toLowerCase().split(STR_COMMA));
-            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("轮询线程: " + timerId));
-            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr("轮询版本数量：" + syncFileVersion.size()));
-            int current = 0;
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContain("轮询线程: " + timerId));
+            OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBeforeBr("轮询版本数量：" + syncFileVersion.size()));
             for (Map.Entry<String, String> version : syncFileVersion.entrySet()) {
-                current++;
                 String ver = version.getKey();
                 if (!authVersion.contains(ver)) {
-                    OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver.toUpperCase() + " 未授权同步"));
+                    OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(ver.toUpperCase() + " 未授权同步"));
                     continue;
                 }
                 ver = ver.toUpperCase();
                 String[] path = version.getValue().split(STR_COMMA);
                 if (path.length != 2) {
-                    OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(ver + " 同步路径配置错误"));
+                    OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(ver + " 同步路径配置错误"));
                     continue;
                 }
                 String fileSyncSource = path[0];
                 String fileSyncTarget = path[1];
                 String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
-                if (current == syncFileVersion.size()) {
-                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTime(versionMsg));
-                } else {
-                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(versionMsg));
-                }
+                OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBeforeBr(versionMsg));
                 fileSyncSourceFile.clear();
                 try {
                     File sourceFile = new File(fileSyncSource);
                     if (!sourceFile.exists()) {
-                        OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBr(String.format("文件同步源目录不存在 %s", ver)));
-                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(fileSyncSource));
+                        OutputUtils.repeatInfo(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(String.format("文件同步源目录不存在 %s", ver)));
+                        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(fileSyncSource));
                         continue;
                     }
                     sync(sourceFile, fileSyncSource, fileSyncTarget, ver);
                 } catch (IOException e) {
                     LoggerUtils.error(e);
-                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+                    OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
                 }
                 clearFile(new File(fileSyncTarget), ver);
             }
@@ -2248,7 +2242,7 @@ public class HepTodoController extends BaseController implements Initializable {
             CURRENT_USER_ID = EXTEND_USER_FRONT_CODE;
         }
         String user = String.format("当前用户: %s", CURRENT_USER_ID);
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(user));
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContain(user));
         if (!logs.contains(user)) {
             logs.add(user);
         }
@@ -2482,7 +2476,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
         } catch (IOException e) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
             LoggerUtils.error(e);
         } catch (Exception e) {
             LoggerUtils.error(e);
@@ -2524,7 +2518,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
         } catch (IOException e) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
             LoggerUtils.error(e);
         } catch (Exception e) {
             LoggerUtils.error(e);
@@ -2537,7 +2531,7 @@ public class HepTodoController extends BaseController implements Initializable {
         try {
             versionList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_VERSION_STAT));
         } catch (IOException e) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
             LoggerUtils.error(e);
         } catch (Exception e) {
             LoggerUtils.error(e);
@@ -2562,7 +2556,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
         } catch (IOException e) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
             LoggerUtils.error(e);
         } catch (Exception e) {
             LoggerUtils.error(e);
@@ -2586,7 +2580,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
             }
         } catch (IOException e) {
-            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr(e.getMessage()));
+            OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(e.getMessage()));
             LoggerUtils.error(e);
         } catch (Exception e) {
             LoggerUtils.error(e);
@@ -2809,7 +2803,7 @@ public class HepTodoController extends BaseController implements Initializable {
             test.add(item);
         }
         dealTaskList(test, true);
-        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBr("查询成功"));
+        OutputUtils.info(notice, TaCommonUtils.getMsgContainTimeContainBeforeBr("查询成功"));
     }
 
 }

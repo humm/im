@@ -288,7 +288,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         FileUtils.writeFile(path, taskNumberList);
         String msg = btnName + "成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
-        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
         activeHepTodoController.doExecuteQuery();
     }
 
@@ -318,7 +318,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         FileUtils.writeFile(path, taskNumberList);
         String msg = btnName + "成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
-        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
         activeHepTodoController.doExecuteQuery();
     }
 
@@ -344,7 +344,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         FileUtils.writeFile(path, taskNumberList);
         String msg = btnName + "成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
-        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
         activeHepTodoController.doExecuteQuery();
     }
 
@@ -369,7 +369,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         FileUtils.writeFile(path, taskNumberList);
         String msg = btnName + "成功";
         HepTodoController activeHepTodoController = JvmCache.getActiveHepTodoController();
-        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBr(msg));
+        OutputUtils.info(activeHepTodoController.notice, TaCommonUtils.getMsgContainTimeContainBeforeBr(msg));
         activeHepTodoController.doExecuteQuery();
     }
 
