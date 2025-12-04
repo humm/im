@@ -287,7 +287,11 @@ public class BaseConst {
     public static final String NAME_MENU_TASK_LEVEL_CLEAR = "标记任务描述" + STR_RIGHT_FACING + "清除标记";
 
 
-    public static final String NAME_TODAY_ADD = "今增";
+    public static final String NAME_BUTTON_ADD_TOADY = "今增";
+    public static final String NAME_BUTTON_WAIT_MERGE = "待合并";
+    public static final String NAME_BUTTON_ALL = "全部";
+    public static final String NAME_BUTTON_ONLY = "去重";
+    public static final String NAME_BUTTON_WAIT_DEV = "待开发";
 
     public final static String SECURITY_FLAG = "+++";
 

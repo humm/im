@@ -64,12 +64,6 @@
                                 <Label fx:id="dayTodo" layoutX="105.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
                                 <Label layoutX="150.0" layoutY="80.0" style="-fx-font-weight: bold;" text="本周待提交："/>
                                 <Label fx:id="weekTodo" layoutX="235.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
-                                <Label layoutX="290.0" layoutY="80.0" style="-fx-font-weight: bold;" text="待提交："/>
-                                <Label fx:id="waitHandleTaskNum" layoutX="345.0" layoutY="80.0"
-                                       style="-fx-font-weight: bold;"/>
-                                <Label layoutX="410.0" layoutY="80.0" style="-fx-font-weight: bold;" text="待合并："/>
-                                <Label fx:id="waitMergerNum" layoutX="465.0" layoutY="80.0"
-                                       style="-fx-font-weight: bold;"/>
 
                                 <Label layoutX="20.0" layoutY="110.0" style="-fx-font-weight: bold;" text="操作类型："/>
                                 <Button fx:id="syncFileBtn" layoutX="100.0" layoutY="105.0" mnemonicParsing="false"
@@ -149,16 +143,9 @@
                                 <Button fx:id="only" layoutX="230.0" layoutY="143.0" mnemonicParsing="false"
                                         onAction="#selectOnly" prefHeight="30.0" prefWidth="100.0" text="去重">
                                 </Button>
-                                <Button fx:id="devCompleteShow" layoutX="360.0" layoutY="143.0" mnemonicParsing="false"
-                                        onAction="#selectDevCompleteShow" prefHeight="30.0" prefWidth="100.0"
-                                        text="显示已完成">
-                                </Button>
-                                <Button fx:id="devCompleteHide" layoutX="490.0" layoutY="143.0" mnemonicParsing="false"
-                                        onAction="#selectDevCompleteHide" prefHeight="30.0" prefWidth="100.0"
-                                        text="隐藏已完成">
-                                </Button>
-                                <Button fx:id="newTask" layoutX="620.0" layoutY="143.0" mnemonicParsing="false"
-                                        onAction="#selectNewTask" prefHeight="30.0" prefWidth="100.0" text="今增">
+                                <Button fx:id="waitDev" layoutX="360.0" layoutY="143.0" mnemonicParsing="false"
+                                        onAction="#selectWaitDev" prefHeight="30.0" prefWidth="100.0"
+                                        text="待开发">
                                 </Button>
 
                                 <Label layoutX="20" layoutY="186.0" style="-fx-font-weight: bold;" text="查询条件："/>

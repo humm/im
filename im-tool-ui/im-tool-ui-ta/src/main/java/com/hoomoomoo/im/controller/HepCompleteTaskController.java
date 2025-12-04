@@ -187,7 +187,8 @@ public class HepCompleteTaskController extends BaseController implements Initial
         if (StringUtils.isNotBlank(testPlan)) {
             suggestionMsg.append(testPlan);
         }
-        suggestionMsg.append("\t更新ta-web-manager-fund-core等前台相关包及console包，执行升级脚本\n");
+        suggestionMsg.append("\t执行升级脚本\n");
+        suggestionMsg.append("\t更新ta-web-manager-fund-core等前台相关包及console包\n");
         suggestionMsg.append("\t清除浏览器缓存，刷新系统内存\n");
         suggestionMsg.append("【测试场景及预期结果】\n");
         suggestionMsg.append(editDescriptionValue);

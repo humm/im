@@ -1,10 +1,10 @@
 package com.hoomoomoo.im.controller;
 
+import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
-import cn.hutool.log.Log;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.AppCache;
@@ -55,6 +55,7 @@ import java.net.URL;
 import java.time.DayOfWeek;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -116,7 +117,8 @@ public class HepTodoController extends BaseController implements Initializable {
     private List<String> focusVersionMessage = new ArrayList<>();
     private int focusExecuteTimes = 0;
 
-    private boolean dealTask = true;
+    private boolean frontTask = false;
+    private boolean render = false;
 
     private String PAGE_USER = "";
     private final static String EXTEND_USER_FRONT_CODE = "front";
@@ -168,6 +170,13 @@ public class HepTodoController extends BaseController implements Initializable {
     private List<String> logs = new ArrayList<>();
     private List<String> syncTaskLog = new ArrayList<>();
     private Map<String, Map<String, Integer>> focusVersion = new HashMap<>();
+
+    private String queryType = STR_BLANK;
+
+    Set<Button> queryButtonSet = new ConcurrentHashSet<>();
+
+    Map<String, Integer> taskDescTotal = new ConcurrentHashMap<>();
+    Map<String, Integer> fixedButtonTotal = new ConcurrentHashMap<>();
 
     @FXML
     private AnchorPane hep;
@@ -245,12 +254,6 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label weekTodo;
 
     @FXML
-    private Label waitHandleTaskNum;
-
-    @FXML
-    private Label waitMergerNum;
-
-    @FXML
     private Label memoryTips;
 
     @FXML
@@ -299,28 +302,15 @@ public class HepTodoController extends BaseController implements Initializable {
     private Button  only;
 
     @FXML
-    private Button  devCompleteHide;
-
-    @FXML
-    private Button  newTask;
-
-    @FXML
-    private Button  devCompleteShow;
+    private Button  waitDev;
 
     private Pane mask;
-
-    @FXML
-    private SplitPane taskSplitPane;
 
     @FXML
     private TextField demandNo;
 
     @FXML
     private TextField taskNo;
-
-    private String queryType = STR_BLANK;
-
-    Set<Button> queryButtonSet = new HashSet<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -331,12 +321,10 @@ public class HepTodoController extends BaseController implements Initializable {
             initExtendUser(appConfigDto);
             queryButtonSet.add(all);
             queryButtonSet.add(only);
-            queryButtonSet.add(devCompleteShow);
-            queryButtonSet.add(devCompleteHide);
-            queryButtonSet.add(newTask);
+            queryButtonSet.add(waitDev);
             queryButtonSet.add(query);
-            queryType = devCompleteHide.getText();
-            controlQueryButtonColor(devCompleteHide);
+            queryType = waitDev.getId();
+            controlQueryButtonColor(waitDev);
             initColorDesc();
             initCopyDemand();
             controlSomeOneTips(0);
@@ -382,36 +370,22 @@ public class HepTodoController extends BaseController implements Initializable {
 
     @FXML
     void selectAll(ActionEvent event) throws Exception {
-        queryType = all.getText();
+        queryType = all.getId();
         controlQueryButtonColor(all);
         executeQuery(event);
     }
 
     @FXML
     void selectOnly(ActionEvent event) throws Exception {
-        queryType = only.getText();
+        queryType = only.getId();
         controlQueryButtonColor(only);
         executeQuery(event);
     }
 
     @FXML
-    void selectDevCompleteHide(ActionEvent event) throws Exception {
-        queryType = devCompleteHide.getText();
-        controlQueryButtonColor(devCompleteHide);
-        executeQuery(event);
-    }
-
-    @FXML
-    void selectNewTask(ActionEvent event) throws Exception {
-        queryType = newTask.getText();
-        controlQueryButtonColor(newTask);
-        executeQuery(event);
-    }
-
-    @FXML
-    void selectDevCompleteShow(ActionEvent event) throws Exception {
-        queryType = devCompleteShow.getText();
-        controlQueryButtonColor(devCompleteShow);
+    void selectWaitDev(ActionEvent event) throws Exception {
+        queryType = waitDev.getId();
+        controlQueryButtonColor(waitDev);
         executeQuery(event);
     }
 
@@ -598,7 +572,7 @@ public class HepTodoController extends BaseController implements Initializable {
         OutputUtils.clearLog(taskConditionQuery);
         OutputUtils.clearLog(sprintVersionQuery);
         sortCodeCache.clear();
-        selectDevCompleteHide(null);
+        selectWaitDev(null);
     }
 
     @FXML
@@ -668,6 +642,7 @@ public class HepTodoController extends BaseController implements Initializable {
         try {
             query.setDisable(true);
             reset.setDisable(true);
+            controlButtonStatus(true);
             execute(OPERATE_QUERY, null);
             LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<>(logs));
             logs.clear();
@@ -683,12 +658,13 @@ public class HepTodoController extends BaseController implements Initializable {
         } finally {
             query.setDisable(false);
             reset.setDisable(false);
+            controlButtonStatus(false);
         }
     }
 
     public JSONArray execute(String operateType, HepTaskDto hepTaskDto) throws Exception {
         if (frontPage()) {
-            dealTask = false;
+            frontTask = true;
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String userExtend = appConfigDto.getHepTaskUserExtend();
             JSONArray task = new JSONArray();
@@ -705,11 +681,12 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     task.addAll(executeReal(operateType, hepTaskDto));
                 }
-                dealTask = true;
+                frontTask = false;
                 dealTaskList(task, true);
             }
             return task;
         } else {
+            frontTask = false;
             return executeReal(operateType, hepTaskDto);
         }
     }
@@ -891,454 +868,444 @@ public class HepTodoController extends BaseController implements Initializable {
         return request;
     }
 
-    @SneakyThrows
     public void dealTaskList(JSONArray task, boolean tagFlag) {
-        if (!dealTask) {
-            return;
-        }
-        dayCompleteTipsInfo.clear();
-        // 格式 yyyyMMdd
-        String thursday = CommonUtils.getWeekDayYmd(DayOfWeek.THURSDAY);
-        String today = CommonUtils.getCurrentDateTime3();
-        String saturday = CommonUtils.getWeekDayYmd(DayOfWeek.SATURDAY);
-        String sunday = CommonUtils.getWeekDayYmd(DayOfWeek.SUNDAY);
-        dayCompleteTipsInfo.put(thursday, "周四");
-        dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.FRIDAY), "周五");
-        dayCompleteTipsInfo.put(saturday, "周六");
-        dayCompleteTipsInfo.put(sunday, "周天");
-        dayCompleteTipsInfo.put(today, "今天");
-        dayCompleteTipsInfo.put(CommonUtils.getTomorrowDateTime(), "明天");
-        dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(2), "后天");
-        String nextMonday = CommonUtils.getNextWeekDayYmd(DayOfWeek.MONDAY);
-        String nextTuesday = CommonUtils.getNextWeekDayYmd(DayOfWeek.TUESDAY);
-        String nextWednesday = CommonUtils.getNextWeekDayYmd(DayOfWeek.WEDNESDAY);
-        String nextThursday = CommonUtils.getNextWeekDayYmd(DayOfWeek.THURSDAY);
-        String nextFriday = CommonUtils.getNextWeekDayYmd(DayOfWeek.FRIDAY);
-        String nextSaturday = CommonUtils.getNextWeekDayYmd(DayOfWeek.SATURDAY);
-        String nextSunday = CommonUtils.getNextWeekDayYmd(DayOfWeek.SUNDAY);
-        dayCompleteTipsInfo.put(nextMonday, "下周一");
-        dayCompleteTipsInfo.put(nextTuesday, "下周二");
-        dayCompleteTipsInfo.put(nextWednesday, "下周三");
-        dayCompleteTipsInfo.put(nextThursday, "下周四");
-        dayCompleteTipsInfo.put(nextFriday, "下周五");
-        dayCompleteTipsInfo.put(nextSaturday, "下周六");
-        dayCompleteTipsInfo.put(nextSunday, "下周天");
-        dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextMonday, 7), "两周一");
-        dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextTuesday, 7), "两周二");
-        dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextWednesday, 7), "两周三");
-        dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextThursday, 7), "两周四");
-        dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextFriday, 7), "两周五");
-        dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextSaturday, 7), "两周六");
-        dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextSunday, 7), "两周天");
+        try {
+            if (frontTask) {
+                return;
+            }
+            if (render) {
+                return;
+            }
+            render = true;
+            taskDescTotal.clear();
+            fixedButtonTotal.clear();
+            dayCompleteTipsInfo.clear();
+            // 格式 yyyyMMdd
+            String thursday = CommonUtils.getWeekDayYmd(DayOfWeek.THURSDAY);
+            String today = CommonUtils.getCurrentDateTime3();
+            String saturday = CommonUtils.getWeekDayYmd(DayOfWeek.SATURDAY);
+            String sunday = CommonUtils.getWeekDayYmd(DayOfWeek.SUNDAY);
+            dayCompleteTipsInfo.put(thursday, "周四");
+            dayCompleteTipsInfo.put(CommonUtils.getWeekDayYmd(DayOfWeek.FRIDAY), "周五");
+            dayCompleteTipsInfo.put(saturday, "周六");
+            dayCompleteTipsInfo.put(sunday, "周天");
+            dayCompleteTipsInfo.put(today, "今天");
+            dayCompleteTipsInfo.put(CommonUtils.getTomorrowDateTime(), "明天");
+            dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(2), "后天");
+            String nextMonday = CommonUtils.getNextWeekDayYmd(DayOfWeek.MONDAY);
+            String nextTuesday = CommonUtils.getNextWeekDayYmd(DayOfWeek.TUESDAY);
+            String nextWednesday = CommonUtils.getNextWeekDayYmd(DayOfWeek.WEDNESDAY);
+            String nextThursday = CommonUtils.getNextWeekDayYmd(DayOfWeek.THURSDAY);
+            String nextFriday = CommonUtils.getNextWeekDayYmd(DayOfWeek.FRIDAY);
+            String nextSaturday = CommonUtils.getNextWeekDayYmd(DayOfWeek.SATURDAY);
+            String nextSunday = CommonUtils.getNextWeekDayYmd(DayOfWeek.SUNDAY);
+            dayCompleteTipsInfo.put(nextMonday, "下周一");
+            dayCompleteTipsInfo.put(nextTuesday, "下周二");
+            dayCompleteTipsInfo.put(nextWednesday, "下周三");
+            dayCompleteTipsInfo.put(nextThursday, "下周四");
+            dayCompleteTipsInfo.put(nextFriday, "下周五");
+            dayCompleteTipsInfo.put(nextSaturday, "下周六");
+            dayCompleteTipsInfo.put(nextSunday, "下周天");
+            dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextMonday, 7), "两周一");
+            dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextTuesday, 7), "两周二");
+            dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextWednesday, 7), "两周三");
+            dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextThursday, 7), "两周四");
+            dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextFriday, 7), "两周五");
+            dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextSaturday, 7), "两周六");
+            dayCompleteTipsInfo.put(CommonUtils.getCustomDateTime(nextSunday, 7), "两周天");
 
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
 
-        Set<String> dayTodoTask = new HashSet<>();
-        Set<String> weekTodoTask = new HashSet<>();
-        Set<String> finishDateError = new HashSet<>();
-        Set<String> finishDateOver = new HashSet<>();
-        Set<String> focusVersionTask = new HashSet<>();
-        Set<String> todayAddTask = new HashSet<>();
-        List<String> focusDemand = new ArrayList<>();
-        if (StringUtils.isNotBlank(appConfigDto.getHepTaskFocusDemand())) {
-            focusDemand = Arrays.asList(appConfigDto.getHepTaskFocusDemand().split(STR_COMMA));
-        }
-        taskList.setDisable(true);
-        List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
-        List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
-        initVersionTask(res);
-        boolean hasBlank = false;
-        int taskTotal = 0;
-        Map<String, Map<String, String>> version = new HashMap<>();
-        StringBuilder weekVersion = new StringBuilder();
-        StringBuilder weekCloseVersion = new StringBuilder();
-        StringBuilder dayVersion = new StringBuilder();
-        StringBuilder dayCloseVersion = new StringBuilder();
-        // 格式 yyyy-MM-dd
-        String todayDate = CommonUtils.getCurrentDateTime4();
-        String lastDayByWeek = CommonUtils.getLastDayByWeek();
-        String weekDay = CommonUtils.getLastDayByWeekYmd();
-        List<String> versionList = getTaskVersionInfo();
-        Map<String, Map<String, String>> taskInfo = getTaskInfo();
-        Map<String, String> taskLevel = getTaskLevelInfo();
-        Map<String, String> taskCustomerName = taskInfo.get(KEY_CUSTOMER);
-        Map<String, String> taskDemandNo = taskInfo.get(KEY_TASK);
-        Map<String, String> taskDemandStatus = getDemandInfo();
-        Map<String, String> taskSubmitStatus = getTaskStatusInfo();
-        Map<String, String> taskCancelDevSubmit = getCancelDevSubmitTaskInfo();
-        List<String> cancelOnlySelf = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT));
-        List<String> cancelErrorVersion = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT));
-        boolean waitTaskSync = false;
-        Map<String, String> hepTaskAppointVersionMap = appConfigDto.getHepTaskVersionOrderDateMap();
-        for (String item : versionList) {
-            String[] elements = item.split(STR_SEMICOLON);
-            Map<String, String> ele = new HashMap<>();
-            String versionCode = elements[0];
-            String oriCloseDate = elements[1];
-            String oriPublishDate = elements[2];
-            if (hepTaskAppointVersionMap.containsKey(versionCode)) {
-                String orderDate = hepTaskAppointVersionMap.get(versionCode);
-                oriCloseDate = orderDate;
-                oriPublishDate = orderDate;
+            Set<String> dayTodoTask = new HashSet<>();
+            Set<String> weekTodoTask = new HashSet<>();
+            Set<String> finishDateError = new HashSet<>();
+            Set<String> finishDateOver = new HashSet<>();
+            Set<String> focusVersionTask = new HashSet<>();
+            Set<String> todayAddTask = new HashSet<>();
+            List<String> focusDemand = new ArrayList<>();
+            if (StringUtils.isNotBlank(appConfigDto.getHepTaskFocusDemand())) {
+                focusDemand = Arrays.asList(appConfigDto.getHepTaskFocusDemand().split(STR_COMMA));
             }
-            ele.put(KEY_ORI_CLOSE_DATE, oriCloseDate);
-            ele.put(KEY_ORI_PUBLISH_DATE, oriPublishDate);
-            ele.put(KEY_ORDER_NO, STR_0);
-            if (todayDate.equals(oriCloseDate)) {
-                dayCloseVersion.append(versionCode).append(STR_SPACE_2);
-            }
-            if (todayDate.equals(oriPublishDate)) {
-                dayVersion.append(versionCode).append(STR_SPACE_2);
-            }
-
-            if (todayDate.equals(oriCloseDate) || todayDate.equals(oriPublishDate)) {
-                dayPublishVersion.add(versionCode);
-            }
-
-            if (weekDay.compareTo(oriCloseDate) >= 0 && todayDate.compareTo(oriCloseDate) <= 0) {
-                weekCloseVersion.append(versionCode).append(STR_SPACE_2);
-            }
-
-            if (weekDay.compareTo(oriPublishDate) >= 0 && todayDate.compareTo(oriPublishDate) <= 0) {
-                weekVersion.append(versionCode).append(STR_SPACE_2);
-            }
-            version.put(versionCode, ele);
-        }
-        int dayVersionNum = 0;
-        int weekVersionNum = 0;
-        int mergerNum = 0;
-        Set<String> taskNoList = new LinkedHashSet<>();
-        Set<String> demandNoList = new LinkedHashSet<>();
-        Iterator<HepTaskDto> iterator = res.listIterator();
-        Set<String> existTask = new HashSet<>();
-        Set<String> sameAssigneeIdReviewerId = new HashSet<>();
-        while (iterator.hasNext()) {
-            HepTaskDto item = iterator.next();
-            String taskName = item.getName().replaceAll(STR_NEXT_LINE, STR_BLANK);
-            item.setName(taskName);
-            item.setOriTaskName(taskName);
-            String taskNumberIn = item.getTaskNumber();
-            if (taskDemandNo.containsKey(taskNumberIn)) {
-                item.setDemandNo(taskDemandNo.get(taskNumberIn));
-            }
-            String demandNo = item.getDemandNo();
-            if (StringUtils.isBlank(demandNo)) {
-                demandNo = taskNumberIn;
-            }
-            taskNoList.add(taskNumberIn);
-            demandNoList.add(demandNo);
-            boolean commitTag = false;
-            boolean completeTag = false;
-            if (taskSubmitStatus.containsKey(taskNumberIn)) {
-                commitTag = true;
-                completeTag = true;
-            }
-            if ((taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn)) && !taskCancelDevSubmit.containsKey(taskNumberIn)) {
-                completeTag = true;
-            }
-            if (completeTag) {
-                mergerNum++;
-            }
-
-            if (taskLevel.containsKey(demandNo)) {
-                item.setTaskLevel(taskLevel.get(demandNo));
-            } else if (taskLevel.containsKey(taskNumberIn)) {
-                item.setTaskLevel(taskLevel.get(taskNumberIn));
-            }
-            String status = item.getStatus();
-            if (SKIP_STATUS_LIST.contains(status)) {
-                if (completeTag) {
-                    mergerNum--;
+            taskList.setDisable(true);
+            List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
+            List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
+            initVersionTask(res);
+            Map<String, Map<String, String>> version = new HashMap<>();
+            StringBuilder weekVersion = new StringBuilder();
+            StringBuilder weekCloseVersion = new StringBuilder();
+            StringBuilder dayVersion = new StringBuilder();
+            StringBuilder dayCloseVersion = new StringBuilder();
+            // 格式 yyyy-MM-dd
+            String todayDate = CommonUtils.getCurrentDateTime4();
+            String lastDayByWeek = CommonUtils.getLastDayByWeek();
+            String weekDay = CommonUtils.getLastDayByWeekYmd();
+            List<String> versionList = getTaskVersionInfo();
+            Map<String, Map<String, String>> taskInfo = getTaskInfo();
+            Map<String, String> taskLevel = getTaskLevelInfo();
+            Map<String, String> taskCustomerName = taskInfo.get(KEY_CUSTOMER);
+            Map<String, String> taskDemandNo = taskInfo.get(KEY_TASK);
+            Map<String, String> taskDemandStatus = getDemandInfo();
+            Map<String, String> taskSubmitStatus = getTaskStatusInfo();
+            Map<String, String> taskCancelDevSubmit = getCancelDevSubmitTaskInfo();
+            List<String> cancelOnlySelf = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT));
+            List<String> cancelErrorVersion = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT));
+            boolean waitTaskSync = false;
+            Map<String, String> hepTaskAppointVersionMap = appConfigDto.getHepTaskVersionOrderDateMap();
+            for (String item : versionList) {
+                String[] elements = item.split(STR_SEMICOLON);
+                Map<String, String> ele = new HashMap<>();
+                String versionCode = elements[0];
+                String oriCloseDate = elements[1];
+                String oriPublishDate = elements[2];
+                if (hepTaskAppointVersionMap.containsKey(versionCode)) {
+                    String orderDate = hepTaskAppointVersionMap.get(versionCode);
+                    oriCloseDate = orderDate;
+                    oriPublishDate = orderDate;
                 }
-                iterator.remove();
-                continue;
-            }
-            if (hasBlank && StringUtils.isBlank(status)) {
-                mergerNum--;
-                iterator.remove();
-                continue;
-            }
-
-            String finishDate = item.getEstimateFinishTime().split(STR_SPACE)[0];
-            String finishTime = item.getEstimateFinishTime().split(STR_SPACE)[1];
-            item.setFinishDate(finishDate);
-            item.setFinishTime(finishTime);
-
-            String sprintVersion = item.getSprintVersion();
-            if (appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
-                setTaskDesc(item, "关注");
-                focusVersionTask.add(taskNumberIn);
-                String assigneeName = item.getAssigneeName();
-                if (focusVersion.containsKey(sprintVersion)) {
-                    Map<String, Integer> userStat = focusVersion.get(sprintVersion);
-                    if (userStat.containsKey(assigneeName)) {
-                        userStat.put(assigneeName, userStat.get(assigneeName) + 1);
-                    } else {
-                        userStat.put(assigneeName, 1);
-                    }
-                } else {
-                    Map<String, Integer> userStat = new HashMap<>();
-                    userStat.put(assigneeName, 1);
-                    focusVersion.put(sprintVersion, userStat);
+                ele.put(KEY_ORI_CLOSE_DATE, oriCloseDate);
+                ele.put(KEY_ORI_PUBLISH_DATE, oriPublishDate);
+                ele.put(KEY_ORDER_NO, STR_0);
+                if (todayDate.equals(oriCloseDate)) {
+                    dayCloseVersion.append(versionCode).append(STR_SPACE_2);
                 }
+                if (todayDate.equals(oriPublishDate)) {
+                    dayVersion.append(versionCode).append(STR_SPACE_2);
+                }
+
+                if (todayDate.equals(oriCloseDate) || todayDate.equals(oriPublishDate)) {
+                    dayPublishVersion.add(versionCode);
+                }
+
+                if (weekDay.compareTo(oriCloseDate) >= 0 && todayDate.compareTo(oriCloseDate) <= 0) {
+                    weekCloseVersion.append(versionCode).append(STR_SPACE_2);
+                }
+
+                if (weekDay.compareTo(oriPublishDate) >= 0 && todayDate.compareTo(oriPublishDate) <= 0) {
+                    weekVersion.append(versionCode).append(STR_SPACE_2);
+                }
+                version.put(versionCode, ele);
             }
 
-            boolean todayComplete = todayDate.compareTo(finishDate) >= 0;
-            boolean needShow = todayComplete || focusVersionTask.contains(taskNumberIn);
+            int dayVersionNum = 0;
+            int weekVersionNum = 0;
+            Set<String> taskNoList = new LinkedHashSet<>();
+            Set<String> demandNoList = new LinkedHashSet<>();
+            Iterator<HepTaskDto> iterator = res.listIterator();
+            Set<String> existTask = new HashSet<>();
+            Set<String> existTaskStat = new HashSet<>();
+            Set<String> sameAssigneeIdReviewerId = new HashSet<>();
+            while (iterator.hasNext()) {
+                HepTaskDto item = iterator.next();
+                String taskName = item.getName().replaceAll(STR_NEXT_LINE, STR_BLANK);
+                item.setName(taskName);
+                item.setOriTaskName(taskName);
+                String taskNumberIn = item.getTaskNumber();
+                if (taskDemandNo.containsKey(taskNumberIn)) {
+                    item.setDemandNo(taskDemandNo.get(taskNumberIn));
+                }
+                String demandNo = item.getDemandNo();
+                if (StringUtils.isBlank(demandNo)) {
+                    demandNo = taskNumberIn;
+                }
+                taskNoList.add(taskNumberIn);
+                demandNoList.add(demandNo);
+                boolean commitTag = false;
+                boolean completeTag = false;
+                if (taskSubmitStatus.containsKey(taskNumberIn)) {
+                    commitTag = true;
+                    completeTag = true;
+                }
+                if ((taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn)) && !taskCancelDevSubmit.containsKey(taskNumberIn)) {
+                    completeTag = true;
+                }
 
-            if (sprintVersion.startsWith(KEY_TA5) || (sprintVersion.contains(KEY_TA6) && !sprintVersion.contains(KEY_FUND) && !sprintVersion.contains(KEY_VERSION_YEAR_2022))) {
-                iterator.remove();
-                continue;
-            }
-            if (version.containsKey(sprintVersion)) {
-                Map<String, String> versionInfo = version.get(sprintVersion);
-                item.setOriCloseDate(CommonUtils.getCurrentDate(versionInfo.get(KEY_ORI_CLOSE_DATE)));
-                item.setOriPublishDate(CommonUtils.getCurrentDate(versionInfo.get(KEY_ORI_PUBLISH_DATE)));
-            }
+                if (taskLevel.containsKey(demandNo)) {
+                    item.setTaskLevel(taskLevel.get(demandNo));
+                } else if (taskLevel.containsKey(taskNumberIn)) {
+                    item.setTaskLevel(taskLevel.get(taskNumberIn));
+                }
+                String status = item.getStatus();
+                if (SKIP_STATUS_LIST.contains(status)) {
+                    iterator.remove();
+                    continue;
+                }
 
-            String taskNameTag = getTaskNameTag(taskName);
-            switch (taskNameTag) {
-                case DEFECT_TAG:
-                    item.setSortDate(getValue(STR_1));
-                    break;
-                case SELF_TEST_TAG:
-                    item.setSortDate(getValue(STR_2));
-                    break;
-                case SELF_BUILD_TAG:
-                    item.setSortDate(getValue(STR_3));
-                    break;
-                default:
-                    if (AUDIT_FAIL.equals(item.getStatusName())) {
-                        item.setSortDate(getValue(STR_4));
-                    } else if (INTEGRATION_FAIL.equals(item.getStatusName())) {
-                        item.setSortDate(getValue(STR_5));
-                    } else if (taskName.contains(TASK_NAME_SCENE)) {
-                        item.setSortDate(getValue(STR_6));
-                    } else {
-                        if (focusDemand.contains(demandNo)) {
-                            item.setSortDate(getValue(STR_7).substring(0, 4) + finishDate.substring(4));
+                String finishDate = item.getEstimateFinishTime().split(STR_SPACE)[0];
+                String finishTime = item.getEstimateFinishTime().split(STR_SPACE)[1];
+                item.setFinishDate(finishDate);
+                item.setFinishTime(finishTime);
+
+                String sprintVersion = item.getSprintVersion();
+                if (appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
+                    setTaskDesc(item, "关注");
+                    focusVersionTask.add(taskNumberIn);
+                    String assigneeName = item.getAssigneeName();
+                    if (focusVersion.containsKey(sprintVersion)) {
+                        Map<String, Integer> userStat = focusVersion.get(sprintVersion);
+                        if (userStat.containsKey(assigneeName)) {
+                            userStat.put(assigneeName, userStat.get(assigneeName) + 1);
                         } else {
-                            item.setSortDate(finishDate);
+                            userStat.put(assigneeName, 1);
                         }
+                    } else {
+                        Map<String, Integer> userStat = new HashMap<>();
+                        userStat.put(assigneeName, 1);
+                        focusVersion.put(sprintVersion, userStat);
                     }
-                    break;
-            }
-
-            String minCompleteByMarkYmd = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), finishDate);
-
-            if (StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
-                if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0) {
-                    finishDateError.add(taskNumberIn);
-                    minCompleteByMarkYmd = CommonUtils.getCurrentDateYmd(finishDate);
                 }
-                if (StringUtils.compare(todayDate, finishDate) > 0) {
-                    finishDateOver.add(taskNumberIn);
-                    minCompleteByMarkYmd = CommonUtils.getCurrentDateYmd(finishDate);
+
+                boolean todayComplete = todayDate.compareTo(finishDate) >= 0;
+                boolean needShow = todayComplete || focusVersionTask.contains(taskNumberIn);
+
+                if (sprintVersion.startsWith(KEY_TA5) || (sprintVersion.contains(KEY_TA6) && !sprintVersion.contains(KEY_FUND) && !sprintVersion.contains(KEY_VERSION_YEAR_2022))) {
+                    iterator.remove();
+                    continue;
                 }
-            }
-
-            item.setMinCompleteByMark(minCompleteByMarkYmd);
-
-            String minCompleteBySort = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getSortDate());
-
-            if (taskMinCompleteDate.containsKey(taskName)) {
-                if (minCompleteBySort.compareTo(taskMinCompleteDate.get(taskName).getMinCompleteBySort()) < 0) {
-                    taskMinCompleteDate.get(taskName).setMinCompleteBySort(minCompleteBySort);
+                if (version.containsKey(sprintVersion)) {
+                    Map<String, String> versionInfo = version.get(sprintVersion);
+                    item.setOriCloseDate(CommonUtils.getCurrentDate(versionInfo.get(KEY_ORI_CLOSE_DATE)));
+                    item.setOriPublishDate(CommonUtils.getCurrentDate(versionInfo.get(KEY_ORI_PUBLISH_DATE)));
                 }
-            } else {
-                HepTaskDto taskMin = new HepTaskDto();
-                taskMin.setMinCompleteBySort(minCompleteBySort);
-                taskMinCompleteDate.put(taskName, taskMin);
-            }
 
-            if (dayCompleteTipsInfo.containsKey(minCompleteByMarkYmd)) {
-                item.setDeadLine(dayCompleteTipsInfo.get(minCompleteByMarkYmd));
-            }
-            if (StringUtils.isBlank(item.getDeadLine()) && weekTodoTask.contains(taskNumberIn)) {
-                item.setDeadLine("本周");
-            }
-            if (commitTag) {
-                setTaskDesc(item, "已提交");
-            } else if (completeTag) {
-                setTaskDesc(item, "待合并");
-            }
-            if (finishDateError.contains(taskNumberIn)) {
-                setTaskDesc(item, "超期");
-            } else if (finishDateOver.contains(taskNumberIn)) {
-                setTaskDesc(item, "已超期");
-            }
-            if (taskName.contains(DEFECT_TAG)) {
-                setTaskDesc(item, "缺陷");
-            }
+                String taskNameTag = getTaskNameTag(taskName);
+                switch (taskNameTag) {
+                    case DEFECT_TAG:
+                        item.setSortDate(getValue(STR_1));
+                        break;
+                    case SELF_TEST_TAG:
+                        item.setSortDate(getValue(STR_2));
+                        break;
+                    case SELF_BUILD_TAG:
+                        item.setSortDate(getValue(STR_3));
+                        break;
+                    default:
+                        if (AUDIT_FAIL.equals(item.getStatusName())) {
+                            item.setSortDate(getValue(STR_4));
+                        } else if (INTEGRATION_FAIL.equals(item.getStatusName())) {
+                            item.setSortDate(getValue(STR_5));
+                        } else if (taskName.contains(TASK_NAME_SCENE)) {
+                            item.setSortDate(getValue(STR_6));
+                        } else {
+                            if (focusDemand.contains(demandNo)) {
+                                item.setSortDate(getValue(STR_7).substring(0, 4) + finishDate.substring(4));
+                            } else {
+                                item.setSortDate(finishDate);
+                            }
+                        }
+                        break;
+                }
 
-            if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
-                sameAssigneeIdReviewerId.add(taskNumberIn);
-                setTaskDesc(item, "同人");
-            }
+                String minCompleteByMarkYmd = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), finishDate);
 
-            String createDate = item.getCreateTime().split(STR_SPACE)[0];
-            if (StringUtils.equals(todayDate, createDate)) {
-                todayAddTask.add(taskNumberIn);
-                setTaskDesc(item, NAME_TODAY_ADD);
-            }
+                if (StringUtils.isNotBlank(finishDate) && StringUtils.isNotBlank(item.getOriCloseDate())){
+                    if (StringUtils.compare(finishDate, item.getOriCloseDate()) > 0) {
+                        finishDateError.add(taskNumberIn);
+                        minCompleteByMarkYmd = CommonUtils.getCurrentDateYmd(finishDate);
+                    }
+                    if (StringUtils.compare(todayDate, finishDate) > 0) {
+                        finishDateOver.add(taskNumberIn);
+                        minCompleteByMarkYmd = CommonUtils.getCurrentDateYmd(finishDate);
+                    }
+                }
 
-            item.setSprintVersionFull(sprintVersion);
-            item.setSprintVersion(formatVersion(sprintVersion));
+                item.setMinCompleteByMark(minCompleteByMarkYmd);
 
-            if (taskCustomerName.containsKey(taskNumberIn)) {
-                String name = taskCustomerName.get(taskNumberIn);
-                item.setCustomerFull(StringUtils.isBlank(name) ? NAME_INNER_CUSTOMER : name);
-            } else {
-                if (StringUtils.isBlank(item.getCustomerFull()) && taskName.contains(DEFECT_TAG)) {
-                    item.setCustomerFull(NAME_INNER_CUSTOMER);
+                String minCompleteBySort = getMinDate(item.getOriCloseDate(), item.getOriPublishDate(), item.getSortDate());
+
+                if (taskMinCompleteDate.containsKey(taskName)) {
+                    if (minCompleteBySort.compareTo(taskMinCompleteDate.get(taskName).getMinCompleteBySort()) < 0) {
+                        taskMinCompleteDate.get(taskName).setMinCompleteBySort(minCompleteBySort);
+                    }
                 } else {
-                    waitTaskSync = true;
+                    HepTaskDto taskMin = new HepTaskDto();
+                    taskMin.setMinCompleteBySort(minCompleteBySort);
+                    taskMinCompleteDate.put(taskName, taskMin);
                 }
-            }
-            item.setCustomer(item.getCustomerFull());
 
-            String customer = item.getCustomer();
-            if (StringUtils.isNotBlank(customer)) {
-                if (customer.contains(STR_COMMA)) {
-                    customer = customer.split(STR_COMMA)[0];
-                    item.setCustomer(customer);
+                if (dayCompleteTipsInfo.containsKey(minCompleteByMarkYmd)) {
+                    item.setDeadLine(dayCompleteTipsInfo.get(minCompleteByMarkYmd));
                 }
-                if (customer.length() > 4) {
-                    customer = customer.substring(0, 4);
-                    if (StringUtils.equals("中信中证", customer)) {
-                        customer = "中信托管";
+                if (StringUtils.isBlank(item.getDeadLine()) && weekTodoTask.contains(taskNumberIn)) {
+                    item.setDeadLine("本周");
+                }
+
+                if (commitTag) {
+                    setTaskDesc(item, "已提交");
+                } else if (completeTag) {
+                    setTaskDesc(item, "待合并");
+                }
+                if (finishDateError.contains(taskNumberIn)) {
+                    setTaskDesc(item, "超期");
+                } else if (finishDateOver.contains(taskNumberIn)) {
+                    setTaskDesc(item, "已超期");
+                }
+                if (taskName.contains(DEFECT_TAG)) {
+                    setTaskDesc(item, "缺陷");
+                }
+
+                if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
+                    sameAssigneeIdReviewerId.add(taskNumberIn);
+                    setTaskDesc(item, "同人");
+                }
+
+                String createDate = item.getCreateTime().split(STR_SPACE)[0];
+                if (StringUtils.equals(todayDate, createDate)) {
+                    todayAddTask.add(taskNumberIn);
+                    setTaskDesc(item, NAME_BUTTON_ADD_TOADY);
+                }
+
+                item.setSprintVersionFull(sprintVersion);
+                item.setSprintVersion(formatVersion(sprintVersion));
+
+                if (taskCustomerName.containsKey(taskNumberIn)) {
+                    String name = taskCustomerName.get(taskNumberIn);
+                    item.setCustomerFull(StringUtils.isBlank(name) ? NAME_INNER_CUSTOMER : name);
+                } else {
+                    if (StringUtils.isBlank(item.getCustomerFull()) && taskName.contains(DEFECT_TAG)) {
+                        item.setCustomerFull(NAME_INNER_CUSTOMER);
+                    } else {
+                        waitTaskSync = true;
                     }
-                    item.setCustomer(customer);
                 }
-            }
+                item.setCustomer(item.getCustomerFull());
 
-            controlHepTaskOnlySelfTips(appConfigDto, item, cancelOnlySelf);
+                String customer = item.getCustomer();
+                if (StringUtils.isNotBlank(customer)) {
+                    if (customer.contains(STR_COMMA)) {
+                        customer = customer.split(STR_COMMA)[0];
+                        item.setCustomer(customer);
+                    }
+                    if (customer.length() > 4) {
+                        customer = customer.substring(0, 4);
+                        if (StringUtils.equals("中信中证", customer)) {
+                            customer = "中信托管";
+                        }
+                        item.setCustomer(customer);
+                    }
+                }
 
-            controlHepTaskAppointVersionTips(appConfigDto, item, cancelErrorVersion);
+                controlHepTaskOnlySelfTips(appConfigDto, item, cancelOnlySelf);
 
-            if (StringUtils.equals(queryType, only.getText())) {
-                if (existTask.contains(taskName)) {
+                controlHepTaskAppointVersionTips(appConfigDto, item, cancelErrorVersion);
+
+                if (todayComplete) {
+                    dayVersionNum++;
+                    dayTodoTask.add(taskNumberIn);
+                }
+
+                boolean week = todayComplete || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
+                if (week) {
+                    weekVersionNum++;
+                    weekTodoTask.add(taskNumberIn);
+                }
+
+                String creatorId = item.getCreatorId();
+                if (StringUtils.equals(appConfigDto.getHepTaskUser(), creatorId)) {
+                    item.setCreatorName(STR_SPACE);
+                }
+
+
+
+                setFixedButtonTotal(all.getId());
+                if (!existTaskStat.contains(taskName)) {
+                    setFixedButtonTotal(only.getId());
+                    existTaskStat.add(taskName);
+                }
+                if (!needShow && !completeTag) {
+                    setFixedButtonTotal(waitDev.getId());
+                }
+
+                if (StringUtils.equals(queryType, only.getId())) {
+                    if (existTask.contains(taskName)) {
+                        iterator.remove();
+                        continue;
+                    }
+                    existTask.add(taskName);
+                } else if (StringUtils.equals(queryType, waitDev.getId()) && !needShow) {
+                    if (completeTag) {
+                        iterator.remove();
+                        continue;
+                    }
+                } else if (StringUtils.isNotBlank(queryType) && queryButtonList.containsKey(queryType)) {
+                    String level = item.getTaskDesc() == null ? STR_BLANK : item.getTaskDesc();
+                    String mark = item.getDeadLine() == null ? STR_BLANK : item.getDeadLine();
+                    if (!level.contains(queryType) && !mark.contains(queryType)) {
+                        iterator.remove();
+                        continue;
+                    }
+                }
+
+                if (filterTaskForRemove(appConfigDto, item)) {
                     iterator.remove();
                     continue;
                 }
-                existTask.add(taskName);
-            } else if (StringUtils.equals(queryType, devCompleteHide.getText()) && !needShow) {
-                if (completeTag) {
-                    iterator.remove();
-                    continue;
-                }
-            } else if (StringUtils.equals(queryType, devCompleteShow.getText())) {
-                if (!completeTag) {
-                    iterator.remove();
-                    continue;
-                }
-            } else if (StringUtils.equals(queryType, newTask.getText())) {
-                if (!StringUtils.equals(todayDate, createDate)) {
-                    iterator.remove();
-                    continue;
-                }
-            } else if (StringUtils.isNotBlank(queryType) && queryButtonList.containsKey(queryType)) {
-                String level = item.getTaskDesc() == null ? STR_BLANK : item.getTaskDesc();
-                String mark = item.getDeadLine() == null ? STR_BLANK : item.getDeadLine();
-                if (!level.contains(queryType) && !mark.contains(queryType)) {
-                    iterator.remove();
-                    continue;
+            }
+
+            if (tagFlag) {
+                initButtonTag();
+                updateFixedButton();
+            }
+
+            res = sortTask(res);
+
+            controlFocusVersionTips(appConfigDto);
+
+            OutputUtils.clearLog(dayTodo);
+            OutputUtils.info(dayTodo, String.valueOf(dayVersionNum));
+
+            OutputUtils.clearLog(weekTodo);
+            OutputUtils.info(weekTodo, String.valueOf(weekVersionNum));
+
+            OutputUtils.clearLog(dayPublish);
+            OutputUtils.info(dayPublish, formatVersion(dayVersion.toString()));
+
+            OutputUtils.clearLog(weekPublish);
+            OutputUtils.info(weekPublish, formatVersion(weekVersion.toString()));
+
+            OutputUtils.clearLog(dayClose);
+            OutputUtils.info(dayClose, formatVersion(dayCloseVersion.toString()));
+
+            OutputUtils.clearLog(weekClose);
+            OutputUtils.info(weekClose, formatVersion(weekCloseVersion.toString()));
+
+            if (!isExtendUser()) {
+                if (waitTaskSync) {
+                    syncTask.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+                } else {
+                    syncTask.setStyle(STYLE_NORMAL_FOR_BUTTON);
                 }
             }
 
-            if (filterTaskForRemove(appConfigDto, item)) {
-                iterator.remove();
-                continue;
-            }
-
-            if (todayComplete) {
-                dayVersionNum++;
-                dayTodoTask.add(taskNumberIn);
-            }
-            boolean week = todayComplete || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
-            if (week) {
-                weekVersionNum++;
-                weekTodoTask.add(taskNumberIn);
-            }
-
-            String creatorId = item.getCreatorId();
-            if (StringUtils.equals(appConfigDto.getHepTaskUser(), creatorId)) {
-                item.setCreatorName(STR_SPACE);
-            }
-
-            if (StringUtils.isBlank(status)) {
-                hasBlank = true;
-                taskTotal++;
+            if (dayVersionNum > 0) {
+                dayTodo.setStyle(STYLE_BOLD_RED);
             } else {
-                hasBlank = false;
+                dayTodo.setStyle(STYLE_BOLD_BLACK);
             }
-        }
-
-        res = sortTask(res);
-
-        if (tagFlag) {
-            initTag(res);
-        }
-
-        controlFocusVersionTips(appConfigDto);
-
-        OutputUtils.clearLog(dayTodo);
-        OutputUtils.info(dayTodo, String.valueOf(dayVersionNum));
-
-        OutputUtils.clearLog(weekTodo);
-        OutputUtils.info(weekTodo, String.valueOf(weekVersionNum));
-
-        OutputUtils.clearLog(dayPublish);
-        OutputUtils.info(dayPublish, formatVersion(dayVersion.toString()));
-
-        OutputUtils.clearLog(weekPublish);
-        OutputUtils.info(weekPublish, formatVersion(weekVersion.toString()));
-
-        OutputUtils.clearLog(dayClose);
-        OutputUtils.info(dayClose, formatVersion(dayCloseVersion.toString()));
-
-        OutputUtils.clearLog(weekClose);
-        OutputUtils.info(weekClose, formatVersion(weekCloseVersion.toString()));
-
-        OutputUtils.clearLog(waitHandleTaskNum);
-        OutputUtils.info(waitHandleTaskNum, String.valueOf(res.size() - taskTotal));
-
-        OutputUtils.clearLog(waitMergerNum);
-        OutputUtils.info(waitMergerNum, String.valueOf(mergerNum));
-
-        if (!isExtendUser()) {
-            if (waitTaskSync) {
-                syncTask.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+            if (weekVersionNum > 0) {
+                weekTodo.setStyle(STYLE_BOLD_RED);
             } else {
-                syncTask.setStyle(STYLE_NORMAL_FOR_BUTTON);
+                weekTodo.setStyle(STYLE_BOLD_BLACK);
             }
-        }
 
-        if (dayVersionNum > 0) {
-            dayTodo.setStyle(STYLE_BOLD_RED);
-        } else {
-            dayTodo.setStyle(STYLE_BOLD_BLACK);
+            OutputUtils.clearLog(taskList);
+            finishDateError.addAll(finishDateOver);
+            infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, todayAddTask, focusDemand);
+            taskList.setDisable(false);
+            if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
+                String msg = String.format("开发人员和审核人员为同一人,请检查【%s】", sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)));
+                LoggerUtils.info(msg);
+                controlSomeOneTips(sameAssigneeIdReviewerId.size());
+            } else {
+                controlSomeOneTips(0);
+            }
+            printTaskInfo(res);
+            controlCheckScriptTips(StringUtils.equalsAny(today, saturday, sunday));
+            updateHepStatFile(appConfigDto, taskNoList, demandNoList);
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+        } finally {
+            render = false;
         }
-        if (weekVersionNum > 0) {
-            weekTodo.setStyle(STYLE_BOLD_RED);
-        } else {
-            weekTodo.setStyle(STYLE_BOLD_BLACK);
-        }
-
-        OutputUtils.clearLog(taskList);
-        finishDateError.addAll(finishDateOver);
-        infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, todayAddTask, focusDemand);
-        taskList.setDisable(false);
-        if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
-            String msg = String.format("开发人员和审核人员为同一人,请检查【%s】", sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)));
-            LoggerUtils.info(msg);
-            controlSomeOneTips(sameAssigneeIdReviewerId.size());
-        } else {
-            controlSomeOneTips(0);
-        }
-        printTaskInfo(res);
-        controlCheckScriptTips(StringUtils.equalsAny(today, saturday, sunday));
-        updateHepStatFile(appConfigDto, taskNoList, demandNoList);
     }
 
     private void controlHepTaskOnlySelfTips (AppConfigDto appConfigDto, HepTaskDto hepTaskDto, List<String> cancelOnlySelf) {
@@ -1531,7 +1498,20 @@ public class HepTodoController extends BaseController implements Initializable {
     }
 
     private void setTaskDesc(HepTaskDto item, String taskDesc) {
-        item.setTaskDesc(StringUtils.isBlank(item.getTaskDesc()) ? taskDesc : taskDesc + STR_COMMA + item.getTaskDesc() );
+        item.setTaskDesc(StringUtils.isBlank(item.getTaskDesc()) ? taskDesc : taskDesc + STR_COMMA + item.getTaskDesc());
+        if (taskDescTotal.containsKey(taskDesc)) {
+            taskDescTotal.put(taskDesc, taskDescTotal.get(taskDesc) + 1);
+        } else {
+            taskDescTotal.put(taskDesc, 1);
+        }
+    }
+
+    private void setFixedButtonTotal(String taskDesc) {
+        if (fixedButtonTotal.containsKey(taskDesc)) {
+            fixedButtonTotal.put(taskDesc, fixedButtonTotal.get(taskDesc) + 1);
+        } else {
+            fixedButtonTotal.put(taskDesc, 1);
+        }
     }
 
     private String formatVersion(String ver) {
@@ -1648,33 +1628,52 @@ public class HepTodoController extends BaseController implements Initializable {
         return String.valueOf(Math.min(Math.min(Integer.valueOf(closeDate), Integer.valueOf(publishDate)), Integer.valueOf(endDate)));
     }
 
-    private void initTag(List<HepTaskDto> task) {
-        if (CollectionUtils.isEmpty(task)) {
+    private void updateFixedButton() {
+        Platform.runLater(() -> {
+            updateFixedButtonName(all, NAME_BUTTON_ALL);
+            updateFixedButtonName(only, NAME_BUTTON_ONLY);
+            updateFixedButtonName(waitDev, NAME_BUTTON_WAIT_DEV);
+        });
+    }
+
+    private void updateFixedButtonName(Button button, String buttonName) {
+        Integer num = fixedButtonTotal.get(button.getId());
+        if (num != null) {
+            button.setText(buttonName + STR_SPACE + num);
+        } else {
+            button.setText(buttonName);
+        }
+    }
+
+    private void initButtonTag() {
+        if (MapUtils.isEmpty(taskDescTotal)) {
             return;
         }
         Platform.runLater(() -> {
             Set<String> buttonConfig = new HashSet<>();
-            for (HepTaskDto hepTaskDto : task) {
-                if (StringUtils.isNotBlank(hepTaskDto.getTaskDesc())) {
-                    buttonConfig.addAll(Arrays.asList(hepTaskDto.getTaskDesc().split(STR_COMMA)));
-                }
-                buttonConfig.remove(NAME_TODAY_ADD);
+            for (String button : taskDescTotal.keySet()) {
+                buttonConfig.add(button);
             }
-            if (!queryButtonList.containsKey(queryType) && !StringUtils.equals(queryType, newTask.getText())) {
-                for (Map.Entry<String, Button> entry : queryButtonList.entrySet()) {
-                    entry.getValue().setVisible(false);
-                }
-            }
-            for (String buttonName : buttonConfig) {
-                if (queryButtonList.containsKey(buttonName)) {
-                    queryButtonList.get(buttonName).setVisible(true);
+            double x = waitDev.getLayoutX();
+            double y = 143;
+            double step = 130;
+            int buttonNum = 1;
+            for (String buttonId : buttonConfig) {
+                if (queryButtonList.containsKey(buttonId)) {
+                    Button button = queryButtonList.get(buttonId);
+                    button.setText(buttonId + STR_SPACE + taskDescTotal.get(buttonId));
                 } else {
-                    Button button = new Button(buttonName);
+                    Button button = new Button(buttonId + STR_SPACE + taskDescTotal.get(buttonId));
+                    button.setId(buttonId);
+                    button.setLayoutX(x + step * buttonNum);
+                    button.setLayoutY(y);
+                    button.setPrefWidth(100);
+                    buttonNum++;
                     queryButtonSet.add(button);
                     headPane.getChildren().add(button);
                     button.setOnMouseClicked(
                         event -> {
-                            queryType = button.getText();
+                            queryType = button.getId();
                             controlQueryButtonColor(button);
                             try {
                                 executeQuery(new ActionEvent());
@@ -1684,23 +1683,8 @@ public class HepTodoController extends BaseController implements Initializable {
                             }
                         }
                     );
-                    queryButtonList.put(buttonName, button);
+                    queryButtonList.put(buttonId, button);
                 }
-            }
-
-            double x = newTask.getLayoutX();
-            double y = 143;
-            double step = 130;
-            int buttonNum = 1;
-            for (Map.Entry<String, Button> entry : queryButtonList.entrySet()) {
-                Button button = entry.getValue();
-                if (!button.isVisible()) {
-                    continue;
-                }
-                button.setLayoutX(x + step * buttonNum);
-                button.setLayoutY(y);
-                button.setPrefWidth(100);
-                buttonNum++;
             }
         });
     }
@@ -1838,7 +1822,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 } else {
                     String minCompleteBySort = hepTaskDto.getMinCompleteBySort();
                     String sortCode = minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskDesc();
-                    if (StringUtils.equals(queryType, newTask.getText())) {
+                    if (StringUtils.equals(queryType, NAME_BUTTON_ADD_TOADY)) {
                         sortCode = item.getAssigneeId() + item.getCreatorId() + minCompleteBySort + taskName + item.getFinishDate() + item.getCustomer() + item.getSprintVersion() + item.getTaskDesc();
                     }
                     item.setSortCode(sortCode);
@@ -1897,8 +1881,8 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void printTaskInfo(List<HepTaskDto> taskList) {
         if (frontPage() && CollectionUtils.isNotEmpty(taskList) &&
-                (StringUtils.equals(queryType, devCompleteHide.getText()) || StringUtils.equals(queryType, devCompleteShow.getText()))) {
-            String printType = StringUtils.equals(queryType, devCompleteShow.getText()) ? NAME_TASK_DEV_COMPLETE : NAME_TASK_NOT_COMPLETE;
+                (StringUtils.equals(queryType, waitDev.getId()) || StringUtils.equals(queryType, NAME_BUTTON_WAIT_MERGE))) {
+            String printType = StringUtils.equals(queryType, NAME_BUTTON_WAIT_MERGE) ? NAME_TASK_DEV_COMPLETE : NAME_TASK_NOT_COMPLETE;
             String detail = taskList.stream().filter(hepTaskDto ->
                     StringUtils.isNotBlank(hepTaskDto.getDemandNo())).map(HepTaskDto::getDemandNo).distinct().collect(Collectors.joining(STR_COMMA)
             );
@@ -2675,9 +2659,15 @@ public class HepTodoController extends BaseController implements Initializable {
         return !CommonUtils.proScene() || STATUS_200 == response.getStatus();
     }
 
+    private void controlButtonStatus(boolean disabled) {
+        for (Button item : queryButtonSet) {
+            item.setDisable(disabled);
+        }
+    }
+
     private void controlQueryButtonColor(Button button) {
         for (Button item : queryButtonSet) {
-            if (StringUtils.equals(button.getText(), item.getText())) {
+            if (StringUtils.equals(item.getId(), button.getId())) {
                 item.setStyle(STYLE_SELECTED_FOR_BUTTON);
             } else {
                 item.setStyle(STYLE_NORMAL_FOR_BUTTON);
