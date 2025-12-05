@@ -88,6 +88,9 @@ public class ChangeToolController implements Initializable {
 
     private static String TA_CODE = "00";
 
+    private static int paramRealtimeSetNum = 0;
+    private static int tableColumnsNum = 0;
+
     private static Map<String, Map<String, String>> configDictValue = new LinkedHashMap<>();
     private static Map<String, String> configDictName = new LinkedHashMap<>();
     private static Set<String> beginValidDateSpecial = new HashSet<>();
@@ -639,6 +642,8 @@ public class ChangeToolController implements Initializable {
 
     public void executeRealtimeExe(String dictPath, String paramPath, String tablePath) {
         try {
+            paramRealtimeSetNum = 0;
+            tableColumnsNum = 0;
             errorTips.setVisible(false);
             errorInfo.clear();
             executeRealtimeBtn.setDisable(true);
@@ -652,6 +657,14 @@ public class ChangeToolController implements Initializable {
             OutputUtils.infoContainBr(logs, "初始化表结构信息 结束");
             OutputUtils.infoContainBr(logs, "生成文件 开始");
             buildFile(paramPath);
+            if (paramRealtimeSetNum == 0) {
+                OutputUtils.infoContainBr(logs, "未扫描到参数电子化配置脚本，请检查【开通脚本目录】配置是否正确");
+                errorTips.setVisible(true);
+            }
+            if (tableColumnsNum == 0) {
+                OutputUtils.infoContainBr(logs, "未扫描到表结构，请检查【表结构目录】配置是否正确");
+                errorTips.setVisible(true);
+            }
             OutputUtils.infoContainBr(logs, "生成文件 结束");
             // 忽略提示信息
             Iterator<String> iterator = errorInfo.listIterator();
@@ -690,6 +703,7 @@ public class ChangeToolController implements Initializable {
             }
         } else {
             if (tablePath.contains("oracle.table") && !tablePath.contains("temp_pubfund")) {
+                tableColumnsNum++;
                 getTableColumns(tablePath);
             }
         }
@@ -883,6 +897,7 @@ public class ChangeToolController implements Initializable {
                 }
             }
         } else {
+            paramRealtimeSetNum++;
             if (!path.endsWith(".sql")) {
                 return;
             }
