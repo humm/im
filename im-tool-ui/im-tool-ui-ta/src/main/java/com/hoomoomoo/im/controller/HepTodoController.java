@@ -939,7 +939,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 focusDemand = Arrays.asList(appConfigDto.getHepTaskFocusDemand().split(STR_COMMA));
             }
             taskList.setDisable(true);
-            List<String> dayPublishVersion = appConfigDto.getDayPublishVersion();
             List<HepTaskDto> res = JSONArray.parseArray(JSONObject.toJSONString(task), HepTaskDto.class);
             initVersionTask(res);
             Map<String, Map<String, String>> version = new HashMap<>();
@@ -969,6 +968,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 String versionCode = elements[0];
                 String oriCloseDate = elements[1];
                 String oriPublishDate = elements[2];
+                String oriPublishDateReal = elements[3];
                 if (hepTaskAppointVersionMap.containsKey(versionCode)) {
                     String orderDate = hepTaskAppointVersionMap.get(versionCode);
                     oriCloseDate = orderDate;
@@ -980,19 +980,16 @@ public class HepTodoController extends BaseController implements Initializable {
                 if (todayDate.equals(oriCloseDate)) {
                     dayCloseVersion.append(versionCode).append(STR_SPACE_2);
                 }
-                if (todayDate.equals(oriPublishDate)) {
+                if (todayDate.equals(oriPublishDate) || todayDate.equals(oriPublishDateReal)) {
                     dayVersion.append(versionCode).append(STR_SPACE_2);
-                }
-
-                if (todayDate.equals(oriCloseDate) || todayDate.equals(oriPublishDate)) {
-                    dayPublishVersion.add(versionCode);
                 }
 
                 if (weekDay.compareTo(oriCloseDate) >= 0 && todayDate.compareTo(oriCloseDate) <= 0) {
                     weekCloseVersion.append(versionCode).append(STR_SPACE_2);
                 }
 
-                if (weekDay.compareTo(oriPublishDate) >= 0 && todayDate.compareTo(oriPublishDate) <= 0) {
+                if ((weekDay.compareTo(oriPublishDate) >= 0 && todayDate.compareTo(oriPublishDate) <= 0) ||
+                        (weekDay.compareTo(oriPublishDateReal) >= 0 && todayDate.compareTo(oriPublishDateReal) <= 0)) {
                     weekVersion.append(versionCode).append(STR_SPACE_2);
                 }
                 version.put(versionCode, ele);
