@@ -1280,14 +1280,17 @@ public class HepTodoController extends BaseController implements Initializable {
             OutputUtils.clearLog(weekClose);
             OutputUtils.info(weekClose, formatVersion(weekCloseVersion.toString()));
 
+            int waitTaskSyncNum = waitTaskSync;
             if (!isExtendUser()) {
-                if (waitTaskSync > 0) {
-                    syncTask.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
-                    syncTask.setText(NAME_BUTTON_TASK_SYNC + STR_SPACE + waitTaskSync);
-                } else {
-                    syncTask.setStyle(STYLE_NORMAL_FOR_BUTTON);
-                    syncTask.setText(NAME_BUTTON_TASK_SYNC);
-                }
+                Platform.runLater(() -> {
+                    if (waitTaskSyncNum > 0) {
+                        syncTask.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+                        syncTask.setText(NAME_BUTTON_TASK_SYNC + STR_SPACE + waitTaskSyncNum);
+                    } else {
+                        syncTask.setStyle(STYLE_NORMAL_FOR_BUTTON);
+                        syncTask.setText(NAME_BUTTON_TASK_SYNC);
+                    }
+                });
             }
 
             if (dayVersionNum > 0) {
@@ -1681,16 +1684,13 @@ public class HepTodoController extends BaseController implements Initializable {
             double step = 130;
             int buttonNum = 1;
             for (String buttonId : buttonConfig) {
+                Button button;
                 if (queryButtonList.containsKey(buttonId)) {
-                    Button button = queryButtonList.get(buttonId);
+                    button = queryButtonList.get(buttonId);
                     button.setText(buttonId + STR_SPACE + taskDescTotal.get(buttonId));
                 } else {
-                    Button button = new Button(buttonId + STR_SPACE + taskDescTotal.get(buttonId));
+                    button = new Button(buttonId + STR_SPACE + taskDescTotal.get(buttonId));
                     button.setId(buttonId);
-                    button.setLayoutX(x + step * buttonNum);
-                    button.setLayoutY(y);
-                    button.setPrefWidth(100);
-                    buttonNum++;
                     queryButtonSet.add(button);
                     headPane.getChildren().add(button);
                     button.setOnMouseClicked(
@@ -1707,7 +1707,12 @@ public class HepTodoController extends BaseController implements Initializable {
                     );
                     queryButtonList.put(buttonId, button);
                 }
+                button.setLayoutX(x + step * buttonNum);
+                button.setLayoutY(y);
+                button.setPrefWidth(100);
+                buttonNum++;
             }
+
         });
     }
 
