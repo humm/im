@@ -293,6 +293,16 @@ public class BaseConst {
     public static final String NAME_BUTTON_ONLY = "去重";
     public static final String NAME_BUTTON_WAIT_DEV = "待开发";
     public static final String NAME_BUTTON_TASK_SYNC = "同步任务";
+    public static final String NAME_BUTTON_SOME_ONE = "同人";
+    public static final String NAME_BUTTON_TODAY = "今天";
+    public static final String NAME_BUTTON_WEEK = "本周";
+    public static final String NAME_BUTTON_FOCUS = "关注";
+    public static final String NAME_BUTTON_ERROR_VERSION = "错版";
+    public static final String NAME_BUTTON_COMMIT = "已提交";
+    public static final String NAME_BUTTON_DEFECT = "缺陷";
+    public static final String NAME_BUTTON_ONLY_ONE = "孤版";
+    public static final String NAME_BUTTON_OVERDUE = "超期";
+    public static final String NAME_BUTTON_HAS_OVERDUE = "已超期";
 
     public final static String SECURITY_FLAG = "+++";
 

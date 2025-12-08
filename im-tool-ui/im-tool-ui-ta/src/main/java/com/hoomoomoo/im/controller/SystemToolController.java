@@ -214,14 +214,14 @@ public class SystemToolController implements Initializable {
             String toTargetPath = filePath.replace(sourcePath, targetPath);
             List<String> content =  FileUtils.readNormalFile(filePath);
             syncFile++;
-            if ("CommonUtils.java".equals(fileName)) {
+            if ("HepTodoController.java".equals(fileName)) {
                 updateFile++;
                 OutputUtils.info(logs, getCommonMsg(NAME_SYNC_CODE, "修改文件 " + fileName));
                 FileUtils.deleteFile(new File(toTargetPath));
                 for (int j=0; j<content.size(); j++) {
                     String ele = content.get(j);
-                    if (ele.contains("FileUtils.startByJar()")) {
-                        ele = ele.replace("FileUtils.startByJar()", "true");
+                    if (ele.contains("CommonUtils.proScene()")) {
+                        ele = ele.replace("CommonUtils.proScene()", "true");
                     }
                     FileUtils.writeFileAppend(toTargetPath, ele + STR_NEXT_LINE);
                 }

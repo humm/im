@@ -177,16 +177,18 @@ public class HepTodoController extends BaseController implements Initializable {
 
     Map<String, Integer> taskDescTotal = new ConcurrentHashMap<>();
     Map<String, Integer> taskDescSort = new HashMap(){{
-        put("已提交", 10);
-        put("待合并", 20);
-        put("关注", 30);
-        put("今增", 40);
-        put("缺陷", 50);
-        put("已超期", 60);
-        put("超期", 70);
-        put("同人", 80);
-        put("孤版", 90);
-        put("错版", 100);
+        put(NAME_BUTTON_COMMIT, 10);
+        put(NAME_BUTTON_WAIT_MERGE, 20);
+        put(NAME_BUTTON_TODAY, 30);
+        put(NAME_BUTTON_WEEK, 40);
+        put(NAME_BUTTON_FOCUS, 50);
+        put(NAME_BUTTON_ADD_TOADY, 60);
+        put(NAME_BUTTON_DEFECT, 70);
+        put(NAME_BUTTON_HAS_OVERDUE, 80);
+        put(NAME_BUTTON_OVERDUE, 90);
+        put(NAME_BUTTON_SOME_ONE, 100);
+        put(NAME_BUTTON_ONLY_ONE, 110);
+        put(NAME_BUTTON_ERROR_VERSION, 120);
     }};
     Map<String, Integer> fixedButtonTotal = new ConcurrentHashMap<>();
 
@@ -260,12 +262,6 @@ public class HepTodoController extends BaseController implements Initializable {
     private Button scriptShow;
 
     @FXML
-    private Label dayTodo;
-
-    @FXML
-    private Label weekTodo;
-
-    @FXML
     private Label memoryTips;
 
     @FXML
@@ -305,9 +301,6 @@ public class HepTodoController extends BaseController implements Initializable {
     private Label syncFrontVersionTips;
 
     @FXML
-    private Button someOneTips;
-
-    @FXML
     private Button  all;
 
     @FXML
@@ -339,7 +332,6 @@ public class HepTodoController extends BaseController implements Initializable {
             controlQueryButtonColor(waitDev);
             initColorDesc();
             initCopyDemand();
-            controlSomeOneTips(0);
             if (isExtendUser()) {
                 controlComponentByExtendUser(false, false, false);
             } else {
@@ -1046,7 +1038,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
                 String sprintVersion = item.getSprintVersion();
                 if (appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
-                    setTaskDesc(item, "关注");
+                    setTaskDesc(item, NAME_BUTTON_FOCUS);
                     focusVersionTask.add(taskNumberIn);
                     String assigneeName = item.getAssigneeName();
                     if (focusVersion.containsKey(sprintVersion)) {
@@ -1132,29 +1124,30 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
 
                 if (dayCompleteTipsInfo.containsKey(minCompleteByMarkYmd)) {
-                    item.setDeadLine(dayCompleteTipsInfo.get(minCompleteByMarkYmd));
-                }
-                if (StringUtils.isBlank(item.getDeadLine()) && weekTodoTask.contains(taskNumberIn)) {
-                    item.setDeadLine("本周");
+                    String deadLine = dayCompleteTipsInfo.get(minCompleteByMarkYmd);
+                    item.setDeadLine(deadLine);
+                    if (StringUtils.equals(NAME_BUTTON_TODAY, deadLine)) {
+                        setTaskDescTotal(NAME_BUTTON_TODAY);
+                    }
                 }
 
                 if (commitTag) {
-                    setTaskDesc(item, "已提交");
+                    setTaskDesc(item, NAME_BUTTON_COMMIT);
                 } else if (completeTag) {
-                    setTaskDesc(item, "待合并");
+                    setTaskDesc(item, NAME_BUTTON_WAIT_MERGE);
                 }
                 if (finishDateError.contains(taskNumberIn)) {
-                    setTaskDesc(item, "超期");
+                    setTaskDesc(item, NAME_BUTTON_OVERDUE);
                 } else if (finishDateOver.contains(taskNumberIn)) {
-                    setTaskDesc(item, "已超期");
+                    setTaskDesc(item, NAME_BUTTON_HAS_OVERDUE);
                 }
                 if (taskName.contains(DEFECT_TAG)) {
-                    setTaskDesc(item, "缺陷");
+                    setTaskDesc(item, NAME_BUTTON_DEFECT);
                 }
 
                 if (StringUtils.equals(appConfigDto.getHepTaskSameOne(), STR_TRUE) && StringUtils.equals(item.getAssigneeId(), item.getReviewerId())) {
                     sameAssigneeIdReviewerId.add(taskNumberIn);
-                    setTaskDesc(item, "同人");
+                    setTaskDesc(item, NAME_BUTTON_SOME_ONE);
                 }
 
                 String createDate = item.getCreateTime().split(STR_SPACE)[0];
@@ -1206,14 +1199,13 @@ public class HepTodoController extends BaseController implements Initializable {
                 if (week) {
                     weekVersionNum++;
                     weekTodoTask.add(taskNumberIn);
+                    setTaskDescTotal(NAME_BUTTON_WEEK);
                 }
 
                 String creatorId = item.getCreatorId();
                 if (StringUtils.equals(appConfigDto.getHepTaskUser(), creatorId)) {
                     item.setCreatorName(STR_SPACE);
                 }
-
-
 
                 setFixedButtonTotal(all.getId());
                 if (!existTaskStat.contains(taskName)) {
@@ -1236,11 +1228,22 @@ public class HepTodoController extends BaseController implements Initializable {
                         continue;
                     }
                 } else if (StringUtils.isNotBlank(queryType) && queryButtonList.containsKey(queryType)) {
-                    String level = item.getTaskDesc() == null ? STR_BLANK : item.getTaskDesc();
-                    String mark = item.getDeadLine() == null ? STR_BLANK : item.getDeadLine();
-                    if (!level.contains(queryType) && !mark.contains(queryType)) {
-                        iterator.remove();
-                        continue;
+                    if (StringUtils.equals(queryType, NAME_BUTTON_TODAY)) {
+                        if (!todayAddTask.contains(taskNumberIn)) {
+                            iterator.remove();
+                            continue;
+                        }
+                    } else if (StringUtils.equals(queryType, NAME_BUTTON_WEEK)) {
+                        if (!weekTodoTask.contains(taskNumberIn)) {
+                            iterator.remove();
+                            continue;
+                        }
+                    } else {
+                        String level = item.getTaskDesc() == null ? STR_BLANK : item.getTaskDesc();
+                        if (!level.contains(queryType)) {
+                            iterator.remove();
+                            continue;
+                        }
                     }
                 }
 
@@ -1258,12 +1261,6 @@ public class HepTodoController extends BaseController implements Initializable {
             res = sortTask(res);
 
             controlFocusVersionTips(appConfigDto);
-
-            OutputUtils.clearLog(dayTodo);
-            OutputUtils.info(dayTodo, String.valueOf(dayVersionNum));
-
-            OutputUtils.clearLog(weekTodo);
-            OutputUtils.info(weekTodo, String.valueOf(weekVersionNum));
 
             OutputUtils.clearLog(dayPublish);
             OutputUtils.info(dayPublish, formatVersion(dayVersion.toString()));
@@ -1290,17 +1287,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 });
             }
 
-            if (dayVersionNum > 0) {
-                dayTodo.setStyle(STYLE_BOLD_RED);
-            } else {
-                dayTodo.setStyle(STYLE_BOLD_BLACK);
-            }
-            if (weekVersionNum > 0) {
-                weekTodo.setStyle(STYLE_BOLD_RED);
-            } else {
-                weekTodo.setStyle(STYLE_BOLD_BLACK);
-            }
-
             OutputUtils.clearLog(taskList);
             finishDateError.addAll(finishDateOver);
             infoTaskList(taskList, res, dayTodoTask, weekTodoTask, finishDateError, focusVersionTask, todayAddTask, focusDemand);
@@ -1308,9 +1294,6 @@ public class HepTodoController extends BaseController implements Initializable {
             if (CollectionUtils.isNotEmpty(sameAssigneeIdReviewerId)) {
                 String msg = String.format("开发人员和审核人员为同一人,请检查【%s】", sameAssigneeIdReviewerId.stream().collect(Collectors.joining(STR_COMMA)));
                 LoggerUtils.info(msg);
-                controlSomeOneTips(sameAssigneeIdReviewerId.size());
-            } else {
-                controlSomeOneTips(0);
             }
             printTaskInfo(res);
             controlCheckScriptTips(StringUtils.equalsAny(today, saturday, sunday));
@@ -1330,23 +1313,9 @@ public class HepTodoController extends BaseController implements Initializable {
         Map<String, String> hepTaskOnlySelfMap = appConfigDto.getHepTaskOnlySelfMap();
         if (hepTaskOnlySelfMap.containsKey(customerFull)) {
             if (!hepTaskDto.getSprintVersionFull().startsWith(hepTaskOnlySelfMap.get(customerFull))) {
-                setTaskDesc(hepTaskDto, "孤版");
+                setTaskDesc(hepTaskDto, NAME_BUTTON_ONLY_ONE);
             }
         }
-    }
-
-    private void controlSomeOneTips(int num) {
-        Platform.runLater(() -> {
-            if (num > 0) {
-                someOneTips.setText("开审同人 " + num);
-                someOneTips.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
-                someOneTips.setVisible(true);
-            } else {
-                someOneTips.setText("开审同人");
-                someOneTips.setStyle(STYLE_NORMAL_FOR_BUTTON);
-                someOneTips.setVisible(false);
-            }
-        });
     }
 
     private void controlFocusVersionTips(AppConfigDto appConfigDto) {
@@ -1418,7 +1387,7 @@ public class HepTodoController extends BaseController implements Initializable {
             String version = hepTaskAppointVersionMap.get(customerFull);
             String ver = version.substring(0, 18);
             if (taskVersion.startsWith(ver) && !StringUtils.equals(version, taskVersion)) {
-                setTaskDesc(hepTaskDto, "错版");
+                setTaskDesc(hepTaskDto, NAME_BUTTON_ERROR_VERSION);
             }
         }
     }
@@ -1513,6 +1482,14 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void setTaskDesc(HepTaskDto item, String taskDesc) {
         item.setTaskDesc(StringUtils.isBlank(item.getTaskDesc()) ? taskDesc : taskDesc + STR_COMMA + item.getTaskDesc());
+        if (taskDescTotal.containsKey(taskDesc)) {
+            taskDescTotal.put(taskDesc, taskDescTotal.get(taskDesc) + 1);
+        } else {
+            taskDescTotal.put(taskDesc, 1);
+        }
+    }
+
+    private void setTaskDescTotal(String taskDesc) {
         if (taskDescTotal.containsKey(taskDesc)) {
             taskDescTotal.put(taskDesc, taskDescTotal.get(taskDesc) + 1);
         } else {
@@ -1708,9 +1685,19 @@ public class HepTodoController extends BaseController implements Initializable {
                 button.setLayoutY(y);
                 button.setPrefWidth(100);
                 buttonNum++;
+                if (StringUtils.equals(button.getId(), NAME_BUTTON_SOME_ONE)) {
+                    controlSomeOneTips(button, taskDescTotal.get(buttonId));
+                }
             }
-
         });
+    }
+
+    private void controlSomeOneTips(Button button, int num) {
+        if (num > 0) {
+            button.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+        } else {
+            button.setStyle(STYLE_NORMAL_FOR_BUTTON);
+        }
     }
 
     public void initVersionTask(List<HepTaskDto> task) {
