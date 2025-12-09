@@ -199,6 +199,9 @@ public class HepTodoController extends BaseController implements Initializable {
     private AnchorPane headPane;
 
     @FXML
+    private Label horseRaceLamp;
+
+    @FXML
     private Label weekPublish;
 
     @FXML
@@ -1927,6 +1930,7 @@ public class HepTodoController extends BaseController implements Initializable {
                         }
                         return;
                     }
+                    OutputUtils.info(horseRaceLamp, TaCommonUtils.getMsgContainTime("重点关注版本扫描"));
                     if (!taskUserPage()) {
                         OutputUtils.clearLog(noticeSync);
                     }
@@ -1983,6 +1987,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                     return;
                 }
+                OutputUtils.info(horseRaceLamp, TaCommonUtils.getMsgContainTime("文件提交扫描"));
                 AppConfigDto appConfig;
                 try {
                     appConfig = ConfigCache.getAppConfigDtoCache();
@@ -2025,6 +2030,8 @@ public class HepTodoController extends BaseController implements Initializable {
                 }
                 return;
             }
+            OutputUtils.info(horseRaceLamp, TaCommonUtils.getMsgContainTime("文件同步扫描"));
+
             AppConfigDto appConfig = ConfigCache.getAppConfigDtoCache();
             Map<String, String> syncFileVersion = appConfig.getHepTaskSyncVersionMap();
             if (MapUtils.isEmpty(syncFileVersion)) {

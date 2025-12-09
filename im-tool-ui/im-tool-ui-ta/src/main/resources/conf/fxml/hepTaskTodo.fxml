@@ -60,8 +60,8 @@
                                 <Label fx:id="fileTipsVersion" layoutX="1020.0" layoutY="55.0"
                                        style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
 
-                                <Label layoutX="20.0" layoutY="80.0" style="-fx-font-weight: bold;" text=""/>
-                                <Label fx:id="" layoutX="105.0" layoutY="80.0" style="-fx-font-weight: bold;"/>
+                                <Label layoutX="20.0" layoutY="80.0" style="-fx-font-weight: bold;" text="轮询提示"/>
+                                <Label fx:id="horseRaceLamp" layoutX="100.0" layoutY="80.0" />
 
                                 <Label layoutX="20.0" layoutY="110.0" style="-fx-font-weight: bold;" text="操作类型："/>
                                 <Button fx:id="syncFileBtn" layoutX="100.0" layoutY="105.0" mnemonicParsing="false"
