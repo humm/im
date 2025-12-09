@@ -1648,6 +1648,11 @@ public class HepTodoController extends BaseController implements Initializable {
             for (String button : taskDescTotal.keySet()) {
                 buttonConfig.add(button);
             }
+            for (String button : queryButtonList.keySet()) {
+                if (!buttonConfig.contains(button)) {
+                    buttonConfig.add(button);
+                }
+            }
             Collections.sort(buttonConfig, (o1, o2) -> {
                 Integer index1 = taskDescSort.get(o1);
                 Integer index2 = taskDescSort.get(o2);
