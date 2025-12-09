@@ -267,24 +267,24 @@ public class BaseConst {
     public static final String NAME_DESC_BEGIN_VALID_DATE = "特殊功能使用字段, 默认情况下无需传该字段";
     public static final String NAME_DESC_COLOR = "颜色标识说明:";
 
-    public final static String STR_RIGHT_FACING= " --> ";
+    public final static String STR_RIGHT_FACING= " -> ";
     public static final String NAME_MENU_COPY = "复制" + STR_RIGHT_FACING + "提交描述";
     public static final String NAME_MENU_SIMPLE_COPY = "复制" + STR_RIGHT_FACING + "提交描述不含需求描述";
     public static final String NAME_MENU_SCRIPT_COPY = "复制" + STR_RIGHT_FACING + "升级脚本提交摘要";
     public static final String NAME_MENU_TASK_NO_COPY = "复制" + STR_RIGHT_FACING + "任务单号";
     public static final String NAME_MENU_DETAIL = "任务" + STR_RIGHT_FACING + "查看详情";
     public static final String NAME_MENU_UPDATE = "任务" + STR_RIGHT_FACING + "更新任务信息";
-    public static final String NAME_MENU_MARK_DEV = "分支任务" + STR_RIGHT_FACING + "标记已完成";
-    public static final String NAME_MENU_CANCEL_DEV = "分支任务" + STR_RIGHT_FACING + "取消标记已完成";
-    public static final String NAME_MENU_MARK_SUBMIT = "当前任务" + STR_RIGHT_FACING + "标记已提交";
-    public static final String NAME_MENU_CANCEL_SUBMIT = "当前任务" + STR_RIGHT_FACING + "取消标记已提交";
-    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记任务描述" + STR_RIGHT_FACING + "简单";
-    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记任务描述" + STR_RIGHT_FACING + "一般";
-    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记任务描述" + STR_RIGHT_FACING + "复杂";
-    public static final String NAME_MENU_TASK_LEVEL_QUESTION = "标记任务描述" + STR_RIGHT_FACING + "待明确";
-    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ERROR_VERSION = "标记任务描述" + STR_RIGHT_FACING + "取消标记错版";
-    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ONLY_SELF = "标记任务描述" + STR_RIGHT_FACING + "取消标记孤版";
-    public static final String NAME_MENU_TASK_LEVEL_CLEAR = "标记任务描述" + STR_RIGHT_FACING + "清除标记";
+    public static final String NAME_MENU_MARK_DEV = "当前任务" + STR_RIGHT_FACING + "标记已提交";
+    public static final String NAME_MENU_CANCEL_DEV = "当前任务" + STR_RIGHT_FACING + "取消标记已提交";
+    public static final String NAME_MENU_MARK_SUBMIT = "当前任务" + STR_RIGHT_FACING + "标记待合并";
+    public static final String NAME_MENU_CANCEL_SUBMIT = "当前任务" + STR_RIGHT_FACING + "取消标记待合并";
+    public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记级别" + STR_RIGHT_FACING + "简单";
+    public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记级别" + STR_RIGHT_FACING + "一般";
+    public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记级别" + STR_RIGHT_FACING + "复杂";
+    public static final String NAME_MENU_TASK_LEVEL_QUESTION = "标记级别" + STR_RIGHT_FACING + "待明确";
+    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ERROR_VERSION = "标记级别" + STR_RIGHT_FACING + "取消标记错版";
+    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ONLY_SELF = "标记级别" + STR_RIGHT_FACING + "取消标记孤版";
+    public static final String NAME_MENU_TASK_LEVEL_CLEAR = "标记级别" + STR_RIGHT_FACING + "清除标记";
 
 
     public static final String NAME_BUTTON_ADD_TOADY = "今增";

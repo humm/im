@@ -1212,7 +1212,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     setFixedButtonTotal(only.getId());
                     existTaskStat.add(taskName);
                 }
-                if (!needShow && !completeTag) {
+                if (!completeTag) {
                     setFixedButtonTotal(waitDev.getId());
                 }
 
@@ -1636,7 +1636,7 @@ public class HepTodoController extends BaseController implements Initializable {
         }
     }
 
-    private void initButtonTag() {
+    private synchronized void initButtonTag() {
         if (MapUtils.isEmpty(taskDescTotal)) {
             return;
         }
@@ -1685,14 +1685,14 @@ public class HepTodoController extends BaseController implements Initializable {
                 button.setLayoutY(y);
                 button.setPrefWidth(100);
                 buttonNum++;
-                if (StringUtils.equals(button.getId(), NAME_BUTTON_SOME_ONE)) {
-                    controlSomeOneTips(button, taskDescTotal.get(buttonId));
+                if (StringUtils.equalsAny(button.getId(), NAME_BUTTON_SOME_ONE, NAME_BUTTON_TODAY)) {
+                    controlButtonTips(button, taskDescTotal.get(buttonId));
                 }
             }
         });
     }
 
-    private void controlSomeOneTips(Button button, int num) {
+    private void controlButtonTips(Button button, int num) {
         if (num > 0) {
             button.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
         } else {
