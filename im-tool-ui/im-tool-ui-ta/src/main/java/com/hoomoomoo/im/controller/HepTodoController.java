@@ -1667,11 +1667,12 @@ public class HepTodoController extends BaseController implements Initializable {
             int buttonNum = 1;
             for (String buttonId : buttonConfig) {
                 Button button;
+                int num = taskDescTotal.get(buttonId) == null ? 0 : taskDescTotal.get(buttonId);
                 if (queryButtonList.containsKey(buttonId)) {
                     button = queryButtonList.get(buttonId);
-                    button.setText(buttonId + STR_SPACE + taskDescTotal.get(buttonId));
+                    button.setText(buttonId + STR_SPACE + num);
                 } else {
-                    button = new Button(buttonId + STR_SPACE + taskDescTotal.get(buttonId));
+                    button = new Button(buttonId + STR_SPACE + num);
                     button.setId(buttonId);
                     queryButtonSet.add(button);
                     headPane.getChildren().add(button);
@@ -1694,7 +1695,7 @@ public class HepTodoController extends BaseController implements Initializable {
                 button.setPrefWidth(100);
                 buttonNum++;
                 if (StringUtils.equalsAny(button.getId(), NAME_BUTTON_SOME_ONE, NAME_BUTTON_TODAY)) {
-                    controlButtonTips(button, taskDescTotal.get(buttonId));
+                    controlButtonTips(button, num);
                 }
             }
         });
