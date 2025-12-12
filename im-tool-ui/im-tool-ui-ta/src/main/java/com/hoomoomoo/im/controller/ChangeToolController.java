@@ -82,6 +82,9 @@ public class ChangeToolController implements Initializable {
     private Button executeRealtimeBtn;
 
     @FXML
+    private Button errorTipsResult;
+
+    @FXML
     private Label errorTips;
 
     @FXML
@@ -139,6 +142,7 @@ public class ChangeToolController implements Initializable {
         OutputUtils.info(paramRealtimeSetPath, appConfigDto.getChangeToolParamRealtimeSetPath());
         OutputUtils.info(tablePath, appConfigDto.getChangeToolTablePath());
         errorTips.setVisible(false);
+        errorTipsResult.setVisible(false);
     }
 
     private void initAutoMode() {
@@ -315,6 +319,11 @@ public class ChangeToolController implements Initializable {
     @FXML
     void showMenuResult(ActionEvent event) throws IOException {
         Runtime.getRuntime().exec("explorer /e,/select," + new File(FileUtils.getFilePath(FILE_CHANGE_MENU)).getAbsolutePath());
+    }
+
+    @FXML
+    void showParamRealtimeSetResult(ActionEvent event) throws IOException {
+        Runtime.getRuntime().exec("explorer /e,/select," + new File(FileUtils.getFilePath(FILE_CHANGE_PARAM_REALTIME_SET)).getAbsolutePath());
     }
 
     @FXML
@@ -648,6 +657,7 @@ public class ChangeToolController implements Initializable {
             paramRealtimeSetNum = 0;
             tableColumnsNum = 0;
             errorTips.setVisible(false);
+            errorTipsResult.setVisible(false);
             errorTableColumnInfo.clear();
             errorConfigColumnInfo.clear();
             modifyInfo.clear();
@@ -682,9 +692,6 @@ public class ChangeToolController implements Initializable {
             skipErrorTips(errorConfigColumnInfo);
 
             StringBuilder errorMessage = new StringBuilder();
-            if (CollectionUtils.isNotEmpty(errorTableColumnInfo) || CollectionUtils.isNotEmpty(errorConfigColumnInfo)) {
-                errorMessage.append("错误明细信息" + STR_NEXT_LINE);
-            }
             if (CollectionUtils.isNotEmpty(errorTableColumnInfo)) {
                 String msg;
                 for (List<String> ele : errorTableColumnInfo) {
@@ -703,8 +710,13 @@ public class ChangeToolController implements Initializable {
                 }
             }
             if (StringUtils.isNotBlank(errorMessage)) {
+                OutputUtils.infoContainBr(logs, "错误明细信息");
                 OutputUtils.infoContainBr(logs, errorMessage.toString());
+                FileUtils.writeFile(FileUtils.getFilePath(FILE_CHANGE_PARAM_REALTIME_SET), Arrays.asList(errorMessage.toString()));
                 errorTips.setVisible(true);
+                errorTipsResult.setVisible(true);
+            } else {
+                FileUtils.writeFile(FileUtils.getFilePath(FILE_CHANGE_PARAM_REALTIME_SET), Arrays.asList("完美无瑕"));
             }
         } catch (Exception e) {
             LoggerUtils.error(e);

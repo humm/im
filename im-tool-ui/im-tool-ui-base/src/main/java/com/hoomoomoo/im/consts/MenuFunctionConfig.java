@@ -192,7 +192,7 @@ public class MenuFunctionConfig {
                 "changeTool",
                 "menuOther",
                 "0",
-                "ChangeToolController.java,changeTool.fxml,paramRealtimeSet.json"
+                "ChangeToolController.java,ExcelComparatorUtils.java,changeTool.fxml,paramRealtimeSet.json"
         ),
 
         SYSTEM_TOOL(

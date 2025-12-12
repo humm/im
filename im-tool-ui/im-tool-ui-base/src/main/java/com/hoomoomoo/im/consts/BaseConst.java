@@ -447,6 +447,7 @@ public class BaseConst {
     public static final String PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT = "/extend/task/taskLevelOnlySelf.stat";
     public static final String FILE_CHANGE_MENU = "/extend/change/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/change/mode/changeMode.sql";
+    public static final String FILE_CHANGE_PARAM_REALTIME_SET = "/extend/change/mode/paramRealtimeSet.sql";
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
     public static final String PATH_SYNC_TASK_STAT = "/task";
     public static final String PATH_SYNC_VERSION_STAT = "/version";

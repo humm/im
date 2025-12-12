@@ -1,7 +1,9 @@
 {
   "global_table": [
     "ta_code",
-    "key_code"
+    "key_code",
+    "create_time",
+    "modify_timestamp"
   ],
   "tbfundfarebelong_date": [
     "effective_flag"
