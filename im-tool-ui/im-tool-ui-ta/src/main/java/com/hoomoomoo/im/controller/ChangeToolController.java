@@ -689,16 +689,16 @@ public class ChangeToolController implements Initializable {
                 String msg;
                 for (List<String> ele : errorTableColumnInfo) {
                     if (StringUtils.isNotBlank(ele.get(3))) {
-                        msg = String.format("%s %s %s %s %s", ele.get(0), ele.get(1), "已配置字段未获取到表结构字段信息", ele.get(2), ele.get(3));
+                        msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), "已配置字段未获取到表结构字段信息", ele.get(2), ele.get(3));
                     } else {
-                        msg = String.format("%s %s %s %s", ele.get(0), ele.get(1), "已配置字段未获取到表结构信息", ele.get(2));
+                        msg = String.format("%s  %s  %s  %s", ele.get(0), ele.get(1), "已配置字段未获取到表结构信息", ele.get(2));
                     }
                     errorMessage.append(msg + STR_NEXT_LINE);
                 }
             }
             if (CollectionUtils.isNotEmpty(errorConfigColumnInfo)) {
                 for (List<String> ele : errorConfigColumnInfo) {
-                    String msg = String.format("%s %s %s %s %s", ele.get(0), ele.get(1), "未配置字段已获取到表结构字段信息", ele.get(2), ele.get(3));
+                    String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), "未配置字段已获取到表结构字段信息", ele.get(2), ele.get(3));
                     errorMessage.append(msg + STR_NEXT_LINE);
                 }
             }

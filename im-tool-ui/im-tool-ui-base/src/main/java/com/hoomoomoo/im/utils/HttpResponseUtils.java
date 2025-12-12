@@ -34,7 +34,7 @@ public class HttpResponseUtils implements HttpHandler {
         if (StringUtils.isNotBlank(checkFile)) {
             List<String> content = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_FILE));
             String[] fileList = checkFile.split(STR_COMMA);
-            boolean same = false;
+            boolean same;
             for (String file : fileList) {
                 same = false;
                 if (CollectionUtils.isNotEmpty(content)) {

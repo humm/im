@@ -531,6 +531,7 @@ public class InitConfigUtils {
      *
      */
     public static List<String> fileTime = new ArrayList<>();
+    public static List<String> existFile = new ArrayList<>();
     public static void buildFileTime(String appCode) {
         ConfigCache.initAppCodeCache(appCode);
         String pathFile = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_FILE), appCode);
@@ -553,9 +554,13 @@ public class InitConfigUtils {
             }
         } else {
             String fileName = file.getName();
-            if (fileName.endsWith(FILE_TYPE_JAVA) || fileName.endsWith(FILE_TYPE_XML)) {
-                fileTime.add(file.getName() + STR_SPACE + file.lastModified());
+            if (existFile.contains(fileName)) {
+                return;
             }
+            if (fileName.endsWith(FILE_TYPE_JAVA) || fileName.endsWith(FILE_TYPE_XML) || fileName.endsWith(FILE_TYPE_JSON)) {
+                fileTime.add(fileName + STR_SPACE + file.lastModified());
+            }
+            existFile.add(fileName);
         }
     }
 }

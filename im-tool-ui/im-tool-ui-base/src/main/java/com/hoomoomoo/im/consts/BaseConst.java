@@ -212,6 +212,7 @@ public class BaseConst {
     public static final String FILE_TYPE_CONF = ".conf";
     public static final String FILE_TYPE_RPX = ".rpx";
     public static final String FILE_TYPE_XLS = ".xls";
+    public static final String FILE_TYPE_JSON = ".json";
 
     public static final String FILE_TYPE_CHECK_SQL = ".check.sql";
     public static final String FILE_TYPE_RES_SQL = ".res.sql";
