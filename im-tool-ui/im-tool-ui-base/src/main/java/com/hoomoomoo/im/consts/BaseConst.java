@@ -274,16 +274,16 @@ public class BaseConst {
     public static final String NAME_MENU_TASK_NO_COPY = "复制" + STR_RIGHT_FACING + "任务单号";
     public static final String NAME_MENU_DETAIL = "任务" + STR_RIGHT_FACING + "查看详情";
     public static final String NAME_MENU_UPDATE = "任务" + STR_RIGHT_FACING + "更新任务信息";
-    public static final String NAME_MENU_MARK_DEV = "当前任务" + STR_RIGHT_FACING + "标记已提交";
-    public static final String NAME_MENU_CANCEL_DEV = "当前任务" + STR_RIGHT_FACING + "取消标记已提交";
-    public static final String NAME_MENU_MARK_SUBMIT = "当前任务" + STR_RIGHT_FACING + "标记待合并";
-    public static final String NAME_MENU_CANCEL_SUBMIT = "当前任务" + STR_RIGHT_FACING + "取消标记待合并";
+    public static final String NAME_MENU_MARK_COMMIT = "当前任务" + STR_RIGHT_FACING + "标记已提交";
+    public static final String NAME_MENU_CANCEL_COMMIT = "当前任务" + STR_RIGHT_FACING + "取标已提交";
+    public static final String NAME_MENU_MARK_MERGE = "当前任务" + STR_RIGHT_FACING + "标记待合并";
+    public static final String NAME_MENU_CANCEL_MERGE = "当前任务" + STR_RIGHT_FACING + "取标待合并";
     public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记级别" + STR_RIGHT_FACING + "简单";
     public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记级别" + STR_RIGHT_FACING + "一般";
     public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记级别" + STR_RIGHT_FACING + "复杂";
     public static final String NAME_MENU_TASK_LEVEL_QUESTION = "标记级别" + STR_RIGHT_FACING + "待明确";
-    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ERROR_VERSION = "标记级别" + STR_RIGHT_FACING + "取消标记错版";
-    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ONLY_SELF = "标记级别" + STR_RIGHT_FACING + "取消标记孤版";
+    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ERROR_VERSION = "标记级别" + STR_RIGHT_FACING + "取标错版";
+    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ONLY_SELF = "标记级别" + STR_RIGHT_FACING + "取标孤版";
     public static final String NAME_MENU_TASK_LEVEL_CLEAR = "标记级别" + STR_RIGHT_FACING + "清除标记";
 
 
@@ -392,6 +392,10 @@ public class BaseConst {
     public static final String MSG_WAIT_HANDLE_NUM_1 = "-- 待处理【%s】\n";
     public static final String MSG_WAIT_HANDLE_NUM_0 = "-- 待处理【%s】";
     public static final String MSG_WAIT_HANDLE_EVENT = "-- *************************************  %s  *************************************";
+
+    public static final String MSG_PATH_TYPE_BASE = "全量脚本";
+    public static final String MSG_PATH_TYPE_EXT = "开通脚本";
+
 
     public static final String APP_MODE_NAME = "模式";
     public static final String APP_MODE_NAME_APP = "工厂模式";

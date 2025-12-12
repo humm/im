@@ -380,7 +380,7 @@ public class ScriptCompareSql {
                     if (!StringUtils.equals(menuValue, menuValueExt)) {
                         if (newMenDiff.containsKey(menuCode)) {
                             newMenDiff.get(menuCode).add(filePath);
-                            diffValue.add(buildDiffValueInfo(menuValueExt));
+                            diffValue.add(buildDiffValueInfo(MSG_PATH_TYPE_EXT, menuValueExt));
                         } else {
                             List<String> pathList = new ArrayList<>();
                             List<String> menuName = menuCache.get(menuCode);
@@ -391,8 +391,8 @@ public class ScriptCompareSql {
                             }
                             pathList.add(filePath);
                             newMenDiff.put(menuCode, pathList);
-                            diffValue.add(buildDiffValueInfo(menuValue));
-                            diffValue.add(buildDiffValueInfo(menuValueExt));
+                            diffValue.add(buildDiffValueInfo(MSG_PATH_TYPE_BASE, menuValue));
+                            diffValue.add(buildDiffValueInfo(MSG_PATH_TYPE_EXT, menuValueExt));
                         }
                     }
                 }
@@ -438,7 +438,7 @@ public class ScriptCompareSql {
                     if (!StringUtils.equals(menuValue, menuValueExt)) {
                         if (oldMenDiff.containsKey(menuCode)) {
                             oldMenDiff.get(menuCode).add(filePath);
-                            diffValue.add(buildDiffValueInfo(menuValueExt));
+                            diffValue.add(buildDiffValueInfo(MSG_PATH_TYPE_EXT, menuValueExt));
                         } else {
                             List<String> pathList = new ArrayList<>();
                             List<String> menuName = menuCache.get(menuCode);
@@ -449,8 +449,8 @@ public class ScriptCompareSql {
                             }
                             pathList.add(filePath);
                             oldMenDiff.put(menuCode, pathList);
-                            diffValue.add(buildDiffValueInfo(menuValue));
-                            diffValue.add(buildDiffValueInfo(menuValueExt));
+                            diffValue.add(buildDiffValueInfo(MSG_PATH_TYPE_BASE, menuValue));
+                            diffValue.add(buildDiffValueInfo(MSG_PATH_TYPE_EXT, menuValueExt));
                         }
                     }
                 }
@@ -904,8 +904,8 @@ public class ScriptCompareSql {
         FileUtils.writeFile(resultPath + fileName, menuCodeList);
     }
 
-    private String buildDiffValueInfo(String value) {
-        return "  " + value;
+    private String buildDiffValueInfo(String menuType, String value) {
+        return STR_SPACE_2 + menuType + STR_SPACE_2 + value;
     }
 
     private String buildMenuInfo(String menuCode) {

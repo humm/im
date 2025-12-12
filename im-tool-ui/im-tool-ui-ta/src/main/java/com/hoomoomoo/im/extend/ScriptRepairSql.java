@@ -32,7 +32,7 @@ public class ScriptRepairSql {
     private static Map<String, Map<String, String>> workFlowExtCache = new LinkedHashMap<>();
     private static int repairFileNum = 0;
 
-    public static Set<String> excludeFundMenu = new HashSet<>(Arrays.asList("fundBlackListSet", "fundClerkList", "fundInterestInfoSet"));
+    public static Set<String> excludeFundMenu = new HashSet<>(Arrays.asList("fundClerkList", "fundInterestInfoSet"));
     public static Set<String> includePubMenu = new HashSet<>(Arrays.asList("bizBlackInfoSet", "bizClerkInfoSet", "bizInterestRateSet", "taUnitAreaAudit"));
     public static Set<String> specialFundMenu = new HashSet<>(Arrays.asList("specialBlackInfoSet", "specialInvalidBlackInfoQuery"));
 

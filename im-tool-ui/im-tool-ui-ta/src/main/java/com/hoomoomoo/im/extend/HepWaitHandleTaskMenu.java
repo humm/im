@@ -126,43 +126,43 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
 
-        MenuItem menuMarkDev = new MenuItem(NAME_MENU_MARK_DEV);
-        CommonUtils.setIcon(menuMarkDev, COMPLETE_ICON, MENUITEM_ICON_SIZE);
-        menuMarkDev.setOnAction(new EventHandler<ActionEvent>() {
+        MenuItem menuCommit = new MenuItem(NAME_MENU_MARK_COMMIT);
+        CommonUtils.setIcon(menuCommit, COMPLETE_ICON, MENUITEM_ICON_SIZE);
+        menuCommit.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleDev(STR_1, NAME_MENU_MARK_DEV);
+                handleDev(STR_1, NAME_MENU_MARK_COMMIT);
             }
         });
 
-        MenuItem menuCancelDev = new MenuItem(NAME_MENU_CANCEL_DEV);
-        CommonUtils.setIcon(menuCancelDev, CANCEL_ICON, MENUITEM_ICON_SIZE);
-        menuCancelDev.setOnAction(new EventHandler<ActionEvent>() {
+        MenuItem menuCancelCommit = new MenuItem(NAME_MENU_CANCEL_COMMIT);
+        CommonUtils.setIcon(menuCancelCommit, CANCEL_ICON, MENUITEM_ICON_SIZE);
+        menuCancelCommit.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleDev(STR_0, NAME_MENU_CANCEL_DEV);
+                handleDev(STR_0, NAME_MENU_CANCEL_COMMIT);
             }
         });
 
-        MenuItem menuMarkSubmit = new MenuItem(NAME_MENU_MARK_SUBMIT);
-        CommonUtils.setIcon(menuMarkSubmit, COMPLETE_ICON, MENUITEM_ICON_SIZE);
-        menuMarkSubmit.setOnAction(new EventHandler<ActionEvent>() {
+        MenuItem menuMarkMerge = new MenuItem(NAME_MENU_MARK_MERGE);
+        CommonUtils.setIcon(menuMarkMerge, COMPLETE_ICON, MENUITEM_ICON_SIZE);
+        menuMarkMerge.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleSubmit(STR_1, NAME_MENU_MARK_SUBMIT);
+                handleSubmit(STR_1, NAME_MENU_MARK_MERGE);
             }
         });
 
-        MenuItem menuCancelSubmit = new MenuItem(NAME_MENU_CANCEL_SUBMIT);
-        CommonUtils.setIcon(menuCancelSubmit, CANCEL_ICON, MENUITEM_ICON_SIZE);
-        menuCancelSubmit.setOnAction(new EventHandler<ActionEvent>() {
+        MenuItem menuCancelMerge = new MenuItem(NAME_MENU_CANCEL_MERGE);
+        CommonUtils.setIcon(menuCancelMerge, CANCEL_ICON, MENUITEM_ICON_SIZE);
+        menuCancelMerge.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleSubmit(STR_0, NAME_MENU_CANCEL_SUBMIT);
+                handleSubmit(STR_0, NAME_MENU_CANCEL_MERGE);
             }
         });
 
@@ -242,10 +242,10 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         getItems().add(menuTaskNoCopy);
         //getItems().add(detailTask);
         getItems().add(updateTask);
-        getItems().add(menuMarkDev);
-        getItems().add(menuCancelDev);
-        getItems().add(menuMarkSubmit);
-        getItems().add(menuCancelSubmit);
+        getItems().add(menuMarkMerge);
+        getItems().add(menuCancelMerge);
+        getItems().add(menuCommit);
+        getItems().add(menuCancelCommit);
         getItems().add(menuTaskLevelSimple);
         getItems().add(menuTaskLevelGeneral);
         getItems().add(menuTaskLevelDifficulty);

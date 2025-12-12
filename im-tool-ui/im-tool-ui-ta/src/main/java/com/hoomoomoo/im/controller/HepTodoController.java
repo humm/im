@@ -1232,7 +1232,7 @@ public class HepTodoController extends BaseController implements Initializable {
                     }
                 } else if (StringUtils.isNotBlank(queryType) && queryButtonList.containsKey(queryType)) {
                     if (StringUtils.equals(queryType, NAME_BUTTON_TODAY)) {
-                        if (!todayAddTask.contains(taskNumberIn)) {
+                        if (!dayTodoTask.contains(taskNumberIn)) {
                             iterator.remove();
                             continue;
                         }
