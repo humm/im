@@ -95,7 +95,8 @@ public class ChangeToolController implements Initializable {
     private static Map<String, String> configDictName = new LinkedHashMap<>();
     private static Set<String> beginValidDateSpecial = new HashSet<>();
     private static Map<String, Map<String, String>> tableColumnsConfig = new HashMap<>();
-    private static List<String> errorInfo = new ArrayList<>();
+    private static List<List<String>> errorTableColumnInfo = new ArrayList<>();
+    private static List<String> modifyInfo = new ArrayList<>();
 
     /**
      * hy 行业 0:参数提示 1:基金行业 2:证券行业 3:个性化行业
@@ -147,7 +148,7 @@ public class ChangeToolController implements Initializable {
         autoModeValue.put("泰康基金", new String[]{STR_1, "4C", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
 
         autoModeValue.put("证券行业", new String[]{STR_2, TA_CODE, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
-        autoModeValue.put("国泰海通", new String[]{STR_2, "JA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
+        autoModeValue.put("国泰海通", new String[]{STR_2, "JA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1, STR_0});
         autoModeValue.put("东方证券", new String[]{STR_2, "SD", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
         autoModeValue.put("申万宏源", new String[]{STR_2, "SA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
         autoModeValue.put("广发证券", new String[]{STR_2, "87", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
@@ -518,7 +519,7 @@ public class ChangeToolController implements Initializable {
         res.add("-- 分产品自动化清算行情导入方式");
         res.add("update tbparam set param_value = '" + navType + "' where param_id = 'fund_autoLiqImpNavType';\n");
 
-        res.add("-- 国泰海通特殊处理功能(国君特有功能)");
+        res.add("-- 国泰海通特殊处理功能(国泰海通特有功能)");
         if (STR_1.equals(gtht)) {
             res.add("update tbparam set param_value = '1' where param_id = 'fund_JaSpecialDeal';\n");
         } else {
@@ -645,7 +646,8 @@ public class ChangeToolController implements Initializable {
             paramRealtimeSetNum = 0;
             tableColumnsNum = 0;
             errorTips.setVisible(false);
-            errorInfo.clear();
+            errorTableColumnInfo.clear();
+            modifyInfo.clear();
             executeRealtimeBtn.setDisable(true);
             OutputUtils.infoContainBr(logs, "初始化字典信息 开始");
             initConfigInfo();
@@ -666,23 +668,43 @@ public class ChangeToolController implements Initializable {
                 errorTips.setVisible(true);
             }
             OutputUtils.infoContainBr(logs, "生成文件 结束");
-            // 忽略提示信息
-            Iterator<String> iterator = errorInfo.listIterator();
-            while (iterator.hasNext()) {
-                String msg = iterator.next();
-                if (msg.contains("tbfundprdendproj") && msg.contains("duration_prd_flag")) {
-                    iterator.remove();
-                } else if (msg.contains("tbfundfarebelong_date") && msg.contains("effective_flag")) {
-                    iterator.remove();
-                } else if (msg.contains("tbfundidtypebizlimit") && msg.contains("busin_type")) {
-                    iterator.remove();
+            if (CollectionUtils.isNotEmpty(modifyInfo)) {
+                OutputUtils.infoContainBr(logs, "修改明细");
+                for (String ele : modifyInfo) {
+                    OutputUtils.infoContainBr(logs, ele);
                 }
             }
-            if (CollectionUtils.isNotEmpty(errorInfo)) {
+            // 忽略提示信息
+            Iterator<List<String>> iterator = errorTableColumnInfo.listIterator();
+            Map<String, String> skipConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_CONF)), Map.class);
+            while (iterator.hasNext()) {
+                List<String> skipInfo = iterator.next();
+                String table = skipInfo.get(2);
+                String column = skipInfo.get(3);
+                if (StringUtils.isBlank(column)) {
+                    continue;
+                }
+                if (skipConfig.containsKey(table)) {
+                    String[] columns = skipConfig.get(table).split(STR_COMMA);
+                    for (String col : columns) {
+                        if (StringUtils.equals(column, col)) {
+                            iterator.remove();
+                            continue;
+                        }
+                    }
+                }
+            }
+            if (CollectionUtils.isNotEmpty(errorTableColumnInfo)) {
                 errorTips.setVisible(true);
                 OutputUtils.infoContainBr(logs, "错误信息 开始");
-                for (String ele : errorInfo) {
-                    OutputUtils.infoContainBr(logs, ele);
+                String msg;
+                for (List<String> ele : errorTableColumnInfo) {
+                    if (StringUtils.isNotBlank(ele.get(3))) {
+                        msg = String.format("%s %s %s %s %s", ele.get(0), ele.get(1), "未获取到表结构字段信息", ele.get(2), ele.get(3));
+                    } else {
+                        msg = String.format("%s %s %s %s", ele.get(0), ele.get(1), "未获取到表结构信息", ele.get(2));
+                    }
+                    OutputUtils.infoContainBr(logs, msg);
                 }
                 OutputUtils.infoContainBr(logs, "错误信息 结束");
             }
@@ -710,7 +732,7 @@ public class ChangeToolController implements Initializable {
     }
 
     private void getTableColumns(String tablePath) throws IOException {
-        OutputUtils.infoContainBr(logs, "加载文件 " + tablePath);
+        OutputUtils.infoContainBr(logs, "扫描文件 " + tablePath);
         String tableContent = FileUtils.readNormalFileToString(tablePath);
         if (StringUtils.isBlank(tableContent)) {
             return;
@@ -791,7 +813,7 @@ public class ChangeToolController implements Initializable {
         if (!path.endsWith(FILE_TYPE_SQL)) {
             return;
         }
-        OutputUtils.infoContainBr(logs, "加载文件 " + path);
+        OutputUtils.infoContainBr(logs, "扫描文件 " + path);
         String dict = FileUtils.readNormalFileToString(path);
         dict = CommonUtils.formatStrToSingleSpace(dict);
         if (StringUtils.isNotBlank(dict)) {
@@ -810,6 +832,9 @@ public class ChangeToolController implements Initializable {
                         String dictName = ScriptSqlUtils.getSqlFieldValue(dictInfo[1]);
                         String dictKey = ScriptSqlUtils.getSqlFieldValue(dictInfo[2]);
                         String dictPrompt = ScriptSqlUtils.getSqlFieldValue(dictInfo[3]);
+                        if (StringUtils.isBlank(dictCode)) {
+                            continue;
+                        }
                         if (configDictValue.containsKey(dictCode)) {
                             Map<String, String> dictMap = configDictValue.get(dictCode);
                             if (!dictMap.containsKey(dictKey)) {
@@ -901,7 +926,7 @@ public class ChangeToolController implements Initializable {
             if (!path.endsWith(".sql")) {
                 return;
             }
-            OutputUtils.infoContainBr(logs, "加载文件 " +  path);
+            OutputUtils.infoContainBr(logs, "扫描文件 " +  path);
             buildExcel(path);
         }
     }
@@ -927,9 +952,14 @@ public class ChangeToolController implements Initializable {
         workbook.write(fileOutputStream);
         workbook.dispose();
         String excelFilePath = excelFileBakPath.replace(KEY_BACKUP, STR_BLANK);
-        if (ExcelComparatorUtils.compareExcel(excelFileBakPath, excelFilePath)) {
+        if (ExcelComparatorUtils.compareExcel(excelFilePath, excelFileBakPath)) {
             FileUtils.deleteFile(excelFileBakPath);
         } else {
+            List<String> diffList = ExcelComparatorUtils.getDiffList();
+            modifyInfo.add(STR_SPACE_2 + filePath);
+            for (String diff : diffList) {
+                modifyInfo.add(STR_SPACE_4 + diff);
+            }
             FileUtils.deleteFile(excelFilePath);
             Files.move(Paths.get(excelFileBakPath),  Paths.get(excelFilePath), StandardCopyOption.ATOMIC_MOVE);
         }
@@ -971,7 +1001,9 @@ public class ChangeToolController implements Initializable {
             CellStyle wrapTextCellStyle = ExcelCommonUtils.getWrapTextCellStyle(workbook);
             String tableCode = changeToLower(paramRealtimeApiTabDto.getTableCode());
             int rowIndex = 0;
+            boolean errorTableColumnInfoExists = false;
             for (ParamRealtimeApiComponentDto item : paramRealtimeApiComponentDtoList) {
+                errorTableColumnInfoExists = false;
                 String fieldCode = changeToLower(item.getFieldCode());
                 boolean needAdd = StringUtils.isNotBlank(paramRealtimeApiTabDto.getFieldName()) && !beginValidDateSpecial.contains(paramRealtimeApiTabDto.getMenuCode());
                 if (StringUtils.equals(paramRealtimeApiTabDto.getFieldName(), fieldCode) && needAdd) {
@@ -1006,16 +1038,28 @@ public class ChangeToolController implements Initializable {
                         buildRowCell(row, centerCellStyle, 2, fieldType);
                         buildRowCell(row, null, 3, fieldMaxLength);
                     } else {
-                        String msg = String.format("%s %s %s %s %s", fileName, paramRealtimeApiTabDto.getTabName(), "未获取到字段配置信息", tableCode, fieldCode);
-                        if (!errorInfo.contains(msg)) {
-                            errorInfo.add(msg);
+                        for (List<String> ele : errorTableColumnInfo) {
+                            if (StringUtils.equals(ele.get(0), fileName) && StringUtils.equals(ele.get(1), paramRealtimeApiTabDto.getTabName())
+                                    && StringUtils.equals(ele.get(2), tableCode) && StringUtils.equals(ele.get(3), fieldCode)) {
+                                errorTableColumnInfoExists = true;
+                                break;
+                            }
+                        }
+                        if (!errorTableColumnInfoExists) {
+                            errorTableColumnInfo.add(Arrays.asList(fileName, paramRealtimeApiTabDto.getTabName(), tableCode, fieldCode));
                         }
                     }
                 } else {
                     if (StringUtils.isNotBlank(tabCode)) {
-                        String msg = String.format("%s %s %s %s", fileName, paramRealtimeApiTabDto.getTabName(), "未获取到表配置信息", tableCode);
-                        if (!errorInfo.contains(msg)) {
-                            errorInfo.add(msg);
+                        for (List<String> ele : errorTableColumnInfo) {
+                            if (StringUtils.equals(ele.get(0), fileName) && StringUtils.equals(ele.get(1), paramRealtimeApiTabDto.getTabName())
+                                    && StringUtils.equals(ele.get(2), tableCode)) {
+                                errorTableColumnInfoExists = true;
+                                break;
+                            }
+                        }
+                        if (!errorTableColumnInfoExists) {
+                            errorTableColumnInfo.add(Arrays.asList(fileName, paramRealtimeApiTabDto.getTabName(), tableCode, STR_BLANK));
                         }
                     }
                 }
@@ -1105,6 +1149,9 @@ public class ChangeToolController implements Initializable {
 
         int rowIndex = 0;
         for (String item : dict) {
+            if (StringUtils.isBlank(item)) {
+                continue;
+            }
             if (configDictValue.containsKey(item)) {
                 Map<String, String> ele = configDictValue.get(item);
                 for (Map.Entry<String, String> entry : ele.entrySet()) {

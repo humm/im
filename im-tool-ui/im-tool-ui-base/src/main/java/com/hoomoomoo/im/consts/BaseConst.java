@@ -448,6 +448,7 @@ public class BaseConst {
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
     public static final String PATH_SYNC_TASK_STAT = "/task";
     public static final String PATH_SYNC_VERSION_STAT = "/version";
+    public static final String PATH_PARAM_REALTIME_SET_CONF = "/conf/extend/paramRealtimeSet.conf";
 
     public static final Integer SECOND_CLICKED = 2;
     public static final String RIGHT_CLICKED = "SECONDARY";
