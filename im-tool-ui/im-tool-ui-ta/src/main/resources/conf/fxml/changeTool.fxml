@@ -111,10 +111,9 @@
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
                                             </padding>
                                         </Button>
-                                        <Label layoutX="1500" layoutY="55.0" prefHeight="15.0" text="参数设置中可配置路径默认值"/>
                                         <Label fx:id="errorTips" layoutX="1300" layoutY="55.0" prefHeight="15.0" text="存在错误信息,请检查"
-                                               style="-fx-font-weight: bold; -fx-text-background-color: red;"
-                                        />
+                                               style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                        <Label layoutX="1650" layoutY="55.0" prefHeight="15.0" text="参数设置中可配置路径默认值"/>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

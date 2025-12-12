@@ -38,6 +38,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CHANGE_TOOL;
@@ -96,6 +97,7 @@ public class ChangeToolController implements Initializable {
     private static Set<String> beginValidDateSpecial = new HashSet<>();
     private static Map<String, Map<String, String>> tableColumnsConfig = new HashMap<>();
     private static List<List<String>> errorTableColumnInfo = new ArrayList<>();
+    private static List<List<String>> errorConfigColumnInfo = new ArrayList<>();
     private static List<String> modifyInfo = new ArrayList<>();
 
     /**
@@ -647,6 +649,7 @@ public class ChangeToolController implements Initializable {
             tableColumnsNum = 0;
             errorTips.setVisible(false);
             errorTableColumnInfo.clear();
+            errorConfigColumnInfo.clear();
             modifyInfo.clear();
             executeRealtimeBtn.setDisable(true);
             OutputUtils.infoContainBr(logs, "初始化字典信息 开始");
@@ -675,44 +678,66 @@ public class ChangeToolController implements Initializable {
                 }
             }
             // 忽略提示信息
-            Iterator<List<String>> iterator = errorTableColumnInfo.listIterator();
-            Map<String, String> skipConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_CONF)), Map.class);
-            while (iterator.hasNext()) {
-                List<String> skipInfo = iterator.next();
-                String table = skipInfo.get(2);
-                String column = skipInfo.get(3);
-                if (StringUtils.isBlank(column)) {
-                    continue;
-                }
-                if (skipConfig.containsKey(table)) {
-                    String[] columns = skipConfig.get(table).split(STR_COMMA);
-                    for (String col : columns) {
-                        if (StringUtils.equals(column, col)) {
-                            iterator.remove();
-                            continue;
-                        }
-                    }
-                }
+            skipErrorTips(errorTableColumnInfo);
+            skipErrorTips(errorConfigColumnInfo);
+
+            StringBuilder errorMessage = new StringBuilder();
+            if (CollectionUtils.isNotEmpty(errorTableColumnInfo) || CollectionUtils.isNotEmpty(errorConfigColumnInfo)) {
+                errorMessage.append("错误明细信息" + STR_NEXT_LINE);
             }
             if (CollectionUtils.isNotEmpty(errorTableColumnInfo)) {
-                errorTips.setVisible(true);
-                OutputUtils.infoContainBr(logs, "错误信息 开始");
                 String msg;
                 for (List<String> ele : errorTableColumnInfo) {
                     if (StringUtils.isNotBlank(ele.get(3))) {
-                        msg = String.format("%s %s %s %s %s", ele.get(0), ele.get(1), "未获取到表结构字段信息", ele.get(2), ele.get(3));
+                        msg = String.format("%s %s %s %s %s", ele.get(0), ele.get(1), "已配置字段未获取到表结构字段信息", ele.get(2), ele.get(3));
                     } else {
-                        msg = String.format("%s %s %s %s", ele.get(0), ele.get(1), "未获取到表结构信息", ele.get(2));
+                        msg = String.format("%s %s %s %s", ele.get(0), ele.get(1), "已配置字段未获取到表结构信息", ele.get(2));
                     }
-                    OutputUtils.infoContainBr(logs, msg);
+                    errorMessage.append(msg + STR_NEXT_LINE);
                 }
-                OutputUtils.infoContainBr(logs, "错误信息 结束");
+            }
+            if (CollectionUtils.isNotEmpty(errorConfigColumnInfo)) {
+                for (List<String> ele : errorConfigColumnInfo) {
+                    String msg = String.format("%s %s %s %s %s", ele.get(0), ele.get(1), "未配置字段已获取到表结构字段信息", ele.get(2), ele.get(3));
+                    errorMessage.append(msg + STR_NEXT_LINE);
+                }
+            }
+            if (StringUtils.isNotBlank(errorMessage)) {
+                OutputUtils.infoContainBr(logs, errorMessage.toString());
+                errorTips.setVisible(true);
             }
         } catch (Exception e) {
             LoggerUtils.error(e);
             OutputUtils.infoContainBr(logs, e.getMessage());
         } finally {
             executeRealtimeBtn.setDisable(false);
+        }
+    }
+
+    private void skipErrorTips(List<List<String>> error) throws IOException {
+        Iterator<List<String>> iterator = error.listIterator();
+        Map<String, List<String>> skipConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_JSON)), Map.class);
+        while (iterator.hasNext()) {
+            List<String> skipInfo = iterator.next();
+            String table = skipInfo.get(2);
+            String column = skipInfo.get(3);
+            if (StringUtils.isBlank(column)) {
+                continue;
+            }
+            if (skipConfig.containsKey(table) || skipConfig.containsKey(KEY_GLOBAL_TABLE)) {
+                List<String> columns = new ArrayList<>();
+                List<String> tableColumns = skipConfig.get(table);
+                if (CollectionUtils.isNotEmpty(tableColumns)) {
+                    columns.addAll(tableColumns);
+                }
+                columns.addAll(skipConfig.get(KEY_GLOBAL_TABLE));
+                for (String col : columns) {
+                    if (StringUtils.equals(column.trim(), col.trim())) {
+                        iterator.remove();
+                        continue;
+                    }
+                }
+            }
         }
     }
 
@@ -1000,8 +1025,22 @@ public class ChangeToolController implements Initializable {
             CellStyle redCenterCellStyle = ExcelCommonUtils.getRedCenterCellStyle(workbook);
             CellStyle wrapTextCellStyle = ExcelCommonUtils.getWrapTextCellStyle(workbook);
             String tableCode = changeToLower(paramRealtimeApiTabDto.getTableCode());
+            Map<String, String> tableInfo = tableColumnsConfig.get(tableCode);
+            if (StringUtils.equals(tableCode, "tbfundproduct_date")) {
+                if (tableColumnsConfig.containsKey("tbfundproduct_ext")) {
+                    tableInfo.putAll(tableColumnsConfig.get("tbfundproduct_ext"));
+                }
+            }
+            if (MapUtils.isNotEmpty(tableInfo)) {
+                List<String> fieldList = paramRealtimeApiComponentDtoList.stream().map(ParamRealtimeApiComponentDto::getFieldCode).collect(Collectors.toList());
+                for (String key : tableInfo.keySet()) {
+                    if (!fieldList.contains(key)) {
+                        errorConfigColumnInfo.add(Arrays.asList(fileName, paramRealtimeApiTabDto.getTabName(), tableCode, key));
+                    }
+                }
+            }
             int rowIndex = 0;
-            boolean errorTableColumnInfoExists = false;
+            boolean errorTableColumnInfoExists;
             for (ParamRealtimeApiComponentDto item : paramRealtimeApiComponentDtoList) {
                 errorTableColumnInfoExists = false;
                 String fieldCode = changeToLower(item.getFieldCode());
@@ -1015,12 +1054,6 @@ public class ChangeToolController implements Initializable {
                 SXSSFRow row = componentDesc.createRow(++rowIndex);
                 buildRowCell(row, null, 0, fieldCode);
                 buildRowCell(row, null, 1, item.getFieldName());
-                Map<String, String> tableInfo = tableColumnsConfig.get(tableCode);
-                if (StringUtils.equals(tableCode, "tbfundproduct_date")) {
-                    if (tableColumnsConfig.containsKey("tbfundproduct_ext")) {
-                        tableInfo.putAll(tableColumnsConfig.get("tbfundproduct_ext"));
-                    }
-                }
                 if (MapUtils.isNotEmpty(tableInfo)) {
                     if (tableInfo.containsKey(fieldCode)) {
                         String column = tableInfo.get(fieldCode);

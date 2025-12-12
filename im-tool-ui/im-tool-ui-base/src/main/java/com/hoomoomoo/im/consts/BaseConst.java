@@ -186,6 +186,7 @@ public class BaseConst {
     public final static String KEY_N = "N";
     public final static String KEY_ADD = "add";
     public final static String KEY_CONSTRAINT = "constraint";
+    public final static String KEY_GLOBAL_TABLE = "global_table";
 
     public final static String HEP_TASK_SYNC_VERSION_TIMER = "hepTaskSyncVersionTimer";
     public final static String HEP_TASK_PUSH_TIMER = "hepTaskPushTimer";
@@ -448,7 +449,7 @@ public class BaseConst {
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
     public static final String PATH_SYNC_TASK_STAT = "/task";
     public static final String PATH_SYNC_VERSION_STAT = "/version";
-    public static final String PATH_PARAM_REALTIME_SET_CONF = "/conf/extend/paramRealtimeSet.conf";
+    public static final String PATH_PARAM_REALTIME_SET_SKIP_JSON = "/conf/extend/paramRealtimeSet.json";
 
     public static final Integer SECOND_CLICKED = 2;
     public static final String RIGHT_CLICKED = "SECONDARY";
