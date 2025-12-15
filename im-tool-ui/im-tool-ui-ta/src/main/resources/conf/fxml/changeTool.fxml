@@ -113,7 +113,7 @@
                                         </Button>
                                         <Label fx:id="errorTips" layoutX="1300" layoutY="55.0" prefHeight="15.0" text="存在错误信息,请检查"
                                                style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                                        <Button fx:id="errorTipsResult" layoutX="1450.0" layoutY="50" mnemonicParsing="false"
+                                        <Button fx:id="errorTipsResult" layoutX="1470.0" layoutY="50" mnemonicParsing="false"
                                                 onAction="#showParamRealtimeSetResult" prefWidth="80.0" text="查看">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>

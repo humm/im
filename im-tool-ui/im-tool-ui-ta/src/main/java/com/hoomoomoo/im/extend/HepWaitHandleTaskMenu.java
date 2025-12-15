@@ -126,33 +126,13 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
 
-        MenuItem menuCommit = new MenuItem(NAME_MENU_MARK_COMMIT);
-        CommonUtils.setIcon(menuCommit, COMPLETE_ICON, MENUITEM_ICON_SIZE);
-        menuCommit.setOnAction(new EventHandler<ActionEvent>() {
-            @SneakyThrows
-            @Override
-            public void handle(ActionEvent event) {
-                handleDev(STR_1, NAME_MENU_MARK_COMMIT);
-            }
-        });
-
-        MenuItem menuCancelCommit = new MenuItem(NAME_MENU_CANCEL_COMMIT);
-        CommonUtils.setIcon(menuCancelCommit, CANCEL_ICON, MENUITEM_ICON_SIZE);
-        menuCancelCommit.setOnAction(new EventHandler<ActionEvent>() {
-            @SneakyThrows
-            @Override
-            public void handle(ActionEvent event) {
-                handleDev(STR_0, NAME_MENU_CANCEL_COMMIT);
-            }
-        });
-
         MenuItem menuMarkMerge = new MenuItem(NAME_MENU_MARK_MERGE);
         CommonUtils.setIcon(menuMarkMerge, COMPLETE_ICON, MENUITEM_ICON_SIZE);
         menuMarkMerge.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleSubmit(STR_1, NAME_MENU_MARK_MERGE);
+                handleMerge(STR_1, NAME_MENU_MARK_MERGE);
             }
         });
 
@@ -162,7 +142,27 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleSubmit(STR_0, NAME_MENU_CANCEL_MERGE);
+                handleMerge(STR_0, NAME_MENU_CANCEL_MERGE);
+            }
+        });
+
+        MenuItem menuCommit = new MenuItem(NAME_MENU_MARK_COMMIT);
+        CommonUtils.setIcon(menuCommit, COMPLETE_ICON, MENUITEM_ICON_SIZE);
+        menuCommit.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                handleSubmit(STR_1, NAME_MENU_MARK_COMMIT);
+            }
+        });
+
+        MenuItem menuCancelCommit = new MenuItem(NAME_MENU_CANCEL_COMMIT);
+        CommonUtils.setIcon(menuCancelCommit, CANCEL_ICON, MENUITEM_ICON_SIZE);
+        menuCancelCommit.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                handleSubmit(STR_0, NAME_MENU_CANCEL_COMMIT);
             }
         });
 
@@ -262,7 +262,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         return instance;
     }
 
-    private void handleDev(String type, String btnName) throws Exception {
+    private void handleMerge(String type, String btnName) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto item = appConfigDto.getHepTaskDto();
         String taskNumber = item.getTaskNumber();
