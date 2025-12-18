@@ -280,13 +280,14 @@ public class BaseConst {
     public static final String NAME_MENU_CANCEL_COMMIT = "当前任务" + STR_RIGHT_FACING + "取标已提交";
     public static final String NAME_MENU_MARK_MERGE = "当前任务" + STR_RIGHT_FACING + "标记待合并";
     public static final String NAME_MENU_CANCEL_MERGE = "当前任务" + STR_RIGHT_FACING + "取标待合并";
+    public static final String NAME_MENU_CLEAR_MERGE = "当前任务" + STR_RIGHT_FACING + "清除待合并";
     public static final String NAME_MENU_TASK_LEVEL_SIMPLE = "标记级别" + STR_RIGHT_FACING + "简单";
     public static final String NAME_MENU_TASK_LEVEL_GENERAL = "标记级别" + STR_RIGHT_FACING + "一般";
     public static final String NAME_MENU_TASK_LEVEL_DIFFICULTY = "标记级别" + STR_RIGHT_FACING + "复杂";
     public static final String NAME_MENU_TASK_LEVEL_QUESTION = "标记级别" + STR_RIGHT_FACING + "待明确";
-    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ERROR_VERSION = "标记级别" + STR_RIGHT_FACING + "取标错版";
-    public static final String NAME_MENU_TASK_LEVEL_CANCEL_ONLY_SELF = "标记级别" + STR_RIGHT_FACING + "取标孤版";
     public static final String NAME_MENU_TASK_LEVEL_CLEAR = "标记级别" + STR_RIGHT_FACING + "清除标记";
+    public static final String NAME_MENU_TASK_CANCEL_ERROR_VERSION = "当前任务" + STR_RIGHT_FACING + "取标错版";
+    public static final String NAME_MENU_TASK_CANCEL_ONLY_SELF = "当前任务" + STR_RIGHT_FACING + "取标孤版";
 
 
     public static final String NAME_BUTTON_ADD_TOADY = "今增";
@@ -440,11 +441,11 @@ public class BaseConst {
     public static final String PATH_VERSION_STAT = "/extend/version/version.stat";
     public static final String PATH_DEMAND_STATUS_STAT = "/extend/task/demandStatus.stat";
     public static final String PATH_TASK_INFO_STAT = "/extend/task/taskInfo.stat";
-    public static final String PATH_DEFINE_TASK_DEV_STAT = "/extend/task/taskDev.stat";
-    public static final String PATH_DEFINE_TASK_STATUS_STAT = "/extend/task/taskStatus.stat";
+    public static final String PATH_DEFINE_TASK_MERGE_STAT = "/extend/task/taskMerge.stat";
+    public static final String PATH_DEFINE_TASK_COMMIT_STAT = "/extend/task/taskCommit.stat";
     public static final String PATH_DEFINE_TASK_LEVEL_STAT = "/extend/task/taskLevel.stat";
-    public static final String PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT = "/extend/task/taskLevelError.stat";
-    public static final String PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT = "/extend/task/taskLevelOnlySelf.stat";
+    public static final String PATH_DEFINE_TASK_CANCEL_ERROR_VERSION_STAT = "/extend/task/cancelErrorVersion.stat";
+    public static final String PATH_DEFINE_TASK_CANCEL_ONLY_SELF_STAT = "/extend/task/cancelOnlySelf.stat";
     public static final String FILE_CHANGE_MENU = "/extend/change/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/change/mode/changeMode.sql";
     public static final String FILE_CHANGE_PARAM_REALTIME_SET = "/extend/change/paramRealtimeSet/paramRealtimeSet.sql";

@@ -947,11 +947,11 @@ public class HepTodoController extends BaseController implements Initializable {
             Map<String, String> taskLevel = getTaskLevelInfo();
             Map<String, String> taskCustomerName = taskInfo.get(KEY_CUSTOMER);
             Map<String, String> taskDemandNo = taskInfo.get(KEY_TASK);
-            Map<String, String> taskDemandStatus = getDemandInfo();
-            Map<String, String> taskSubmitStatus = getTaskStatusInfo();
-            Map<String, String> taskCancelDevSubmit = getCancelDevSubmitTaskInfo();
-            List<String> cancelOnlySelf = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT));
-            List<String> cancelErrorVersion = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT));
+            Map<String, String> demandComplete = getDemandCompleteInfo();
+            Map<String, String> taskCommit = getTaskCommitInfo();
+            Map<String, String> taskCancelWaitMerge = getCancelWaitMergeTaskInfo();
+            List<String> cancelOnlySelf = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_CANCEL_ONLY_SELF_STAT));
+            List<String> cancelErrorVersion = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_CANCEL_ERROR_VERSION_STAT));
             int waitTaskSync = 0;
             Map<String, String> hepTaskAppointVersionMap = appConfigDto.getHepTaskVersionOrderDateMap();
             for (String item : versionList) {
@@ -1012,11 +1012,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 demandNoList.add(demandNo);
                 boolean commitTag = false;
                 boolean completeTag = false;
-                if (taskSubmitStatus.containsKey(taskNumberIn)) {
+                if (taskCommit.containsKey(taskNumberIn)) {
                     commitTag = true;
                     completeTag = true;
                 }
-                if ((taskDemandStatus.containsKey(demandNo) || taskDemandStatus.containsKey(taskNumberIn)) && !taskCancelDevSubmit.containsKey(taskNumberIn)) {
+                if ((demandComplete.containsKey(demandNo) || demandComplete.containsKey(taskNumberIn)) && !taskCancelWaitMerge.containsKey(taskNumberIn)) {
                     completeTag = true;
                 }
 
@@ -1419,13 +1419,13 @@ public class HepTodoController extends BaseController implements Initializable {
             int demandNum = demandNoList.size();
             List<String> demandStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEMAND_STATUS_STAT));
             List<String> taskStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_TASK_INFO_STAT));
-            List<String> taskExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_STATUS_STAT));
-            List<String> taskDevExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_STAT));
+            List<String> taskExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_COMMIT_STAT));
+            List<String> taskDevExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_MERGE_STAT));
             List<String> taskLevelExtendStat = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_STAT));
             updateFile(demandStat, demandNoList, PATH_DEMAND_STATUS_STAT, demandNum, taskNum);
             updateFile(taskStat, taskNoList, PATH_TASK_INFO_STAT, demandNum, taskNum);
-            updateFile(taskExtendStat, taskNoList, PATH_DEFINE_TASK_STATUS_STAT, demandNum, taskNum);
-            updateFile(taskDevExtendStat, taskNoList, PATH_DEFINE_TASK_DEV_STAT, demandNum, taskNum);
+            updateFile(taskExtendStat, taskNoList, PATH_DEFINE_TASK_COMMIT_STAT, demandNum, taskNum);
+            updateFile(taskDevExtendStat, taskNoList, PATH_DEFINE_TASK_MERGE_STAT, demandNum, taskNum);
             taskNoList.addAll(demandNoList);
             updateFile(taskLevelExtendStat, taskNoList, PATH_DEFINE_TASK_LEVEL_STAT, demandNum, taskNum);
             if (CollectionUtils.isNotEmpty(syncTaskLog)) {
@@ -1458,9 +1458,9 @@ public class HepTodoController extends BaseController implements Initializable {
             fileName = "需求状态";
         } else if (path.endsWith(PATH_TASK_INFO_STAT)) {
             fileName = "任务信息";
-        } else if (path.endsWith(PATH_DEFINE_TASK_STATUS_STAT)) {
+        } else if (path.endsWith(PATH_DEFINE_TASK_COMMIT_STAT)) {
             fileName = "任务状态";
-        } else if (path.endsWith(PATH_DEFINE_TASK_DEV_STAT)) {
+        } else if (path.endsWith(PATH_DEFINE_TASK_MERGE_STAT)) {
             fileName = "分支状态";
         } else if (path.endsWith(PATH_DEFINE_TASK_LEVEL_STAT)) {
             fileName = "任务描述";
@@ -2456,10 +2456,10 @@ public class HepTodoController extends BaseController implements Initializable {
         return task;
     }
 
-    public Map<String,String> getCancelDevSubmitTaskInfo() {
+    public Map<String,String> getCancelWaitMergeTaskInfo() {
         Map<String, String> task = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_STAT));
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_MERGE_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     if (StringUtils.isBlank(item)) {
@@ -2535,11 +2535,11 @@ public class HepTodoController extends BaseController implements Initializable {
         return versionList;
     }
 
-    public Map<String,String> getDemandInfo() {
+    public Map<String,String> getDemandCompleteInfo() {
         Map<String, String> demand = new HashMap<>();
         try {
             List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEMAND_STATUS_STAT));
-            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_STAT)));
+            taskList.addAll(FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_MERGE_STAT)));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     if (StringUtils.isBlank(item)) {
@@ -2560,10 +2560,10 @@ public class HepTodoController extends BaseController implements Initializable {
         return demand;
     }
 
-    public Map<String,String> getTaskStatusInfo() {
+    public Map<String,String> getTaskCommitInfo() {
         Map<String, String> task = new HashMap<>();
         try {
-            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_STATUS_STAT));
+            List<String> taskList = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_DEFINE_TASK_COMMIT_STAT));
             if (CollectionUtils.isNotEmpty(taskList)) {
                 for (String item : taskList) {
                     if (StringUtils.isBlank(item)) {

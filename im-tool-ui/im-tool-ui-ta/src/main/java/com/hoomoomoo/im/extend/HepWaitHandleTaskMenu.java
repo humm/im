@@ -32,7 +32,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
     private static HepWaitHandleTaskMenu instance;
     private HepWaitHandleTaskMenu() {
         MenuItem copyTask = new MenuItem(NAME_MENU_COPY);
-        CommonUtils.setIcon(copyTask, COPY_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(copyTask, COPY_ICON, MENUITEM_ICON_SIZE);
         copyTask.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -45,7 +45,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem copyTaskSimple = new MenuItem(NAME_MENU_SIMPLE_COPY);
-        CommonUtils.setIcon(copyTaskSimple, COPY_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(copyTaskSimple, COPY_ICON, MENUITEM_ICON_SIZE);
         copyTaskSimple.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -58,7 +58,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem menuScriptCopy = new MenuItem(NAME_MENU_SCRIPT_COPY);
-        CommonUtils.setIcon(menuScriptCopy, COPY_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuScriptCopy, COPY_ICON, MENUITEM_ICON_SIZE);
         menuScriptCopy.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -70,7 +70,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem menuTaskNoCopy = new MenuItem(NAME_MENU_TASK_NO_COPY);
-        CommonUtils.setIcon(menuTaskNoCopy, COPY_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuTaskNoCopy, COPY_ICON, MENUITEM_ICON_SIZE);
         menuTaskNoCopy.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -82,7 +82,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem updateTask = new MenuItem(NAME_MENU_UPDATE);
-        CommonUtils.setIcon(updateTask, UPDATE_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(updateTask, UPDATE_ICON, MENUITEM_ICON_SIZE);
         updateTask.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -96,7 +96,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem detailTask = new MenuItem(NAME_MENU_DETAIL);
-        CommonUtils.setIcon(detailTask, DETAIL_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(detailTask, DETAIL_ICON, MENUITEM_ICON_SIZE);
         detailTask.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -127,7 +127,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem menuMarkMerge = new MenuItem(NAME_MENU_MARK_MERGE);
-        CommonUtils.setIcon(menuMarkMerge, COMPLETE_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuMarkMerge, COMPLETE_ICON, MENUITEM_ICON_SIZE);
         menuMarkMerge.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -137,7 +137,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem menuCancelMerge = new MenuItem(NAME_MENU_CANCEL_MERGE);
-        CommonUtils.setIcon(menuCancelMerge, CANCEL_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuCancelMerge, CANCEL_ICON, MENUITEM_ICON_SIZE);
         menuCancelMerge.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -146,8 +146,18 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
 
+        MenuItem menuClearMerge = new MenuItem(NAME_MENU_CLEAR_MERGE);
+        // CommonUtils.setIcon(menuClearMerge, CANCEL_ICON, MENUITEM_ICON_SIZE);
+        menuClearMerge.setOnAction(new EventHandler<ActionEvent>() {
+            @SneakyThrows
+            @Override
+            public void handle(ActionEvent event) {
+                handleMerge(STR_2, NAME_MENU_CLEAR_MERGE);
+            }
+        });
+
         MenuItem menuCommit = new MenuItem(NAME_MENU_MARK_COMMIT);
-        CommonUtils.setIcon(menuCommit, COMPLETE_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuCommit, COMPLETE_ICON, MENUITEM_ICON_SIZE);
         menuCommit.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -157,7 +167,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem menuCancelCommit = new MenuItem(NAME_MENU_CANCEL_COMMIT);
-        CommonUtils.setIcon(menuCancelCommit, CANCEL_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuCancelCommit, CANCEL_ICON, MENUITEM_ICON_SIZE);
         menuCancelCommit.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -167,7 +177,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem menuTaskLevelSimple = new MenuItem(NAME_MENU_TASK_LEVEL_SIMPLE);
-        CommonUtils.setIcon(menuTaskLevelSimple, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuTaskLevelSimple, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
         menuTaskLevelSimple.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -177,7 +187,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem menuTaskLevelGeneral = new MenuItem(NAME_MENU_TASK_LEVEL_GENERAL);
-        CommonUtils.setIcon(menuTaskLevelGeneral, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuTaskLevelGeneral, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
         menuTaskLevelGeneral.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -187,7 +197,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem menuTaskLevelDifficulty = new MenuItem(NAME_MENU_TASK_LEVEL_DIFFICULTY);
-        CommonUtils.setIcon(menuTaskLevelDifficulty, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuTaskLevelDifficulty, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
         menuTaskLevelDifficulty.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -197,7 +207,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         });
 
         MenuItem menuTaskLevelQuestion = new MenuItem(NAME_MENU_TASK_LEVEL_QUESTION);
-        CommonUtils.setIcon(menuTaskLevelQuestion, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuTaskLevelQuestion, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
         menuTaskLevelQuestion.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -206,28 +216,28 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
             }
         });
 
-        MenuItem menuTaskLevelErrorVersion = new MenuItem(NAME_MENU_TASK_LEVEL_CANCEL_ERROR_VERSION);
-        CommonUtils.setIcon(menuTaskLevelErrorVersion, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
+        MenuItem menuTaskLevelErrorVersion = new MenuItem(NAME_MENU_TASK_CANCEL_ERROR_VERSION);
+        // CommonUtils.setIcon(menuTaskLevelErrorVersion, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
         menuTaskLevelErrorVersion.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleLevelSpecial(STR_1, NAME_MENU_TASK_LEVEL_CANCEL_ERROR_VERSION);
+                handleLevelSpecial(STR_1, NAME_MENU_TASK_CANCEL_ERROR_VERSION);
             }
         });
 
-        MenuItem menuTaskLevelOnlySelf = new MenuItem(NAME_MENU_TASK_LEVEL_CANCEL_ONLY_SELF);
-        CommonUtils.setIcon(menuTaskLevelOnlySelf, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
+        MenuItem menuTaskLevelOnlySelf = new MenuItem(NAME_MENU_TASK_CANCEL_ONLY_SELF);
+        // CommonUtils.setIcon(menuTaskLevelOnlySelf, CANCEL_LEVEL_ICON, MENUITEM_ICON_SIZE);
         menuTaskLevelOnlySelf.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
             public void handle(ActionEvent event) {
-                handleLevelSpecial(STR_2, NAME_MENU_TASK_LEVEL_CANCEL_ONLY_SELF);
+                handleLevelSpecial(STR_2, NAME_MENU_TASK_CANCEL_ONLY_SELF);
             }
         });
 
         MenuItem menuTaskLevelClear = new MenuItem(NAME_MENU_TASK_LEVEL_CLEAR);
-        CommonUtils.setIcon(menuTaskLevelClear, CANCEL_LEVEL_CLEAR_ICON, MENUITEM_ICON_SIZE);
+        // CommonUtils.setIcon(menuTaskLevelClear, CANCEL_LEVEL_CLEAR_ICON, MENUITEM_ICON_SIZE);
         menuTaskLevelClear.setOnAction(new EventHandler<ActionEvent>() {
             @SneakyThrows
             @Override
@@ -244,15 +254,16 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         getItems().add(updateTask);
         getItems().add(menuMarkMerge);
         getItems().add(menuCancelMerge);
+        getItems().add(menuClearMerge);
         getItems().add(menuCommit);
         getItems().add(menuCancelCommit);
         getItems().add(menuTaskLevelSimple);
         getItems().add(menuTaskLevelGeneral);
         getItems().add(menuTaskLevelDifficulty);
         getItems().add(menuTaskLevelQuestion);
+        getItems().add(menuTaskLevelClear);
         getItems().add(menuTaskLevelErrorVersion);
         getItems().add(menuTaskLevelOnlySelf);
-        getItems().add(menuTaskLevelClear);
     }
 
     public static HepWaitHandleTaskMenu getInstance() {
@@ -268,15 +279,24 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         String taskNumber = item.getTaskNumber();
         String eleValue = taskNumber + STR_SEMICOLON + type;
         String eleIndex = taskNumber + STR_SEMICOLON;
-        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_DEV_STAT);
+        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_MERGE_STAT);
         File demandExtendStat = new File(path);
         if (!demandExtendStat.exists()) {
             demandExtendStat.createNewFile();
         }
+        boolean needUpdate = false;
         List<String> taskNumberList = FileUtils.readNormalFile(path);
-        if (!taskNumberList.contains(eleIndex + STR_0) && !taskNumberList.contains(eleIndex + STR_1)) {
-            taskNumberList.add(eleValue);
+        if (StringUtils.equals(type, STR_2)) {
+            eleValue = STR_BLANK;
+            needUpdate = true;
         } else {
+            if (!taskNumberList.contains(eleIndex + STR_0) && !taskNumberList.contains(eleIndex + STR_1)) {
+                taskNumberList.add(eleValue);
+            } else {
+                needUpdate = true;
+            }
+        }
+        if (needUpdate) {
             for (int i=0; i<taskNumberList.size(); i++) {
                 String ele = taskNumberList.get(i);
                 if (ele.contains(eleIndex)) {
@@ -298,7 +318,7 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         String taskNumber = item.getTaskNumber();
         String eleValue = taskNumber + STR_SEMICOLON + type;
         String eleIndex = taskNumber + STR_SEMICOLON;
-        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_STATUS_STAT);
+        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_COMMIT_STAT);
         File taskExtendStat = new File(path);
         if (!taskExtendStat.exists()) {
             taskExtendStat.createNewFile();
@@ -352,9 +372,9 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto item = appConfigDto.getHepTaskDto();
         String taskNumber = item.getTaskNumber();
-        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ERROR_VERSION_STAT);
+        String path = FileUtils.getFilePath(PATH_DEFINE_TASK_CANCEL_ERROR_VERSION_STAT);
         if (StringUtils.equals(type, STR_2)) {
-            path = FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_ONLY_SELF_STAT);
+            path = FileUtils.getFilePath(PATH_DEFINE_TASK_CANCEL_ONLY_SELF_STAT);
         }
         File taskExtendStat = new File(path);
         if (!taskExtendStat.exists()) {
