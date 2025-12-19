@@ -91,6 +91,7 @@ public class ChangeToolController implements Initializable {
     private ComboBox dbNum;
 
     private static String TA_CODE = "00";
+    private static String KEY_DATA = "\"data\": {";
 
     private static int paramRealtimeSetNum = 0;
     private static int tableColumnsNum = 0;
@@ -984,7 +985,10 @@ public class ChangeToolController implements Initializable {
     private void buildFile(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto, String filePath) throws IOException {
         String excelFileBakPath = filePath.replace(".sql", KEY_BACKUP + ".xlsx");
         String jsonFilePath = filePath.replace(".sql", ".json");
-        FileUtils.writeFile(jsonFilePath, paramRealtimeDto.getRequestContent());
+        String jsonSceneFilePath = filePath.replace(".sql", "Scene.json");
+        List<String> requestContent = paramRealtimeDto.getRequestContent();
+        FileUtils.writeFile(jsonFilePath, requestContent.stream().collect(Collectors.joining(STR_NEXT_LINE)));
+        FileUtils.writeFile(jsonSceneFilePath, buildSceneContent(requestContent).stream().collect(Collectors.joining(STR_NEXT_LINE)));
         FileOutputStream fileOutputStream = new FileOutputStream(excelFileBakPath);
         workbook.write(fileOutputStream);
         workbook.dispose();
@@ -1000,6 +1004,34 @@ public class ChangeToolController implements Initializable {
             FileUtils.deleteFile(excelFilePath);
             Files.move(Paths.get(excelFileBakPath),  Paths.get(excelFilePath), StandardCopyOption.ATOMIC_MOVE);
         }
+    }
+
+    private List<String> buildSceneContent(List<String> requestContent) {
+        List<String> sceneContent = new ArrayList<>();
+        sceneContent.add(requestContent.get(0));
+        int dataIndex = 0;
+        for (int i=0; i<requestContent.size(); i++) {
+            if (requestContent.get(i).contains(KEY_DATA)) {
+                dataIndex = i;
+                break;
+            }
+        }
+        sceneContent.add("    \"systemCode\": \"TA\",");
+        sceneContent.add("    \"mac\": \"xxxxxxxxxx\",");
+        sceneContent.add("    \"username\": \"admin\",");
+        sceneContent.add("    \"sign\": \"xxxxxxxxxx\",");
+        sceneContent.add("    \"user\": \"productcenter\",");
+        sceneContent.add("    \"operatorId\": \"admin\",");
+        sceneContent.add("    \"checkerId\": \"system\",");
+        sceneContent.add("    \"importDate\": \"\",");
+        sceneContent.add("    \"finishDate\": \"\",");
+        sceneContent.add("    \"operType\": \"\",");
+        sceneContent.add("    \"sceneCode\": \"场景编码\",");
+        sceneContent.add("    \"projectCode\": \"xxx\",");
+        sceneContent.add("    \"projectName\": \"xxx\",");
+        sceneContent.add("    \"memo\": \"备注\",");
+        sceneContent.addAll(requestContent.subList(dataIndex, requestContent.size()));
+        return sceneContent;
     }
 
     private void buildComponentDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto, String fileName) throws Exception {
@@ -1236,19 +1268,22 @@ public class ChangeToolController implements Initializable {
 
             List<ParamRealtimeRequestDescDto> paramRealtimeRequestDescList = new ArrayList<>();
             paramRealtimeRequestDescList.add(
-                    new ParamRealtimeRequestDescDto("function", "接口名称", paramRealtimeApiTab.getMenuCode(), KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+                    new ParamRealtimeRequestDescDto("systemCode", "系统标识", "启用鉴权功能必填", KEY_N, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
-                    new ParamRealtimeRequestDescDto("action", "操作类型", "add:新增; edit:修改", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+                    new ParamRealtimeRequestDescDto("mac", "mac地址", "鉴权功能使用", KEY_N, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
-                    new ParamRealtimeRequestDescDto("username", "用户名", "接口用户", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+                    new ParamRealtimeRequestDescDto("username", "用户代码", "用户信息", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
-                    new ParamRealtimeRequestDescDto("sign", "签名", STR_BLANK, KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+                    new ParamRealtimeRequestDescDto("sign", "签名", "启用鉴权功能必填", KEY_N, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
-                    new ParamRealtimeRequestDescDto("effectiveDate", "生效日期", STR_BLANK, KEY_N, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+                    new ParamRealtimeRequestDescDto("function", "接口代码", "推送接口标识", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+            );
+            paramRealtimeRequestDescList.add(
+                    new ParamRealtimeRequestDescDto("action", "操作类型", "add:新增; edit:修改; delete:删除", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
                     new ParamRealtimeRequestDescDto("isOverWrite", "是否覆盖", "1:是; 0:否", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
@@ -1303,13 +1338,14 @@ public class ChangeToolController implements Initializable {
             currentLine++;
             List<String> requestContent = new ArrayList<>();
             requestContent.add("{");
+            requestContent.add("    \"systemCode\": \"TA\",");
+            requestContent.add("    \"mac\": \"xxxxxxxxxx\",");
+            requestContent.add("    \"username\": \"admin\",");
+            requestContent.add("    \"sign\": \"xxxxxxxxxx\",");
             requestContent.add("    \"function\": \"" + paramRealtimeApiTab.getMenuCode() + "\",");
             requestContent.add("    \"action\": \"add\",");
-            requestContent.add("    \"username\": \"admin\",");
             requestContent.add("    \"isOverWrite\": \"1\",");
-            requestContent.add("    \"effectiveDate\": \"20251010\",");
-            requestContent.add("    \"sign\": \"A20F83DADF6263CE5D8596F1F8C5DF37\",");
-            requestContent.add("    \"data\": {");
+            requestContent.add("    " + KEY_DATA);
             for (int j=0; j<paramRealtimeApiTabList.size(); j++) {
                 ParamRealtimeApiTabDto tab = paramRealtimeApiTabList.get(j);
                 requestContent.add("        \"" + tab.getTabCode() + "\": [");
@@ -1350,9 +1386,9 @@ public class ChangeToolController implements Initializable {
             }
             requestContent.add("    }");
             requestContent.add("}");
-            paramRealtimeDto.setRequestContent(requestContent.stream().collect(Collectors.joining(STR_NEXT_LINE)));
+            paramRealtimeDto.setRequestContent(requestContent);
             SXSSFRow row = requestDesc.createRow(currentLine);
-            buildRowCell(row, wrapTextCellStyle, 0, paramRealtimeDto.getRequestContent());
+            buildRowCell(row, wrapTextCellStyle, 0, requestContent.stream().collect(Collectors.joining(STR_NEXT_LINE)));
             requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine + requestContent.size() - 1, 0, 6));
         }
     }

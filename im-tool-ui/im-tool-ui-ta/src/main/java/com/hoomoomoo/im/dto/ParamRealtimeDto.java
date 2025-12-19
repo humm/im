@@ -10,7 +10,7 @@ public class ParamRealtimeDto {
 
     private List<ParamRealtimeApiComponentDto> paramRealtimeApiComponentDtoList;
 
-    private String requestContent;
+    private List<String> requestContent;
 
     private Map<String, List<String>> primaryKey = new HashMap<>();
 
@@ -38,11 +38,11 @@ public class ParamRealtimeDto {
         this.paramRealtimeApiComponentDtoList = paramRealtimeApiComponentDtoList;
     }
 
-    public String getRequestContent() {
+    public List<String> getRequestContent() {
         return requestContent;
     }
 
-    public void setRequestContent(String requestContent) {
+    public void setRequestContent(List<String> requestContent) {
         this.requestContent = requestContent;
     }
 }
