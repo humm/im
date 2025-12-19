@@ -692,30 +692,39 @@ public class ChangeToolController implements Initializable {
             skipErrorTips(errorTableColumnInfo);
             skipErrorTips(errorConfigColumnInfo);
 
+            int errorColumn = 0;
+            int errorTable = 0;
             StringBuilder errorMessage = new StringBuilder();
             if (CollectionUtils.isNotEmpty(errorTableColumnInfo)) {
                 String msg;
                 for (List<String> ele : errorTableColumnInfo) {
                     if (StringUtils.isNotBlank(ele.get(3))) {
-                        msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), "已配置字段未获取到表结构字段信息", ele.get(2), ele.get(3));
+                        errorColumn++;
+                        msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), "未获取到表字段信息", ele.get(2), ele.get(3));
                     } else {
-                        msg = String.format("%s  %s  %s  %s", ele.get(0), ele.get(1), "已配置字段未获取到表结构信息", ele.get(2));
+                        errorTable++;
+                        msg = String.format("%s  %s  %s  %s", ele.get(0), ele.get(1), "未获取到表结构信息", ele.get(2));
                     }
                     errorMessage.append(msg + STR_NEXT_LINE);
                 }
             }
             if (CollectionUtils.isNotEmpty(errorConfigColumnInfo)) {
                 for (List<String> ele : errorConfigColumnInfo) {
-                    String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), "未配置字段已获取到表结构字段信息", ele.get(2), ele.get(3));
+                    String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), "未配置字段信息", ele.get(2), ele.get(3));
                     errorMessage.append(msg + STR_NEXT_LINE);
                 }
             }
             if (StringUtils.isNotBlank(errorMessage)) {
-                OutputUtils.infoContainBr(logs, "错误明细信息");
+                String summary = "未获取到表字段信息:" + errorColumn + "  未获取到表结构信息:" + errorTable + "  未配置字段信息:" + errorConfigColumnInfo.size();
+                OutputUtils.infoContainBr(logs, "异常明细信息");
                 OutputUtils.infoContainBr(logs, errorMessage.toString());
-                FileUtils.writeFile(FileUtils.getFilePath(FILE_CHANGE_PARAM_REALTIME_SET), Arrays.asList(errorMessage.toString()));
+                OutputUtils.info(logs, summary);
+                FileUtils.writeFile(FileUtils.getFilePath(FILE_CHANGE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
                 errorTips.setVisible(true);
                 errorTipsResult.setVisible(true);
+                Platform.runLater(() -> {
+                    CommonUtils.showTipsByError(summary, 60 * 60 * 1000);
+                });
             } else {
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_CHANGE_PARAM_REALTIME_SET), Arrays.asList("完美无瑕"));
             }
@@ -1018,8 +1027,8 @@ public class ChangeToolController implements Initializable {
         }
         sceneContent.add("    \"systemCode\": \"TA\",");
         sceneContent.add("    \"mac\": \"xxxxxxxxxx\",");
-        sceneContent.add("    \"username\": \"admin\",");
         sceneContent.add("    \"sign\": \"xxxxxxxxxx\",");
+        sceneContent.add("    \"username\": \"admin\",");
         sceneContent.add("    \"user\": \"productcenter\",");
         sceneContent.add("    \"operatorId\": \"admin\",");
         sceneContent.add("    \"checkerId\": \"system\",");
@@ -1274,19 +1283,19 @@ public class ChangeToolController implements Initializable {
                     new ParamRealtimeRequestDescDto("mac", "mac地址", "鉴权功能使用", KEY_N, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
-                    new ParamRealtimeRequestDescDto("username", "用户代码", "用户信息", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+                    new ParamRealtimeRequestDescDto("sign", "签名", "启用鉴权功能必填", KEY_N, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
-                    new ParamRealtimeRequestDescDto("sign", "签名", "启用鉴权功能必填", KEY_N, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+                    new ParamRealtimeRequestDescDto("username", "用户代码", "用户信息", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
                     new ParamRealtimeRequestDescDto("function", "接口代码", "推送接口标识", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
-                    new ParamRealtimeRequestDescDto("action", "操作类型", "add:新增; edit:修改; delete:删除", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+                    new ParamRealtimeRequestDescDto("action", "操作类型", "add:新增   edit:修改   delete:删除", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
-                    new ParamRealtimeRequestDescDto("isOverWrite", "是否覆盖", "1:是; 0:否", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+                    new ParamRealtimeRequestDescDto("isOverWrite", "是否覆盖", "1:是   0:否", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
                     new ParamRealtimeRequestDescDto("data", "请求数据", "data中为参数的相关信息, 其为json格式, 主要数据由各个tab页中的数据组成", KEY_Y, COLUMN_TYPE_JSON, STR_BLANK, STR_BLANK)
@@ -1340,8 +1349,8 @@ public class ChangeToolController implements Initializable {
             requestContent.add("{");
             requestContent.add("    \"systemCode\": \"TA\",");
             requestContent.add("    \"mac\": \"xxxxxxxxxx\",");
-            requestContent.add("    \"username\": \"admin\",");
             requestContent.add("    \"sign\": \"xxxxxxxxxx\",");
+            requestContent.add("    \"username\": \"admin\",");
             requestContent.add("    \"function\": \"" + paramRealtimeApiTab.getMenuCode() + "\",");
             requestContent.add("    \"action\": \"add\",");
             requestContent.add("    \"isOverWrite\": \"1\",");
@@ -1427,6 +1436,12 @@ public class ChangeToolController implements Initializable {
                 "        method.setURI(URI.create(uri));\n" +
                 "        method.setEntity(entity);\n" +
                 "        HttpResponse response = httpClient.execute(method);"));
+        paramRealtimeInterfaceDescList.add(new ParamRealtimeInterfaceDescDto(STR_BLANK, "5",
+                "字段类型说明\n" +
+                "    C: 字符\n" +
+                "    N: 数字\n" +
+                "    I:   整数\n" +
+                "    JSON: JSON"));
         CellStyle centerCellStyle = ExcelCommonUtils.getCenterCellStyle(workbook);
         CellStyle wrapTextCellStyle = ExcelCommonUtils.getWrapTextCellStyle(workbook);
         for (int i=0; i<paramRealtimeInterfaceDescList.size(); i++) {
@@ -1437,7 +1452,7 @@ public class ChangeToolController implements Initializable {
             buildRowCell(row, wrapTextCellStyle, 2, paramRealtimeInterfaceDesc.getAgreeContent());
         }
 
-        interfaceDesc.addMergedRegion(new CellRangeAddress(1,4,0,0));
+        interfaceDesc.addMergedRegion(new CellRangeAddress(1,5,0,0));
     }
 
     private void buildRowCell(SXSSFRow row, CellStyle cellStyle, int rowIndex, String rowName) {
