@@ -715,7 +715,7 @@ public class ChangeToolController implements Initializable {
                 }
             }
             if (StringUtils.isNotBlank(errorMessage)) {
-                String summary = "未获取到表字段信息:" + errorColumn + "  未获取到表结构信息:" + errorTable + "  未配置字段信息:" + errorConfigColumnInfo.size();
+                String summary = "未获取到表字段信息: " + errorColumn + "  未获取到表结构信息: " + errorTable + "  未配置字段信息: " + errorConfigColumnInfo.size();
                 OutputUtils.infoContainBr(logs, "异常明细信息");
                 OutputUtils.infoContainBr(logs, errorMessage.toString());
                 OutputUtils.info(logs, summary);
@@ -993,8 +993,8 @@ public class ChangeToolController implements Initializable {
 
     private void buildFile(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto, String filePath) throws IOException {
         String excelFileBakPath = filePath.replace(".sql", KEY_BACKUP + ".xlsx");
-        String jsonFilePath = filePath.replace(".sql", ".json");
-        String jsonSceneFilePath = filePath.replace(".sql", "Scene.json");
+        String jsonFilePath = filePath.replace(".sql", "_normal.json");
+        String jsonSceneFilePath = filePath.replace(".sql", "_scene.json");
         List<String> requestContent = paramRealtimeDto.getRequestContent();
         FileUtils.writeFile(jsonFilePath, requestContent.stream().collect(Collectors.joining(STR_NEXT_LINE)));
         FileUtils.writeFile(jsonSceneFilePath, buildSceneContent(requestContent).stream().collect(Collectors.joining(STR_NEXT_LINE)));
