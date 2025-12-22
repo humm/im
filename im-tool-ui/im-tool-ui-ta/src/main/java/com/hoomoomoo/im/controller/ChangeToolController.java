@@ -1033,7 +1033,6 @@ public class ChangeToolController implements Initializable {
         sceneContent.add("    \"checkerId\": \"system\",");
         sceneContent.add("    \"importDate\": \"20251010\",");
         sceneContent.add("    \"finishDate\": \"20251010\",");
-        sceneContent.add("    \"operType\": \"\",");
         sceneContent.add("    \"sceneCode\": \"xxx\",");
         sceneContent.add("    \"projectCode\": \"xxx\",");
         sceneContent.add("    \"projectName\": \"xxx\",");
@@ -1205,7 +1204,8 @@ public class ChangeToolController implements Initializable {
         SXSSFRow row = componentDesc.createRow(++rowIndex);
         buildRowCell(row, null, 0, paramRealtimeApiTabDto.getFieldName());
         buildRowCell(row, null, 1, "有效起始日期");
-        buildRowCell(row, null, 2, NAME_DESC_BEGIN_VALID_DATE);
+        buildRowCell(row, null, 2, COLUMN_TYPE_I);
+        buildRowCell(row, null, 3, NAME_DESC_BEGIN_VALID_DATE);
         buildRowCell(row, centerCellStyle, 6, KEY_N);
         buildRowCell(row, wrapTextCellStyle, 7,"{\"required\":true,\"message\":\"有效起始日期必填\"}\n{\"validator\":\"isDate\",\"message\":\"日期格式不正确\"}");
     }
