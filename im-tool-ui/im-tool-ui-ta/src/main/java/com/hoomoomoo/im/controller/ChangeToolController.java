@@ -1,5 +1,6 @@
 package com.hoomoomoo.im.controller;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.hoomoomoo.im.cache.ConfigCache;
@@ -735,6 +736,14 @@ public class ChangeToolController implements Initializable {
         }
     }
 
+    private boolean skipColumns(String tableCode, String fieldCode) {
+        // 中信孤版个性化字段
+        if (StringUtils.equals("tbfundfarebelong_date", tableCode) && StringUtils.equals("effective_flag", fieldCode)) {
+            return true;
+        }
+        return false;
+    }
+
     private void skipErrorTips(List<List<String>> error) throws IOException {
         Iterator<List<String>> iterator = error.listIterator();
         Map<String, List<String>> skipConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_JSON)), Map.class);
@@ -1095,8 +1104,11 @@ public class ChangeToolController implements Initializable {
             for (ParamRealtimeApiComponentDto item : paramRealtimeApiComponentDtoList) {
                 errorTableColumnInfoExists = false;
                 String fieldCode = changeToLower(item.getFieldCode());
-                boolean needAdd = StringUtils.isNotBlank(paramRealtimeApiTabDto.getFieldName()) && !beginValidDateSpecial.contains(paramRealtimeApiTabDto.getMenuCode());
-                if (StringUtils.equals(paramRealtimeApiTabDto.getFieldName(), fieldCode) && needAdd) {
+                if (skipColumns(tableCode, fieldCode)) {
+                    continue;
+                }
+                boolean needAddBeginValidDate = StringUtils.isNotBlank(paramRealtimeApiTabDto.getFieldName()) && !beginValidDateSpecial.contains(paramRealtimeApiTabDto.getMenuCode());
+                if (StringUtils.equals(paramRealtimeApiTabDto.getFieldName(), fieldCode) && needAddBeginValidDate) {
                     continue;
                 }
                 if (!StringUtils.equals(tabCode, item.getTabCode())) {
@@ -1193,7 +1205,7 @@ public class ChangeToolController implements Initializable {
                 } else {
                     buildRowCell(row, centerCellStyle, 6, required);
                 }
-                if (needAdd) {
+                if (needAddBeginValidDate) {
                     buildBeginValidDateLine(componentDesc, rowIndex, wrapTextCellStyle, centerCellStyle, paramRealtimeApiTabDto);
                 }
             }
@@ -1204,7 +1216,7 @@ public class ChangeToolController implements Initializable {
         SXSSFRow row = componentDesc.createRow(++rowIndex);
         buildRowCell(row, null, 0, paramRealtimeApiTabDto.getFieldName());
         buildRowCell(row, null, 1, "有效起始日期");
-        buildRowCell(row, null, 2, COLUMN_TYPE_I);
+        buildRowCell(row, centerCellStyle, 2, COLUMN_TYPE_I);
         buildRowCell(row, null, 3, NAME_DESC_BEGIN_VALID_DATE);
         buildRowCell(row, centerCellStyle, 6, KEY_N);
         buildRowCell(row, wrapTextCellStyle, 7,"{\"required\":true,\"message\":\"有效起始日期必填\"}\n{\"validator\":\"isDate\",\"message\":\"日期格式不正确\"}");
@@ -1337,7 +1349,7 @@ public class ChangeToolController implements Initializable {
                 }
             }
 
-            boolean needAdd = StringUtils.isNotBlank(paramRealtimeApiTab.getFieldName()) && !beginValidDateSpecial.contains(paramRealtimeApiTab.getMenuCode());
+            boolean needAddBeginValidDate = StringUtils.isNotBlank(paramRealtimeApiTab.getFieldName()) && !beginValidDateSpecial.contains(paramRealtimeApiTab.getMenuCode());
 
             currentLine = currentLine + 3;
             SXSSFRow rowContent = requestDesc.createRow(currentLine);
@@ -1356,23 +1368,28 @@ public class ChangeToolController implements Initializable {
             requestContent.add("    " + KEY_DATA);
             for (int j=0; j<paramRealtimeApiTabList.size(); j++) {
                 ParamRealtimeApiTabDto tab = paramRealtimeApiTabList.get(j);
+                String tableCode = changeToLower(tab.getTableCode());
                 requestContent.add("        \"" + tab.getTabCode() + "\": [");
                 requestContent.add("            {");
                 for (int i = 0; i< paramRealtimeApiComponentDtoList.size(); i++) {
                     ParamRealtimeApiComponentDto item = paramRealtimeApiComponentDtoList.get(i);
+                    String fieldCode = changeToLower(item.getFieldCode());
+                    if (skipColumns(tableCode, fieldCode)) {
+                        continue;
+                    }
                     if (!StringUtils.equals(tab.getTabCode(), item.getTabCode())) {
                         continue;
                     }
-                    if (StringUtils.equals(beginValidDate, item.getFieldCode()) && needAdd) {
+                    if (StringUtils.equals(beginValidDate, fieldCode) && needAddBeginValidDate) {
                         continue;
                     }
-                    String line = "\"" + item.getFieldCode() + "\"" + ": " + (StringUtils.isNotBlank(item.getDefaultValue()) ? "\"" + item.getDefaultValue() + "\"" : "\"\"");
+                    String line = "\"" + fieldCode + "\"" + ": " + (StringUtils.isNotBlank(item.getDefaultValue()) ? "\"" + item.getDefaultValue() + "\"" : "\"\"");
                     if (i != paramRealtimeApiComponentDtoList.size() - 1) {
                         line += ",";
                     }
                     requestContent.add("                " + line);
                 }
-                if (needAdd) {
+                if (needAddBeginValidDate) {
                     addBeginValidDate(requestContent, beginValidDate);
                 }
                 requestContent.add("            }");
