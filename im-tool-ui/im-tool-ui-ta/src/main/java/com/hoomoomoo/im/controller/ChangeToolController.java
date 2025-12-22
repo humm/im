@@ -38,7 +38,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CHANGE_TOOL;
@@ -1032,13 +1031,13 @@ public class ChangeToolController implements Initializable {
         sceneContent.add("    \"user\": \"productcenter\",");
         sceneContent.add("    \"operatorId\": \"admin\",");
         sceneContent.add("    \"checkerId\": \"system\",");
-        sceneContent.add("    \"importDate\": \"\",");
-        sceneContent.add("    \"finishDate\": \"\",");
+        sceneContent.add("    \"importDate\": \"20251010\",");
+        sceneContent.add("    \"finishDate\": \"20251010\",");
         sceneContent.add("    \"operType\": \"\",");
-        sceneContent.add("    \"sceneCode\": \"场景编码\",");
+        sceneContent.add("    \"sceneCode\": \"xxx\",");
         sceneContent.add("    \"projectCode\": \"xxx\",");
         sceneContent.add("    \"projectName\": \"xxx\",");
-        sceneContent.add("    \"memo\": \"备注\",");
+        sceneContent.add("    \"memo\": \"xxx\",");
         sceneContent.addAll(requestContent.subList(dataIndex, requestContent.size()));
         return sceneContent;
     }
@@ -1374,14 +1373,7 @@ public class ChangeToolController implements Initializable {
                     requestContent.add("                " + line);
                 }
                 if (needAdd) {
-                    int lastIndex = requestContent.size() - 1;
-                    String lastLine = requestContent.get(lastIndex);
-                    if (!lastLine.endsWith(STR_COMMA)) {
-                        lastLine += STR_COMMA;
-                    }
-                    lastLine += STR_NEXT_LINE + "                \"" + beginValidDate + "\": " + "\"20251010\"";
-                    lastLine += "    // " + NAME_DESC_BEGIN_VALID_DATE;
-                    requestContent.set(lastIndex, lastLine);
+                    addBeginValidDate(requestContent, beginValidDate);
                 }
                 requestContent.add("            }");
                 if (j != paramRealtimeApiTabList.size() - 1) {
@@ -1400,6 +1392,16 @@ public class ChangeToolController implements Initializable {
             buildRowCell(row, wrapTextCellStyle, 0, requestContent.stream().collect(Collectors.joining(STR_NEXT_LINE)));
             requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine + requestContent.size() - 1, 0, 6));
         }
+    }
+
+    private void addBeginValidDate(List<String> requestContent, String beginValidDate) {
+        int lastIndex = requestContent.size() - 1;
+        String lastLine = requestContent.get(lastIndex);
+        if (!lastLine.endsWith(STR_COMMA)) {
+            lastLine += STR_COMMA;
+        }
+        lastLine += STR_NEXT_LINE + "                \"" + beginValidDate + "\": " + "\"" + NAME_DESC_BEGIN_VALID_DATE + "\"";
+        requestContent.set(lastIndex, lastLine);
     }
 
     private void buildInterfaceDesc(SXSSFWorkbook workbook) {
