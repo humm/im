@@ -320,7 +320,7 @@ public class HepTodoController extends BaseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            LoggerUtils.info(String.format(BaseConst.MSG_USE, TASK_TODO.getName()));
+            LoggerUtils.info(String.format(MSG_USE, TASK_TODO.getName()));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             initUserInfo(appConfigDto);
             initExtendUser(appConfigDto);
