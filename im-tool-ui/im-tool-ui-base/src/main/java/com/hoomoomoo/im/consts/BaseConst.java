@@ -271,8 +271,8 @@ public class BaseConst {
 
     public final static String STR_RIGHT_FACING= " -> ";
     public static final String NAME_MENU_COPY = "复制" + STR_RIGHT_FACING + "提交描述";
-    public static final String NAME_MENU_SIMPLE_COPY = "复制" + STR_RIGHT_FACING + "提交描述不含需求描述";
-    public static final String NAME_MENU_SCRIPT_COPY = "复制" + STR_RIGHT_FACING + "升级脚本提交摘要";
+    public static final String NAME_MENU_SIMPLE_COPY = "复制" + STR_RIGHT_FACING + "提交描述不含需求内容";
+    public static final String NAME_MENU_SCRIPT_COPY = "复制" + STR_RIGHT_FACING + "升级脚本签名";
     public static final String NAME_MENU_TASK_NO_COPY = "复制" + STR_RIGHT_FACING + "任务单号";
     public static final String NAME_MENU_DETAIL = "任务" + STR_RIGHT_FACING + "查看详情";
     public static final String NAME_MENU_UPDATE = "任务" + STR_RIGHT_FACING + "更新任务信息";
@@ -506,16 +506,12 @@ public class BaseConst {
     public final static String COLUMN_TYPE_JSON = "JSON";
 
     public static final String STYLE_CENTER = "-fx-alignment: center;";
-    public static final String STYLE_BOLD_RED = "-fx-font-weight: bold; -fx-text-background-color: red;";
-    public static final String STYLE_BOLD_BLACK = "-fx-font-weight: bold; -fx-text-background-color: #000000;";
-    public static final String STYLE_BOLD_RED_FOR_BUTTON = "-fx-font-weight: bold; -fx-text-fill: red;";
-    public static final String STYLE_SELECTED_FOR_BUTTON = "-fx-font-weight: bold; -fx-text-fill: green;";
-    public static final String STYLE_BOLD = "-fx-font-weight: bold;";
-    public static final String STYLE_NORMAL_FOR_BUTTON = "-fx-font-weight: normal; -fx-text-fill: 0x000000ff;";
+    public static final String STYLE_RED = "-fx-text-background-color: red;";
+    public static final String STYLE_RED_FOR_BUTTON = "-fx-text-fill: red;";
+    public static final String STYLE_SELECTED_FOR_BUTTON = "-fx-text-fill: green;";
+    public static final String STYLE_NORMAL_FOR_BUTTON = "-fx-text-fill: 0x000000ff;";
     public static final String STYLE_NORMAL = "-fx-font-weight: normal;";
-
-    public static final String STYLE_COLOR_BLACK = "-fx-text-background-color: black;";
-    public static final String STYLE_COLOR_BLUE = "-fx-text-background-color: blue;";
+    public static final String STYLE_BOLD = "-fx-font-weight: bold;";
 
 
     public enum SQL_CHECK_TYPE {

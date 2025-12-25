@@ -89,7 +89,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
                 logDtoList.addAll(SvnUtils.getSvnLog(50, taskNumber));
             }
         } catch (Exception e) {
-            notice.setStyle(STYLE_BOLD_RED);
+            notice.setStyle(STYLE_RED);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("修改记录信息同步异常,请检查"));
             LoggerUtils.error(e);
             sync.setDisable(false);
@@ -161,7 +161,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
                     setDefaultTaskDesc(editDescriptionValue.toString(), STR_BLANK);
                 }
             } else {
-                notice.setStyle(STYLE_BOLD_RED);
+                notice.setStyle(STYLE_RED);
                 OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("已提交任务信息格式错误"));
                 setDefaultTaskDesc(editDescriptionValue.toString(), STR_BLANK);
             }
@@ -169,7 +169,7 @@ public class HepCompleteTaskController extends BaseController implements Initial
             setDefaultTaskDesc(editDescriptionValue.toString(), extFile.toString());
         }
         if (StringUtils.isBlank(modifiedFileValue)) {
-            notice.setStyle(STYLE_BOLD_RED);
+            notice.setStyle(STYLE_RED);
             OutputUtils.info(notice, TaCommonUtils.getMsgContainTime("未查询到修改记录信息,请检查"));
         } else {
             notice.setStyle(STYLE_NORMAL);

@@ -358,7 +358,7 @@ public class HepTodoController extends BaseController implements Initializable {
             CommonUtils.stopTimer(appConfigDto, HEP_TASK_SYNC_VERSION_TIMER);
             Platform.runLater(() -> {
                 syncFileBtn.setText("启动文件同步");
-                syncFileBtn.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+                syncFileBtn.setStyle(STYLE_RED_FOR_BUTTON);
             });
             OutputUtils.info(filePushTips, STR_BLANK);
             OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBeforeBr("停止文件同步"));
@@ -1278,7 +1278,7 @@ public class HepTodoController extends BaseController implements Initializable {
             if (!isExtendUser()) {
                 Platform.runLater(() -> {
                     if (waitTaskSyncNum > 0) {
-                        syncTask.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+                        syncTask.setStyle(STYLE_RED_FOR_BUTTON);
                         syncTask.setText(NAME_BUTTON_TASK_SYNC + STR_SPACE + waitTaskSyncNum);
                     } else {
                         syncTask.setStyle(STYLE_NORMAL_FOR_BUTTON);
@@ -1403,7 +1403,7 @@ public class HepTodoController extends BaseController implements Initializable {
             checkDate = false;
         }
         if (checkDate) {
-            scriptCheck.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+            scriptCheck.setStyle(STYLE_RED_FOR_BUTTON);
         } else {
             scriptCheck.setStyle(STYLE_NORMAL_FOR_BUTTON);
         }
@@ -1700,7 +1700,7 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void controlButtonTips(Button button, int num) {
         if (num > 0) {
-            button.setStyle(STYLE_BOLD_RED_FOR_BUTTON);
+            button.setStyle(STYLE_RED_FOR_BUTTON);
         } else {
             button.setStyle(STYLE_NORMAL_FOR_BUTTON);
         }
@@ -2110,7 +2110,7 @@ public class HepTodoController extends BaseController implements Initializable {
             }
         }
         if (push) {
-            filePushTips.setStyle(STYLE_BOLD_RED);
+            filePushTips.setStyle(STYLE_RED);
             filePushTips.setVisible(true);
         } else {
            filePushTips.setStyle(STYLE_NORMAL);
@@ -2130,7 +2130,7 @@ public class HepTodoController extends BaseController implements Initializable {
         String[] memoryInfo = CommonUtils.getMemoryInfo();
         OutputUtils.info(memoryTips, "内存(MB): " + memoryInfo[0]);
         if (Integer.valueOf(memoryInfo[1]) > 1024 || Integer.valueOf(memoryInfo[2]) > 512) {
-            memoryTips.setStyle(STYLE_BOLD_RED);
+            memoryTips.setStyle(STYLE_RED);
         } else {
             memoryTips.setStyle(STYLE_NORMAL);
         }
@@ -2367,7 +2367,6 @@ public class HepTodoController extends BaseController implements Initializable {
         double x = 20;
         double y = 220;
         Label label = new Label(NAME_DESC_COLOR);
-        label.setStyle(STYLE_BOLD);
         label.setLayoutX(x);
         label.setLayoutY(y);
         label.setOnMouseClicked(event -> {

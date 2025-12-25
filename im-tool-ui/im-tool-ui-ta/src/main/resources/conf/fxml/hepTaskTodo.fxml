@@ -26,41 +26,35 @@
                         <AnchorPane fx:id="headPane" minHeight="0.0" minWidth="0.0" prefHeight="97.0"
                                     prefWidth="322.0">
                             <children>
-                                <Label layoutX="20.0" layoutY="5.0" style="-fx-font-weight: bold;" text="今天封版："/>
+                                <Label layoutX="20.0" layoutY="5.0" text="今天封版："/>
                                 <Label fx:id="dayClose" layoutX="100.0" layoutY="5.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                                <Label layoutX="20.0" layoutY="30.0" style="-fx-font-weight: bold;" text="今天发版："/>
+                                       style="-fx-text-background-color: red;"/>
+                                <Label layoutX="20.0" layoutY="30.0" text="今天发版："/>
                                 <Label fx:id="dayPublish" layoutX="100.0" layoutY="30.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                       style="-fx-text-background-color: red;"/>
 
-                                <Label layoutX="870.0" layoutY="5.0" style="-fx-font-weight: bold;" text="本周封版："/>
-                                <Label fx:id="weekClose" layoutX="950.0" layoutY="5.0" style="-fx-font-weight: bold;"/>
-                                <Label layoutX="870.0" layoutY="30.0" style="-fx-font-weight: bold;" text="本周发版："/>
-                                <Label fx:id="weekPublish" layoutX="950.0" layoutY="30.0"
-                                       style="-fx-font-weight: bold;"/>
+                                <Label layoutX="870.0" layoutY="5.0" text="本周封版："/>
+                                <Label fx:id="weekClose" layoutX="950.0" layoutY="5.0"/>
+                                <Label layoutX="870.0" layoutY="30.0" text="本周发版："/>
+                                <Label fx:id="weekPublish" layoutX="950.0" layoutY="30.0"/>
 
-                                <Label fx:id="fileTipsFileTitle" layoutX="20.0" layoutY="55.0"
-                                       style="-fx-font-weight: bold;" text="同步文件："/>
+                                <Label fx:id="fileTipsFileTitle" layoutX="20.0" layoutY="55.0" text="同步文件："/>
                                 <Label fx:id="fileTipsFile" layoutX="90.0" layoutY="55.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                                <Label fx:id="fileTipsFileTimeTitle" layoutX="450.0" layoutY="55.0"
-                                       style="-fx-font-weight: bold;" text="同步时间："/>
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsFileTimeTitle" layoutX="450.0" layoutY="55.0" text="同步时间："/>
                                 <Label fx:id="fileTipsFileTime" layoutX="520.0" layoutY="55.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                                <Label fx:id="fileTipsFileStatusTitle" layoutX="620.0" layoutY="55.0"
-                                       style="-fx-font-weight: bold;" text="同步状态："/>
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsFileStatusTitle" layoutX="620.0" layoutY="55.0" text="同步状态："/>
                                 <Label fx:id="fileTipsFileStatus" layoutX="690.0" layoutY="55.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                                <Label fx:id="fileTipsFileOperateTitle" layoutX="760.0" layoutY="55.0"
-                                       style="-fx-font-weight: bold;" text="操作类型："/>
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsFileOperateTitle" layoutX="760.0" layoutY="55.0" text="操作类型："/>
                                 <Label fx:id="fileTipsFileOperate" layoutX="830.0" layoutY="55.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                                <Label fx:id="fileTipsVersionTitle" layoutX="950.0" layoutY="55.0"
-                                       style="-fx-font-weight: bold;" text="同步版本："/>
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsVersionTitle" layoutX="950.0" layoutY="55.0" text="同步版本："/>
                                 <Label fx:id="fileTipsVersion" layoutX="1020.0" layoutY="55.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                       style="-fx-text-background-color: red;"/>
 
-                                <Label layoutX="20.0" layoutY="110.0" style="-fx-font-weight: bold;" text="操作类型："/>
+                                <Label layoutX="20.0" layoutY="110.0" text="操作类型："/>
                                 <Button fx:id="syncFileBtn" layoutX="100.0" layoutY="105.0" mnemonicParsing="false"
                                         onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="停止文件同步">
                                     <padding>
@@ -124,7 +118,7 @@
                                     </padding>
                                 </Button>
 
-                                <Label layoutX="20" layoutY="148.0" style="-fx-font-weight: bold;" text="查询类型："/>
+                                <Label layoutX="20" layoutY="148.0" text="查询类型："/>
                                 <Button fx:id="all" layoutX="100.0" layoutY="143.0" mnemonicParsing="false"
                                         onAction="#selectAll" prefHeight="30.0" prefWidth="100.0" text="全部">
                                 </Button>
@@ -136,7 +130,7 @@
                                         text="待开发">
                                 </Button>
 
-                                <Label layoutX="20" layoutY="186.0" style="-fx-font-weight: bold;" text="查询条件："/>
+                                <Label layoutX="20" layoutY="186.0" text="查询条件："/>
                                 <ComboBox fx:id="sprintVersionQuery" layoutX="100.0" layoutY="183.0" prefWidth="230"/>
                                 <TextField fx:id="taskConditionQuery" layoutX="360.0" layoutY="183.0" prefHeight="25.0" prefWidth="360.0"/>
 
@@ -150,16 +144,14 @@
                                                    style="-fx-scale-x: 0.8; -fx-scale-y: 0.8;"/>
                                 <Label fx:id="scheduleText" layoutX="1055" layoutY="188.0" text="0%"/>
 
-                                <Label fx:id="focusVersionTipsLabel" layoutX="20" layoutY="220.0"
-                                       style="-fx-font-weight: bold;"/>
+                                <Label fx:id="focusVersionTipsLabel" layoutX="20" layoutY="220.0"/>
                                 <Label fx:id="focusVersionTips" layoutX="120.0" layoutY="220.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                       style="-fx-text-background-color: red;"/>
                                 <Label fx:id="memoryTips" layoutX="650" layoutY="220.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
-                                <Label fx:id="filePushTips" layoutX="850.0" layoutY="220.0"
-                                       style="-fx-font-weight: bold;"/>
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="filePushTips" layoutX="850.0" layoutY="220.0"/>
                                 <Label fx:id="syncFrontVersionTips" layoutX="1080.0" layoutY="220.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: red;"/>
+                                       style="-fx-text-background-color: red;"/>
                                 <TextField fx:id="demandNo" editable="false" layoutX="1230.0" layoutY="215.0"
                                            style="-fx-background-color: transparent;"/>
                                 <TextField fx:id="taskNo" editable="false" layoutX="1380.0" layoutY="215.0"
