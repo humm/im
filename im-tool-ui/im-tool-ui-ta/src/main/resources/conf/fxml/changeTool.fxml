@@ -67,7 +67,7 @@
                                 <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
                                             prefHeight="195.0" prefWidth="198.0">
                                     <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0"
-                                           style="-fx-font-weight: bold;-fx-font-size: 15;" text="计算分库分表"/>
+                                           style="-fx-font-weight: bold;-fx-font-size: 15;" text="分库分表"/>
 
                                     <Label layoutX="35.0" layoutY="70.0" prefHeight="15.0" prefWidth="200.0"
                                            style="-fx-font-weight: bold;" text="基金账号/内部客户号"/>
