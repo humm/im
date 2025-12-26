@@ -70,6 +70,9 @@ public class ParameterToolController implements Initializable {
     private Button errorTipsResult;
 
     @FXML
+    private Button errorTipsResultByFile;
+
+    @FXML
     private Label errorTips;
 
     private static String KEY_DATA = "\"data\": {";
@@ -100,11 +103,22 @@ public class ParameterToolController implements Initializable {
         OutputUtils.info(tablePath, appConfigDto.getChangeToolTablePath());
         errorTips.setVisible(false);
         errorTipsResult.setVisible(false);
+        errorTipsResultByFile.setVisible(false);
     }
 
     @FXML
     void showParamRealtimeSetResult(ActionEvent event) throws IOException {
-        Runtime.getRuntime().exec("explorer /e,/select," + new File(FileUtils.getFilePath(FILE_CHANGE_PARAM_REALTIME_SET)).getAbsolutePath());
+        Runtime.getRuntime().exec("explorer /e,/select," + new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET)).getAbsolutePath());
+    }
+
+    @FXML
+    void showParamRealtimeSetResultByFile(ActionEvent event) throws IOException {
+        try {
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_PARAMETER_RESULT, "检查结果");
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, "请检查结果文件是否存在");
+        }
     }
 
     @FXML
@@ -160,6 +174,7 @@ public class ParameterToolController implements Initializable {
             tableColumnsNum = 0;
             errorTips.setVisible(false);
             errorTipsResult.setVisible(false);
+            errorTipsResultByFile.setVisible(false);
             errorTableColumnInfo.clear();
             errorConfigColumnInfo.clear();
             modifyInfo.clear();
@@ -193,41 +208,62 @@ public class ParameterToolController implements Initializable {
             skipErrorTips(errorTableColumnInfo);
             skipErrorTips(errorConfigColumnInfo);
 
+            Map<String, StringBuilder> tipsByFile = new LinkedHashMap<>();
             int errorColumn = 0;
             int errorTable = 0;
             StringBuilder errorMessage = new StringBuilder();
             if (CollectionUtils.isNotEmpty(errorTableColumnInfo)) {
                 String msg;
                 for (List<String> ele : errorTableColumnInfo) {
+                    String folder = ele.get(0);
                     if (StringUtils.isNotBlank(ele.get(3))) {
                         errorColumn++;
-                        msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), "未获取到表字段信息", ele.get(2), ele.get(3));
+                        msg = String.format("%s  %s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "未获取到表字段信息", ele.get(3), ele.get(4));
                     } else {
                         errorTable++;
-                        msg = String.format("%s  %s  %s  %s", ele.get(0), ele.get(1), "未获取到表结构信息", ele.get(2));
+                        msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "未获取到表结构信息", ele.get(3));
                     }
-                    errorMessage.append(msg + STR_NEXT_LINE);
+                    msg += STR_NEXT_LINE;
+                    errorMessage.append(msg);
+                    if (tipsByFile.containsKey(folder)) {
+                        tipsByFile.get(folder).append(msg);
+                    } else {
+                        tipsByFile.put(folder, new StringBuilder(msg));
+                    }
                 }
             }
             if (CollectionUtils.isNotEmpty(errorConfigColumnInfo)) {
                 for (List<String> ele : errorConfigColumnInfo) {
-                    String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), "未配置字段信息", ele.get(2), ele.get(3));
-                    errorMessage.append(msg + STR_NEXT_LINE);
+                    String folder = ele.get(0);
+                    String msg = String.format("%s  %s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "未配置字段信息", ele.get(3), ele.get(4)) + STR_NEXT_LINE;
+                    errorMessage.append(msg);
+                    if (tipsByFile.containsKey(folder)) {
+                        tipsByFile.get(folder).append(msg);
+                    } else {
+                        tipsByFile.put(folder, new StringBuilder(msg));
+                    }
                 }
             }
+            FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_FOLDER_SET)));
             if (StringUtils.isNotBlank(errorMessage)) {
                 String summary = "未获取到表字段信息: " + errorColumn + "  未获取到表结构信息: " + errorTable + "  未配置字段信息: " + errorConfigColumnInfo.size();
                 OutputUtils.infoContainBr(logs, "异常明细信息");
                 OutputUtils.infoContainBr(logs, errorMessage.toString());
                 OutputUtils.info(logs, summary);
-                FileUtils.writeFile(FileUtils.getFilePath(FILE_CHANGE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
+                FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
+                if (MapUtils.isNotEmpty(tipsByFile)) {
+                    for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
+                        FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_FOLDER_SET + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
+                    }
+                }
                 errorTips.setVisible(true);
                 errorTipsResult.setVisible(true);
+                errorTipsResultByFile.setVisible(true);
                 Platform.runLater(() -> {
-                    CommonUtils.showTipsByError(summary, 60 * 60 * 1000);
+                    CommonUtils.showTipsByError(summary, 10 * 60 * 1000);
                 });
             } else {
-                FileUtils.writeFile(FileUtils.getFilePath(FILE_CHANGE_PARAM_REALTIME_SET), Arrays.asList("完美无瑕"));
+                FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList("完美无瑕"));
             }
         } catch (Exception e) {
             LoggerUtils.error(e);
@@ -250,8 +286,8 @@ public class ParameterToolController implements Initializable {
         Map<String, List<String>> skipConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_JSON)), Map.class);
         while (iterator.hasNext()) {
             List<String> skipInfo = iterator.next();
-            String table = skipInfo.get(2);
-            String column = skipInfo.get(3);
+            String table = skipInfo.get(3);
+            String column = skipInfo.get(4);
             if (StringUtils.isBlank(column)) {
                 continue;
             }
@@ -495,7 +531,7 @@ public class ParameterToolController implements Initializable {
         }
         buildInterfaceDesc(workbook);
         buildRequestDesc(workbook, paramRealtimeDto);
-        buildComponentDesc(workbook, paramRealtimeDto, new File(filePath).getName());
+        buildComponentDesc(workbook, paramRealtimeDto, new File(filePath));
         buildDictDesc(workbook, paramRealtimeDto);
         buildFile(workbook, paramRealtimeDto, filePath);
     }
@@ -551,7 +587,9 @@ public class ParameterToolController implements Initializable {
         return sceneContent;
     }
 
-    private void buildComponentDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto, String fileName) throws Exception {
+    private void buildComponentDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto, File file) throws Exception {
+        String fileName = file.getName();
+        String fileFolder = new File(file.getParent()).getName();
         List<ParamRealtimeApiComponentDto> paramRealtimeApiComponentDtoList = paramRealtimeDto.getParamRealtimeApiComponentDtoList();
         List<ParamRealtimeApiTabDto> paramRealtimeApiTabDtoList = paramRealtimeDto.getParamRealtimeApiTabList();
         for (ParamRealtimeApiTabDto paramRealtimeApiTabDto : paramRealtimeApiTabDtoList) {
@@ -596,7 +634,7 @@ public class ParameterToolController implements Initializable {
                 List<String> fieldList = paramRealtimeApiComponentDtoList.stream().map(ParamRealtimeApiComponentDto::getFieldCode).collect(Collectors.toList());
                 for (String key : tableInfo.keySet()) {
                     if (!fieldList.contains(key)) {
-                        errorConfigColumnInfo.add(Arrays.asList(fileName, paramRealtimeApiTabDto.getTabName(), tableCode, key));
+                        errorConfigColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), tableCode, key));
                     }
                 }
             }
@@ -636,27 +674,27 @@ public class ParameterToolController implements Initializable {
                         buildRowCell(row, null, 3, fieldMaxLength);
                     } else {
                         for (List<String> ele : errorTableColumnInfo) {
-                            if (StringUtils.equals(ele.get(0), fileName) && StringUtils.equals(ele.get(1), paramRealtimeApiTabDto.getTabName())
+                            if (StringUtils.equals(ele.get(1), fileName) && StringUtils.equals(ele.get(1), paramRealtimeApiTabDto.getTabName())
                                     && StringUtils.equals(ele.get(2), tableCode) && StringUtils.equals(ele.get(3), fieldCode)) {
                                 errorTableColumnInfoExists = true;
                                 break;
                             }
                         }
                         if (!errorTableColumnInfoExists) {
-                            errorTableColumnInfo.add(Arrays.asList(fileName, paramRealtimeApiTabDto.getTabName(), tableCode, fieldCode));
+                            errorTableColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), tableCode, fieldCode));
                         }
                     }
                 } else {
                     if (StringUtils.isNotBlank(tabCode)) {
                         for (List<String> ele : errorTableColumnInfo) {
-                            if (StringUtils.equals(ele.get(0), fileName) && StringUtils.equals(ele.get(1), paramRealtimeApiTabDto.getTabName())
+                            if (StringUtils.equals(ele.get(1), fileName) && StringUtils.equals(ele.get(1), paramRealtimeApiTabDto.getTabName())
                                     && StringUtils.equals(ele.get(2), tableCode)) {
                                 errorTableColumnInfoExists = true;
                                 break;
                             }
                         }
                         if (!errorTableColumnInfoExists) {
-                            errorTableColumnInfo.add(Arrays.asList(fileName, paramRealtimeApiTabDto.getTabName(), tableCode, STR_BLANK));
+                            errorTableColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), tableCode, STR_BLANK));
                         }
                     }
                 }

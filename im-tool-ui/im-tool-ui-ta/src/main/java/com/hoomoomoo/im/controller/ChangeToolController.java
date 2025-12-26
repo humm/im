@@ -272,7 +272,7 @@ public class ChangeToolController implements Initializable {
 
     @FXML
     void showParamRealtimeSetResult(ActionEvent event) throws IOException {
-        Runtime.getRuntime().exec("explorer /e,/select," + new File(FileUtils.getFilePath(FILE_CHANGE_PARAM_REALTIME_SET)).getAbsolutePath());
+        Runtime.getRuntime().exec("explorer /e,/select," + new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET)).getAbsolutePath());
     }
 
     @FXML

@@ -4,18 +4,17 @@ import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.extend.ScriptSqlUtils;
-import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import lombok.SneakyThrows;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_FilE_TYPE.NEW_MENU_UPDATE;
@@ -73,6 +72,25 @@ public class CheckResultController implements Initializable {
             String res = basePath + ScriptSqlUtils.workFlow.replace(FILE_TYPE_SQL, FILE_TYPE_RES_SQL);
             initTabByFile(check, NAME_ERROR_INFO);
             initTabByFile(res, NAME_SCRIPT_DETAIL);
+        } else if (PAGE_TYPE_SYSTEM_TOOL_PARAMETER_RESULT.equals(pageType)) {
+            initTabByFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET)).getAbsolutePath(), "汇总信息");
+            File folder = new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_FOLDER_SET));
+            if (folder.isDirectory()) {
+                List<File> files = Arrays.asList(folder.listFiles());
+                Collections.sort(files, new Comparator<File>() {
+                    @Override
+                    public int compare(File o1, File o2) {
+                        return o1.getName().compareTo(o2.getName());
+                    }
+                });
+                for (File file : files) {
+                    if (StringUtils.equals(file.getName(), FILE_REALTIME_SET)) {
+                        continue;
+                    }
+                    initTabByFile(file.getAbsolutePath(), file.getName());
+                }
+            }
+
         }
     }
 

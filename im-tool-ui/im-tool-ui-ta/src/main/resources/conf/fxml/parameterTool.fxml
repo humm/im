@@ -44,12 +44,19 @@
                                                 <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
                                             </padding>
                                         </Button>
-                                        <Label fx:id="errorTips" layoutX="1300" layoutY="55.0" prefHeight="15.0"
+                                        <Label fx:id="errorTips" layoutX="1230" layoutY="55.0" prefHeight="15.0"
                                                style="-fx-font-weight: bold; -fx-text-background-color: red;"
                                                text="存在错误信息,请检查"/>
-                                        <Button fx:id="errorTipsResult" layoutX="1470.0" layoutY="50"
+                                        <Button fx:id="errorTipsResult" layoutX="1400.0" layoutY="50"
                                                 mnemonicParsing="false" onAction="#showParamRealtimeSetResult"
                                                 prefWidth="80.0" text="查看">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </Button>
+                                        <Button fx:id="errorTipsResultByFile" layoutX="1500.0" layoutY="50"
+                                                mnemonicParsing="false" onAction="#showParamRealtimeSetResultByFile"
+                                                prefWidth="100.0" text="分文件查看">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                             </padding>
