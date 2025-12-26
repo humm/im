@@ -186,13 +186,24 @@ public class MenuFunctionConfig {
 
         CHANGE_TOOL(
                 "600",
-                "整备环境",
-                "整备环境",
+                "环境准备",
+                "环境准备",
                 "/conf/fxml/changeTool.fxml",
                 "changeTool",
                 "menuOther",
                 "0",
-                "ChangeToolController.java,ExcelComparatorUtils.java,changeTool.fxml,paramRealtimeSet.json"
+                "ChangeToolController.java,changeTool.fxml"
+        ),
+
+        PARAMETER_TOOL(
+                "650",
+                "文档更新",
+                "文档更新",
+                "/conf/fxml/parameterTool.fxml",
+                "parameterTool",
+                "menuOther",
+                "0",
+                "ParameterToolController.java,ExcelComparatorUtils.java,parameterTool.fxml,paramRealtimeSet.json"
         ),
 
         SYSTEM_TOOL(

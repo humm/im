@@ -23,10 +23,6 @@ public class ChangeFunctionTask implements Callable<CopyCodeTaskParam> {
             case STR_2:
                 changeFunctionTaskParam.getChangeToolController().buildMenuModeSql(taskType);
                 break;
-            case STR_3:
-                changeFunctionTaskParam.getChangeToolController().executeRealtimeExe(changeFunctionTaskParam.getDictPath(),
-                        changeFunctionTaskParam.getParamPath(), changeFunctionTaskParam.getTablePath());
-                break;
             default:
                 new Exception("未匹配执行方法，请检查");
         }
