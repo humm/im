@@ -180,6 +180,19 @@ public class FileUtils {
      * @date: 2021/04/28
      * @return:
      */
+    public static void writeFile(String filePath, String content, String encode) throws IOException {
+        writeFile(filePath, content, encode, false);
+    }
+
+    /**
+     * 写文件
+     *
+     * @param filePath
+     * @param content
+     * @author: humm23693
+     * @date: 2021/04/28
+     * @return:
+     */
     public static void writeFileAppend(String filePath, String content) throws IOException {
         writeFile(filePath, content, null, true);
     }

@@ -541,8 +541,8 @@ public class ParameterToolController implements Initializable {
         String jsonFilePath = filePath.replace(".sql", "_normal.json");
         String jsonSceneFilePath = filePath.replace(".sql", "_scene.json");
         List<String> requestContent = paramRealtimeDto.getRequestContent();
-        FileUtils.writeFile(jsonFilePath, requestContent.stream().collect(Collectors.joining(STR_NEXT_LINE)));
-        FileUtils.writeFile(jsonSceneFilePath, buildSceneContent(requestContent).stream().collect(Collectors.joining(STR_NEXT_LINE)));
+        FileUtils.writeFile(jsonFilePath, requestContent.stream().collect(Collectors.joining(STR_NEXT_LINE)), ENCODING_UTF8);
+        FileUtils.writeFile(jsonSceneFilePath, buildSceneContent(requestContent).stream().collect(Collectors.joining(STR_NEXT_LINE)), ENCODING_UTF8);
         FileOutputStream fileOutputStream = new FileOutputStream(excelFileBakPath);
         workbook.write(fileOutputStream);
         workbook.dispose();
@@ -956,7 +956,7 @@ public class ParameterToolController implements Initializable {
         if (!lastLine.endsWith(STR_COMMA)) {
             lastLine += STR_COMMA;
         }
-        lastLine += STR_NEXT_LINE + "                \"" + beginValidDate + "\": " + "\"" + NAME_DESC_BEGIN_VALID_DATE + "\"";
+        lastLine += STR_NEXT_LINE + "                \"" + beginValidDate + "\": " + "\"\"  // " + NAME_DESC_BEGIN_VALID_DATE;
         requestContent.set(lastIndex, lastLine);
     }
 
