@@ -447,83 +447,66 @@ public class ChangeToolController implements Initializable {
         res.add("-- " + taskType + "\n");
 
         res.add("-- 开通实时并发清算功能(基金行业)");
-        res.add("update tbparam set param_value = '" + gm + "' where param_id = 'fund_MultiProcessesLiqDeal';\n");
+        res.add(generateSql("开通实时并发清算功能", "fund_MultiProcessesLiqDeal", gm));
 
         res.add("-- 按照产品日切清算(中信自动化清算模式)");
-        if (STR_1.equals(zx) || xyMode) {
-            res.add("update tbparam set param_value = '1' where param_id = 'fund_T1MultiProcessesLiqDeal';\n");
-        } else {
-            res.add("update tbparam set param_value = '0' where param_id = 'fund_T1MultiProcessesLiqDeal';\n");
-        }
+        res.add(generateSql("按照产品日切清算", "fund_T1MultiProcessesLiqDeal", STR_1.equals(zx) || xyMode ? STR_1 : STR_0));
 
         res.add("-- 开通参数日期管理功能(中信特有功能)");
-        if (STR_1.equals(zx)) {
-            res.add("update tbparam set param_value = '1' where param_id = 'fund_ParamProcessesLiqDeal';\n");
-        } else {
-            res.add("update tbparam set param_value = '0' where param_id = 'fund_ParamProcessesLiqDeal';\n");
-        }
+        res.add(generateSql("开通参数日期管理功能", "fund_ParamProcessesLiqDeal", zx));
 
-        res.add("-- 兴业自动化清算特有功能(兴业特有功能)");
-        res.add("update tbparam set param_value = '" + xy + "' where param_id = 'fund_XyMultiProcessesPrivate';\n");
+        res.add("-- 是否兴业自动化清算特有功能(兴业特有功能)");
+        res.add(generateSql("是否兴业自动化清算特有功能", "fund_XyMultiProcessesPrivate", xy));
 
         res.add("-- 清算列表外部发起(兴业自动化清算模式)");
-        if (xyMode) {
-            res.add("update tbparam set param_value = '1' where param_id = 'fund_XyMultiProcessesLiqDeal';\n");
-        } else {
-            res.add("update tbparam set param_value = '0' where param_id = 'fund_XyMultiProcessesLiqDeal';\n");
-        }
+        res.add(generateSql("清算列表外部发起", "fund_XyMultiProcessesLiqDeal", xyMode ? STR_1 : STR_0));
 
         res.add("-- 开通分产品自动化清算功能(证券行业)");
-        res.add("update tbparam set param_value = '" + sm + "' where param_id = 'fund_AutoLiqByPrd';\n");
+        res.add(generateSql("开通分产品自动化清算功能", "fund_AutoLiqByPrd", sm));
 
         res.add("-- 分产品自动化清算行情导入方式");
-        res.add("update tbparam set param_value = '" + navType + "' where param_id = 'fund_autoLiqImpNavType';\n");
+        res.add(generateSql("分产品自动化清算行情导入方式", "fund_autoLiqImpNavType", navType));
 
         res.add("-- 国泰海通特殊处理功能(国泰海通特有功能)");
-        if (STR_1.equals(gtht)) {
-            res.add("update tbparam set param_value = '1' where param_id = 'fund_JaSpecialDeal';\n");
-        } else {
-            res.add("update tbparam set param_value = '0' where param_id = 'fund_JaSpecialDeal';\n");
-        }
+        res.add(generateSql("国泰海通特殊处理功能", "fund_JaSpecialDeal", gtht));
 
         res.add("-- 开通中金模式自动化清算功能(中金特有功能)");
-        res.add("update tbparam set param_value = '" + zj + "' where param_id = 'fund_ZjMultiProcessesPrivate';\n");
+        res.add(generateSql("开通中金模式自动化清算功能", "fund_ZjMultiProcessesPrivate", zj));
 
         String gfzq = StringUtils.equals("87", TA_CODE) ? STR_1 : STR_0;
 
-        res.add("-- 开通自动化清算支持固定批次处理功能(广发证券特有功能)");
-        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AutoLiqSptFixedBatch';\n");
+        res.add("-- 开通自动化清算支持固定批次处理功能");
+        res.add(generateSql("开通自动化清算支持固定批次处理功能", "fund_AutoLiqSptFixedBatch", gfzq));
 
-        res.add("-- 开通自动化清算隐藏基金状态和账户处理节点功能(广发证券特有功能)");
-        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AutoLiqHideStatusSet';\n");
+        res.add("-- 开通自动化清算隐藏基金状态节点");
+        res.add(generateSql("开通自动化清算隐藏基金状态节点", "fund_AutoLiqHideStatusSet", gfzq));
 
-        res.add("-- 开通自动化数据自动导入功能(广发证券特有功能)");
-        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_MultiProcessesDataAutoImp';\n");
+        res.add("-- 开通自动化数据自动导入");
+        res.add(generateSql("开通自动化数据自动导入", "fund_MultiProcessesDataAutoImp", gfzq));
 
-        res.add("-- 开通自动化清算支持T0产品清算功能(广发证券特有功能)");
-        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AutoLiqSptT0Deal';\n");
+        res.add("-- 开通自动化清算支持T0产品清算");
+        res.add(generateSql("开通自动化清算支持T0产品清算", "fund_AutoLiqSptT0Deal", gfzq));
 
-        res.add("-- 开通自动化清算支持外部API稽核功能(广发证券特有功能)");
-        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AutoLiqSptApiAudit';\n");
+        res.add("-- 开通自动化清算支持外部API稽核");
+        res.add(generateSql("开通自动化清算支持外部API稽核", "fund_AutoLiqSptApiAudit", gfzq));
 
-        res.add("-- 开通自动化清算根据交易列表处理功能(广发证券特有功能)");
-        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AutoLiqByTradeList';\n");
+        res.add("-- 开通自动化清算根据交易列表处理功能");
+        res.add(generateSql("开通自动化清算根据交易列表处理功能", "fund_AutoLiqByTradeList", gfzq));
 
-        res.add("-- 开通资金清算只导出T0确认文件功能(广发证券特有功能)");
-        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_ZjqsExpT0CfmFile';\n");
+        res.add("-- 开通资金清算只导出T0确认文件");
+        res.add(generateSql("开通资金清算只导出T0确认文件", "fund_ZjqsExpT0CfmFile", gfzq));
 
-        res.add("-- 开通销售商预设批次导出功能(广发证券特有功能)");
-        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_AgencyPreExport';\n");
+        res.add("-- 开通销售商预设批次导出功能");
+        res.add(generateSql("开通销售商预设批次导出功能", "fund_AgencyPreExport", gfzq));
 
-        res.add("-- 开通OTC登记托管功能(广发证券特有功能)");
-        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_OTCTransferAgent';\n");
+        res.add("-- 开通OTC登记托管功能");
+        res.add(generateSql("开通OTC登记托管功能", "fund_OTCTransferAgent", gfzq));
 
-        res.add("-- 开通TA5系统特性(广发证券特有功能)");
-        res.add("update tbparam set param_value = '" + gfzq + "' where param_id = 'fund_Ta5Features';\n");
+        res.add("-- 开通TA5系统特性");
+        res.add(generateSql("开通TA5系统特性", "fund_Ta5Features", gfzq));
 
-        res.add("-- 更新TA代码");
-        res.add("update tbparam set param_value = '" + TA_CODE + "' where param_id = 'BTACODE';\n");
-
+        res.add("-- TA代码");
+        res.add(generateSql("TA代码", "BTACODE", TA_CODE));
 
         res.add(STR_SPACE);
         String groupCode = STR_BLANK;
@@ -552,5 +535,13 @@ public class ChangeToolController implements Initializable {
             FileUtils.writeFileAppend(resFilePath, res);
         }
         executeEnd(resFilePath);
+    }
+
+    private String generateSql(String paramName, String paramId, String paramValue) {
+        StringBuilder sql = new StringBuilder();
+        sql.append(String.format("delete from tbparam where param_id = '%s';\n", paramId));
+        sql.append("insert into tbparam (ta_code, param_id, param_name, param_value, value_name, belong_type, modi_flag, reserve1)\n");
+        sql.append(String.format("values ('000000', '%s', '%s', '%s', ' ', '5', '1', ' ');\n", paramId, paramName, paramValue));
+        return sql.toString();
     }
 }
