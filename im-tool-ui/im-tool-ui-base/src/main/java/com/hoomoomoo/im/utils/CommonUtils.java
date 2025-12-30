@@ -1326,7 +1326,7 @@ public class CommonUtils {
                 }
                 appConfigDto.setScanTips(true);
                 Platform.runLater(() -> {
-                    checkVersion(appConfigDto, false);
+                    checkVersion(appConfigDto);
                     File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
                     if (log.exists()) {
                         File[] subLog = log.listFiles();
@@ -1585,11 +1585,11 @@ public class CommonUtils {
         }
     }
 
-    public static void checkVersion(AppConfigDto appConfigDto, boolean mustCheck) {
+    public static void checkVersion(AppConfigDto appConfigDto) {
         if (isSuperUser()) {
             return;
         }
-        if (!mustCheck && appConfigDto.getCheckVersion()) {
+        if (appConfigDto.getCheckVersion()) {
             return;
         }
         try {
@@ -1625,6 +1625,7 @@ public class CommonUtils {
             String finalVer = HttpRequestUtils.sendPost(appServerUrl + STR_COLON + appServerPort + appServerName, param);
             if (finalVer.contains("请及时更新")) {
                 CommonUtils.showTipsByError(finalVer, 60 * 1000);
+                appConfigDto.setFinalVer(finalVer);
             }
         } catch (Exception e) {
             if (!(e instanceof SocketTimeoutException)) {

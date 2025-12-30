@@ -1,14 +1,11 @@
 {
-  "global_table": [
+  "global": [
     "ta_code",
     "key_code",
     "create_time",
     "modify_timestamp"
   ],
-  "tbfundfarebelong_date": [
-    "effective_flag"
-  ],
-  "tbfundidtypebizlimit": [
+  "fundIdTypeBizLimitSet.sql": [
     "busin_type"
   ]
 }

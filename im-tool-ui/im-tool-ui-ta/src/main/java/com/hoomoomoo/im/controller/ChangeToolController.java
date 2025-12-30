@@ -57,18 +57,6 @@ public class ChangeToolController implements Initializable {
 
     private static String TA_CODE = "00";
 
-    /**
-     * hy 行业 0:参数提示 1:基金行业 2:证券行业 3:个性化行业
-     * taCode ta代码
-     * gm 公募
-     * zx 中信
-     * xy 兴业
-     * zj 中金
-     * gjdf 国金道富
-     * gtht 国泰海通
-     * sm 分产品自动化
-     * navType 分产品自动化清算行情导入方式
-     */
     Map<String, String[]> autoModeValue = new LinkedHashMap<>();
     List<RadioButton> buttonList = new ArrayList<>();
 
@@ -94,6 +82,18 @@ public class ChangeToolController implements Initializable {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
     }
 
+    /**
+     * hy 行业 0:参数提示 1:基金行业 2:证券行业 3:个性化行业
+     * taCode ta代码
+     * gm 公募
+     * zx 中信
+     * xy 兴业
+     * zj 中金
+     * gj 国金道富
+     * gt 国泰海通
+     * sm 分产品自动化
+     * navType 分产品自动化清算行情导入方式
+     */
     private void initAutoMode() {
         autoModeValue.put("参数提示", new String[]{STR_0});
 
@@ -215,6 +215,11 @@ public class ChangeToolController implements Initializable {
     @FXML
     void executeAutoMode(ActionEvent event) {
         try {
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            if (StringUtils.isNotBlank(appConfigDto.getFinalVer())) {
+                CommonUtils.showTipsByError(appConfigDto.getFinalVer(), 30 * 1000);
+                return;
+            }
             OutputUtils.clearLog(logs);
             String mode = STR_BLANK;
             for (RadioButton radioButton : buttonList) {
@@ -239,6 +244,11 @@ public class ChangeToolController implements Initializable {
     @FXML
     void executeMenuMode(ActionEvent event) {
         try {
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            if (StringUtils.isNotBlank(appConfigDto.getFinalVer())) {
+                CommonUtils.showTipsByError(appConfigDto.getFinalVer(), 30 * 1000);
+                return;
+            }
             OutputUtils.clearLog(logs);
             String menu = STR_BLANK;
             for (RadioButton radioButton : menuButtonList) {
@@ -271,12 +281,12 @@ public class ChangeToolController implements Initializable {
     }
 
     @FXML
-    void showParamRealtimeSetResult(ActionEvent event) throws IOException {
-        Runtime.getRuntime().exec("explorer /e,/select," + new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET)).getAbsolutePath());
-    }
-
-    @FXML
-    void executeDbBtn(ActionEvent event) throws IOException {
+    void executeDbBtn(ActionEvent event) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        if (StringUtils.isNotBlank(appConfigDto.getFinalVer())) {
+            CommonUtils.showTipsByError(appConfigDto.getFinalVer(), 30 * 1000);
+            return;
+        }
         OutputUtils.clearLog(logs);
         String codeIn =  CommonUtils.getComponentValue(code);
         String dbNumIn =  CommonUtils.getComponentValue(dbNum);
@@ -438,9 +448,9 @@ public class ChangeToolController implements Initializable {
         }
     }
 
-    public void buildAutoModeSql(String taskType, String gm, String zx, String xy, String zj, String gjdf,
-                                 String gtht, String sm, String navType) throws Exception {
-        boolean xyMode =  STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gjdf);
+    public void buildAutoModeSql(String taskType, String gm, String zx, String xy, String zj, String gj,
+                                 String gt, String sm, String navType) throws Exception {
+        boolean xyMode =  STR_1.equals(xy) || STR_1.equals(zj) || STR_1.equals(gj);
         executeStart(taskType);
         OutputUtils.info(logs, "执行中 ...");
         List<String> res = new ArrayList<>();
@@ -468,42 +478,42 @@ public class ChangeToolController implements Initializable {
         res.add(generateSql("分产品自动化清算行情导入方式", "fund_autoLiqImpNavType", navType));
 
         res.add("-- 国泰海通特殊处理功能(国泰海通特有功能)");
-        res.add(generateSql("国泰海通特殊处理功能", "fund_JaSpecialDeal", gtht));
+        res.add(generateSql("国泰海通特殊处理功能", "fund_JaSpecialDeal", gt));
 
         res.add("-- 开通中金模式自动化清算功能(中金特有功能)");
         res.add(generateSql("开通中金模式自动化清算功能", "fund_ZjMultiProcessesPrivate", zj));
 
-        String gfzq = StringUtils.equals("87", TA_CODE) ? STR_1 : STR_0;
+        String gf = StringUtils.equals("87", TA_CODE) ? STR_1 : STR_0;
 
         res.add("-- 开通自动化清算支持固定批次处理功能");
-        res.add(generateSql("开通自动化清算支持固定批次处理功能", "fund_AutoLiqSptFixedBatch", gfzq));
+        res.add(generateSql("开通自动化清算支持固定批次处理功能", "fund_AutoLiqSptFixedBatch", gf));
 
         res.add("-- 开通自动化清算隐藏基金状态节点");
-        res.add(generateSql("开通自动化清算隐藏基金状态节点", "fund_AutoLiqHideStatusSet", gfzq));
+        res.add(generateSql("开通自动化清算隐藏基金状态节点", "fund_AutoLiqHideStatusSet", gf));
 
         res.add("-- 开通自动化数据自动导入");
-        res.add(generateSql("开通自动化数据自动导入", "fund_MultiProcessesDataAutoImp", gfzq));
+        res.add(generateSql("开通自动化数据自动导入", "fund_MultiProcessesDataAutoImp", gf));
 
         res.add("-- 开通自动化清算支持T0产品清算");
-        res.add(generateSql("开通自动化清算支持T0产品清算", "fund_AutoLiqSptT0Deal", gfzq));
+        res.add(generateSql("开通自动化清算支持T0产品清算", "fund_AutoLiqSptT0Deal", gf));
 
         res.add("-- 开通自动化清算支持外部API稽核");
-        res.add(generateSql("开通自动化清算支持外部API稽核", "fund_AutoLiqSptApiAudit", gfzq));
+        res.add(generateSql("开通自动化清算支持外部API稽核", "fund_AutoLiqSptApiAudit", gf));
 
         res.add("-- 开通自动化清算根据交易列表处理功能");
-        res.add(generateSql("开通自动化清算根据交易列表处理功能", "fund_AutoLiqByTradeList", gfzq));
+        res.add(generateSql("开通自动化清算根据交易列表处理功能", "fund_AutoLiqByTradeList", gf));
 
         res.add("-- 开通资金清算只导出T0确认文件");
-        res.add(generateSql("开通资金清算只导出T0确认文件", "fund_ZjqsExpT0CfmFile", gfzq));
+        res.add(generateSql("开通资金清算只导出T0确认文件", "fund_ZjqsExpT0CfmFile", gf));
 
         res.add("-- 开通销售商预设批次导出功能");
-        res.add(generateSql("开通销售商预设批次导出功能", "fund_AgencyPreExport", gfzq));
+        res.add(generateSql("开通销售商预设批次导出功能", "fund_AgencyPreExport", gf));
 
         res.add("-- 开通OTC登记托管功能");
-        res.add(generateSql("开通OTC登记托管功能", "fund_OTCTransferAgent", gfzq));
+        res.add(generateSql("开通OTC登记托管功能", "fund_OTCTransferAgent", gf));
 
         res.add("-- 开通TA5系统特性");
-        res.add(generateSql("开通TA5系统特性", "fund_Ta5Features", gfzq));
+        res.add(generateSql("开通TA5系统特性", "fund_Ta5Features", gf));
 
         res.add("-- TA代码");
         res.add(generateSql("TA代码", "BTACODE", TA_CODE));

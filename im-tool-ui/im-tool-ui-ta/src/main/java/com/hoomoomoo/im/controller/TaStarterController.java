@@ -34,7 +34,7 @@ public class TaStarterController implements Initializable {
         CommonUtils.scanLog();
         CommonUtils.clearLog();
         CommonUtils.scanTimer();
-        //TaCommonUtils.startRestPlan();
+        // TaCommonUtils.startRestPlan();
     }
 
 }

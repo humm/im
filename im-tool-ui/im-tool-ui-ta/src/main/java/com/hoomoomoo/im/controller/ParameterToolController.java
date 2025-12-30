@@ -31,7 +31,6 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -93,7 +92,7 @@ public class ParameterToolController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         String msg = String.format(BaseConst.MSG_USE, PARAMETER_TOOL.getName());
         LoggerUtils.info(msg);
-        LoggerUtils.writeLogInfo(CHANGE_TOOL.getCode(), new Date(), new ArrayList<String>(){{
+        LoggerUtils.writeLogInfo(CHANGE_TOOL.getCode(), new Date(), new ArrayList<String>() {{
             add(msg);
         }});
 
@@ -122,16 +121,12 @@ public class ParameterToolController implements Initializable {
     }
 
     @FXML
-    void executeRealtime(ActionEvent event) {
-        Platform.runLater(() -> {
-            try {
-                CommonUtils.checkVersion(ConfigCache.getAppConfigDtoCache(), true);
-            } catch (Exception e) {
-                if (!(e instanceof SocketTimeoutException)) {
-                    LoggerUtils.error(e);
-                }
-            }
-        });
+    void executeRealtime(ActionEvent event) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        if (StringUtils.isNotBlank(appConfigDto.getFinalVer())) {
+            CommonUtils.showTipsByError(appConfigDto.getFinalVer(), 30 * 1000);
+            return;
+        }
         OutputUtils.clearLog(logs);
         try {
             String dictPath = baseDictPath.getText();
@@ -285,19 +280,19 @@ public class ParameterToolController implements Initializable {
         Iterator<List<String>> iterator = error.listIterator();
         Map<String, List<String>> skipConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_JSON)), Map.class);
         while (iterator.hasNext()) {
-            List<String> skipInfo = iterator.next();
-            String table = skipInfo.get(3);
-            String column = skipInfo.get(4);
-            if (StringUtils.isBlank(column)) {
+            List<String> errorInfo = iterator.next();
+            if (errorInfo.size() != 5) {
                 continue;
             }
-            if (skipConfig.containsKey(table) || skipConfig.containsKey(KEY_GLOBAL_TABLE)) {
+            String fileName = errorInfo.get(1);
+            String column = errorInfo.get(4);
+            if (skipConfig.containsKey(fileName) || skipConfig.containsKey(KEY_GLOBAL)) {
                 List<String> columns = new ArrayList<>();
-                List<String> tableColumns = skipConfig.get(table);
+                List<String> tableColumns = skipConfig.get(fileName);
                 if (CollectionUtils.isNotEmpty(tableColumns)) {
                     columns.addAll(tableColumns);
                 }
-                columns.addAll(skipConfig.get(KEY_GLOBAL_TABLE));
+                columns.addAll(skipConfig.get(KEY_GLOBAL));
                 for (String col : columns) {
                     if (StringUtils.equals(column.trim(), col.trim())) {
                         iterator.remove();
@@ -330,7 +325,7 @@ public class ParameterToolController implements Initializable {
             return;
         }
         String[] table = tableContent.split("create table");
-        for (int i=1; i<table.length; i++) {
+        for (int i = 1; i < table.length; i++) {
             String item = changeToLower(CommonUtils.formatStrToSingleSpace(table[i]));
             item = item.split(KEY_CONSTRAINT)[0];
             String tableName = changeToLower(item.split("\\(")[0]);
@@ -342,7 +337,7 @@ public class ParameterToolController implements Initializable {
                 String[] eleConfig = column.split(STR_S_SLASH);
                 String fieldCode = STR_BLANK;
                 String fieldType = STR_BLANK;
-                for (int j=0; j<eleConfig.length; j++) {
+                for (int j = 0; j < eleConfig.length; j++) {
                     String ele = changeToLower(eleConfig[j]);
                     if (StringUtils.isBlank(ele)) {
                         continue;
@@ -361,10 +356,10 @@ public class ParameterToolController implements Initializable {
                         }
                         break;
                     } else if (StringUtils.equals(tableName, ele)) {
-                      continue;
+                        continue;
                     } else {
                         fieldCode = ele;
-                        fieldType = eleConfig[j+1];
+                        fieldType = eleConfig[j + 1];
                         break;
                     }
                 }
@@ -518,7 +513,7 @@ public class ParameterToolController implements Initializable {
             if (!path.endsWith(".sql")) {
                 return;
             }
-            OutputUtils.infoContainBr(logs, "扫描文件 " +  path);
+            OutputUtils.infoContainBr(logs, "扫描文件 " + path);
             buildExcel(path);
         }
     }
@@ -556,7 +551,7 @@ public class ParameterToolController implements Initializable {
                 modifyInfo.add(STR_SPACE_4 + diff);
             }
             FileUtils.deleteFile(excelFilePath);
-            Files.move(Paths.get(excelFileBakPath),  Paths.get(excelFilePath), StandardCopyOption.ATOMIC_MOVE);
+            Files.move(Paths.get(excelFileBakPath), Paths.get(excelFilePath), StandardCopyOption.ATOMIC_MOVE);
         }
     }
 
@@ -564,7 +559,7 @@ public class ParameterToolController implements Initializable {
         List<String> sceneContent = new ArrayList<>();
         sceneContent.add(requestContent.get(0));
         int dataIndex = 0;
-        for (int i=0; i<requestContent.size(); i++) {
+        for (int i = 0; i < requestContent.size(); i++) {
             if (requestContent.get(i).contains(KEY_DATA)) {
                 dataIndex = i;
                 break;
@@ -758,7 +753,7 @@ public class ParameterToolController implements Initializable {
         buildRowCell(row, centerCellStyle, 2, COLUMN_TYPE_I);
         buildRowCell(row, null, 3, NAME_DESC_BEGIN_VALID_DATE);
         buildRowCell(row, centerCellStyle, 6, KEY_N);
-        buildRowCell(row, wrapTextCellStyle, 7,"{\"required\":true,\"message\":\"有效起始日期必填\"}\n{\"validator\":\"isDate\",\"message\":\"日期格式不正确\"}");
+        buildRowCell(row, wrapTextCellStyle, 7, "{\"required\":true,\"message\":\"有效起始日期必填\"}\n{\"validator\":\"isDate\",\"message\":\"日期格式不正确\"}");
     }
 
     private void buildDictDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto) {
@@ -852,7 +847,7 @@ public class ParameterToolController implements Initializable {
             );
             CellStyle centerCellStyle = ExcelCommonUtils.getCenterCellStyle(workbook);
             CellStyle wrapTextCellStyle = ExcelCommonUtils.getWrapTextCellStyle(workbook);
-            for (int i=0; i<paramRealtimeRequestDescList.size(); i++) {
+            for (int i = 0; i < paramRealtimeRequestDescList.size(); i++) {
                 SXSSFRow row = requestDesc.createRow(i + 1);
                 ParamRealtimeRequestDescDto paramRealtimeInterfaceDesc = paramRealtimeRequestDescList.get(i);
                 buildRowCell(row, null, 0, paramRealtimeInterfaceDesc.getCode());
@@ -868,7 +863,7 @@ public class ParameterToolController implements Initializable {
             int currentLine = paramRealtimeRequestDescList.size() + 3;
             SXSSFRow rowUnique = requestDesc.createRow(currentLine);
             buildRowCell(rowUnique, titleCellStyle, 0, sheetName + "唯一性约束");
-            requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine,0,6));
+            requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine, 0, 6));
 
             for (ParamRealtimeApiTabDto item : paramRealtimeApiTabList) {
                 String keyStr = item.getCheckName();
@@ -882,7 +877,7 @@ public class ParameterToolController implements Initializable {
                 currentLine++;
                 SXSSFRow rowUniqueDesc = requestDesc.createRow(currentLine);
                 buildRowCell(rowUniqueDesc, null, 0, desc + keyStr);
-                requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine,0,6));
+                requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine, 0, 6));
                 if (!product) {
                     break;
                 }
@@ -893,7 +888,7 @@ public class ParameterToolController implements Initializable {
             currentLine = currentLine + 3;
             SXSSFRow rowContent = requestDesc.createRow(currentLine);
             buildRowCell(rowContent, titleCellStyle, 0, "参考报文");
-            requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine,0,6));
+            requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine, 0, 6));
             currentLine++;
             List<String> requestContent = new ArrayList<>();
             requestContent.add("{");
@@ -905,12 +900,12 @@ public class ParameterToolController implements Initializable {
             requestContent.add("    \"action\": \"add\",");
             requestContent.add("    \"isOverWrite\": \"1\",");
             requestContent.add("    " + KEY_DATA);
-            for (int j=0; j<paramRealtimeApiTabList.size(); j++) {
+            for (int j = 0; j < paramRealtimeApiTabList.size(); j++) {
                 ParamRealtimeApiTabDto tab = paramRealtimeApiTabList.get(j);
                 String tableCode = changeToLower(tab.getTableCode());
                 requestContent.add("        \"" + tab.getTabCode() + "\": [");
                 requestContent.add("            {");
-                for (int i = 0; i< paramRealtimeApiComponentDtoList.size(); i++) {
+                for (int i = 0; i < paramRealtimeApiComponentDtoList.size(); i++) {
                     ParamRealtimeApiComponentDto item = paramRealtimeApiComponentDtoList.get(i);
                     String fieldCode = changeToLower(item.getFieldCode());
                     if (skipColumns(tableCode, fieldCode)) {
@@ -977,32 +972,32 @@ public class ParameterToolController implements Initializable {
         paramRealtimeInterfaceDescList.add(new ParamRealtimeInterfaceDescDto(STR_BLANK, "2", "字符编码使用utf-8"));
         paramRealtimeInterfaceDescList.add(new ParamRealtimeInterfaceDescDto(STR_BLANK, "3",
                 "请求头部必须增加属性\n" +
-                "    Content-Type=application/json\n" +
-                "    X-Requested-With=XMLHttpRequest"));
+                        "    Content-Type=application/json\n" +
+                        "    X-Requested-With=XMLHttpRequest"));
         paramRealtimeInterfaceDescList.add(new ParamRealtimeInterfaceDescDto(STR_BLANK, "4",
                 "请求内容必须是json格式的内容\n" +
-                "    java示例:\n" +
-                "        DefaultHttpClient  httpClient = new DefaultHttpClient();\n" +
-                "        HttpPost method = new HttpPost();\n" +
-                "        method.setHeader(\"Content-type\", \"application/json; charset=utf-8\");\n" +
-                "        method.setHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
-                "        String jsonStr = \"{}\";\n" +
-                "        String uri = \"\";\n" +
-                "        StringEntity entity = new StringEntity(jsonStr, \"utf-8\");\n" +
-                "        entity.setContentEncoding(\"UTF-8\");\n" +
-                "        entity.setContentType(\"application/json\");\n" +
-                "        method.setURI(URI.create(uri));\n" +
-                "        method.setEntity(entity);\n" +
-                "        HttpResponse response = httpClient.execute(method);"));
+                        "    java示例:\n" +
+                        "        DefaultHttpClient  httpClient = new DefaultHttpClient();\n" +
+                        "        HttpPost method = new HttpPost();\n" +
+                        "        method.setHeader(\"Content-type\", \"application/json; charset=utf-8\");\n" +
+                        "        method.setHeader(\"X-Requested-With\", \"XMLHttpRequest\");\n" +
+                        "        String jsonStr = \"{}\";\n" +
+                        "        String uri = \"\";\n" +
+                        "        StringEntity entity = new StringEntity(jsonStr, \"utf-8\");\n" +
+                        "        entity.setContentEncoding(\"UTF-8\");\n" +
+                        "        entity.setContentType(\"application/json\");\n" +
+                        "        method.setURI(URI.create(uri));\n" +
+                        "        method.setEntity(entity);\n" +
+                        "        HttpResponse response = httpClient.execute(method);"));
         paramRealtimeInterfaceDescList.add(new ParamRealtimeInterfaceDescDto(STR_BLANK, "5",
                 "字段类型说明\n" +
-                "    C: 字符\n" +
-                "    N: 数字\n" +
-                "    I:   整数\n" +
-                "    JSON: JSON"));
+                        "    C: 字符\n" +
+                        "    N: 数字\n" +
+                        "    I:   整数\n" +
+                        "    JSON: JSON"));
         CellStyle centerCellStyle = ExcelCommonUtils.getCenterCellStyle(workbook);
         CellStyle wrapTextCellStyle = ExcelCommonUtils.getWrapTextCellStyle(workbook);
-        for (int i=0; i<paramRealtimeInterfaceDescList.size(); i++) {
+        for (int i = 0; i < paramRealtimeInterfaceDescList.size(); i++) {
             SXSSFRow row = interfaceDesc.createRow(i + 1);
             ParamRealtimeInterfaceDescDto paramRealtimeInterfaceDesc = paramRealtimeInterfaceDescList.get(i);
             buildRowCell(row, centerCellStyle, 0, paramRealtimeInterfaceDesc.getAgreeName());
@@ -1010,7 +1005,7 @@ public class ParameterToolController implements Initializable {
             buildRowCell(row, wrapTextCellStyle, 2, paramRealtimeInterfaceDesc.getAgreeContent());
         }
 
-        interfaceDesc.addMergedRegion(new CellRangeAddress(1,5,0,0));
+        interfaceDesc.addMergedRegion(new CellRangeAddress(1, 5, 0, 0));
     }
 
     private void buildRowCell(SXSSFRow row, CellStyle cellStyle, int rowIndex, String rowName) {
