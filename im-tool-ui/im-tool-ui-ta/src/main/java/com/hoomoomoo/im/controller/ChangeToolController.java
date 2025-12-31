@@ -44,6 +44,9 @@ public class ChangeToolController implements Initializable {
     private AnchorPane menuModePane;
 
     @FXML
+    private AnchorPane parameterModePane;
+
+    @FXML
     private Button autoModeBtn;
 
     @FXML
@@ -60,12 +63,11 @@ public class ChangeToolController implements Initializable {
     Map<String, String[]> autoModeValue = new LinkedHashMap<>();
     List<RadioButton> buttonList = new ArrayList<>();
 
-    /**
-     * newUd
-     * all
-     */
     Map<String, Boolean[]> menuModeValue = new LinkedHashMap<>();
     List<RadioButton> menuButtonList = new ArrayList<>();
+
+    Map<String, String[]> parameterModeValue = new LinkedHashMap<>();
+    List<RadioButton> parameterButtonList = new ArrayList<>();
 
     @SneakyThrows
     @Override
@@ -78,8 +80,7 @@ public class ChangeToolController implements Initializable {
         initAutoMode();
         initMenuMode();
         initDb();
-
-        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        initParameterMode();
     }
 
     /**
@@ -166,6 +167,69 @@ public class ChangeToolController implements Initializable {
         buildTips();
     }
 
+    private void initParameterMode() {
+        parameterModeValue.put("场景化", new String[]{STR_1, TA_CODE, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("嘉实基金", new String[]{STR_1, "07", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("国泰海通", new String[]{STR_1, "JA", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("阳光资产", new String[]{STR_1, " ", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+
+        parameterModeValue.put("普通模式", new String[]{STR_2, TA_CODE, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
+        parameterModeValue.put("国金道富", new String[]{STR_2, "NB", STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1, STR_0});
+        parameterModeValue.put("东方证券", new String[]{STR_2, "SD", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
+        parameterModeValue.put("中泰证券", new String[]{STR_2, " ", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
+        parameterModeValue.put("广发证券", new String[]{STR_2, "87", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
+
+        Map<String, Set<String>> group = new LinkedHashMap<>();
+        for (Map.Entry<String, String[]> entry : parameterModeValue.entrySet()) {
+            String name = entry.getKey();
+            String hy = entry.getValue()[0];
+            if (group.containsKey(hy)) {
+                group.get(hy).add(name);
+            } else {
+                Set<String> select = new LinkedHashSet<>();
+                select.add(name);
+                group.put(hy, select);
+            }
+        }
+
+        double layoutY = 70;
+        ToggleGroup toggleGroup = new ToggleGroup();
+        for (Map.Entry<String, Set<String>> entry : group.entrySet()) {
+            String modeName = entry.getKey();
+            switch (entry.getKey()) {
+                case STR_1:
+                    modeName = "场景化";
+                    break;
+                case STR_2:
+                    modeName = "普通模式";
+                    break;
+                default:
+                    break;
+            }
+            Label label = new Label(modeName);
+            label.setStyle(STYLE_BOLD);
+            label.setLayoutX(35);
+            label.setLayoutY(layoutY);
+            Set<String> select = entry.getValue();
+            HBox hBox = new HBox(10);
+            hBox.setLayoutX(110);
+            hBox.setLayoutY(layoutY);
+            layoutY += 30;
+            for (String buttonName : select) {
+                RadioButton button = new RadioButton(buttonName);
+                button.setToggleGroup(toggleGroup);
+                hBox.getChildren().add(button);
+                parameterButtonList.add(button);
+            }
+            parameterModePane.getChildren().addAll(label, hBox);
+        }
+    }
+
+
+    /**
+     * newUd
+     * all
+     */
     private void initMenuMode() {
         menuModeValue.put("新版", new Boolean[]{true, false});
         menuModeValue.put("老版", new Boolean[]{false, false});

@@ -73,7 +73,7 @@
                     <children>
                         <SplitPane dividerPositions="0.4, 0.7" layoutX="174.0" layoutY="76.0" prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                             <items>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="195.0" prefWidth="214.0">
+                                <AnchorPane fx:id="parameterModePane" minHeight="0.0" minWidth="0.0" prefHeight="195.0" prefWidth="214.0">
                                     <children>
                                         <Label layoutX="20.0" layoutY="20.0" prefHeight="15.0" prefWidth="120.0" style="-fx-font-weight: bold;-fx-font-size: 15;" text="参数电子化模式" />
                                     </children>
