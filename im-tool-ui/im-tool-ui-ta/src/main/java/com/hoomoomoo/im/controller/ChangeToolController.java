@@ -209,7 +209,7 @@ public class ChangeToolController implements Initializable {
     }
 
     private String buildTipsMessage(String mode, String val) {
-        return "【" + mode + "】" + " 个性化参数 " + "【" + val + "】" + STR_NEXT_LINE_2;
+        return "【" + mode + "】" + " 个性化参数 " + "【" + val + "】" + STR_NEXT_LINE;
     }
 
     @FXML

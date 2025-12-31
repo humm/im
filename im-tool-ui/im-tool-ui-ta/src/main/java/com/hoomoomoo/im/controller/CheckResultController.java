@@ -74,7 +74,7 @@ public class CheckResultController implements Initializable {
             initTabByFile(res, NAME_SCRIPT_DETAIL);
         } else if (PAGE_TYPE_SYSTEM_TOOL_PARAMETER_RESULT.equals(pageType)) {
             initTabByFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET)).getAbsolutePath(), "汇总信息");
-            File folder = new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_FOLDER_SET));
+            File folder = new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER));
             if (folder.isDirectory()) {
                 List<File> files = Arrays.asList(folder.listFiles());
                 Collections.sort(files, new Comparator<File>() {

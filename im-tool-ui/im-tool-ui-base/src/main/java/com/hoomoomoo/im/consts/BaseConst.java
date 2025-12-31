@@ -448,13 +448,14 @@ public class BaseConst {
     public static final String PATH_DEFINE_TASK_CANCEL_ONLY_SELF_STAT = "/extend/task/cancelOnlySelf.stat";
     public static final String FILE_CHANGE_MENU = "/extend/change/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/change/mode/changeMode.sql";
-    public static final String FILE_PARAM_REALTIME_SET = "/extend/paramRealtimeSet/paramRealtimeSet.sql";
-    public static final String FILE_PARAM_REALTIME_FOLDER_SET = "/extend/paramRealtimeSet/";
+    public static final String FILE_PARAM_REALTIME_SET = "/extend/paramRealtimeSet/00_paramRealtimeSet.sql";
+    public static final String FILE_PARAM_REALTIME_SET_FOLDER = "/extend/paramRealtimeSet/";
     public static final String FILE_REALTIME_SET = "paramRealtimeSet.sql";
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
     public static final String PATH_SYNC_TASK_STAT = "/task";
     public static final String PATH_SYNC_VERSION_STAT = "/version";
-    public static final String PATH_PARAM_REALTIME_SET_SKIP_JSON = "/conf/extend/paramRealtimeSet.json";
+    public static final String PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE = "/conf/extend/paramRealtimeSetExclude.json";
+    public static final String PATH_PARAM_REALTIME_SET_SKIP_INCLUDE = "/conf/extend/paramRealtimeSetInclude.json";
 
     public static final Integer SECOND_CLICKED = 2;
     public static final String RIGHT_CLICKED = "SECONDARY";

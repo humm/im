@@ -1161,6 +1161,9 @@ public class HepTodoController extends BaseController implements Initializable {
 
                 if (taskCustomerName.containsKey(taskNumberIn)) {
                     String name = taskCustomerName.get(taskNumberIn);
+                    if (StringUtils.isNotBlank(name) && name.contains("（") && name.contains("）")) {
+                        name = name.substring(name.indexOf("（") + 1, name.indexOf("）"));
+                    }
                     item.setCustomerFull(StringUtils.isBlank(name) ? NAME_INNER_CUSTOMER : name);
                 } else {
                     if (StringUtils.isBlank(item.getCustomerFull()) && taskName.contains(DEFECT_TAG)) {

@@ -200,8 +200,8 @@ public class ParameterToolController implements Initializable {
                 }
             }
             // 忽略提示信息
-            skipErrorTips(errorTableColumnInfo);
-            skipErrorTips(errorConfigColumnInfo);
+            Map<String, List<String>> desc = skipErrorTips(errorTableColumnInfo);
+            desc.putAll(skipErrorTips(errorConfigColumnInfo));
 
             Map<String, StringBuilder> tipsByFile = new LinkedHashMap<>();
             int errorColumn = 0;
@@ -239,7 +239,21 @@ public class ParameterToolController implements Initializable {
                     }
                 }
             }
-            FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_FOLDER_SET)));
+
+            if (MapUtils.isNotEmpty(desc)) {
+                for (Map.Entry<String, List<String>> entry : desc.entrySet()) {
+                    String folder = entry.getKey();
+                    List<String> ele = entry.getValue();
+                    String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), ele.get(3), ele.get(4)) + STR_NEXT_LINE;
+                    errorMessage.append(msg);
+                    if (tipsByFile.containsKey(folder)) {
+                        tipsByFile.get(folder).append(msg);
+                    } else {
+                        tipsByFile.put(folder, new StringBuilder(msg));
+                    }
+                }
+            }
+            FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER)));
             if (StringUtils.isNotBlank(errorMessage)) {
                 String summary = "未获取到表字段信息: " + errorColumn + "  未获取到表结构信息: " + errorTable + "  未配置字段信息: " + errorConfigColumnInfo.size();
                 OutputUtils.infoContainBr(logs, "异常明细信息");
@@ -248,7 +262,7 @@ public class ParameterToolController implements Initializable {
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
                 if (MapUtils.isNotEmpty(tipsByFile)) {
                     for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
-                        FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_FOLDER_SET + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
+                        FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
                     }
                 }
                 errorTips.setVisible(true);
@@ -276,31 +290,45 @@ public class ParameterToolController implements Initializable {
         return false;
     }
 
-    private void skipErrorTips(List<List<String>> error) throws IOException {
+    private Map<String, List<String>> skipErrorTips(List<List<String>> error) throws IOException {
+        Map<String, List<String>> desc = new HashMap<>();
         Iterator<List<String>> iterator = error.listIterator();
-        Map<String, List<String>> skipConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_JSON)), Map.class);
+        Map<String, List<String>> skipExcludeConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE)), Map.class);
+        Map<String, List<String>> skipIncludeConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_INCLUDE)), Map.class);
         while (iterator.hasNext()) {
             List<String> errorInfo = iterator.next();
             if (errorInfo.size() != 5) {
                 continue;
             }
+            String fileFolderName = errorInfo.get(0);
             String fileName = errorInfo.get(1);
             String column = errorInfo.get(4);
-            if (skipConfig.containsKey(fileName) || skipConfig.containsKey(KEY_GLOBAL)) {
+            // 剔除字段
+            if (skipExcludeConfig.containsKey(fileName) || skipExcludeConfig.containsKey(KEY_GLOBAL)) {
                 List<String> columns = new ArrayList<>();
-                List<String> tableColumns = skipConfig.get(fileName);
+                List<String> tableColumns = skipExcludeConfig.get(fileName);
                 if (CollectionUtils.isNotEmpty(tableColumns)) {
                     columns.addAll(tableColumns);
                 }
-                columns.addAll(skipConfig.get(KEY_GLOBAL));
-                for (String col : columns) {
-                    if (StringUtils.equals(column.trim(), col.trim())) {
-                        iterator.remove();
-                        continue;
+                columns.addAll(skipExcludeConfig.get(KEY_GLOBAL));
+                if (columns.contains(column)) {
+                    iterator.remove();
+                    continue;
+                }
+            }
+            // 包含字段
+            if (skipIncludeConfig.containsKey(fileName)) {
+                List<String> columns = skipIncludeConfig.get(fileName);
+                if (CollectionUtils.isNotEmpty(columns) && !columns.contains(column)) {
+                    if (!desc.containsKey(fileFolderName)) {
+                        desc.put(fileFolderName, Arrays.asList(errorInfo.get(0), errorInfo.get(1), errorInfo.get(2), errorInfo.get(3), "配置了自定义字段显示,请确认已涵盖页面所使用字段"));
                     }
+                    iterator.remove();
+                    continue;
                 }
             }
         }
+        return desc;
     }
 
     private void initTableInfo(String tablePath) throws IOException {
