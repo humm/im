@@ -38,6 +38,7 @@ public class BaseConst {
     public static final String STR_8 = "8";
     public static final String STR_9 = "9";
     public static final String STR_16 = "16";
+    public static final String STR_100 = "100";
     public static final String STR_20991231 = "20991231";
     public static final String STR_DATE_20991231 = "2099-12-31";
 
@@ -448,6 +449,7 @@ public class BaseConst {
     public static final String PATH_DEFINE_TASK_CANCEL_ONLY_SELF_STAT = "/extend/task/cancelOnlySelf.stat";
     public static final String FILE_CHANGE_MENU = "/extend/change/menu/changeMenu.sql";
     public static final String FILE_CHANGE_MODE = "/extend/change/mode/changeMode.sql";
+    public static final String FILE_CHANGE_PARAMETER = "/extend/change/mode/changeParameter.sql";
     public static final String FILE_PARAM_REALTIME_SET = "/extend/paramRealtimeSet/00_paramRealtimeSet.sql";
     public static final String FILE_PARAM_REALTIME_SET_FOLDER = "/extend/paramRealtimeSet/";
     public static final String FILE_REALTIME_SET = "paramRealtimeSet.sql";
