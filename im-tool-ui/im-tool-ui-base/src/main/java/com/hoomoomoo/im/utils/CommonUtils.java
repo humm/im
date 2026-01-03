@@ -1,6 +1,7 @@
 package com.hoomoomoo.im.utils;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.hoomoomoo.im.cache.AppCache;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
@@ -36,10 +37,10 @@ import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
+import java.net.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1326,7 +1327,6 @@ public class CommonUtils {
                 }
                 appConfigDto.setScanTips(true);
                 Platform.runLater(() -> {
-                    checkVersion(appConfigDto);
                     File log = new File(FileUtils.getFilePath(PATH_LOG_ROOT));
                     if (log.exists()) {
                         File[] subLog = log.listFiles();
@@ -1587,13 +1587,9 @@ public class CommonUtils {
 
     public static void checkVersion(AppConfigDto appConfigDto) {
         if (isSuperUser()) {
-            return;
-        }
-        if (appConfigDto.getCheckVersion()) {
-            return;
+            //  return;
         }
         try {
-            appConfigDto.setCheckVersion(true);
             String appServerUrl = appConfigDto.getAppServerUrl();
             String appServerName = STR_SLASH + APP_CODE_TA;
             int appServerPort = Integer.parseInt(appConfigDto.getAppServerPort());
@@ -1620,17 +1616,23 @@ public class CommonUtils {
                     checkFile.add(item);
                 }
             }
-            String param = KEY_VERSION + STR_EQUAL + CommonUtils.getVersion();
-            param += STR_AND + KEY_CHECK_FILE + STR_EQUAL + checkFile.stream().collect(Collectors.joining(STR_COMMA));
+            Map<String, String> param = new LinkedHashMap<>(2);
+            param.put(KEY_VERSION, CommonUtils.getVersion());
+            param.put(KEY_CHECK_FILE, checkFile.stream().collect(Collectors.joining(STR_COMMA)));
             String finalVer = HttpRequestUtils.sendPost(appServerUrl + STR_COLON + appServerPort + appServerName, param);
-            if (finalVer.contains("请及时更新")) {
-                CommonUtils.showTipsByError(finalVer, 60 * 1000);
-                appConfigDto.setFinalVer(finalVer);
+            if (StringUtils.isNotBlank(finalVer)) {
+                Map<String, String> version = JSONObject.parseObject(finalVer, Map.class);
+                if (version.containsKey(KEY_VERSION)) {
+                    String ver = version.get(KEY_VERSION);
+                    CommonUtils.showTipsByError("最新版本为: " + ver + STR_NEXT_LINE_2 + "请更新最新版本 ...", 90 * 1000);
+                    appConfigDto.setFinalVer(version.get(KEY_VERSION));
+                }
             }
         } catch (Exception e) {
             if (!(e instanceof SocketTimeoutException)) {
                 LoggerUtils.error(e);
             }
+            CommonUtils.showTipsByError("服务不在线, 版本信息校验异常", 90 * 1000);
         }
     }
 

@@ -5,12 +5,20 @@
     <parent>
         <artifactId>im-tool-ui</artifactId>
         <groupId>com.hoomoomoo</groupId>
-        <version>2026.000001</version>
+        <version>2026.000010</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>im-tool-ui-base</artifactId>
-    <version>2026.000001</version>
+    <version>2026.000010</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>8.5.31</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

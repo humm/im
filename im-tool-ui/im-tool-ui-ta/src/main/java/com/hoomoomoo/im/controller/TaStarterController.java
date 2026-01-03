@@ -1,7 +1,11 @@
 package com.hoomoomoo.im.controller;
 
+import com.hoomoomoo.im.cache.ConfigCache;
+import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.JvmCache;
+import com.hoomoomoo.im.utils.TaCommonUtils;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.MenuBar;
@@ -29,12 +33,16 @@ public class TaStarterController implements Initializable {
     @SneakyThrows
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         JvmCache.setTaStarterController(this);
         CommonUtils.initialize(location, resources, functionTab, menuBar);
         CommonUtils.scanLog();
         CommonUtils.clearLog();
         CommonUtils.scanTimer();
-        // TaCommonUtils.startRestPlan();
+        Platform.runLater(() -> {
+            CommonUtils.checkVersion(appConfigDto);
+        });
+        TaCommonUtils.startRestPlan();
     }
 
 }

@@ -6,9 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Map;
 
-import static com.hoomoomoo.im.consts.BaseConst.ENCODING_GBK;
-import static com.hoomoomoo.im.consts.BaseConst.STR_BLANK;
+import static com.hoomoomoo.im.consts.BaseConst.*;
 
 /**
  * @author humm23693
@@ -23,22 +23,24 @@ public class HttpRequestUtils {
     private static final String USER_AGENT = "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)";
     private static final Integer TIME_OUT = 3 * 1000;
 
-    public static String sendGet(String url, String param) throws IOException {
-        return send(url, param, false);
+    public static String sendPost(String url, Map<String, String> param) throws IOException {
+        StringBuilder paramStr = new StringBuilder();
+        int index = 0;
+        for (Map.Entry<String, String> entry : param.entrySet()) {
+            if (index != 0) {
+                paramStr.append(STR_AND);
+            }
+            paramStr.append(entry.getKey()).append(STR_EQUAL).append(entry.getValue());
+            index++;
+        }
+        return sendPost(url, paramStr.toString());
     }
 
-    public static String sendPost(String url, String param) throws IOException {
-        return send(url, param, true);
-    }
-
-    public static String send(String url, String param, boolean post) throws IOException {
+    private static String sendPost(String url, String param) throws IOException {
         String result = STR_BLANK;
         BufferedReader in = null;
         PrintWriter out = null;
         try {
-            if (!post) {
-                url += "?" + param;
-            }
             URL realUrl = new URL(url);
             URLConnection connection = realUrl.openConnection();
             connection.setConnectTimeout(TIME_OUT);
@@ -46,15 +48,13 @@ public class HttpRequestUtils {
             connection.setRequestProperty("accept", ACCEPT);
             connection.setRequestProperty("connection", CONNECTION);
             connection.setRequestProperty("user-agent", USER_AGENT);
-            if (post) {
-                connection.setDoOutput(true);
-                connection.setDoInput(true);
-                out = new PrintWriter(connection.getOutputStream());
-                out.print(param);
-                out.flush();
-            }
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+            out = new PrintWriter(connection.getOutputStream());
+            out.print(param);
+            out.flush();
             connection.connect();
-            in = new BufferedReader(new InputStreamReader(connection.getInputStream(), ENCODING_GBK));
+            in = new BufferedReader(new InputStreamReader(connection.getInputStream(), ENCODING_UTF8));
             String line;
             while ((line = in.readLine()) != null) {
                 result += line;

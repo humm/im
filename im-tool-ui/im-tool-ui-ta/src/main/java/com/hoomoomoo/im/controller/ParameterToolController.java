@@ -269,7 +269,7 @@ public class ParameterToolController implements Initializable {
                 errorTipsResult.setVisible(true);
                 errorTipsResultByFile.setVisible(true);
                 Platform.runLater(() -> {
-                    CommonUtils.showTipsByError(summary, 10 * 60 * 1000);
+                    CommonUtils.showTipsByError(summary, 90 * 1000);
                 });
             } else {
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList("完美无瑕"));
