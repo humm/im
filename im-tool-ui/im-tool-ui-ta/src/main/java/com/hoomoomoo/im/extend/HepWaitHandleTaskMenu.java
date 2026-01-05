@@ -346,6 +346,9 @@ public class HepWaitHandleTaskMenu extends ContextMenu {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto item = appConfigDto.getHepTaskDto();
         String taskNumber = item.getTaskNumber();
+        if (StringUtils.isNotBlank(item.getDemandNo())) {
+            taskNumber = item.getDemandNo();
+        }
         String eleValue = taskNumber + STR_SEMICOLON + type;
         String eleIndex = taskNumber + STR_SEMICOLON;
         String path = FileUtils.getFilePath(PATH_DEFINE_TASK_LEVEL_STAT);

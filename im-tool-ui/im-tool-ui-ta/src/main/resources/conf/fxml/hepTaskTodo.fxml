@@ -21,7 +21,7 @@
                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                    AnchorPane.topAnchor="0.0">
             <items>
-                <SplitPane dividerPositions="0.85">
+                <SplitPane dividerPositions="0.88">
                     <items>
                         <AnchorPane fx:id="headPane" minHeight="0.0" minWidth="0.0" prefHeight="97.0"
                                     prefWidth="322.0">
@@ -33,10 +33,10 @@
                                 <Label fx:id="dayPublish" layoutX="100.0" layoutY="30.0"
                                        style="-fx-text-background-color: red;"/>
 
-                                <Label layoutX="870.0" layoutY="5.0" text="本周封版："/>
-                                <Label fx:id="weekClose" layoutX="950.0" layoutY="5.0"/>
-                                <Label layoutX="870.0" layoutY="30.0" text="本周发版："/>
-                                <Label fx:id="weekPublish" layoutX="950.0" layoutY="30.0"/>
+                                <Label layoutX="770.0" layoutY="5.0" text="本周封版："/>
+                                <Label fx:id="weekClose" layoutX="850.0" layoutY="5.0"/>
+                                <Label layoutX="770.0" layoutY="30.0" text="本周发版："/>
+                                <Label fx:id="weekPublish" layoutX="850.0" layoutY="30.0"/>
 
                                 <Label fx:id="fileTipsFileTitle" layoutX="20.0" layoutY="55.0" text="同步文件："/>
                                 <Label fx:id="fileTipsFile" layoutX="90.0" layoutY="55.0"
@@ -62,34 +62,34 @@
                                     </padding>
                                 </Button>
 
-                                <Button fx:id="extendUser" layoutX="230" layoutY="105.0" mnemonicParsing="false"
+                                <Button fx:id="extendUser" layoutX="210" layoutY="105.0" mnemonicParsing="false"
                                         onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联用户任务">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
                                 </Button>
 
-                                <Button fx:id="scriptCheck" layoutX="360" layoutY="105.0" mnemonicParsing="false"
+                                <Button fx:id="scriptCheck" layoutX="320" layoutY="105.0" mnemonicParsing="false"
                                         onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="100.0" text="检查配置脚本">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
                                 </Button>
-                                <Button fx:id="scriptShow" layoutX="490.0" layoutY="105.0" mnemonicParsing="false"
+                                <Button fx:id="scriptShow" layoutX="430.0" layoutY="105.0" mnemonicParsing="false"
                                         onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="100.0" text="查看检查结果">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
                                 </Button>
 
-                                <Button fx:id="syncTask" layoutX="620.0" layoutY="105.0" mnemonicParsing="false"
+                                <Button fx:id="syncTask" layoutX="540.0" layoutY="105.0" mnemonicParsing="false"
                                         onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
                                 </Button>
 
-                                <Button fx:id="updateVersion" layoutX="750.0" layoutY="105.0" mnemonicParsing="false"
+                                <Button fx:id="updateVersion" layoutX="650.0" layoutY="105.0" mnemonicParsing="false"
                                         onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="100.0"
                                         text="同步发版计划">
                                     <padding>
@@ -97,21 +97,21 @@
                                     </padding>
                                 </Button>
 
-                                <Button fx:id="showVersion" layoutX="880.0" layoutY="105.0" mnemonicParsing="false"
+                                <Button fx:id="showVersion" layoutX="760.0" layoutY="105.0" mnemonicParsing="false"
                                         onAction="#showVersion" prefHeight="30.0" prefWidth="100.0" text="查看发版计划">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
                                 </Button>
 
-                                <Button fx:id="showLog" layoutX="1010.0" layoutY="105.0" mnemonicParsing="false"
+                                <Button fx:id="showLog" layoutX="870.0" layoutY="105.0" mnemonicParsing="false"
                                         onAction="#showLogInfo" prefHeight="30.0" prefWidth="100.0" text="查看系统日志">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                     </padding>
                                 </Button>
 
-                                <Button fx:id="showCopyDemand" layoutX="1140.0" layoutY="105.0" mnemonicParsing="false"
+                                <Button fx:id="showCopyDemand" layoutX="980.0" layoutY="105.0" mnemonicParsing="false"
                                         onAction="#showCopyDemandExe" prefHeight="30.0" prefWidth="100.0" text="复制需求编号">
                                     <padding>
                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
@@ -122,10 +122,10 @@
                                 <Button fx:id="all" layoutX="100.0" layoutY="143.0" mnemonicParsing="false"
                                         onAction="#selectAll" prefHeight="30.0" prefWidth="100.0" text="全部">
                                 </Button>
-                                <Button fx:id="only" layoutX="230.0" layoutY="143.0" mnemonicParsing="false"
+                                <Button fx:id="only" layoutX="210.0" layoutY="143.0" mnemonicParsing="false"
                                         onAction="#selectOnly" prefHeight="30.0" prefWidth="100.0" text="去重">
                                 </Button>
-                                <Button fx:id="waitDev" layoutX="360.0" layoutY="143.0" mnemonicParsing="false"
+                                <Button fx:id="waitDev" layoutX="320.0" layoutY="143.0" mnemonicParsing="false"
                                         onAction="#selectWaitDev" prefHeight="30.0" prefWidth="100.0"
                                         text="待开发">
                                 </Button>

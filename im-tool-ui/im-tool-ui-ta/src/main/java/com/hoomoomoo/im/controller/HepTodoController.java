@@ -987,8 +987,6 @@ public class HepTodoController extends BaseController implements Initializable {
                 version.put(versionCode, ele);
             }
 
-            int dayVersionNum = 0;
-            int weekVersionNum = 0;
             Set<String> taskNoList = new LinkedHashSet<>();
             Set<String> demandNoList = new LinkedHashSet<>();
             Iterator<HepTaskDto> iterator = res.listIterator();
@@ -1194,13 +1192,11 @@ public class HepTodoController extends BaseController implements Initializable {
                 controlHepTaskAppointVersionTips(appConfigDto, item, cancelErrorVersion);
 
                 if (todayComplete) {
-                    dayVersionNum++;
                     dayTodoTask.add(taskNumberIn);
                 }
 
                 boolean week = todayComplete || (StringUtils.compare(lastDayByWeek, finishDate) >= 0);
                 if (week) {
-                    weekVersionNum++;
                     weekTodoTask.add(taskNumberIn);
                     setTaskDescTotal(NAME_BUTTON_WEEK);
                 }
@@ -1663,7 +1659,7 @@ public class HepTodoController extends BaseController implements Initializable {
             });
             double x = waitDev.getLayoutX();
             double y = 143;
-            double step = 130;
+            double step = 110;
             int buttonNum = 1;
             for (String buttonId : buttonConfig) {
                 Button button;

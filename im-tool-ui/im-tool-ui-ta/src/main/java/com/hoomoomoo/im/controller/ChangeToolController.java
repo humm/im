@@ -158,12 +158,12 @@ public class ChangeToolController implements Initializable {
         parameterModeValue.put("国泰海通", new String[]{STR_1, "JA", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1});
         parameterModeValue.put("兴业证券", new String[]{STR_1, "XY", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0});
         parameterModeValue.put("国金道富", new String[]{STR_1, "NB", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("阳光资产", new String[]{STR_1, " ",  STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("阳光资产", new String[]{STR_1, "T9",  STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
 
         parameterModeValue.put("普通模式", new String[]{STR_2, TA,   STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
         parameterModeValue.put("中信证券", new String[]{STR_2, "S5", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
         parameterModeValue.put("东方证券", new String[]{STR_2, "SD", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("中泰证券", new String[]{STR_2, " ",  STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("中泰证券", new String[]{STR_2, "QL",  STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
         parameterModeValue.put("广发证券", new String[]{STR_2, "87", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
 
         initRadioButton(subGroup, parameterModeValue, parameterButtonList, parameterModePane);
