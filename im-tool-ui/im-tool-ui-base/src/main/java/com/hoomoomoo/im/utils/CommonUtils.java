@@ -38,9 +38,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1587,7 +1584,7 @@ public class CommonUtils {
 
     public static void checkVersion(AppConfigDto appConfigDto) {
         if (isSuperUser()) {
-            //  return;
+            return;
         }
         try {
             String appServerUrl = appConfigDto.getAppServerUrl();
@@ -1624,8 +1621,9 @@ public class CommonUtils {
                 Map<String, String> version = JSONObject.parseObject(finalVer, Map.class);
                 if (version.containsKey(KEY_VERSION)) {
                     String ver = version.get(KEY_VERSION);
-                    CommonUtils.showTipsByError("最新版本为: " + ver + STR_NEXT_LINE_2 + "请更新最新版本 ...", 90 * 1000);
-                    appConfigDto.setFinalVer(version.get(KEY_VERSION));
+                    String verMsg = "最新版本为: " + ver + STR_NEXT_LINE_2 + "请更新最新版本 ...";
+                    CommonUtils.showTipsByError(verMsg, 90 * 1000);
+                    appConfigDto.setFinalVerMsg(verMsg);
                 }
             }
         } catch (Exception e) {

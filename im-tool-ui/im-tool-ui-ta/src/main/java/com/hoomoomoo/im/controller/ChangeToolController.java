@@ -261,8 +261,8 @@ public class ChangeToolController implements Initializable {
     void executeParameterMode(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            if (StringUtils.isNotBlank(appConfigDto.getFinalVer())) {
-                CommonUtils.showTipsByError(appConfigDto.getFinalVer(), 30 * 1000);
+            if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
+                CommonUtils.showTipsByError(appConfigDto.getFinalVerMsg(), 30 * 1000);
                 return;
             }
             OutputUtils.clearLog(logs);
@@ -290,8 +290,8 @@ public class ChangeToolController implements Initializable {
     void executeAutoMode(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            if (StringUtils.isNotBlank(appConfigDto.getFinalVer())) {
-                CommonUtils.showTipsByError(appConfigDto.getFinalVer(), 30 * 1000);
+            if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
+                CommonUtils.showTipsByError(appConfigDto.getFinalVerMsg(), 30 * 1000);
                 return;
             }
             OutputUtils.clearLog(logs);
@@ -319,8 +319,8 @@ public class ChangeToolController implements Initializable {
     void executeMenuMode(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            if (StringUtils.isNotBlank(appConfigDto.getFinalVer())) {
-                CommonUtils.showTipsByError(appConfigDto.getFinalVer(), 30 * 1000);
+            if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
+                CommonUtils.showTipsByError(appConfigDto.getFinalVerMsg(), 30 * 1000);
                 return;
             }
             OutputUtils.clearLog(logs);
@@ -362,8 +362,8 @@ public class ChangeToolController implements Initializable {
     @FXML
     void executeDbBtn(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (StringUtils.isNotBlank(appConfigDto.getFinalVer())) {
-            CommonUtils.showTipsByError(appConfigDto.getFinalVer(), 30 * 1000);
+        if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
+            CommonUtils.showTipsByError(appConfigDto.getFinalVerMsg(), 30 * 1000);
             return;
         }
         OutputUtils.clearLog(logs);

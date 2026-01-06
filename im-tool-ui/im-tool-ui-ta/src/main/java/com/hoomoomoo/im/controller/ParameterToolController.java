@@ -123,8 +123,8 @@ public class ParameterToolController implements Initializable {
     @FXML
     void executeRealtime(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (StringUtils.isNotBlank(appConfigDto.getFinalVer())) {
-            CommonUtils.showTipsByError(appConfigDto.getFinalVer(), 30 * 1000);
+        if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
+            CommonUtils.showTipsByError(appConfigDto.getFinalVerMsg(), 30 * 1000);
             return;
         }
         OutputUtils.clearLog(logs);
@@ -865,10 +865,13 @@ public class ParameterToolController implements Initializable {
                     new ParamRealtimeRequestDescDto("function", "接口代码", "推送接口标识", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
-                    new ParamRealtimeRequestDescDto("action", "操作类型", "add:新增   edit:修改   delete:删除", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+                    new ParamRealtimeRequestDescDto("action", "操作类型", "add:新增   edit:修改   delete:删除   sync:同步", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
                     new ParamRealtimeRequestDescDto("isOverWrite", "是否覆盖", "1:是   0:否", KEY_Y, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
+            );
+            paramRealtimeRequestDescList.add(
+                    new ParamRealtimeRequestDescDto("lowId", "请求流水号", "删除和同步使用", KEY_N, COLUMN_TYPE_C, STR_BLANK, STR_BLANK)
             );
             paramRealtimeRequestDescList.add(
                     new ParamRealtimeRequestDescDto("data", "请求数据", "data中为参数的相关信息, 其为json格式, 主要数据由各个tab页中的数据组成", KEY_Y, COLUMN_TYPE_JSON, STR_BLANK, STR_BLANK)
@@ -927,6 +930,7 @@ public class ParameterToolController implements Initializable {
             requestContent.add("    \"function\": \"" + paramRealtimeApiTab.getMenuCode() + "\",");
             requestContent.add("    \"action\": \"add\",");
             requestContent.add("    \"isOverWrite\": \"1\",");
+            requestContent.add("    \"lowId\": \"xxxxxxxxxx\",");
             requestContent.add("    " + KEY_DATA);
             for (int j = 0; j < paramRealtimeApiTabList.size(); j++) {
                 ParamRealtimeApiTabDto tab = paramRealtimeApiTabList.get(j);

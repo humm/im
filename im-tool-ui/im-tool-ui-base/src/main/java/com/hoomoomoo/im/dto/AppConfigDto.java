@@ -23,7 +23,7 @@ public class AppConfigDto extends BaseDto {
 
     private String appName;
 
-    private String finalVer;
+    private String finalVerMsg;
 
     private String appTabShow;
 
