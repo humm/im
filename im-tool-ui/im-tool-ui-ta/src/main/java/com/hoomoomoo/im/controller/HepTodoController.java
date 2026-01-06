@@ -1335,6 +1335,9 @@ public class HepTodoController extends BaseController implements Initializable {
                         continue;
                     }
                     int num = stat.get(item) == null ? 0 : stat.get(item);
+                    if (num == 0) {
+                        continue;
+                    }
                     total += num;
                     versionMsg.append(String.format(" %s(%s)", item, num));
                 }
