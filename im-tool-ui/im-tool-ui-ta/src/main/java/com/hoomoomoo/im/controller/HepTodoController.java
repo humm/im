@@ -1689,6 +1689,12 @@ public class HepTodoController extends BaseController implements Initializable {
                     );
                     queryButtonList.put(buttonId, button);
                 }
+                if (num == 0) {
+                    button.setVisible(false);
+                    continue;
+                } else {
+                    button.setVisible(true);
+                }
                 button.setLayoutX(x + step * buttonNum);
                 button.setLayoutY(y);
                 button.setPrefWidth(100);
