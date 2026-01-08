@@ -293,8 +293,18 @@ public class ParameterToolController implements Initializable {
     private Map<String, List<String>> skipErrorTips(List<List<String>> error) throws IOException {
         Map<String, List<String>> desc = new HashMap<>();
         Iterator<List<String>> iterator = error.listIterator();
-        Map<String, List<String>> skipExcludeConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE)), Map.class);
-        Map<String, List<String>> skipIncludeConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_INCLUDE)), Map.class);
+        Map<String, List<String>> skipExcludeConfig = new HashMap<>();
+        Map<String, List<String>> skipIncludeConfig = new HashMap<>();
+        String excludeDev = FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE_DEV);
+        String includeDev = FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_INCLUDE_DEV);
+        if (new File(excludeDev).exists()) {
+            skipExcludeConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(excludeDev), Map.class));
+        }
+        if (new File(includeDev).exists()) {
+            skipIncludeConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(includeDev), Map.class));
+        }
+        skipExcludeConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE)), Map.class));
+        skipIncludeConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_INCLUDE)), Map.class));
         while (iterator.hasNext()) {
             List<String> errorInfo = iterator.next();
             if (errorInfo.size() != 5) {
@@ -565,7 +575,7 @@ public class ParameterToolController implements Initializable {
         String jsonSceneFilePath = filePath.replace(".sql", "_scene.json");
         List<String> requestContent = paramRealtimeDto.getRequestContent();
         FileUtils.writeFile(jsonFilePath, requestContent.stream().collect(Collectors.joining(STR_NEXT_LINE)), ENCODING_UTF8);
-        FileUtils.writeFile(jsonSceneFilePath, buildSceneContent(requestContent).stream().collect(Collectors.joining(STR_NEXT_LINE)), ENCODING_UTF8);
+        FileUtils.writeFile(jsonSceneFilePath, buildSceneContent(paramRealtimeDto).stream().collect(Collectors.joining(STR_NEXT_LINE)), ENCODING_UTF8);
         FileOutputStream fileOutputStream = new FileOutputStream(excelFileBakPath);
         workbook.write(fileOutputStream);
         workbook.dispose();
@@ -583,17 +593,18 @@ public class ParameterToolController implements Initializable {
         }
     }
 
-    private List<String> buildSceneContent(List<String> requestContent) {
+    private List<String> buildSceneContent(ParamRealtimeDto paramRealtimeDto) {
+        List<String> requestPartData = paramRealtimeDto.getRequestPartData();
         List<String> sceneContent = new ArrayList<>();
-        sceneContent.add(requestContent.get(0));
+        sceneContent.add(requestPartData.get(0));
         int dataIndex = 0;
-        for (int i = 0; i < requestContent.size(); i++) {
-            if (requestContent.get(i).contains(KEY_DATA)) {
+        for (int i = 0; i < requestPartData.size(); i++) {
+            if (requestPartData.get(i).contains(KEY_DATA)) {
                 dataIndex = i;
                 break;
             }
         }
-        sceneContent.add("    \"systemCode\": \"TA\",");
+        sceneContent.add("    \"systemCode\": \"xxxxxxxxxx\",");
         sceneContent.add("    \"mac\": \"xxxxxxxxxx\",");
         sceneContent.add("    \"sign\": \"xxxxxxxxxx\",");
         sceneContent.add("    \"username\": \"admin\",");
@@ -606,7 +617,17 @@ public class ParameterToolController implements Initializable {
         sceneContent.add("    \"projectCode\": \"xxx\",");
         sceneContent.add("    \"projectName\": \"xxx\",");
         sceneContent.add("    \"memo\": \"xxx\",");
-        sceneContent.addAll(requestContent.subList(dataIndex, requestContent.size()));
+        sceneContent.addAll(requestPartData.subList(dataIndex, requestPartData.size()));
+
+        List<String> head = new ArrayList<>();
+        head.add("{");
+        head.add("    \"请求地址\": \"http://127.0.0.1:8181/API/paramSceneConfig/paramSceneConfigData\",");
+        head.add("    \"参考报文说明\": \"场景化使用\"");
+        if (StringUtils.isNotBlank(paramRealtimeDto.getBeginValidDate())) {
+            addBeginValidDate(head, paramRealtimeDto.getBeginValidDate());
+        }
+        head.add("}");
+        sceneContent.addAll(0, head);
         return sceneContent;
     }
 
@@ -824,7 +845,7 @@ public class ParameterToolController implements Initializable {
         }
     }
 
-    private void buildRequestDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto) throws IOException {
+    private void buildRequestDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto) {
         List<ParamRealtimeApiTabDto> paramRealtimeApiTabList = paramRealtimeDto.getParamRealtimeApiTabList();
         List<ParamRealtimeApiComponentDto> paramRealtimeApiComponentDtoList = paramRealtimeDto.getParamRealtimeApiComponentDtoList();
         if (CollectionUtils.isNotEmpty(paramRealtimeApiTabList) && CollectionUtils.isNotEmpty(paramRealtimeApiComponentDtoList)) {
@@ -922,15 +943,18 @@ public class ParameterToolController implements Initializable {
             requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine, 0, 6));
             currentLine++;
             List<String> requestContent = new ArrayList<>();
+            List<String> head = new ArrayList<>();
+            head.add("{");
+            head.add("    \"请求地址\": \"http://127.0.0.1:8181/API/apiParam/api/entry\",");
+            head.add("    \"参考报文说明\": \"新增或者修改使用,新增时action传值add,修改时传值edit\"");
             requestContent.add("{");
-            requestContent.add("    \"systemCode\": \"TA\",");
+            requestContent.add("    \"systemCode\": \"xxxxxxxxxx\",");
             requestContent.add("    \"mac\": \"xxxxxxxxxx\",");
             requestContent.add("    \"sign\": \"xxxxxxxxxx\",");
             requestContent.add("    \"username\": \"admin\",");
             requestContent.add("    \"function\": \"" + paramRealtimeApiTab.getMenuCode() + "\",");
             requestContent.add("    \"action\": \"add\",");
             requestContent.add("    \"isOverWrite\": \"1\",");
-            requestContent.add("    \"lowId\": \"xxxxxxxxxx\",");
             requestContent.add("    " + KEY_DATA);
             for (int j = 0; j < paramRealtimeApiTabList.size(); j++) {
                 ParamRealtimeApiTabDto tab = paramRealtimeApiTabList.get(j);
@@ -955,9 +979,9 @@ public class ParameterToolController implements Initializable {
                     }
                     requestContent.add("                " + line);
                 }
-                if (needAddBeginValidDate) {
+                /*if (needAddBeginValidDate) {
                     addBeginValidDate(requestContent, beginValidDate);
-                }
+                }*/
                 requestContent.add("            }");
                 if (j != paramRealtimeApiTabList.size() - 1) {
                     requestContent.add("        ],");
@@ -970,6 +994,46 @@ public class ParameterToolController implements Initializable {
             }
             requestContent.add("    }");
             requestContent.add("}");
+            if (needAddBeginValidDate) {
+                addBeginValidDate(head, beginValidDate);
+                paramRealtimeDto.setBeginValidDate(beginValidDate);
+            }
+            head.add("}");
+            requestContent.addAll(0, head);
+            paramRealtimeDto.setRequestPartData(requestContent.stream().collect(Collectors.toList()));
+
+            requestContent.add(STR_NEXT_LINE);
+
+            requestContent.add("{");
+            requestContent.add("    \"请求地址\": \"http://127.0.0.1:8181/API/apiParam/api/entry\",");
+            requestContent.add("    \"参考报文说明\": \"删除使用\"");
+            requestContent.add("}");
+            requestContent.add("{");
+            requestContent.add("    \"systemCode\": \"xxxxxxxxxx\",");
+            requestContent.add("    \"mac\": \"xxxxxxxxxx\",");
+            requestContent.add("    \"sign\": \"xxxxxxxxxx\",");
+            requestContent.add("    \"username\": \"admin\",");
+            requestContent.add("    \"function\": \"" + paramRealtimeApiTab.getMenuCode() + "\",");
+            requestContent.add("    \"action\": \"delete\",");
+            requestContent.add("    \"lowId\": \"xxxxxxxxxx\"");
+            requestContent.add("}");
+
+            requestContent.add(STR_NEXT_LINE);
+
+            requestContent.add("{");
+            requestContent.add("    \"请求地址\": \"http://127.0.0.1:8181/API/apiParam/api/sync\",");
+            requestContent.add("    \"参考报文说明\": \"同步使用\"");
+            requestContent.add("}");
+            requestContent.add("{");
+            requestContent.add("    \"systemCode\": \"xxxxxxxxxx\",");
+            requestContent.add("    \"mac\": \"xxxxxxxxxx\",");
+            requestContent.add("    \"sign\": \"xxxxxxxxxx\",");
+            requestContent.add("    \"username\": \"admin\",");
+            requestContent.add("    \"function\": \"" + paramRealtimeApiTab.getMenuCode() + "\",");
+            requestContent.add("    \"action\": \"sync\",");
+            requestContent.add("    \"lowId\": \"xxxxxxxxxx\"");
+            requestContent.add("}");
+
             paramRealtimeDto.setRequestContent(requestContent);
             SXSSFRow row = requestDesc.createRow(currentLine);
             buildRowCell(row, wrapTextCellStyle, 0, requestContent.stream().collect(Collectors.joining(STR_NEXT_LINE)));
@@ -983,7 +1047,7 @@ public class ParameterToolController implements Initializable {
         if (!lastLine.endsWith(STR_COMMA)) {
             lastLine += STR_COMMA;
         }
-        lastLine += STR_NEXT_LINE + "                \"" + beginValidDate + "\": " + "\"\"  // " + NAME_DESC_BEGIN_VALID_DATE;
+        lastLine += STR_NEXT_LINE + "    \"" + beginValidDate + "\": \"" + NAME_DESC_BEGIN_VALID_DATE + "\"";
         requestContent.set(lastIndex, lastLine);
     }
 

@@ -1,8 +1,3 @@
 {
-  "fundStatusModify.sql": [
-    "prd_code"
-  ],
-  "fundFactCollectInfoSet.sql": [
-    "prd_code"
-  ]
+
 }
