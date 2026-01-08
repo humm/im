@@ -61,7 +61,7 @@ public class ChangeToolController implements Initializable {
     @FXML
     private ComboBox dbNum;
 
-    private static String TA = "00";
+    private static String _TA_ = "00";
 
     Map<String, String[]> autoModeValue = new LinkedHashMap<>();
     List<RadioButton> autoButtonList = new ArrayList<>();
@@ -107,12 +107,12 @@ public class ChangeToolController implements Initializable {
 
         autoModeValue.put("参数提示", new String[]{STR_0});
 
-        autoModeValue.put("基金行业", new String[]{STR_1, TA,   STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        autoModeValue.put("基金行业", new String[]{STR_1, _TA_, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
         autoModeValue.put("嘉实基金", new String[]{STR_1, "07", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
         autoModeValue.put("建信基金", new String[]{STR_1, "53", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
         autoModeValue.put("泰康基金", new String[]{STR_1, "4C", STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
 
-        autoModeValue.put("证券行业", new String[]{STR_2, TA,   STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
+        autoModeValue.put("证券行业", new String[]{STR_2, _TA_, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
         autoModeValue.put("国泰海通", new String[]{STR_2, "JA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1, STR_0});
         autoModeValue.put("东方证券", new String[]{STR_2, "SD", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
         autoModeValue.put("申万宏源", new String[]{STR_2, "SA", STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1});
@@ -153,17 +153,17 @@ public class ChangeToolController implements Initializable {
         subGroup.put(STR_1, "场景化");
         subGroup.put(STR_2, "普通模式");
 
-        parameterModeValue.put("场景化",   new String[]{STR_1, TA,   STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("场景化",   new String[]{STR_1, _TA_, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
         parameterModeValue.put("嘉实基金", new String[]{STR_1, "07", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0});
         parameterModeValue.put("国泰海通", new String[]{STR_1, "JA", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1});
         parameterModeValue.put("兴业证券", new String[]{STR_1, "XY", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("国金道富", new String[]{STR_1, "NB", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("阳光资产", new String[]{STR_1, "T9",  STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("国金道富", new String[]{STR_1, "NB", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("阳光资产", new String[]{STR_1, "T9", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
 
-        parameterModeValue.put("普通模式", new String[]{STR_2, TA,   STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("普通模式", new String[]{STR_2, _TA_, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
         parameterModeValue.put("中信证券", new String[]{STR_2, "S5", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
         parameterModeValue.put("东方证券", new String[]{STR_2, "SD", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("中泰证券", new String[]{STR_2, "QL",  STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("中泰证券", new String[]{STR_2, "QL", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
         parameterModeValue.put("广发证券", new String[]{STR_2, "87", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
 
         initRadioButton(subGroup, parameterModeValue, parameterButtonList, parameterModePane);
@@ -520,7 +520,7 @@ public class ChangeToolController implements Initializable {
             OutputUtils.repeatInfo(logs, "未匹配执行方法，请检查");
             new Exception("未匹配执行方法，请检查");
         }
-        TA = param[1];
+        _TA_ = param[1];
         buildParameterModeSql(taskType, param[2], param[3], param[4], param[5], param[6], param[7], param[8], param[9], param[10], param[11], param[12], param[13], param[14], param[15],
                 param[16], param[17], param[18], param[19]);
     }
@@ -598,7 +598,7 @@ public class ChangeToolController implements Initializable {
         res.add(generateSql("接口绕过sign签名认证", "fund_apiNoSign", STR_1));
 
         res.add("-- TA代码");
-        res.add(generateSql("TA代码", "BTACODE", TA));
+        res.add(generateSql("TA代码", "BTACODE", _TA_));
 
         res.add(STR_SPACE);
         res.add("commit;");
@@ -620,7 +620,7 @@ public class ChangeToolController implements Initializable {
         if (param.length == 1) {
             buildTips();
         } else {
-            TA = param[1];
+            _TA_ = param[1];
             buildAutoModeSql(taskType, param[2], param[3], param[4], param[5], param[6], param[7], param[8], param[9]);
         }
     }
@@ -660,7 +660,7 @@ public class ChangeToolController implements Initializable {
         res.add("-- 开通中金模式自动化清算功能(中金特有功能)");
         res.add(generateSql("开通中金模式自动化清算功能", "fund_ZjMultiProcessesPrivate", zj));
 
-        String gf = StringUtils.equals("87", TA) ? STR_1 : STR_0;
+        String gf = StringUtils.equals("87", _TA_) ? STR_1 : STR_0;
 
         res.add("-- 开通自动化清算支持固定批次处理功能");
         res.add(generateSql("开通自动化清算支持固定批次处理功能", "fund_AutoLiqSptFixedBatch", gf));
@@ -693,7 +693,7 @@ public class ChangeToolController implements Initializable {
         res.add(generateSql("开通TA5系统特性", "fund_Ta5Features", gf));
 
         res.add("-- TA代码");
-        res.add(generateSql("TA代码", "BTACODE", TA));
+        res.add(generateSql("TA代码", "BTACODE", _TA_));
 
         res.add(STR_SPACE);
         String groupCode = STR_BLANK;
