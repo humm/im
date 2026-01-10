@@ -327,6 +327,8 @@ public class AppConfigDto extends BaseDto {
 
     private String appServerPort;
 
+    private String appFilePort;
+
     public AppConfigDto() {
         initTooltip();
         this.scanTips = true;

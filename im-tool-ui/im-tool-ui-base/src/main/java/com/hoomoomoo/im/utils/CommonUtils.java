@@ -1212,6 +1212,24 @@ public class CommonUtils {
         return path;
     }
 
+    public static void deleteDownloadFile() {
+        if (!CommonUtils.isSuperUser()) {
+            return;
+        }
+        File download = new File(FileUtils.getFilePath(PATH_DOWNLOAD));
+        if (download.exists()) {
+            File[] files = download.listFiles();
+            List<File> fileList = Arrays.asList(files).stream().collect(Collectors.toList());
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File o1, File o2) {
+                    return Long.valueOf(o2.lastModified() - o1.lastModified()).intValue();
+                }
+            });
+            deleteFile(fileList);
+        }
+    }
+
     public static void deleteVersionFile(String appCode) {
         if (!CommonUtils.proScene()) {
             return;
@@ -1230,7 +1248,12 @@ public class CommonUtils {
                 return Long.valueOf(o2.lastModified() - o1.lastModified()).intValue();
             }
         });
+        deleteFile(fileList);
+    }
+
+    private static void deleteFile(List<File> fileList) {
         if (fileList.size() > 1) {
+            fileList = fileList.subList(0, fileList.size());
             Iterator<File> iterator = fileList.listIterator();
             while (iterator.hasNext()) {
                 FileUtils.deleteFile(iterator.next());
@@ -1590,6 +1613,7 @@ public class CommonUtils {
             String appServerUrl = appConfigDto.getAppServerUrl();
             String appServerName = STR_SLASH + APP_CODE_TA;
             int appServerPort = Integer.parseInt(appConfigDto.getAppServerPort());
+            String appFilePort = appConfigDto.getAppFilePort();
             List<String> content = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_FILE));
             if (CollectionUtils.isEmpty(content)) {
                 return;
@@ -1621,9 +1645,10 @@ public class CommonUtils {
                 Map<String, String> version = JSONObject.parseObject(finalVer, Map.class);
                 if (version.containsKey(KEY_VERSION)) {
                     String ver = version.get(KEY_VERSION);
-                    String verMsg = "最新版本为: " + ver + STR_NEXT_LINE_2 + "请更新最新版本 ...";
-                    CommonUtils.showTipsByError(verMsg, 90 * 1000);
-                    appConfigDto.setFinalVerMsg(verMsg);
+                    StringBuilder verMsg = new StringBuilder("最新版本: " + ver);
+                    verMsg.append(STR_NEXT_LINE_2 + "下载地址: " + appServerUrl + STR_COLON + appFilePort + "/download/");
+                    CommonUtils.showTipsByError(verMsg.toString(), 90 * 1000);
+                    appConfigDto.setFinalVerMsg(verMsg.toString());
                 }
             }
         } catch (Exception e) {

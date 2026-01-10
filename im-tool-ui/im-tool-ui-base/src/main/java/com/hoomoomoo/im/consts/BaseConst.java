@@ -420,6 +420,7 @@ public class BaseConst {
     public static final String PATH_FXML = "/conf/fxml";
     public static final String PATH_STYLE = "/conf/style";
     public static final String PATH_LOG = "/logs/%s/%s";
+    public static final String PATH_DOWNLOAD = "/download";
     public static final String PATH_LOG_ROOT = "/logs";
     public static final String SUB_PATH_LOG = "/logs/%s";
     public static final String PATH_STAT = "/stats/%s";

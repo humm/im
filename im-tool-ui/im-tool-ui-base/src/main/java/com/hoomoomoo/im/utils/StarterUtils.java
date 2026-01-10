@@ -116,6 +116,7 @@ public class StarterUtils {
                 }
             });
 
+            CommonUtils.deleteDownloadFile();
             CommonUtils.deleteVersionFile(appCode);
             String appServerName = STR_SLASH + APP_CODE_TA;
             int appServerPort = Integer.parseInt(appConfigDto.getAppServerPort());

@@ -26,4 +26,9 @@ for /f %%F in ('dir /b /o-d /a-d "%searchDir%\%fileType%"') do (
     goto :over
 )
 :over
+
+set location=%cd%\download\
+md location
+copy %startFile% location /y
+
 im-tool-ui-ta -jar %startFile%
