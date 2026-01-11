@@ -1,0 +1,16 @@
+.progress-indicator .percentage {
+    -fx-fill: null;
+}
+
+.tabClass {
+    -fx-font-weight: bold;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #d5d2d2;
+}
+
+.table-row-cell:selected .table-cell {
+    -fx-border-color: transparent;  /* 单元格边框透明（消除绿线） */
+    -fx-border-width: 0; /* 边框宽度设为 0 */
+}

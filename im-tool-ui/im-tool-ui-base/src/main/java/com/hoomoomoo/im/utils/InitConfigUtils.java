@@ -505,9 +505,6 @@ public class InitConfigUtils {
         keys.put("change.tool.base.dict.path", null);
         keys.put("change.tool.paramRealtimeSet.path", null);
         keys.put("change.tool.table.path", null);
-
-        keys.put("app.server.url", "http://192.168.27.40");
-
     }
 
     /**
@@ -535,7 +532,6 @@ public class InitConfigUtils {
     public static void buildFileTime(String appCode) {
         ConfigCache.initAppCodeCache(appCode);
         String pathFile = CommonUtils.dealFilePath(FileUtils.getFilePath(PATH_FILE), appCode);
-        System.out.println(pathFile);
         File file = new File(pathFile.substring(0, pathFile.indexOf("target")));
         readFile(file);
         try {
@@ -547,6 +543,7 @@ public class InitConfigUtils {
     }
 
     public static void readFile(File file) {
+        System.out.println(file.getAbsolutePath());
         if (file.isDirectory()) {
             File[] fileList = file.listFiles();
             for (File item : fileList) {
@@ -557,7 +554,7 @@ public class InitConfigUtils {
             if (existFile.contains(fileName)) {
                 return;
             }
-            if (fileName.endsWith(FILE_TYPE_JAVA) || fileName.endsWith(FILE_TYPE_XML) || fileName.endsWith(FILE_TYPE_JSON)) {
+            if (fileName.endsWith(FILE_TYPE_JAVA) || fileName.endsWith(FILE_TYPE_FXML) || fileName.endsWith(FILE_TYPE_JSON)) {
                 fileTime.add(fileName + STR_SPACE + file.lastModified());
             }
             existFile.add(fileName);

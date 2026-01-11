@@ -1253,7 +1253,7 @@ public class CommonUtils {
 
     private static void deleteFile(List<File> fileList) {
         if (fileList.size() > 1) {
-            fileList = fileList.subList(0, fileList.size());
+            fileList = fileList.subList(1, fileList.size());
             Iterator<File> iterator = fileList.listIterator();
             while (iterator.hasNext()) {
                 FileUtils.deleteFile(iterator.next());
@@ -1622,26 +1622,43 @@ public class CommonUtils {
             if (CollectionUtils.isEmpty(functionDtoList)) {
                 return;
             }
-            Set<String> relateFile = new HashSet<>();
+            Map<String, List<String>> relateFile = new HashMap<>();
             for (FunctionDto functionDto : functionDtoList) {
                 MenuFunctionConfig.FunctionConfig functionConfig = MenuFunctionConfig.FunctionConfig.getFunctionConfig(functionDto.getFunctionCode());
                 String file = functionConfig.getRelateFile();
                 if (StringUtils.isNotBlank(file)) {
-                    relateFile.addAll(Arrays.asList(file.split(STR_COMMA)));
+                    relateFile.put(functionConfig.getCode(), Arrays.asList(file.split(STR_COMMA)));
                 }
             }
-            List<String> checkFile = new ArrayList<>();
+            Map<String, String> timeStampFile = new HashMap<>();
             for (String item : content) {
                 String fileName = item.split(STR_SPACE)[0];
-                if (relateFile.contains(fileName)) {
-                    checkFile.add(item);
+                timeStampFile.put(fileName, item);
+            }
+            Map<String, Map<String, String>> checkFile = new HashMap<>();
+            for (Map.Entry<String, List<String>> entry : relateFile.entrySet()) {
+                String code = entry.getKey();
+                List<String> fileList = entry.getValue();
+                for (String ele : fileList) {
+                    if (timeStampFile.containsKey(ele)) {
+                        String fileInfo = timeStampFile.get(ele);
+                        if (checkFile.containsKey(code)) {
+                            checkFile.get(code).put(ele, fileInfo);
+                        } else {
+                            Map<String, String> files = new HashMap<>();
+                            files.put(ele, fileInfo);
+                            checkFile.put(code, files);
+                        }
+                    }
                 }
             }
             Map<String, String> param = new LinkedHashMap<>(2);
+            param.put(KEY_FUNCTION_CODE, KEY_FUNCTION_CODE_CHECK_VERSION);
             param.put(KEY_VERSION, CommonUtils.getVersion());
-            param.put(KEY_CHECK_FILE, checkFile.stream().collect(Collectors.joining(STR_COMMA)));
+            param.put(KEY_CHECK_FILE, JSON.toJSONString(checkFile));
             String finalVer = HttpRequestUtils.sendPost(appServerUrl + STR_COLON + appServerPort + appServerName, param);
             if (StringUtils.isNotBlank(finalVer)) {
+                LoggerUtils.info("版本校验返回信息: " + finalVer);
                 Map<String, String> version = JSONObject.parseObject(finalVer, Map.class);
                 if (version.containsKey(KEY_VERSION)) {
                     String ver = version.get(KEY_VERSION);
@@ -1652,9 +1669,7 @@ public class CommonUtils {
                 }
             }
         } catch (Exception e) {
-            if (!(e instanceof SocketTimeoutException)) {
-                LoggerUtils.error(e);
-            }
+            LoggerUtils.error(e);
             CommonUtils.showTipsByError("服务不在线, 版本信息校验异常", 90 * 1000);
         }
     }

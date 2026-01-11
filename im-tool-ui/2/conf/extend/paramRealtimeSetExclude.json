@@ -1,0 +1,11 @@
+{
+  "global": [
+    "ta_code",
+    "key_code",
+    "create_time",
+    "modify_timestamp"
+  ],
+  "fundIdTypeBizLimitSet.sql": [
+    "busin_type"
+  ]
+}

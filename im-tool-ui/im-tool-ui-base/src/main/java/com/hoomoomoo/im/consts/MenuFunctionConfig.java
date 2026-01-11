@@ -192,7 +192,7 @@ public class MenuFunctionConfig {
                 "changeTool",
                 "menuOther",
                 "0",
-                "ChangeToolController.java,changeTool.fxml"
+                "ChangeToolController.java,ChangeFunctionTask.java,ChangeFunctionTaskParam.java,changeTool.fxml"
         ),
 
         PARAMETER_TOOL(
@@ -203,7 +203,7 @@ public class MenuFunctionConfig {
                 "parameterTool",
                 "menuOther",
                 "0",
-                "ParameterToolController.java,ExcelComparatorUtils.java,parameterTool.fxml,paramRealtimeSet.json"
+                "ParameterToolController.java,ExcelComparatorUtils.java,ParameterToolTask.java,ParameterToolTaskParam.java,parameterTool.fxml,paramRealtimeSetExclude.json,paramRealtimeSetInclude.json"
         ),
 
         SYSTEM_TOOL(

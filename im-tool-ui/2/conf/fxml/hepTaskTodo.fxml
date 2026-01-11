@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.hoomoomoo.im.controller.HepTodoController">
+    <children>
+        <SplitPane dividerPositions="0.28" layoutX="98.0" layoutY="100.0" orientation="VERTICAL" prefHeight="400.0"
+                   prefWidth="600.0"
+                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                   AnchorPane.topAnchor="0.0">
+            <items>
+                <SplitPane dividerPositions="0.88">
+                    <items>
+                        <AnchorPane fx:id="headPane" minHeight="0.0" minWidth="0.0" prefHeight="97.0"
+                                    prefWidth="322.0">
+                            <children>
+                                <Label layoutX="20.0" layoutY="5.0" text="今天封版："/>
+                                <Label fx:id="dayClose" layoutX="100.0" layoutY="5.0"
+                                       style="-fx-text-background-color: red;"/>
+                                <Label layoutX="20.0" layoutY="30.0" text="今天发版："/>
+                                <Label fx:id="dayPublish" layoutX="100.0" layoutY="30.0"
+                                       style="-fx-text-background-color: red;"/>
+
+                                <Label layoutX="770.0" layoutY="5.0" text="本周封版："/>
+                                <Label fx:id="weekClose" layoutX="850.0" layoutY="5.0"/>
+                                <Label layoutX="770.0" layoutY="30.0" text="本周发版："/>
+                                <Label fx:id="weekPublish" layoutX="850.0" layoutY="30.0"/>
+
+                                <Label fx:id="fileTipsFileTitle" layoutX="20.0" layoutY="55.0" text="同步文件："/>
+                                <Label fx:id="fileTipsFile" layoutX="90.0" layoutY="55.0"
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsFileTimeTitle" layoutX="450.0" layoutY="55.0" text="同步时间："/>
+                                <Label fx:id="fileTipsFileTime" layoutX="520.0" layoutY="55.0"
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsFileStatusTitle" layoutX="620.0" layoutY="55.0" text="同步状态："/>
+                                <Label fx:id="fileTipsFileStatus" layoutX="690.0" layoutY="55.0"
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsFileOperateTitle" layoutX="760.0" layoutY="55.0" text="操作类型："/>
+                                <Label fx:id="fileTipsFileOperate" layoutX="830.0" layoutY="55.0"
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="fileTipsVersionTitle" layoutX="950.0" layoutY="55.0" text="同步版本："/>
+                                <Label fx:id="fileTipsVersion" layoutX="1020.0" layoutY="55.0"
+                                       style="-fx-text-background-color: red;"/>
+
+                                <Label layoutX="20.0" layoutY="110.0" text="操作类型："/>
+                                <Button fx:id="syncFileBtn" layoutX="100.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="停止文件同步">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+
+                                <Button fx:id="extendUser" layoutX="210" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#executeExtendUser" prefHeight="30.0" prefWidth="100.0" text="关联用户任务">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+
+                                <Button fx:id="scriptCheck" layoutX="320" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#scriptCheckBtn" prefHeight="30.0" prefWidth="100.0" text="检查配置脚本">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+                                <Button fx:id="scriptShow" layoutX="430.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#scriptShowBtn" prefHeight="30.0" prefWidth="100.0" text="查看检查结果">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+
+                                <Button fx:id="syncTask" layoutX="540.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#syncTaskInfo" prefHeight="30.0" prefWidth="100.0" text="同步任务">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+
+                                <Button fx:id="updateVersion" layoutX="650.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#executeUpdateVersion" prefHeight="30.0" prefWidth="100.0"
+                                        text="同步发版计划">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+
+                                <Button fx:id="showVersion" layoutX="760.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#showVersion" prefHeight="30.0" prefWidth="100.0" text="查看发版计划">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+
+                                <Button fx:id="showLog" layoutX="870.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#showLogInfo" prefHeight="30.0" prefWidth="100.0" text="查看系统日志">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+
+                                <Button fx:id="showCopyDemand" layoutX="980.0" layoutY="105.0" mnemonicParsing="false"
+                                        onAction="#showCopyDemandExe" prefHeight="30.0" prefWidth="100.0" text="复制需求编号">
+                                    <padding>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </padding>
+                                </Button>
+
+                                <Label layoutX="20" layoutY="148.0" text="查询类型："/>
+                                <Button fx:id="all" layoutX="100.0" layoutY="143.0" mnemonicParsing="false"
+                                        onAction="#selectAll" prefHeight="30.0" prefWidth="100.0" text="全部">
+                                </Button>
+                                <Button fx:id="only" layoutX="210.0" layoutY="143.0" mnemonicParsing="false"
+                                        onAction="#selectOnly" prefHeight="30.0" prefWidth="100.0" text="去重">
+                                </Button>
+                                <Button fx:id="waitDev" layoutX="320.0" layoutY="143.0" mnemonicParsing="false"
+                                        onAction="#selectWaitDev" prefHeight="30.0" prefWidth="100.0"
+                                        text="待开发">
+                                </Button>
+
+                                <Label layoutX="20" layoutY="186.0" text="查询条件："/>
+                                <ComboBox fx:id="sprintVersionQuery" layoutX="100.0" layoutY="183.0" prefWidth="230"/>
+                                <TextField fx:id="taskConditionQuery" layoutX="360.0" layoutY="183.0" prefHeight="25.0" prefWidth="360.0"/>
+
+                                <Button fx:id="query" layoutX="750.0" layoutY="183.0" mnemonicParsing="false"
+                                        onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
+                                </Button>
+                                <Button fx:id="reset" layoutX="880.0" layoutY="183.0" mnemonicParsing="false"
+                                        onAction="#executeReset" prefHeight="30.0" prefWidth="100.0" text="重置">
+                                </Button>
+                                <ProgressIndicator fx:id="schedule" layoutX="1020.0" layoutY="182.0" progress="0.0"
+                                                   style="-fx-scale-x: 0.8; -fx-scale-y: 0.8;"/>
+                                <Label fx:id="scheduleText" layoutX="1055" layoutY="188.0" text="0%"/>
+
+                                <Label fx:id="focusVersionTipsLabel" layoutX="20" layoutY="220.0"/>
+                                <Label fx:id="focusVersionTips" layoutX="120.0" layoutY="220.0"
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="memoryTips" layoutX="650" layoutY="220.0"
+                                       style="-fx-text-background-color: red;"/>
+                                <Label fx:id="filePushTips" layoutX="850.0" layoutY="220.0"/>
+                                <Label fx:id="syncFrontVersionTips" layoutX="1080.0" layoutY="220.0"
+                                       style="-fx-text-background-color: red;"/>
+                                <TextField fx:id="demandNo" editable="false" layoutX="1230.0" layoutY="215.0"
+                                           style="-fx-background-color: transparent;"/>
+                                <TextField fx:id="taskNo" editable="false" layoutX="1380.0" layoutY="215.0"
+                                           style="-fx-background-color: transparent;"/>
+
+                            </children>
+                        </AnchorPane>
+                        <SplitPane prefHeight="97.0" prefWidth="67.0">
+                            <SplitPane dividerPositions="0.35, 0.65" orientation="VERTICAL" prefHeight="318.4"
+                                       prefWidth="191.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                       AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                <items>
+                                    <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
+                                                prefHeight="114.0" prefWidth="108.0">
+                                        <children>
+                                            <TextArea fx:id="notice" editable="false" prefHeight="75.05454285172401"
+                                                      prefWidth="108.21817806527648" AnchorPane.bottomAnchor="0.0"
+                                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                      AnchorPane.topAnchor="0.0"/>
+                                        </children>
+                                    </AnchorPane>
+                                    <AnchorPane layoutX="10.0" layoutY="10.0" minHeight="0.0" minWidth="0.0"
+                                                prefHeight="62.0" prefWidth="108.0">
+                                        <children>
+                                            <TextArea fx:id="noticeSync" editable="false" prefHeight="75.05454285172401"
+                                                      prefWidth="108.21817806527648" AnchorPane.bottomAnchor="0.0"
+                                                      AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                                      AnchorPane.topAnchor="0.0"/>
+                                        </children>
+                                    </AnchorPane>
+                                </items>
+                            </SplitPane>
+                        </SplitPane>
+                    </items>
+                </SplitPane>
+                <AnchorPane fx:id="hep" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                    <children>
+                        <SplitPane fx:id="taskSplitPane" layoutX="174.0" layoutY="76.0"
+                                   prefHeight="187.0" prefWidth="598.0" AnchorPane.bottomAnchor="0.0"
+                                   AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <items>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="318.0" prefWidth="312.0">
+                                    <children>
+                                        <SplitPane layoutX="35.0" layoutY="36.0" orientation="VERTICAL"
+                                                   prefHeight="298.4727169219722" prefWidth="295.8545351945865"
+                                                   AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                   AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <items>
+                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0"
+                                                            prefWidth="160.0">
+                                                    <children>
+                                                        <TableView fx:id="taskList" layoutX="-212.0" layoutY="46.0"
+                                                                   onMouseClicked="#showTaskInfo"
+                                                                   prefHeight="263.5636272234959"
+                                                                   prefWidth="294.1090807096627"
+                                                                   AnchorPane.bottomAnchor="0.0"
+                                                                   AnchorPane.leftAnchor="0.0"
+                                                                   AnchorPane.rightAnchor="0.0"
+                                                                   AnchorPane.topAnchor="0.0">
+                                                            <columns>
+                                                                <TableColumn id="name" editable="false" prefWidth="860"
+                                                                             sortable="false" text="任务名称">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="name"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="taskLevel" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="级别">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="taskLevel"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="taskDesc" editable="false"
+                                                                             prefWidth="130" sortable="false"
+                                                                             style="-fx-alignment: center;" text="描述">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="taskDesc"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="deadLine" editable="false"
+                                                                             prefWidth="70" sortable="false"
+                                                                             style="-fx-alignment: center;" text="截止日">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="deadLine"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="customer" editable="false"
+                                                                             prefWidth="105" sortable="false"
+                                                                             style="-fx-alignment: center;" text="客户名称">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="customer"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="sprintVersion" editable="false"
+                                                                             prefWidth="160" sortable="false" text="版本">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="sprintVersion"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="statusName" editable="false"
+                                                                             prefWidth="90" sortable="false"
+                                                                             style="-fx-alignment: center;" text="状态">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="statusName"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="finishDate" editable="false"
+                                                                             prefWidth="70" sortable="false"
+                                                                             style="-fx-alignment: center;" text="完成日期">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="finishDate"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="oriCloseDate" editable="false"
+                                                                             prefWidth="70" sortable="false"
+                                                                             style="-fx-alignment: center;" text="封版日期">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="oriCloseDate"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="oriPublishDate" editable="false"
+                                                                             prefWidth="70" sortable="false"
+                                                                             style="-fx-alignment: center;" text="发版日期">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory
+                                                                                property="oriPublishDate"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="assigneeName" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="经办人">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="assigneeName"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="reviewerName" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="审核人">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="reviewerName"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="creatorName" editable="false"
+                                                                             prefWidth="65" sortable="false"
+                                                                             style="-fx-alignment: center;" text="创建人">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="creatorName"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="minCompleteBySort" editable="false"
+                                                                             prefWidth="105" sortable="false"
+                                                                             style="-fx-alignment: center;" text="排序日期">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory
+                                                                                property="minCompleteBySort"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="createTime" editable="false"
+                                                                             prefWidth="190" sortable="false"
+                                                                             style="-fx-alignment: center;" text="创建时间">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="createTime"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                            </columns>
+                                                        </TableView>
+                                                    </children>
+                                                </AnchorPane>
+                                            </items>
+                                        </SplitPane>
+                                    </children>
+                                </AnchorPane>
+                            </items>
+                        </SplitPane>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
+    </children>
+</AnchorPane>

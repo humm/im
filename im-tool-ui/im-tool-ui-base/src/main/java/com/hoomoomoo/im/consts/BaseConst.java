@@ -86,7 +86,8 @@ public class BaseConst {
     public static final String KEY_DELETE = "delete";
     public static final String KEY_LIB = "/lib";
     public static final String KEY_VERSION = "version";
-    public static final String KEY_VERSION_MSG = "versionMsg";
+    public static final String KEY_FUNCTION_CODE = "functionCode";
+    public static final String KEY_FUNCTION_CODE_CHECK_VERSION = "checkVersion";
     public static final String KEY_CHECK_FILE = "checkFile";
     public static final String KEY_DEV_CLOSE_DATE = "dev_close_date";
     public static final String KEY_PUBLISH_CLOSE_DATE = "publish_close_date";
@@ -208,7 +209,7 @@ public class BaseConst {
     public static final String FILE_TYPE_VUE = ".vue";
     public static final String FILE_TYPE_STAT = ".stat";
     public static final String FILE_TYPE_JAVA = ".java";
-    public static final String FILE_TYPE_XML = ".xml";
+    public static final String FILE_TYPE_FXML = ".fxml";
     public static final String FILE_TYPE_CLASS = ".class";
     public static final String FILE_TYPE_SQL = ".sql";
     public static final String FILE_TYPE_CONF = ".conf";
