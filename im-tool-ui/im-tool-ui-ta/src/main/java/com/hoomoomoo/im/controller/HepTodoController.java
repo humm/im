@@ -523,7 +523,7 @@ public class HepTodoController extends BaseController implements Initializable {
         stage = new Stage();
         stage.getIcons().add(new Image(PATH_ICON));
         stage.setScene(scene);
-        stage.setWidth(850);
+        stage.setWidth(1000);
         stage.setTitle("发版日期");
         stage.setResizable(false);
         stage.show();

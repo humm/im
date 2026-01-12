@@ -42,7 +42,7 @@ public class TaStarterController implements Initializable {
         Platform.runLater(() -> {
             CommonUtils.checkVersion(appConfigDto);
         });
-        TaCommonUtils.startRestPlan();
+        // TaCommonUtils.startRestPlan();
     }
 
 }

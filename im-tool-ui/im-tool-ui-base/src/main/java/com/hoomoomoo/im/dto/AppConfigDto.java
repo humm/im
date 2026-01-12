@@ -25,6 +25,8 @@ public class AppConfigDto extends BaseDto {
 
     private String finalVerMsg;
 
+    private String finalVerUrl;
+
     private String appTabShow;
 
     private String svnUsername;

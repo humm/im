@@ -262,7 +262,7 @@ public class ChangeToolController implements Initializable {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
-                CommonUtils.showTipsByError(appConfigDto.getFinalVerMsg(), 30 * 1000);
+                CommonUtils.showTipsByDownload();
                 return;
             }
             OutputUtils.clearLog(logs);
@@ -291,7 +291,7 @@ public class ChangeToolController implements Initializable {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
-                CommonUtils.showTipsByError(appConfigDto.getFinalVerMsg(), 30 * 1000);
+                CommonUtils.showTipsByDownload();
                 return;
             }
             OutputUtils.clearLog(logs);
@@ -320,7 +320,7 @@ public class ChangeToolController implements Initializable {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
-                CommonUtils.showTipsByError(appConfigDto.getFinalVerMsg(), 30 * 1000);
+                CommonUtils.showTipsByDownload();
                 return;
             }
             OutputUtils.clearLog(logs);
@@ -363,7 +363,7 @@ public class ChangeToolController implements Initializable {
     void executeDbBtn(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
-            CommonUtils.showTipsByError(appConfigDto.getFinalVerMsg(), 30 * 1000);
+            CommonUtils.showTipsByDownload();
             return;
         }
         OutputUtils.clearLog(logs);

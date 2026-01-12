@@ -343,6 +343,7 @@ public class SystemToolController implements Initializable {
         Set<String> demand = new HashSet<String>(){{
             add("https://dev.hundsun.com/heppm/story/getStoryMenuListV3");
             add("https://dev.hundsun.com/heppm/onSiteDefect/getList");
+            add("https://dev.hundsun.com/heppm/qualityStory/getStoryListActionsV2");
         }};
         Set<String> task = new HashSet<String>(){{
             add("https://dev.hundsun.com/heppm/task/queryByConditionV4");

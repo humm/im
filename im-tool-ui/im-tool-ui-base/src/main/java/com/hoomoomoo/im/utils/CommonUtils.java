@@ -21,6 +21,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -34,6 +35,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -1073,13 +1075,47 @@ public class CommonUtils {
         showTips(STR_0, msg, null, null, autoClose, false, DEFAULT_AUTO_CLOSE_MILLIS);
     }
 
+    public static Button getAlertButton(DialogPane dialogPane, ButtonType buttonType) {
+        return (Button) dialogPane.lookupButton(buttonType);
+    }
+
+    public static void showTipsByDownload() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String finalVerMsg = appConfigDto.getFinalVerMsg();
+        String finalVerUrl = appConfigDto.getFinalVerUrl();
+        ButtonType closeBtn = new ButtonType("关闭");
+        ButtonType downloadBtn = new ButtonType("复制下载地址");
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("提示");
+        alert.setHeaderText(String.format("%s", finalVerMsg));
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().addAll(closeBtn, downloadBtn);
+        alert.show();
+        Button focusButton = getAlertButton(alert.getDialogPane(), downloadBtn);
+        focusButton.requestFocus();
+        focusButton.setDefaultButton(true);
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.setOnCloseRequest(event -> {
+            alert.setResult(ButtonType.CANCEL);
+            alert.close();
+        });
+        alert.setOnHidden(event -> {
+            Optional<ButtonType> result = Optional.ofNullable(alert.getResult());
+            result.ifPresent(buttonType -> {
+                if (buttonType == downloadBtn) {
+                    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(finalVerUrl), null);
+                }
+            });
+        });
+    }
+
     public static void showTipsByErrorNotAutoClose(String msg, List<String> detail) {
         boolean showDetail = false;
         String all = STR_BLANK;
         if (detail.size() > 30) {
             all = msg + STR_NEXT_LINE_2 + detail.stream().map(Object::toString).collect(Collectors.joining());
             detail = detail.subList(0, 30);
-            detail.add("显示部分内容 . 详情参阅文件 " + getSpecialString(50, STR_POINT + STR_SPACE));
+            detail.add(STR_NEXT_LINE_2 + "显示部分内容, 详情参阅文件 " + getSpecialString(50, STR_POINT + STR_SPACE));
             showDetail = true;
         }
         showTips(STR_0, msg, detail.stream().map(Object::toString).collect(Collectors.joining()), all, false, showDetail, DEFAULT_AUTO_CLOSE_MILLIS);
@@ -1107,16 +1143,21 @@ public class CommonUtils {
                 String time = (minute > 0 ? minute + "分" : STR_BLANK) + (second > 0 ? second + "秒" : STR_BLANK);
                 alert.setContentText(time + "后将自动关闭");
             }
+            alert.show();
             Service<Void> service = getCloseInfoService(millis);
             service.setOnSucceeded(e -> alert.hide());
             service.start();
-        }
-        if (showDetail) {
+        } else if (showDetail) {
             ButtonType detailBtn = new ButtonType("详情");
             ButtonType closeBtn = new ButtonType("关闭");
             alert.getButtonTypes().clear();
             alert.getButtonTypes().addAll(detailBtn, closeBtn);
             alert.show();
+            Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+            alertStage.setOnCloseRequest(event -> {
+                alert.setResult(ButtonType.CANCEL);
+                alert.close();
+            });
             alert.setOnHidden(event -> {
                 Optional<ButtonType> result = Optional.ofNullable(alert.getResult());
                 result.ifPresent(buttonType -> {
@@ -1152,7 +1193,6 @@ public class CommonUtils {
                 });
             });
         }
-        alert.show();
     }
 
     public static void showTipsByRest() {
@@ -1662,10 +1702,12 @@ public class CommonUtils {
                 Map<String, String> version = JSONObject.parseObject(finalVer, Map.class);
                 if (version.containsKey(KEY_VERSION)) {
                     String ver = version.get(KEY_VERSION);
+                    String url = appServerUrl + STR_COLON + appFilePort + "/download/";
                     StringBuilder verMsg = new StringBuilder("最新版本: " + ver);
-                    verMsg.append(STR_NEXT_LINE_2 + "下载地址: " + appServerUrl + STR_COLON + appFilePort + "/download/");
-                    CommonUtils.showTipsByError(verMsg.toString(), 90 * 1000);
+                    verMsg.append(STR_NEXT_LINE_2 + "下载地址: " + url);
                     appConfigDto.setFinalVerMsg(verMsg.toString());
+                    appConfigDto.setFinalVerUrl(url);
+                    showTipsByDownload();
                 }
             }
         } catch (Exception e) {

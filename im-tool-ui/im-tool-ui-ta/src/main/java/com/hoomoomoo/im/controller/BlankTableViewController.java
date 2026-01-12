@@ -50,7 +50,7 @@ public class BlankTableViewController implements Initializable {
 
         TableColumn code = new TableColumn<>("版本编号");
         code.setCellValueFactory(new PropertyValueFactory<>("name"));
-        code.setPrefWidth(360);
+        code.setPrefWidth(500);
 
         TableColumn closeDate = new TableColumn<>("封版日期");
         closeDate.setCellValueFactory(new PropertyValueFactory<>("closeDate"));
@@ -74,7 +74,7 @@ public class BlankTableViewController implements Initializable {
         showVersion(versionDtoList);
 
         close.setText(String.format("%s (版本数量:%s)", close.getText(), versionDtoList.size()));
-        close.setLayoutX(330);
+        close.setLayoutX(395);
         close.setPrefWidth(150);
     }
 
