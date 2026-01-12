@@ -455,7 +455,7 @@ public class BaseConst {
     public static final String FILE_CHANGE_PARAMETER = "/extend/change/mode/changeParameter.sql";
     public static final String FILE_PARAM_REALTIME_SET = "/extend/paramRealtimeSet/00_paramRealtimeSet.sql";
     public static final String FILE_PARAM_REALTIME_SET_FOLDER = "/extend/paramRealtimeSet/";
-    public static final String FILE_REALTIME_SET = "paramRealtimeSet.sql";
+    public static final String FILE_REALTIME_SET = "00_paramRealtimeSet.sql";
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
     public static final String PATH_SYNC_TASK_STAT = "/task";
     public static final String PATH_SYNC_VERSION_STAT = "/version";

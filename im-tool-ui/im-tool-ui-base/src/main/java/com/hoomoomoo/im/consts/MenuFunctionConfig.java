@@ -203,7 +203,7 @@ public class MenuFunctionConfig {
                 "parameterTool",
                 "menuOther",
                 "0",
-                "ParameterToolController.java,ExcelComparatorUtils.java,ParameterToolTask.java,ParameterToolTaskParam.java,parameterTool.fxml,paramRealtimeSetExclude.json,paramRealtimeSetInclude.json"
+                "CheckResultController.java,ParameterToolController.java,ExcelComparatorUtils.java,ParameterToolTask.java,ParameterToolTaskParam.java,parameterTool.fxml,paramRealtimeSetExclude.json,paramRealtimeSetInclude.json"
         ),
 
         SYSTEM_TOOL(

@@ -1670,7 +1670,11 @@ public class CommonUtils {
             }
         } catch (Exception e) {
             LoggerUtils.error(e);
-            CommonUtils.showTipsByError("服务不在线, 版本信息校验异常", 90 * 1000);
+            if (e instanceof IOException) {
+                CommonUtils.showTipsByError("服务不在线, 版本信息校验异常", 90 * 1000);
+            } else {
+                CommonUtils.showTipsByError(e.getMessage(), 90 * 1000);
+            }
         }
     }
 

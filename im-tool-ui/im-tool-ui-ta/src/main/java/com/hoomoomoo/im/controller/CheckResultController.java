@@ -73,7 +73,6 @@ public class CheckResultController implements Initializable {
             initTabByFile(check, NAME_ERROR_INFO);
             initTabByFile(res, NAME_SCRIPT_DETAIL);
         } else if (PAGE_TYPE_SYSTEM_TOOL_PARAMETER_RESULT.equals(pageType)) {
-            initTabByFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET)).getAbsolutePath(), "汇总信息");
             File folder = new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER));
             if (folder.isDirectory()) {
                 List<File> files = Arrays.asList(folder.listFiles());
@@ -84,9 +83,6 @@ public class CheckResultController implements Initializable {
                     }
                 });
                 for (File file : files) {
-                    if (StringUtils.equals(file.getName(), FILE_REALTIME_SET)) {
-                        continue;
-                    }
                     initTabByFile(file.getAbsolutePath(), file.getName());
                 }
             }

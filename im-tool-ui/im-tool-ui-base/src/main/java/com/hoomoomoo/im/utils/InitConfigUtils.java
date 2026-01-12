@@ -543,7 +543,6 @@ public class InitConfigUtils {
     }
 
     public static void readFile(File file) {
-        System.out.println(file.getAbsolutePath());
         if (file.isDirectory()) {
             File[] fileList = file.listFiles();
             for (File item : fileList) {
