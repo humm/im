@@ -260,8 +260,7 @@ public class ChangeToolController implements Initializable {
     void executeParameterMode(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
-                CommonUtils.showTipsByDownload();
+            if (CommonUtils.needUpdateVersion(appConfigDto)) {
                 return;
             }
             OutputUtils.clearLog(logs);
@@ -289,8 +288,7 @@ public class ChangeToolController implements Initializable {
     void executeAutoMode(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
-                CommonUtils.showTipsByDownload();
+            if (CommonUtils.needUpdateVersion(appConfigDto)) {
                 return;
             }
             OutputUtils.clearLog(logs);
@@ -318,8 +316,7 @@ public class ChangeToolController implements Initializable {
     void executeMenuMode(ActionEvent event) {
         try {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
-                CommonUtils.showTipsByDownload();
+            if (CommonUtils.needUpdateVersion(appConfigDto)) {
                 return;
             }
             OutputUtils.clearLog(logs);
@@ -361,8 +358,7 @@ public class ChangeToolController implements Initializable {
     @FXML
     void executeDbBtn(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
-            CommonUtils.showTipsByDownload();
+        if (CommonUtils.needUpdateVersion(appConfigDto)) {
             return;
         }
         OutputUtils.clearLog(logs);

@@ -80,7 +80,7 @@ public class ConfigCache {
         }
     }
 
-    private static void initExtend(String confPath, AppConfigDto appConfigDto) throws Exception{
+    private static void initExtend(String confPath, AppConfigDto appConfigDto) throws Exception {
         // 更新配置信息
         List<String> content = FileUtils.readNormalFile(confPath);
 

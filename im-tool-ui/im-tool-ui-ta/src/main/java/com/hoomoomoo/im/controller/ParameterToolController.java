@@ -122,8 +122,7 @@ public class ParameterToolController implements Initializable {
     @FXML
     void executeRealtime(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-        if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
-            CommonUtils.showTipsByDownload();
+        if (CommonUtils.needUpdateVersion(appConfigDto)) {
             return;
         }
         OutputUtils.clearLog(logs);

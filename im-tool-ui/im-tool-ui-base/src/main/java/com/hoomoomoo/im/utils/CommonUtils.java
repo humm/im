@@ -1645,9 +1645,17 @@ public class CommonUtils {
         }
     }
 
-    public static void checkVersion(AppConfigDto appConfigDto) {
+    public static boolean needUpdateVersion(AppConfigDto appConfigDto) {
+        appConfigDto = checkVersion(appConfigDto);
+        if (StringUtils.isNotBlank(appConfigDto.getFinalVerMsg())) {
+            return true;
+        }
+        return false;
+    }
+
+    public static AppConfigDto checkVersion(AppConfigDto appConfigDto) {
         if (isSuperUser()) {
-            return;
+            return appConfigDto;
         }
         try {
             String appServerUrl = appConfigDto.getAppServerUrl();
@@ -1656,11 +1664,11 @@ public class CommonUtils {
             String appFilePort = appConfigDto.getAppFilePort();
             List<String> content = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_FILE));
             if (CollectionUtils.isEmpty(content)) {
-                return;
+                return appConfigDto;
             }
             List<FunctionDto> functionDtoList = getRealAuthFunction();
             if (CollectionUtils.isEmpty(functionDtoList)) {
-                return;
+                return appConfigDto;
             }
             Map<String, List<String>> relateFile = new HashMap<>();
             for (FunctionDto functionDto : functionDtoList) {
@@ -1708,16 +1716,20 @@ public class CommonUtils {
                     appConfigDto.setFinalVerMsg(verMsg.toString());
                     appConfigDto.setFinalVerUrl(url);
                     showTipsByDownload();
+                } else {
+                    appConfigDto.setFinalVerMsg(STR_BLANK);
+                    appConfigDto.setFinalVerUrl(STR_BLANK);
                 }
             }
         } catch (Exception e) {
             LoggerUtils.error(e);
             if (e instanceof IOException) {
-                CommonUtils.showTipsByError("服务不在线, 版本信息校验异常", 90 * 1000);
+                CommonUtils.showTipsByError("服务不在线, 请确认当前版本为最新版本后再使用", 90 * 1000);
             } else {
                 CommonUtils.showTipsByError(e.getMessage(), 90 * 1000);
             }
         }
+        return appConfigDto;
     }
 
     /**
