@@ -138,7 +138,7 @@ public class ChangeToolController implements Initializable {
      * fund_ApiSceneCheckParam   开通场景化入参校验功能
      * fund_ApiMergerData    开通请求入参合并功能
      * fund_ApiFillData   开通数据补填功能
-     * fund_ApiFillDataByTemplate  开通数据模板补填功能
+     * fund_ApiFillDataByPrdTemplate  开通数据模板补填功能
      * fund_ApiFillDataSync   开通数据同步补填功能
      * fund_ApiResponseStandard   开通请求返回数据标准化
      * fund_ApiTipsField   开通请求入参字段标记显示功能
@@ -147,24 +147,25 @@ public class ChangeToolController implements Initializable {
      * fund_ExcelTemplate  开通Excel模板设置功能
      * fund_ParamProcessesLiqDeal  开通参数日期管理功能
      * fund_ApiIntervalGroup 开通区间数据分组操作功能
+     * fund_ApiFillDataByTemplate 开通参数电子化根据模板补填数据功能
      */
     private void initParameterMode() {
         Map<String, String> subGroup = new LinkedHashMap<>();
         subGroup.put(STR_1, "场景化");
         subGroup.put(STR_2, "普通模式");
 
-        parameterModeValue.put("场景化",   new String[]{STR_1, _TA_, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("嘉实基金", new String[]{STR_1, "07", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0});
-        parameterModeValue.put("国泰海通", new String[]{STR_1, "JA", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1});
-        parameterModeValue.put("兴业证券", new String[]{STR_1, "XY", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("国金道富", new String[]{STR_1, "NB", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("阳光资产", new String[]{STR_1, "T9", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("场景化",   new String[]{STR_1, _TA_, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("嘉实基金", new String[]{STR_1, "07", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("国泰海通", new String[]{STR_1, "JA", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
+        parameterModeValue.put("兴业证券", new String[]{STR_1, "XY", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("国金道富", new String[]{STR_1, "NB", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("阳光资产", new String[]{STR_1, "T9", STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
 
-        parameterModeValue.put("普通模式", new String[]{STR_2, _TA_, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("中信证券", new String[]{STR_2, "S5", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0});
-        parameterModeValue.put("东方证券", new String[]{STR_2, "SD", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("中泰证券", new String[]{STR_2, "QL", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
-        parameterModeValue.put("广发证券", new String[]{STR_2, "87", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("普通模式", new String[]{STR_2, _TA_, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("中信证券", new String[]{STR_2, "S5", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1, STR_0, STR_0});
+        parameterModeValue.put("东方证券", new String[]{STR_2, "SD", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
+        parameterModeValue.put("中泰证券", new String[]{STR_2, "QL", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_1});
+        parameterModeValue.put("广发证券", new String[]{STR_2, "87", STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_1, STR_1, STR_1, STR_1, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0, STR_0});
 
         initRadioButton(subGroup, parameterModeValue, parameterButtonList, parameterModePane);
     }
@@ -522,13 +523,14 @@ public class ChangeToolController implements Initializable {
         }
         _TA_ = param[1];
         buildParameterModeSql(taskType, param[2], param[3], param[4], param[5], param[6], param[7], param[8], param[9], param[10], param[11], param[12], param[13], param[14], param[15],
-                param[16], param[17], param[18], param[19]);
+                param[16], param[17], param[18], param[19], param[20]);
     }
 
     public void buildParameterModeSql(String taskType, String fundApiOpen, String fundApiUse, String fundApiSyncUse, String fundApiSyncUseOnDeal,
                                       String fundApiScene, String fundApiSkipActionType, String fundApiSceneCheckParam, String fundApiMergerData, String fundApiFillData,
-                                      String fundApiFillDataByTemplate, String fundApiFillDataSync, String fundApiResponseStandard, String fundApiTipsField,
-                                      String fundApiBuildAccount, String fundPreSetParamByDate, String fundExcelTemplate, String fundParamProcessesLiqDeal, String fundApiIntervalGroup) throws Exception {
+                                      String fundApiFillDataByPrdTemplate, String fundApiFillDataSync, String fundApiResponseStandard, String fundApiTipsField,
+                                      String fundApiBuildAccount, String fundPreSetParamByDate, String fundExcelTemplate, String fundParamProcessesLiqDeal,
+                                      String fundApiIntervalGroup, String fundApiFillDataByTemplate) throws Exception {
         executeStart(taskType);
         OutputUtils.info(logs, "执行中 ...");
         List<String> res = new ArrayList<>();
@@ -565,7 +567,10 @@ public class ChangeToolController implements Initializable {
         res.add(generateSql("开通数据补填功能", "fund_ApiFillData", fundApiFillData));
 
         res.add("-- 开通数据模板补填功能");
-        res.add(generateSql("开通数据模板补填功能", "fund_ApiFillDataByTemplate", fundApiFillDataByTemplate));
+        res.add(generateSql("开通数据模板补填功能", "fund_ApiFillDataByPrdTemplate", fundApiFillDataByPrdTemplate));
+
+        res.add("-- 开通参数电子化根据模板补填数据功能");
+        res.add(generateSql("开通参数电子化根据模板补填数据功能", "fund_ApiFillDataByTemplate", fundApiFillDataByTemplate));
 
         res.add("-- 开通数据同步补填功能");
         res.add(generateSql("开通数据同步补填功能", "fund_ApiFillDataSync", fundApiFillDataSync));
