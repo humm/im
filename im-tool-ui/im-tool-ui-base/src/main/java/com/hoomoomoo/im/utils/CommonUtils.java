@@ -1724,10 +1724,12 @@ public class CommonUtils {
         } catch (Exception e) {
             LoggerUtils.error(e);
             if (e instanceof IOException) {
-                CommonUtils.showTipsByError("服务不在线, 请确认当前版本为最新版本后再使用", 90 * 1000);
+                CommonUtils.showTipsByError("服务不在线, 请确认当前版本为最新版本", 90 * 1000);
             } else {
                 CommonUtils.showTipsByError(e.getMessage(), 90 * 1000);
             }
+            appConfigDto.setFinalVerMsg(STR_BLANK);
+            appConfigDto.setFinalVerUrl(STR_BLANK);
         }
         return appConfigDto;
     }
