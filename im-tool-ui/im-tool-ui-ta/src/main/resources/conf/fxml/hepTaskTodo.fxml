@@ -225,13 +225,6 @@
                                                                         <PropertyValueFactory property="taskLevel"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="taskDesc" editable="false"
-                                                                             prefWidth="130" sortable="false"
-                                                                             style="-fx-alignment: center;" text="描述">
-                                                                    <cellValueFactory>
-                                                                        <PropertyValueFactory property="taskDesc"/>
-                                                                    </cellValueFactory>
-                                                                </TableColumn>
                                                                 <TableColumn id="deadLine" editable="false"
                                                                              prefWidth="70" sortable="false"
                                                                              style="-fx-alignment: center;" text="截止日">
@@ -257,6 +250,13 @@
                                                                              style="-fx-alignment: center;" text="状态">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="statusName"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="taskDesc" editable="false"
+                                                                             prefWidth="130" sortable="false"
+                                                                             style="-fx-alignment: center;" text="描述">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="taskDesc"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="finishDate" editable="false"

@@ -16,6 +16,7 @@ import java.net.URLDecoder;
 import java.util.*;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
+import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CHECK_VERSION;
 
 /**
  * @author humm23693
@@ -50,9 +51,11 @@ public class HttpResponseUtils implements HttpHandler {
         String requestVer = requestParam.get(KEY_VERSION);
         String finalVer = CommonUtils.getVersion();
         String ipAddress = exchange.getRemoteAddress().toString().substring(1);
-        LoggerUtils.info(ipAddress + " 请求版本校验 开始");
-        LoggerUtils.info(ipAddress + " 请求参数: " +  requestParam);
-        LoggerUtils.info(ipAddress + " 请求版本信息: " + requestVer);
+        Date date = new Date();
+        List<String> logs = new ArrayList<>();
+        logs.add("请求ip地址: " + ipAddress);
+        logs.add("请求参数: " +  requestParam);
+        logs.add("请求版本信息: " + requestVer);
         boolean checkSame = true;
         if (!StringUtils.equals(requestVer, finalVer)) {
             Map<String, Map<String, String>> checkFile = JSONObject.parseObject(requestParam.get(KEY_CHECK_FILE), Map.class);
@@ -95,14 +98,14 @@ public class HttpResponseUtils implements HttpHandler {
             }
         }
         Map<String, String> message = new HashMap<>(2);
-        LoggerUtils.info(ipAddress + " 最新版本信息: " + finalVer);
+        logs.add("最新版本信息: " + finalVer);
         if (!checkSame) {
             message.put(KEY_VERSION, finalVer);
-            LoggerUtils.info(ipAddress + " 版本校验结果: 需要进行版本更新");
+            logs.add("版本校验结果: 需要进行版本更新");
         } else {
-            LoggerUtils.info(ipAddress + " 版本校验结果: 不需要进行版本更新");
+            logs.add("版本校验结果: 不需要进行版本更新");
         }
-        LoggerUtils.info(ipAddress + " 请求版本校验 结束");
+        LoggerUtils.writeLogInfo(CHECK_VERSION.getCode(), date, logs);
         return message;
     }
 

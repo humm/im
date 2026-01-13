@@ -206,6 +206,17 @@ public class MenuFunctionConfig {
                 "CheckResultController.java,ParameterToolController.java,ExcelComparatorUtils.java,ParameterToolTask.java,ParameterToolTaskParam.java,parameterTool.fxml,paramRealtimeSetExclude.json,paramRealtimeSetInclude.json"
         ),
 
+        CHECK_VERSION(
+                "800",
+                "版本校验",
+                "版本校验",
+                " ",
+                "checkVersion",
+                "menuOther",
+                "1",
+                ""
+        ),
+
         SYSTEM_TOOL(
                 "700",
                 "系统工具",
