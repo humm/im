@@ -650,7 +650,6 @@ public class HepTodoController extends BaseController implements Initializable {
             reset.setDisable(true);
             controlButtonStatus(true);
             execute(OPERATE_QUERY, null);
-            LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), new ArrayList<>(logs));
             logs.clear();
             focusVersion.clear();
             syncTaskLog.clear();

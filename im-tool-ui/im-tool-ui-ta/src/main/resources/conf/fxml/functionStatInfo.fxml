@@ -38,14 +38,14 @@
                                                                </TableColumn>
                                                                <TableColumn id="firstTime" editable="false"
                                                                             prefWidth="300" sortable="false"
-                                                                            text="首次提交时间">
+                                                                            text="首次使用时间">
                                                                    <cellValueFactory>
                                                                        <PropertyValueFactory property="firstTime"/>
                                                                    </cellValueFactory>
                                                                </TableColumn>
                                                                <TableColumn id="lastTime" editable="false"
                                                                             prefWidth="300" sortable="false"
-                                                                            text="末次提交时间">
+                                                                            text="末次使用时间">
                                                                    <cellValueFactory>
                                                                        <PropertyValueFactory property="lastTime"/>
                                                                    </cellValueFactory>

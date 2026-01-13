@@ -6,6 +6,7 @@ import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.FunctionDto;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import javafx.application.Platform;
 import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
@@ -106,6 +107,9 @@ public class HttpResponseUtils implements HttpHandler {
             logs.add("版本校验结果: 不需要进行版本更新");
         }
         LoggerUtils.writeLogInfo(CHECK_VERSION.getCode(), date, logs);
+        Platform.runLater(() -> {
+            CommonUtils.showTipsByInfo("热烈欢迎贵宾: " + ipAddress, 90 * 1000);
+        });
         return message;
     }
 
