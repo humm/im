@@ -77,9 +77,7 @@ public class ChangeToolController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         String msg = String.format(BaseConst.MSG_USE, CHANGE_TOOL.getName());
         LoggerUtils.info(msg);
-        LoggerUtils.writeLogInfo(CHANGE_TOOL.getCode(), new Date(), new ArrayList<String>(){{
-            add(msg);
-        }});
+        LoggerUtils.writeLogInfo(CHANGE_TOOL.getCode(), new Date(), Arrays.asList(msg));
         initAutoMode();
         initMenuMode();
         initDb();

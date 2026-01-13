@@ -30,11 +30,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -53,8 +53,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.time.DayOfWeek;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -320,7 +320,9 @@ public class HepTodoController extends BaseController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            LoggerUtils.info(String.format(MSG_USE, TASK_TODO.getName()));
+            String msg = String.format(MSG_USE, TASK_TODO.getName());
+            LoggerUtils.info(msg);
+            LoggerUtils.writeLogInfo(TASK_TODO.getCode(), new Date(), Arrays.asList(msg));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             initUserInfo(appConfigDto);
             initExtendUser(appConfigDto);

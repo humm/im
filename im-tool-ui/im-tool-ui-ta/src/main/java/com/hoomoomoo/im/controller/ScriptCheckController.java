@@ -17,10 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
@@ -49,9 +46,7 @@ public class ScriptCheckController implements Initializable {
         JvmCache.setScriptCheckController(this);
         String msg = String.format(BaseConst.MSG_USE, SCRIPT_CHECK.getName());
         LoggerUtils.info(msg);
-        LoggerUtils.writeLogInfo(SCRIPT_CHECK.getCode(), new Date(), new ArrayList<String>(){{
-            add(msg);
-        }});
+        LoggerUtils.writeLogInfo(SCRIPT_CHECK.getCode(), new Date(), Arrays.asList(msg));
     }
 
     @FXML
