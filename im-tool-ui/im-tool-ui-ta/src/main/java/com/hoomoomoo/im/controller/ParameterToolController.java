@@ -86,6 +86,7 @@ public class ParameterToolController implements Initializable {
     private static List<List<String>> errorTableColumnInfo = new ArrayList<>();
     private static List<List<String>> errorConfigColumnInfo = new ArrayList<>();
     private static List<List<String>> errorDefaultValuesColumnInfo = new ArrayList<>();
+    private static List<List<String>> errorOrderColumnInfo = new ArrayList<>();
     private static List<String> modifyInfo = new ArrayList<>();
 
     @SneakyThrows
@@ -171,6 +172,7 @@ public class ParameterToolController implements Initializable {
             errorTableColumnInfo.clear();
             errorConfigColumnInfo.clear();
             errorDefaultValuesColumnInfo.clear();
+            errorOrderColumnInfo.clear();
             modifyInfo.clear();
             executeRealtimeBtn.setDisable(true);
             OutputUtils.infoContainBr(logs, "初始化字典信息 开始");
@@ -266,12 +268,30 @@ public class ParameterToolController implements Initializable {
                 }
             }
 
+            if (CollectionUtils.isNotEmpty(errorOrderColumnInfo)) {
+                for (List<String> ele : errorOrderColumnInfo) {
+                    String folder = ele.get(0);
+                    String msg = String.format("%s  %s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "未配置字段排序", ele.get(3), ele.get(4)) + STR_NEXT_LINE;
+                    errorMessage.append(msg);
+                    if (tipsByFile.containsKey(folder)) {
+                        tipsByFile.get(folder).append(msg);
+                    } else {
+                        tipsByFile.put(folder, new StringBuilder(msg));
+                    }
+                }
+            }
+
             FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER)));
             if (StringUtils.isNotBlank(errorMessage)) {
-                String summary = "未获取到表字段信息: " + errorColumn + "  未获取到表结构信息: " + errorTable + "  未配置字段信息: " + errorConfigColumnInfo.size() + "  未配置字段默认值: " + errorDefaultValuesColumnInfo.size();
+                StringBuilder summary = new StringBuilder();
+                summary.append("未获取到表字段信息: " + errorColumn + STR_SPACE_2);
+                summary.append("未获取到表结构信息: " + errorTable + STR_SPACE_2);
+                summary.append("未配置字段信息: " + errorConfigColumnInfo.size() + STR_SPACE_2);
+                summary.append("未配置字段默认值: " + errorDefaultValuesColumnInfo.size() + STR_SPACE_2);
+                summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);
                 OutputUtils.infoContainBr(logs, "异常明细信息");
                 OutputUtils.infoContainBr(logs, errorMessage.toString());
-                OutputUtils.info(logs, summary);
+                OutputUtils.info(logs, summary.toString());
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
                 if (MapUtils.isNotEmpty(tipsByFile)) {
                     for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
@@ -282,7 +302,7 @@ public class ParameterToolController implements Initializable {
                 errorTipsResult.setVisible(true);
                 errorTipsResultByFile.setVisible(true);
                 Platform.runLater(() -> {
-                    CommonUtils.showTipsByError(summary, 90 * 1000);
+                    CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
                 });
             } else {
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList("完美..."));
@@ -546,8 +566,14 @@ public class ParameterToolController implements Initializable {
                             paramRealtimeApiComponentDto.setTransType(ScriptSqlUtils.getSqlFieldValue(sqlInfo[3]));
                             paramRealtimeApiComponentDto.setDictKey(ScriptSqlUtils.getSqlFieldValue(sqlInfo[4]));
                             paramRealtimeApiComponentDto.setCheckRules(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
-                            if (sqlInfo.length == 8) {
-                                paramRealtimeApiComponentDto.setOrderField(ScriptSqlUtils.getSqlFieldValue(sqlInfo[6]));
+                            if (sqlInfo.length >= 7) {
+                                String orderField = ScriptSqlUtils.getSqlFieldValue(sqlInfo[6]);
+                                paramRealtimeApiComponentDto.setOrderField(orderField);
+                                if (StringUtils.isBlank(orderField)) {
+                                    errorOrderColumnInfo.add(Arrays.asList(fileFolder, fileName, tabCode, fieldName, fieldCode));
+                                }
+                            }
+                            if (sqlInfo.length >= 8) {
                                 paramRealtimeApiComponentDto.setDefaultValue(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
                             }
                         }
