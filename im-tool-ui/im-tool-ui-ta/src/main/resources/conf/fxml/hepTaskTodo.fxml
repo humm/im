@@ -232,6 +232,19 @@
                                                                         <PropertyValueFactory property="deadLine"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
+                                                                <TableColumn id="taskDesc" editable="false"
+                                                                             prefWidth="130" sortable="false"
+                                                                             style="-fx-alignment: center;" text="描述">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="taskDesc"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="sprintVersion" editable="false"
+                                                                             prefWidth="160" sortable="false" text="任务版本">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="sprintVersion"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
                                                                 <TableColumn id="customer" editable="false"
                                                                              prefWidth="105" sortable="false"
                                                                              style="-fx-alignment: center;" text="客户名称">
@@ -239,24 +252,11 @@
                                                                         <PropertyValueFactory property="customer"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="sprintVersion" editable="false"
-                                                                             prefWidth="160" sortable="false" text="版本">
-                                                                    <cellValueFactory>
-                                                                        <PropertyValueFactory property="sprintVersion"/>
-                                                                    </cellValueFactory>
-                                                                </TableColumn>
                                                                 <TableColumn id="statusName" editable="false"
                                                                              prefWidth="90" sortable="false"
                                                                              style="-fx-alignment: center;" text="状态">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="statusName"/>
-                                                                    </cellValueFactory>
-                                                                </TableColumn>
-                                                                <TableColumn id="taskDesc" editable="false"
-                                                                             prefWidth="130" sortable="false"
-                                                                             style="-fx-alignment: center;" text="描述">
-                                                                    <cellValueFactory>
-                                                                        <PropertyValueFactory property="taskDesc"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
                                                                 <TableColumn id="finishDate" editable="false"
