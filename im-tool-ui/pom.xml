@@ -21,7 +21,7 @@
         <commons.collections>3.2.2</commons.collections>
         <hsweb-utils.version>3.0.2</hsweb-utils.version>
         <commons-beanutils.version>1.9.2</commons-beanutils.version>
-        <junrar.version>7.3.0</junrar.version>
+        <junrar.version>7.4.1</junrar.version>
         <ant.version>1.9.4</ant.version>
         <jxl.version>2.6</jxl.version>
         <junit.version>4.12</junit.version>
