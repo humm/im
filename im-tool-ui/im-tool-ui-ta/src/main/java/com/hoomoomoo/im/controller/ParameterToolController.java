@@ -572,6 +572,8 @@ public class ParameterToolController implements Initializable {
                                 if (StringUtils.isBlank(orderField)) {
                                     errorOrderColumnInfo.add(Arrays.asList(fileFolder, fileName, tabCode, fieldName, fieldCode));
                                 }
+                            } else {
+                                errorOrderColumnInfo.add(Arrays.asList(fileFolder, fileName, tabCode, fieldName, fieldCode));
                             }
                             if (sqlInfo.length >= 8) {
                                 paramRealtimeApiComponentDto.setDefaultValue(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
