@@ -375,8 +375,6 @@ public class ParameterToolController implements Initializable {
                     OutputUtils.infoContainBr(logs, "异常明细信息");
                     OutputUtils.infoContainBr(logs, errorMessage.toString());
                 }
-                OutputUtils.info(logs, summary.toString());
-                FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
                 if (MapUtils.isNotEmpty(tipsByFile)) {
                     for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
                         FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
@@ -387,15 +385,25 @@ public class ParameterToolController implements Initializable {
                 }
 
                 // 临时修改 开始
-                OutputUtils.info(logs, "无差异页面: " + currentTips.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "无差异页面: " + currentTips.stream().collect(Collectors.joining(STR_SPACE_2)));
                 // 临时修改 结束
+
+                FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
+                OutputUtils.info(logs, summary.toString());
 
                 errorTips.setVisible(true);
                 errorTipsResult.setVisible(true);
                 errorTipsResultByFile.setVisible(true);
                 if (alertTips) {
                     Platform.runLater(() -> {
-                        CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
+                        // 临时修改 开始
+                        if (true) {
+                            CommonUtils.showTipsByInfo("文档更新完成, 请检查差异项", 90 * 1000);
+                        } else {
+                            CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
+                        }
+                        // 临时修改 结束
+                        // CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
                     });
                 } else {
                     appConfigDto.getRepairErrorInfo().add(NAME_PARAMETER_DOC);

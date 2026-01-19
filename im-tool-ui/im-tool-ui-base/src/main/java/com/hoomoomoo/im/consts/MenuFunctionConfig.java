@@ -184,16 +184,6 @@ public class MenuFunctionConfig {
                 "0",
                 "ChangeToolController.java,ChangeFunctionTask.java,ChangeFunctionTaskParam.java,changeTool.fxml"
         ),
-        SCRIPT_CHECK(
-                "500",
-                "检查文件",
-                "检查文件",
-                "/conf/fxml/scriptCheck.fxml",
-                "scriptCheck",
-                "menuServicing",
-                "0",
-                ""
-        ),
         PARAMETER_TOOL(
                 "650",
                 "文档更新",
@@ -204,7 +194,16 @@ public class MenuFunctionConfig {
                 "0",
                 "CheckResultController.java,ParameterToolController.java,ExcelComparatorUtils.java,ParameterToolTask.java,ParameterToolTaskParam.java,parameterTool.fxml,paramRealtimeSetExclude.json,paramRealtimeSetInclude.json"
         ),
-
+        SCRIPT_CHECK(
+                "700",
+                "文件检查",
+                "文件检查",
+                "/conf/fxml/scriptCheck.fxml",
+                "scriptCheck",
+                "menuServicing",
+                "0",
+                ""
+        ),
         CHECK_VERSION(
                 "800",
                 "版本校验",
@@ -217,7 +216,7 @@ public class MenuFunctionConfig {
         ),
 
         SYSTEM_TOOL(
-                "700",
+                "2000",
                 "系统工具",
                 "系统工具",
                 "/conf/fxml/systemTool.fxml",
