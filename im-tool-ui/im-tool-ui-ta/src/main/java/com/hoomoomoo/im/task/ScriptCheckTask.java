@@ -45,6 +45,12 @@ public class ScriptCheckTask implements Callable<ScriptCheckTaskParam> {
             case NAME_REPAIR_REPORT:
                 scriptCheckTaskParam.getScriptCheckController().doRepairReport();
                 break;
+            case NAME_PARAMETER_DOC:
+                scriptCheckTaskParam.getScriptCheckController().doUpdateParameterDoc();
+                break;
+            case NAME_REPAIR_ONE_KEY:
+                scriptCheckTaskParam.getScriptCheckController().doRepairOneKey();
+                break;
             case KEY_SCHEDULE:
                 scriptCheckTaskParam.getScriptCheckController().doShowScheduleInfo(scriptCheckTaskParam.getFunctionName(), scriptCheckTaskParam.getMsg(), scriptCheckTaskParam.getStart());
                 break;

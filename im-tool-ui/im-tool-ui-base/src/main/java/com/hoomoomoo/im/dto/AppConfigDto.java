@@ -297,6 +297,10 @@ public class AppConfigDto extends BaseDto {
 
     private String repairSchedule;
 
+    private String repairFunctionName;
+
+    private List<String> repairErrorInfo;
+
     private String hepTaskRestPlan;
 
     private String hepTaskRestPlanDate;
@@ -358,6 +362,7 @@ public class AppConfigDto extends BaseDto {
         this.tableColumnList = new ArrayList<>(16);
         this.dayPublishVersion = new ArrayList<>(16);
         this.weekPublishVersion = new ArrayList<>(16);
+        this.repairErrorInfo = new ArrayList<>(16);
         this.timerMap = new ConcurrentHashMap<>();
         this.initScanLog = true;
         this.scanLogTipsIndex = new LinkedHashMap<>();

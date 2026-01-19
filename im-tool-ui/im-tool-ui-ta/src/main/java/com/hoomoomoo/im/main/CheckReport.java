@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang3.StringUtils;
 
+import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
+
 public class CheckReport {
 	private static Set<String> fileSet = new LinkedHashSet();
 	private static Set<String> noCommitSet = new LinkedHashSet();
@@ -283,7 +285,7 @@ public class CheckReport {
 
 			if (ele.length != length) {
 				if (error) {
-					throw new Exception("数据格式错误");
+					throw new Exception("数据格式错误" + STR_NEXT_LINE);
 				} else {
 					return null;
 				}
@@ -309,7 +311,7 @@ public class CheckReport {
 	private static String getReportCodeByDelete(String item) throws Exception {
 		String[] delete = item.split("=");
 		if (delete.length != 2) {
-			throw new Exception("数据格式错误");
+			throw new Exception("数据格式错误" + STR_NEXT_LINE);
 		} else {
 			return delete[1].trim().split(";")[0];
 		}

@@ -516,8 +516,9 @@ public class ScriptRepairSql {
         }
         String resFile = workFlowPath.replace(".sql", ".res.sql");
         if (CollectionUtils.isNotEmpty(error)) {
+            appConfigDto.getRepairErrorInfo().add(NAME_REPAIR_WORK_FLOW);
             FileUtils.writeFile(resFile, res);
-            throw new Exception("检查存在未匹配项，请查看结果文件");
+            throw new Exception("检查存在未匹配项，请查看结果文件" + STR_NEXT_LINE);
         } else {
             File file = new File(resFile);
             if (file.exists()) {
@@ -817,6 +818,7 @@ public class ScriptRepairSql {
 
         String checkFile = newUedPage.replace(".sql", ".check.sql");
         if (CollectionUtils.isNotEmpty(error)) {
+            appConfigDto.getRepairErrorInfo().add(NAME_REPAIR_NEW_MENU);
             FileUtils.writeFile(checkFile, error);
         } else {
             File file = new File(checkFile);
@@ -835,7 +837,7 @@ public class ScriptRepairSql {
         String resFile = newUedPage.replace(".sql", ".res.sql");
         if (CollectionUtils.isNotEmpty(error)) {
             FileUtils.writeFile(resFile, res);
-            throw new Exception("检查存在未匹配项，请查看结果文件");
+            throw new Exception("检查存在未匹配项，请查看结果文件" + STR_NEXT_LINE);
         } else {
             File file = new File(resFile);
             if (file.exists()) {
@@ -1347,8 +1349,9 @@ public class ScriptRepairSql {
         }
         String resFile = basePath.replace(".sql", ".res.sql");
         if (CollectionUtils.isNotEmpty(error)) {
+            appConfigDto.getRepairErrorInfo().add(NAME_REPAIR_OLD_MENU);
             FileUtils.writeFile(resFile, res);
-            throw new Exception("检查存在未匹配项，请查看结果文件");
+            throw new Exception("检查存在未匹配项，请查看结果文件" + STR_NEXT_LINE);
         } else {
             File file = new File(resFile);
             if (file.exists()) {

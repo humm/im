@@ -588,6 +588,7 @@ public class ScriptCompareSql {
         resMap.put("tbworkflowsubtransext", new LinkedHashSet<>());
         resMap.put("add_report_field", new LinkedHashSet<>());
         resMap.put("add_report", new LinkedHashSet<>());
+        resMap.put("tbmenucondition", new LinkedHashSet<>());
         File fileExt = new File(basePathExt);
         Set<String> skip = ScriptSqlUtils.initExtLegalSkip();
         for (File file : fileExt.listFiles()) {
@@ -639,16 +640,18 @@ public class ScriptCompareSql {
                     res.get("add_report").add(filePath);
                 } else if (!ele.contains("insert into")) {
                     continue;
-                } else if (ele.contains("tsys_trans ") || ele.contains("tsys_trans(") ) {
+                } else if (ele.contains("tsys_trans ") || ele.contains("tsys_trans(")) {
                     res.get("tsys_trans").add(filePath);
-                } else if (ele.contains("tsys_subtrans ") || ele.contains("tsys_subtrans(") ) {
+                } else if (ele.contains("tsys_subtrans ") || ele.contains("tsys_subtrans(")) {
                     res.get("tsys_subtrans").add(filePath);
-                } else if (ele.contains("tsys_subtrans_ext ") || ele.contains("tsys_subtrans_ext(") ) {
+                } else if (ele.contains("tsys_subtrans_ext ") || ele.contains("tsys_subtrans_ext(")) {
                     res.get("tsys_subtrans_ext").add(filePath);
-                } else if (ele.contains("tbworkflowsubtrans ") || ele.contains("tbworkflowsubtrans(") ) {
+                } else if (ele.contains("tbworkflowsubtrans ") || ele.contains("tbworkflowsubtrans(")) {
                     res.get("tbworkflowsubtrans").add(filePath);
-                } else if (ele.contains("tbworkflowsubtransext ") || ele.contains("tbworkflowsubtransext(") ) {
+                } else if (ele.contains("tbworkflowsubtransext ") || ele.contains("tbworkflowsubtransext(")) {
                     res.get("tbworkflowsubtrans").add(filePath);
+                } else if (ele.contains("tbmenucondition") ) {
+                    res.get("tbmenucondition").add(filePath);
                 }
             }
         }

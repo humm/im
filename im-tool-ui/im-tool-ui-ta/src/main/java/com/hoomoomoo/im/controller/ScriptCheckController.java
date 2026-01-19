@@ -10,15 +10,17 @@ import com.hoomoomoo.im.utils.*;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 
 import java.io.File;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.*;
@@ -37,6 +39,18 @@ public class ScriptCheckController implements Initializable {
 
     @FXML
     private TextArea logs;
+
+    @FXML
+    private Button showRepairOldMenuLogBtn;
+
+    @FXML
+    private Button showRepairNewMenuLogBtn;
+
+    @FXML
+    private Button repairWorkFlowLogBtn;
+
+    @FXML
+    private Button showUpdateParameterDocResultBtn;
 
     private boolean executeFlag = false;
 
@@ -57,7 +71,6 @@ public class ScriptCheckController implements Initializable {
             return;
         }
         executeFlag = true;
-        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_CHECK_MENU)));
         } catch (Exception e) {
@@ -196,7 +209,7 @@ public class ScriptCheckController implements Initializable {
             addLog("检查结果");
         } catch (Exception e) {
             LoggerUtils.error(e);
-            OutputUtils.info(logs, getCommonMsg(NAME_SHOW_RESULT, "请检查结果文件是否存在"));
+            OutputUtils.info(logs, getCommonMsg(NAME_SHOW_RESULT, "请检查结果文件是否存在" + STR_NEXT_LINE));
         }
     }
 
@@ -207,12 +220,54 @@ public class ScriptCheckController implements Initializable {
             return;
         }
         executeFlag = true;
-        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_LACK_EXT)));
         } catch (Exception e) {
             LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+    @FXML
+    void updateParameterDoc(ActionEvent event) throws Exception {
+        if (executeFlag) {
+            OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
+            return;
+        }
+        executeFlag = true;
+        try {
+            TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_PARAMETER_DOC)));
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_PARAMETER_DOC, e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+    @FXML
+    void showUpdateParameterDocResult(ActionEvent event) throws Exception {
+        try {
+            new ParameterToolController().showParamRealtimeSetResultByFile(null);
+            addLog("查看" + NAME_PARAMETER_DOC);
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, "查看修正老版全量错误信息"));
+        }
+    }
+
+    public void doUpdateParameterDoc() {
+        try {
+            OutputUtils.info(logs, getCommonMsg(NAME_PARAMETER_DOC, NAME_REPAIR_START));
+            showScheduleInfo(NAME_PARAMETER_DOC, NAME_REPAIR);
+            new ParameterToolController().updateParameterDoc(logs);
+            OutputUtils.info(logs, getCommonMsg(NAME_PARAMETER_DOC, NAME_REPAIR_END));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_PARAMETER_DOC);
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_PARAMETER_DOC, e.getMessage()));
+        } finally {
             executeFlag = false;
         }
     }
@@ -223,7 +278,7 @@ public class ScriptCheckController implements Initializable {
             String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
             File errFile = new File(resultPath + "\\" + LACK_LOG.getFileName());
             if (!errFile.exists()) {
-                OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, "未找到缺少日志文件"));
+                OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, "未找到缺少日志文件" + STR_NEXT_LINE));
                 return;
             }
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_LACK_EXT, NAME_REPAIR_START));
@@ -247,7 +302,6 @@ public class ScriptCheckController implements Initializable {
             return;
         }
         executeFlag = true;
-        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_WORK_FLOW)));
         } catch (Exception e) {
@@ -260,6 +314,10 @@ public class ScriptCheckController implements Initializable {
     @FXML
     void repairWorkFlowLog(ActionEvent event) throws Exception {
         try {
+            if (executeFlag) {
+                OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
+                return;
+            }
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             String check = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.workFlow.replace(".sql", ".check.sql");
             File checkFile = new File(check);
@@ -278,6 +336,7 @@ public class ScriptCheckController implements Initializable {
     public void doRepairWorkFlow() {
         try {
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, NAME_REPAIR_START));
+            executeFlag = true;
             showScheduleInfo(NAME_REPAIR_WORK_FLOW, NAME_REPAIR);
             ScriptRepairSql.repairWorkFlow();
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_WORK_FLOW, NAME_REPAIR_END));
@@ -305,7 +364,6 @@ public class ScriptCheckController implements Initializable {
             return;
         }
         executeFlag = true;
-        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_EXT)));
         } catch (Exception e) {
@@ -332,13 +390,31 @@ public class ScriptCheckController implements Initializable {
     }
 
     @FXML
+    void repairOneKey(ActionEvent event) throws Exception {
+        if (executeFlag) {
+            OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
+            return;
+        }
+        showRepairOldMenuLogBtn.setStyle(STYLE_NORMAL_FOR_BUTTON);
+        showRepairNewMenuLogBtn.setStyle(STYLE_NORMAL_FOR_BUTTON);
+        repairWorkFlowLogBtn.setStyle(STYLE_NORMAL_FOR_BUTTON);
+        showUpdateParameterDocResultBtn.setStyle(STYLE_NORMAL_FOR_BUTTON);
+        try {
+            TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_ONE_KEY)));
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ONE_KEY, e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+    @FXML
     void repairOldMenu(ActionEvent event) throws Exception {
         if (executeFlag) {
             OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
             return;
         }
         executeFlag = true;
-        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_OLD_MENU)));
         } catch (Exception e) {
@@ -346,6 +422,85 @@ public class ScriptCheckController implements Initializable {
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_OLD_MENU, e.getMessage()));
             executeFlag = false;
         }
+    }
+
+    public void doRepairOneKey() {
+        try {
+            repairOldMenu(null);
+            repair("repairNewMenu");
+            repair("repairWorkFlow");
+            repair("repairExt");
+            repair("updateChangeMenu");
+            repair("repairReport");
+            repair("repairLackLog");
+            repair("updateParameterDoc");
+            addLog(NAME_REPAIR_ONE_KEY);
+            while (true) {
+                AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+                List<String> repairErrorInfo = appConfigDto.getRepairErrorInfo();
+                if (repairErrorInfo.contains(NAME_PARAMETER_DOC) || repairErrorInfo.contains(NAME_PARAMETER_DOC_SUCCESS)) {
+                    if (repairErrorInfo.contains(NAME_REPAIR_OLD_MENU)) {
+                        showRepairOldMenuLogBtn.setStyle(STYLE_RED_FOR_BUTTON);
+                    }
+                    if (repairErrorInfo.contains(NAME_REPAIR_NEW_MENU)) {
+                        showRepairNewMenuLogBtn.setStyle(STYLE_RED_FOR_BUTTON);
+                    }
+                    if (repairErrorInfo.contains(NAME_REPAIR_WORK_FLOW)) {
+                        repairWorkFlowLogBtn.setStyle(STYLE_RED_FOR_BUTTON);
+                    }
+                    if (repairErrorInfo.contains(NAME_PARAMETER_DOC)) {
+                        showUpdateParameterDocResultBtn.setStyle(STYLE_RED_FOR_BUTTON);
+                    }
+                    break;
+                }
+                Thread.sleep(3 * 1000);
+            }
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ONE_KEY, e.getMessage()));
+        }
+    }
+
+    public void repair(String repairType) {
+        try {
+            while (true) {
+                if (executeFlag) {
+                    Thread.sleep(1 * 1000);
+                    continue;
+                }
+                switch (repairType) {
+                    case "repairNewMenu":
+                        repairNewMenu(null);
+                        break;
+                    case "repairWorkFlow":
+                        repairWorkFlow(null);
+                        break;
+                    case "repairExt":
+                        repairExt(null);
+                        break;
+                    case "updateChangeMenu":
+                        updateChangeMenu(null);
+                        break;
+                    case "repairReport":
+                        repairReport(null);
+                        break;
+                    case "repairLackLog":
+                        repairLackLog(null);
+                        break;
+                    case "updateParameterDoc":
+                        updateParameterDoc(null);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            }
+        } catch (Exception e) {
+            executeFlag = false;
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_ONE_KEY, e.getMessage()));
+        }
+
     }
 
     public void doRepairOldMenu() {
@@ -371,7 +526,6 @@ public class ScriptCheckController implements Initializable {
             return;
         }
         executeFlag = true;
-        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_NEW_MENU)));
         } catch (Exception e) {
@@ -399,6 +553,10 @@ public class ScriptCheckController implements Initializable {
 
     @FXML
     void repairErrorLog(ActionEvent event) throws Exception {
+        if (executeFlag) {
+            OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
+            return;
+        }
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         String resultPath = appConfigDto.getSystemToolCheckMenuResultPath();
         File errFile = new File(resultPath + "\\" + ERROR_LOG.getFileName());
@@ -411,7 +569,6 @@ public class ScriptCheckController implements Initializable {
             return;
         }
         TaCommonUtils.openBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_REPAIR_ERROR_LOG, NAME_REPAIR_ERROR_EXT);
-        ConfigCache.getAppConfigDtoCache().setRepairSchedule(STR_BLANK);
         try {
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_ERROR_EXT)));
         } catch (Exception e) {
@@ -459,7 +616,7 @@ public class ScriptCheckController implements Initializable {
             addLog("升级脚本");
         } catch (Exception e) {
             LoggerUtils.error(e);
-            OutputUtils.info(logs, getCommonMsg(NAME_SHOW_RESULT, "请检查结果文件是否不存在"));
+            OutputUtils.info(logs, getCommonMsg(NAME_SHOW_RESULT, "请检查结果文件是否不存在" + STR_NEXT_LINE));
         }
     }
 
@@ -477,52 +634,38 @@ public class ScriptCheckController implements Initializable {
     @FXML
     void updateChangeMenu(ActionEvent event) {
         try {
+            if (executeFlag) {
+                OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
+                return;
+            }
+            executeFlag = true;
             TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, KEY_UPDATE_CHANGE_MENU)));
         } catch (Exception e) {
             LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(KEY_UPDATE_CHANGE_MENU, e.getMessage()));
+            executeFlag = false;
         }
     }
 
     @FXML
     void repairReport(ActionEvent event) {
         try {
-            TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_REPORT)));
-        } catch (Exception e) {
-            LoggerUtils.error(e);
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT, e.getMessage()));
-        }
-    }
-
-    public void doRepairReport() {
-        try {
             if (executeFlag) {
                 OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
                 return;
             }
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT,"执行开始"));
             executeFlag = true;
-            showScheduleInfo(NAME_REPAIR_REPORT, NAME_REPAIR);
-            new ReportRepairSql().repair(ConfigCache.getAppConfigDtoCache());
-            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT,"执行结束"));
-            OutputUtils.info(logs, STR_NEXT_LINE);
-            addLog(NAME_REPAIR_REPORT);
+            TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_REPORT)));
         } catch (Exception e) {
             LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT, e.getMessage()));
-        } finally {
             executeFlag = false;
         }
     }
 
     public void doUpdateChangeMenu() {
         try {
-            if (executeFlag) {
-                OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
-                return;
-            }
             OutputUtils.info(logs, getCommonMsg(NAME_OLD_TO_NEW_MENU,"执行开始"));
-            executeFlag = true;
             showScheduleInfo(NAME_OLD_TO_NEW_MENU, NAME_REPAIR);
             new ScriptUpdateSql().generateChangeMenuSql();
             OutputUtils.info(logs, getCommonMsg(NAME_OLD_TO_NEW_MENU,"执行结束"));
@@ -531,6 +674,22 @@ public class ScriptCheckController implements Initializable {
         } catch (Exception e) {
             LoggerUtils.error(e);
             OutputUtils.info(logs, getCommonMsg(NAME_OLD_TO_NEW_MENU, e.getMessage()));
+        } finally {
+            executeFlag = false;
+        }
+    }
+
+    public void doRepairReport() {
+        try {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT,"执行开始"));
+            showScheduleInfo(NAME_REPAIR_REPORT, NAME_REPAIR);
+            new ReportRepairSql().repair(ConfigCache.getAppConfigDtoCache());
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT,"执行结束"));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_REPAIR_REPORT);
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_REPORT, e.getMessage()));
         } finally {
             executeFlag = false;
         }
@@ -578,7 +737,10 @@ public class ScriptCheckController implements Initializable {
         }
     }
 
-    public void showScheduleInfo(String functionName, String msg) throws ExecutionException, InterruptedException {
+    public void showScheduleInfo(String functionName, String msg) throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        appConfigDto.setRepairSchedule(STR_BLANK);
+        appConfigDto.setRepairFunctionName(functionName);
         long start = System.currentTimeMillis();
         ScriptCheckTaskParam scriptCheckTaskParam = new ScriptCheckTaskParam(this, KEY_SCHEDULE);
         scriptCheckTaskParam.setStart(start);
@@ -589,6 +751,10 @@ public class ScriptCheckController implements Initializable {
 
     public void doShowScheduleInfo(String functionName, String msg, long start) throws Exception {
         while (true) {
+            String repairFunctionName = ConfigCache.getAppConfigDtoCache().getRepairFunctionName();
+            if (!StringUtils.equals(repairFunctionName, functionName)) {
+                break;
+            }
             String repairSchedule = ConfigCache.getAppConfigDtoCache().getRepairSchedule();
             if (executeFlag) {
                 String tips = msg + "中 ··· ···  耗时 " + getRunTime(start) + " ··· ";
@@ -599,10 +765,7 @@ public class ScriptCheckController implements Initializable {
             } else {
                 break;
             }
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-            }
+            Thread.sleep(3000);
         }
     }
 

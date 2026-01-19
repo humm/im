@@ -79,6 +79,8 @@ public class ParameterToolController implements Initializable {
     private static int paramRealtimeSetNum = 0;
     private static int tableColumnsNum = 0;
 
+    private static boolean alertTips = true;
+
     private static Map<String, Map<String, String>> configDictValue = new LinkedHashMap<>();
     private static Map<String, String> configDictName = new LinkedHashMap<>();
     private static Set<String> beginValidDateSpecial = new HashSet<>();
@@ -88,6 +90,18 @@ public class ParameterToolController implements Initializable {
     private static List<List<String>> errorDefaultValuesColumnInfo = new ArrayList<>();
     private static List<List<String>> errorOrderColumnInfo = new ArrayList<>();
     private static List<String> modifyInfo = new ArrayList<>();
+
+
+    public void updateParameterDoc(TextArea logs) throws Exception {
+        this.alertTips = false;
+        this.logs = logs;
+        this.errorTips = new Label();
+        this.executeRealtimeBtn = new Button();
+        this.errorTipsResult = new Button();
+        this.errorTipsResultByFile = new Button();
+        initialize(null, null);
+        executeRealtime(null);
+    }
 
     @SneakyThrows
     @Override
@@ -126,9 +140,16 @@ public class ParameterToolController implements Initializable {
         if (CommonUtils.needUpdateVersion(appConfigDto)) {
             return;
         }
-        OutputUtils.clearLog(logs);
+        if (alertTips) {
+            OutputUtils.clearLog(logs);
+        }
         try {
-            String dictPath = baseDictPath.getText();
+            String dictPath;
+            if (baseDictPath != null) {
+                dictPath = baseDictPath.getText();
+            } else {
+                dictPath = appConfigDto.getChangeToolBaseDictPath();
+            }
             if (StringUtils.isBlank(dictPath)) {
                 OutputUtils.info(logs, "请设置字典全量脚本文件");
                 return;
@@ -137,7 +158,12 @@ public class ParameterToolController implements Initializable {
                 OutputUtils.info(logs, "字典全量脚本文件必须为文件");
                 return;
             }
-            String paramPath = paramRealtimeSetPath.getText();
+            String paramPath;
+            if (paramRealtimeSetPath != null) {
+                paramPath = paramRealtimeSetPath.getText();
+            } else {
+                paramPath = appConfigDto.getChangeToolParamRealtimeSetPath();
+            }
             if (StringUtils.isBlank(paramPath)) {
                 OutputUtils.info(logs, "请设置开通脚本目录位置");
                 return;
@@ -146,7 +172,12 @@ public class ParameterToolController implements Initializable {
                 OutputUtils.info(logs, "开通脚本目录必须为文件夹");
                 return;
             }
-            String path = tablePath.getText();
+            String path;
+            if (tablePath != null) {
+                path = tablePath.getText();
+            } else {
+                path = appConfigDto.getChangeToolTablePath();
+            }
             if (StringUtils.isBlank(path)) {
                 OutputUtils.info(logs, "请表结构目录");
                 return;
@@ -175,26 +206,26 @@ public class ParameterToolController implements Initializable {
             errorOrderColumnInfo.clear();
             modifyInfo.clear();
             executeRealtimeBtn.setDisable(true);
-            OutputUtils.infoContainBr(logs, "初始化字典信息 开始");
+            OutputUtils.info(logs, getCommonMsg("初始化字典信息 开始"));
             initConfigInfo();
             initBaseDict(dictPath);
             initExtDict(paramPath);
-            OutputUtils.infoContainBr(logs, "初始化字典信息 结束");
-            OutputUtils.infoContainBr(logs, "初始化表结构信息 开始");
+            OutputUtils.info(logs, getCommonMsg("初始化字典信息 结束"));
+            OutputUtils.info(logs, getCommonMsg("初始化表结构信息 开始"));
             initTableInfo(tablePath);
-            OutputUtils.infoContainBr(logs, "初始化表结构信息 结束");
-            OutputUtils.infoContainBr(logs, "生成文件 开始");
+            OutputUtils.info(logs, getCommonMsg("初始化表结构信息 结束"));
+            OutputUtils.info(logs, getCommonMsg("生成文件 开始"));
             buildFile(paramPath);
             if (paramRealtimeSetNum == 0) {
-                OutputUtils.infoContainBr(logs, "未扫描到参数电子化配置脚本，请检查【开通脚本目录】配置是否正确");
+                OutputUtils.info(logs, getCommonMsg("未扫描到参数电子化配置脚本，请检查【开通脚本目录】配置是否正确"));
                 errorTips.setVisible(true);
             }
             if (tableColumnsNum == 0) {
-                OutputUtils.infoContainBr(logs, "未扫描到表结构，请检查【表结构目录】配置是否正确");
+                OutputUtils.info(logs, getCommonMsg("未扫描到表结构，请检查【表结构目录】配置是否正确"));
                 errorTips.setVisible(true);
             }
-            OutputUtils.infoContainBr(logs, "生成文件 结束");
-            if (CollectionUtils.isNotEmpty(modifyInfo)) {
+            OutputUtils.info(logs, getCommonMsg("生成文件 结束"));
+            if (alertTips && CollectionUtils.isNotEmpty(modifyInfo)) {
                 OutputUtils.infoContainBr(logs, "修改明细");
                 for (String ele : modifyInfo) {
                     OutputUtils.infoContainBr(logs, ele);
@@ -282,6 +313,7 @@ public class ParameterToolController implements Initializable {
             }
 
             FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER)));
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(errorMessage)) {
                 StringBuilder summary = new StringBuilder();
                 summary.append("未获取到表字段信息: " + errorColumn + STR_SPACE_2);
@@ -289,8 +321,10 @@ public class ParameterToolController implements Initializable {
                 summary.append("未配置字段信息: " + errorConfigColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段默认值: " + errorDefaultValuesColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);
-                OutputUtils.infoContainBr(logs, "异常明细信息");
-                OutputUtils.infoContainBr(logs, errorMessage.toString());
+                if (alertTips) {
+                    OutputUtils.infoContainBr(logs, "异常明细信息");
+                    OutputUtils.infoContainBr(logs, errorMessage.toString());
+                }
                 OutputUtils.info(logs, summary.toString());
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
                 if (MapUtils.isNotEmpty(tipsByFile)) {
@@ -301,11 +335,16 @@ public class ParameterToolController implements Initializable {
                 errorTips.setVisible(true);
                 errorTipsResult.setVisible(true);
                 errorTipsResultByFile.setVisible(true);
-                Platform.runLater(() -> {
-                    CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
-                });
+                if (alertTips) {
+                    Platform.runLater(() -> {
+                        CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
+                    });
+                } else {
+                    appConfigDto.getRepairErrorInfo().add(NAME_PARAMETER_DOC);
+                }
             } else {
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList("完美..."));
+                appConfigDto.getRepairErrorInfo().add(NAME_PARAMETER_DOC_SUCCESS);
             }
         } catch (Exception e) {
             LoggerUtils.error(e);
@@ -313,6 +352,13 @@ public class ParameterToolController implements Initializable {
         } finally {
             executeRealtimeBtn.setDisable(false);
         }
+    }
+
+    private String getCommonMsg(String message) {
+        if (alertTips) {
+            return message + STR_NEXT_LINE;
+        }
+        return ScriptCheckController.getCommonMsg(NAME_PARAMETER_DOC, message);
     }
 
     private boolean skipColumns(String tableCode, String fieldCode) {
@@ -390,7 +436,9 @@ public class ParameterToolController implements Initializable {
     }
 
     private void getTableColumns(String tablePath) throws IOException {
-        OutputUtils.infoContainBr(logs, "扫描文件 " + tablePath);
+        if (alertTips) {
+            OutputUtils.infoContainBr(logs, "扫描文件 " + tablePath);
+        }
         String tableContent = FileUtils.readNormalFileToString(tablePath);
         if (StringUtils.isBlank(tableContent)) {
             return;
@@ -471,7 +519,9 @@ public class ParameterToolController implements Initializable {
         if (!path.endsWith(FILE_TYPE_SQL)) {
             return;
         }
-        OutputUtils.infoContainBr(logs, "扫描文件 " + path);
+        if (alertTips) {
+            OutputUtils.infoContainBr(logs, "扫描文件 " + path);
+        }
         String dict = FileUtils.readNormalFileToString(path);
         dict = CommonUtils.formatStrToSingleSpace(dict);
         if (StringUtils.isNotBlank(dict)) {
@@ -601,7 +651,9 @@ public class ParameterToolController implements Initializable {
             if (!path.endsWith(".sql")) {
                 return;
             }
-            OutputUtils.infoContainBr(logs, "扫描文件 " + path);
+            if (alertTips) {
+                OutputUtils.infoContainBr(logs, "扫描文件 " + path);
+            }
             buildExcel(path);
         }
     }

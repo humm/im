@@ -181,7 +181,7 @@ public class ReportRepairSql {
 
             if (ele.length != length) {
                 if (error) {
-                    throw new Exception("数据格式错误");
+                    throw new Exception("数据格式错误" + STR_NEXT_LINE);
                 } else {
                     return null;
                 }
@@ -207,7 +207,7 @@ public class ReportRepairSql {
     private static String getReportCodeByDelete(String item) throws Exception {
         String[] delete = item.split(STR_EQUAL);
         if (delete.length != 2) {
-            throw new Exception("数据格式错误");
+            throw new Exception("数据格式错误" + STR_NEXT_LINE);
         } else {
             return delete[1].trim().split(STR_SEMICOLON)[0];
         }

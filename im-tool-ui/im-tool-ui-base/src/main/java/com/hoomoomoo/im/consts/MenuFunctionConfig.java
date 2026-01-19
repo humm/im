@@ -14,7 +14,7 @@ public class MenuFunctionConfig {
         MENU_SCRIPT("menuScript", "脚本", 200, "script"),
         MENU_FILE("menuFile", "文件", 300, "file"),
         MENU_HEP("menuHep", "效能", 400, "hep"),
-        MENU_OTHER("menuOther", "整备", 410, "other"),
+        MENU_OTHER("menuServicing", "整备", 410, "other"),
         MENU_TOOL("menuTool", "系统", 450, "tool"),
         MENU_PARAM("menuParam", "参数", 500, "param"),
         MENU_HELP("menuHelp", "帮助", 600, "help");
@@ -152,16 +152,6 @@ public class MenuFunctionConfig {
                 "1",
                 ""
         ),
-        SCRIPT_CHECK(
-                "500",
-                "检查文件",
-                "检查文件",
-                "/conf/fxml/scriptCheck.fxml",
-                "scriptCheck",
-                "menuFile",
-                "0",
-                ""
-        ),
         GENERATE_CODE(
                 "310",
                 "生成代码",
@@ -190,18 +180,27 @@ public class MenuFunctionConfig {
                 "环境准备",
                 "/conf/fxml/changeTool.fxml",
                 "changeTool",
-                "menuOther",
+                "menuServicing",
                 "0",
                 "ChangeToolController.java,ChangeFunctionTask.java,ChangeFunctionTaskParam.java,changeTool.fxml"
         ),
-
+        SCRIPT_CHECK(
+                "500",
+                "检查文件",
+                "检查文件",
+                "/conf/fxml/scriptCheck.fxml",
+                "scriptCheck",
+                "menuServicing",
+                "0",
+                ""
+        ),
         PARAMETER_TOOL(
                 "650",
                 "文档更新",
                 "文档更新",
                 "/conf/fxml/parameterTool.fxml",
                 "parameterTool",
-                "menuOther",
+                "menuServicing",
                 "0",
                 "CheckResultController.java,ParameterToolController.java,ExcelComparatorUtils.java,ParameterToolTask.java,ParameterToolTaskParam.java,parameterTool.fxml,paramRealtimeSetExclude.json,paramRealtimeSetInclude.json"
         ),
@@ -212,7 +211,7 @@ public class MenuFunctionConfig {
                 "版本校验",
                 " ",
                 "checkVersion",
-                "menuOther",
+                "menuServicing",
                 "1",
                 ""
         ),

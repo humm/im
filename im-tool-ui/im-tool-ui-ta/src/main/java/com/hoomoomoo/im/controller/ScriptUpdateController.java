@@ -527,10 +527,10 @@ public class ScriptUpdateController extends BaseController implements Initializa
         if (startIndex != -1 && endIndex != -1) {
             elements = sql.substring(startIndex + 1, endIndex).split(STR_COMMA);
         } else {
-            throw new Exception("菜单【" + sql + "】数据格式错误");
+            throw new Exception("菜单【" + sql + "】数据格式错误" + STR_NEXT_LINE);
         }
         if (elements.length != 16) {
-            throw new Exception("菜单【" + sql + "】数据格式错误");
+            throw new Exception("菜单【" + sql + "】数据格式错误" + STR_NEXT_LINE);
         }
         menuDto.setMenuCode(elements[0]);
         menuDto.setKindCode(elements[1]);

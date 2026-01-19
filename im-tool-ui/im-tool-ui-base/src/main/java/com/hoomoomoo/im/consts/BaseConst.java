@@ -256,10 +256,13 @@ public class BaseConst {
     public static final String NAME_UPDATE_MENU = "新版全量升级";
     public static final String NAME_OLD_TO_NEW_MENU = "老版切换新版";
     public static final String NAME_REPAIR_LACK_EXT = "修正缺少日志";
+    public static final String NAME_PARAMETER_DOC = "参数电子化文档";
+    public static final String NAME_PARAMETER_DOC_SUCCESS = "参数电子化文档-完美";
     public static final String NAME_SHOW_RESULT = "查看结果";
     public static final String NAME_REPAIR_ERROR_EXT = "修正错误日志";
     public static final String NAME_REPAIR_WORK_FLOW = "修正复核信息";
     public static final String NAME_REPAIR_OLD_MENU = "修正老版全量";
+    public static final String NAME_REPAIR_ONE_KEY = "一键修正";
     public static final String NAME_REPAIR_NEW_MENU = "修正新版全量";
     public static final String NAME_REPAIR_EXT = "修正开通脚本";
     public static final String NAME_REPAIR_REPORT = "修正报表脚本";
