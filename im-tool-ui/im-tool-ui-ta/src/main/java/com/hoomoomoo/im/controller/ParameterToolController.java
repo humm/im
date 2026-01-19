@@ -312,6 +312,50 @@ public class ParameterToolController implements Initializable {
                 }
             }
 
+            // 临时修改 开始
+            Set<String> currentTips = new LinkedHashSet<>();
+            currentTips.add("03_fundProfitSchemaSet");
+            currentTips.add("04_fundProfitProjSet");
+            currentTips.add("05_fundMergerControlSet");
+            currentTips.add("06_fundFareBelongInfoSet");
+            currentTips.add("07_fundStatusModify");
+            currentTips.add("08_fundFactCollectInfoSet");
+            currentTips.add("09_fundTrusteeLiquiDay");
+            currentTips.add("10_fundAgencyLiquiDay");
+            currentTips.add("11_fundFundStatusSchema");
+            currentTips.add("12_fundProductInfoSet");
+            currentTips.add("13_fundCurrencySchemeSet");
+            currentTips.add("14_fundSaleQualifySet");
+            currentTips.add("15_fundFeeRateInfo");
+            currentTips.add("35_fundChangeLiquiDay");
+            currentTips.add("36_fundChangeLimitInfoSet");
+            currentTips.add("37_fundNetRedeemSchema");
+            currentTips.add("41_fundTailRatioBalance");
+            currentTips.add("43_fundTrationControl");
+            currentTips.add("25_fundProfitZoneSet");
+            currentTips.add("89_fundManualProfit");
+            currentTips.add("30_fundSpecifyRedeemSet");
+            currentTips.add("39_fundUpgradeInfoSet");
+            currentTips.add("40_fundConctrlSchemaSet");
+            currentTips.add("42_fundCustTailRatioBalance");
+            currentTips.add("31_fundDiscountLimitInfoSet");
+            currentTips.add("18_fundAgencyInfoBase");
+            currentTips.add("20_fundFundOpendayListSet");
+            currentTips.add("46_fundIdTypeBizLimitSet");
+            currentTips.add("88_fundProfitBaseZoneSet");
+            currentTips.add("90_fundNewStiBusLmt");
+            currentTips.add("79_fundInvestorRoleLimitSet");
+            currentTips.add("80_fundInvestorRoleSet");
+
+            Iterator<String> iterator = tipsByFile.keySet().iterator();
+            while (iterator.hasNext()) {
+                String ele = iterator.next();
+                if (!currentTips.contains(ele)) {
+                    iterator.remove();
+                }
+            }
+            // 临时修改 结束
+
             FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER)));
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(errorMessage)) {
@@ -321,6 +365,12 @@ public class ParameterToolController implements Initializable {
                 summary.append("未配置字段信息: " + errorConfigColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段默认值: " + errorDefaultValuesColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);
+
+                // 临时修改 开始
+                summary.append(STR_NEXT_LINE);
+                summary.append("忽略汇总提示信息, 此提示为全量提示, 本次只需关注任务修改页面" + STR_NEXT_LINE);
+                // 临时修改 结束
+
                 if (alertTips) {
                     OutputUtils.infoContainBr(logs, "异常明细信息");
                     OutputUtils.infoContainBr(logs, errorMessage.toString());
@@ -330,8 +380,16 @@ public class ParameterToolController implements Initializable {
                 if (MapUtils.isNotEmpty(tipsByFile)) {
                     for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
                         FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
+                        // 临时修改 开始
+                        currentTips.remove(entry.getKey());
+                        // 临时修改 结束
                     }
                 }
+
+                // 临时修改 开始
+                OutputUtils.info(logs, "无差异页面: " + currentTips.stream().collect(Collectors.joining(STR_SPACE_2)));
+                // 临时修改 结束
+
                 errorTips.setVisible(true);
                 errorTipsResult.setVisible(true);
                 errorTipsResultByFile.setVisible(true);
