@@ -37,6 +37,8 @@
                                         <TextField fx:id="tablePath" layoutX="270.0" layoutY="91.0" prefHeight="23.0"
                                                    prefWidth="800.0"/>
 
+                                        <Label layoutX="14" layoutY="130.0" prefHeight="15.0" text="参数设置中可配置路径默认值" style="-fx-text-background-color: red;"/>
+
                                         <Button fx:id="executeRealtimeBtn" layoutX="1100.0" layoutY="50.0"
                                                 mnemonicParsing="false" onAction="#executeRealtime" prefHeight="30.0"
                                                 prefWidth="100.0" text="执行">
@@ -61,7 +63,14 @@
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                             </padding>
                                         </Button>
-                                        <Label layoutX="1650" layoutY="55.0" prefHeight="15.0" text="参数设置中可配置路径默认值"/>
+
+                                        <Button layoutX="1700.0" layoutY="50"
+                                                mnemonicParsing="false" onAction="#showSystemLog"
+                                                prefWidth="100.0" text="查看系统日志">
+                                            <padding>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                            </padding>
+                                        </Button>
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">

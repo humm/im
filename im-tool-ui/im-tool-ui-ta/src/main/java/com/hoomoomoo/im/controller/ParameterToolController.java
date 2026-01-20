@@ -135,6 +135,16 @@ public class ParameterToolController implements Initializable {
     }
 
     @FXML
+    void showSystemLog(ActionEvent event) throws IOException {
+        try {
+            TaCommonUtils.openMultipleBlankChildStage(PAGE_TYPE_SYSTEM_TOOL_SYSTEM_LOG, "系统日志");
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, "查看系统日志错误");
+        }
+    }
+
+    @FXML
     void executeRealtime(ActionEvent event) throws Exception {
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         if (CommonUtils.needUpdateVersion(appConfigDto)) {
