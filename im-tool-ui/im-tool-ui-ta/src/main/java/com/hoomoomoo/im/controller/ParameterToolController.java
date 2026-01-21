@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
+import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.*;
 import com.hoomoomoo.im.extend.ScriptSqlUtils;
 import com.hoomoomoo.im.task.ParameterToolTask;
@@ -370,15 +371,12 @@ public class ParameterToolController implements Initializable {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(errorMessage)) {
                 StringBuilder summary = new StringBuilder();
-                summary.append("未获取到表字段信息: " + errorColumn + STR_SPACE_2);
+                // 临时修改 开始  临时注释
+                /*summary.append("未获取到表字段信息: " + errorColumn + STR_SPACE_2);
                 summary.append("未获取到表结构信息: " + errorTable + STR_SPACE_2);
                 summary.append("未配置字段信息: " + errorConfigColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段默认值: " + errorDefaultValuesColumnInfo.size() + STR_SPACE_2);
-                summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);
-
-                // 临时修改 开始
-                summary.append(STR_NEXT_LINE);
-                summary.append("忽略汇总提示信息, 此提示为全量提示, 本次只需关注任务修改页面" + STR_NEXT_LINE);
+                summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);*/
                 // 临时修改 结束
 
                 if (alertTips) {
@@ -395,7 +393,25 @@ public class ParameterToolController implements Initializable {
                 }
 
                 // 临时修改 开始
-                summary.append(STR_NEXT_LINE + "无差异页面: " + currentTips.stream().collect(Collectors.joining(STR_SPACE_2)));
+                List<String> notFixed = new ArrayList<>(currentTips);
+                Collections.sort(notFixed, new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        return o1.compareTo(o2);
+                    }
+                });
+
+                List<String> needFixed = new ArrayList<>(tipsByFile.keySet());
+                Collections.sort(needFixed, new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        return o1.compareTo(o2);
+                    }
+                });
+
+                summary.append(STR_NEXT_LINE + "无差异页面(" + notFixed.size() + "): " + notFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "有差异页面(" + needFixed.size() + "): " + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE);
                 // 临时修改 结束
 
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
@@ -410,10 +426,10 @@ public class ParameterToolController implements Initializable {
                         if (true) {
                             CommonUtils.showTipsByInfo("文档更新完成, 请检查差异项", 90 * 1000);
                         } else {
+                            // 实际弹窗提示
                             CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
                         }
                         // 临时修改 结束
-                        // CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
                     });
                 } else {
                     appConfigDto.getRepairErrorInfo().add(NAME_PARAMETER_DOC);

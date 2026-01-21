@@ -7,5 +7,40 @@
   ],
   "fundIdTypeBizLimitSet.sql": [
     "busin_type"
+  ],
+  "fundChangeLimitInfoSet.sql": [
+    "client_type"
+  ],
+  "fundTailRatioBalance.sql": [
+    "flag",
+    "update_flag",
+    "nav_type"
+  ],
+  "fundProfitZoneSet.sql": [
+    "max_sharpe_ratio",
+    "ratio_min_mult",
+    "max_net_value",
+    "ratio_max_mult",
+    "min_net_value",
+    "min_sharpe_ratio",
+    "min_up_ratio",
+    "max_up_ratio",
+    "deduct_formula"
+  ],
+  "fundUpgradeInfoSet.sql": [
+    "end_date",
+    "upg_share_divtype_rule",
+    "min_days",
+    "exp_kj_merger",
+    "hold_class_type",
+    "share_do_method",
+    "upg_prd_insufi_share_deal",
+    "interval_hold_days_type",
+    "merge_account_mode",
+    "bef_upgrade_rdm_deal",
+    "max_days"
+  ],
+  "fundConctrlSchemaSet.sql": [
+    "control_by_amt"
   ]
 }
