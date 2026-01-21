@@ -5,9 +5,6 @@
     "create_time",
     "modify_timestamp"
   ],
-  "fundIdTypeBizLimitSet.sql": [
-    "busin_type"
-  ],
   "fundChangeLimitInfoSet.sql": [
     "client_type"
   ],
@@ -42,5 +39,200 @@
   ],
   "fundConctrlSchemaSet.sql": [
     "control_by_amt"
+  ],
+  "fundTrusteeLiquiDay.sql": [
+    "targ_prd_code",
+    "fee_clear_days",
+    "liqui_stat_type",
+    "change_liqui_days",
+    "changein_liqui_days",
+    "begin_valid_date"
+  ],
+  "fundAgencyLiquiDay.sql": [
+    "targ_prd_code",
+    "fee_clear_days",
+    "liqui_stat_type",
+    "change_liqui_days",
+    "changein_liqui_days",
+    "begin_valid_date"
+  ],
+  "fundFundStatusSchema.sql": [
+    "trans_date",
+    "last_modify",
+    "is_auto_preset"
+  ],
+  "fundSaleQualifySet.sql": [
+    "total_nav_level",
+    "service_manage_ratio",
+    "begin_valid_date",
+    "tail_value_level",
+    "last_exp_date",
+    "pension_no_purchase_fee"
+  ],
+  "fundFeeRateInfo.sql": [
+    "max_fee_rate",
+    "seller_type",
+    "min_income_rate",
+    "version",
+    "unit_name",
+    "unit",
+    "max_income_rate",
+    "back_flag",
+    "calculate_numeric",
+    "is_differ_control",
+    "fee_mode",
+    "reserve1",
+    "reserve2",
+    "reserve3"
+  ],
+  "fundChangeLiquiDay.sql": [
+    "iss_fail_cleardays",
+    "red_liqui_days",
+    "fee_clear_days",
+    "liqui_stat_type",
+    "allot_liqui_days",
+    "subscirbe_liqui_days",
+    "prdend_cleardays",
+    "seller_code",
+    "bonus_liqui_days"
+  ],
+  "fundProductInfoSet.sql": [
+    "default_template_flag",
+    "plan_name",
+    "share_based_type",
+    "max_open_count",
+    "is_imp_income",
+    "foreig_minbal_rmb",
+    "pension_invest_direction",
+    "stock_not_profit",
+    "white_control",
+    "hope_year_ratio",
+    "busin_param",
+    "sort_level",
+    "is_issue_fail",
+    "max_open_deal_type",
+    "liqbatch_need_nav",
+    "hint_end_day",
+    "minhold_modify_date",
+    "plan_code",
+    "rdm_cfm_endday_type",
+    "exp_nav_by_yesterday",
+    "manager_name",
+    "vol_digit",
+    "min_hold_amt_rmb"
+  ],
+  "fundIdTypeBizLimitSet.sql": [
+    "flag",
+    "busin_type"
+  ],
+  "fundCustTailRatioBalance.sql": [
+    "flag",
+    "update_flag",
+    "mgr_fee_ratio"
+  ],
+  "fundDiscountLimitInfoSet.sql": [
+    "reserve1",
+    "reserve2",
+    "reserve3",
+    "ratio1",
+    "ratio2"
+  ],
+  "fundFundOpendayListSet.sql": [
+    "auto_flag",
+    "import_date",
+    "regular_prd_flag",
+    "create_date",
+    "short_regular_status",
+    "merge_flag",
+    "ori_prd_status",
+    "gen_openday_flag",
+    "uuid_bak",
+    "ori_begin_date",
+    "ori_end_date"
+  ],
+  "fundInvestorRoleLimitSet.sql": [
+    "modify_date"
+  ],
+  "fundInvestorRoleSet.sql": [
+    "source_type",
+    "offical_code",
+    "modify_date"
+  ],
+  "fundAgencyInfoBase.sql": [
+    "exp_flag",
+    "modify_date",
+    "c4exp_schema_xrdate",
+    "asso_branch_code",
+    "region",
+    "exp_limit_inc_fee",
+    "zbd_ta_code",
+    "third_pension_breach",
+    "seller_diff_sftp",
+    "c1_setup_date_chg_rule",
+    "signoff_flag",
+    "batch_no",
+    "exp05_by_ta_busin"
+  ],
+  "fundProfitSchemaSet.sql": [
+    "is_auto_generate",
+    "stagging_income",
+    "force_add_date",
+    "busin_param",
+    "tot_nav",
+    "end_index_price",
+    "unvalid_date",
+    "base_days",
+    "attach_info",
+    "stagging_income_unit",
+    "profit_dev_max",
+    "aim_val",
+    "income_days",
+    "temp_flag",
+    "deal_status",
+    "plan_code",
+    "deal_date",
+    "cfm_date",
+    "nav",
+    "reserve1",
+    "reserve2",
+    "reserve3"
+  ],
+  "fundProfitProjSet.sql": [
+    "deal_days",
+    "pay_way",
+    "sharpe_year_days",
+    "is_ruyi32",
+    "no_risk_ratio",
+    "cal_openday_type",
+    "deal_months",
+    "busin_param",
+    "deduct_status",
+    "virtual_nav_by_rule_flag",
+    "project_name",
+    "special_code",
+    "auto_inc",
+    "virtual_cycle_type",
+    "rule_base_date",
+    "weekend_deal_type",
+    "prft_reg_cal_limit_type",
+    "request_date",
+    "cfm_date",
+    "plan_code",
+    "index_market_date_type",
+    "first_deduct_nav_date"
+  ],
+  "fundMergerControlSet.sql": [
+    "flag"
+  ],
+  "fundFareBelongInfoSet.sql": [
+    "reserve1",
+    "reserve3",
+    "reserve2"
+  ],
+  "fundManualProfit.sql": [
+    "in_client_no",
+    "busin_param",
+    "cfm_date",
+    "assigned_profit_balance"
   ]
 }

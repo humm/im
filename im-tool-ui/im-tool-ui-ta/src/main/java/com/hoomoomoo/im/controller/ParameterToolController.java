@@ -90,6 +90,7 @@ public class ParameterToolController implements Initializable {
     private static List<List<String>> errorConfigColumnInfo = new ArrayList<>();
     private static List<List<String>> errorDefaultValuesColumnInfo = new ArrayList<>();
     private static List<List<String>> errorOrderColumnInfo = new ArrayList<>();
+    private static List<List<String>> errorMultipleTabInfo = new ArrayList<>();
     private static List<String> modifyInfo = new ArrayList<>();
 
 
@@ -215,6 +216,7 @@ public class ParameterToolController implements Initializable {
             errorConfigColumnInfo.clear();
             errorDefaultValuesColumnInfo.clear();
             errorOrderColumnInfo.clear();
+            errorMultipleTabInfo.clear();
             modifyInfo.clear();
             executeRealtimeBtn.setDisable(true);
             OutputUtils.info(logs, getCommonMsg("初始化字典信息 开始"));
@@ -314,6 +316,19 @@ public class ParameterToolController implements Initializable {
                 for (List<String> ele : errorOrderColumnInfo) {
                     String folder = ele.get(0);
                     String msg = String.format("%s  %s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "未配置字段排序", ele.get(3), ele.get(4)) + STR_NEXT_LINE;
+                    errorMessage.append(msg);
+                    if (tipsByFile.containsKey(folder)) {
+                        tipsByFile.get(folder).append(msg);
+                    } else {
+                        tipsByFile.put(folder, new StringBuilder(msg));
+                    }
+                }
+            }
+
+            if (CollectionUtils.isNotEmpty(errorMultipleTabInfo)) {
+                for (List<String> ele : errorMultipleTabInfo) {
+                    String folder = ele.get(0);
+                    String msg = String.format("%s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "存在多tab未指定tab名称") + STR_NEXT_LINE;
                     errorMessage.append(msg);
                     if (tipsByFile.containsKey(folder)) {
                         tipsByFile.get(folder).append(msg);
@@ -502,7 +517,7 @@ public class ParameterToolController implements Initializable {
                 List<String> columns = skipIncludeConfig.get(fileName);
                 if (CollectionUtils.isNotEmpty(columns) && !columns.contains(column)) {
                     if (!desc.containsKey(fileFolderName)) {
-                        desc.put(fileFolderName, Arrays.asList(errorInfo.get(0), errorInfo.get(1), errorInfo.get(2), errorInfo.get(3), "配置了自定义字段显示,请确认已涵盖页面所使用字段"));
+                        // desc.put(fileFolderName, Arrays.asList(errorInfo.get(0), errorInfo.get(1), errorInfo.get(2), errorInfo.get(3), "配置了自定义字段显示,请确认已涵盖页面所使用字段"));
                     }
                     iterator.remove();
                     continue;
@@ -757,7 +772,7 @@ public class ParameterToolController implements Initializable {
             return;
         }
         buildInterfaceDesc(workbook);
-        buildRequestDesc(workbook, paramRealtimeDto);
+        buildRequestDesc(workbook, paramRealtimeDto, new File(filePath));
         buildComponentDesc(workbook, paramRealtimeDto, new File(filePath));
         buildDictDesc(workbook, paramRealtimeDto);
         buildFile(workbook, paramRealtimeDto, filePath);
@@ -1039,15 +1054,29 @@ public class ParameterToolController implements Initializable {
         }
     }
 
-    private void buildRequestDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto) {
+    private String getMultipleTabName(ParamRealtimeApiTabDto paramRealtimeApiTab) {
+        Map<String, String> tab = new HashMap<>();
+        tab.put("fundProductInfoSet", "基金信息");
+        tab.put("fundAgencyInfoBase", "销售商信息");
+        return tab.get(paramRealtimeApiTab.getMenuCode());
+    }
+
+    private void buildRequestDesc(SXSSFWorkbook workbook, ParamRealtimeDto paramRealtimeDto, File file) {
         List<ParamRealtimeApiTabDto> paramRealtimeApiTabList = paramRealtimeDto.getParamRealtimeApiTabList();
         List<ParamRealtimeApiComponentDto> paramRealtimeApiComponentDtoList = paramRealtimeDto.getParamRealtimeApiComponentDtoList();
         if (CollectionUtils.isNotEmpty(paramRealtimeApiTabList) && CollectionUtils.isNotEmpty(paramRealtimeApiComponentDtoList)) {
             ParamRealtimeApiTabDto paramRealtimeApiTab = paramRealtimeApiTabList.get(0);
             String sheetName = paramRealtimeApiTab.getTabName();
-            boolean product = StringUtils.equals("fundProductInfoSet", paramRealtimeApiTab.getMenuCode());
-            if (product) {
-                sheetName = "基金信息";
+            boolean multipleTab = paramRealtimeApiTabList.size() > 1;
+            if (multipleTab) {
+                String multipleTabName = getMultipleTabName(paramRealtimeApiTab);
+                if (StringUtils.isNotBlank(multipleTabName)) {
+                    sheetName = multipleTabName;
+                } else {
+                    String fileName = file.getName();
+                    String fileFolder = new File(file.getParent()).getName();
+                    errorMultipleTabInfo.add(Arrays.asList(fileFolder, fileName, sheetName));
+                }
             }
             SXSSFSheet requestDesc = workbook.createSheet(sheetName + "接口");
             CellStyle titleCellStyle = ExcelCommonUtils.getTitleCellStyle(workbook);
@@ -1117,14 +1146,14 @@ public class ParameterToolController implements Initializable {
                     paramRealtimeDto.getPrimaryKey().put(item.getTabCode(), Arrays.asList(keyStr.split(STR_COMMA)));
                 }
                 String desc = "主键字段: ";
-                if (product) {
+                if (multipleTab) {
                     desc = item.getTabName() + desc;
                 }
                 currentLine++;
                 SXSSFRow rowUniqueDesc = requestDesc.createRow(currentLine);
                 buildRowCell(rowUniqueDesc, null, 0, desc + keyStr);
                 requestDesc.addMergedRegion(new CellRangeAddress(currentLine, currentLine, 0, 6));
-                if (!product) {
+                if (!multipleTab) {
                     break;
                 }
             }
@@ -1155,20 +1184,26 @@ public class ParameterToolController implements Initializable {
                 String tableCode = changeToLower(tab.getTableCode());
                 requestContent.add("        \"" + tab.getTabCode() + "\": [");
                 requestContent.add("            {");
+                int lastIndex = 0;
                 for (int i = 0; i < paramRealtimeApiComponentDtoList.size(); i++) {
+                    lastIndex = paramRealtimeApiComponentDtoList.size() - 1;
                     ParamRealtimeApiComponentDto item = paramRealtimeApiComponentDtoList.get(i);
                     String fieldCode = changeToLower(item.getFieldCode());
                     if (skipColumns(tableCode, fieldCode)) {
+                        if (i == lastIndex) {
+                            deleteLastComma(requestContent);
+                        }
                         continue;
                     }
                     if (!StringUtils.equals(tab.getTabCode(), item.getTabCode())) {
+                        deleteLastComma(requestContent);
                         continue;
                     }
                     if (StringUtils.equals(beginValidDate, fieldCode) && needAddBeginValidDate) {
                         continue;
                     }
                     String line = "\"" + fieldCode + "\"" + ": " + (StringUtils.isNotBlank(item.getDefaultValue()) ? "\"" + item.getDefaultValue() + "\"" : "\"\"");
-                    if (i != paramRealtimeApiComponentDtoList.size() - 1) {
+                    if (i != lastIndex) {
                         line += ",";
                     }
                     requestContent.add("                " + line);
@@ -1182,7 +1217,7 @@ public class ParameterToolController implements Initializable {
                 } else {
                     requestContent.add("        ]");
                 }
-                if (!product) {
+                if (!multipleTab) {
                     break;
                 }
             }
@@ -1235,6 +1270,13 @@ public class ParameterToolController implements Initializable {
         }
     }
 
+    private void deleteLastComma(List<String> requestContent) {
+        int lastIndex = requestContent.size() - 1;
+        String lastLine = requestContent.get(lastIndex);
+        if (lastLine.endsWith(STR_COMMA)) {
+            requestContent.set(lastIndex, lastLine.substring(0, lastLine.indexOf(STR_COMMA)));
+        }
+    }
     private void addBeginValidDate(List<String> requestContent, String beginValidDate) {
         int lastIndex = requestContent.size() - 1;
         String lastLine = requestContent.get(lastIndex);

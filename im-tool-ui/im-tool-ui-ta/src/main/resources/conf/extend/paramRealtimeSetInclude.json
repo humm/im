@@ -1,3 +1,16 @@
 {
-
+  "fundFundStatusSchema_GY.sql": [
+    "prd_code",
+    "prd_status",
+    "begin_date",
+    "end_date"
+  ],
+  "fundStatusModify.sql": [
+    "prd_code",
+    "prd_status"
+  ],
+  "fundFactCollectInfoSet.sql": [
+    "prd_code",
+    "prd_issue_real_bala"
+  ]
 }
