@@ -40,7 +40,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
-import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.CHANGE_TOOL;
 import static com.hoomoomoo.im.consts.MenuFunctionConfig.FunctionConfig.PARAMETER_TOOL;
 
 /**
@@ -92,6 +91,7 @@ public class ParameterToolController implements Initializable {
     private static List<List<String>> errorOrderColumnInfo = new ArrayList<>();
     private static List<List<String>> errorMultipleTabInfo = new ArrayList<>();
     private static List<String> modifyInfo = new ArrayList<>();
+    private static Map<String, List<String>> logTips = new LinkedHashMap<>();
 
 
     public void updateParameterDoc(TextArea logs) throws Exception {
@@ -218,6 +218,7 @@ public class ParameterToolController implements Initializable {
             errorOrderColumnInfo.clear();
             errorMultipleTabInfo.clear();
             modifyInfo.clear();
+            logTips.clear();
             executeRealtimeBtn.setDisable(true);
             OutputUtils.info(logs, getCommonMsg("初始化字典信息 开始"));
             initConfigInfo();
@@ -276,20 +277,6 @@ public class ParameterToolController implements Initializable {
                 for (List<String> ele : errorConfigColumnInfo) {
                     String folder = ele.get(0);
                     String msg = String.format("%s  %s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "未配置字段信息", ele.get(3), ele.get(4)) + STR_NEXT_LINE;
-                    errorMessage.append(msg);
-                    if (tipsByFile.containsKey(folder)) {
-                        tipsByFile.get(folder).append(msg);
-                    } else {
-                        tipsByFile.put(folder, new StringBuilder(msg));
-                    }
-                }
-            }
-
-            if (MapUtils.isNotEmpty(desc)) {
-                for (Map.Entry<String, List<String>> entry : desc.entrySet()) {
-                    String folder = entry.getKey();
-                    List<String> ele = entry.getValue();
-                    String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), ele.get(3), ele.get(4)) + STR_NEXT_LINE;
                     errorMessage.append(msg);
                     if (tipsByFile.containsKey(folder)) {
                         tipsByFile.get(folder).append(msg);
@@ -383,6 +370,7 @@ public class ParameterToolController implements Initializable {
             // 临时修改 结束
 
             FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER)));
+
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(errorMessage)) {
                 StringBuilder summary = new StringBuilder();
@@ -423,6 +411,15 @@ public class ParameterToolController implements Initializable {
                         return o1.compareTo(o2);
                     }
                 });
+
+                if (MapUtils.isNotEmpty(logTips)) {
+                    for (Map.Entry<String, List<String>> entry : logTips.entrySet()) {
+                        List<String> ele = entry.getValue();
+                        String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), ele.get(3), ele.get(4));
+                        summary.append(STR_NEXT_LINE + msg);
+                    }
+                    summary.append(STR_NEXT_LINE);
+                }
 
                 summary.append(STR_NEXT_LINE + "无差异页面(" + notFixed.size() + "): " + notFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
                 summary.append(STR_NEXT_LINE + "有差异页面(" + needFixed.size() + "): " + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
@@ -516,8 +513,8 @@ public class ParameterToolController implements Initializable {
             if (skipIncludeConfig.containsKey(fileName)) {
                 List<String> columns = skipIncludeConfig.get(fileName);
                 if (CollectionUtils.isNotEmpty(columns) && !columns.contains(column)) {
-                    if (!desc.containsKey(fileFolderName)) {
-                        // desc.put(fileFolderName, Arrays.asList(errorInfo.get(0), errorInfo.get(1), errorInfo.get(2), errorInfo.get(3), "配置了自定义字段显示,请确认已涵盖页面所使用字段"));
+                    if (!logTips.containsKey(fileFolderName)) {
+                        logTips.put(fileFolderName, Arrays.asList(errorInfo.get(0), errorInfo.get(1), errorInfo.get(2), errorInfo.get(3), "配置了自定义字段显示,请确认已涵盖页面所使用字段"));
                     }
                     iterator.remove();
                     continue;
