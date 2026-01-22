@@ -376,6 +376,7 @@ public class ParameterToolController implements Initializable {
                     });
 
                     if (MapUtils.isNotEmpty(logTips)) {
+                        summary.append(STR_NEXT_LINE);
                         for (Map.Entry<String, List<String>> entry : logTips.entrySet()) {
                             List<String> ele = entry.getValue();
                             String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), ele.get(3), ele.get(4));
@@ -396,7 +397,7 @@ public class ParameterToolController implements Initializable {
                 errorTipsResultByFile.setVisible(true);
                 if (alertTips) {
                     Platform.runLater(() -> {
-                        CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
+                        CommonUtils.showTipsByInfo("文档更新完成, 请查看提示信息", 90 * 1000);
                     });
                 } else {
                     appConfigDto.getRepairErrorInfo().add(NAME_PARAMETER_DOC);
