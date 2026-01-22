@@ -54,6 +54,10 @@
                                 <Label fx:id="fileTipsVersion" layoutX="1020.0" layoutY="55.0"
                                        style="-fx-text-background-color: red;"/>
 
+                                <Label fx:id="focusVersionTipsLabel" layoutX="20" layoutY="80.0"/>
+                                <Label fx:id="focusVersionTips" layoutX="120.0" layoutY="80.0"
+                                       style="-fx-font-weight: bold; -fx-text-background-color: #804d00; "/>
+
                                 <Label layoutX="20.0" layoutY="110.0" text="操作类型："/>
                                 <Button fx:id="syncFileBtn" layoutX="100.0" layoutY="105.0" mnemonicParsing="false"
                                         onAction="#syncOrSuspend" prefHeight="30.0" prefWidth="100.0" text="停止文件同步">
@@ -144,9 +148,6 @@
                                                    style="-fx-scale-x: 0.8; -fx-scale-y: 0.8;"/>
                                 <Label fx:id="scheduleText" layoutX="1055" layoutY="188.0" text="0%"/>
 
-                                <Label fx:id="focusVersionTipsLabel" layoutX="20" layoutY="220.0"/>
-                                <Label fx:id="focusVersionTips" layoutX="120.0" layoutY="220.0"
-                                       style="-fx-text-background-color: red;"/>
                                 <Label fx:id="memoryTips" layoutX="650" layoutY="220.0"
                                        style="-fx-text-background-color: red;"/>
                                 <Label fx:id="filePushTips" layoutX="850.0" layoutY="220.0"/>

@@ -129,7 +129,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static String TIME_OVER_COLOR = "-fx-text-background-color: #6f8000;";
     private final static String TODAY_COLOR = "-fx-text-background-color: #ff0000;";
     private final static String WEEK_COLOR = "-fx-text-background-color: #7b00ff;";
-    private final static String FOCUS_COLOR = "-fx-text-background-color: #f50d90;";
+    private final static String FOCUS_COLOR = "-fx-text-background-color: #0d94f5;";
     private final static String NEW_COLOR = "-fx-text-background-color: #6d0e86;";
     private final static String DEFAULT_COLOR = "-fx-text-background-color: #000000;";
 
@@ -1371,11 +1371,11 @@ public class HepTodoController extends BaseController implements Initializable {
         if (num > 0) {
             OutputUtils.repeatInfo(focusVersionTips, message.get(0));
             controlFocusVersionTips(true);
-            controlColorDesc(false);
+            // controlColorDesc(false);
         } else {
             OutputUtils.repeatInfo(focusVersionTips, STR_BLANK);
             controlFocusVersionTips(false);
-            controlColorDesc(true);
+            // controlColorDesc(true);
         }
     }
 
@@ -1957,18 +1957,6 @@ public class HepTodoController extends BaseController implements Initializable {
 
     private void initComponentStatus() {
         controlFocusVersionTips(false);
-        focusVersionTipsLabel.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
-                focusVersionTips.setVisible(!focusVersionTips.isVisible());
-                for (Label ele : colorList) {
-                    if (ele.getText().contains(NAME_DESC_COLOR)) {
-                        ele.setVisible(false);
-                        continue;
-                    }
-                    ele.setVisible(!ele.isVisible());
-                }
-            }
-        });
         filePushTips.setVisible(false);
         setSyncFrontVersionTips(false);
     }
