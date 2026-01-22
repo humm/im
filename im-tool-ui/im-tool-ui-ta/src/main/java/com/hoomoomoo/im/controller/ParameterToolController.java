@@ -325,106 +325,68 @@ public class ParameterToolController implements Initializable {
                 }
             }
 
-            // 临时修改 开始
-            Set<String> currentTips = new LinkedHashSet<>();
-            currentTips.add("03_fundProfitSchemaSet");
-            currentTips.add("04_fundProfitProjSet");
-            currentTips.add("05_fundMergerControlSet");
-            currentTips.add("06_fundFareBelongInfoSet");
-            currentTips.add("07_fundStatusModify");
-            currentTips.add("08_fundFactCollectInfoSet");
-            currentTips.add("09_fundTrusteeLiquiDay");
-            currentTips.add("10_fundAgencyLiquiDay");
-            currentTips.add("11_fundFundStatusSchema");
-            currentTips.add("12_fundProductInfoSet");
-            currentTips.add("13_fundCurrencySchemeSet");
-            currentTips.add("14_fundSaleQualifySet");
-            currentTips.add("15_fundFeeRateInfo");
-            currentTips.add("35_fundChangeLiquiDay");
-            currentTips.add("36_fundChangeLimitInfoSet");
-            currentTips.add("37_fundNetRedeemSchema");
-            currentTips.add("41_fundTailRatioBalance");
-            currentTips.add("43_fundTrationControl");
-            currentTips.add("25_fundProfitZoneSet");
-            currentTips.add("89_fundManualProfit");
-            currentTips.add("30_fundSpecifyRedeemSet");
-            currentTips.add("39_fundUpgradeInfoSet");
-            currentTips.add("40_fundConctrlSchemaSet");
-            currentTips.add("42_fundCustTailRatioBalance");
-            currentTips.add("31_fundDiscountLimitInfoSet");
-            currentTips.add("18_fundAgencyInfoBase");
-            currentTips.add("20_fundFundOpendayListSet");
-            currentTips.add("46_fundIdTypeBizLimitSet");
-            currentTips.add("88_fundProfitBaseZoneSet");
-            currentTips.add("90_fundNewStiBusLmt");
-            currentTips.add("79_fundInvestorRoleLimitSet");
-            currentTips.add("80_fundInvestorRoleSet");
+            Set<String> currentUpdate = getCurrentUpdateTab();
 
             Iterator<String> iterator = tipsByFile.keySet().iterator();
             while (iterator.hasNext()) {
                 String ele = iterator.next();
-                if (!currentTips.contains(ele)) {
+                if (!currentUpdate.contains(ele)) {
                     iterator.remove();
                 }
             }
-            // 临时修改 结束
 
             FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER)));
 
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(errorMessage)) {
                 StringBuilder summary = new StringBuilder();
-                // 临时修改 开始  临时注释
-                /*summary.append("未获取到表字段信息: " + errorColumn + STR_SPACE_2);
+                summary.append("未获取到表字段信息: " + errorColumn + STR_SPACE_2);
                 summary.append("未获取到表结构信息: " + errorTable + STR_SPACE_2);
                 summary.append("未配置字段信息: " + errorConfigColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段默认值: " + errorDefaultValuesColumnInfo.size() + STR_SPACE_2);
-                summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);*/
-                // 临时修改 结束
+                summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);
 
                 if (alertTips) {
                     OutputUtils.infoContainBr(logs, "异常明细信息");
                     OutputUtils.infoContainBr(logs, errorMessage.toString());
                 }
-                if (MapUtils.isNotEmpty(tipsByFile)) {
-                    for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
-                        FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
-                        // 临时修改 开始
-                        currentTips.remove(entry.getKey());
-                        // 临时修改 结束
-                    }
-                }
 
-                // 临时修改 开始
-                List<String> notFixed = new ArrayList<>(currentTips);
-                Collections.sort(notFixed, new Comparator<String>() {
-                    @Override
-                    public int compare(String o1, String o2) {
-                        return o1.compareTo(o2);
+                if (CollectionUtils.isNotEmpty(currentUpdate)) {
+                    if (MapUtils.isNotEmpty(tipsByFile)) {
+                        for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
+                            FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
+                            currentUpdate.remove(entry.getKey());
+                        }
                     }
-                });
 
-                List<String> needFixed = new ArrayList<>(tipsByFile.keySet());
-                Collections.sort(needFixed, new Comparator<String>() {
-                    @Override
-                    public int compare(String o1, String o2) {
-                        return o1.compareTo(o2);
-                    }
-                });
+                    List<String> notFixed = new ArrayList<>(currentUpdate);
+                    Collections.sort(notFixed, new Comparator<String>() {
+                        @Override
+                        public int compare(String o1, String o2) {
+                            return o1.compareTo(o2);
+                        }
+                    });
 
-                if (MapUtils.isNotEmpty(logTips)) {
-                    for (Map.Entry<String, List<String>> entry : logTips.entrySet()) {
-                        List<String> ele = entry.getValue();
-                        String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), ele.get(3), ele.get(4));
-                        summary.append(STR_NEXT_LINE + msg);
+                    List<String> needFixed = new ArrayList<>(tipsByFile.keySet());
+                    Collections.sort(needFixed, new Comparator<String>() {
+                        @Override
+                        public int compare(String o1, String o2) {
+                            return o1.compareTo(o2);
+                        }
+                    });
+
+                    if (MapUtils.isNotEmpty(logTips)) {
+                        for (Map.Entry<String, List<String>> entry : logTips.entrySet()) {
+                            List<String> ele = entry.getValue();
+                            String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), ele.get(3), ele.get(4));
+                            summary.append(STR_NEXT_LINE + msg);
+                        }
+                        summary.append(STR_NEXT_LINE);
                     }
+                    summary.append(STR_NEXT_LINE + "本次修改【无差异】页面(" + notFixed.size() + "): " + notFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
+                    summary.append(STR_NEXT_LINE + "本次修改【有差异】页面(" + needFixed.size() + "): " + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
                     summary.append(STR_NEXT_LINE);
                 }
-
-                summary.append(STR_NEXT_LINE + "无差异页面(" + notFixed.size() + "): " + notFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
-                summary.append(STR_NEXT_LINE + "有差异页面(" + needFixed.size() + "): " + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
-                summary.append(STR_NEXT_LINE);
-                // 临时修改 结束
 
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
                 OutputUtils.info(logs, summary.toString());
@@ -434,14 +396,7 @@ public class ParameterToolController implements Initializable {
                 errorTipsResultByFile.setVisible(true);
                 if (alertTips) {
                     Platform.runLater(() -> {
-                        // 临时修改 开始
-                        if (true) {
-                            CommonUtils.showTipsByInfo("文档更新完成, 请检查差异项", 90 * 1000);
-                        } else {
-                            // 实际弹窗提示
-                            CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
-                        }
-                        // 临时修改 结束
+                        CommonUtils.showTipsByError(summary.toString(), 90 * 1000);
                     });
                 } else {
                     appConfigDto.getRepairErrorInfo().add(NAME_PARAMETER_DOC);
@@ -456,6 +411,43 @@ public class ParameterToolController implements Initializable {
         } finally {
             executeRealtimeBtn.setDisable(false);
         }
+    }
+
+    private Set<String> getCurrentUpdateTab() {
+        Set<String> currentUpdate = new LinkedHashSet<>();
+        currentUpdate.add("03_fundProfitSchemaSet");
+        currentUpdate.add("04_fundProfitProjSet");
+        currentUpdate.add("05_fundMergerControlSet");
+        currentUpdate.add("06_fundFareBelongInfoSet");
+        currentUpdate.add("07_fundStatusModify");
+        currentUpdate.add("08_fundFactCollectInfoSet");
+        currentUpdate.add("09_fundTrusteeLiquiDay");
+        currentUpdate.add("10_fundAgencyLiquiDay");
+        currentUpdate.add("11_fundFundStatusSchema");
+        currentUpdate.add("12_fundProductInfoSet");
+        currentUpdate.add("13_fundCurrencySchemeSet");
+        currentUpdate.add("14_fundSaleQualifySet");
+        currentUpdate.add("15_fundFeeRateInfo");
+        currentUpdate.add("35_fundChangeLiquiDay");
+        currentUpdate.add("36_fundChangeLimitInfoSet");
+        currentUpdate.add("37_fundNetRedeemSchema");
+        currentUpdate.add("41_fundTailRatioBalance");
+        currentUpdate.add("43_fundTrationControl");
+        currentUpdate.add("25_fundProfitZoneSet");
+        currentUpdate.add("89_fundManualProfit");
+        currentUpdate.add("30_fundSpecifyRedeemSet");
+        currentUpdate.add("39_fundUpgradeInfoSet");
+        currentUpdate.add("40_fundConctrlSchemaSet");
+        currentUpdate.add("42_fundCustTailRatioBalance");
+        currentUpdate.add("31_fundDiscountLimitInfoSet");
+        currentUpdate.add("18_fundAgencyInfoBase");
+        currentUpdate.add("20_fundFundOpendayListSet");
+        currentUpdate.add("46_fundIdTypeBizLimitSet");
+        currentUpdate.add("88_fundProfitBaseZoneSet");
+        currentUpdate.add("90_fundNewStiBusLmt");
+        currentUpdate.add("79_fundInvestorRoleLimitSet");
+        currentUpdate.add("80_fundInvestorRoleSet");
+        return currentUpdate;
     }
 
     private String getCommonMsg(String message) {

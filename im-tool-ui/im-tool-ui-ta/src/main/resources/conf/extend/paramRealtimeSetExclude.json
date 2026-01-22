@@ -234,5 +234,8 @@
     "busin_param",
     "cfm_date",
     "assigned_profit_balance"
+  ],
+  "fundCurrencySchemeSet.sql": [
+    "next_basevol_upddate"
   ]
 }
