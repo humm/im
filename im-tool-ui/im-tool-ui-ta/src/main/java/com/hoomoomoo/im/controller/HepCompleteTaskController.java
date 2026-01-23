@@ -119,9 +119,9 @@ public class HepCompleteTaskController extends BaseController implements Initial
                 modifiedFileValue.append(file);
                 if (file.contains("extradata")) {
                     if (file.endsWith(FILE_TYPE_SQL)) {
-                        extFile.append(STR_SLASH_T + "执行脚本 " + file.substring(file.lastIndexOf("/") + 1)).append(STR_NEXT_LINE);
+                        extFile.append(STR_SLASH_T + "执行脚本 " + file.substring(file.indexOf("/") + 1)).append(STR_NEXT_LINE);
                     } else if (file.endsWith(FILE_TYPE_RPX)) {
-                        extFile.append(STR_SLASH_T + "替换文件 " + file.substring(file.lastIndexOf("/") + 1)).append(STR_NEXT_LINE);
+                        extFile.append(STR_SLASH_T + "替换文件 " + file.substring(file.indexOf("/") + 1)).append(STR_NEXT_LINE);
                     }
                 }
             }
@@ -222,28 +222,36 @@ public class HepCompleteTaskController extends BaseController implements Initial
         AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
         HepTaskDto hepTaskDto = appConfigDto.getHepTaskDto();
         if (StringUtils.isBlank(realWorkloadValue)) {
-            tips.append("【耗费工时】").append(STR_NEXT_LINE);
+            tips.append("【耗费工时】不能为空").append(STR_NEXT_LINE);
         }
         if (StringUtils.isBlank(realFinishTimeValue)) {
-            tips.append("【完成时间】").append(STR_NEXT_LINE);
+            tips.append("【完成时间】不能为空").append(STR_NEXT_LINE);
         }
         if (!OPERATE_TYPE_CUSTOM_UPDATE.equals(hepTaskDto.getOperateType())) {
             if (StringUtils.isBlank(modifiedFileValue)) {
-                tips.append("【修改文件】").append(STR_NEXT_LINE);
+                tips.append("【修改文件】不能为空").append(STR_NEXT_LINE);
             }
             if (StringUtils.isBlank(editDescriptionValue)) {
-                tips.append("【修改说明】").append(STR_NEXT_LINE);
+                tips.append("【修改说明】不能为空").append(STR_NEXT_LINE);
             }
             if (StringUtils.isBlank(suggestionValue)) {
-                tips.append("【测试建议】").append(STR_NEXT_LINE);
+                tips.append("【测试建议】不能为空").append(STR_NEXT_LINE);
+            } else {
+                if (CommonUtils.formatStrToSingleSpace(suggestionValue).contains("】 【")) {
+                    tips.append("【测试建议】存在未填小项").append(STR_NEXT_LINE);
+                }
             }
             if (StringUtils.isBlank(selfTestDescValue)) {
-                tips.append("【自测说明】").append(STR_NEXT_LINE);
+                tips.append("【自测说明】不能为空").append(STR_NEXT_LINE);
+            } else {
+                if (CommonUtils.formatStrToSingleSpace(selfTestDescValue).contains("】 【")) {
+                    tips.append("【自测说明】存在未填小项").append(STR_NEXT_LINE);
+                }
             }
         }
         if (StringUtils.isNotBlank(tips)) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("校验失败，如下信息不能为空");
+            alert.setTitle("存在未填项");
             alert.setHeaderText(tips.toString());
             alert.showAndWait();
             return;
