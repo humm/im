@@ -331,6 +331,7 @@ public class BaseConst {
     public static final String STR_COLON = ":";
     public static final String STR_HYPHEN = "-";
     public static final String STR_HYPHEN_1 = " - ";
+    public static final String STR_UNDER_LINE = "_";
     public final static String STR_POINT = ".";
     public final static String STR_POINT_3 = "...";
     public final static String STR_$_SLASH = "\\$";

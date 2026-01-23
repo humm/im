@@ -88,15 +88,15 @@ public class ScriptSqlUtils {
     }
 
     public static String getMenuCode(String item) {
-        return getMenuElement(item, 0);
+        return getElement(item, 0);
     }
 
     public static String getTransCodeByWorkFlow(String item) {
-        return getMenuElement(item, 0);
+        return getElement(item, 0);
     }
 
     public static String getSubTransCodeByWorkFlow(String item) {
-            return getMenuElement(item, 1);
+            return getElement(item, 1);
         }
 
     public static String getSubTransCodeByWhole(String item) {
@@ -118,33 +118,34 @@ public class ScriptSqlUtils {
     }
 
     public static String getMenuName(String item) {
-        return getMenuElement(item, 4);
+        return getElement(item, 4);
     }
 
     public static String getParentCode(String item) {
-        return getMenuElement(item, 10);
+        return getElement(item, 10);
     }
 
     public static String getTransCodeByMenu(String item) {
-        return getMenuElement(item, 2);
+        return getElement(item, 2);
     }
+
     public static String getSubTransCodeBySubTrans(String item) {
-        return getMenuElement(item, 1);
+        return getElement(item, 1);
     }
 
     public static String getMenuRemark(String item) {
-        return getMenuElement(item, 14);
+        return getElement(item, 14);
     }
 
     public static String getTransCodeAndSubTransCodeByMenu(String item) {
-        return getMenuElement(item, 2) + " - " + getMenuElement(item, 3);
+        return getElement(item, 2) + " - " + getElement(item, 3);
     }
 
     public static String getOrderNo(String item) {
-        return getMenuElement(item, 11);
+        return getElement(item, 11);
     }
 
-    public static String getMenuElement(String ele, int index) {
+    public static String getElement(String ele, int index) {
         String menu = null;
         String item = handleSqlForValues(ele);
         try {

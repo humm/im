@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
-import com.hoomoomoo.im.consts.MenuFunctionConfig;
 import com.hoomoomoo.im.dto.*;
 import com.hoomoomoo.im.extend.ScriptSqlUtils;
 import com.hoomoomoo.im.task.ParameterToolTask;
@@ -90,8 +89,11 @@ public class ParameterToolController implements Initializable {
     private static List<List<String>> errorDefaultValuesColumnInfo = new ArrayList<>();
     private static List<List<String>> errorOrderColumnInfo = new ArrayList<>();
     private static List<List<String>> errorMultipleTabInfo = new ArrayList<>();
+    private static List<List<String>> errorSkipColumnInfo = new ArrayList<>();
     private static List<String> modifyInfo = new ArrayList<>();
     private static Map<String, List<String>> logTips = new LinkedHashMap<>();
+
+    private static Map<String, List<String>> skipExcludeConfig = new LinkedHashMap<>();
 
 
     public void updateParameterDoc(TextArea logs) throws Exception {
@@ -217,6 +219,8 @@ public class ParameterToolController implements Initializable {
             errorDefaultValuesColumnInfo.clear();
             errorOrderColumnInfo.clear();
             errorMultipleTabInfo.clear();
+            errorSkipColumnInfo.clear();
+            skipExcludeConfig.clear();
             modifyInfo.clear();
             logTips.clear();
             executeRealtimeBtn.setDisable(true);
@@ -228,6 +232,9 @@ public class ParameterToolController implements Initializable {
             OutputUtils.info(logs, getCommonMsg("初始化表结构信息 开始"));
             initTableInfo(tablePath);
             OutputUtils.info(logs, getCommonMsg("初始化表结构信息 结束"));
+
+            skipExcludeConfig = getSkipConfig(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE, PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE_DEV);
+
             OutputUtils.info(logs, getCommonMsg("生成文件 开始"));
             buildFile(paramPath);
             if (paramRealtimeSetNum == 0) {
@@ -246,8 +253,8 @@ public class ParameterToolController implements Initializable {
                 }
             }
             // 忽略提示信息
-            Map<String, List<String>> desc = skipErrorTips(errorTableColumnInfo);
-            desc.putAll(skipErrorTips(errorConfigColumnInfo));
+            skipErrorTips(errorTableColumnInfo);
+            skipErrorTips(errorConfigColumnInfo);
 
             Map<String, StringBuilder> tipsByFile = new LinkedHashMap<>();
             int errorColumn = 0;
@@ -325,15 +332,20 @@ public class ParameterToolController implements Initializable {
                 }
             }
 
-            Set<String> currentUpdate = getCurrentUpdateTab();
-
-            Iterator<String> iterator = tipsByFile.keySet().iterator();
-            while (iterator.hasNext()) {
-                String ele = iterator.next();
-                if (!currentUpdate.contains(ele)) {
-                    iterator.remove();
+            if (CollectionUtils.isNotEmpty(errorSkipColumnInfo)) {
+                for (List<String> ele : errorSkipColumnInfo) {
+                    String folder = ele.get(0);
+                    String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "存在使用字段配置忽略检查",  ele.get(3)) + STR_NEXT_LINE;
+                    errorMessage.append(msg);
+                    if (tipsByFile.containsKey(folder)) {
+                        tipsByFile.get(folder).append(msg);
+                    } else {
+                        tipsByFile.put(folder, new StringBuilder(msg));
+                    }
                 }
             }
+
+            Set<String> currentUpdate = getCurrentUpdateTab();
 
             FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER)));
 
@@ -345,49 +357,52 @@ public class ParameterToolController implements Initializable {
                 summary.append("未配置字段信息: " + errorConfigColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段默认值: " + errorDefaultValuesColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);
+                summary.append("存在使用字段配置忽略检查: " + errorSkipColumnInfo.size() + STR_SPACE_2);
 
                 if (alertTips) {
-                    OutputUtils.infoContainBr(logs, "异常明细信息");
+                    OutputUtils.infoContainBr(logs, STR_NEXT_LINE + "异常明细信息");
                     OutputUtils.infoContainBr(logs, errorMessage.toString());
                 }
 
-                if (CollectionUtils.isNotEmpty(currentUpdate)) {
-                    if (MapUtils.isNotEmpty(tipsByFile)) {
-                        for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
-                            FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
-                            currentUpdate.remove(entry.getKey());
+                List<String> needFixed = new ArrayList<>();
+                if (MapUtils.isNotEmpty(tipsByFile)) {
+                    for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
+                        String key = entry.getKey();
+                        FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
+                        if (currentUpdate.contains(key)) {
+                            needFixed.add(key);
+                            currentUpdate.remove(key);
                         }
                     }
+                }
 
-                    List<String> notFixed = new ArrayList<>(currentUpdate);
-                    Collections.sort(notFixed, new Comparator<String>() {
-                        @Override
-                        public int compare(String o1, String o2) {
-                            return o1.compareTo(o2);
-                        }
-                    });
-
-                    List<String> needFixed = new ArrayList<>(tipsByFile.keySet());
-                    Collections.sort(needFixed, new Comparator<String>() {
-                        @Override
-                        public int compare(String o1, String o2) {
-                            return o1.compareTo(o2);
-                        }
-                    });
-
-                    if (MapUtils.isNotEmpty(logTips)) {
-                        summary.append(STR_NEXT_LINE);
-                        for (Map.Entry<String, List<String>> entry : logTips.entrySet()) {
-                            List<String> ele = entry.getValue();
-                            String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), ele.get(3), ele.get(4));
-                            summary.append(STR_NEXT_LINE + msg);
-                        }
-                        summary.append(STR_NEXT_LINE);
+                Collections.sort(needFixed, new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        return o1.compareTo(o2);
                     }
-                    summary.append(STR_NEXT_LINE + "本次修改【无差异】页面(" + notFixed.size() + "): " + notFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
-                    summary.append(STR_NEXT_LINE + "本次修改【有差异】页面(" + needFixed.size() + "): " + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
+                });
+
+                List<String> notFixed = new ArrayList<>(currentUpdate);
+                Collections.sort(notFixed, new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        return o1.compareTo(o2);
+                    }
+                });
+
+                if (MapUtils.isNotEmpty(logTips)) {
+                    summary.append(STR_NEXT_LINE);
+                    for (Map.Entry<String, List<String>> entry : logTips.entrySet()) {
+                        List<String> ele = entry.getValue();
+                        String msg = String.format("%s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), ele.get(3), ele.get(4));
+                        summary.append(STR_NEXT_LINE + msg);
+                    }
                     summary.append(STR_NEXT_LINE);
                 }
+                summary.append(STR_NEXT_LINE + "本次修改【无差异】页面(" + notFixed.size() + "): " + notFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "本次修改【有差异】页面(" + needFixed.size() + "): " + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE);
 
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
                 OutputUtils.info(logs, summary.toString());
@@ -397,7 +412,7 @@ public class ParameterToolController implements Initializable {
                 errorTipsResultByFile.setVisible(true);
                 if (alertTips) {
                     Platform.runLater(() -> {
-                        CommonUtils.showTipsByInfo("文档更新完成, 请查看提示信息", 90 * 1000);
+                        CommonUtils.showTipsByInfo("文档更新完成... 请查看提示信息", 90 * 1000);
                     });
                 } else {
                     appConfigDto.getRepairErrorInfo().add(NAME_PARAMETER_DOC);
@@ -466,21 +481,20 @@ public class ParameterToolController implements Initializable {
         return false;
     }
 
-    private Map<String, List<String>> skipErrorTips(List<List<String>> error) throws IOException {
-        Map<String, List<String>> desc = new HashMap<>();
+    private Map<String, List<String>> getSkipConfig(String confFilePath, String devFilePath) throws IOException {
+        Map<String, List<String>> skipConfig = new HashMap<>();
+        skipConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(confFilePath)), Map.class));
+        String devFile = FileUtils.getFilePath(devFilePath);
+        if (new File(devFile).exists()) {
+            skipConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(devFilePath)), Map.class));
+        }
+        return skipConfig;
+    }
+
+    private void skipErrorTips(List<List<String>> error) throws IOException {
         Iterator<List<String>> iterator = error.listIterator();
-        Map<String, List<String>> skipExcludeConfig = new HashMap<>();
-        Map<String, List<String>> skipIncludeConfig = new HashMap<>();
-        String excludeDev = FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE_DEV);
-        String includeDev = FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_INCLUDE_DEV);
-        if (new File(excludeDev).exists()) {
-            skipExcludeConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(excludeDev), Map.class));
-        }
-        if (new File(includeDev).exists()) {
-            skipIncludeConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(includeDev), Map.class));
-        }
-        skipExcludeConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE)), Map.class));
-        skipIncludeConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(PATH_PARAM_REALTIME_SET_SKIP_INCLUDE)), Map.class));
+        Map<String, List<String>> skipExcludeConfig = getSkipConfig(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE, PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE_DEV);
+        Map<String, List<String>> skipIncludeConfig = getSkipConfig(PATH_PARAM_REALTIME_SET_SKIP_INCLUDE, PATH_PARAM_REALTIME_SET_SKIP_INCLUDE_DEV);
         while (iterator.hasNext()) {
             List<String> errorInfo = iterator.next();
             if (errorInfo.size() != 5) {
@@ -514,7 +528,6 @@ public class ParameterToolController implements Initializable {
                 }
             }
         }
-        return desc;
     }
 
     private void initTableInfo(String tablePath) throws IOException {
@@ -871,6 +884,7 @@ public class ParameterToolController implements Initializable {
             if (StringUtils.equals(tableCode, "tbfundproduct_date")) {
                 if (tableColumnsConfig.containsKey("tbfundproduct_ext")) {
                     tableInfo.putAll(tableColumnsConfig.get("tbfundproduct_ext"));
+                    // tableInfo.putAll(tableColumnsConfig.get("tbfundproduct_nt"));
                 }
             }
             if (MapUtils.isNotEmpty(tableInfo)) {
@@ -881,6 +895,38 @@ public class ParameterToolController implements Initializable {
                     }
                 }
             }
+
+            if (StringUtils.equals(tabCode, "fundProductInfoSet")) {
+                List<String> skipColumns = skipExcludeConfig.get("fundProductInfoSet.sql");
+                Map<String, String> skipColumnsMap = new HashMap<>();
+                for (String ele : skipColumns) {
+                    skipColumnsMap.put(ele.toLowerCase().replaceAll(STR_UNDER_LINE, STR_BLANK), ele);
+                }
+                String productPath = baseDictPath.getText().replace("06tbdict-fund.sql", "15fund-product-field.sql");
+                if (!new File(productPath).exists()) {
+                    productPath = productPath.replace("15fund-product-field.sql", "15fund-product-field.oracle.sql");
+                }
+                String content = FileUtils.readNormalFileToString(productPath);
+                if (StringUtils.isNotBlank(content)) {
+                    String[] columns = content.split(STR_SEMICOLON);
+                    for (String column : columns) {
+                        if (column.contains("tbdataelement")) {
+                            String fieldCode = ScriptSqlUtils.getElement(column, 3);
+                            if (fieldCode != null) {
+                                // 废弃字段不使用
+                                if (StringUtils.equals("managerName", fieldCode)) {
+                                    continue;
+                                }
+                                fieldCode = fieldCode.toLowerCase();
+                                if (skipColumnsMap.containsKey(fieldCode)) {
+                                    errorSkipColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), skipColumnsMap.get(fieldCode)));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
             int rowIndex = 0;
             boolean errorTableColumnInfoExists;
             for (ParamRealtimeApiComponentDto item : paramRealtimeApiComponentDtoList) {
