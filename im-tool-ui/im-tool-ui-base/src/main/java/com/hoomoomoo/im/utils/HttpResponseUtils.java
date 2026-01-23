@@ -51,7 +51,7 @@ public class HttpResponseUtils implements HttpHandler {
     private Map<String, String> checkVersion(HttpExchange exchange, Map<String, String> requestParam) throws Exception {
         String requestVer = requestParam.get(KEY_VERSION);
         String finalVer = CommonUtils.getVersion();
-        String ipAddress = exchange.getRemoteAddress().toString().substring(1);
+        String ipAddress = exchange.getRemoteAddress().toString().substring(1).split(STR_COLON)[0];
         Date date = new Date();
         List<String> logs = new ArrayList<>();
         logs.add("请求ip地址: " + ipAddress);

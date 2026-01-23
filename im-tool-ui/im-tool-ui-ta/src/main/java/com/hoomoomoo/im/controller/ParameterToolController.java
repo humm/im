@@ -747,18 +747,11 @@ public class ParameterToolController implements Initializable {
                 String absolutePath = item.getAbsolutePath();
                 if (absolutePath.contains("paramRealtimeSet")) {
                     buildFile(absolutePath);
-                } else {
-                    if (alertTips) {
-                        OutputUtils.infoContainBr(logs, "忽略文件 " + absolutePath);
-                    }
                 }
             }
         } else {
             paramRealtimeSetNum++;
             if (!path.endsWith(".sql")) {
-                if (alertTips) {
-                    OutputUtils.infoContainBr(logs, "忽略文件 " + path);
-                }
                 return;
             }
             if (alertTips) {

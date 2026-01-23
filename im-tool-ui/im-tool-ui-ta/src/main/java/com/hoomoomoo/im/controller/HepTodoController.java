@@ -129,7 +129,7 @@ public class HepTodoController extends BaseController implements Initializable {
     private final static String TIME_OVER_COLOR = "-fx-text-background-color: #6f8000;";
     private final static String TODAY_COLOR = "-fx-text-background-color: #ff0000;";
     private final static String WEEK_COLOR = "-fx-text-background-color: #7b00ff;";
-    private final static String FOCUS_COLOR = "-fx-text-background-color: #0d94f5;";
+    private final static String FOCUS_COLOR = "-fx-text-background-color: #b30df5;";
     private final static String NEW_COLOR = "-fx-text-background-color: #6d0e86;";
     private final static String DEFAULT_COLOR = "-fx-text-background-color: #000000;";
 
