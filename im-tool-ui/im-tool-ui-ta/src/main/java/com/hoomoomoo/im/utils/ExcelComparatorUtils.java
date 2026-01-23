@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE;
+import static com.hoomoomoo.im.consts.BaseConst.STR_NEXT_LINE_2;
+
 public class ExcelComparatorUtils {
 
     // 存储差异信息
@@ -26,11 +29,11 @@ public class ExcelComparatorUtils {
         // 清空历史差异
         DIFF_LIST.clear();
         if (!new File(filePath1).exists()) {
-            LoggerUtils.info(filePath1 + " 修改前不存在,不比较");
+            LoggerUtils.info(filePath1 + " 修改前不存在, 不比较");
             return false;
         }
         if (!new File(filePath2).exists()) {
-            LoggerUtils.info(filePath2 + " 修改后不存在,不比较");
+            LoggerUtils.info(filePath2 + " 修改后不存在, 不比较");
             return false;
         }
         try {
@@ -40,7 +43,7 @@ public class ExcelComparatorUtils {
             Workbook workbook2 = getWorkbook(fis2, filePath2);
             // 1. 校验工作表数量
             if (workbook1.getNumberOfSheets() != workbook2.getNumberOfSheets()) {
-                DIFF_LIST.add("工作表数量不一致: 修改前=" + workbook1.getNumberOfSheets() + ",修改后=" + workbook2.getNumberOfSheets());
+                DIFF_LIST.add("工作表数量不一致: 修改前 -> " + workbook1.getNumberOfSheets() + ", 修改后 ->" + workbook2.getNumberOfSheets());
                 return false;
             }
 
@@ -53,7 +56,7 @@ public class ExcelComparatorUtils {
                 String sheetName1 = workbook1.getSheetName(sheetIndex);
                 String sheetName2 = workbook2.getSheetName(sheetIndex);
                 if (!sheetName1.equals(sheetName2)) {
-                    DIFF_LIST.add("工作表名称不一致: 索引" + sheetIndex + ",修改前=" + sheetName1 + ",修改后=" + sheetName2);
+                    DIFF_LIST.add("工作表名称不一致: 索引" + sheetIndex + ", 修改前 -> " + sheetName1 + ", 修改后 -> " + sheetName2);
                 }
 
                 // 3. 逐行对比
@@ -68,11 +71,11 @@ public class ExcelComparatorUtils {
                         continue; // 两行都为空,跳过
                     }
                     if (row1 == null) {
-                        DIFF_LIST.add("工作表[" + sheetName1 + "]行[" + rowIndex + "]: 修改前无此行,修改后有");
+                        DIFF_LIST.add("工作表【" + sheetName1 + "】行【" + rowIndex + "】: 修改前无此行, 修改后有");
                         continue;
                     }
                     if (row2 == null) {
-                        DIFF_LIST.add("工作表[" + sheetName1 + "]行[" + rowIndex + "]: 修改前有此行,修改后无");
+                        DIFF_LIST.add("工作表【" + sheetName1 + "】行【" + rowIndex + "】: 修改前有此行, 修改后无");
                         continue;
                     }
 
@@ -88,7 +91,7 @@ public class ExcelComparatorUtils {
 
                         // 校验单元格值
                         if (!cellValue1.equals(cellValue2)) {
-                            DIFF_LIST.add("工作表[" + sheetName1 + "]行[" + rowIndex + "]列[" + cellIndex + "]值不一致: " + "修改前=" + cellValue1 + ",修改后=" + cellValue2);
+                            DIFF_LIST.add("工作表【" + sheetName1 + "】行【" + rowIndex + "】列【" + cellIndex + "】值不一致: " + STR_NEXT_LINE + "修改前 -> " + cellValue1 + STR_NEXT_LINE + "修改后 -> " + cellValue2);
                         }
                     }
                 }

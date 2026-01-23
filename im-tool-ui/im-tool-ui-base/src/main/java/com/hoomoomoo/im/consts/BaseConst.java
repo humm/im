@@ -323,8 +323,10 @@ public class BaseConst {
     public final static String STR_SPACE_2 = "  ";
     public final static String STR_SPACE_3 = "   ";
     public final static String STR_SPACE_4 = "    ";
+    public final static String STR_SPACE_8 = "        ";
+    public final static String STR_SPACE_12 = "            ";
     public final static String STR_SPACE_10 = "          ";
-    public final static String STR_SPACE_8 = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
+    public final static String STR_SPACE_NBSP_8 = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
     public final static String STR_EQUALS = "=";
     public static final String STR_COMMA = ",";
     public static final String STR_SEMICOLON = ";";
@@ -458,6 +460,7 @@ public class BaseConst {
     public static final String FILE_CHANGE_MODE = "/extend/change/mode/changeMode.sql";
     public static final String FILE_CHANGE_PARAMETER = "/extend/change/mode/changeParameter.sql";
     public static final String FILE_PARAM_REALTIME_SET = "/extend/paramRealtimeSet/00_paramRealtimeSet.sql";
+    public static final String FILE_PARAM_REALTIME_SET_UPDATE_DETAIL = "/extend/paramRealtimeSet/00_paramRealtimeSetUpdateDetail.sql";
     public static final String FILE_PARAM_REALTIME_SET_FOLDER = "/extend/paramRealtimeSet/";
     public static final String FILE_REALTIME_SET = "00_paramRealtimeSet.sql";
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";

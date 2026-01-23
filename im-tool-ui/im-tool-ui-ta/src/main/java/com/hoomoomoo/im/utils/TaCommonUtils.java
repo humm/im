@@ -12,18 +12,15 @@ import com.hoomoomoo.im.dto.SvnStatDto;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
@@ -352,7 +349,7 @@ public class TaCommonUtils {
             return STR_BLANK;
         }
         if (toBr) {
-            return text.replaceAll("\\n", "\r<br>").replaceAll("\\t", STR_SPACE_8).replaceAll("        ", STR_SPACE_8).trim();
+            return text.replaceAll("\\n", "\r<br>").replaceAll("\\t", STR_SPACE_NBSP_8).replaceAll("        ", STR_SPACE_NBSP_8).trim();
         } else {
             return text.replaceAll("\r", STR_BLANK).replaceAll("<br>", STR_BLANK).trim();
         }
@@ -362,7 +359,7 @@ public class TaCommonUtils {
         if (StringUtils.isBlank(text)) {
             return STR_BLANK;
         }
-        return text.replaceAll("\\n", "<br>").replaceAll("\\t", STR_SPACE_8).trim();
+        return text.replaceAll("\\n", "<br>").replaceAll("\\t", STR_SPACE_NBSP_8).trim();
     }
 
     public static String formatTextBrToNextLine(String text){

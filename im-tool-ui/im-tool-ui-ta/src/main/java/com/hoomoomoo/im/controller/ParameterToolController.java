@@ -246,12 +246,7 @@ public class ParameterToolController implements Initializable {
                 errorTips.setVisible(true);
             }
             OutputUtils.info(logs, getCommonMsg("生成文件 结束"));
-            if (alertTips && CollectionUtils.isNotEmpty(modifyInfo)) {
-                OutputUtils.infoContainBr(logs, "修改明细");
-                for (String ele : modifyInfo) {
-                    OutputUtils.infoContainBr(logs, ele);
-                }
-            }
+
             // 忽略提示信息
             skipErrorTips(errorTableColumnInfo);
             skipErrorTips(errorConfigColumnInfo);
@@ -352,17 +347,13 @@ public class ParameterToolController implements Initializable {
             AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
             if (StringUtils.isNotBlank(errorMessage)) {
                 StringBuilder summary = new StringBuilder();
+                OutputUtils.info(logs, STR_NEXT_LINE_2);
                 summary.append("未获取到表字段信息: " + errorColumn + STR_SPACE_2);
                 summary.append("未获取到表结构信息: " + errorTable + STR_SPACE_2);
                 summary.append("未配置字段信息: " + errorConfigColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段默认值: " + errorDefaultValuesColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);
                 summary.append("存在使用字段配置忽略检查: " + errorSkipColumnInfo.size() + STR_SPACE_2);
-
-                if (alertTips) {
-                    OutputUtils.infoContainBr(logs, STR_NEXT_LINE + "异常明细信息");
-                    OutputUtils.infoContainBr(logs, errorMessage.toString());
-                }
 
                 List<String> needFixed = new ArrayList<>();
                 if (MapUtils.isNotEmpty(tipsByFile)) {
@@ -400,11 +391,13 @@ public class ParameterToolController implements Initializable {
                     }
                     summary.append(STR_NEXT_LINE);
                 }
-                summary.append(STR_NEXT_LINE + "本次修改【无差异】页面(" + notFixed.size() + "): " + notFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
-                summary.append(STR_NEXT_LINE + "本次修改【有差异】页面(" + needFixed.size() + "): " + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "等待处理【有差异】页面 (" + tipsByFile.size() + "): " + tipsByFile.keySet().stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "本次修改【有差异】页面 (" + needFixed.size() + "): " + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "本次修改【无差异】页面 (" + notFixed.size() + ")");
                 summary.append(STR_NEXT_LINE);
 
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
+                FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_UPDATE_DETAIL), modifyInfo);
                 OutputUtils.info(logs, summary.toString());
 
                 errorTips.setVisible(true);
@@ -412,7 +405,7 @@ public class ParameterToolController implements Initializable {
                 errorTipsResultByFile.setVisible(true);
                 if (alertTips) {
                     Platform.runLater(() -> {
-                        CommonUtils.showTipsByInfo("文档更新完成... 请查看提示信息", 90 * 1000);
+                        CommonUtils.showTipsByInfo("文档更新完成... 请查看提示信息", 30 * 1000);
                     });
                 } else {
                     appConfigDto.getRepairErrorInfo().add(NAME_PARAMETER_DOC);
@@ -754,11 +747,18 @@ public class ParameterToolController implements Initializable {
                 String absolutePath = item.getAbsolutePath();
                 if (absolutePath.contains("paramRealtimeSet")) {
                     buildFile(absolutePath);
+                } else {
+                    if (alertTips) {
+                        OutputUtils.infoContainBr(logs, "忽略文件 " + absolutePath);
+                    }
                 }
             }
         } else {
             paramRealtimeSetNum++;
             if (!path.endsWith(".sql")) {
+                if (alertTips) {
+                    OutputUtils.infoContainBr(logs, "忽略文件 " + path);
+                }
                 return;
             }
             if (alertTips) {
@@ -796,9 +796,18 @@ public class ParameterToolController implements Initializable {
             FileUtils.deleteFile(excelFileBakPath);
         } else {
             List<String> diffList = ExcelComparatorUtils.getDiffList();
-            modifyInfo.add(STR_SPACE_2 + filePath);
-            for (String diff : diffList) {
-                modifyInfo.add(STR_SPACE_4 + diff);
+            if (CollectionUtils.isNotEmpty(diffList)) {
+                modifyInfo.add(filePath);
+                modifyInfo.add(STR_SPACE_4 + "Excel修改点共" + diffList.size() + "处");
+                for (int i=0; i<diffList.size(); i++) {
+                    String diff =  diffList.get(i);
+                    modifyInfo.add(STR_SPACE_8 + "第" + (i + 1) + "处");
+                    String[] diffDetail = diff.split(STR_NEXT_LINE);
+                    for (String detail : diffDetail) {
+                        modifyInfo.add(STR_SPACE_12 + detail);
+                    }
+                    modifyInfo.add(STR_NEXT_LINE);
+                }
             }
             FileUtils.deleteFile(excelFilePath);
             Files.move(Paths.get(excelFileBakPath), Paths.get(excelFilePath), StandardCopyOption.ATOMIC_MOVE);

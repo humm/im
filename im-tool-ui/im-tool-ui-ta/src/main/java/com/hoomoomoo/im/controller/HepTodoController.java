@@ -2625,7 +2625,7 @@ public class HepTodoController extends BaseController implements Initializable {
                             show = true;
                         }
                     }
-                    controlTooltip(appConfigDto, show, msg, 1050, 210);
+                    controlTooltip(appConfigDto, show, msg, 1050, 205);
                 }
             }
         });
