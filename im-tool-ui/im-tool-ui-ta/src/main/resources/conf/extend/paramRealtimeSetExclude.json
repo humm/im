@@ -111,7 +111,6 @@
     "sort_level",
     "is_issue_fail",
     "max_open_deal_type",
-    "liqbatch_need_nav",
     "hint_end_day",
     "minhold_modify_date",
     "exp_nav_by_yesterday",
