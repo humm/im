@@ -489,7 +489,11 @@ public class TaCommonUtils {
 
     public static String changeVersion(AppConfigDto appConfigDto, String ver) {
         String resVer;
-        if (ver.contains("M")) {
+        if (ver.contains("C")) {
+            int start = ver.indexOf("C");
+            int end = ver.indexOf("C") + 3;
+            resVer = ver.substring(0, start) + "CXXX" + ver.substring(end + 1);
+        } else if (ver.contains("M")) {
             resVer = ver.substring(0, ver.lastIndexOf("M") + 1) + "1";
         } else if (ver.endsWith("000")) {
             resVer = ver;
