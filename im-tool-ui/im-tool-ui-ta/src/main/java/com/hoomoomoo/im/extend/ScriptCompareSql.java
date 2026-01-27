@@ -26,9 +26,8 @@ public class ScriptCompareSql {
     private String baseMenu = "";
     private String newUedPage = "";
     private String menuCondition = "";
+    private String productConfig = "";
 
-    // 扫描文件数量
-    private int extFileNum = 0;
     private int needAddUedMenuNum = 0;
     // 所有菜单
     private Set<String> totalMenu = new HashSet<>();
@@ -103,6 +102,7 @@ public class ScriptCompareSql {
             baseMenu = basePath + ScriptSqlUtils.baseMenu;
             newUedPage = basePath + ScriptSqlUtils.newUedPage;
             menuCondition = basePath + ScriptSqlUtils.menuCondition;
+            productConfig = basePath + ScriptSqlUtils.productConfig;
             resultPath = resPath + "\\";
 
             String confPath = FileUtils.getFilePath(SQL_CHECK_TYPE.LACK_NEW_MENU_ALL.getPathConf());
@@ -153,7 +153,7 @@ public class ScriptCompareSql {
             String[] element = item.split("-");
             String transCode = STR_BLANK;
             String tranSubCode = STR_BLANK;
-            for (int i=0; i<element.length; i++) {
+            for (int i = 0; i < element.length; i++) {
                 String ele = element[i].trim();
                 if (StringUtils.isBlank(ele)) {
                     continue;
@@ -176,7 +176,7 @@ public class ScriptCompareSql {
             String[] element = CommonUtils.trimStrToSpace(item).split(STR_SPACE);
             if (element.length >= 2) {
                 String checkType = element[0];
-                for (int i=1; i<element.length; i++) {
+                for (int i = 1; i < element.length; i++) {
                     String menuName = element[i];
                     if (skipCache.containsKey(checkType)) {
                         skipCache.get(checkType).add(menuName);
@@ -512,15 +512,15 @@ public class ScriptCompareSql {
         while (subTransIterator.hasNext()) {
             String transCode = subTransIterator.next().trim();
             if (!subTransExtCache.containsKey(transCode) && !skipLogCache.contains(transCode) && !transCode.endsWith("QryC") && !transCode.endsWith("QueryC") && !transCode.endsWith("ColC")) {
-               String menu = buildMenuInfo(subTransCache, transCode);
-               if (menu.contains("查询列") || menu.contains("确认列")) {
-                   continue;
-               }
-               subTransExtList.add(menu);
+                String menu = buildMenuInfo(subTransCache, transCode);
+                if (menu.contains("查询列") || menu.contains("确认列")) {
+                    continue;
+                }
+                subTransExtList.add(menu);
             }
         }
         subTransExtList.add(0, String.format(MSG_WAIT_HANDLE_NUM, subTransExtList.size()));
-        subTransExtList.add(0, String.format(MSG_WAIT_HANDLE_EVENT,LACK_LOG.getName()));
+        subTransExtList.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LACK_LOG.getName()));
         FileUtils.writeFile(resultPath + LACK_LOG.getFileName(), subTransExtList);
     }
 
@@ -581,6 +581,8 @@ public class ScriptCompareSql {
      */
     private void extLegalCheck(AppConfigDto appConfigDto) throws Exception {
         Map<String, Set<String>> resMap = new LinkedHashMap<>();
+        Map<String, Set<String>> productExtMap = new LinkedHashMap<>();
+
         resMap.put("tsys_trans", new LinkedHashSet<>());
         resMap.put("tsys_subtrans", new LinkedHashSet<>());
         resMap.put("tsys_subtrans_ext", new LinkedHashSet<>());
@@ -589,13 +591,33 @@ public class ScriptCompareSql {
         resMap.put("add_report_field", new LinkedHashSet<>());
         resMap.put("add_report", new LinkedHashSet<>());
         resMap.put("tbmenucondition", new LinkedHashSet<>());
+        resMap.put("tbdataelement", new LinkedHashSet<>());
+        resMap.put("tbtemplaterelgroup", new LinkedHashSet<>());
+        resMap.put("tbelementgroup", new LinkedHashSet<>());
         File fileExt = new File(basePathExt);
         Set<String> skip = ScriptSqlUtils.initExtLegalSkip();
         for (File file : fileExt.listFiles()) {
-            checkMenuByFile(file, resMap, skip);
+            checkMenuByFile(file, resMap, skip, true);
+            checkMenuByFile(file, productExtMap, skip, false);
+        }
+        Map<String, Set<String>> productTips = new LinkedHashMap<>();
+        String content = FileUtils.readNormalFileToString(new File(productConfig).getPath());
+        if (StringUtils.isNotEmpty(content)) {
+            String[] data = content.split(STR_SEMICOLON);
+            for (String item : data) {
+                item = item.toLowerCase();
+                if (item.contains("tbpageelement")) {
+                    String id = ScriptSqlUtils.getElement(item, 0);
+                    String code = ScriptSqlUtils.getElement(item, 4);
+                    String name = ScriptSqlUtils.getElement(item, 5);
+                    String field = String.format("id: %s  elementCode: %s  elementName: %s", id, code, name);
+                    if (productExtMap.containsKey(id) && !item.contains(ANNOTATION_NORMAL)) {
+                        productTips.put(field, productExtMap.get(id));
+                    }
+                }
+            }
         }
 
-        checkMenuByFile(new File(menuCondition), resMap, skip);
 
         int total = 0;
         List<String> res = new ArrayList<>();
@@ -610,17 +632,30 @@ public class ScriptCompareSql {
             res.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, "存在错误表配置信息 " + checkType));
             res.add(String.format(MSG_WAIT_HANDLE_NUM, checkRes.size()));
             res.addAll(checkRes);
+        }
 
+        if (MapUtils.isNotEmpty(productTips)) {
+            total += productTips.size();
+            res.add(STR_NEXT_LINE_2 + String.format(MSG_WAIT_HANDLE_EVENT, "基金信息tbpageelement存在开通脚本且全量脚本未注释 "));
+            res.add(String.format(MSG_WAIT_HANDLE_NUM, productTips.size()));
+            for (Map.Entry<String, Set<String>> entry : productTips.entrySet()) {
+                String field = entry.getKey();
+                Set<String> pathSet = entry.getValue();
+                res.add(field);
+                for (String path : pathSet) {
+                    res.add(STR_SPACE_4 + path);
+                }
+            }
         }
         res.add(0, String.format(MSG_WAIT_HANDLE_NUM_0, total));
         res.add(0, String.format(MSG_WAIT_HANDLE_EVENT, LEGAL_EXT_MENU.getName()));
         FileUtils.writeFile(resultPath + LEGAL_EXT_MENU.getFileName(), res);
     }
 
-    private void checkMenuByFile(File file, Map<String, Set<String>> res, Set<String> skip) throws IOException {
+    private void checkMenuByFile(File file, Map<String, Set<String>> res, Set<String> skip, boolean checkTable) throws IOException {
         if (file.isDirectory()) {
             for (File item : file.listFiles()) {
-                checkMenuByFile(item, res, skip);
+                checkMenuByFile(item, res, skip, checkTable);
             }
         } else {
             String fileName = file.getName();
@@ -631,29 +666,58 @@ public class ScriptCompareSql {
             if (skip.contains(fileName)) {
                 return;
             }
-            List<String> content = FileUtils.readNormalFile(filePath);
-            for (String ele : content) {
-                ele = CommonUtils.trimStrToSpace(ele).toLowerCase();
-                if (ele.contains("call") && ele.contains("add_report_field")) {
-                    res.get("add_report_field").add(filePath);
-                } else if (ele.contains("call") && ele.contains("add_report")) {
-                    res.get("add_report").add(filePath);
-                } else if (!ele.contains("insert into")) {
-                    continue;
-                } else if (ele.contains("tsys_trans ") || ele.contains("tsys_trans(")) {
-                    res.get("tsys_trans").add(filePath);
-                } else if (ele.contains("tsys_subtrans ") || ele.contains("tsys_subtrans(")) {
-                    res.get("tsys_subtrans").add(filePath);
-                } else if (ele.contains("tsys_subtrans_ext ") || ele.contains("tsys_subtrans_ext(")) {
-                    res.get("tsys_subtrans_ext").add(filePath);
-                } else if (ele.contains("tbworkflowsubtrans ") || ele.contains("tbworkflowsubtrans(")) {
-                    res.get("tbworkflowsubtrans").add(filePath);
-                } else if (ele.contains("tbworkflowsubtransext ") || ele.contains("tbworkflowsubtransext(")) {
-                    res.get("tbworkflowsubtrans").add(filePath);
-                } else if (ele.contains("tbmenucondition") ) {
-                    res.get("tbmenucondition").add(filePath);
+            if (checkTable) {
+                List<String> content = FileUtils.readNormalFile(filePath);
+                for (String ele : content) {
+                    ele = CommonUtils.trimStrToSpace(ele).toLowerCase();
+                    if (ele.contains("call") && ele.contains("add_report_field")) {
+                        res.get("add_report_field").add(filePath);
+                    } else if (ele.contains("call") && ele.contains("add_report")) {
+                        res.get("add_report").add(filePath);
+                    } else if (!ele.contains("insert into")) {
+                        continue;
+                    } else if (ele.contains("tsys_trans ") || ele.contains("tsys_trans(")) {
+                        res.get("tsys_trans").add(filePath);
+                    } else if (ele.contains("tsys_subtrans ") || ele.contains("tsys_subtrans(")) {
+                        res.get("tsys_subtrans").add(filePath);
+                    } else if (ele.contains("tsys_subtrans_ext ") || ele.contains("tsys_subtrans_ext(")) {
+                        res.get("tsys_subtrans_ext").add(filePath);
+                    } else if (ele.contains("tbworkflowsubtrans ") || ele.contains("tbworkflowsubtrans(")) {
+                        res.get("tbworkflowsubtrans").add(filePath);
+                    } else if (ele.contains("tbworkflowsubtransext ") || ele.contains("tbworkflowsubtransext(")) {
+                        res.get("tbworkflowsubtrans").add(filePath);
+                    } else if (ele.contains("tbmenucondition")) {
+                        res.get("tbmenucondition").add(filePath);
+                    } else if (ele.contains("tbdataelement")) {
+                        res.get("tbdataelement").add(filePath);
+                    } else if (ele.contains("tbtemplaterelgroup")) {
+                        res.get("tbtemplaterelgroup").add(filePath);
+                    } else if (ele.contains("tbelementgroup")) {
+                        res.get("tbelementgroup").add(filePath);
+                    }
+
+                }
+            } else {
+                String content = FileUtils.readNormalFileToString(filePath);
+                String[] data = content.split(STR_SEMICOLON);
+                for (String item : data) {
+                    item = item.toLowerCase();
+                    if (item.contains("tbpageelement")) {
+                        String id = ScriptSqlUtils.getElement(item, 0);
+                        if (StringUtils.isBlank(id)) {
+                            continue;
+                        }
+                        if (res.containsKey(id)) {
+                            res.get(id).add(filePath);
+                        } else {
+                            Set<String> filedPath = new LinkedHashSet<>();
+                            filedPath.add(filePath);
+                            res.put(id, filedPath);
+                        }
+                    }
                 }
             }
+
         }
 
     }
@@ -790,7 +854,7 @@ public class ScriptCompareSql {
         // 注释内容不存在开始结束标识
         List<String> config = FileUtils.readNormalFile(newUedPage);
         List<String> remarkError = new ArrayList<>();
-        for (int i=6; i<config.size(); i++) {
+        for (int i = 6; i < config.size(); i++) {
             String item = config.get(i).toLowerCase().trim();
             if (!item.contains(ANNOTATION_NORMAL)) {
                 continue;
@@ -1018,7 +1082,6 @@ public class ScriptCompareSql {
     }
 
 
-
     private static String getMenuDetail(int len, String item) throws Exception {
         String res = STR_BLANK;
         item = ScriptSqlUtils.handleSqlForValues(item);
@@ -1062,7 +1125,6 @@ public class ScriptCompareSql {
             menuExtCache.put(key, menu);
         }
         initMenuByFile(new File(baseMenu));
-        extFileNum++;
     }
 
     private boolean skipItem(Set<String> skipConfig, String message) {
@@ -1125,7 +1187,6 @@ public class ScriptCompareSql {
                             }
                             menuCache.put(menuCode, menu);
                         }
-                        extFileNum++;
                     }
                     endFlag = true;
                 }

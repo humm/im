@@ -99,7 +99,6 @@
   "fundProductInfoSet.sql": [
     "default_template_flag",
     "plan_name",
-    "share_based_type",
     "max_open_count",
     "is_imp_income",
     "foreig_minbal_rmb",

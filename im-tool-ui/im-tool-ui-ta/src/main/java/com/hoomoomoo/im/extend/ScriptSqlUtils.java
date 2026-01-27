@@ -21,6 +21,7 @@ public class ScriptSqlUtils {
     public static String newUedPage = "\\07console-fund-ta-vue-menu-new-ued.sql";
     public static String newUedHome = "\\07console-fund-ta-vue-menu-new-ued-home.sql";
     public static String menuCondition = "\\07console-fund-ta-vue-tbmenucondition.sql";
+    public static String productConfig = "\\15fund-product-field.sql";
     public static String extReport = "\\Report";
 
     public static String getSubTransCodeOpDir(String subTransCode, String defaultValue) {
@@ -154,6 +155,8 @@ public class ScriptSqlUtils {
                 menu = menuCodeInfo[index];
                 if (menu.contains("'")) {
                     menu = menu.split("'")[1];
+                } else if (menu.contains("(")) {
+                    menu = menu.split("\\(")[1];
                 }
             }
         } catch (Exception e){

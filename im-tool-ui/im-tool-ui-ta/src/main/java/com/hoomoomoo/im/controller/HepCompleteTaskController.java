@@ -180,6 +180,8 @@ public class HepCompleteTaskController extends BaseController implements Initial
     private String getExecuteFilePath(String path) {
         if (path.contains("sql/")) {
             return path.substring(path.indexOf("sql/"));
+        } else if (path.contains("extradata/")) {
+            return path.substring(path.indexOf("extradata/"));
         }
         return path;
     }
