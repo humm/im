@@ -101,7 +101,7 @@ public class MenuFunctionConfig {
                 "processInfo",
                 "menuScript",
                 "0",
-                ""
+                "ProcessInfoController.java,processInfo.fxml"
         ),
         FUND_INFO(
                 "220",
@@ -111,7 +111,7 @@ public class MenuFunctionConfig {
                 "fundInfo",
                 "menuScript",
                 "0",
-                ""
+                "FundInfoController.java,fundInfo.fxml"
         ),
         DATABASE_SCRIPT(
                 "230",
