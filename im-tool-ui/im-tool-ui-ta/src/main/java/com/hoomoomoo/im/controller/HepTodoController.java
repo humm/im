@@ -2058,6 +2058,9 @@ public class HepTodoController extends BaseController implements Initializable {
                 String fileSyncSource = path[0];
                 String fileSyncTarget = path[1];
                 String versionMsg = "轮询版本: " + ver.replace(STR_VERSION_PREFIX, STR_BLANK);
+                if(versionMsg.contains(INDEX_PROJECT_VERSION_CXXX)) {
+                    versionMsg = versionMsg.split(INDEX_PROJECT_VERSION_CXXX)[0] + INDEX_PROJECT_VERSION_CXXX;
+                }
                 OutputUtils.info(noticeSync, TaCommonUtils.getMsgContainTimeContainBeforeBr(versionMsg));
                 fileSyncSourceFile.clear();
                 try {

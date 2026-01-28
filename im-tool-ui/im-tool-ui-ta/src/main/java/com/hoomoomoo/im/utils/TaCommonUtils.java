@@ -384,6 +384,10 @@ public class TaCommonUtils {
         return STR_NEXT_LINE + getMsgContainTimeContain(msg);
     }
 
+    public static String getMsgContainBeforeBr(String msg) {
+        return STR_NEXT_LINE + msg;
+    }
+
     public static String getMsgContainTimeContainAfterBr(String msg) {
         return getMsgContainTimeContain(msg) + STR_NEXT_LINE;
     }

@@ -21,7 +21,7 @@
                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
                    AnchorPane.topAnchor="0.0">
             <items>
-                <SplitPane dividerPositions="0.88">
+                <SplitPane dividerPositions="0.85">
                     <items>
                         <AnchorPane fx:id="headPane" minHeight="0.0" minWidth="0.0" prefHeight="97.0"
                                     prefWidth="322.0">
@@ -135,18 +135,18 @@
                                 </Button>
 
                                 <Label layoutX="20" layoutY="186.0" text="查询条件："/>
-                                <ComboBox fx:id="sprintVersionQuery" layoutX="100.0" layoutY="183.0" prefWidth="230"/>
-                                <TextField fx:id="taskConditionQuery" layoutX="360.0" layoutY="183.0" prefHeight="25.0" prefWidth="360.0"/>
+                                <ComboBox fx:id="sprintVersionQuery" layoutX="100.0" layoutY="183.0" prefWidth="320"/>
+                                <TextField fx:id="taskConditionQuery" layoutX="430.0" layoutY="183.0" prefHeight="25.0" prefWidth="320.0"/>
 
-                                <Button fx:id="query" layoutX="750.0" layoutY="183.0" mnemonicParsing="false"
+                                <Button fx:id="query" layoutX="760.0" layoutY="183.0" mnemonicParsing="false"
                                         onAction="#executeQuery" prefHeight="30.0" prefWidth="100.0" text="查询">
                                 </Button>
-                                <Button fx:id="reset" layoutX="880.0" layoutY="183.0" mnemonicParsing="false"
+                                <Button fx:id="reset" layoutX="870.0" layoutY="183.0" mnemonicParsing="false"
                                         onAction="#executeReset" prefHeight="30.0" prefWidth="100.0" text="重置">
                                 </Button>
-                                <ProgressIndicator fx:id="schedule" layoutX="1020.0" layoutY="182.0" progress="0.0"
+                                <ProgressIndicator fx:id="schedule" layoutX="990.0" layoutY="182.0" progress="0.0"
                                                    style="-fx-scale-x: 0.8; -fx-scale-y: 0.8;"/>
-                                <Label fx:id="scheduleText" layoutX="1055" layoutY="188.0" text="0%"/>
+                                <Label fx:id="scheduleText" layoutX="1025" layoutY="188.0" text="0%"/>
 
                                 <Label fx:id="memoryTips" layoutX="650" layoutY="220.0"
                                        style="-fx-text-background-color: red;"/>

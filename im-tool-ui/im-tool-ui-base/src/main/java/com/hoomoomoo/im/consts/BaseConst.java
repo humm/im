@@ -531,6 +531,8 @@ public class BaseConst {
     public static final String STYLE_NORMAL = "-fx-font-weight: normal;";
     public static final String STYLE_BOLD = "-fx-font-weight: bold;";
 
+    public static final String INDEX_PROJECT_VERSION_CXXX = "CXXX";
+
 
     public enum SQL_CHECK_TYPE {
         CHECK_RESULT_SUMMARY(100, "结果汇总", "100.结果汇总.sql", ""),
