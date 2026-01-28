@@ -645,6 +645,7 @@ public class ScriptCompareSql {
                 for (String path : pathSet) {
                     res.add(STR_SPACE_4 + path);
                 }
+                res.add(STR_SPACE);
             }
         }
         res.add(0, String.format(MSG_WAIT_HANDLE_NUM_0, total));

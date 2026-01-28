@@ -19,6 +19,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import jxl.Sheet;
 import jxl.Workbook;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.*;
@@ -394,7 +395,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : getCell(sheet, 12, k)) + ", "
                         + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : getCell(sheet, 13, k)) + ", "
                         + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : getCell(sheet, 14, k)) + ", "
-                        + ((getCell(sheet, 16, k).equals("null")) ? "'0'" : getCell(sheet, 16, k)) + ", "
+                        + ((getCell(sheet, 16, k).equals("null")) ? "0" : getCellNumber(sheet, 16, k)) + ", "
                         + ((getCell(sheet, 17, k).equals("null")) ? "' '" : getCell(sheet, 17, k))
                         + ");";
                 if (freeProcess) {
@@ -455,7 +456,7 @@ public class ProcessInfoController extends BaseController implements Initializab
                         + ((getCell(sheet, 12, k).equals("null")) ? "'0'" : getCell(sheet, 12, k)) + ","
                         + ((getCell(sheet, 13, k).equals("null")) ? "'0'" : getCell(sheet, 13, k)) + ","
                         + ((getCell(sheet, 14, k).equals("null")) ? "'0'" : getCell(sheet, 14, k)) + ","
-                        + ((getCell(sheet, 16, k).equals("null")) ? "'0'" : getCell(sheet, 16, k)) + ","
+                        + ((getCell(sheet, 16, k).equals("null")) ? "0" : getCellNumber(sheet, 16, k)) + ","
                         + ((getCell(sheet, 17, k).equals("null")) ? "' '" : getCell(sheet, 17, k))
                         + ");";
                 if (freeProcess) {
@@ -531,6 +532,18 @@ public class ProcessInfoController extends BaseController implements Initializab
         }
     }
 
+    public String getCellNumber(Sheet sheet, int i, int j) {
+        return getCell(sheet, i, j).replaceAll("'", "");
+    }
+
+    public String getCellNumber(Map map, String key) {
+        Object val = map.get(key);
+        if (val == null || val.equals(" ") || val.equals("")) {
+            return "null";
+        }
+        return val.toString().replaceAll("'", "");
+    }
+
     /**
      * 传入组名和ta代码生成脚本
      *
@@ -573,26 +586,27 @@ public class ProcessInfoController extends BaseController implements Initializab
                         " sche_task_isuse, sche_task_ishide, sche_task_memo, sche_task_dependencies, function_id, " +
                         "bank_no, ta_code, sche_task_isskip, sche_task_skipreason, sche_task_delaytime, sche_task_pause," +
                         " parent_function_id,sche_reserve)\n" +
-                        "values('"
-                        + key + "' , '"
-                        + taskCode + "' , '"
-                        + map.get(TaskMemoryCache.SCHE_TASK_NAME) + "' , '"
-                        + parentTaskCode + "' , '"
-                        + map.get(TaskMemoryCache.SCHE_TASK_REDO) + "' , '"
-                        + map.get(TaskMemoryCache.SCHE_TASK_TIMEOUT) + "' , "
-                        + (map.get(TaskMemoryCache.SCHE_TASK_RETRYCOUNT).equals(" ") ? " " : "null") + " , '"
-                        + map.get(TaskMemoryCache.SCHE_TASK_ISUSE) + "' , '"
-                        + map.get(TaskMemoryCache.SCHE_TASK_ISHIDE) + "' , '"
-                        + map.get(TaskMemoryCache.SCHE_TASK_MEMO) + "' , '"
-                        + map.get(TaskMemoryCache.SCHE_TASK_DEPENDENCIES) + "' , '"
-                        + map.get(FUNCTION_ID) + "' , '"
-                        + map.get(TaskMemoryCache.BANK_NO) + "' , '"
-                        + taCode + "' , '"
-                        + map.get(TaskMemoryCache.SCHE_TASK_ISSKIP) + "' , '"
-                        + map.get(TaskMemoryCache.SCHE_TASK_SKIPREASON) + "' , "
-                        + (map.get(TaskMemoryCache.SCHE_TASK_DELAYTIME).equals(" ") ? " " : "null") + " , '"
-                        + map.get(TaskMemoryCache.SCHE_TASK_PAUSE) + "', null , '"
-                        + (map.get(SCHE_TASK_RESERVE).equals("") ? " " : map.get(SCHE_TASK_RESERVE)) + "' );";
+                        "values(" +
+                        "'" + key + "' , " +
+                        "'"  + taskCode + "' , " +
+                        "'" + map.get(TaskMemoryCache.SCHE_TASK_NAME) + "' , " +
+                        "'" + parentTaskCode + "' , " +
+                        "'" + map.get(TaskMemoryCache.SCHE_TASK_REDO) + "' , "
+                        + getCellNumber(map, TaskMemoryCache.SCHE_TASK_TIMEOUT) + " , "
+                        + getCellNumber(map, TaskMemoryCache.SCHE_TASK_RETRYCOUNT) + " , " +
+                        "'" + map.get(TaskMemoryCache.SCHE_TASK_ISUSE) + "' , " +
+                        "'" + map.get(TaskMemoryCache.SCHE_TASK_ISHIDE) + "' , " +
+                        "'" + map.get(TaskMemoryCache.SCHE_TASK_MEMO) + "' , " +
+                        "'" + map.get(TaskMemoryCache.SCHE_TASK_DEPENDENCIES) + "' , " +
+                        "'" + map.get(FUNCTION_ID) + "' , " +
+                        "'" + map.get(TaskMemoryCache.BANK_NO) + "' , "+
+                        "'" + taCode + "' , " +
+                        "'" + map.get(TaskMemoryCache.SCHE_TASK_ISSKIP) + "' , " +
+                        "'" + map.get(TaskMemoryCache.SCHE_TASK_SKIPREASON) + "' , "
+                        + getCellNumber(map, TaskMemoryCache.SCHE_TASK_DELAYTIME) + " , " +
+                        "'" + map.get(TaskMemoryCache.SCHE_TASK_PAUSE) + "' ," +
+                        " null , " +
+                        "'" + (map.get(SCHE_TASK_RESERVE).equals("") ? " " : map.get(SCHE_TASK_RESERVE)) + "' );";
 
                 String functionId = (String) map.get(FUNCTION_ID);
                 String reserve = (String) map.get(SCHE_TASK_RESERVE);
@@ -610,25 +624,27 @@ public class ProcessInfoController extends BaseController implements Initializab
                                 " sche_task_isuse, sche_task_ishide, sche_task_memo, sche_task_dependencies, function_id, " +
                                 "bank_no, ta_code, sche_task_isskip, sche_task_skipreason, sche_task_delaytime, sche_task_pause," +
                                 " parent_function_id,sche_reserve)\n" +
-                                "values( null ,'"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_CODE) + "' , '"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_NAME) + "' , '"
-                                + parentSubTaskCode + "' , '"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_REDO) + "' , '"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_TIMEOUT) + "' , "
-                                + (map.get(TaskMemoryCache.SCHE_TASK_RETRYCOUNT).equals(" ") ? " " : "null") + " , '"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_ISUSE) + "' , '"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_ISHIDE) + "' , '"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_MEMO) + "' , '"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_DEPENDENCIES) + "' , '"
-                                + subMap.get(FUNCTION_ID) + "' , '"
-                                + subMap.get(TaskMemoryCache.BANK_NO) + "' , '"
-                                + taCode + "' , '"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_ISSKIP) + "' , '"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_SKIPREASON) + "' ,  "
-                                + (map.get(TaskMemoryCache.SCHE_TASK_DELAYTIME).equals(" ") ? " " : "null") + " , '"
-                                + subMap.get(TaskMemoryCache.SCHE_TASK_PAUSE) + "' , '" + functionId + "', '"
-                                + (map.get(SCHE_TASK_RESERVE).equals("") ? " " : map.get(SCHE_TASK_RESERVE)) + "' );";
+                                "values( " +
+                                "null , " +
+                                "'" + subMap.get(TaskMemoryCache.SCHE_TASK_CODE) + "' , " +
+                                "'" + subMap.get(TaskMemoryCache.SCHE_TASK_NAME) + "' , " +
+                                "'" + parentSubTaskCode + "' , " +
+                                "'" + subMap.get(TaskMemoryCache.SCHE_TASK_REDO) + "' , "
+                                + getCellNumber(subMap, TaskMemoryCache.SCHE_TASK_TIMEOUT) + " , "
+                                + getCellNumber(subMap, TaskMemoryCache.SCHE_TASK_RETRYCOUNT) + " , " +
+                                "'" + subMap.get(TaskMemoryCache.SCHE_TASK_ISUSE) + "' , " +
+                                "'" + subMap.get(TaskMemoryCache.SCHE_TASK_ISHIDE) + "' , " +
+                                "'" + subMap.get(TaskMemoryCache.SCHE_TASK_MEMO) + "' , " +
+                                "'" + subMap.get(TaskMemoryCache.SCHE_TASK_DEPENDENCIES) + "' , " +
+                                "'" + subMap.get(FUNCTION_ID) + "' , " +
+                                "'" + subMap.get(TaskMemoryCache.BANK_NO) + "' , " +
+                                "'"  + taCode + "' , "+
+                                "'" + subMap.get(TaskMemoryCache.SCHE_TASK_ISSKIP) + "' , " +
+                                "'" + subMap.get(TaskMemoryCache.SCHE_TASK_SKIPREASON) + "' ,  "
+                                + getCellNumber(subMap, TaskMemoryCache.SCHE_TASK_DELAYTIME) + " , " +
+                                "'" + subMap.get(TaskMemoryCache.SCHE_TASK_PAUSE) + "' , " +
+                                "'" + functionId + "' , " +
+                                "'" + (map.get(SCHE_TASK_RESERVE).equals("") ? " " : map.get(SCHE_TASK_RESERVE)) + "' );";
                         // 写 子task SCHE_JOB_CODE 字段填写空
                         bufferedWriter.write(subTaskSql + "\n");
                     }
