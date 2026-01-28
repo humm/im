@@ -751,7 +751,8 @@ public class ParameterToolController implements Initializable {
             }
         } else {
             paramRealtimeSetNum++;
-            if (!path.endsWith(".sql")) {
+            // 临时修改
+            if (!path.endsWith(".sql") || path.contains("rbzc")) {
                 return;
             }
             if (alertTips) {
