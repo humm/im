@@ -6,7 +6,7 @@
     <groupId>com.hoomoomoo</groupId>
     <artifactId>im-tool-ui</artifactId>
     <packaging>pom</packaging>
-	<version>2026.000265</version>
+	<version>2026.000268</version>
 
     <modules>
         <module>im-tool-ui-ta</module>
@@ -127,11 +127,6 @@
             <artifactId>mybatis</artifactId>
             <version>${mybatis.version}</version>
         </dependency>
-       <!-- <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring-core.version}</version>
-        </dependency>-->
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>

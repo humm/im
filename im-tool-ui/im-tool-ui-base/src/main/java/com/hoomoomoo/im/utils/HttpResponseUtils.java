@@ -70,17 +70,22 @@ public class HttpResponseUtils implements HttpHandler {
                             String functionCode = functionDto.getFunctionCode();
                             List<String> relateFileList = Arrays.asList(relateFile.split(STR_COMMA));
                             Map<String, String> checkFileList = checkFile.get(functionCode);
-                            for (String file : relateFileList) {
-                                if (!checkFileList.containsKey(file)) {
-                                    checkSame = false;
-                                    break;
+                            if (MapUtils.isNotEmpty(checkFileList)) {
+                                for (String file : relateFileList) {
+                                    if (!checkFileList.containsKey(file)) {
+                                        checkSame = false;
+                                        break;
+                                    }
                                 }
-                            }
-                            for (String file : checkFileList.keySet()) {
-                                if (!relateFileList.contains(file)) {
-                                    checkSame = false;
-                                    break;
+                                for (String file : checkFileList.keySet()) {
+                                    if (!relateFileList.contains(file)) {
+                                        checkSame = false;
+                                        break;
+                                    }
                                 }
+                            } else {
+                                checkSame = false;
+                                break;
                             }
                             List<String> content = FileUtils.readNormalFile(FileUtils.getFilePath(PATH_FILE));
                             List<String> fileList = new ArrayList<>();
