@@ -99,6 +99,7 @@ public class ParameterToolController implements Initializable {
     private static Map<String, List<String>> logTips = new LinkedHashMap<>();
 
     private static Map<String, List<String>> skipExcludeConfig = new LinkedHashMap<>();
+    private static Map<String, List<String>> paramRealtimeSetSkip = new LinkedHashMap<>();
 
 
     public void updateParameterDoc(TextArea logs) throws Exception {
@@ -242,6 +243,7 @@ public class ParameterToolController implements Initializable {
             errorSkipColumnInfo.clear();
             errorRequiredColumnInfo.clear();
             skipExcludeConfig.clear();
+            paramRealtimeSetSkip.clear();
             modifyInfo.clear();
             logTips.clear();
             executeRealtimeBtn.setDisable(true);
@@ -255,6 +257,7 @@ public class ParameterToolController implements Initializable {
             OutputUtils.info(logs, getCommonMsg("初始化表结构信息 结束"));
 
             skipExcludeConfig = getSkipConfig(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE, PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE_DEV);
+            paramRealtimeSetSkip = getSkipConfig(PATH_PARAM_REALTIME_SET_SKIP, PATH_PARAM_REALTIME_SET_SKIP_DEV);
 
             OutputUtils.info(logs, getCommonMsg("生成文件 开始"));
             buildFile(paramPath);
@@ -426,9 +429,9 @@ public class ParameterToolController implements Initializable {
                     }
                     summary.append(STR_NEXT_LINE);
                 }
-                summary.append(STR_NEXT_LINE + "等待处理【有差异】页面 (" + tipsByFile.size() + "): " + tipsByFile.keySet().stream().collect(Collectors.joining(STR_SPACE_2)));
-                summary.append(STR_NEXT_LINE + "本次修改【有差异】页面 (" + needFixed.size() + "): " + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
-                summary.append(STR_NEXT_LINE + "本次修改【无差异】页面 (" + notFixed.size() + ")");
+                summary.append(STR_NEXT_LINE + "等待处理【有差异】页面" + getFileNumStr(tipsByFile.size()) + tipsByFile.keySet().stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "本次修改【有差异】页面" + getFileNumStr(needFixed.size()) + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "本次修改【无差异】页面" + getFileNumStr(notFixed.size()));
                 summary.append(STR_NEXT_LINE);
 
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
@@ -455,6 +458,19 @@ public class ParameterToolController implements Initializable {
         } finally {
             executeRealtimeBtn.setDisable(false);
         }
+    }
+
+    private String getFileNumStr(int num) {
+        StringBuilder numStr = new StringBuilder(" (");
+        int fixedNum = 3 - String.valueOf(num).length();
+        for (int i=0; i<fixedNum; i++) {
+            numStr.append(STR_0);
+        }
+        numStr.append(num).append(")");
+        if (num > 0) {
+            numStr.append(" : ");
+        }
+        return numStr.toString();
     }
 
     private Set<String> getCurrentUpdateTab() {
@@ -1082,17 +1098,18 @@ public class ParameterToolController implements Initializable {
             String content = FileUtils.readNormalFileToString(productPath);
             if (StringUtils.isNotBlank(content)) {
                 String[] columns = content.split(STR_SEMICOLON);
+                List<String> skipField = paramRealtimeSetSkip.get(fileName);
                 for (String column : columns) {
                     if (column.contains("tbdataelement")) {
                         String fieldCode = ScriptSqlUtils.getElement(column, 3);
                         if (fieldCode != null) {
-                            // 废弃字段不使用
-                            if (StringUtils.equals("managerName", fieldCode)) {
-                                continue;
-                            }
                             fieldCode = fieldCode.toLowerCase();
                             if (skipColumnsMap.containsKey(fieldCode)) {
-                                errorSkipColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), skipColumnsMap.get(fieldCode)));
+                                String oriFieldCode = skipColumnsMap.get(fieldCode);
+                                if (CollectionUtils.isNotEmpty(skipField) && skipField.contains(oriFieldCode)) {
+                                    continue;
+                                }
+                                errorSkipColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), oriFieldCode));
                             }
                         }
                     }
@@ -1119,20 +1136,39 @@ public class ParameterToolController implements Initializable {
                 for (Map.Entry<String, String> entry : skipColumnsMap.entrySet()) {
                     String fieldCodeLower = entry.getKey();
                     String fieldCode = entry.getValue();
+                    List<String> skipField = paramRealtimeSetSkip.get(fileName);
+                    if (CollectionUtils.isNotEmpty(skipField) && skipField.contains(fieldCode)) {
+                        continue;
+                    }
                     String addForm1 = "v-model=\"addform." + fieldCodeLower + "\"";
                     String addForm2 = "v-model='addform." + fieldCodeLower + "'";
                     String updateForm1 = "v-model=\"updateform." + fieldCodeLower + "\"";
                     String updateForm2 = "v-model='updateform." + fieldCodeLower + "'";
                     String actionForm1 = "v-model=\"actionform." + fieldCodeLower + "\"";
                     String actionForm2 = "v-model='actionform." + fieldCodeLower + "'";
-                    if (content.contains(addForm1) || content.contains(addForm2) || content.contains(updateForm1) || content.contains(updateForm2)
-                            || content.contains(actionForm1) || content.contains(actionForm2)) {
+                    if (needAddField(content, addForm1) || needAddField(content, addForm2) || needAddField(content, updateForm1) || needAddField(content, updateForm2)
+                            || needAddField(content, actionForm1) || needAddField(content, actionForm2)) {
                         errorSkipColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), fieldCode));
                     }
                 }
             }
         }
         return extField;
+    }
+
+    private boolean needAddField(String content, String indexStr) {
+        if (content.contains(indexStr)) {
+            int index = content.indexOf(indexStr);
+            content = content.substring(0, index);
+            int start = content.lastIndexOf("<!--");
+            int end = content.lastIndexOf("-->");
+            // 注释字段
+            if (start != -1 && start > end) {
+                return false;
+            }
+            return true;
+        }
+        return false;
     }
 
     private void buildBeginValidDateLine(SXSSFSheet componentDesc, int rowIndex, CellStyle wrapTextCellStyle, CellStyle centerCellStyle, ParamRealtimeApiTabDto paramRealtimeApiTabDto) {

@@ -1,0 +1,12 @@
+{
+  "文件说明": [
+    "已配置字段不使用,页面存在字段",
+    "配置不使用字段"
+  ],
+  "fundIdTypeBizLimitSet.sql": [
+    "busin_type"
+  ],
+  "fundProductInfoSet.sql": [
+    "manager_name"
+  ]
+}

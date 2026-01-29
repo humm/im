@@ -1,4 +1,8 @@
 {
+  "文件说明": [
+    "表结构存在字段,实际不使用字段",
+    "配置实际使用字段"
+  ],
   "fundFundStatusSchema_GY.sql": [
     "prd_code",
     "prd_status",

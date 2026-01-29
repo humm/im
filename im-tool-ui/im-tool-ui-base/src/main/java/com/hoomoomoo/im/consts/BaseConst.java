@@ -467,8 +467,10 @@ public class BaseConst {
     public static final String PATH_DEFINE_HEP_STAT = "/extend/hep/";
     public static final String PATH_SYNC_TASK_STAT = "/task";
     public static final String PATH_SYNC_VERSION_STAT = "/version";
+    public static final String PATH_PARAM_REALTIME_SET_SKIP = "/conf/extend/paramRealtimeSetSkip.json";
     public static final String PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE = "/conf/extend/paramRealtimeSetExclude.json";
     public static final String PATH_PARAM_REALTIME_SET_SKIP_INCLUDE = "/conf/extend/paramRealtimeSetInclude.json";
+    public static final String PATH_PARAM_REALTIME_SET_SKIP_DEV = "/extend/dev/paramRealtimeSetSkip.json";
     public static final String PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE_DEV = "/extend/dev/paramRealtimeSetExclude.json";
     public static final String PATH_PARAM_REALTIME_SET_SKIP_INCLUDE_DEV = "/extend/dev/paramRealtimeSetInclude.json";
 
