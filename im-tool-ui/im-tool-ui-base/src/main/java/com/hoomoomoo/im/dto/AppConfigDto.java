@@ -325,6 +325,8 @@ public class AppConfigDto extends BaseDto {
 
     private String changeToolTablePath;
 
+    private String changeToolVuePath;
+
     private String changeToolBaseDictPath;
 
     private Boolean scanTips;

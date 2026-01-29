@@ -696,17 +696,6 @@ public class CommonUtils {
             LoggerUtils.error(e);
         }
         return version;
-        /*String[] verList = version.split(STR_POINT_SLASH);
-        String versionYear = verList[0];
-        String versionNum = verList[1];
-        long ver = Long.parseLong(versionNum);
-        ver--;
-        String verAfter = String.valueOf(ver);
-        int supplementLength = versionNum.length() - verAfter.length();
-        for (int i=0; i<supplementLength; i++) {
-            verAfter = STR_0 + verAfter;
-        }
-        return versionYear + STR_POINT + verAfter;*/
     }
 
     /**
@@ -1025,13 +1014,24 @@ public class CommonUtils {
         return functionDtoList;
     }
 
+    /**
+     * 压缩内容 不保留分割符
+     * @param str
+     * @return
+     */
     public static String trimStrToBlank(String str) {
         return str.trim().replaceAll(STR_S_SLASH, STR_BLANK);
     }
 
+    /**
+     * 压缩内容 保留一个空格
+     * @param str
+     * @return
+     */
     public static String trimStrToSpace(String str) {
         return str.trim().replaceAll(STR_S_SLASH, STR_SPACE);
     }
+
 
     public static boolean isNumber(String str) {
         Pattern pattern = Pattern.compile("\\d+");

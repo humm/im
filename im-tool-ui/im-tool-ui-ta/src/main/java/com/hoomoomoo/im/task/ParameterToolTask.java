@@ -17,7 +17,8 @@ public class ParameterToolTask implements Callable<CopyCodeTaskParam> {
         String functionType = parameterToolTaskParam.getFunctionType();
         switch (functionType) {
             case STR_3:
-                parameterToolTaskParam.getParameterToolController().executeRealtimeExe(parameterToolTaskParam.getDictPath(), parameterToolTaskParam.getParamPath(), parameterToolTaskParam.getTablePath());
+                parameterToolTaskParam.getParameterToolController().executeRealtimeExe(parameterToolTaskParam.getDictPath(), parameterToolTaskParam.getParamPath(),
+                        parameterToolTaskParam.getTablePath(), parameterToolTaskParam.getVuePath());
                 break;
             default:
                 new Exception("未匹配执行方法，请检查");

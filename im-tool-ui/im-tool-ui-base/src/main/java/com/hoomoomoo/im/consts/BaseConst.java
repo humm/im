@@ -185,6 +185,7 @@ public class BaseConst {
     public final static String KEY_VALUES = "values";
     public final static String KEY_TB_FUND_API_COMPONENT = "tbfundapicomponent";
     public final static String KEY_TB_FUND_API_TAB = "tbfundapitab";
+    public final static String KEY_TB_FUND_API_PAGE_DEFINE = "tbfundapipagedefine";
     public final static String KEY_Y = "Y";
     public final static String KEY_N = "N";
     public final static String KEY_ADD = "add";

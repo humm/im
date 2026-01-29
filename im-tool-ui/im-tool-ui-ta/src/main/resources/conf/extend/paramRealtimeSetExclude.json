@@ -62,6 +62,7 @@
     "is_auto_preset"
   ],
   "fundSaleQualifySet.sql": [
+    "prd_code",
     "total_nav_level",
     "service_manage_ratio",
     "begin_valid_date",

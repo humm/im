@@ -16,11 +16,14 @@ public class ParameterToolTaskParam {
 
     private String tablePath;
 
-    public ParameterToolTaskParam(ParameterToolController parameterToolController, String functionType, String dictPath, String paramPath, String tablePath) {
+    private String vuePath;
+
+    public ParameterToolTaskParam(ParameterToolController parameterToolController, String functionType, String dictPath, String paramPath, String tablePath, String vuePath) {
         this.parameterToolController = parameterToolController;
         this.functionType = functionType;
         this.dictPath = dictPath;
         this.paramPath = paramPath;
         this.tablePath = tablePath;
+        this.vuePath = vuePath;
     }
 }

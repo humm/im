@@ -63,6 +63,9 @@ public class ParameterToolController implements Initializable {
     private TextField tablePath;
 
     @FXML
+    private TextField vuePath;
+
+    @FXML
     private Button executeRealtimeBtn;
 
     @FXML
@@ -120,6 +123,7 @@ public class ParameterToolController implements Initializable {
         OutputUtils.info(baseDictPath, appConfigDto.getChangeToolBaseDictPath());
         OutputUtils.info(paramRealtimeSetPath, appConfigDto.getChangeToolParamRealtimeSetPath());
         OutputUtils.info(tablePath, appConfigDto.getChangeToolTablePath());
+        OutputUtils.info(vuePath, appConfigDto.getChangeToolVuePath());
         errorTips.setVisible(false);
         // errorTipsResult.setVisible(false);
         // errorTipsResultByFile.setVisible(false);
@@ -181,35 +185,49 @@ public class ParameterToolController implements Initializable {
                 paramPath = appConfigDto.getChangeToolParamRealtimeSetPath();
             }
             if (StringUtils.isBlank(paramPath)) {
-                OutputUtils.info(logs, "请设置开通脚本目录位置");
+                OutputUtils.info(logs, "请设置开通脚本目录");
                 return;
             }
             if (!new File(paramPath).isDirectory()) {
                 OutputUtils.info(logs, "开通脚本目录必须为文件夹");
                 return;
             }
-            String path;
+            String table;
             if (tablePath != null) {
-                path = tablePath.getText();
+                table = tablePath.getText();
             } else {
-                path = appConfigDto.getChangeToolTablePath();
+                table = appConfigDto.getChangeToolTablePath();
             }
-            if (StringUtils.isBlank(path)) {
-                OutputUtils.info(logs, "请表结构目录");
+            if (StringUtils.isBlank(table)) {
+                OutputUtils.info(logs, "请设置表结构目录");
                 return;
             }
-            if (!new File(path).isDirectory()) {
+            if (!new File(table).isDirectory()) {
                 OutputUtils.info(logs, "表结构目录必须为文件夹");
                 return;
             }
-            TaskUtils.execute(new ParameterToolTask(new ParameterToolTaskParam(this, STR_3, dictPath, paramPath, path)));
+            String vue;
+            if (vuePath != null) {
+                vue = vuePath.getText();
+            } else {
+                vue = appConfigDto.getChangeToolVuePath();
+            }
+            if (StringUtils.isBlank(vue)) {
+                OutputUtils.info(logs, "请设置vue页面目录");
+                return;
+            }
+            if (!new File(vue).isDirectory()) {
+                OutputUtils.info(logs, "vue页面目录必须为文件夹");
+                return;
+            }
+            TaskUtils.execute(new ParameterToolTask(new ParameterToolTaskParam(this, STR_3, dictPath, paramPath, table, vue)));
         } catch (Exception e) {
             LoggerUtils.error(e);
             OutputUtils.infoContainBr(logs, e.getMessage());
         }
     }
 
-    public void executeRealtimeExe(String dictPath, String paramPath, String tablePath) {
+    public void executeRealtimeExe(String dictPath, String paramPath, String tablePath, String vuePath) {
         try {
             paramRealtimeSetNum = 0;
             tableColumnsNum = 0;
@@ -656,7 +674,7 @@ public class ParameterToolController implements Initializable {
                             // LoggerUtils.error("数据字典格式化获取数据错误: " + eleAfter);
                             continue;
                         }
-                        String dictCode = ScriptSqlUtils.getSqlFieldValue(dictInfo[0].replace(STR_BRACKETS_LEFT, STR_BLANK));
+                        String dictCode = ScriptSqlUtils.getSqlFieldValue(dictInfo[0]);
                         String dictName = ScriptSqlUtils.getSqlFieldValue(dictInfo[1]);
                         String dictKey = ScriptSqlUtils.getSqlFieldValue(dictInfo[2]);
                         String dictPrompt = ScriptSqlUtils.getSqlFieldValue(dictInfo[3]);
@@ -691,6 +709,7 @@ public class ParameterToolController implements Initializable {
         List<ParamRealtimeApiComponentDto> paramRealtimeApiComponentDtoList = new ArrayList<>();
         paramRealtimeDto.setParamRealtimeApiTabList(paramRealtimeApiTabList);
         paramRealtimeDto.setParamRealtimeApiComponentDtoList(paramRealtimeApiComponentDtoList);
+        Map<String, String> tabCodePageUrl = new HashMap<>();
         if (StringUtils.isNotBlank(content)) {
             String[] element = content.split("\\);");
             for (String ele : element) {
@@ -699,30 +718,36 @@ public class ParameterToolController implements Initializable {
                     String eleAfter = ScriptSqlUtils.handleSqlForValues(ele);
                     if (eleAfter != null) {
                         String[] sqlInfo = eleAfter.split("',");
-                        if (eleLower.contains(KEY_TB_FUND_API_TAB)) {
+                        if (eleLower.contains(KEY_TB_FUND_API_PAGE_DEFINE)) {
+                            if (sqlInfo.length != 2) {
+                                LoggerUtils.error("格式化获取数据错误: " + ele);
+                                continue;
+                            }
+                            tabCodePageUrl.put(ScriptSqlUtils.getSqlFieldValue(sqlInfo[1]), ScriptSqlUtils.getSqlFieldValue(sqlInfo[0]));
+                        } else if (eleLower.contains(KEY_TB_FUND_API_TAB)) {
                             if (sqlInfo.length < 6) {
                                 LoggerUtils.error("格式化获取数据错误: " + ele);
                                 continue;
                             }
                             ParamRealtimeApiTabDto paramRealtimeApiTab = new ParamRealtimeApiTabDto();
                             paramRealtimeApiTabList.add(paramRealtimeApiTab);
-                            paramRealtimeApiTab.setMenuCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[0].replace(STR_BRACKETS_LEFT, STR_BLANK)));
+                            paramRealtimeApiTab.setMenuCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[0]));
                             paramRealtimeApiTab.setTabCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[1]));
                             paramRealtimeApiTab.setTabName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[2]));
                             paramRealtimeApiTab.setServiceCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[3]));
                             paramRealtimeApiTab.setOnSubmit(ScriptSqlUtils.getSqlFieldValue(sqlInfo[4]));
-                            paramRealtimeApiTab.setCheckName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
+                            paramRealtimeApiTab.setCheckName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5]));
                             if (sqlInfo.length == 9) {
                                 paramRealtimeApiTab.setFieldName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[6]));
                                 paramRealtimeApiTab.setDstScope(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7]));
-                                paramRealtimeApiTab.setTableCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[8].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
+                                paramRealtimeApiTab.setTableCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[8]));
                             }
                         } else if (eleLower.contains(KEY_TB_FUND_API_COMPONENT)) {
                             if (sqlInfo.length < 6) {
                                 LoggerUtils.error("格式化获取数据错误: " + ele);
                                 continue;
                             }
-                            String tabCode = ScriptSqlUtils.getSqlFieldValue(sqlInfo[0].replace(STR_BRACKETS_LEFT, STR_BLANK));
+                            String tabCode = ScriptSqlUtils.getSqlFieldValue(sqlInfo[0]);
                             String fieldCode = ScriptSqlUtils.getSqlFieldValue(sqlInfo[1]);
                             String fieldName = ScriptSqlUtils.getSqlFieldValue(sqlInfo[2]);
                             if (sqlInfo.length < 8) {
@@ -735,7 +760,7 @@ public class ParameterToolController implements Initializable {
                             paramRealtimeApiComponentDto.setFieldName(fieldName);
                             paramRealtimeApiComponentDto.setTransType(ScriptSqlUtils.getSqlFieldValue(sqlInfo[3]));
                             paramRealtimeApiComponentDto.setDictKey(ScriptSqlUtils.getSqlFieldValue(sqlInfo[4]));
-                            paramRealtimeApiComponentDto.setCheckRules(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
+                            paramRealtimeApiComponentDto.setCheckRules(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5]));
                             if (sqlInfo.length >= 7) {
                                 String orderField = ScriptSqlUtils.getSqlFieldValue(sqlInfo[6]);
                                 paramRealtimeApiComponentDto.setOrderField(orderField);
@@ -746,9 +771,16 @@ public class ParameterToolController implements Initializable {
                                 errorOrderColumnInfo.add(Arrays.asList(fileFolder, fileName, tabCode, fieldName, fieldCode));
                             }
                             if (sqlInfo.length >= 8) {
-                                paramRealtimeApiComponentDto.setDefaultValue(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7].replace(STR_BRACKETS_RIGHT, STR_BLANK)));
+                                paramRealtimeApiComponentDto.setDefaultValue(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7]));
                             }
                         }
+                    }
+                }
+            }
+            if (CollectionUtils.isNotEmpty(paramRealtimeApiTabList)) {
+                for (ParamRealtimeApiTabDto paramRealtimeApiTab : paramRealtimeApiTabList) {
+                    if (tabCodePageUrl.containsKey(paramRealtimeApiTab.getTabCode())) {
+                        paramRealtimeApiTab.setPageUrl(tabCodePageUrl.get(paramRealtimeApiTab.getTabCode()));
                     }
                 }
             }
@@ -915,7 +947,7 @@ public class ParameterToolController implements Initializable {
                 }
             }
 
-            Set<String> extProductField = productSpecialDeal(paramRealtimeApiTabDto, tabCode, fileFolder, fileName);
+            Set<String> extProductField = checkSkipColumns(paramRealtimeApiTabDto, tabCode, fileFolder, fileName);
 
             int rowIndex = 0;
             boolean errorTableColumnInfoExists;
@@ -1033,14 +1065,16 @@ public class ParameterToolController implements Initializable {
         }
     }
 
-    private Set<String> productSpecialDeal(ParamRealtimeApiTabDto paramRealtimeApiTabDto, String tabCode, String fileFolder, String fileName) throws Exception {
+    private Set<String> checkSkipColumns(ParamRealtimeApiTabDto paramRealtimeApiTabDto, String tabCode, String fileFolder, String fileName) throws Exception {
         Set<String> extField = new LinkedHashSet<>();
-        if (StringUtils.equals(tabCode, "fundProductInfoSet")) {
-            List<String> skipColumns = skipExcludeConfig.get("fundProductInfoSet.sql");
-            Map<String, String> skipColumnsMap = new HashMap<>();
+        List<String> skipColumns = skipExcludeConfig.get(fileName);
+        Map<String, String> skipColumnsMap = new HashMap<>();
+        if (CollectionUtils.isNotEmpty(skipColumns)) {
             for (String ele : skipColumns) {
                 skipColumnsMap.put(ele.toLowerCase().replaceAll(STR_UNDER_LINE, STR_BLANK), ele);
             }
+        }
+        if (StringUtils.equals(tabCode, "fundProductInfoSet")) {
             String productPath = baseDictPath.getText().replace("06tbdict-fund.sql", "15fund-product-field.sql");
             if (!new File(productPath).exists()) {
                 productPath = productPath.replace("15fund-product-field.sql", "15fund-product-field.oracle.sql");
@@ -1077,6 +1111,18 @@ public class ParameterToolController implements Initializable {
             }
             for (String field : productExtMap.keySet()) {
                 extField.add(field.toLowerCase());
+            }
+        } else {
+            String vue = vuePath.getText() + "\\views\\" + paramRealtimeApiTabDto.getPageUrl() + FILE_TYPE_VUE;
+            if (new File(vue).exists()) {
+                String content = CommonUtils.trimStrToBlank(FileUtils.readNormalFileToString(vue)).toLowerCase();
+                for (Map.Entry<String, String> entry : skipColumnsMap.entrySet()) {
+                    String fieldCodeLower = entry.getKey();
+                    String fieldCode = entry.getValue();
+                    if (content.contains("prop=\"" + fieldCodeLower + "\"") || content.contains("prop='" + fieldCodeLower + "'")) {
+                        errorSkipColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), fieldCode));
+                    }
+                }
             }
         }
         return extField;

@@ -20,6 +20,16 @@ public class ParamRealtimeApiTabDto {
 
     private String tableCode;
 
+    private String pageUrl;
+
+    public String getPageUrl() {
+        return pageUrl;
+    }
+
+    public void setPageUrl(String pageUrl) {
+        this.pageUrl = pageUrl;
+    }
+
     public String getMenuCode() {
         return menuCode;
     }

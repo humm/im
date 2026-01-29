@@ -505,6 +505,7 @@ public class InitConfigUtils {
         keys.put("change.tool.base.dict.path", null);
         keys.put("change.tool.paramRealtimeSet.path", null);
         keys.put("change.tool.table.path", null);
+        keys.put("change.tool.vue.path", null);
 
         keys.put("app.server.url", "http://192.168.27.40");
     }

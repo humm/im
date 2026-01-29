@@ -85,7 +85,7 @@ public class ScriptSqlUtils {
     }
 
     public static String getSqlFieldValue(String value) {
-        return value.replaceAll(STR_QUOTES_SINGLE, STR_BLANK).trim();
+        return value.replaceAll(STR_QUOTES_SINGLE, STR_BLANK).replaceAll("\\(", STR_BLANK).replaceAll("\\)", STR_BLANK).trim();
     }
 
     public static String getMenuCode(String item) {
