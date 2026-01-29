@@ -597,8 +597,8 @@ public class ScriptCompareSql {
         File fileExt = new File(basePathExt);
         Set<String> skip = ScriptSqlUtils.initExtLegalSkip();
         for (File file : fileExt.listFiles()) {
-            checkMenuByFile(file, resMap, skip, true);
-            checkMenuByFile(file, productExtMap, skip, false);
+            checkMenuByFile(file, resMap, skip, true, 0);
+            checkMenuByFile(file, productExtMap, skip, false, 0);
         }
         Map<String, Set<String>> productTips = new LinkedHashMap<>();
         String content = FileUtils.readNormalFileToString(new File(productConfig).getPath());
@@ -653,10 +653,10 @@ public class ScriptCompareSql {
         FileUtils.writeFile(resultPath + LEGAL_EXT_MENU.getFileName(), res);
     }
 
-    private void checkMenuByFile(File file, Map<String, Set<String>> res, Set<String> skip, boolean checkTable) throws IOException {
+    public static void checkMenuByFile(File file, Map<String, Set<String>> res, Set<String> skip, boolean checkTable, int keyCodeIndex) throws IOException {
         if (file.isDirectory()) {
             for (File item : file.listFiles()) {
-                checkMenuByFile(item, res, skip, checkTable);
+                checkMenuByFile(item, res, skip, checkTable, keyCodeIndex);
             }
         } else {
             String fileName = file.getName();
@@ -704,16 +704,16 @@ public class ScriptCompareSql {
                 for (String item : data) {
                     item = item.toLowerCase();
                     if (item.contains("tbpageelement")) {
-                        String id = ScriptSqlUtils.getElement(item, 0);
-                        if (StringUtils.isBlank(id)) {
+                        String key = ScriptSqlUtils.getElement(item, keyCodeIndex);
+                        if (StringUtils.isBlank(key)) {
                             continue;
                         }
-                        if (res.containsKey(id)) {
-                            res.get(id).add(filePath);
+                        if (res.containsKey(key)) {
+                            res.get(key).add(filePath);
                         } else {
                             Set<String> filedPath = new LinkedHashSet<>();
                             filedPath.add(filePath);
-                            res.put(id, filedPath);
+                            res.put(key, filedPath);
                         }
                     }
                 }

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.consts.BaseConst;
 import com.hoomoomoo.im.dto.*;
+import com.hoomoomoo.im.extend.ScriptCompareSql;
 import com.hoomoomoo.im.extend.ScriptSqlUtils;
 import com.hoomoomoo.im.task.ParameterToolTask;
 import com.hoomoomoo.im.task.ParameterToolTaskParam;
@@ -90,6 +91,7 @@ public class ParameterToolController implements Initializable {
     private static List<List<String>> errorOrderColumnInfo = new ArrayList<>();
     private static List<List<String>> errorMultipleTabInfo = new ArrayList<>();
     private static List<List<String>> errorSkipColumnInfo = new ArrayList<>();
+    private static List<List<String>> errorRequiredColumnInfo = new ArrayList<>();
     private static List<String> modifyInfo = new ArrayList<>();
     private static Map<String, List<String>> logTips = new LinkedHashMap<>();
 
@@ -220,6 +222,7 @@ public class ParameterToolController implements Initializable {
             errorOrderColumnInfo.clear();
             errorMultipleTabInfo.clear();
             errorSkipColumnInfo.clear();
+            errorRequiredColumnInfo.clear();
             skipExcludeConfig.clear();
             modifyInfo.clear();
             logTips.clear();
@@ -340,6 +343,19 @@ public class ParameterToolController implements Initializable {
                 }
             }
 
+            if (CollectionUtils.isNotEmpty(errorRequiredColumnInfo)) {
+                for (List<String> ele : errorRequiredColumnInfo) {
+                    String folder = ele.get(0);
+                    String msg = String.format("%s  %s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "增值功能默认必填", ele.get(3), ele.get(4)) + STR_NEXT_LINE;
+                    errorMessage.append(msg);
+                    if (tipsByFile.containsKey(folder)) {
+                        tipsByFile.get(folder).append(msg);
+                    } else {
+                        tipsByFile.put(folder, new StringBuilder(msg));
+                    }
+                }
+            }
+
             Set<String> currentUpdate = getCurrentUpdateTab();
 
             FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER)));
@@ -354,6 +370,7 @@ public class ParameterToolController implements Initializable {
                 summary.append("未配置字段默认值: " + errorDefaultValuesColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);
                 summary.append("存在使用字段配置忽略检查: " + errorSkipColumnInfo.size() + STR_SPACE_2);
+                summary.append("增值功能默认必填: " + errorRequiredColumnInfo.size() + STR_SPACE_2);
 
                 List<String> needFixed = new ArrayList<>();
                 if (MapUtils.isNotEmpty(tipsByFile)) {
@@ -751,8 +768,7 @@ public class ParameterToolController implements Initializable {
             }
         } else {
             paramRealtimeSetNum++;
-            // 临时修改
-            if (!path.endsWith(".sql") || path.contains("rbzc")) {
+            if (!path.endsWith(".sql")) {
                 return;
             }
             if (alertTips) {
@@ -899,36 +915,7 @@ public class ParameterToolController implements Initializable {
                 }
             }
 
-            if (StringUtils.equals(tabCode, "fundProductInfoSet")) {
-                List<String> skipColumns = skipExcludeConfig.get("fundProductInfoSet.sql");
-                Map<String, String> skipColumnsMap = new HashMap<>();
-                for (String ele : skipColumns) {
-                    skipColumnsMap.put(ele.toLowerCase().replaceAll(STR_UNDER_LINE, STR_BLANK), ele);
-                }
-                String productPath = baseDictPath.getText().replace("06tbdict-fund.sql", "15fund-product-field.sql");
-                if (!new File(productPath).exists()) {
-                    productPath = productPath.replace("15fund-product-field.sql", "15fund-product-field.oracle.sql");
-                }
-                String content = FileUtils.readNormalFileToString(productPath);
-                if (StringUtils.isNotBlank(content)) {
-                    String[] columns = content.split(STR_SEMICOLON);
-                    for (String column : columns) {
-                        if (column.contains("tbdataelement")) {
-                            String fieldCode = ScriptSqlUtils.getElement(column, 3);
-                            if (fieldCode != null) {
-                                // 废弃字段不使用
-                                if (StringUtils.equals("managerName", fieldCode)) {
-                                    continue;
-                                }
-                                fieldCode = fieldCode.toLowerCase();
-                                if (skipColumnsMap.containsKey(fieldCode)) {
-                                    errorSkipColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), skipColumnsMap.get(fieldCode)));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            Set<String> extProductField = productSpecialDeal(paramRealtimeApiTabDto, tabCode, fileFolder, fileName);
 
             int rowIndex = 0;
             boolean errorTableColumnInfoExists;
@@ -1033,6 +1020,9 @@ public class ParameterToolController implements Initializable {
                 }
                 if (StringUtils.equals(required, KEY_Y)) {
                     buildRowCell(row, redCenterCellStyle, 6, required);
+                    if (extProductField.contains(fieldCode.replaceAll(STR_UNDER_LINE, STR_BLANK))) {
+                        errorRequiredColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), tableCode, fieldCode));
+                    }
                 } else {
                     buildRowCell(row, centerCellStyle, 6, required);
                 }
@@ -1041,6 +1031,55 @@ public class ParameterToolController implements Initializable {
                 }
             }
         }
+    }
+
+    private Set<String> productSpecialDeal(ParamRealtimeApiTabDto paramRealtimeApiTabDto, String tabCode, String fileFolder, String fileName) throws Exception {
+        Set<String> extField = new LinkedHashSet<>();
+        if (StringUtils.equals(tabCode, "fundProductInfoSet")) {
+            List<String> skipColumns = skipExcludeConfig.get("fundProductInfoSet.sql");
+            Map<String, String> skipColumnsMap = new HashMap<>();
+            for (String ele : skipColumns) {
+                skipColumnsMap.put(ele.toLowerCase().replaceAll(STR_UNDER_LINE, STR_BLANK), ele);
+            }
+            String productPath = baseDictPath.getText().replace("06tbdict-fund.sql", "15fund-product-field.sql");
+            if (!new File(productPath).exists()) {
+                productPath = productPath.replace("15fund-product-field.sql", "15fund-product-field.oracle.sql");
+            }
+            String content = FileUtils.readNormalFileToString(productPath);
+            if (StringUtils.isNotBlank(content)) {
+                String[] columns = content.split(STR_SEMICOLON);
+                for (String column : columns) {
+                    if (column.contains("tbdataelement")) {
+                        String fieldCode = ScriptSqlUtils.getElement(column, 3);
+                        if (fieldCode != null) {
+                            // 废弃字段不使用
+                            if (StringUtils.equals("managerName", fieldCode)) {
+                                continue;
+                            }
+                            fieldCode = fieldCode.toLowerCase();
+                            if (skipColumnsMap.containsKey(fieldCode)) {
+                                errorSkipColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), skipColumnsMap.get(fieldCode)));
+                            }
+                        }
+                    }
+                }
+            }
+            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+            String extPath = appConfigDto.getSystemToolCheckMenuFundExtPath();
+            String basePathExt = extPath + ScriptSqlUtils.basePathExt;
+            File fileExt = new File(basePathExt);
+            Set<String> skip = new HashSet<String>(){{
+                add("TA6.0_fund_SpecialProduct.sql");
+            }};
+            Map<String, Set<String>> productExtMap = new LinkedHashMap<>();
+            for (File file : fileExt.listFiles()) {
+                ScriptCompareSql.checkMenuByFile(file, productExtMap, skip, false, 4);
+            }
+            for (String field : productExtMap.keySet()) {
+                extField.add(field.toLowerCase());
+            }
+        }
+        return extField;
     }
 
     private void buildBeginValidDateLine(SXSSFSheet componentDesc, int rowIndex, CellStyle wrapTextCellStyle, CellStyle centerCellStyle, ParamRealtimeApiTabDto paramRealtimeApiTabDto) {
