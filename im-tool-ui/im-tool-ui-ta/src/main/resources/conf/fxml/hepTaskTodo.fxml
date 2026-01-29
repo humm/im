@@ -56,7 +56,7 @@
 
                                 <Label fx:id="focusVersionTipsLabel" layoutX="20" layoutY="80.0"/>
                                 <Label fx:id="focusVersionTips" layoutX="120.0" layoutY="80.0"
-                                       style="-fx-font-weight: bold; -fx-text-background-color: #804d00; "/>
+                                       style="-fx-font-weight: bold; -fx-text-background-color: #b30df5; "/>
 
                                 <Label layoutX="20.0" layoutY="110.0" text="操作类型："/>
                                 <Button fx:id="syncFileBtn" layoutX="100.0" layoutY="105.0" mnemonicParsing="false"
