@@ -219,7 +219,7 @@
                                                                         <PropertyValueFactory property="serialNo"/>
                                                                     </cellValueFactory>
                                                                 </TableColumn>
-                                                                <TableColumn id="name" editable="false" prefWidth="825"
+                                                                <TableColumn id="name" editable="false" prefWidth="830"
                                                                              sortable="false" text="任务名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="name"/>

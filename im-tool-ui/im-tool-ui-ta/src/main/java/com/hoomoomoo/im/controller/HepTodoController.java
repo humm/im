@@ -1036,6 +1036,14 @@ public class HepTodoController extends BaseController implements Initializable {
                 item.setFinishTime(finishTime);
 
                 String sprintVersion = item.getSprintVersion();
+                item.setSprintVersionFull(sprintVersion);
+                item.setSprintVersion(formatVersion(sprintVersion));
+
+                if (filterTaskForRemove(appConfigDto, item)) {
+                    iterator.remove();
+                    continue;
+                }
+
                 if (appConfigDto.getHepTaskFocusVersionMap().contains(sprintVersion)) {
                     setTaskDesc(item, NAME_BUTTON_FOCUS);
                     focusVersionTask.add(taskNumberIn);
@@ -1155,9 +1163,6 @@ public class HepTodoController extends BaseController implements Initializable {
                     setTaskDesc(item, NAME_BUTTON_ADD_TOADY);
                 }
 
-                item.setSprintVersionFull(sprintVersion);
-                item.setSprintVersion(formatVersion(sprintVersion));
-
                 if (taskCustomerName.containsKey(taskNumberIn)) {
                     String name = taskCustomerName.get(taskNumberIn);
                     if (StringUtils.isNotBlank(name) && name.contains("（") && name.contains("）")) {
@@ -1245,11 +1250,6 @@ public class HepTodoController extends BaseController implements Initializable {
                             continue;
                         }
                     }
-                }
-
-                if (filterTaskForRemove(appConfigDto, item)) {
-                    iterator.remove();
-                    continue;
                 }
             }
 
