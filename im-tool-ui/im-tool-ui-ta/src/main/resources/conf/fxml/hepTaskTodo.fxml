@@ -213,7 +213,13 @@
                                                                    AnchorPane.rightAnchor="0.0"
                                                                    AnchorPane.topAnchor="0.0">
                                                             <columns>
-                                                                <TableColumn id="name" editable="false" prefWidth="860"
+                                                                <TableColumn id="serialNo" editable="false" prefWidth="35"
+                                                                             sortable="false" text="...">
+                                                                    <cellValueFactory>
+                                                                        <PropertyValueFactory property="serialNo"/>
+                                                                    </cellValueFactory>
+                                                                </TableColumn>
+                                                                <TableColumn id="name" editable="false" prefWidth="825"
                                                                              sortable="false" text="任务名称">
                                                                     <cellValueFactory>
                                                                         <PropertyValueFactory property="name"/>

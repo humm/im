@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class HepTaskDto extends BaseDto{
 
+    private Integer serialNo;
     private String id;
     private String taskNumber;
     private String name;

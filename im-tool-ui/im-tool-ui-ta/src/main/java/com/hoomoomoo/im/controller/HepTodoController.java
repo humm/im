@@ -1543,7 +1543,9 @@ public class HepTodoController extends BaseController implements Initializable {
         }
 
         Platform.runLater(() -> {
+            int index = 1;
             for (HepTaskDto hepTaskDto : res) {
+                hepTaskDto.setSerialNo(index++);
                 formatData(hepTaskDto);
                 taskListIn.getItems().add(hepTaskDto);
                 // 设置行
