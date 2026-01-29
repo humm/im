@@ -1119,7 +1119,14 @@ public class ParameterToolController implements Initializable {
                 for (Map.Entry<String, String> entry : skipColumnsMap.entrySet()) {
                     String fieldCodeLower = entry.getKey();
                     String fieldCode = entry.getValue();
-                    if (content.contains("prop=\"" + fieldCodeLower + "\"") || content.contains("prop='" + fieldCodeLower + "'")) {
+                    String addForm1 = "v-model=\"addform." + fieldCodeLower + "\"";
+                    String addForm2 = "v-model='addform." + fieldCodeLower + "'";
+                    String updateForm1 = "v-model=\"updateform." + fieldCodeLower + "\"";
+                    String updateForm2 = "v-model='updateform." + fieldCodeLower + "'";
+                    String actionForm1 = "v-model=\"actionform." + fieldCodeLower + "\"";
+                    String actionForm2 = "v-model='actionform." + fieldCodeLower + "'";
+                    if (content.contains(addForm1) || content.contains(addForm2) || content.contains(updateForm1) || content.contains(updateForm2)
+                            || content.contains(actionForm1) || content.contains(actionForm2)) {
                         errorSkipColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), fieldCode));
                     }
                 }
