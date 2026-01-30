@@ -1128,20 +1128,28 @@ public class ParameterToolController implements Initializable {
             }
             String basePathExt = paramRealtimeSetPath.getText();
             File fileExt = new File(basePathExt);
-            Set<String> skip = new HashSet<String>(){{
-                add("TA6.0_fund_SpecialProduct.sql");
-            }};
             Map<String, Set<String>> productExtMap = new LinkedHashMap<>();
             File[] extFileList = fileExt.listFiles();
             if (extFileList != null) {
                 for (File file : extFileList) {
-                    ScriptCompareSql.checkMenuByFile(file, productExtMap, skip, false, 4);
+                    ScriptCompareSql.checkMenuByFile(file, productExtMap, new HashSet<>(Arrays.asList("TA6.0_fund_SpecialProduct.sql")), false, 4);
                 }
             } else {
                 LoggerUtils.info("请检查开通脚本目录是否正确: " + basePathExt);
             }
-            for (String field : productExtMap.keySet()) {
-                extField.add(field.toLowerCase());
+            boolean add;
+            for (Map.Entry<String, Set<String>> entry : productExtMap.entrySet()) {
+                add = false;
+                String field = entry.getKey();
+                Set<String> pathSet = entry.getValue();
+                for (String path : pathSet) {
+                    if (!path.contains("\\special\\")) {
+                        add = true;
+                    }
+                }
+                if (add) {
+                    extField.add(field.toLowerCase());
+                }
             }
         } else {
             String vue = vuePath.getText() + "\\views\\" + paramRealtimeApiTabDto.getPageUrl() + FILE_TYPE_VUE;

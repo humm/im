@@ -577,6 +577,38 @@ public class ScriptCheckController implements Initializable {
         }
     }
 
+    @FXML
+    void repairNewMenuTree(ActionEvent event) throws Exception {
+        if (executeFlag) {
+            OutputUtils.info(logs, getCommonMsg("修正中 ··· 请稍后 ···"));
+            return;
+        }
+        executeFlag = true;
+        try {
+            TaskUtils.execute(new ScriptCheckTask(new ScriptCheckTaskParam(this, NAME_REPAIR_NEW_MENU_TREE)));
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU_TREE, e.getMessage()));
+            executeFlag = false;
+        }
+    }
+
+   public void doRepairNewMenuTree() throws Exception {
+        try {
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU_TREE, NAME_REPAIR_START));
+            showScheduleInfo(NAME_REPAIR_NEW_MENU_TREE, NAME_REPAIR);
+            ScriptRepairSql.repairNewMenuTree();
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU_TREE, NAME_REPAIR_END));
+            OutputUtils.info(logs, STR_NEXT_LINE);
+            addLog(NAME_REPAIR_NEW_MENU_TREE);
+        } catch (Exception e) {
+            LoggerUtils.error(e);
+            OutputUtils.info(logs, getCommonMsg(NAME_REPAIR_NEW_MENU_TREE, e.getMessage()));
+        } finally {
+            executeFlag = false;
+        }
+    }
+
     public void doRepairErrorLog() {
         try {
             boolean startFlag = false;

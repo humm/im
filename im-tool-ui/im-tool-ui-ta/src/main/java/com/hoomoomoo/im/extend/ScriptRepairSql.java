@@ -3,6 +3,7 @@ package com.hoomoomoo.im.extend;
 import com.hoomoomoo.im.cache.ConfigCache;
 import com.hoomoomoo.im.dto.AppConfigDto;
 import com.hoomoomoo.im.dto.MenuTransitionDto;
+import com.hoomoomoo.im.dto.MenuTreeDto;
 import com.hoomoomoo.im.utils.CommonUtils;
 import com.hoomoomoo.im.utils.FileUtils;
 import org.apache.commons.collections4.CollectionUtils;
@@ -12,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static com.hoomoomoo.im.consts.BaseConst.*;
 import static com.hoomoomoo.im.consts.BaseConst.SQL_CHECK_TYPE.ERROR_LOG;
@@ -25,6 +27,7 @@ public class ScriptRepairSql {
     private static String BLOCK_LINE_INDEX_TIPS = "-- ****************************************************************************** %s ******************************************************************************";
     private static String BLOCK_LINE_SUB_TRANS_EXT_INDEX_TIPS = "-- ******************************************************* %s *******************************************************";
     private static String MENU_TIPS = "-- ************************************************************************* %s *************************************************************************";
+    private static String MENU_TIPS_LEFT = "*************************************************************************";
     private static String MENU_TIPS_PART = "-- *************************************************************************";
     private static String TRANS_TIPS = "-- **************************************** %s ****************************************";
 
@@ -35,6 +38,148 @@ public class ScriptRepairSql {
     public static Set<String> excludeFundMenu = new HashSet<>(Arrays.asList("fundClerkList", "fundInterestInfoSet"));
     public static Set<String> includePubMenu = new HashSet<>(Arrays.asList("bizBlackInfoSet", "bizClerkInfoSet", "bizInterestRateSet", "taUnitAreaAudit"));
     public static Set<String> specialFundMenu = new HashSet<>(Arrays.asList("specialBlackInfoSet", "specialInvalidBlackInfoQuery"));
+
+    public static void repairNewMenuTree() throws Exception {
+        AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
+        String newUedPage = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.newUedPage;
+        String content = FileUtils.readNormalFileToString(newUedPage);
+        List<MenuTreeDto> menuTree = new ArrayList<>();
+        List<MenuTreeDto> menuList = new ArrayList<>();
+        if (StringUtils.isNotBlank(content)) {
+            String[] menuContent = content.split(Pattern.quote(STR_SEMICOLON));
+            for (String ele : menuContent) {
+                boolean isMenu = ele.split(STR_COMMA).length > 10;
+                if (!isMenu) {
+                    continue;
+                }
+                if (ele.contains("tsys_menu_std") && ele.contains("values (")) {
+                    String menuCode = ScriptSqlUtils.getMenuCode(ele);
+                    String menuName = ScriptSqlUtils.getMenuName(ele);
+                    String parentCode = ScriptSqlUtils.getParentCode(ele);
+                    MenuTreeDto menuTreeDto = new MenuTreeDto(menuCode, menuName, parentCode);
+                    System.out.println(ele);
+                    menuList.add(menuTreeDto);
+                    String reserve = ScriptSqlUtils.getMenuReserve(ele);
+                    if (StringUtils.isNotBlank(reserve) && !StringUtils.equals(reserve, STR_0) && !StringUtils.equals(reserve, STR_BLANK)) {
+                        String[] subMenu = reserve.split(STR_COMMA);
+                        for (String sub : subMenu) {
+                            menuTreeDto.getSubMenuList().add(new MenuTreeDto(sub, sub));
+                        }
+                    }
+                }
+
+            }
+            String[] parentMenuList = content.split(Pattern.quote(MENU_TIPS_LEFT));
+            int index;
+            String firstParentCode;
+            String secondParentCode;
+            for (String menu : parentMenuList){
+                if (menu.contains("|")) {
+                    String[] menuGroup = menu.split(STR_SPACE);
+                    index = 1;
+                    firstParentCode = STR_BLANK;
+                    secondParentCode = STR_BLANK;
+                    for (String ele : menuGroup) {
+                        if (StringUtils.isNotBlank(ele) && ele.contains("|")) {
+                            String[] menuInfo = ele.split("\\|");
+                            if (menuInfo.length == 2) {
+                                String menuCode = menuInfo[0];
+                                String menuName = menuInfo[1];
+                                if (index == 1) {
+                                    if (getMenu(menuTree, menuCode) == null) {
+                                        menuTree.add(new MenuTreeDto(menuCode, menuName));
+                                    }
+                                    firstParentCode = menuCode;
+                                } else if (index == 2) {
+                                    addSubMenu(getMenu(menuTree, firstParentCode), menuCode, menuName);
+                                    secondParentCode = menuCode;
+                                } else if (index == 3) {
+                                    addSubMenu(getSubMenu(getMenu(menuTree,  firstParentCode), secondParentCode), menuCode, menuName);
+                                }
+                                index++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        menuTree.add(new MenuTreeDto("xxx", "虚拟菜单"));
+        List<String> tree = new ArrayList<>();
+        for (MenuTreeDto menuTreeDto : menuTree) {
+            fixMenu(menuTreeDto, menuList);
+            buildTree(menuTreeDto, tree, ANNOTATION_NORMAL + STR_SPACE);
+        }
+        FileUtils.writeFile(appConfigDto.getSystemToolCheckMenuFundBasePath() + "\\07console-fund-ta-vue-menu-new-ued-tree.sql", tree);
+    }
+
+    private static void buildTree(MenuTreeDto menuTreeDto, List<String> tree, String separator) {
+        if(menuTreeDto == null) {
+            return;
+        }
+        tree.add(separator + menuTreeDto.getMenuName());
+        List<MenuTreeDto> menuTree = menuTreeDto.getSubMenuList();
+        if (CollectionUtils.isNotEmpty(menuTree)) {
+            for (MenuTreeDto menu : menuTree) {
+                buildTree(menu, tree, separator + STR_SPACE_3);
+            }
+        }
+    }
+
+    private static void fixMenu(MenuTreeDto menuTreeDto, List<MenuTreeDto> menuList) {
+        List<MenuTreeDto> menuTree = menuTreeDto.getSubMenuList();
+        if (CollectionUtils.isNotEmpty(menuTree)) {
+            for (MenuTreeDto menu : menuTree) {
+                fixMenu(menu, menuList);
+            }
+        } else {
+            String menuCode = menuTreeDto.getMenuCode();
+            for (MenuTreeDto menu : menuList) {
+                if (StringUtils.equals(menuCode, menu.getParentMenuCode())) {
+                    MenuTreeDto subMenuTreeDto = new MenuTreeDto(menu.getMenuCode(), menu.getMenuName());
+                    menuTreeDto.getSubMenuList().add(subMenuTreeDto);
+                    List<MenuTreeDto> sheetList = menu.getSubMenuList();
+                    if (CollectionUtils.isNotEmpty(sheetList)) {
+                        for (MenuTreeDto ele : sheetList) {
+                            subMenuTreeDto.getSubMenuList().add(getMenu(menuList, ele.getMenuCode()));
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+
+    private static MenuTreeDto getMenu(List<MenuTreeDto> list, String menuCode) {
+        for (MenuTreeDto menu : list) {
+            if (StringUtils.equals(menuCode, menu.getMenuCode())) {
+                return menu;
+            }
+        }
+        return null;
+    }
+
+    private static MenuTreeDto getSubMenu(MenuTreeDto menuTreeDto, String menuCode) {
+        List<MenuTreeDto> list = menuTreeDto.getSubMenuList();
+        for (MenuTreeDto menu : list) {
+            if (StringUtils.equals(menuCode, menu.getMenuCode())) {
+                return menu;
+            }
+        }
+        return null;
+    }
+
+    private static void addSubMenu(MenuTreeDto menuTreeDto, String menuCode, String menuName) {
+        if (menuTreeDto == null) {
+            return;
+        }
+        List<MenuTreeDto> list = menuTreeDto.getSubMenuList();
+        for (MenuTreeDto menu : list) {
+            if (StringUtils.equals(menuCode, menu.getMenuCode())) {
+                return;
+            }
+        }
+        list.add(new MenuTreeDto(menuCode, menuName));
+    }
 
     public static void repairLackLog() throws Exception {
         repairFileNum = 0;

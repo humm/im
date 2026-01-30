@@ -30,6 +30,9 @@ public class ScriptCheckTask implements Callable<ScriptCheckTaskParam> {
             case NAME_REPAIR_NEW_MENU:
                 scriptCheckTaskParam.getScriptCheckController().doRepairNewMenu();
                 break;
+            case NAME_REPAIR_NEW_MENU_TREE:
+                scriptCheckTaskParam.getScriptCheckController().doRepairNewMenuTree();
+                break;
             case NAME_REPAIR_ERROR_EXT:
                 scriptCheckTaskParam.getScriptCheckController().doRepairErrorLog();
                 break;

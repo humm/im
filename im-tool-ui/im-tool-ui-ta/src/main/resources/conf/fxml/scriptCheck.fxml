@@ -177,6 +177,12 @@
                                                      </padding>
                                                  </Button>
 
+                                                 <Button layoutX="130.0" layoutY="465" mnemonicParsing="false" onAction="#repairNewMenuTree" prefWidth="110" text="新版全景图">
+                                                     <padding>
+                                                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                                     </padding>
+                                                 </Button>
+
 
 
 
