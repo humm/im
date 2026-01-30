@@ -530,7 +530,18 @@ public class ParameterToolController implements Initializable {
         skipConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(confFilePath)), Map.class));
         String devFile = FileUtils.getFilePath(devFilePath);
         if (new File(devFile).exists()) {
-            skipConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(devFilePath)), Map.class));
+            Map<String, List<String>> dev = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(devFilePath)), Map.class);
+            if (MapUtils.isNotEmpty(dev)) {
+                for (Map.Entry<String, List<String>> entry : dev.entrySet()) {
+                    String fileName = entry.getKey();
+                    List<String> field = entry.getValue();
+                    if (skipConfig.containsKey(fileName)) {
+                        skipConfig.get(fileName).addAll(field);
+                    } else {
+                        skipConfig.put(fileName, field);
+                    }
+                }
+            }
         }
         return skipConfig;
     }
@@ -1115,16 +1126,19 @@ public class ParameterToolController implements Initializable {
                     }
                 }
             }
-            AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
-            String extPath = appConfigDto.getSystemToolCheckMenuFundExtPath();
-            String basePathExt = extPath + ScriptSqlUtils.basePathExt;
+            String basePathExt = paramRealtimeSetPath.getText();
             File fileExt = new File(basePathExt);
             Set<String> skip = new HashSet<String>(){{
                 add("TA6.0_fund_SpecialProduct.sql");
             }};
             Map<String, Set<String>> productExtMap = new LinkedHashMap<>();
-            for (File file : fileExt.listFiles()) {
-                ScriptCompareSql.checkMenuByFile(file, productExtMap, skip, false, 4);
+            File[] extFileList = fileExt.listFiles();
+            if (extFileList != null) {
+                for (File file : extFileList) {
+                    ScriptCompareSql.checkMenuByFile(file, productExtMap, skip, false, 4);
+                }
+            } else {
+                LoggerUtils.info("请检查开通脚本目录是否正确: " + basePathExt);
             }
             for (String field : productExtMap.keySet()) {
                 extField.add(field.toLowerCase());
