@@ -49,7 +49,7 @@ public class ScriptRepairSql {
         String newUedPage = appConfigDto.getSystemToolCheckMenuFundBasePath() + ScriptSqlUtils.newUedPage;
         String content = FileUtils.readNormalFileToString(newUedPage);
         List<MenuTreeDto> menuTree = new ArrayList<>();
-        menuTree.add(new MenuTreeDto("菜单全景,不包含无实际菜单仅为弹窗页面", "不对外发布"));
+        menuTree.add(new MenuTreeDto("菜单全景", "不对外发布, 不包含无实际菜单仅为弹窗页面"));
         List<MenuTreeDto> menuList = new ArrayList<>();
         if (StringUtils.isNotBlank(content)) {
             String[] menuContent = content.split(Pattern.quote(STR_SEMICOLON));
@@ -150,7 +150,7 @@ public class ScriptRepairSql {
                     tree.set(i - 1, elePrev.substring(0, elePrev.lastIndexOf(STR_COMMA)));
                 } else if (ele.contains("不对外发布")) {
                     String line = ele + STR_NEXT_LINE;
-                    tree.set(i, line + ele.replaceAll("menuName", "menuTotal").replaceAll("不对外发布", "菜单总数" + menuTotal));
+                    tree.set(i, line + ele.replaceAll("menuName", "menuTotal").replaceAll("不对外发布, 不包含无实际菜单仅为弹窗页面", "菜单总数" + menuTotal));
                 }
             }
             Iterator<String> iterator = tree.listIterator();
