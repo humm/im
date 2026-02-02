@@ -11,12 +11,10 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 
 import java.io.File;
 import java.net.URL;
@@ -434,6 +432,7 @@ public class ScriptCheckController implements Initializable {
             repair("repairReport");
             repair("repairLackLog");
             repair("updateParameterDoc");
+            repair("repairNewMenuTree");
             addLog(NAME_REPAIR_ONE_KEY);
             while (true) {
                 AppConfigDto appConfigDto = ConfigCache.getAppConfigDtoCache();
@@ -489,6 +488,9 @@ public class ScriptCheckController implements Initializable {
                         break;
                     case "updateParameterDoc":
                         updateParameterDoc(null);
+                        break;
+                    case "repairNewMenuTree":
+                        repairNewMenuTree(null);
                         break;
                     default:
                         break;

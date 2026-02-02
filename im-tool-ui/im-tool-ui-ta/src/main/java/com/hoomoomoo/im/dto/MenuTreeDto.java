@@ -1,16 +1,22 @@
 package com.hoomoomoo.im.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MenuTreeDto {
 
+    @JSONField(ordinal = 10)
     private String menuCode;
 
+    @JSONField(ordinal = 20)
     private String menuName;
 
+    @JSONField(ordinal = 30)
     private String parentMenuCode;
 
+    @JSONField(ordinal = 40)
     private List<MenuTreeDto> subMenuList = new ArrayList<>();
 
     public MenuTreeDto(String menuCode, String menuName) {
