@@ -71,11 +71,11 @@ public class ExcelComparatorUtils {
                         continue; // 两行都为空,跳过
                     }
                     if (row1 == null) {
-                        DIFF_LIST.add("工作表【" + sheetName1 + "】行【" + rowIndex + "】: 修改前无此行, 修改后有");
+                        DIFF_LIST.add("工作表【" + sheetName1 + "】行【" + (rowIndex + 1 )+ "】: 修改前无此行, 修改后有");
                         continue;
                     }
                     if (row2 == null) {
-                        DIFF_LIST.add("工作表【" + sheetName1 + "】行【" + rowIndex + "】: 修改前有此行, 修改后无");
+                        DIFF_LIST.add("工作表【" + sheetName1 + "】行【" + (rowIndex + 1) + "】: 修改前有此行, 修改后无");
                         continue;
                     }
 
@@ -91,7 +91,7 @@ public class ExcelComparatorUtils {
 
                         // 校验单元格值
                         if (!cellValue1.equals(cellValue2)) {
-                            DIFF_LIST.add("工作表【" + sheetName1 + "】行【" + rowIndex + "】列【" + cellIndex + "】值不一致: " + STR_NEXT_LINE + "修改前 -> " + cellValue1 + STR_NEXT_LINE + "修改后 -> " + cellValue2);
+                            DIFF_LIST.add("工作表【" + sheetName1 + "】行【" + (rowIndex + 1)+ "】列【" + (cellIndex + 1) + "】值不一致: " + STR_NEXT_LINE + "修改前 -> " + cellValue1 + STR_NEXT_LINE + "修改后 -> " + cellValue2);
                         }
                     }
                 }

@@ -701,7 +701,7 @@ public class ParameterToolController implements Initializable {
                             // LoggerUtils.error("数据字典格式化获取数据错误: " + eleAfter);
                             continue;
                         }
-                        String dictCode = ScriptSqlUtils.getSqlFieldValue(dictInfo[0]);
+                        String dictCode = deleteParentheses(ScriptSqlUtils.getSqlFieldValue(dictInfo[0]));
                         String dictName = ScriptSqlUtils.getSqlFieldValue(dictInfo[1]);
                         String dictKey = ScriptSqlUtils.getSqlFieldValue(dictInfo[2]);
                         String dictPrompt = ScriptSqlUtils.getSqlFieldValue(dictInfo[3]);
@@ -758,23 +758,23 @@ public class ParameterToolController implements Initializable {
                             }
                             ParamRealtimeApiTabDto paramRealtimeApiTab = new ParamRealtimeApiTabDto();
                             paramRealtimeApiTabList.add(paramRealtimeApiTab);
-                            paramRealtimeApiTab.setMenuCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[0]));
+                            paramRealtimeApiTab.setMenuCode(deleteParentheses(ScriptSqlUtils.getSqlFieldValue(sqlInfo[0])));
                             paramRealtimeApiTab.setTabCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[1]));
                             paramRealtimeApiTab.setTabName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[2]));
                             paramRealtimeApiTab.setServiceCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[3]));
                             paramRealtimeApiTab.setOnSubmit(ScriptSqlUtils.getSqlFieldValue(sqlInfo[4]));
-                            paramRealtimeApiTab.setCheckName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5]));
+                            paramRealtimeApiTab.setCheckName(deleteParentheses(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5])));
                             if (sqlInfo.length == 9) {
                                 paramRealtimeApiTab.setFieldName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[6]));
                                 paramRealtimeApiTab.setDstScope(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7]));
-                                paramRealtimeApiTab.setTableCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[8]));
+                                paramRealtimeApiTab.setTableCode(deleteParentheses(ScriptSqlUtils.getSqlFieldValue(sqlInfo[8])));
                             }
                         } else if (eleLower.contains(KEY_TB_FUND_API_COMPONENT)) {
                             if (sqlInfo.length < 6) {
                                 LoggerUtils.error("格式化获取数据错误: " + ele);
                                 continue;
                             }
-                            String tabCode = ScriptSqlUtils.getSqlFieldValue(sqlInfo[0]);
+                            String tabCode = deleteParentheses(ScriptSqlUtils.getSqlFieldValue(sqlInfo[0]));
                             String fieldCode = ScriptSqlUtils.getSqlFieldValue(sqlInfo[1]);
                             String fieldName = ScriptSqlUtils.getSqlFieldValue(sqlInfo[2]);
                             if (sqlInfo.length < 8) {
@@ -787,7 +787,7 @@ public class ParameterToolController implements Initializable {
                             paramRealtimeApiComponentDto.setFieldName(fieldName);
                             paramRealtimeApiComponentDto.setTransType(ScriptSqlUtils.getSqlFieldValue(sqlInfo[3]));
                             paramRealtimeApiComponentDto.setDictKey(ScriptSqlUtils.getSqlFieldValue(sqlInfo[4]));
-                            paramRealtimeApiComponentDto.setCheckRules(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5]));
+                            paramRealtimeApiComponentDto.setCheckRules(deleteParentheses(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5])));
                             if (sqlInfo.length >= 7) {
                                 String orderField = ScriptSqlUtils.getSqlFieldValue(sqlInfo[6]);
                                 paramRealtimeApiComponentDto.setOrderField(orderField);
@@ -798,7 +798,7 @@ public class ParameterToolController implements Initializable {
                                 errorOrderColumnInfo.add(Arrays.asList(fileFolder, fileName, tabCode, fieldName, fieldCode));
                             }
                             if (sqlInfo.length >= 8) {
-                                paramRealtimeApiComponentDto.setDefaultValue(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7]));
+                                paramRealtimeApiComponentDto.setDefaultValue(deleteParentheses(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7])));
                             }
                         }
                     }
@@ -1535,5 +1535,15 @@ public class ParameterToolController implements Initializable {
             cell.setCellStyle(cellStyle);
         }
         cell.setCellValue(rowName);
+    }
+
+    private String deleteParentheses(String val) {
+        if (val.startsWith(STR_BRACKETS_LEFT)) {
+            val = val.substring(val.indexOf(STR_BRACKETS_LEFT) + 1);
+        }
+        if (val.endsWith(STR_BRACKETS_RIGHT)) {
+            val = val.substring(0, val.length() - 1);
+        }
+        return val;
     }
 }

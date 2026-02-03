@@ -8,5 +8,14 @@
   ],
   "fundProductInfoSet.sql": [
     "manager_name"
+  ],
+  "fundCurrencySchemeSet.sql": [
+    "next_basevol_upddate"
+  ],
+  "fundSaleQualifySet.sql": [
+    "begin_valid_date"
+  ],
+  "fundManualProfit.sql": [
+    "assigned_profit_balance"
   ]
 }
