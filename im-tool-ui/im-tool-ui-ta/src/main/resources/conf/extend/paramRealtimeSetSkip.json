@@ -17,5 +17,8 @@
   ],
   "fundManualProfit.sql": [
     "assigned_profit_balance"
+  ],
+  "fundProfitProjSet.sql": [
+    "plan_code"
   ]
 }

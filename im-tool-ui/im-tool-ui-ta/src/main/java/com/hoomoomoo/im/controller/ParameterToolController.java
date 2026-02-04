@@ -94,6 +94,7 @@ public class ParameterToolController implements Initializable {
     private static List<List<String>> errorOrderColumnInfo = new ArrayList<>();
     private static List<List<String>> errorMultipleTabInfo = new ArrayList<>();
     private static List<List<String>> errorSkipColumnInfo = new ArrayList<>();
+    private static List<List<String>> errorExtRequiredColumnInfo = new ArrayList<>();
     private static List<List<String>> errorRequiredColumnInfo = new ArrayList<>();
     private static List<String> modifyInfo = new ArrayList<>();
     private static Map<String, List<String>> logTips = new LinkedHashMap<>();
@@ -241,6 +242,7 @@ public class ParameterToolController implements Initializable {
             errorOrderColumnInfo.clear();
             errorMultipleTabInfo.clear();
             errorSkipColumnInfo.clear();
+            errorExtRequiredColumnInfo.clear();
             errorRequiredColumnInfo.clear();
             skipExcludeConfig.clear();
             paramRealtimeSetSkip.clear();
@@ -364,10 +366,23 @@ public class ParameterToolController implements Initializable {
                 }
             }
 
+            if (CollectionUtils.isNotEmpty(errorExtRequiredColumnInfo)) {
+                for (List<String> ele : errorExtRequiredColumnInfo) {
+                    String folder = ele.get(0);
+                    String msg = String.format("%s  %s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "增值功能默认必填", ele.get(3), ele.get(4)) + STR_NEXT_LINE;
+                    errorMessage.append(msg);
+                    if (tipsByFile.containsKey(folder)) {
+                        tipsByFile.get(folder).append(msg);
+                    } else {
+                        tipsByFile.put(folder, new StringBuilder(msg));
+                    }
+                }
+            }
+
             if (CollectionUtils.isNotEmpty(errorRequiredColumnInfo)) {
                 for (List<String> ele : errorRequiredColumnInfo) {
                     String folder = ele.get(0);
-                    String msg = String.format("%s  %s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "增值功能默认必填", ele.get(3), ele.get(4)) + STR_NEXT_LINE;
+                    String msg = String.format("%s  %s  %s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "必填逻辑与页面不一致", ele.get(3), ele.get(4)) + STR_NEXT_LINE;
                     errorMessage.append(msg);
                     if (tipsByFile.containsKey(folder)) {
                         tipsByFile.get(folder).append(msg);
@@ -391,7 +406,8 @@ public class ParameterToolController implements Initializable {
                 summary.append("未配置字段默认值: " + errorDefaultValuesColumnInfo.size() + STR_SPACE_2);
                 summary.append("未配置字段排序: " + errorOrderColumnInfo.size() + STR_SPACE_2);
                 summary.append("存在使用字段配置忽略检查: " + errorSkipColumnInfo.size() + STR_SPACE_2);
-                summary.append("增值功能默认必填: " + errorRequiredColumnInfo.size() + STR_SPACE_2);
+                summary.append("增值功能默认必填: " + errorExtRequiredColumnInfo.size() + STR_SPACE_2);
+                summary.append("必填逻辑与页面不一致: " + errorRequiredColumnInfo.size() + STR_SPACE_2);
 
                 List<String> needFixed = new ArrayList<>();
                 if (MapUtils.isNotEmpty(tipsByFile)) {
@@ -750,7 +766,7 @@ public class ParameterToolController implements Initializable {
                                 LoggerUtils.error("格式化获取数据错误: " + ele);
                                 continue;
                             }
-                            tabCodePageUrl.put(ScriptSqlUtils.getSqlFieldValue(sqlInfo[1]), ScriptSqlUtils.getSqlFieldValue(sqlInfo[0]));
+                            tabCodePageUrl.put(ScriptSqlUtils.getSqlFieldValue(sqlInfo[1]), deleteParentheses(ScriptSqlUtils.getSqlFieldValue(sqlInfo[0])));
                         } else if (eleLower.contains(KEY_TB_FUND_API_TAB)) {
                             if (sqlInfo.length < 6) {
                                 LoggerUtils.error("格式化获取数据错误: " + ele);
@@ -808,6 +824,8 @@ public class ParameterToolController implements Initializable {
                 for (ParamRealtimeApiTabDto paramRealtimeApiTab : paramRealtimeApiTabList) {
                     if (tabCodePageUrl.containsKey(paramRealtimeApiTab.getTabCode())) {
                         paramRealtimeApiTab.setPageUrl(tabCodePageUrl.get(paramRealtimeApiTab.getTabCode()));
+                    } else if (tabCodePageUrl.containsKey(paramRealtimeApiTab.getMenuCode())) {
+                        paramRealtimeApiTab.setPageUrl(tabCodePageUrl.get(paramRealtimeApiTab.getMenuCode()));
                     }
                 }
             }
@@ -939,20 +957,20 @@ public class ParameterToolController implements Initializable {
             buildRowCell(rowTitle, titleCellStyle, 0, "字段代码");
             buildRowCell(rowTitle, titleCellStyle, 1, "字段描述");
             buildRowCell(rowTitle, titleCellStyle, 2, "字段类型");
-            buildRowCell(rowTitle, titleCellStyle, 3, "字段最大长度");
+            buildRowCell(rowTitle, titleCellStyle, 3, "最大长度");
             buildRowCell(rowTitle, titleCellStyle, 4, "数据字典");
             buildRowCell(rowTitle, titleCellStyle, 5, "默认值");
             buildRowCell(rowTitle, titleCellStyle, 6, "必填");
             buildRowCell(rowTitle, titleCellStyle, 7, "校验规则");
 
-            componentDesc.setColumnWidth(0, 35 * 256);
-            componentDesc.setColumnWidth(1, 35 * 256);
-            componentDesc.setColumnWidth(2, 15 * 256);
+            componentDesc.setColumnWidth(0, 30 * 256);
+            componentDesc.setColumnWidth(1, 30 * 256);
+            componentDesc.setColumnWidth(2, 10 * 256);
             componentDesc.setColumnWidth(3, 15 * 256);
-            componentDesc.setColumnWidth(4, 15 * 256);
+            componentDesc.setColumnWidth(4, 10 * 256);
             componentDesc.setColumnWidth(5, 20 * 256);
             componentDesc.setColumnWidth(6, 10 * 256);
-            componentDesc.setColumnWidth(7, 200 * 256);
+            componentDesc.setColumnWidth(7, 180 * 256);
 
             CellStyle centerCellStyle = ExcelCommonUtils.getCenterCellStyle(workbook);
             CellStyle redCenterCellStyle = ExcelCommonUtils.getRedCenterCellStyle(workbook);
@@ -978,6 +996,7 @@ public class ParameterToolController implements Initializable {
 
             int rowIndex = 0;
             boolean errorTableColumnInfoExists;
+            String content = getVueContent(paramRealtimeApiTabDto.getPageUrl());
             for (ParamRealtimeApiComponentDto item : paramRealtimeApiComponentDtoList) {
                 errorTableColumnInfoExists = false;
                 String fieldCode = changeToLower(item.getFieldCode());
@@ -1049,9 +1068,11 @@ public class ParameterToolController implements Initializable {
                     required = KEY_Y;
                 }
                 String checkRules = item.getCheckRules();
+                boolean requiredByParam = false;
                 if (StringUtils.isNotBlank(checkRules.trim())) {
                     StringBuilder rule = new StringBuilder();
                     checkRules = checkRules.replaceAll("\\\\", STR_BLANK);
+                    requiredByParam = checkRules.contains("defaultNotNullByParam") || checkRules.contains("defaultNotNullByExpression") || checkRules.contains("requiredByParam");
                     JSONArray rules;
                     try {
                         rules = JSON.parseArray(checkRules);
@@ -1065,8 +1086,6 @@ public class ParameterToolController implements Initializable {
                         if (StringUtils.equals(required, KEY_N)) {
                             if (ele.contains("\"required\"") && ele.contains("true")) {
                                 required = KEY_Y;
-                            } else if (ele.contains("\"checkIsRequired\"")) {
-                                required = KEY_N;
                             }
                         }
                         rule.append(ele).append(STR_NEXT_LINE);
@@ -1077,10 +1096,19 @@ public class ParameterToolController implements Initializable {
                         buildRowCell(row, wrapTextCellStyle, 7, checkRules);
                     }
                 }
+                if (StringUtils.isNotBlank(content)){
+                    List<String> checkIndex = getCheckIndex(fieldCode.replace(STR_UNDER_LINE, STR_BLANK));
+                    for (String ele : checkIndex) {
+                        if (!requiredByParam && controlRequired(content, ele, required)) {
+                            errorRequiredColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), tableCode, fieldCode));
+                            break;
+                        }
+                    }
+                }
                 if (StringUtils.equals(required, KEY_Y)) {
                     buildRowCell(row, redCenterCellStyle, 6, required);
                     if (extProductField.contains(fieldCode.replaceAll(STR_UNDER_LINE, STR_BLANK))) {
-                        errorRequiredColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), tableCode, fieldCode));
+                        errorExtRequiredColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), tableCode, fieldCode));
                     }
                 } else {
                     buildRowCell(row, centerCellStyle, 6, required);
@@ -1093,7 +1121,7 @@ public class ParameterToolController implements Initializable {
     }
 
     private Set<String> checkSkipColumns(ParamRealtimeApiTabDto paramRealtimeApiTabDto, String tabCode, String fileFolder, String fileName) throws Exception {
-        Set<String> extField = new LinkedHashSet<>();
+        Set<String> extRequired = new LinkedHashSet<>();
         List<String> skipColumns = skipExcludeConfig.get(fileName);
         Map<String, String> skipColumnsMap = new HashMap<>();
         if (CollectionUtils.isNotEmpty(skipColumns)) {
@@ -1148,13 +1176,12 @@ public class ParameterToolController implements Initializable {
                     }
                 }
                 if (add) {
-                    extField.add(field.toLowerCase());
+                    extRequired.add(field.toLowerCase());
                 }
             }
         } else {
-            String vue = vuePath.getText() + "\\views\\" + paramRealtimeApiTabDto.getPageUrl() + FILE_TYPE_VUE;
-            if (new File(vue).exists()) {
-                String content = CommonUtils.trimStrToBlank(FileUtils.readNormalFileToString(vue)).toLowerCase();
+            String content = getVueContent(paramRealtimeApiTabDto.getPageUrl());
+            if (StringUtils.isNotBlank(content)) {
                 for (Map.Entry<String, String> entry : skipColumnsMap.entrySet()) {
                     String fieldCodeLower = entry.getKey();
                     String fieldCode = entry.getValue();
@@ -1162,35 +1189,81 @@ public class ParameterToolController implements Initializable {
                     if (CollectionUtils.isNotEmpty(skipField) && skipField.contains(fieldCode)) {
                         continue;
                     }
-                    String addForm1 = "v-model=\"addform." + fieldCodeLower + "\"";
-                    String addForm2 = "v-model='addform." + fieldCodeLower + "'";
-                    String updateForm1 = "v-model=\"updateform." + fieldCodeLower + "\"";
-                    String updateForm2 = "v-model='updateform." + fieldCodeLower + "'";
-                    String actionForm1 = "v-model=\"actionform." + fieldCodeLower + "\"";
-                    String actionForm2 = "v-model='actionform." + fieldCodeLower + "'";
-                    if (needAddField(content, addForm1) || needAddField(content, addForm2) || needAddField(content, updateForm1) || needAddField(content, updateForm2)
-                            || needAddField(content, actionForm1) || needAddField(content, actionForm2)) {
-                        errorSkipColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), fieldCode));
+                    List<String> checkIndex = getCheckIndex(fieldCodeLower);
+                    for (String item : checkIndex) {
+                        if (uesField(content, item)) {
+                            errorSkipColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), fieldCode));
+                            break;
+                        }
                     }
                 }
             }
         }
-        return extField;
+        return extRequired;
     }
 
-    private boolean needAddField(String content, String indexStr) {
+    private String getVueContent(String path) throws IOException {
+        String vue = vuePath.getText() + "\\views\\" + path + FILE_TYPE_VUE;
+        if (new File(vue).exists()) {
+            return CommonUtils.trimStrToBlank(FileUtils.readNormalFileToString(vue)).toLowerCase();
+        }
+        return STR_BLANK;
+    }
+
+    private List<String> getCheckIndex(String fieldCode) {
+        List<String> res = new ArrayList<>();
+        res.add("v-model=\"addform." + fieldCode + "\"");
+        res.add("v-model='addform." + fieldCode + "'");
+        res.add("v-model=\"updateform." + fieldCode + "\"");
+        res.add("v-model='updateform." + fieldCode + "'");
+        res.add("v-model=\"actionform." + fieldCode + "\"");
+        res.add("v-model='actionform." + fieldCode + "'");
+        return res;
+    }
+
+    private boolean uesField(String content, String indexStr) {
         if (content.contains(indexStr)) {
             int index = content.indexOf(indexStr);
-            content = content.substring(0, index);
-            int start = content.lastIndexOf("<!--");
-            int end = content.lastIndexOf("-->");
+            String fieldPart = content.substring(0, index);
+            int start = fieldPart.lastIndexOf("<!--");
+            int end = fieldPart.lastIndexOf("-->");
             // 注释字段
             if (start != -1 && start > end) {
+                return false;
+            }
+            content = getFieldInfo(content, indexStr);
+            if (content.contains("v-if=\"false\"") || content.contains("v-show=\"false\"") || (content.contains("disabled") && !content.contains("disabled="))) {
                 return false;
             }
             return true;
         }
         return false;
+    }
+
+    private boolean controlRequired(String content, String indexStr, String required) {
+        if (content.contains(indexStr)) {
+            content = getFieldInfo(content, indexStr);
+            if (content.contains("isprdrelationadd") || content.contains("isfatemplate") || content.contains("templatemodal")) {
+                if (StringUtils.equals(KEY_N, required)) {
+                    return true;
+                }
+            } else if ((content.contains("v-if") || content.contains("v-show")) && !content.contains("v-if=\"false\"") && !content.contains("v-show=\"false\"")) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    private String getFieldInfo(String content, String indexStr) {
+        String itemIndexLeftStr = "<h-form-item";
+        String itemIndexRightStr = "</h-form-item>";
+        int index = content.indexOf(indexStr);
+        String contentLeft = content.substring(0, index);
+        String contentRight = content.substring(index);
+        int itemIndexLeft = contentLeft.lastIndexOf(itemIndexLeftStr);
+        int itemIndexRight = contentRight.indexOf(itemIndexRightStr);
+        return contentLeft.substring(itemIndexLeft, index) + contentRight.substring(0, itemIndexRight + itemIndexRightStr.length());
     }
 
     private void buildBeginValidDateLine(SXSSFSheet componentDesc, int rowIndex, CellStyle wrapTextCellStyle, CellStyle centerCellStyle, ParamRealtimeApiTabDto paramRealtimeApiTabDto) {

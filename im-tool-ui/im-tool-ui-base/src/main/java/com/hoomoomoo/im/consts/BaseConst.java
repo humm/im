@@ -191,6 +191,8 @@ public class BaseConst {
     public final static String KEY_ADD = "add";
     public final static String KEY_CONSTRAINT = "constraint";
     public final static String KEY_GLOBAL = "global";
+    public final static String KEY_EXT_REQUIRED = "extRequired";
+    public final static String KEY_VUE_REQUIRED = "vueRequired";
 
     public final static String HEP_TASK_SYNC_VERSION_TIMER = "hepTaskSyncVersionTimer";
     public final static String HEP_TASK_PUSH_TIMER = "hepTaskPushTimer";
