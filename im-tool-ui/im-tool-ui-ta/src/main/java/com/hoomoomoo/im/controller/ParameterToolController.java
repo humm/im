@@ -1084,7 +1084,9 @@ public class ParameterToolController implements Initializable {
                     while (iterator.hasNext()) {
                         String ele = iterator.next().toString();
                         if (StringUtils.equals(required, KEY_N)) {
-                            if (ele.contains("\"required\"") && ele.contains("true")) {
+                            if (requiredByParam) {
+                                required = KEY_Y_OR_N;
+                            } else if (ele.contains("\"required\"") && ele.contains("true")) {
                                 required = KEY_Y;
                             }
                         }
