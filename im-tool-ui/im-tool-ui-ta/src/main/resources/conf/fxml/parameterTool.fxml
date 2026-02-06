@@ -17,7 +17,7 @@
             <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="598.0">
                     <children>
-                        <SplitPane dividerPositions="0.22" layoutX="181.0" layoutY="28.0" orientation="VERTICAL"
+                        <SplitPane dividerPositions="0.27" layoutX="181.0" layoutY="28.0" orientation="VERTICAL"
                                    prefHeight="256.5818092838007" prefWidth="598.6908883288683"
                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -42,26 +42,32 @@
                                         <TextField fx:id="vuePath" layoutX="300.0" layoutY="131.0" prefHeight="23.0"
                                                    prefWidth="770.0"/>
 
-                                        <Label layoutX="14" layoutY="170.0" prefHeight="15.0" text="参数设置中可配置路径默认值" style="-fx-text-background-color: red;"/>
+                                        <Label layoutX="14.0" layoutY="178.0" prefHeight="15.0"
+                                               text="TA5字段对应关系文件"/>
+                                        <TextField fx:id="ta5Path" layoutX="180.0" layoutY="171.0" prefHeight="23.0"
+                                                   prefWidth="890.0"/>
+                                        <Label layoutX="1100.0" layoutY="178.0" prefHeight="15.0" text="下个版本生效"/>
 
-                                        <Button fx:id="executeRealtimeBtn" layoutX="1100.0" layoutY="50.0"
+                                        <Label layoutX="14" layoutY="211.0" prefHeight="15.0" text="参数设置中可配置路径默认值" style="-fx-text-background-color: red;"/>
+
+                                        <Button fx:id="executeRealtimeBtn" layoutX="1100.0" layoutY="91.0"
                                                 mnemonicParsing="false" onAction="#executeRealtime" prefHeight="30.0"
                                                 prefWidth="100.0" text="执行">
                                             <padding>
-                                                <Insets bottom="5.0" left="20.0" right="20.0" top="5.0"/>
+                                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                             </padding>
                                         </Button>
-                                        <Label fx:id="errorTips" layoutX="1230" layoutY="55.0" prefHeight="15.0"
+                                        <Label fx:id="errorTips" layoutX="1230" layoutY="96.0" prefHeight="15.0"
                                                style="-fx-font-weight: bold; -fx-text-background-color: red;"
                                                text="存在错误信息,请检查"/>
-                                        <Button fx:id="errorTipsResult" layoutX="1400.0" layoutY="50"
+                                        <Button fx:id="errorTipsResult" layoutX="1400.0" layoutY="91"
                                                 mnemonicParsing="false" onAction="#showParamRealtimeSetResult"
                                                 prefWidth="80.0" text="查看">
                                             <padding>
                                                 <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
                                             </padding>
                                         </Button>
-                                        <Button fx:id="errorTipsResultByFile" layoutX="1500.0" layoutY="50"
+                                        <Button fx:id="errorTipsResultByFile" layoutX="1500.0" layoutY="91"
                                                 mnemonicParsing="false" onAction="#showParamRealtimeSetResultByFile"
                                                 prefWidth="100.0" text="分文件查看">
                                             <padding>
@@ -69,7 +75,7 @@
                                             </padding>
                                         </Button>
 
-                                        <Button layoutX="1700.0" layoutY="50"
+                                        <Button layoutX="1700.0" layoutY="91"
                                                 mnemonicParsing="false" onAction="#showSystemLog"
                                                 prefWidth="100.0" text="查看系统日志">
                                             <padding>

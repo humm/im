@@ -22,7 +22,7 @@ import lombok.SneakyThrows;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.streaming.SXSSFCell;
 import org.apache.poi.xssf.streaming.SXSSFRow;
@@ -30,6 +30,7 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -66,6 +67,9 @@ public class ParameterToolController implements Initializable {
     private TextField vuePath;
 
     @FXML
+    private TextField ta5Path;
+
+    @FXML
     private Button executeRealtimeBtn;
 
     @FXML
@@ -85,6 +89,7 @@ public class ParameterToolController implements Initializable {
     private static boolean alertTips = true;
 
     private static Map<String, Map<String, String>> configDictValue = new LinkedHashMap<>();
+    private static Map<String, Map<String, String>> configTa5FieldCode = new LinkedHashMap<>();
     private static Map<String, String> configDictName = new LinkedHashMap<>();
     private static Set<String> beginValidDateSpecial = new HashSet<>();
     private static Map<String, Map<String, String>> tableColumnsConfig = new HashMap<>();
@@ -96,11 +101,14 @@ public class ParameterToolController implements Initializable {
     private static List<List<String>> errorSkipColumnInfo = new ArrayList<>();
     private static List<List<String>> errorExtRequiredColumnInfo = new ArrayList<>();
     private static List<List<String>> errorRequiredColumnInfo = new ArrayList<>();
+    private static List<List<String>> errorTa5TableInfo = new ArrayList<>();
     private static List<String> modifyInfo = new ArrayList<>();
     private static Map<String, List<String>> logTips = new LinkedHashMap<>();
+    private List<String> errorLog = new ArrayList<>();
 
     private static Map<String, List<String>> skipExcludeConfig = new LinkedHashMap<>();
-    private static Map<String, List<String>> paramRealtimeSetSkip = new LinkedHashMap<>();
+    private static Map<String, List<String>> paramRealtimeSetUseFieldSkip = new LinkedHashMap<>();
+    private static Map<String, List<String>> paramRealtimeSetRequiredSkip = new LinkedHashMap<>();
 
 
     public void updateParameterDoc(TextArea logs) throws Exception {
@@ -126,9 +134,8 @@ public class ParameterToolController implements Initializable {
         OutputUtils.info(paramRealtimeSetPath, appConfigDto.getChangeToolParamRealtimeSetPath());
         OutputUtils.info(tablePath, appConfigDto.getChangeToolTablePath());
         OutputUtils.info(vuePath, appConfigDto.getChangeToolVuePath());
+        OutputUtils.info(ta5Path, appConfigDto.getChangeToolTa5Path());
         errorTips.setVisible(false);
-        // errorTipsResult.setVisible(false);
-        // errorTipsResultByFile.setVisible(false);
     }
 
     @FXML
@@ -222,15 +229,35 @@ public class ParameterToolController implements Initializable {
                 OutputUtils.info(logs, "vue页面目录必须为文件夹");
                 return;
             }
-            TaskUtils.execute(new ParameterToolTask(new ParameterToolTaskParam(this, STR_3, dictPath, paramPath, table, vue)));
+            String ta5;
+            if (ta5Path != null) {
+                ta5 = ta5Path.getText();
+            } else {
+                ta5 = appConfigDto.getChangeToolTa5Path();
+            }
+            // 临时注释
+            if (StringUtils.isBlank(ta5)) {
+                //OutputUtils.info(logs, "请设置TA5字段对应关系文件");
+                //return;
+            }
+            if (new File(dictPath).isDirectory()) {
+                //OutputUtils.info(logs, "TA5字段对应关系文件必须为文件");
+                //return;
+            }
+            TaskUtils.execute(new ParameterToolTask(new ParameterToolTaskParam(this, STR_3)));
         } catch (Exception e) {
             LoggerUtils.error(e);
             OutputUtils.infoContainBr(logs, e.getMessage());
         }
     }
 
-    public void executeRealtimeExe(String dictPath, String paramPath, String tablePath, String vuePath) {
+    public void executeRealtimeExe() {
         try {
+            configDictValue.clear();
+            configTa5FieldCode.clear();
+            configDictName.clear();
+            beginValidDateSpecial.clear();
+            tableColumnsConfig.clear();
             paramRealtimeSetNum = 0;
             tableColumnsNum = 0;
             errorTips.setVisible(false);
@@ -244,25 +271,32 @@ public class ParameterToolController implements Initializable {
             errorSkipColumnInfo.clear();
             errorExtRequiredColumnInfo.clear();
             errorRequiredColumnInfo.clear();
+            errorTa5TableInfo.clear();
             skipExcludeConfig.clear();
-            paramRealtimeSetSkip.clear();
+            paramRealtimeSetUseFieldSkip.clear();
+            paramRealtimeSetRequiredSkip.clear();
             modifyInfo.clear();
             logTips.clear();
+            errorLog.clear();
             executeRealtimeBtn.setDisable(true);
+            OutputUtils.info(logs, getCommonMsg("初始化TA5字段对应关系文件 开始"));
+            initTa5FieldConfig(ta5Path.getText());
+            OutputUtils.info(logs, getCommonMsg("初始化TA5字段对应关系文件 结束"));
             OutputUtils.info(logs, getCommonMsg("初始化字典信息 开始"));
             initConfigInfo();
-            initBaseDict(dictPath);
-            initExtDict(paramPath);
+            initBaseDict(baseDictPath.getText());
+            initExtDict(paramRealtimeSetPath.getText());
             OutputUtils.info(logs, getCommonMsg("初始化字典信息 结束"));
             OutputUtils.info(logs, getCommonMsg("初始化表结构信息 开始"));
-            initTableInfo(tablePath);
+            initTableInfo(tablePath.getText());
             OutputUtils.info(logs, getCommonMsg("初始化表结构信息 结束"));
 
-            skipExcludeConfig = getSkipConfig(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE, PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE_DEV);
-            paramRealtimeSetSkip = getSkipConfig(PATH_PARAM_REALTIME_SET_SKIP, PATH_PARAM_REALTIME_SET_SKIP_DEV);
+            skipExcludeConfig = getSkipConfigForMapConfig(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE, PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE_DEV);
+            paramRealtimeSetUseFieldSkip = getSkipConfigForListConfig(PATH_PARAM_REALTIME_SET_SKIP, PATH_PARAM_REALTIME_SET_SKIP_DEV, "存在使用字段配置忽略检查");
+            paramRealtimeSetRequiredSkip = getSkipConfigForListConfig(PATH_PARAM_REALTIME_SET_SKIP, PATH_PARAM_REALTIME_SET_SKIP_DEV, "必填逻辑与页面不一致");
 
             OutputUtils.info(logs, getCommonMsg("生成文件 开始"));
-            buildFile(paramPath);
+            buildFile(paramRealtimeSetPath.getText());
             if (paramRealtimeSetNum == 0) {
                 OutputUtils.info(logs, getCommonMsg("未扫描到参数电子化配置脚本，请检查【开通脚本目录】配置是否正确"));
                 errorTips.setVisible(true);
@@ -392,6 +426,19 @@ public class ParameterToolController implements Initializable {
                 }
             }
 
+            if (CollectionUtils.isNotEmpty(errorTa5TableInfo)) {
+                for (List<String> ele : errorTa5TableInfo) {
+                    String folder = ele.get(0);
+                    String msg = String.format("%s  %s  %s  %s", ele.get(0), ele.get(1), ele.get(2), "未匹配TA5表结构") + STR_NEXT_LINE;
+                    errorMessage.append(msg);
+                    if (tipsByFile.containsKey(folder)) {
+                        tipsByFile.get(folder).append(msg);
+                    } else {
+                        tipsByFile.put(folder, new StringBuilder(msg));
+                    }
+                }
+            }
+
             Set<String> currentUpdate = getCurrentUpdateTab();
 
             FileUtils.deleteFile(new File(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER)));
@@ -408,33 +455,40 @@ public class ParameterToolController implements Initializable {
                 summary.append("存在使用字段配置忽略检查: " + errorSkipColumnInfo.size() + STR_SPACE_2);
                 summary.append("增值功能默认必填: " + errorExtRequiredColumnInfo.size() + STR_SPACE_2);
                 summary.append("必填逻辑与页面不一致: " + errorRequiredColumnInfo.size() + STR_SPACE_2);
+                summary.append("未匹配TA5表结构: " + errorTa5TableInfo.size() + STR_SPACE_2);
 
+                List<String> errorTa5Table = errorTa5TableInfo.stream().map(item -> item.get(0)).collect(Collectors.toList());
+                List<String> errorTa5TableCurrent = new ArrayList<>();
+                List<String> matchTa5TableCurrent = new ArrayList<>();
                 List<String> needFixed = new ArrayList<>();
+                List<String> notFixed = new ArrayList<>();
                 if (MapUtils.isNotEmpty(tipsByFile)) {
                     for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
                         String key = entry.getKey();
                         FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
                         if (currentUpdate.contains(key)) {
+                            if (errorTa5Table.contains(key)) {
+                                errorTa5TableCurrent.add(key);
+                            } else {
+                                matchTa5TableCurrent.add(key);
+                            }
                             needFixed.add(key);
-                            currentUpdate.remove(key);
                         }
                     }
                 }
 
-                Collections.sort(needFixed, new Comparator<String>() {
-                    @Override
-                    public int compare(String o1, String o2) {
-                        return o1.compareTo(o2);
+                for (String item : currentUpdate) {
+                    if (!tipsByFile.containsKey(item)) {
+                        matchTa5TableCurrent.add(item);
+                        notFixed.add(item);
                     }
-                });
+                }
+                sortPage(errorTa5Table);
+                sortPage(errorTa5TableCurrent);
+                sortPage(matchTa5TableCurrent);
+                sortPage(needFixed);
+                sortPage(notFixed);
 
-                List<String> notFixed = new ArrayList<>(currentUpdate);
-                Collections.sort(notFixed, new Comparator<String>() {
-                    @Override
-                    public int compare(String o1, String o2) {
-                        return o1.compareTo(o2);
-                    }
-                });
 
                 if (MapUtils.isNotEmpty(logTips)) {
                     summary.append(STR_NEXT_LINE);
@@ -445,10 +499,23 @@ public class ParameterToolController implements Initializable {
                     }
                     summary.append(STR_NEXT_LINE);
                 }
-                summary.append(STR_NEXT_LINE + "等待处理【有差异】页面" + getFileNumStr(tipsByFile.size()) + tipsByFile.keySet().stream().collect(Collectors.joining(STR_SPACE_2)));
-                summary.append(STR_NEXT_LINE + "本次修改【有差异】页面" + getFileNumStr(needFixed.size()) + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
-                summary.append(STR_NEXT_LINE + "本次修改【无差异】页面" + getFileNumStr(notFixed.size()));
+
+                summary.append(STR_NEXT_LINE + "等待处理【未匹配TA5表结构】页面" + getFileNumStr(errorTa5Table.size(), true) + errorTa5Table.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "本次修改【未匹配TA5表结构】页面" + getFileNumStr(errorTa5TableCurrent.size(), true) + errorTa5TableCurrent.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "本次修改【已匹配TA5表结构】页面" + getFileNumStr(matchTa5TableCurrent.size(), false));
                 summary.append(STR_NEXT_LINE);
+                summary.append(STR_NEXT_LINE + "等待处理【有差异】页面" + getFileNumStr(tipsByFile.size(), true) + tipsByFile.keySet().stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "本次修改【有差异】页面" + getFileNumStr(needFixed.size(), true) + needFixed.stream().collect(Collectors.joining(STR_SPACE_2)));
+                summary.append(STR_NEXT_LINE + "本次修改【无差异】页面" + getFileNumStr(notFixed.size(), false));
+                summary.append(STR_NEXT_LINE);
+
+                if (CollectionUtils.isNotEmpty(errorLog)) {
+                    summary.append(STR_NEXT_LINE);
+                    for (String log : errorLog) {
+                        summary.append(STR_NEXT_LINE + log);
+                    }
+                    summary.append(STR_NEXT_LINE);
+                }
 
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET), Arrays.asList(summary + STR_NEXT_LINE_2 + errorMessage));
                 FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_UPDATE_DETAIL), modifyInfo);
@@ -476,14 +543,23 @@ public class ParameterToolController implements Initializable {
         }
     }
 
-    private String getFileNumStr(int num) {
+    private void sortPage(List<String> list) {
+        Collections.sort(list, new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                return o1.compareTo(o2);
+            }
+        });
+    }
+
+    private String getFileNumStr(int num, boolean needColon) {
         StringBuilder numStr = new StringBuilder(" (");
         int fixedNum = 3 - String.valueOf(num).length();
         for (int i=0; i<fixedNum; i++) {
             numStr.append(STR_0);
         }
         numStr.append(num).append(")");
-        if (num > 0) {
+        if (num > 0 && needColon) {
             numStr.append(" : ");
         }
         return numStr.toString();
@@ -541,7 +617,7 @@ public class ParameterToolController implements Initializable {
         return false;
     }
 
-    private Map<String, List<String>> getSkipConfig(String confFilePath, String devFilePath) throws IOException {
+    private Map<String, List<String>> getSkipConfigForMapConfig(String confFilePath, String devFilePath) throws IOException {
         Map<String, List<String>> skipConfig = new HashMap<>();
         skipConfig.putAll(JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(confFilePath)), Map.class));
         String devFile = FileUtils.getFilePath(devFilePath);
@@ -562,10 +638,46 @@ public class ParameterToolController implements Initializable {
         return skipConfig;
     }
 
+    private Map<String, List<String>> getSkipConfigForListConfig(String confFilePath, String devFilePath, String configType) throws IOException {
+        Map<String, List<String>> skipConfig = new HashMap<>();
+        List<Map<String, List<String>>> config = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(confFilePath)), List.class);
+        if (CollectionUtils.isNotEmpty(config)) {
+            for (Map<String, List<String>> item : config) {
+                if (item.get(NAME_CONFIG_DESC).contains(configType)) {
+                    skipConfig = item;
+                }
+            }
+        }
+        String devFile = FileUtils.getFilePath(devFilePath);
+        if (new File(devFile).exists()) {
+            List<Map<String, List<String>>> devConfig = JSON.parseObject(FileUtils.readNormalFileToString(FileUtils.getFilePath(devFilePath)), List.class);
+            Map<String, List<String>> dev = new HashMap<>();
+            if (CollectionUtils.isNotEmpty(devConfig)) {
+                for (Map<String, List<String>> item : devConfig) {
+                    if (item.get(NAME_CONFIG_DESC).contains(configType)) {
+                        dev = item;
+                    }
+                }
+            }
+            if (MapUtils.isNotEmpty(dev)) {
+                for (Map.Entry<String, List<String>> entry : dev.entrySet()) {
+                    String fileName = entry.getKey();
+                    List<String> field = entry.getValue();
+                    if (skipConfig.containsKey(fileName)) {
+                        skipConfig.get(fileName).addAll(field);
+                    } else {
+                        skipConfig.put(fileName, field);
+                    }
+                }
+            }
+        }
+        return skipConfig;
+    }
+
     private void skipErrorTips(List<List<String>> error) throws IOException {
         Iterator<List<String>> iterator = error.listIterator();
-        Map<String, List<String>> skipExcludeConfig = getSkipConfig(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE, PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE_DEV);
-        Map<String, List<String>> skipIncludeConfig = getSkipConfig(PATH_PARAM_REALTIME_SET_SKIP_INCLUDE, PATH_PARAM_REALTIME_SET_SKIP_INCLUDE_DEV);
+        Map<String, List<String>> skipExcludeConfig = getSkipConfigForMapConfig(PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE, PATH_PARAM_REALTIME_SET_SKIP_EXCLUDE_DEV);
+        Map<String, List<String>> skipIncludeConfig = getSkipConfigForMapConfig(PATH_PARAM_REALTIME_SET_SKIP_INCLUDE, PATH_PARAM_REALTIME_SET_SKIP_INCLUDE_DEV);
         while (iterator.hasNext()) {
             List<String> errorInfo = iterator.next();
             if (errorInfo.size() != 5) {
@@ -696,6 +808,55 @@ public class ParameterToolController implements Initializable {
         }
     }
 
+    private void initTa5FieldConfig(String path) throws IOException {
+        File file = new File(path);
+        if (!file.exists()) {
+            errorLog.add("TA5字段对应关系文件不存在,请检查");
+            return;
+        }
+        FileInputStream fileInputStream = new FileInputStream(path);
+        Workbook workbook = ExcelComparatorUtils.getWorkbook(fileInputStream, path);
+        Map<String, String> ta5ToTa6Table = new LinkedHashMap<>();
+        Map<String, String> ta6ToTa5FieldCode = new LinkedHashMap<>();
+        for (int sheetIndex = 0; sheetIndex < workbook.getNumberOfSheets(); sheetIndex++) {
+            ta6ToTa5FieldCode.clear();
+            Sheet sheet = workbook.getSheetAt(sheetIndex);
+            int maxRowNum = sheet.getLastRowNum();
+            String sheetName = sheet.getSheetName().trim();
+            for (int rowIndex = 0; rowIndex <= maxRowNum; rowIndex++) {
+                Row row = sheet.getRow(rowIndex);
+                if (row == null) {
+                    continue;
+                }
+                int maxCellNum = row.getLastCellNum();
+                if (sheetIndex == 0) {
+                    // 第一个sheet页 获取TA5与TA6表名称对应关系
+                    String ta5 = ExcelComparatorUtils.getCellValue(row.getCell(2));
+                    String ta6 = ExcelComparatorUtils.getCellValue(row.getCell(4));
+                    if (StringUtils.isNotBlank(ta5) && StringUtils.isNotBlank(ta6)) {
+                        ta5ToTa6Table.put(ta5, ta6.trim());
+                    }
+                } else {
+                    for (int cellIndex = 0; cellIndex < maxCellNum; cellIndex++) {
+                        String ta5 = ExcelComparatorUtils.getCellValue(row.getCell(1));
+                        String ta6 = ExcelComparatorUtils.getCellValue(row.getCell(8));
+                        if (StringUtils.isNotBlank(ta5) && StringUtils.isNotBlank(ta6)) {
+                            String ta5Lower = ta5.toLowerCase();
+                            if (ta5Lower.startsWith("c_") || ta5Lower.startsWith("l_") || ta5Lower.startsWith("d_") || ta5Lower.startsWith("f_")) {
+                                ta5 = ta5Lower;
+                            }
+                            ta6ToTa5FieldCode.put(ta6, ta5);
+                        }
+                    }
+                }
+            }
+            if (ta5ToTa6Table.containsKey(sheetName)) {
+                configTa5FieldCode.put(ta5ToTa6Table.get(sheetName), ta6ToTa5FieldCode);
+            }
+        }
+        configTa5FieldCode.put("tbfundcurrencyscheme", configTa5FieldCode.get("tbfundproduct"));
+    }
+
     private void initBaseDict(String path) throws IOException {
         if (!path.endsWith(FILE_TYPE_SQL)) {
             return;
@@ -780,10 +941,15 @@ public class ParameterToolController implements Initializable {
                             paramRealtimeApiTab.setServiceCode(ScriptSqlUtils.getSqlFieldValue(sqlInfo[3]));
                             paramRealtimeApiTab.setOnSubmit(ScriptSqlUtils.getSqlFieldValue(sqlInfo[4]));
                             paramRealtimeApiTab.setCheckName(deleteParentheses(ScriptSqlUtils.getSqlFieldValue(sqlInfo[5])));
-                            if (sqlInfo.length == 9) {
+                            if (sqlInfo.length >= 9) {
                                 paramRealtimeApiTab.setFieldName(ScriptSqlUtils.getSqlFieldValue(sqlInfo[6]));
                                 paramRealtimeApiTab.setDstScope(ScriptSqlUtils.getSqlFieldValue(sqlInfo[7]));
-                                paramRealtimeApiTab.setTableCode(deleteParentheses(ScriptSqlUtils.getSqlFieldValue(sqlInfo[8])));
+                                String tableCode = deleteParentheses(ScriptSqlUtils.getSqlFieldValue(sqlInfo[8]));
+                                paramRealtimeApiTab.setTableCode(tableCode);
+                                String tableCodeReal = tableCode.replace("_date", STR_BLANK);
+                                if (!configTa5FieldCode.containsKey(tableCodeReal)) {
+                                    errorTa5TableInfo.add(Arrays.asList(fileFolder, fileName, tableCode));
+                                }
                             }
                         } else if (eleLower.contains(KEY_TB_FUND_API_COMPONENT)) {
                             if (sqlInfo.length < 6) {
@@ -974,6 +1140,7 @@ public class ParameterToolController implements Initializable {
 
             CellStyle centerCellStyle = ExcelCommonUtils.getCenterCellStyle(workbook);
             CellStyle redCenterCellStyle = ExcelCommonUtils.getRedCenterCellStyle(workbook);
+            CellStyle blueCenterCellStyle = ExcelCommonUtils.getBlueCenterCellStyle(workbook);
             CellStyle wrapTextCellStyle = ExcelCommonUtils.getWrapTextCellStyle(workbook);
             String tableCode = changeToLower(paramRealtimeApiTabDto.getTableCode());
             Map<String, String> tableInfo = tableColumnsConfig.get(tableCode);
@@ -1098,7 +1265,26 @@ public class ParameterToolController implements Initializable {
                         buildRowCell(row, wrapTextCellStyle, 7, checkRules);
                     }
                 }
+                if (StringUtils.equals(required, KEY_Y)) {
+                    buildRowCell(row, redCenterCellStyle, 6, required);
+                    if (extProductField.contains(fieldCode.replaceAll(STR_UNDER_LINE, STR_BLANK))) {
+                        errorExtRequiredColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), tableCode, fieldCode));
+                    }
+                } else if (StringUtils.equals(required, KEY_Y_OR_N)) {
+                    buildRowCell(row, blueCenterCellStyle, 6, required);
+                } else {
+                    buildRowCell(row, centerCellStyle, 6, required);
+                }
+                if (needAddBeginValidDate) {
+                    buildBeginValidDateLine(componentDesc, rowIndex, wrapTextCellStyle, centerCellStyle, paramRealtimeApiTabDto);
+                }
                 if (StringUtils.isNotBlank(content)){
+                    List<String> skipField = paramRealtimeSetRequiredSkip.get(fileName);
+                    if (CollectionUtils.isNotEmpty(skipField)) {
+                        if (skipField.contains(fieldCode)) {
+                            continue;
+                        }
+                    }
                     List<String> checkIndex = getCheckIndex(fieldCode.replace(STR_UNDER_LINE, STR_BLANK));
                     for (String ele : checkIndex) {
                         if (!requiredByParam && controlRequired(content, ele, required)) {
@@ -1106,17 +1292,6 @@ public class ParameterToolController implements Initializable {
                             break;
                         }
                     }
-                }
-                if (StringUtils.equals(required, KEY_Y)) {
-                    buildRowCell(row, redCenterCellStyle, 6, required);
-                    if (extProductField.contains(fieldCode.replaceAll(STR_UNDER_LINE, STR_BLANK))) {
-                        errorExtRequiredColumnInfo.add(Arrays.asList(fileFolder, fileName, paramRealtimeApiTabDto.getTabName(), tableCode, fieldCode));
-                    }
-                } else {
-                    buildRowCell(row, centerCellStyle, 6, required);
-                }
-                if (needAddBeginValidDate) {
-                    buildBeginValidDateLine(componentDesc, rowIndex, wrapTextCellStyle, centerCellStyle, paramRealtimeApiTabDto);
                 }
             }
         }
@@ -1139,7 +1314,7 @@ public class ParameterToolController implements Initializable {
             String content = FileUtils.readNormalFileToString(productPath);
             if (StringUtils.isNotBlank(content)) {
                 String[] columns = content.split(STR_SEMICOLON);
-                List<String> skipField = paramRealtimeSetSkip.get(fileName);
+                List<String> skipField = paramRealtimeSetUseFieldSkip.get(fileName);
                 for (String column : columns) {
                     if (column.contains("tbdataelement")) {
                         String fieldCode = ScriptSqlUtils.getElement(column, 3);
@@ -1187,7 +1362,7 @@ public class ParameterToolController implements Initializable {
                 for (Map.Entry<String, String> entry : skipColumnsMap.entrySet()) {
                     String fieldCodeLower = entry.getKey();
                     String fieldCode = entry.getValue();
-                    List<String> skipField = paramRealtimeSetSkip.get(fileName);
+                    List<String> skipField = paramRealtimeSetUseFieldSkip.get(fileName);
                     if (CollectionUtils.isNotEmpty(skipField) && skipField.contains(fieldCode)) {
                         continue;
                     }

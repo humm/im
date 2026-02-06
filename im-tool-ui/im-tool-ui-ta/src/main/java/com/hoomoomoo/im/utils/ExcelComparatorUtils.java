@@ -108,7 +108,7 @@ public class ExcelComparatorUtils {
     /**
      * 根据文件流和路径获取Workbook（兼容xls和xlsx）
      */
-    private static Workbook getWorkbook(FileInputStream fis, String filePath) throws IOException {
+    public static Workbook getWorkbook(FileInputStream fis, String filePath) throws IOException {
         if (filePath.endsWith(".xlsx")) {
             return new XSSFWorkbook(fis); // 2007+格式
         } else if (filePath.endsWith(".xls")) {
@@ -121,7 +121,7 @@ public class ExcelComparatorUtils {
     /**
      * 获取单元格值（统一转为字符串,避免类型差异）
      */
-    private static String getCellValue(Cell cell) {
+    public static String getCellValue(Cell cell) {
         if (cell == null) {
             return ""; // 空单元格返回空字符串
         }

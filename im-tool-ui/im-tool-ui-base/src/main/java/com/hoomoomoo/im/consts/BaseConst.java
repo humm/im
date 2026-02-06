@@ -223,7 +223,6 @@ public class BaseConst {
 
     public static final String FILE_TYPE_CHECK_SQL = ".check.sql";
     public static final String FILE_TYPE_RES_SQL = ".res.sql";
-    public static final String FILE_APP_EXTEND = "scriptUpdateDefaultRule.conf";
 
     public static final String NAME_DELETE = " 删除";
     public static final String NAME_NO_AUTH = "权限不够,请重试";
@@ -279,6 +278,8 @@ public class BaseConst {
 
     public static final String NAME_DESC_BEGIN_VALID_DATE = "特殊功能使用字段, 默认情况下无需传该字段";
     public static final String NAME_DESC_COLOR = "颜色标识说明:";
+
+    public static final String NAME_CONFIG_DESC = "配置说明";
 
     public final static String STR_RIGHT_FACING= " -> ";
     public static final String NAME_MENU_COPY = "复制" + STR_RIGHT_FACING + "提交描述";

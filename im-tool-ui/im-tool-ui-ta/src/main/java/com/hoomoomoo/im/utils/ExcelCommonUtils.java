@@ -52,6 +52,17 @@ public class ExcelCommonUtils {
         return cellStyle;
     }
 
+    public static CellStyle getBlueCenterCellStyle(SXSSFWorkbook workbook) {
+        CellStyle cellStyle = getCellStyle(workbook);
+        cellStyle.setAlignment(HorizontalAlignment.CENTER);
+        cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+        Font font = workbook.createFont();
+        font.setColor(IndexedColors.BLUE.getIndex());
+        font.setFontName("等线");
+        cellStyle.setFont(font);
+        return cellStyle;
+    }
+
     public static CellStyle getWrapTextCellStyle(SXSSFWorkbook workbook) {
         CellStyle cellStyle = getCellStyle(workbook);
         cellStyle.setWrapText(true);

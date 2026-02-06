@@ -1,24 +1,50 @@
-{
-  "文件说明": [
-    "已配置字段不使用,页面存在字段",
-    "配置不使用字段"
-  ],
-  "fundIdTypeBizLimitSet.sql": [
-    "busin_type"
-  ],
-  "fundProductInfoSet.sql": [
-    "manager_name"
-  ],
-  "fundCurrencySchemeSet.sql": [
-    "next_basevol_upddate"
-  ],
-  "fundSaleQualifySet.sql": [
-    "begin_valid_date"
-  ],
-  "fundManualProfit.sql": [
-    "assigned_profit_balance"
-  ],
-  "fundProfitProjSet.sql": [
-    "plan_code"
-  ]
-}
+[
+  {
+    "配置说明": [
+      "存在使用字段配置忽略检查"
+    ],
+    "fundIdTypeBizLimitSet.sql": [
+      "busin_type"
+    ],
+    "fundProductInfoSet.sql": [
+      "manager_name"
+    ],
+    "fundCurrencySchemeSet.sql": [
+      "next_basevol_upddate"
+    ],
+    "fundSaleQualifySet.sql": [
+      "begin_valid_date"
+    ],
+    "fundManualProfit.sql": [
+      "assigned_profit_balance"
+    ],
+    "fundProfitProjSet.sql": [
+      "plan_code"
+    ]
+  },
+  {
+    "配置说明": [
+      "必填逻辑与页面不一致"
+    ],
+    "fundSaleQualifySet.sql": [
+      "max_acco_num",
+      "adjust_mfdata",
+      "exdshr_deal_type",
+      "first_invest_include_fee",
+      "append_invest_include_fee",
+      "exp07_asset_rule",
+      "sub_cal_interest_mode",
+      "exp26_by_apr_date",
+      "exceed_issue_assign_by_branch",
+      "book_rdm_advance_days",
+      "is_cal_fee_diff_cust",
+      "book_buy_days",
+      "exp_fund_bf_issuedate",
+      "short_redeem_type",
+      "cal_interest_mode"
+    ]
+  }
+]
+
+
+

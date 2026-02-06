@@ -10,20 +10,8 @@ public class ParameterToolTaskParam {
 
     private String functionType;
 
-    private String dictPath;
-
-    private String paramPath;
-
-    private String tablePath;
-
-    private String vuePath;
-
-    public ParameterToolTaskParam(ParameterToolController parameterToolController, String functionType, String dictPath, String paramPath, String tablePath, String vuePath) {
+    public ParameterToolTaskParam(ParameterToolController parameterToolController, String functionType) {
         this.parameterToolController = parameterToolController;
         this.functionType = functionType;
-        this.dictPath = dictPath;
-        this.paramPath = paramPath;
-        this.tablePath = tablePath;
-        this.vuePath = vuePath;
     }
 }
