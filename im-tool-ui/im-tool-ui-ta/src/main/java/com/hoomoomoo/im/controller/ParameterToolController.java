@@ -235,7 +235,7 @@ public class ParameterToolController implements Initializable {
             } else {
                 ta5 = appConfigDto.getChangeToolTa5Path();
             }
-            // 临时注释
+            // 临时修改
             if (StringUtils.isBlank(ta5)) {
                 //OutputUtils.info(logs, "请设置TA5字段对应关系文件");
                 //return;
@@ -465,8 +465,9 @@ public class ParameterToolController implements Initializable {
                 if (MapUtils.isNotEmpty(tipsByFile)) {
                     for (Map.Entry<String, StringBuilder> entry : tipsByFile.entrySet()) {
                         String key = entry.getKey();
-                        FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
                         if (currentUpdate.contains(key)) {
+                            // 临时修改
+                            FileUtils.writeFile(FileUtils.getFilePath(FILE_PARAM_REALTIME_SET_FOLDER + entry.getKey() + FILE_TYPE_SQL), Arrays.asList(entry.getValue().toString()));
                             if (errorTa5Table.contains(key)) {
                                 errorTa5TableCurrent.add(key);
                             } else {
